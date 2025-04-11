@@ -1140,6 +1140,37 @@
                         "fr": "Configuration de l’application duplicate"
                     }
                 },
+                "hyperlinks": {
+                    "description": {
+                        "en": [
+                            "Hyperlinks application to add hyperlinks to video.",
+                            "Set `USE_HYPERLINKS` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Liens permettant d'ajouter des liens à la vidéo.",
+                            "Mettre `USE_HYPERLINKS` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_HYPERLINKS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Activation of the Hyperlinks application"
+                                ],
+                                "fr": [
+                                    "Activation de l’application Liens"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": ""
+                        }
+                    },
+                    "title": {
+                        "en": "Hyperlinks application configuration",
+                        "fr": "Configuration de l’application Liens"
+                    }
+                },
                 "enrichment": {
                     "description": {},
                     "settings": {},
@@ -1189,7 +1220,7 @@
 
                     },
                     "title": {
-                        "en": "Seaker application configuration",
+                        "en": "Speaker application configuration",
                         "fr": "Configuration de l’application Intervenant"
                     }
                 },

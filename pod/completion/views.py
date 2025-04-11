@@ -33,6 +33,10 @@ import json
 from django.contrib.sites.shortcuts import get_current_site
 from .utils import get_video_completion_context
 from pod.speaker.utils import get_video_speakers
+from pod.hyperlinks.models import VideoHyperlink
+from pod.hyperlinks.forms import VideoHyperlinkForm, HyperlinkForm
+from pod.completion.permissions.video import has_video_rights
+from pod.video.queryset.utils import prefetch_video_completion_hyperlink
 
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTIVE_MODEL_ENRICH = getattr(settings, "ACTIVE_MODEL_ENRICH", False)
@@ -189,6 +193,7 @@ def video_completion(request: WSGIRequest, slug: str):
                 and request.user.has_perm("completion.add_track")
                 and request.user.has_perm("completion.add_document")
                 and request.user.has_perm("completion.add_overlay")
+                and request.user.has_perm("completion.add_hyperlink")
             )
         )
         and (request.user not in video.additional_owners.all())
@@ -203,6 +208,7 @@ def video_completion(request: WSGIRequest, slug: str):
         list_track = video.track_set.all().order_by("lang")
         list_document = video.document_set.all()
         list_overlay = video.overlay_set.all()
+        list_hyperlink = VideoHyperlink.objects.filter(video=video)
     else:
         list_contributor = video.contributor_set.all()
 
@@ -218,6 +224,7 @@ def video_completion(request: WSGIRequest, slug: str):
                 "list_track": list_track,
                 "list_document": list_document,
                 "list_overlay": list_overlay,
+                "list_hyperlink": list_hyperlink,
             },
         )
     else:
@@ -582,6 +589,176 @@ def video_completion_speaker_delete(request: WSGIRequest, video: Video):
                 {
                     "page_title": page_title,
                     "list_speaker": list_speaker,
+                    "video": video,
+                },
+                request=request,
+            )
+        }
+        data = json.dumps(some_data_to_dump)
+        return HttpResponse(data, content_type="application/json")
+    context = get_video_completion_context(video)
+    context["page_title"] = page_title
+    return render(
+        request,
+        "video_completion.html",
+        context,
+    )
+
+
+@csrf_protect
+@has_video_rights(
+    ["completion.add_hyperlink"],
+    "You cannot complement this video.",
+    prefetch_video_completion_hyperlink
+)
+@login_required(redirect_field_name="referrer")
+def video_completion_hyperlink(request: WSGIRequest, slug: str, video: Video):
+    """View to manage hyperlinks of a video."""
+    action_mapping = {
+        "new": video_completion_hyperlink_new,
+        "save": video_completion_hyperlink_save,
+        "modify": video_completion_hyperlink_modify,
+        "delete": video_completion_hyperlink_delete,
+    }
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action in action_mapping:
+            return action_mapping[action](request, video)
+
+    page_title = get_completion_home_page_title(video)
+    context = {
+        "page_title": page_title,
+        "video": video,
+    }
+
+    return render(request, "video_completion.html", context)
+
+
+def video_completion_hyperlink_new(request: WSGIRequest, video: Video):
+    """View to add new hyperlink to a video."""
+    form_hyperlink = VideoHyperlinkForm(initial={"video": video})
+    context = get_video_completion_context(video, form_hyperlink=form_hyperlink)
+    context["page_title"] = _("Add a new hyperlink to the video “%s”") % video.title
+    context["form_hyperlink_is_active"] = True
+    if is_ajax(request):
+        return render(
+            request,
+            "hyperlinks/form_hyperlink.html",
+            {
+                "page_title": context["page_title"],
+                "form_hyperlink": form_hyperlink,
+                "video": video,
+            },
+        )
+    else:
+        return render(
+            request,
+            "video_completion.html",
+            context,
+        )
+
+
+def video_completion_hyperlink_save(request: WSGIRequest, video: Video):
+    """View to save hyperlinks of a video."""
+    form_hyperlink = None
+    form_hyperlink = VideoHyperlinkForm(request.POST)
+    if form_hyperlink.is_valid():
+        form_hyperlink.save()
+        list_hyperlink = VideoHyperlink.objects.filter(video=video)
+        if is_ajax(request):
+            some_data_to_dump = {
+                "list_data": render_to_string(
+                    "hyperlinks/list_hyperlink.html",
+                    {
+                        "page_title": _("Add a new hyperlink to the video “%s”")
+                        % video.title,
+                        "list_hyperlink": list_hyperlink,
+                        "video": video,
+                    },
+                    request=request,
+                ),
+            }
+            data = json.dumps(some_data_to_dump)
+            return HttpResponse(data, content_type="application/json")
+        else:
+            context = get_video_completion_context(video, list_hyperlink=list_hyperlink)
+            context["page_title"] = get_completion_home_page_title(video)
+            messages.add_message(
+                request, messages.SUCCESS, _("The hyperlink has been saved.")
+            )
+            return render(
+                request,
+                "video_completion.html",
+                context,
+            )
+    else:
+        if is_ajax(request):
+            some_data_to_dump = {
+                "errors": "{0}".format(_("Please correct errors")),
+                "form": render_to_string(
+                    "hyperlinks/form_hyperlink.html",
+                    {
+                        "page_title": _("Add a new hyperlink to the video “%s”")
+                        % video.title,
+                        "video": video,
+                        "form_hyperlink": form_hyperlink,
+                    },
+                    request=request,
+                ),
+            }
+            data = json.dumps(some_data_to_dump)
+            return HttpResponse(data, content_type="application/json")
+        context = get_video_completion_context(video, form_hyperlink=form_hyperlink)
+        context["page_title"] = get_completion_home_page_title(video)
+        return render(
+            request,
+            "video_completion.html",
+            context,
+        )
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def video_completion_hyperlink_modify(request: WSGIRequest, video: Video):
+    """View to modify a video hyperlink."""
+    hyperlink = get_object_or_404(VideoHyperlink, id=request.POST["id"])
+    form_hyperlink = HyperlinkForm(instance=hyperlink)
+    page_title = _("Edit the hyperlink “%s”") % hyperlink.url
+    if is_ajax(request):
+        return render(
+            request,
+            "hyperlinks/form_hyperlink.html",
+            {
+                "page_title": page_title,
+                "form_hyperlink": form_hyperlink,
+                "video": video,
+            },
+        )
+    context = get_video_completion_context(video, form_hyperlink=form_hyperlink)
+    context["page_title"] = page_title
+    return render(
+        request,
+        "video_completion.html",
+        context,
+    )
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def video_completion_hyperlink_delete(request: WSGIRequest, video: Video):
+    """View to delete a video hyperlink."""
+    hyperlink = get_object_or_404(VideoHyperlink, id=request.POST["id"])
+    hyperlink.delete()
+    page_title = get_completion_home_page_title(video)
+    list_hyperlink = VideoHyperlink.objects.filter(video=video)
+    if is_ajax(request):
+        some_data_to_dump = {
+            "list_data": render_to_string(
+                "hyperlinks/list_hyperlink.html",
+                {
+                    "page_title": page_title,
+                    "list_hyperlink": list_hyperlink,
                     "video": video,
                 },
                 request=request,

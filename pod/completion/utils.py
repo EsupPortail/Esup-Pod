@@ -2,6 +2,7 @@
 
 from django.utils.translation import gettext as _
 from pod.speaker.utils import get_video_speakers
+from pod.hyperlinks.models import VideoHyperlink
 
 
 def get_video_completion_context(
@@ -11,11 +12,13 @@ def get_video_completion_context(
     list_document=None,
     list_track=None,
     list_overlay=None,
+    list_hyperlink=None,
     form_contributor=None,
     form_speaker=None,
     form_document=None,
     form_track=None,
     form_overlay=None,
+    form_hyperlink=None,
 ):
     """
     Return a dictionary containing information extracted from the video.
@@ -34,6 +37,8 @@ def get_video_completion_context(
         list_track = video.track_set.all()
     if list_overlay is None:
         list_overlay = video.overlay_set.all()
+    if list_hyperlink is None:
+        list_hyperlink = VideoHyperlink.objects.filter(video=video)
 
     context = {
         "video": video,
@@ -47,6 +52,7 @@ def get_video_completion_context(
         "form_document": form_document,
         "form_track": form_track,
         "form_overlay": form_overlay,
+        "form_hyperlink": form_hyperlink,
         "page_title": _("Additions for the video “%s”") % video.title,
     }
 
