@@ -154,10 +154,11 @@
   let data_send = false;
 
   (function() {
-    body_element = document.querySelector("body");
-    body_element.addEventListener('DOMSubtreeModified', function () {
+
+    const observer = new MutationObserver(function (mutationsList, observer) {
       let inputTitle = document.querySelector("input[name='title'][type='text']");
       let renderTypeInput = document.getElementById("render_type");
+
       // If we are at last step and renderTypeInput has not been injected yet.
       if (inputTitle && !renderTypeInput) {
         // If we have 2 video sources
@@ -174,12 +175,14 @@
           send_presenter_value(renderTypeInput.value);
         }
       }
-    }, false);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
   })();
 
   /**
-   * [send_presenter_value description]
-   * @param  {[type]} val [description]
+  * Sends the selected presenter value to the server using an AJAX POST request.
+  * On success, it resets the `data_send` flag to `false`.
+   * @param  {[type]} val the selected presenter value
    */
   function send_presenter_value(val) {
     // console.log("[send_presenter_value] VAL: " + val);

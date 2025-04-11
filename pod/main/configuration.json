@@ -19,13 +19,13 @@
                             "description": {
                                 "en": [
                                     "API URL for the AI video enhancement.",
-                                    "Example: 'https://aristote.univ.fr/api'",
-                                    "Project Link: https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                    "Example: '<https://aristote.univ.fr/api>'",
+                                    "Project Link: <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
                                 ],
                                 "fr": [
                                     "L’URL de l’API pour l’IA d’amélioration des vidéos.",
-                                    "Exemple : 'https://aristote.univ.fr/api'",
-                                    "Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                    "Exemple : '<https://aristote.univ.fr/api>'",
+                                    "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
                                 ]
                             },
                             "pod_version_end": "",
@@ -54,8 +54,8 @@
                                 ],
                                 "fr": [
                                     "L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.",
-                                    "Exemple : '<https://aristote.univ.fr/cgu>'",
-                                    "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
+                                    "Exemple : '<https://aristote.univ.fr/cgu>'",
+                                    "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
                                 ]
                             },
                             "pod_version_end": "",
@@ -70,7 +70,7 @@
                                 ],
                                 "fr": [
                                     "L’ID du client de l’IA d’amélioration des vidéos.",
-                                    "Exemple : 'v1'"
+                                    "Exemple : 'v1'"
                                 ]
                             },
                             "pod_version_end": "",
@@ -121,11 +121,11 @@
                             "description": {
                                 "en": [
                                     "URL of proxy server for request coming from Aristote.",
-                                    "Exemple : '<https://proxy_aristote.univ.fr>'"
+                                    "Example: '<https://proxy_aristote.univ.fr>'"
                                 ],
                                 "fr": [
                                     "L’URL du serveur proxy pour les requêtes venant d'Aristote.",
-                                    "Exemple : '<https://proxy_aristote.univ.fr>'"
+                                    "Exemple : '<https://proxy_aristote.univ.fr>'"
                                 ]
                             },
                             "pod_version_end": "",
@@ -332,7 +332,7 @@
                                     "Url of the institution’s CAS server. In the format https://url_cas"
                                 ],
                                 "fr": [
-                                    "Url du serveur CAS de l’établissement. Format https://url_cas"
+                                    "Url du serveur CAS de l’établissement. Format `http://url_cas`"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3761,7 +3761,7 @@
                                 ],
                                 "fr": [
                                     "Version d’ElasticSearch.",
-                                    "valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.",
+                                    "valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.",
                                     "Attention, le paquet elasticsearch-py doit correspondre à la version du serveur. ",
                                     "pour la 8, `pip3 install elasticsearch==8.17.2`.",
                                     "Voir [elasticsearch-py.readthedocs.io](https://elasticsearch-py.readthedocs.io/)",
@@ -5784,13 +5784,13 @@
                         "en": [
                             "WARNING (ckeditor.W001) django-ckeditor bundles CKEditor 4.22.1 free version",
                             "which isn’t supported anmyore and which does have unfixed security issues,",
-                            "see for example https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS .",
+                            "see for example <https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS>.",
                             "You should consider strongly switching to a different editor."
                         ],
                         "fr": [
                             "ATTENTION. django-ckeditor integre la version gratuite de CKEditor 4.22.1,",
                             "qui n'est plus prise en charge et qui présente des problèmes de sécurité non résolus,",
-                            "voir par exemple https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS."
+                            "voir par exemple <https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS>."
                         ]
                     },
                     "pod_version_end": "4.0.0",
