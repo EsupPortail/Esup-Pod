@@ -41,7 +41,7 @@ class FrontOwnerForm(OwnerAdminForm):
 
 
 class AdminOwnerForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(AdminOwnerForm, self).__init__(*args, **kwargs)
 
     class Meta(object):

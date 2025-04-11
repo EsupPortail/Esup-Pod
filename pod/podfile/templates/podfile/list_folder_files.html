@@ -1,6 +1,6 @@
 {% load i18n static podfile_filters %}
 <!-- Image and text -->
-<nav class="px-3 navbar navbar-expand-lg navbar-link bg-primary" data-bs-theme="dark">
+<nav class="px-3 navbar navbar-expand-lg navbar-link bg-primary text-white" data-bs-theme="dark">
   <div class="container-fluid">
     <h2 class="text-truncate m-0 navbar-brand">
       <span
@@ -87,7 +87,6 @@
             <input type="hidden" name="type" value="{{type}}">
             {% endif %}
             <div class="custom-file">
-              <button id='podfile_submit_button' type="submit" class="d-none"></button>
               <label for="ufile" class="visually-hidden">{% trans "Upload Files" %}</label>
               <input
                   type="file"
