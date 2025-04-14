@@ -329,6 +329,7 @@ a:not(.btn, .dropdown-item):focus {
     margin-top: 3.56em;
   }
   
+  
 }
 
 /***
@@ -551,6 +552,7 @@ a.btn-outline-primary:not(:hover) svg {
 
   /*** General search ***/
   .pod-navbar-search {
+    display: none;
     position: absolute;
     left: 0;
     top: 0;
