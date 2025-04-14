@@ -293,6 +293,7 @@ a:not(.btn, .dropdown-item):focus {
   background-color: #f5f5f5;
   border-bottom: 1px solid #cdcdcd;
   margin-top: 4.5em;
+  z-index: 1020;
 }
 
 .pod-navbar-breadcrumb .breadcrumb {
