@@ -112,13 +112,13 @@
           {% show_video_buttons as video_buttons %}
           {% if video_buttons %}
             <li class="nav-item pod-navbar__nav-item" id="nav-addvideo">
-              <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Add a new video on' %} {{ TITLE_SITE }}">
+              <a class="btn btn-primary " href="{% url 'video:video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Add a new video on' %} {{ TITLE_SITE }}">
                 <i class="bi bi-plus pod-add" aria-hidden="true"></i>
                 <span class="ms-1 d-none d-md-inline">{% trans 'Add a video' %}</span>
               </a>
             </li>
             <li class="nav-item pod-navbar__nav-item ms-2 ms-md-4" id="nav-myvideos">
-              <a class="btn btn-primary btn-sm" href="{% url 'video:dashboard' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Show all my videos on' %} {{ TITLE_SITE }}">
+              <a class="btn btn-primary " href="{% url 'video:dashboard' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Show all my videos on' %} {{ TITLE_SITE }}">
                 <i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>
                 <span class="ms-1 d-none d-md-inline">{% trans 'Dashboard' %}</span>
               </a>
@@ -127,7 +127,7 @@
           {% show_meeting_button as meeting_button %}
           {% if meeting_button %}
             <li class="nav-item pod-navbar__nav-item ms-2 ms-md-4" id="nav-mymeetings">
-              <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Show all my meetings on' %} {{ TITLE_SITE }}">
+              <a class="btn btn-primary " href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Show all my meetings on' %} {{ TITLE_SITE }}">
                 <i class="bi bi-person-video pod-add" aria-hidden="true"></i>
                 <span class="ms-1 d-none d-md-inline">{% trans 'My meetings' %}</span>
               </a>
@@ -223,7 +223,7 @@
 
     {% if user.is_authenticated %}
       <li class="nav-item ms-2 ms-sm-3" id="nav-usermenu">
-        <button class="btn btn-sm nav-item {% if not request.user.owner.userpicture  %}initials btn btn-primary {% else %} nav-link{% endif %} d-flex justify-content-center align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menuuser" aria-controls="pod-navbar__menuuser" title="{% trans 'Toggle user menu' %}"
+        <button class="btn btn-primary nav-item {% if not request.user.owner.userpicture  %}initials {% else %} nav-link{% endif %} d-flex justify-content-center align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menuuser" aria-controls="pod-navbar__menuuser" title="{% trans 'Toggle user menu' %}"
          data-pod-tooltip="true">
           {% if request.user.owner.userpicture %}
             <img src="{{ user.owner.userpicture.file.url }}" class="userpicture rounded" alt="{{ user }}" loading="lazy">
@@ -398,7 +398,7 @@
         {% if request.path != LOGIN_URL %}
          <li class="nav-item dropdown login m-2" id="nav-authentication">
            {% get_url_referrer request as url_referrer %}
-           <a class="btn btn-primary btn-sm ps-2 pe-2 d-flex" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" title="{% trans 'Open login page' %}" data-bs-toggle="tooltip">
+           <a class="btn btn-primary  ps-2 pe-2 d-flex" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" title="{% trans 'Open login page' %}" data-bs-toggle="tooltip">
              <i class="bi bi-person-circle" aria-hidden="true"></i> <span class="ms-1 d-none d-lg-block">{% trans 'Log in' %}</span>
             </a>
           </li>

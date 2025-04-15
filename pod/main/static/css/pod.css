@@ -32,40 +32,40 @@
    * Esup-Pod default colors
    ***/
 
-  /*** couleur de fond du site ***/
+  /*** site background color ***/
   --pod-background: #fff;
   --pod-background-dark: #222831;
 
-  /*** couleur du texte des boutons principaux ***/
+  /*** main button text color ***/
   --pod-btn-text: #fff;
   --pod-btn-text-dark: #fff;
 
-  /**** couleur de police ****/
+  /**** font color ****/
   --pod-font-color: #000;
   --pod-font-color-dark: #f8f9fa;
 
-  /**** couleur neutre pour fond de bloc (ex jumbotron) ***/
+  /**** neutral color for block background (e.g. jumbotron) ***/
   --pod-background-neutre1-bloc: #ddd;
   --pod-background-neutre1-bloc-dark: #393e46;
   --pod-background-neutre1-bloc-hover: #e5f1fa;
 
-  /**** couleur neutre 2 pour fond de bloc ***/
+  /**** second neutral color for block background ***/
   --pod-background-neutre2-bloc: #f5f5f5;
   --pod-background-neutre2-bloc-dark: #393e46;
 
-  /*** couleur des bordures de l'ariane ***/
+  /*** breadcrumb border color ***/
   --pod-navbar-breadcrumb-border: #ced4da;
   --pod-navbar-breadcrumb-border-dark: #8e969d;
 
-  /**** couleur des liens *****/
+  /**** link colors *****/
   --pod-link-color: var(--pod-primary);
   --pod-link-color-rgb: var(--pod-primary-rgb);
   --pod-activelink-color: var(--pod-primary-darken);
 
-  /* couleur d'un élément actif (ex. : survol de bouton) */
+  /* active element color (e.g., button hover) */
   --pod-primary-focus: var(--pod-primary-darken);
 
-  /* Couleur d'alerte */
+  /* alert color */
   --pod-alert: #fc8670;
   --pod-alert-dark: #b11030;
 
@@ -314,7 +314,6 @@ a:not(.btn, .dropdown-item):focus {
 
 .pod-navbar .btn {
   border-radius: var(--bs-border-radius-xl);
-  font-size: 1rem;
   padding: 0.4rem 1.5rem;
   display: inline-flex;
   align-items: center;
@@ -322,7 +321,6 @@ a:not(.btn, .dropdown-item):focus {
 }
 
 .pod-navbar .btn i {
-  font-size: 1.3em;
   display: inline-flex;
   align-items: center;
 }
@@ -332,16 +330,6 @@ a:not(.btn, .dropdown-item):focus {
     font-size: 0.9rem;
     padding: 0.25rem 0.75rem;
   }
-
-  .pod-navbar .btn i {
-    font-size: 1em;
-  }
-
-  .pod-navbar-breadcrumb {
-    margin-top: 3.56em;
-  }
-  
-  
 }
 
 /***

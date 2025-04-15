@@ -63,15 +63,15 @@
 <body>
   {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
   <header role="banner" class="fixed-top">
-    <!-- Navigation principale -->
+    <!-- Main navigation -->
     <nav class="navbar pod-navbar m-0 p-1 p-md-2" aria-label="{% trans 'Main navigation' %}">
       {% include 'navbar.html' %}
     </nav>
 
-    <!-- Navigation repliée-->
+    <!-- Collapsed navigation -->
     {% include 'navbar_collapse.html' %}
 
-    <!-- Fil d'Ariane dans le même nav avec la classe pod-navbar-breadcrumb appliquée -->
+    <!-- Breadcrumb navigation -->
     {% if not request.GET.is_iframe %}
       <nav aria-label="{% trans 'Breadcrumb' %}" id="mainbreadcrumb" class="pod-navbar-breadcrumb ">
         <ol class="breadcrumb d-flex">
