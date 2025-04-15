@@ -130,7 +130,7 @@
           <button title="{% trans 'Grid display mode' %}" class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == "grid" %}active{% endif %}" aria-current="page" onclick="changeDisplayMode('grid')"></button>
           <button title="{% trans 'List display mode' %}" class="btn btn-outline-primary bi bi-list-check btn-dashboard-display-mode {% if display_mode == "list" %}active{% endif %}" onclick="changeDisplayMode('list')"></button>
         </div>
-        <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-4 mb-2">
+        <form id="sortForm" action="{% url 'videos:dashboard' %}" method="get" class="filterSortForms col-4 mb-2">
           {% include "videos/video_sort_select.html" %}
         </form>
       </div>
@@ -145,7 +145,7 @@
 {% endblock page_content %}
 
 {% block page_aside %}
-  {% include 'videos/filter_aside.html' %}
+  {% include 'videos/filter_aside_dashboard.html' %}
 {% endblock page_aside %}
 
 {% block more_script %}

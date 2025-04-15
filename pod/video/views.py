@@ -561,6 +561,7 @@ def theme_edit_save(request, channel):
 # ############################################################################
 
 
+
 @login_required(redirect_field_name="referrer")
 def dashboard(request):
     """
@@ -578,15 +579,19 @@ def dashboard(request):
 
     if USER_VIDEO_CATEGORY:
         categories = Category.objects.prefetch_related("video").filter(owner=request.user)
-        if len(request.GET.getlist("categories")):
-            categories_checked = request.GET.getlist("categories")
-            categories_videos = categories.filter(
-                slug__in=categories_checked
-            ).values_list("video", flat=True)
-            videos_list = videos_list.filter(pk__in=categories_videos)
+        selected_categories = request.GET.getlist("categories")
 
-        data_context["categories"] = categories
-        data_context["all_categories_videos"] = get_json_videos_categories(request)
+        if selected_categories:
+            category_video_ids = categories.filter(
+                slug__in=selected_categories
+            ).values_list("video_id", flat=True)
+
+            videos_list = videos_list.filter(pk__in=category_video_ids)
+
+        data_context.update({
+            "categories": categories,
+            "all_categories_videos": get_json_videos_categories(request),
+        })
 
     page = request.GET.get("page", 1)
     full_path = ""
@@ -888,6 +893,9 @@ def get_paginated_videos(paginator, page):
 
 def get_filtered_videos_list(request, videos_list):
     """Return filtered videos list by get parameters."""
+    title_query = request.GET.get("title")
+    if title_query:
+        videos_list = videos_list.filter(title__icontains=title_query)
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
     if request.GET.getlist("discipline"):
