@@ -62,44 +62,43 @@
 
 <body>
   {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
-  <header role="banner">
-      <!-- Navigation principale -->
-      <nav class="navbar pod-navbar fixed-top m-0 p-1 p-md-2" aria-label="{% trans 'Main navigation' %}">
-        {% include 'navbar.html' %}
-      </nav>
-    
-      <!-- Navigation repliée-->
-      {% include 'navbar_collapse.html' %}
-    
-      <div class="container-fluid pod-navbar-breadcrumb fixed-top">
-        {% if not request.GET.is_iframe %}
-          {% if MAINTENANCE_SHEDULED %}
-            <div class="alert alert-warning" role="alert">
-              {{ MAINTENANCE_TEXT_SHEDULED|safe }}
-            </div>
-          {% endif %}
-          
-          <!-- Fil d'Ariane -->
-          <nav aria-label="{% trans 'Breadcrumb' %}" id="mainbreadcrumb">
-            <ol class="breadcrumb d-flex">
-              {% block breadcrumbs %}
-                {% if request.path == '/' %}
-                  <li class="breadcrumb-item active" aria-current="page">
-                    {% trans 'Home' %}
-                  </li>
-                {% else %}
-                  <li class="breadcrumb-item">
-                    <a href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ TITLE_SITE }} - {% trans 'Home' %}">
-                      {% trans 'Home' %}
-                    </a>
-                  </li>
-                {% endif %}
-              {% endblock breadcrumbs %}
-            </ol>
-          </nav>
+  <header role="banner" class="fixed-top">
+    <!-- Navigation principale -->
+    <nav class="navbar pod-navbar m-0 p-1 p-md-2" aria-label="{% trans 'Main navigation' %}">
+      {% include 'navbar.html' %}
+    </nav>
+
+    <!-- Navigation repliée-->
+    {% include 'navbar_collapse.html' %}
+
+    <!-- Fil d'Ariane dans le même nav avec la classe pod-navbar-breadcrumb appliquée -->
+    {% if not request.GET.is_iframe %}
+      <nav aria-label="{% trans 'Breadcrumb' %}" id="mainbreadcrumb" class="pod-navbar-breadcrumb ">
+        <ol class="breadcrumb d-flex">
+          {% block breadcrumbs %}
+            {% if request.path == '/' %}
+              <li class="breadcrumb-item active" aria-current="page">
+                {% trans 'Home' %}
+              </li>
+            {% else %}
+              <li class="breadcrumb-item">
+                <a href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ TITLE_SITE }} - {% trans 'Home' %}">
+                  {% trans 'Home' %}
+                </a>
+              </li>
+            {% endif %}
+          {% endblock breadcrumbs %}
+        </ol>
+
+        {% if MAINTENANCE_SHEDULED %}
+          <div class="alert alert-warning" role="alert">
+            {{ MAINTENANCE_TEXT_SHEDULED|safe }}
+          </div>
         {% endif %}
-      </div>
+      </nav>
+    {% endif %}
   </header>
+
   {% block content %}
   {% if request.path in "/,/authentication_login/,/accounts/login/" and MAINTENANCE_MODE %}
     {% get_maintenance_welcome as maintenance_text %}

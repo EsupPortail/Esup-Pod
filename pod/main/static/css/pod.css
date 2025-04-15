@@ -51,7 +51,11 @@
 
   /**** couleur neutre 2 pour fond de bloc ***/
   --pod-background-neutre2-bloc: #f5f5f5;
-  --pod-background-neutre2-bloc-dark: #161c26;
+  --pod-background-neutre2-bloc-dark: #393e46;
+
+  /*** couleur des bordures de l'ariane ***/
+  --pod-navbar-breadcrumb-border: #ced4da;
+  --pod-navbar-breadcrumb-border-dark: #8e969d;
 
   /**** couleur des liens *****/
   --pod-link-color: var(--pod-primary);
@@ -291,13 +295,21 @@ a:not(.btn, .dropdown-item):focus {
 
 .pod-navbar-breadcrumb {
   background-color: var(--pod-background-neutre2-bloc);
-  border-bottom: 1px solid var(--bs-gray-400);
-  margin-top: 4.5em;
+  border-bottom: 1px solid var(--pod-navbar-breadcrumb-border);
   z-index: 1020;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .pod-navbar-breadcrumb .breadcrumb {
   margin-bottom: 0;
+}
+
+.pod-navbar {
+  background: var(--pod-background);
+  border-bottom: 1px solid var(--pod-navbar-breadcrumb-border);
 }
 
 .pod-navbar .btn {
@@ -1257,11 +1269,6 @@ main {
   }
 }
 
-.pod-navbar {
-  background: var(--pod-background);
-  border-bottom: 1px solid var(--bs-gray-400);
-}
-
 .pod-info-video {
   margin-top: 1.5rem;
 }
@@ -1735,13 +1742,6 @@ table .alert.alert-danger.btn.pod-btn-social {
 .calendarbox {
   z-index: 3000;
   background-color: var(--pod-background) !important;
-}
-
-#mainbreadcrumb {
-  margin-right: 2.7rem;
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-left: 1rem;
 }
 
 div.disabled,
