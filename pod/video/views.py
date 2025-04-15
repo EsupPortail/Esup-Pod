@@ -906,7 +906,6 @@ def get_filtered_videos_list(request, videos_list):
         videos_list = videos_list.filter(
             Q(title_en__icontains=title_query) | Q(title_fr__icontains=title_query)
         )
-    print("after filtre : ", videos_list)
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
     if request.GET.getlist("discipline"):
