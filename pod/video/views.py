@@ -561,19 +561,8 @@ def theme_edit_save(request, channel):
 # ############################################################################
 
 
-
 @login_required(redirect_field_name="referrer")
 def dashboard(request):
-    """
-    Render the logged user's dashboard: videos list/bulk update's interface.
-
-    Args:
-        request (Request): current HTTP Request.
-
-    Returns:
-        Render of global views with updated filtered and sorted videos, categories,
-         display_mode, etc...
-    """
     data_context = {}
     videos_list = get_videos_for_owner(request)
 
@@ -585,7 +574,6 @@ def dashboard(request):
             category_video_ids = categories.filter(
                 slug__in=selected_categories
             ).values_list("video_id", flat=True)
-
             videos_list = videos_list.filter(pk__in=category_video_ids)
 
         data_context.update({
@@ -593,102 +581,51 @@ def dashboard(request):
             "all_categories_videos": get_json_videos_categories(request),
         })
 
-    page = request.GET.get("page", 1)
-    full_path = ""
-    if page:
-        full_path = (
-            request.get_full_path()
-            .replace("?page=%s" % page, "")
-            .replace("&page=%s" % page, "")
-        )
-
-    filtered_videos_list = get_filtered_videos_list(request, videos_list)
-    sort_field = request.GET.get("sort") if request.GET.get("sort") else "date_added"
-    sort_direction = request.GET.get("sort_direction")
-    sorted_videos_list = sort_videos_list(
-        filtered_videos_list, sort_field, sort_direction
-    )
-    error_message = None
-    if not filtered_videos_list:
-        error_message = _("No videos matched your filters. Please try adjusting them.")
-    if not videos_list:
-        error_message = _("You haven't uploaded any videos yet. Click 'Add a new video' to get started.")
-
-    ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
-    owner_filter = owner_is_searchable(request.user)
-
-    count_videos = len(sorted_videos_list)
-
-    paginator = Paginator(sorted_videos_list, 12)
-    videos = get_paginated_videos(paginator, page)
+    video_context = get_common_video_context(request, videos_list, template_type="dashboard")
+    data_context.update(video_context)
 
     videos_list_templates = {
         "grid": "videos/video_list_grid_selectable.html",
         "list": "videos/video_list_table_selectable.html",
     }
-
-    display_mode = (
-        request.GET.get("display_mode")
-        if request.GET.get("display_mode")
-        and request.GET.get("display_mode") in videos_list_templates.keys()
-        else "grid"
-    )
+    display_mode = request.GET.get("display_mode")
+    if display_mode not in videos_list_templates:
+        display_mode = "grid"
     template = videos_list_templates[display_mode]
 
     if is_ajax(request):
-        return render(
-            request,
-            template,
-            {
-                "videos": videos,
-                "full_path": full_path,
-                "count_videos": count_videos,
-                "cursus_codes": CURSUS_CODES,
-                "owner_filter": owner_filter,
-            },
-        )
+        return render(request, template, {
+            "videos": data_context["videos"],
+            "full_path": data_context["full_path"],
+            "count_videos": data_context["count_videos"],
+            "cursus_codes": CURSUS_CODES,
+            "owner_filter": data_context["owner_filter"],
+        })
 
-    default_owner = request.user.pk
     form = VideoForm(
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser,
         current_user=request.user,
-        initial={"owner": default_owner},
+        initial={"owner": request.user.pk},
     )
-    # Remove fields we don't want to be bulk-modified
     for unwanted in ["title", "video"]:
         del form.fields[unwanted]
 
-    data_context["form"] = form
-    data_context["fieldsets_dashboard"] = [
-        "channel_option",
-        "access_restrictions",
-        "advanced_options",
-    ]
-    data_context["use_category"] = USER_VIDEO_CATEGORY
-    data_context["use_obsolescence"] = USE_OBSOLESCENCE
-    data_context["use_transcription"] = USE_TRANSCRIPTION
-    data_context["videos"] = videos
-    data_context["count_videos"] = count_videos
-    data_context["types"] = request.GET.getlist("type")
-    data_context["owners"] = request.GET.getlist("owner")
-    data_context["disciplines"] = request.GET.getlist("discipline")
-    data_context["tags_slug"] = request.GET.getlist("tag")
-    data_context["cursus_selected"] = request.GET.getlist("cursus")
-    data_context["cursus_codes"] = CURSUS_CODES
-    data_context["full_path"] = full_path
-    data_context["owners"] = request.GET.getlist("owner")
-    data_context["ownersInstances"] = ownersInstances
-    data_context["sort_field"] = sort_field
-    data_context["sort_direction"] = request.GET.get("sort_direction")
-    data_context["owner_filter"] = owner_filter
-    data_context["display_mode"] = display_mode
-    data_context["video_list_template"] = template
-    data_context["page_title"] = _("Dashboard")
-    data_context["listTheme"] = json.dumps(get_list_theme_in_form(form))
-    data_context["error_message"] = error_message
+    data_context.update({
+        "form": form,
+        "fieldsets_dashboard": ["channel_option", "access_restrictions", "advanced_options"],
+        "use_category": USER_VIDEO_CATEGORY,
+        "use_obsolescence": USE_OBSOLESCENCE,
+        "use_transcription": USE_TRANSCRIPTION,
+        "display_mode": display_mode,
+        "video_list_template": template,
+        "page_title": _("Dashboard"),
+        "listTheme": json.dumps(get_list_theme_in_form(form)),
+        "error_message": None if data_context["videos"] else _("No videos matched your filters."),
+    })
 
     return render(request, "videos/dashboard.html", data_context)
+
 
 
 
@@ -956,66 +893,75 @@ def owner_is_searchable(user: User) -> bool:
     """
     return not HIDE_USER_FILTER and user.is_authenticated
 
+def get_common_video_context(request, videos_source, template_type="default"):
+    """
+    Generic processing for video lists with filters, sorting, and pagination.
 
-def videos(request):
-    """Render the main list of videos."""
-    videos_list = get_filtered_videos_list(request, get_available_videos())
-    sort_field = request.GET.get("sort") if request.GET.get("sort") else "date_added"
+    Args:
+        request: HttpRequest object
+        videos_source: queryset or function to retrieve the list of videos
+        template_type: "dashboard" or "default" (used for AJAX templates, etc.)
+
+    Returns:
+        dict containing the context, paginated videos, etc.
+    """
+
+    videos_list = get_filtered_videos_list(request, videos_source)
+    sort_field = request.GET.get("sort") or "date_added"
     sort_direction = request.GET.get("sort_direction")
 
-    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+    sorted_videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+    count_videos = len(sorted_videos_list)
 
-    if not sort_field:
-        # Get the default Video ordering
-        sort_field = Video._meta.ordering[0].lstrip("-")
-    count_videos = len(videos_list)
+    page = request.GET.get("page") or 1
+    full_path = request.get_full_path().replace(f"?page={page}", "").replace(f"&page={page}", "")
 
-    page = request.GET.get("page", 1)
-    if page == "" or page is None:
-        page = 1
-    full_path = ""
-    if page:
-        full_path = (
-            request.get_full_path()
-            .replace("?page=%s" % page, "")
-            .replace("&page=%s" % page, "")
-        )
+    paginator = Paginator(sorted_videos_list, 12)
+    paginated_videos = get_paginated_videos(paginator, page)
 
-    paginator = Paginator(videos_list, 12)
-    videos = get_paginated_videos(paginator, page)
-    ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
-    owner_filter = owner_is_searchable(request.user)
+    context = {
+        "videos": paginated_videos,
+        "count_videos": count_videos,
+        "full_path": full_path,
+        "sort_field": sort_field,
+        "sort_direction": sort_direction,
+        "owner_filter": owner_is_searchable(request.user),
+        "ownersInstances": get_owners_has_instances(request.GET.getlist("owner")),
+    }
 
-    if is_ajax(request):
-        return render(
-            request,
-            "videos/video_list.html",
-            {
-                "videos": videos,
-                "full_path": full_path,
-                "count_videos": count_videos,
-                "owner_filter": owner_filter,
-            },
-        )
-    return render(
-        request,
-        "videos/videos.html",
-        {
-            "videos": videos,
-            "count_videos": count_videos,
+    if template_type == "dashboard":
+        context.update({
             "types": request.GET.getlist("type"),
             "owners": request.GET.getlist("owner"),
             "disciplines": request.GET.getlist("discipline"),
             "tags_slug": request.GET.getlist("tag"),
             "cursus_selected": request.GET.getlist("cursus"),
-            "full_path": full_path,
-            "ownersInstances": ownersInstances,
-            "cursus_list": CURSUS_CODES,
-            "sort_field": sort_field,
-            "sort_direction": request.GET.get("sort_direction"),
-            "owner_filter": owner_filter,
-        },
-    )
+        })
+
+    return context
+
+
+def videos(request):
+    video_context = get_common_video_context(request, get_available_videos())
+
+    if is_ajax(request):
+        return render(request, "videos/video_list.html", {
+            "videos": video_context["videos"],
+            "full_path": video_context["full_path"],
+            "count_videos": video_context["count_videos"],
+            "owner_filter": video_context["owner_filter"],
+        })
+
+    return render(request, "videos/videos.html", {
+        **video_context,
+        "types": request.GET.getlist("type"),
+        "owners": request.GET.getlist("owner"),
+        "disciplines": request.GET.getlist("discipline"),
+        "tags_slug": request.GET.getlist("tag"),
+        "cursus_selected": request.GET.getlist("cursus"),
+        "cursus_list": CURSUS_CODES,
+    })
+
 
 
 def is_in_video_groups(user, video):
