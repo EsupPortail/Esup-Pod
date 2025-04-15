@@ -290,8 +290,8 @@ a:not(.btn, .dropdown-item):focus {
 }
 
 .pod-navbar-breadcrumb {
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #cdcdcd;
+  background-color: var(--pod-background-neutre2-bloc);
+  border-bottom: 1px solid var(--bs-gray-400);
   margin-top: 4.5em;
   z-index: 1020;
 }
@@ -1259,7 +1259,7 @@ main {
 
 .pod-navbar {
   background: var(--pod-background);
-  border-bottom: 1px solid #cdcdcd;
+  border-bottom: 1px solid var(--bs-gray-400);
 }
 
 .pod-info-video {
