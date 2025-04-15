@@ -121,8 +121,8 @@
 
   <div>
     {% if videos.paginator.count == 0 %}
-      <h2 class="h4">{% trans "No video found"%}</h2>
-      <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the ”Add a new video” button to add one'%}</p>
+      <!--<h2 class="h4">{% trans "No video found"%}</h2>-->
+      <p class="alert alert-info mt-1 mt-md-3 mt-lg-5 ">{% trans error_message %}</p>
     {% else %}
       <div class="row mt-3">
         <h2 id="video_count" class="col-5">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>

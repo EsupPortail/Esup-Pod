@@ -16,6 +16,26 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.5\n"
 
+#: pod/video/views.py
+msgid "No videos matched your filters. Please try adjusting them."
+msgstr "Aucune vidéo ne correspond à vos filtres. Veuillez les modifier."
+
+#: pod/video/views.py
+msgid "You haven't uploaded any videos yet. Click 'Add a new video' to get started."
+msgstr "Vous n'avez pas encore mis en ligne de vidéos. Cliquez sur « Ajouter une nouvelle vidéo » pour commencer."
+
+#: pod/video/templates/videos/filter_aside_dashboard.html
+msgid "Dashboard Filters"
+msgstr "Filtres du tableau de bord"
+
+#: pod/video/templates/videos/filter_aside_dashboard.html
+msgid "Search by title"
+msgstr "Rechercher par titre"
+
+#: pod/video/templates/videos/filter_aside_dashboard.html
+msgid "Enter video title"
+msgstr "Saisissez le titre de la vidéo"
+
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
 msgstr "Amélioration par l’intelligence artificielle"

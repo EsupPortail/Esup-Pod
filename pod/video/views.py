@@ -608,6 +608,12 @@ def dashboard(request):
     sorted_videos_list = sort_videos_list(
         filtered_videos_list, sort_field, sort_direction
     )
+    error_message = None
+    if not filtered_videos_list:
+        error_message = _("No videos matched your filters. Please try adjusting them.")
+    if not videos_list:
+        error_message = _("You haven't uploaded any videos yet. Click 'Add a new video' to get started.")
+
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
 
@@ -680,8 +686,10 @@ def dashboard(request):
     data_context["video_list_template"] = template
     data_context["page_title"] = _("Dashboard")
     data_context["listTheme"] = json.dumps(get_list_theme_in_form(form))
+    data_context["error_message"] = error_message
 
     return render(request, "videos/dashboard.html", data_context)
+
 
 
 @login_required(redirect_field_name="referrer")
@@ -895,7 +903,10 @@ def get_filtered_videos_list(request, videos_list):
     """Return filtered videos list by get parameters."""
     title_query = request.GET.get("title")
     if title_query:
-        videos_list = videos_list.filter(title__icontains=title_query)
+        videos_list = videos_list.filter(
+            Q(title_en__icontains=title_query) | Q(title_fr__icontains=title_query)
+        )
+    print("after filtre : ", videos_list)
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
     if request.GET.getlist("discipline"):
