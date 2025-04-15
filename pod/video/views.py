@@ -614,6 +614,12 @@ def dashboard(request):
     if not videos_list:
         error_message = _("You haven't uploaded any videos yet. Click 'Add a new video' to get started.")
 
+    error_message = None
+    if not filtered_videos_list:
+        error_message = _("No videos matched your filters. Please try adjusting them.")
+    if not videos_list:
+        error_message = _("You haven't uploaded any videos yet. Click 'Add a new video' to get started.")
+
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
 
