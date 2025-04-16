@@ -15,7 +15,7 @@
     {% include "videos/filter_aside_category.html" %}
   {% endif %}
   <fieldset>
-    <legend class="h5"><i class="bi bi-search"></i>&nbsp;{% trans 'Search' %}</legend>
+    <legend class="h5"><i class="bi bi-search"></i>&nbsp;{% trans 'Filters' %}</legend>
     <div class="form-group">
       <label for="titlebox">{% trans 'Search by title' %}</label>
       <input
@@ -25,6 +25,15 @@
         class="form-control"
         placeholder="{% trans 'Enter video title' %}"
         value="{{ request.GET.title }}">
+    
+      <label for="ownerbox">{% trans 'Filter by contributor' %}</label>
+      <input
+        type="text"
+        name="owner"
+        id="ownerbox"
+        class="form-control"
+        placeholder="{% trans 'Enter a contributor name' %}"
+        value="{{ request.GET.owner }}">
     </div>
   </fieldset>
   {% if HIDE_TYPES == False %}
