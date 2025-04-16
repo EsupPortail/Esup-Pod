@@ -63,6 +63,12 @@
 <body>
   {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
   <header role="banner" class="fixed-top">
+    {% if MAINTENANCE_SHEDULED %}
+    <div class="alert alert-warning m-0 p-2" role="alert">
+      {{ MAINTENANCE_TEXT_SHEDULED|safe }}
+    </div>
+    {% endif %}
+
     <!-- Main navigation -->
     <nav class="navbar pod-navbar m-0 p-1 p-md-2" aria-label="{% trans 'Main navigation' %}">
       {% include 'navbar.html' %}
@@ -89,12 +95,6 @@
             {% endif %}
           {% endblock breadcrumbs %}
         </ol>
-
-        {% if MAINTENANCE_SHEDULED %}
-          <div class="alert alert-warning" role="alert">
-            {{ MAINTENANCE_TEXT_SHEDULED|safe }}
-          </div>
-        {% endif %}
       </nav>
     {% endif %}
   </header>

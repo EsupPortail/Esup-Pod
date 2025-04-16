@@ -81,22 +81,22 @@
     </div>
   </div>
 
-  <form class="pod-navbar__form my-2 my-lg-0" action='{% url "video_search:search_videos" %}' id="nav-search">
+  <form class="pod-navbar__form my-2 my-lg-0" action="{% url 'video_search:search_videos' %}" id="nav-search">
     <label for="s" class="d-lg-none">
-      <i class="bi bi-search" aria-hidden="true"></i> <span class="visually-hidden">{% trans 'Search for a media on' %} {{ TITLE_SITE }}</span>
+      <i class="bi bi-search" aria-hidden="true"></i>
+      <span class="visually-hidden">{% trans 'Search for a media on' %} {{ TITLE_SITE }}</span>
     </label>
     <div class="input-group me-sm-2 pod-navbar-search">
-      <input class="form-control form-control-sm hide-search-input" id="s"
+      <input class="form-control form-control-md hide-search-input custom-rounded-left" id="s"
              placeholder="{% trans 'Search a media' %}" type="search" name="q"
              data-bs-toggle="tooltip"
-             title="{% blocktrans %}Type keyword here to search a media on {{ TITLE_SITE }}{% endblocktrans %}"
-             style="border-top-left-radius: var(--bs-border-radius-xl); border-bottom-left-radius: var(--bs-border-radius-xl);">
+             title="{% blocktrans %}Type keyword here to search a media on {{ TITLE_SITE }}{% endblocktrans %}">
       <button id="search-button" type="submit" class="btn btn-primary"
         data-bs-toggle="tooltip" title="{% trans 'Do the media search' %}">
         <i class="bi bi-search" aria-hidden="true"></i>
       </button>
     </div>
-  </form>
+  </form>  
 
   <ul class="navbar-nav flex-row align-items-center" id="nav-useraction">
     {% if user.is_authenticated %}
@@ -223,8 +223,14 @@
 
     {% if user.is_authenticated %}
       <li class="nav-item ms-2 ms-sm-3" id="nav-usermenu">
-        <button class="btn btn-primary nav-item {% if not request.user.owner.userpicture  %}initials {% else %} nav-link{% endif %} d-flex justify-content-center align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menuuser" aria-controls="pod-navbar__menuuser" title="{% trans 'Toggle user menu' %}"
-         data-pod-tooltip="true">
+        <button
+          class="nav-item d-flex justify-content-center align-items-center {% if not request.user.owner.userpicture %}btn btn-primary initials{% else %}nav-link{% endif %}"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#pod-navbar__menuuser"
+          aria-controls="pod-navbar__menuuser"
+          title="{% trans 'Toggle user menu' %}"
+          data-pod-tooltip="true">
           {% if request.user.owner.userpicture %}
             <img src="{{ user.owner.userpicture.file.url }}" class="userpicture rounded" alt="{{ user }}" loading="lazy">
           {% endif %}
