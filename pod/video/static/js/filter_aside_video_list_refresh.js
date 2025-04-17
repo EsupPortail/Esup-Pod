@@ -159,54 +159,61 @@ document
 /**
  * Handles the search form submission.
  * Prevents default behavior, gets the title input,
- * builds a new URL, and redirects the user.
  */
 document.getElementById("searchForm").addEventListener("submit", function (e) {
   e.preventDefault();
-  const titleInput = document.getElementById("titlebox");
-  const newTitle = titleInput.value;
-  let url = getUrlForRefresh({ forceTitle: newTitle });
-  window.location.href = url;
+  refreshVideosSearch();
 });
 
-
+/**
+ * Retrieves the current value entered in the video title search input field.
+ *
+ * @returns {string} The current value of the search input with ID "titlebox".
+ */
+function getSearchValue() {
+  return document.getElementById("titlebox").value;
+}
 
 /**
  * Get built url with filter and sort and page parameters
  * @returns {string}
  */
-function getUrlForRefresh({ forceTitle = null } = {}) {
+function getUrlForRefresh() {
   let baseUrl = window.location.pathname;
-  let urlParams = new URLSearchParams(window.location.search);  
-  // Met à jour les valeurs des champs de tri
-  urlParams.set("sort", document.getElementById("sort").value); 
+  let urlParams = new URLSearchParams(window.location.search);
+
+  urlParams.set("sort", document.getElementById("sort").value);
   let sortDirectionAsc = document.getElementById("sort_direction").checked;
   if (sortDirectionAsc) {
     urlParams.set("sort_direction", document.getElementById("sort_direction").value);
   } else {
     urlParams.delete("sort_direction");
-  } 
-  // Utilise la valeur forcée si fournie
-  let titleValue = forceTitle !== null ? forceTitle : document.getElementById("title").value;
-  if (titleValue) {
-    urlParams.set("title", titleValue);
+  }
+
+  let newTitle = getSearchValue(); 
+  if (newTitle) {
+    urlParams.set("title", newTitle);
   } else {
     urlParams.delete("title");
-  } 
+  }
+
   if (typeof displayMode !== "undefined") {
     urlParams.set("display_mode", displayMode);
-  } 
-  // Supprime toutes les catégories d’abord (évite les doublons si déjà dans l’URL)
+  }
+
   urlParams.delete("categories");
   document.querySelectorAll(".categories-list-item.active").forEach((cat) => {
     urlParams.append("categories", cat.firstElementChild.dataset.slug);
-  }); 
-  // Ajoute les filtres cochés
+  });
+
+  urlParams.delete("owner");
+
   checkedInputs.forEach((input) => {
-    urlParams.set(input.name, input.value);
-  }); 
-  // Réinitialise la pagination
-  urlParams.set("page", "");  
+    urlParams.append(input.name, input.value); 
+  });
+
+  urlParams.set("page", "");
+
   return `${baseUrl}?${urlParams.toString()}`;
 }
 
@@ -299,22 +306,25 @@ function createUserCheckBox(user) {
 document.getElementById("resetFilters").addEventListener("click", function () {
   checkedInputs = [];
   document
-    .querySelectorAll(
-      "#filters input[type=checkbox]:checked[class=form-check-input]",
-    )
+    .querySelectorAll("#filters input[type=checkbox]:checked[class=form-check-input]")
     .forEach((checkBox) => {
       checkBox.checked = false;
     });
+
   document.querySelectorAll("#filters .categories-list-item").forEach((c_p) => {
     c_p.classList.remove("active");
   });
+
+  document.getElementById("titlebox").value = "";
   if (filterOwnerContainer && ownerBox) {
     filterOwnerContainer.textContent = "";
     ownerBox.value = "";
   }
+
   window.history.pushState("", "", window.location.pathname);
   refreshVideosSearch();
 });
+
 
 /**
  * Toggle (enable/disable) inputs to prevent user actions during loading
