@@ -584,7 +584,7 @@ def dashboard(request):
         if selected_categories:
             category_video_ids = categories.filter(
                 slug__in=selected_categories
-            ).values_list("video_id", flat=True)
+            ).values_list("video", flat=True)
 
             videos_list = videos_list.filter(pk__in=category_video_ids)
 

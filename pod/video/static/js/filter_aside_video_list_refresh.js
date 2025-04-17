@@ -165,46 +165,49 @@ document.getElementById("searchForm").addEventListener("submit", function (e) {
   e.preventDefault();
   const titleInput = document.getElementById("titlebox");
   const newTitle = titleInput.value;
-  let url = getUrlForRefresh(newTitle);
+  let url = getUrlForRefresh({ forceTitle: newTitle });
   window.location.href = url;
 });
+
 
 
 /**
  * Get built url with filter and sort and page parameters
  * @returns {string}
  */
-function getUrlForRefresh(newTitle) {
-  let newUrl = window.location.pathname;
-  // Add sort-related parameters
-  newUrl += "?sort=" + document.getElementById("sort").value + "&";
-  var sortDirectionAsc = document.getElementById("sort_direction").checked;
-  if(newTitle) {
-    newUrl += "title=" + newTitle;
-  }
+function getUrlForRefresh({ forceTitle = null } = {}) {
+  let baseUrl = window.location.pathname;
+  let urlParams = new URLSearchParams(window.location.search);  
+  // Met à jour les valeurs des champs de tri
+  urlParams.set("sort", document.getElementById("sort").value); 
+  let sortDirectionAsc = document.getElementById("sort_direction").checked;
   if (sortDirectionAsc) {
-    newUrl +=
-      "sort_direction=" + document.getElementById("sort_direction").value + "&";
-  }
-  // Add dashboard display mode param
-  if (urlVideos === "/video/dashboard/" && displayMode !== undefined) {
-    newUrl += "display_mode=" + displayMode + "&";
-  }
-  // Add categories checked if exists
-  if (document.querySelectorAll(".categories-list-item.active").length !== 0) {
-    Array.from(
-      document.querySelectorAll(".categories-list-item.active"),
-    ).forEach((cat) => {
-      newUrl += "categories=" + cat.firstElementChild["dataset"]["slug"] + "&";
-    });
-  }
-  // Add all other parameters (filters)
+    urlParams.set("sort_direction", document.getElementById("sort_direction").value);
+  } else {
+    urlParams.delete("sort_direction");
+  } 
+  // Utilise la valeur forcée si fournie
+  let titleValue = forceTitle !== null ? forceTitle : document.getElementById("title").value;
+  if (titleValue) {
+    urlParams.set("title", titleValue);
+  } else {
+    urlParams.delete("title");
+  } 
+  if (typeof displayMode !== "undefined") {
+    urlParams.set("display_mode", displayMode);
+  } 
+  // Supprime toutes les catégories d’abord (évite les doublons si déjà dans l’URL)
+  urlParams.delete("categories");
+  document.querySelectorAll(".categories-list-item.active").forEach((cat) => {
+    urlParams.append("categories", cat.firstElementChild.dataset.slug);
+  }); 
+  // Ajoute les filtres cochés
   checkedInputs.forEach((input) => {
-    newUrl += input.name + "=" + input.value + "&";
-  });
-  // Add page parameter
-  newUrl += "page=";
-  return newUrl;
+    urlParams.set(input.name, input.value);
+  }); 
+  // Réinitialise la pagination
+  urlParams.set("page", "");  
+  return `${baseUrl}?${urlParams.toString()}`;
 }
 
 /**
