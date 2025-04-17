@@ -157,15 +157,31 @@ document
   });
 
 /**
+ * Handles the search form submission.
+ * Prevents default behavior, gets the title input,
+ * builds a new URL, and redirects the user.
+ */
+document.getElementById("searchForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const titleInput = document.getElementById("titlebox");
+  const newTitle = titleInput.value;
+  let url = getUrlForRefresh(newTitle);
+  window.location.href = url;
+});
+
+
+/**
  * Get built url with filter and sort and page parameters
  * @returns {string}
  */
-function getUrlForRefresh() {
+function getUrlForRefresh(newTitle) {
   let newUrl = window.location.pathname;
   // Add sort-related parameters
   newUrl += "?sort=" + document.getElementById("sort").value + "&";
   var sortDirectionAsc = document.getElementById("sort_direction").checked;
-
+  if(newTitle) {
+    newUrl += "title=" + newTitle;
+  }
   if (sortDirectionAsc) {
     newUrl +=
       "sort_direction=" + document.getElementById("sort_direction").value + "&";
@@ -190,6 +206,24 @@ function getUrlForRefresh() {
   newUrl += "page=";
   return newUrl;
 }
+
+/**
+ * Add change event listener on inputs (filters, sort column and sort direction) to refresh video list
+ * @param el
+ */
+function setListenerChangeInputs(el) {
+  el.addEventListener("change", (e) => {
+    checkedInputs = [];
+    disabledInputs(true);
+    document
+      .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
+      .forEach((e) => {
+        checkedInputs.push(e);
+      });
+    refreshVideosSearch();
+  });
+}
+
 
 /**
  * Add change event listener on inputs (filters, sort column and sort direction) to refresh video list

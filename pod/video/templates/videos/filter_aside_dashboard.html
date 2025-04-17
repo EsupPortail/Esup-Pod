@@ -10,32 +10,42 @@
     {% trans 'The videos on the left are automatically sorted according to the filters selected below. Check options to adjust results.' %}
   </p>
   <hr>
-<form action="{% url 'videos:dashboard' %}" method="get" id="filters">
+  
+<form action="{% url 'videos:dashboard' %}" method="get" id="searchForm">
   {% if use_category %}
     {% include "videos/filter_aside_category.html" %}
   {% endif %}
+  <legend class="h5"><i class="bi bi-funnel-fil" aria-hidden="true"></i>&nbsp;{% trans 'Filters' %}</legend>
+  <label for="titlebox" class="form-label">{% trans 'Search by title' %}</label>
+  <div class="input-group mb-3">
+    <input type="text" name="title" id="titlebox" class="form-control" placeholder="{% trans 'Enter video title' %}" value="{{ request.GET.title }}">
+    <button type="submit" class="btn btn-primary">{% trans 'Search' %}</button>
+  </div>
+</form>
+  
+  
+<form action="{% url 'videos:dashboard' %}" method="get" id="filters">
+  {% if owner_filter %}
   <fieldset>
-    <legend class="h5"><i class="bi bi-search"></i>&nbsp;{% trans 'Filters' %}</legend>
     <div class="form-group">
-      <label for="titlebox">{% trans 'Search by title' %}</label>
-      <input
-        type="text"
-        name="title"
-        id="titlebox"
-        class="form-control"
-        placeholder="{% trans 'Enter video title' %}"
-        value="{{ request.GET.title }}">
-    
-      <label for="ownerbox">{% trans 'Filter by contributor' %}</label>
-      <input
-        type="text"
-        name="owner"
-        id="ownerbox"
-        class="form-control"
-        placeholder="{% trans 'Enter a contributor name' %}"
-        value="{{ request.GET.owner }}">
+      <label for="ownerbox">{% trans 'Filter by user' %}</label>
+      <input placeholder="{% trans 'Search' %}" id="ownerbox" type="text" class="form-control">
+    </div>
+    <div class="form-group navList owners" id="collapseFilterOwner" style="max-height:300px; overflow:auto;">
+      {% for owner in ownersInstances %}
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="owner" value="{{ owner.get_username }}" id="id{{ owner.get_username }}" checked>
+          <label class="form-check-label" for="id{{ owner.get_username }}">
+            {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
+              <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{ owner }}" loading="lazy">
+            {% endthumbnail %}
+            {{ owner }}
+          </label>
+        </div>
+      {% endfor %}
     </div>
   </fieldset>
+  {% endif %}
   {% if HIDE_TYPES == False %}
   <fieldset class="border-right border-bottom mt-2">
     <legend class="h5"><i class="bi bi-tv" aria-hidden="true"></i>&nbsp;{% trans 'Types' %} </legend>
