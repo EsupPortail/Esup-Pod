@@ -18,4 +18,4 @@ institutional life (video of events), offering several days of content.
 
 ## Technical documentation
 
-* [Installation of Esup-Pod v4](4.x/Installation/index-en)
+* [Installation of Esup-Pod v4](4.x/Installation/index_en)
