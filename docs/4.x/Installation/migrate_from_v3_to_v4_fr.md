@@ -34,6 +34,7 @@ Le système repose sur deux scripts principaux :
 - Assurez-vous d'avoir accès à la base de données de Pod, en version 3.8.x (MariaDB/MySQL ou PostgreSQL).
 - Assurez-vous d'avoir accès à la base de données de Pod, en version 4.0.x (MariaDB/MySQL ou PostgreSQL).
 
+---
 
 ## Exportation des données de Pod v3
 
@@ -72,6 +73,8 @@ Exécutez le script depuis un serveur Pod v3 en utilisant la commande suivante :
 ```bash
 python manage.py export_data_from_v3_to_v4
 ```
+
+---
 
 ## Importation des données dans Pod v4
 
