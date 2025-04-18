@@ -8,7 +8,7 @@ lang: en
 Créé en 2014 à l’université de [Lille](https://www.univ-lille.fr/),
 le projet Pod est porté par le
 [consortium Esup Portail](https://www.esup-portail.org/)
-et soutenu par le [Ministère de l’Enseignement Supérieur, de la Recherche et de l’Innovation](http://www.enseignementsup-recherche.gouv.fr/)
+et soutenu par le [Ministère de l’Enseignement Supérieur et de la Recherche](http://www.enseignementsup-recherche.gouv.fr/)
 depuis septembre 2015.
 
 Le projet et la plateforme du même nom s’adressent aux usagers de nos établissements,
