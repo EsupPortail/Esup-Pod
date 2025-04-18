@@ -20,4 +20,8 @@ lang: fr
 * [Mise à jour standard](upgrade_standalone_fr)
 * [Mise à jour via Docker](upgrade_docker)
 
+## Migration
+
+* [Migration des données entre la version 3 et la version 4](migrate_from_v3_to_v4_fr)
+
 > Work in progress...
