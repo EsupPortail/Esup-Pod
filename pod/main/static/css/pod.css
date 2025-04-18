@@ -296,7 +296,6 @@ a:not(.btn, .dropdown-item):focus {
 .pod-navbar-breadcrumb {
   background-color: var(--pod-background-neutre2-bloc);
   border-bottom: 1px solid var(--pod-navbar-breadcrumb-border);
-  z-index: 1020;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   margin-top: auto;
@@ -1369,7 +1368,7 @@ main {
   font-size: 1.755rem;
 }
 
-@media (max-width: 576px) {
+@media (width <= 576px) {
   .pod-navbar__brand {
     font-size: 1.25rem;
   }
@@ -1570,7 +1569,7 @@ Commented in 3.6.0
   height: auto;
 }
 
-@media (max-width: 576px) {
+@media (width <= 576px) {
   .pod-navbar__button-toggler {
     font-size: 2rem;
     margin-right: 0.5rem;
