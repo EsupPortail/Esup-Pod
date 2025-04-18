@@ -16,6 +16,6 @@ by allowing the publication of videos in the fields of research
 (promotion of platforms, etc.), training (tutorials, distance training, student reports, etc.),
 institutional life (video of events), offering several days of content.
 
-## Documentation technique
+## Technical documentation
 
-* [Installation d’Esup-Pod v4](4.x/Installation)
+* [Installation of Esup-Pod v4](4.x/Installation/index-en)
