@@ -43,9 +43,9 @@ Le système repose sur deux scripts principaux :
 
 Ce premier script exporte les données de la base de données Pod v3.8.x vers un fichier JSON. Il prend en charge les bases de données MariaDB/MySQL et PostgreSQL et adapte les requêtes SQL en conséquence.
 
-Attention, ce script doit être exécuté depuis un serveur de Pod v3.
+*Attention, ce script doit être exécuté depuis un serveur de Pod v3.*
 
-La dernière version de ce script `export_data_from_v3_to_v4.py` est accessible ici: [https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands](https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands)
+La dernière version de ce script `export_data_from_v3_to_v4.py` est accessible ici : [https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands](https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands)
 
 Il est nécessaire de récupérer ce script et de le positionner dans le répertoire `pod/video/management/commands`, avec les bons droits.
 {: .alert .alert-warning}
