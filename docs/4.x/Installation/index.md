@@ -13,7 +13,7 @@ lang: fr
 
 ### Fonctionalités optionelles
 
-* [Installation d’OpenCast Studio](optional/opencast-studio-install_fr.md)
+* [Installation d’OpenCast Studio](optional/opencast-studio-install_fr)
 
 ## Mise à jour
 
