@@ -8,13 +8,6 @@ import os
 import sys
 import importlib.util
 
-# DEPRECATIONS HACKS
-import django
-from django.utils.translation import gettext
-
-# Needed for django-chunked-upload==2.0.0
-django.utils.translation.ugettext = gettext
-
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
 

@@ -17,7 +17,7 @@ django-lti-provider==1.0.0
 django-auth-mixins==1.0.1
 pandas
 django-shibboleth-remoteuser
-django-chunked-upload==2.0.0
+django-chunked-upload@git+https://github.com/juliomalegria/django-chunked-upload.git
 django-select2
 django-redis
 chardet==5.2.0
