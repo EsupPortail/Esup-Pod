@@ -62,7 +62,7 @@
 
 <body>
   {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
-  <header role="banner" class="fixed-top">
+  <header role="banner" class="sticky-top">
     {% if MAINTENANCE_SHEDULED %}
     <div class="alert alert-warning m-0 p-2" role="alert">
       {{ MAINTENANCE_TEXT_SHEDULED|safe }}

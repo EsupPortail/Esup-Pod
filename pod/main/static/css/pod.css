@@ -1064,7 +1064,6 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   min-height: 100vh;
-  padding-top: 3.1rem;
   color: var(--pod-font-color);
   background-color: var(--pod-background);
 }
