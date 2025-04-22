@@ -87,7 +87,7 @@
       <span class="visually-hidden">{% trans 'Search for a media on' %} {{ TITLE_SITE }}</span>
     </label>
     <div class="input-group me-sm-2 pod-navbar-search">
-      <input class="form-control form-control-md hide-search-input custom-rounded-left" id="s"
+      <input class="rounded-start-4 form-control form-control-md hide-search-input" id="s"
              placeholder="{% trans 'Search a media' %}" type="search" name="q"
              data-bs-toggle="tooltip"
              title="{% blocktrans %}Type keyword here to search a media on {{ TITLE_SITE }}{% endblocktrans %}">
@@ -96,7 +96,7 @@
         <i class="bi bi-search" aria-hidden="true"></i>
       </button>
     </div>
-  </form>  
+  </form>
 
   <ul class="navbar-nav flex-row align-items-center" id="nav-useraction">
     {% if user.is_authenticated %}

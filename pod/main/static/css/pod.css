@@ -556,11 +556,6 @@ a.btn-outline-primary:not(:hover) svg {
     top: 0;
   }
 
-  .custom-rounded-left {
-    border-top-left-radius: var(--bs-border-radius-xl);
-    border-bottom-left-radius: var(--bs-border-radius-xl);
-  }
-   
   #s {
     border-radius: 0;
     transition: height 0.5s;
@@ -959,6 +954,8 @@ span[data-bs-placement] {
 .form-group .errorlist {
   margin-bottom: 0;
 }
+
+header>.alert{--bs-border-radius: 0}
 
 #base-message-alert,
 #formalertdiv {
