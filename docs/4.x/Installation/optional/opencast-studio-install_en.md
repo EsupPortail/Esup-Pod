@@ -4,6 +4,13 @@ version: 4.x
 lang: en
 ---
 
+- [Setting Up Opencast Studio](#setting-up-opencast-studio)
+  - [Installation](#installation)
+  - [Configuration and Prerequisites](#configuration-and-prerequisites)
+    - [Configuration](#configuration)
+    - [Prerequisites](#prerequisites)
+  - [Operation](#operation)
+
 # Setting Up Opencast Studio
 
 ## Installation

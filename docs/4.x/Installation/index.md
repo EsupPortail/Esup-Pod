@@ -13,8 +13,11 @@ lang: fr
 
 ### Fonctionnalités optionnelles
 
+* [BigBlueButton / Couplage avec BigBlueButton](optional/meeting-install_fr)
+* [BigBlueButton / Migration d'infrastructure BigBlueButton](optional/bbb-infrastructure-migration-install_fr)
+* [BigBlueButton / Mise en place du mode webinaire pour les sessions BigBlueButton](optional/set-up-webinar-mode-bbb-install_fr)
+* [Importer une vidéo externe / un enregistrement BigBlueButton au format vidéo](optional/import-external-video-bbb-recording-install_fr)
 * [Installation d’OpenCast Studio](optional/opencast-studio-install_fr)
-* [Couplage avec BigBlueButton](optional/meeting-install_fr)
 
 ## Mise à jour
 

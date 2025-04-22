@@ -13,8 +13,11 @@ lang: en
 
 ### Optional features
 
+* [BigBlueButton / Pairing with BigBlueButton](optional/meeting-install_en)
+* [BigBlueButton / Migration of BigBlueButton Infrastructure](optional/bbb-infrastructure-migration-install_en)
+* [BigBlueButton / Setting up Webinar Mode for BigBlueButton sessions](optional/set-up-webinar-mode-install_en)
+* [Import an external video / BigBlueButton recording in video format](optional/import-external-video-bbb-recording-install_en)
 * [OpenCast Studio installation](optional/opencast-studio-install_en)
-* [Pairing with BigBlueButton](optional/meeting-install_en)
 
 ## Upgrade
 

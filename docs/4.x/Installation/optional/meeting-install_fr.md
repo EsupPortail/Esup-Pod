@@ -3,8 +3,30 @@ layout: default
 version: 4.x
 lang: fr
 ---
+- [Couplage avec BigBlueButton](#couplage-avec-bigbluebutton)
+  - [Pod v4 compatible avec BigBlueButton](#pod-v4-compatible-avec-bigbluebutton)
+  - [Infrastructure BigBlueButton du ministère de l'Enseignement Supérieur et de la Recherche](#infrastructure-bigbluebutton-du-ministère-de-lenseignement-supérieur-et-de-la-recherche)
+  - [L'infrastructure BBB ESR](#linfrastructure-bbb-esr)
+  - [Les accès à l'infrastructure BBB de l'ESR](#les-accès-à-linfrastructure-bbb-de-lesr)
+  - [Le module des réunions de Pod](#le-module-des-réunions-de-pod)
+    - [Configuration](#configuration)
+      - [Paramétrage optionnel complémentaire :](#paramétrage-optionnel-complémentaire-)
+  - [Fonctionnalités](#fonctionnalités)
+    - [La gestion des réunions](#la-gestion-des-réunions)
+    - [La gestion des enregistrements](#la-gestion-des-enregistrements)
+      - [Les enregistrements](#les-enregistrements)
+      - [Le téléversement sur Pod](#le-téléversement-sur-pod)
+  - [Exploitation](#exploitation)
+    - [L'interface d'administration](#linterface-dadministration)
+      - [L'administration des sessions](#ladministration-des-sessions)
+      - [L'administration des journaux de session](#ladministration-des-journaux-de-session)
+    - [Les fichiers de logs](#les-fichiers-de-logs)
+  - [Fonctionnalités annexes concernant le couplage de Pod avec BigBlueButton](#fonctionnalités-annexes-concernant-le-couplage-de-pod-avec-bigbluebutton)
+    - [Migration d'infrastructure BigBlueButton, avec l'appui de Pod](#migration-dinfrastructure-bigbluebutton-avec-lappui-de-pod)
+    - [Importer une vidéo externe / un enregistrement BigBlueButton au format vidéo](#importer-une-vidéo-externe--un-enregistrement-bigbluebutton-au-format-vidéo)
+    - [Mise en place du mode webinaire pour les sessions BigBlueButton pour Pod](#mise-en-place-du-mode-webinaire-pour-les-sessions-bigbluebutton-pour-pod)
 
-# Contexte
+# Couplage avec BigBlueButton
 
 ## Pod v4 compatible avec BigBlueButton
 
@@ -176,13 +198,13 @@ Pour les établissements n'ayant jamais eu d’infrastructure locale BigBlueButt
 
 Cependant, pour les établissements ayant auparavant une infrastructure locale BBB, l'utilisation du BBB de l'ESR présente des impacts aux usagers.
 
-Une documentation de cette fonctionnalité peut alors être utile pour ces établissements : [Migration d'infrastructure BigBlueButton, avec l'appui de Pod](bbb-infrastructure-migration-with-pod-support_fr)
+Une documentation de cette fonctionnalité peut alors être utile pour ces établissements : [Migration d'infrastructure BigBlueButton, avec l'appui de Pod](bbb-infrastructure-migration-install_fr)
 
 ### Importer une vidéo externe / un enregistrement BigBlueButton au format vidéo
 
 Cette fonctionnalité permet, aux usagers, d'importer facilement des enregistrements dans la plateforme en provenance d'autres services ou applications externes (typiquement, réaliser une classe virtuelle Big Blue Button via Moodle, une vidéo publiée sur PeerTube...).
 
-Une documentation de cette fonctionnalité est disponible sur ce Wiki : [Importer une vidéo externe / un enregistrement BigBlueButton au format vidéo](import-external-video-bbb-recording_fr)
+Une documentation de cette fonctionnalité est disponible sur ce Wiki : [Importer une vidéo externe / un enregistrement BigBlueButton au format vidéo](import-external-video-bbb-recording-install_fr)
 
 ### Mise en place du mode webinaire pour les sessions BigBlueButton pour Pod
 
@@ -199,4 +221,4 @@ L'idée étant de séparer les présentateurs des auditeurs:
 - les présentateurs devront rejoindre la réunion BigBlueButton,
 - les auditeurs devront accéder au direct sur Pod.
 
-Une documentation de cette fonctionnalité est disponible sur ce Wiki : [Mise en place du mode webinaire pour les sessions BigBlueButton pour Pod](set-up-webinar-mode-bbb-for-pod_fr)
+Une documentation de cette fonctionnalité est disponible sur ce Wiki : [Mise en place du mode webinaire pour les sessions BigBlueButton pour Pod](set-up-webinar-mode-bbb-install_fr)
