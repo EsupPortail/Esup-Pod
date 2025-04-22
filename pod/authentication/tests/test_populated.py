@@ -406,7 +406,6 @@ class PopulatedLDAPTestCase(TestCase):
         )
 
 
-@skip("# Esup-Pod 4.0 is no more compatible with Shibb (until someone correct this)")
 class PopulatedShibTestCase(TestCase):
     def setUp(self) -> None:
         """Set up PopulatedShibTestCase create user Pod."""

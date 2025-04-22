@@ -16,7 +16,7 @@ sorl-thumbnail==12.11.0
 django-lti-provider==1.0.0
 django-auth-mixins==1.0.1
 pandas
-django-shibboleth-remoteuser@git+https://gitlab.uvm.edu/saa/research-storage-automation/django-shibboleth-remoteuser-uvm.git
+django-shibboleth-remoteuser@git+https://gitlab.gwdg.de/discuss-data/django-shibboleth-remoteuser
 django-chunked-upload==2.0.0
 django-select2
 django-redis
