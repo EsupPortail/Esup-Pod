@@ -11,6 +11,11 @@ lang: en
 * [Installation stand-alone](Installation_standalone)
 * [Installation Docker](Installation_Docker)
 
+### Optional features
+
+* [OpenCast Studio installation](optional/opencast-studio-install_en)
+* [Pairing with BigBlueButton](optional/meeting-install_en)
+
 ## Upgrade
 
 * [Stand alone upgrade](upgrade_standalone)

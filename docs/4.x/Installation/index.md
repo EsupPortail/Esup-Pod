@@ -11,9 +11,10 @@ lang: fr
 * [Installation standard](install_standalone_fr)
 * [Installation via Docker](install_docker_fr)
 
-### Fonctionalités optionelles
+### Fonctionnalités optionnelles
 
 * [Installation d’OpenCast Studio](optional/opencast-studio-install_fr)
+* [Couplage avec BigBlueButton](optional/meeting-install_fr)
 
 ## Mise à jour
 
