@@ -32,36 +32,40 @@
    * Esup-Pod default colors
    ***/
 
-  /*** couleur de fond du site ***/
+  /*** site background color ***/
   --pod-background: #fff;
   --pod-background-dark: #222831;
 
-  /*** couleur du texte des boutons principaux ***/
+  /*** main button text color ***/
   --pod-btn-text: #fff;
   --pod-btn-text-dark: #fff;
 
-  /**** couleur de police ****/
+  /**** font color ****/
   --pod-font-color: #000;
   --pod-font-color-dark: #f8f9fa;
 
-  /**** couleur neutre pour fond de bloc (ex jumbotron) ***/
+  /**** neutral color for block background (e.g. jumbotron) ***/
   --pod-background-neutre1-bloc: #ddd;
   --pod-background-neutre1-bloc-dark: #393e46;
   --pod-background-neutre1-bloc-hover: #e5f1fa;
 
-  /**** couleur neutre 2 pour fond de bloc ***/
+  /**** second neutral color for block background ***/
   --pod-background-neutre2-bloc: #f5f5f5;
   --pod-background-neutre2-bloc-dark: #161c26;
 
-  /**** couleur des liens *****/
+  /*** breadcrumb border color ***/
+  --pod-navbar-breadcrumb-border: #ced4da;
+  --pod-navbar-breadcrumb-border-dark: #8e969d;
+
+  /**** link colors *****/
   --pod-link-color: var(--pod-primary);
   --pod-link-color-rgb: var(--pod-primary-rgb);
   --pod-activelink-color: var(--pod-primary-darken);
 
-  /* couleur d'un élément actif (ex. : survol de bouton) */
+  /* active element color (e.g., button hover) */
   --pod-primary-focus: var(--pod-primary-darken);
 
-  /* Couleur d'alerte */
+  /* alert color */
   --pod-alert: #fc8670;
   --pod-alert-dark: #b11030;
 
@@ -289,6 +293,44 @@ a:not(.btn, .dropdown-item):focus {
   padding: 0.25rem 1.25rem;
 }
 
+.pod-navbar-breadcrumb {
+  background-color: var(--pod-background-neutre2-bloc);
+  border-bottom: 1px solid var(--pod-navbar-breadcrumb-border);
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.pod-navbar-breadcrumb .breadcrumb {
+  margin-bottom: 0;
+}
+
+.pod-navbar {
+  background: var(--pod-background);
+  border-bottom: 1px solid var(--pod-navbar-breadcrumb-border);
+}
+
+.pod-navbar .btn {
+  border-radius: var(--bs-border-radius-xl);
+  padding: 0.4rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pod-navbar .btn i {
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 576px) {
+  .pod-navbar .btn {
+    font-size: 0.9rem;
+    padding: 0.25rem 0.75rem;
+  }
+}
+
 /***
  *  video *
  ***/
@@ -490,7 +532,7 @@ a.btn-outline-primary:not(:hover) svg {
 /*** modif taille logo ***/
 @media (max-width: 576px) {
   .navbar-brand img {
-    height: 35px;
+    height: 30px;
   }
 }
 
@@ -947,6 +989,8 @@ span[data-bs-placement] {
   margin-bottom: 0;
 }
 
+header>.alert{--bs-border-radius: 0}
+
 #base-message-alert,
 #formalertdiv {
   position: fixed;
@@ -1054,9 +1098,12 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   min-height: 100vh;
-  padding-top: 3.1rem;
   color: var(--pod-font-color);
   background-color: var(--pod-background);
+}
+
+main {
+  padding-top: 3em;
 }
 
 /*** reinit bootstrap 5 ***/
@@ -1244,13 +1291,6 @@ body {
   }
 }
 
-.pod-navbar {
-  background: var(--pod-background);
-  box-shadow:
-    0 1px 3px rgb(0 0 0 / 12%),
-    0 1px 2px rgb(0 0 0 / 24%);
-}
-
 .pod-info-video {
   margin-top: 1.5rem;
 }
@@ -1355,6 +1395,13 @@ body {
   gap: 0.5rem;
   color: var(--pod-font-color) !important;
   transition: transform 0.4s ease;
+  font-size: 1.755rem;
+}
+
+@media (width <= 576px) {
+  .pod-navbar__brand {
+    font-size: 1.25rem;
+  }
 }
 
 .pod-navbar__brand:hover,
@@ -1418,6 +1465,7 @@ body {
 
 .pod-navbar__form {
   margin-left: auto;
+  margin-right: auto;
 }
 
 @media (width >= 992px) {
@@ -1580,13 +1628,20 @@ Commented in 3.6.0
 .pod-navbar__button-toggler {
   color: var(--pod-font-color);
   padding: 0;
-  font-size: 1.8rem;
+  font-size: 2rem;
   margin: 0;
   border: 0;
-  margin-right: 0.3rem;
+  margin-right: 1rem;
   background: none;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: auto;
+  height: auto;
+}
+
+@media (width <= 576px) {
+  .pod-navbar__button-toggler {
+    font-size: 2rem;
+    margin-right: 0.5rem;
+  }
 }
 
 .pod-camera-video {
@@ -1747,10 +1802,6 @@ table .alert.alert-danger.btn.pod-btn-social {
 .calendarbox {
   z-index: 3000;
   background-color: var(--pod-background) !important;
-}
-
-#mainbreadcrumb {
-  margin-right: 2.7rem;
 }
 
 div.disabled,
