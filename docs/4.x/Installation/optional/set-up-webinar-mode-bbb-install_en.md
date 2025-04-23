@@ -126,7 +126,7 @@ Reference site: https://github.com/Renater/SIPMediaGW
 
 ###### Prerequisites
 
-```
+```bash
 # Create a user: vagrant
 adduser vagrant
 usermod -aG wheel vagrant
@@ -136,7 +136,7 @@ sudo apt-get install git
 
 ###### Effective installation
 
-```
+```bash
 # Retrieve the latest version of SIPMediaGW from Git, in the /sipmediagw application directory
 cd /
 sudo git clone https://github.com/Renater/SIPMediaGW.git sipmediagw
@@ -150,7 +150,7 @@ HOST_IP=1.2.3.4 ./provision.sh
 
 ###### Configuration
 
-```
+```bash
 # Edit the /sipmediagw/.env file with its values
 MAIN_APP=streaming
 BROWSE_FILE="bigbluebutton.py"
@@ -167,14 +167,14 @@ By default, the security token is initialized to 1234.
 
 To modify this behavior, it is necessary to edit the /sipmediagw/HTTPLauncher.py file:
 
-```
+```py
 # Edit the /sipmediagw/HTTPLauncher.py file
 allowedToken = '1234'
 ```
 
 ###### Service restart
 
-```
+```bash
 # Restart the service
 sudo systemctl restart sipmediagw
 ```
@@ -219,7 +219,7 @@ These additional fields are displayed directly on the webinar form page. |
 
 Typically, here is an example of a *settings_local.py* that allows you to use this webinar mode:
 
-```
+```py
 # Use of Webinar mode for the meetings module
 USE_MEETING_WEBINAR = True
 # Possible options for a webinar
@@ -252,7 +252,6 @@ To add a live gateway, simply:
 - Enter the URL address of a **SIPMediaGW** server (see installation of a SIPMediaGW server above).
 - Enter the **Bearer token** of the **SIPMediaGW** server used.
 
-```
 For more information on live broadcasts, please refer to the documentation: https://www.esup-portail.org/wiki/x/BgC8KQ
 
 For example, if you enter:
@@ -265,7 +264,7 @@ For example, if you enter:
 This live gateway will be able to manage a webinar; the video and audio stream will be sent by the **SIPMediaGW server http://1.2.3.4:8080** via the **RTMP** protocol to the **live.univ.fr** server, on the **live** application with the name ***name***.
 
 The webinar live broadcast, displayed on the Pod live page, will read the video and audio stream via the **HLS** protocol at the address **https://live.univ.fr/hls/name.m3u8**.
-```
+
 
 > 💡Each live gateway can then be used to conduct a webinar.
 > This means that it is possible to have multiple live gateways to manage **multiple webinars in parallel** (over overlapping time slots).

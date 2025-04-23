@@ -189,7 +189,7 @@ At this point, the video file has been deposited on the Pod server, and an HTTPS
 
 The email is in the following format:
 
-```
+```txt
 [Pod] New recording added
 
 Hello,

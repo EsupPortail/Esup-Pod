@@ -585,7 +585,7 @@ THIRD_PARTY_APPS = ["live", "enrichment"]
 > Selon votre paramétrage système, il est possible que les enrichissements renvoient une erreur 403 forbidden.
 > Pour éviter ce problème, vous pouvez rajouter cette ligne dans _settings_local.py_
 >
-> ```python
+> ```py
 > FILE_UPLOAD_PERMISSIONS = 0o644 # Octal number
 > ```
 

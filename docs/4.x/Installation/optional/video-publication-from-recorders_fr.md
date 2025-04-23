@@ -82,7 +82,7 @@ Plusieurs propriétés sont indispensables pour le paramétrage dans le fichier 
 
 Exemple de paramétrage :
     
-```
+```py
 ##
 # Recorder settings
 #
@@ -205,7 +205,7 @@ A ce niveau là, le fichier vidéo a été déposé sur le serveur Pod et une re
 
 Cet email est de la forme suivante :
 
-```
+```txt
 [Pod] Nouvel enregistrement ajouté
 
 Bonjour,

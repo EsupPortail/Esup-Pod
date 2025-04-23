@@ -100,7 +100,7 @@ To modify this behavior, it is possible to tweak the following file:
 
     - /usr/local/bigbluebutton/core/lib/recordandplayback/edl/video.rb: FFMPEG_WF_ARGS section
 
-```python
+```py
 FFMPEG_WF_ARGS = [
         '-codec', FFMPEG_WF_CODEC.to_s, '-preset', 'fast', '-crf', '23',
         '-x264opts', 'stitchable=1', '-force_key_frames', 'expr:gte(t,n_forced*10)', '-pix_fmt', 'yuv420p',
@@ -144,7 +144,7 @@ The update for September concerns an error of the type ('NoneType' object has no
 
 In the end, this involves changing the function_patterns variable on line 264 of the cipher.py file with this code:
 
-```python
+```py
 function_patterns = [
  # https://github.com/ytdl-org/youtube-dl/issues/29326#issuecomment-865985377
  # https://github.com/yt-dlp/yt-dlp/commit/48416bc4a8f1d5ff07d5977659cb8ece7640dcd8
@@ -160,7 +160,7 @@ function_patterns = [
 
 And modifying line 411 of the same cipher.py file with this code:
 
-```python
+```py
 # transform_plan_raw = find_object_from_startpoint(raw_code, match.span()[1] - 1)
 transform_plan_raw = js
 ```

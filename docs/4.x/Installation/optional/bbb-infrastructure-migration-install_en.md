@@ -167,7 +167,7 @@ It is necessary to ensure sufficient storage space is available.
 
 Once `bbb-recorder` is installed on the various encoding servers, the `bbb` plugin must be configured directly in Pod, by editing the `custom/settings_local.py` file (on the encoders and on the frontend):
 
-```python
+```py
 # Use import-video module
 USE_IMPORT_VIDEO = True
 

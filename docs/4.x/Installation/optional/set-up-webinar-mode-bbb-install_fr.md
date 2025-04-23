@@ -127,7 +127,7 @@ Le site de référence : https://github.com/Renater/SIPMediaGW
 
 ###### Pré-requis
 
-```
+```bash
 # Création d'un user : vagrant
 adduser vagrant
 usermod -aG wheel vagrant
@@ -137,7 +137,7 @@ sudo apt-get install git
 
 ###### Installation effective
 
-```
+```bash
 # Récupération de la dernière version de SIPMediaGW depuis Git, dans le répertoire applicatif /sipmediagw
 cd /
 sudo git clone https://github.com/Renater/SIPMediaGW.git sipmediagw
@@ -151,7 +151,7 @@ HOST_IP=1.2.3.4 ./provision.sh
 
 ###### Configuration
 
-```
+```bash
 # Editer le fichier/sipmediagw/.env avec ses valeurs
 MAIN_APP=streaming
 BROWSE_FILE="bigbluebutton.py"
@@ -168,14 +168,14 @@ Par défaut, le jeton de sécurité est initialisé à 1234.
 
 Pour modifier ce comportement, il est nécessaire de modifier le fichier /sipmediagw/HTTPLauncher.py :
 
-```
+```py
 # Editer le fichier /sipmediagw/HTTPLauncher.py
 allowedToken = '1234'
 ```
 
 ###### Redémarrage du service
 
-```
+```bash
 # Redémarrer le service
 sudo systemctl restart sipmediagw
 ```
@@ -224,7 +224,7 @@ Ces champs complémentaires sont affichés directement dans la page de formulair
 
 Typiquement, voici un exemple de *settings_local.py* permettant d'utiliser ce mode webinaire :
 
-```
+```py
 # Utilisation du mode Webinaire pour le module des réunions
 USE_MEETING_WEBINAR = True
 # Options possibles pour un webinaire
@@ -257,7 +257,6 @@ Pour ajouter une passerelle de live, il suffit de :
 - saisir l'adresse URL d'un serveur **SIPMediaGW** (cf. installation d'un serveur SIPMediaGW ci-dessus).
 - saisir le **jeton Bearer** du serveur **SIPMediaGW** utilisé.
 
-```
 Pour plus d'informations sur les directs, veuillez consulter la documentation : https://www.esup-portail.org/wiki/x/BgC8KQ
 
 Par exemple, si vous saisissez :
@@ -270,7 +269,7 @@ Par exemple, si vous saisissez :
 Cette passerelle de live pourra gérer un webinaire; le flux vidéo et audio sera envoyé par le serveur **SIPMediaGW http://1.2.3.4:8080** via le protocole **RTMP** au serveur **live.univ.fr**, sur l'application **live** avec le nom ***nom***.
 
 Le direct du webinaire, affiché dans la page des directs de Pod, lira le flux vidéo et audio via le protocole HLS à l'adresse **https://live.univ.fr/hls/nom.m3u8**.
-```
+
 
 > 💡Chaque passerelle de live pourra alors être utilisé pour réaliser un webinaire.
 > Cela signifie qu'il est possible d'avoir plusieurs passerelles de live pour pouvoir gérer **plusieurs webinaires en parallèle** (sur des plages horaires qui se chevauchent).
