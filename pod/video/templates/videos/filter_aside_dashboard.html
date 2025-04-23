@@ -24,27 +24,6 @@
 </form>
 
 <form action="{% url 'videos:dashboard' %}" method="get" id="filters">
-  {% if owner_filter %}
-  <fieldset>
-    <label for="ownerBox-toDel">{% trans 'Filter by user' %}</label>
-    <div class="input-group mb-3">
-      <input placeholder="{% trans 'Search' %}" id="ownerBox-toDel" type="text" class="form-control">
-    </div>
-    <div class="form-group navList owners" id="collapseFilterOwner-toDel" style="max-height:300px; overflow:auto;">
-      {% for owner in ownersInstances %}
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="owner" value="{{ owner.get_username }}" id="id{{ owner.get_username }}" checked>
-          <label class="form-check-label" for="id{{ owner.get_username }}">
-            {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
-              <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{ owner }}" loading="lazy">
-            {% endthumbnail %}
-            {{ owner }}
-          </label>
-        </div>
-      {% endfor %}
-    </div>
-  </fieldset>
-  {% endif %}
   {% if HIDE_TYPES == False %}
   <fieldset class="border-right border-bottom mt-2">
     <legend class="h5"><i class="bi bi-tv" aria-hidden="true"></i>&nbsp;{% trans 'Types' %} </legend>

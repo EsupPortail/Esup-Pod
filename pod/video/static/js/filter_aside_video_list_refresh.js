@@ -217,18 +217,27 @@ function getUrlForRefresh() {
   return `${baseUrl}?${urlParams.toString()}`;
 }
 
+//---------------------------------------------//
+//------------------WORKING--------------------//
+//---------------------------------------------//
+
+let checkedUsernames = new Set();
+let currentSearchResults = []; // tableau d’objets { username, first_name, last_name }
+
 /**
  * Add change event listener on inputs (filters, sort column and sort direction) to refresh video list
  * @param el
  */
 function setListenerChangeInputs(el) {
   el.addEventListener("change", (e) => {
+    console.log("Changement détecté sur : ", e.target.value);
     checkedInputs = [];
     disabledInputs(true);
     document
       .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
       .forEach((e) => {
         checkedInputs.push(e);
+        console.log("Mis à jour de checkedInputs dans setListenerChangeInputs : ", e.value);
       });
     refreshActiveFiltersElement();
     refreshVideosSearch();
@@ -236,10 +245,11 @@ function setListenerChangeInputs(el) {
 }
 
 function refreshActiveFiltersElement() {
+  console.log("Entrée dans refreshActiveFiltersElement");
   const container = document.getElementById("activeFilters");
   container.innerHTML = ""; // On vide d'abord
-
   checkedInputs.forEach((input) => {
+    console.log("refreshActiveFiltersElement input: ", input.value);
     const tag = document.createElement("div");
     tag.className = "badge bg-primary text-light me-2 mb-2 p-2";
     tag.innerText = input.value;
@@ -251,6 +261,7 @@ function refreshActiveFiltersElement() {
     closeBtn.onclick = () => {
       input.checked = false;
       input.dispatchEvent(new Event("change")); // Déclenche à nouveau le changement
+      console.log("Je retire le filtre pour l'utilisateur : ", input.value);
     };
 
     tag.appendChild(closeBtn);
@@ -258,67 +269,132 @@ function refreshActiveFiltersElement() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Initialise checkedInputs avec les cases déjà cochées
-  checkedInputs = [];
-  document
-    .querySelectorAll("input[type=checkbox]:checked.form-check-input")
-    .forEach((e) => {
-      checkedInputs.push(e);
-    });
-
-  // Rafraîchir les filtres visibles
-  refreshActiveFiltersElement();
-});
-
-
-/**
- * Add event listener to search user input to create checkboxes
- */
 if (ownerBox) {
+  const userFilterDropdown = document.getElementById("user-filter-dropdown");
+
+  // Au clic sur le menu déroulant, on affiche les utilisateurs sélectionnés
+  userFilterDropdown.addEventListener("click", () => {
+    console.log("Menu déroulant cliqué, affichage des utilisateurs sélectionnés");
+    displayCheckedUsers();
+  });
+
+  // Au changement dans l'input de recherche
   ownerBox.addEventListener("input", () => {
-    if (ownerBox.value && ownerBox.value.length > 2) {
-      var searchTerm = ownerBox.value;
+    const searchTerm = ownerBox.value;
+    console.log("Recherche en cours avec le terme : ", searchTerm);
+
+    if (searchTerm && searchTerm.length > 2) {
+      console.log("Termes de recherche trouvés, appel à getSearchListUsers()");
+      // Si l'utilisateur tape quelque chose, on effectue une recherche
       getSearchListUsers(searchTerm).then((users) => {
-        filterOwnerContainer.textContent = "";
-        users.forEach((user) => {
-          filterOwnerContainer.appendChild(createUserCheckBox(user));
-          setListenerChangeInputs(
-            document.getElementById("id" + user.username),
-          );
-        });
+        updateUserList(users);
       });
     } else {
-      filterOwnerContainer.textContent = "";
+      console.log("Recherche vide, affichage uniquement des utilisateurs sélectionnés");
+      // Sinon, on affiche uniquement les utilisateurs sélectionnés
+      displayCheckedUsers();
     }
   });
 }
+
+// Affiche uniquement les utilisateurs sélectionnés
+function displayCheckedUsers() {
+  console.log("Affichage des utilisateurs sélectionnés...");
+  const selectedUsernames = new Set(checkedInputs.map(u => u.value));
+
+  if (selectedUsernames.size === 0) {
+    console.log("Aucun utilisateur sélectionné, vider le container");
+    filterOwnerContainer.textContent = "";
+    return;
+  }
+
+  console.log("Utilisateurs sélectionnés : ", Array.from(selectedUsernames));
+
+  // On effectue une recherche vide (qui renvoie tous les utilisateurs)
+  getSearchListUsers("").then((users) => {
+    const selectedUsers = users.filter(user => selectedUsernames.has(user.username));
+    updateUserList(selectedUsers);
+  });
+}
+
+function updateUserList(users) {
+  console.log("Mise à jour de la liste des utilisateurs...");
+  filterOwnerContainer.textContent = ""; // Vider l'affichage précédent
+
+  // Récupérer les utilisateurs sélectionnés
+  const selectedUsernames = new Set(checkedInputs.map(u => u.value));
+
+  // Filtrer les utilisateurs pour ceux qui correspondent à la recherche
+  const filteredUsers = users.filter(user => !selectedUsernames.has(user.username));
+
+  console.log("Utilisateurs filtrés : ", filteredUsers);
+
+  // Fusionner les utilisateurs sélectionnés et filtrés (les sélectionnés viennent en premier)
+  const finalUserList = [
+    ...checkedInputs.map(input => ({
+      username: input.value,
+      first_name: "", // Remplir si nécessaire
+      last_name: "",  // Remplir si nécessaire
+    })),
+    ...filteredUsers
+  ];
+
+  const fragment = document.createDocumentFragment();
+
+  // Ajouter chaque utilisateur dans le DOM
+  finalUserList.forEach((user) => {
+    const checkboxId = "id" + user.username;
+    if (!document.getElementById(checkboxId)) {
+      console.log("Ajout de l'utilisateur au DOM : ", user.username);
+      const checkbox = createUserCheckBox(user, selectedUsernames);
+      fragment.appendChild(checkbox);
+      setListenerChangeInputs(checkbox.querySelector("input"));
+    }
+  });
+
+  filterOwnerContainer.appendChild(fragment);
+}
+
 
 /**
  * Create checkbox for user search
  * @param user
  * @returns {HTMLDivElement}
  */
-function createUserCheckBox(user) {
+function createUserCheckBox(user, selectedUsernames) {
+  console.log("Création de la checkbox pour l'utilisateur : ", user.username);
   let div = document.createElement("div");
   div.classList.add("form-check");
+
   let checkbox = document.createElement("input");
   checkbox.classList.add("form-check-input");
   checkbox.type = "checkbox";
   checkbox.name = "owner";
   checkbox.value = user.username;
   checkbox.id = "id" + user.username;
+
+  // Coche si utilisateur déjà sélectionné
+  if (selectedUsernames.has(user.username)) {
+    checkbox.checked = true;
+    console.log("Utilisateur sélectionné : ", user.username);
+  }
+
   let label = document.createElement("label");
   label.classList.add("form-check-label");
-  label.setAttribute("for", "id" + user.username);
-  if (user.first_name !== "" && user.last_name !== "") {
-    label.innerHTML = user.first_name + " " + user.last_name + " ";
-  }
-  label.innerHTML += "(" + user.username + ")";
+  label.setAttribute("for", checkbox.id);
+
+  const fullName = `${user.first_name} ${user.last_name}`.trim();
+  label.innerHTML = (fullName !== "" ? fullName + " " : "") + `(${user.username})`;
+
   div.appendChild(checkbox);
   div.appendChild(label);
+
+  console.log("Checkbox créée pour : ", user.username);
+
   return div;
 }
+
+
 
 /**
  * Add click event listener to manage reset of filters
@@ -345,6 +421,14 @@ document.getElementById("resetFilters").addEventListener("click", function () {
   refreshVideosSearch();
 });
 
+let teststst = document.querySelectorAll("input[type=checkbox]:checked[class=form-check-input]");
+console.log("Resutat querySelectorAll l370 : " + teststst.entries());
+checkedInputs = [];
+teststst.forEach((e) => {
+    checkedInputs.push(e);
+    console.log("Mis a jours de checkedInputs l370 : "+e.value);
+  });
+refreshActiveFiltersElement();
 
 /**
  * Toggle (enable/disable) inputs to prevent user actions during loading
@@ -358,16 +442,14 @@ function disabledInputs(value) {
     });
 }
 
+//---------------------------------------------//
+//----------------END-WORKING------------------//
+//---------------------------------------------//
+
 document
   .querySelectorAll("#filters .form-check-input,#sort,#sort_direction")
   .forEach((el) => {
     setListenerChangeInputs(el);
-  });
-
-document
-  .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
-  .forEach((e) => {
-    checkedInputs.push(e);
   });
 
 // First launch of the infinite scroll
