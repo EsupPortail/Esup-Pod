@@ -69,7 +69,7 @@ Several properties are essential for configuration in the settings file:
 
 Example configuration:
 
-```
+```py
 ##
 # Recorder settings
 #
@@ -254,7 +254,7 @@ Claiming a recording displays the list of all unassigned videos:
 
 ⚠️ If preview mode is activated (USE_RECORD_PREVIEW = True), the public path (_PUBLIC_RECORD_DIR = 'records'_) of the recording deposit directory (DEFAULT_RECORDER_PATH = '/data/www/%userpod%/uploads/') must be specified, and the following must be added to the NGINX configuration:
 
-```
+```bash
 vi pod/custom/pod_nginx.conf
 ...
 location /records {
