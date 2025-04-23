@@ -1426,6 +1426,45 @@ body {
   }
 }
 
+/* Pod Sliders */
+
+.slider {
+  background-color: var(--pod-background-neutre1-bloc);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-around;
+  inset: 0;
+  position: absolute;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.slider:focus,
+.slider:hover {
+  box-shadow: 0 0 3px var(--pod-primary-lighten);
+}
+
+.slider::before {
+  background-color: var(--bs-white);
+  bottom: 2px;
+  content: "";
+  height: 20px;
+  left: 2px;
+  position: absolute;
+  transition: 0.4s;
+  width: 20px;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--pod-primary);
+}
+
+input:checked + .slider::before {
+  transform: translateX(26px);
+}
+
+
 /* small screens */
 .pod-grid-content {
   position: relative;

@@ -1,9 +1,9 @@
 #------------------------------------------------------------------------------------------------------------------------------
 #  (\___/)
-#  (='.'=) Dockerfile multi-stages node & python
+#  (='.'=) Dockerfile python for pod-encode
 #  (")_(")
 #------------------------------------------------------------------------------------------------------------------------------
-# Conteneur node
+
 ARG PYTHON_VERSION=3.9
 
 #------------------------------------------------------------------------------------------------------------------------------
@@ -11,8 +11,6 @@ ARG PYTHON_VERSION=3.9
 FROM $PYTHON_VERSION
 WORKDIR /tmp/pod
 COPY ./pod/ .
-# TODO
-#FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
