@@ -92,7 +92,9 @@ def start_transcripting_task(self, video_id, mp3filepath, duration, lang):
         requests.exceptions.InvalidURL,
         requests.exceptions.Timeout,
     ) as exception:
-        msg += "Exception on start_transcripting_task: {}".format(type(exception).__name__)
+        msg += "Exception on start_transcripting_task: {}".format(
+            type(exception).__name__
+        )
         msg += "\nURL: %s" % url
         msg += "\nException message: {}".format(exception)
         logger.error(msg)
