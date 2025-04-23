@@ -190,7 +190,7 @@ function getUrlForRefresh() {
     urlParams.delete("sort_direction");
   }
 
-  let newTitle = getSearchValue(); 
+  let newTitle = getSearchValue();
   if (newTitle) {
     urlParams.set("title", newTitle);
   } else {
@@ -209,7 +209,7 @@ function getUrlForRefresh() {
   urlParams.delete("owner");
 
   checkedInputs.forEach((input) => {
-    urlParams.append(input.name, input.value); 
+    urlParams.append(input.name, input.value);
   });
 
   urlParams.set("page", "");
@@ -230,27 +230,47 @@ function setListenerChangeInputs(el) {
       .forEach((e) => {
         checkedInputs.push(e);
       });
+    refreshActiveFiltersElement();
     refreshVideosSearch();
   });
 }
 
+function refreshActiveFiltersElement() {
+  const container = document.getElementById("activeFilters");
+  container.innerHTML = ""; // On vide d'abord
 
-/**
- * Add change event listener on inputs (filters, sort column and sort direction) to refresh video list
- * @param el
- */
-function setListenerChangeInputs(el) {
-  el.addEventListener("change", (e) => {
-    checkedInputs = [];
-    disabledInputs(true);
-    document
-      .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
-      .forEach((e) => {
-        checkedInputs.push(e);
-      });
-    refreshVideosSearch();
+  checkedInputs.forEach((input) => {
+    const tag = document.createElement("div");
+    tag.className = "badge bg-primary text-light me-2 mb-2 p-2";
+    tag.innerText = input.value;
+
+    // Optionnel : bouton pour retirer le filtre
+    const closeBtn = document.createElement("button");
+    closeBtn.className = "btn-close btn-close-white ms-2";
+    closeBtn.style.fontSize = "0.6rem";
+    closeBtn.onclick = () => {
+      input.checked = false;
+      input.dispatchEvent(new Event("change")); // Déclenche à nouveau le changement
+    };
+
+    tag.appendChild(closeBtn);
+    container.appendChild(tag);
   });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialise checkedInputs avec les cases déjà cochées
+  checkedInputs = [];
+  document
+    .querySelectorAll("input[type=checkbox]:checked.form-check-input")
+    .forEach((e) => {
+      checkedInputs.push(e);
+    });
+
+  // Rafraîchir les filtres visibles
+  refreshActiveFiltersElement();
+});
+
 
 /**
  * Add event listener to search user input to create checkboxes
