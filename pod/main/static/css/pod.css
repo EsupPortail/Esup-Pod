@@ -989,7 +989,9 @@ span[data-bs-placement] {
   margin-bottom: 0;
 }
 
-header>.alert{--bs-border-radius: 0}
+header > .alert {
+  --bs-border-radius: 0;
+}
 
 #base-message-alert,
 #formalertdiv {
