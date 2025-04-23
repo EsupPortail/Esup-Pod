@@ -1,4 +1,4 @@
-"""Tests the views for ai_enhancement module."""
+"""Test the views for ai_enhancement module."""
 
 import json
 from unittest.mock import patch

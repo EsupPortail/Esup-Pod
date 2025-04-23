@@ -89,7 +89,8 @@ def start_encoding_task(
         requests.exceptions.InvalidURL,
         requests.exceptions.Timeout,
     ) as exception:
-        msg += "Exception: {}".format(type(exception).__name__)
+        msg += "Exception on start_encoding_task: {}".format(type(exception).__name__)
+        msg += "\nURL: %s" % url
         msg += "\nException message: {}".format(exception)
         logger.error(msg)
 
@@ -125,6 +126,7 @@ def start_studio_task(recording_id, video_output, videos, subtime, presenter) ->
         requests.exceptions.InvalidURL,
         requests.exceptions.Timeout,
     ) as exception:
-        msg = "Exception: {}".format(type(exception).__name__)
+        msg = "Exception on start_studio_task: {}".format(type(exception).__name__)
+        msg += "\nURL: %s" % url
         msg += "\nException message: {}".format(exception)
         logger.error(msg)
