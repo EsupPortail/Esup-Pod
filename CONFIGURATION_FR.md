@@ -33,7 +33,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   > valeur par défaut : `6.3.0`
   >> ATTENTION. django-ckeditor integre la version gratuite de CKEditor 4.22.1,<br>
   >> qui n'est plus prise en charge et qui présente des problèmes de sécurité non résolus,<br>
-  >> voir par exemple https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS.<br>
+  >> voir par exemple <https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS>.<br>
 * `django_select2`
   > valeur par défaut : `latest`
   >> Recherche et completion dans les formulaires<br>
@@ -755,20 +755,20 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `AI_ENHANCEMENT_API_URL`
   > valeur par défaut : ``
   >> L’URL de l’API pour l’IA d’amélioration des vidéos.<br>
-  >> Exemple : 'https://aristote.univ.fr/api'<br>
-  >> Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+  >> Exemple : '<https://aristote.univ.fr/api>'<br>
+  >> Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
 * `AI_ENHANCEMENT_API_VERSION`
   > valeur par défaut : ``
   >> La version de l’API pour l’IA d’amélioration des vidéos.<br>
 * `AI_ENHANCEMENT_CGU_URL`
   > valeur par défaut : ``
   >> L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.<br>
-  >> Exemple : '<https://aristote.univ.fr/cgu>'<br>
-  >> Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
+  >> Exemple : '<https://aristote.univ.fr/cgu>'<br>
+  >> Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
 * `AI_ENHANCEMENT_CLIENT_ID`
   > valeur par défaut : `mocked_id`
   >> L’ID du client de l’IA d’amélioration des vidéos.<br>
-  >> Exemple : 'v1'<br>
+  >> Exemple : 'v1'<br>
 * `AI_ENHANCEMENT_CLIENT_SECRET`
   > valeur par défaut : `mocked_secret`
   >> Le mot de passe secret du client de l’IA d’amélioration des vidéos.<br>
@@ -781,7 +781,7 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `AI_ENHANCEMENT_PROXY_URL`
   > valeur par défaut : ``
   >> L’URL du serveur proxy pour les requêtes venant d'Aristote.<br>
-  >> Exemple : '<https://proxy_aristote.univ.fr>'<br>
+  >> Exemple : '<https://proxy_aristote.univ.fr>'<br>
 
 ### Configuration de l’application authentification
 
@@ -837,7 +837,7 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
   >> Voir [kstateome/django-cas](https://github.com/kstateome/django-cas)<br>
 * `CAS_SERVER_URL`
   > valeur par défaut : `sso_cas`
-  >> Url du serveur CAS de l’établissement. Format https://url_cas<br>
+  >> Url du serveur CAS de l’établissement. Format `http://url_cas`<br>
 * `CAS_MAP_AFFILIATIONS`
   > valeur par défaut : `False`
   >> Si True, des `groupes` d’utilisateurs sont créés automatiquement<br>
@@ -2189,7 +2189,7 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l’en
 * `ES_VERSION`
   > valeur par défaut : `8`
   >> Version d’ElasticSearch.<br>
-  >> valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.<br>
+  >> valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.<br>
   >> Attention, le paquet elasticsearch-py doit correspondre à la version du serveur.<br>
   >> pour la 8, `pip3 install elasticsearch==8.17.2`.<br>
   >> Voir [elasticsearch-py.readthedocs.io](https://elasticsearch-py.readthedocs.io/)<br>
