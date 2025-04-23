@@ -17,31 +17,33 @@
   <body>
 
     <!-- HEADER -->
-    <header class="navbar navbar-expand-lg bg-primary justify-content-around" data-bs-theme="dark">
-      {% if site.github.is_project_page %}
-        <a id="forkme_banner" class="btn btn-primary" href="{{ site.github.repository_url }}">
-          <i class="bi bi-github" aria-hidden="true"></i>
-          Voir sur GitHub
-        </a>
-      {% endif %}
+    <header>
+      <nav class="navbar navbar-expand-lg bg-primary justify-content-around" data-bs-theme="dark">
+        {% if site.github.is_project_page %}
+          <a id="forkme_banner" class="btn btn-primary" href="{{ site.github.repository_url }}">
+            <i class="bi bi-github" aria-hidden="true"></i>
+            Voir sur GitHub
+          </a>
+        {% endif %}
 
-      <a class="navbar-brand" href="/Esup-Pod">{{ site.title | default: site.github.repository_name }}</a>
+        <a class="navbar-brand" href="/Esup-Pod">{{ site.title | default: site.github.repository_name }}</a>
 
-      {% if site.show_downloads %}
-        <section id="downloads">
-          <a class="zip_download_link" href="{{ site.github.zip_url }}">Download this project as a .zip file</a>
-          <a class="tar_download_link" href="{{ site.github.tar_url }}">Download this project as a tar.gz file</a>
-        </section>
-      {% endif %}
-      {% include version_selector.html %}
-      <div class="position-fixed end-0 me-2" id="collapse-button">
-        <a role="button" href="#toc-page" class="btn btn-outline-primary"
-           data-bs-toggle="collapse" aria-expanded="true" aria-controls="toc-page"
-           aria-label="Side menu" data-pod-tooltip="true"
-           data-bs-original-title="Toggle side menu">
-          <i class="bi bi-list" aria-hidden="true"></i>
-        </a>
-      </div>
+        {% if site.show_downloads %}
+          <section id="downloads">
+            <a class="zip_download_link" href="{{ site.github.zip_url }}">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="{{ site.github.tar_url }}">Download this project as a tar.gz file</a>
+          </section>
+        {% endif %}
+        {% include version_selector.html %}
+        <div class="position-fixed end-0 me-2" id="collapse-button">
+          <a role="button" href="#toc-page" class="btn btn-outline-primary"
+            data-bs-toggle="collapse" aria-expanded="true" aria-controls="toc-page"
+            aria-label="Side menu" data-pod-tooltip="true"
+            data-bs-original-title="Toggle side menu">
+            <i class="bi bi-list" aria-hidden="true"></i>
+          </a>
+        </div>
+      </nav>
       {% include breadcrumbs.html %}
     </header>
 
