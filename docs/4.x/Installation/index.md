@@ -18,7 +18,7 @@ lang: fr
 * [BigBlueButton / Mise en place du mode webinaire pour les sessions BigBlueButton](optional/set-up-webinar-mode-bbb-install_fr)
 * [Importer une vidéo externe / un enregistrement BigBlueButton au format vidéo](optional/import-external-video-bbb-recording-install_fr)
 * [Installation d’OpenCast Studio](optional/opencast-studio-install_fr)
-* [Mise en place de la publication de vidéos depuis des enregistreurs](optional/video-publication-from-recorders_fr.md)
+* [Mise en place de la publication de vidéos depuis des enregistreurs](optional/video-publication-from-recorders_fr)
 
 ## Mise à jour
 
