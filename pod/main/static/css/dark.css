@@ -34,6 +34,7 @@
   --pod-font-color: var(--pod-font-color-dark);
   --pod-background-neutre1-bloc: var(--pod-background-neutre1-bloc-dark);
   --pod-background-neutre2-bloc: var(--pod-background-neutre2-bloc-dark);
+  --pod-navbar-breadcrumb-border: var(--pod-navbar-breadcrumb-border-dark);
   --pod-btn-text: var(--pod-btn-text-dark);
   --pod-alert: var(--pod-alert-dark);
   --pod-link-color: var(--pod-primary-lighten-dark);
@@ -106,7 +107,7 @@
 }
 
 [data-theme="dark"] .breadcrumb-item.active {
-  color: #a8abb3;
+  color: #ffffff;
 }
 
 [data-theme="dark"] .nav-tabs .nav-item.show .nav-link,

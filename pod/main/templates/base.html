@@ -62,12 +62,43 @@
 
 <body>
   {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
-  <header>
-    <nav class="pod-navbar navbar fixed-top m-0 p-1 p-md-2">
+  <header role="banner" class="sticky-top">
+    {% if MAINTENANCE_SHEDULED %}
+    <div class="alert alert-warning m-0 p-2" role="alert">
+      {{ MAINTENANCE_TEXT_SHEDULED|safe }}
+    </div>
+    {% endif %}
+
+    <!-- Main navigation -->
+    <nav class="navbar pod-navbar m-0 p-1 p-md-2" aria-label="{% trans 'Main navigation' %}">
       {% include 'navbar.html' %}
     </nav>
+
+    <!-- Collapsed navigation -->
     {% include 'navbar_collapse.html' %}
+
+    <!-- Breadcrumb navigation -->
+    {% if not request.GET.is_iframe %}
+      <nav aria-label="{% trans 'Breadcrumb' %}" id="mainbreadcrumb" class="pod-navbar-breadcrumb ">
+        <ol class="breadcrumb d-flex">
+          {% block breadcrumbs %}
+            {% if request.path == '/' %}
+              <li class="breadcrumb-item active" aria-current="page">
+                {% trans 'Home' %}
+              </li>
+            {% else %}
+              <li class="breadcrumb-item">
+                <a href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ TITLE_SITE }} - {% trans 'Home' %}">
+                  {% trans 'Home' %}
+                </a>
+              </li>
+            {% endif %}
+          {% endblock breadcrumbs %}
+        </ol>
+      </nav>
+    {% endif %}
   </header>
+
   {% block content %}
   {% if request.path in "/,/authentication_login/,/accounts/login/" and MAINTENANCE_MODE %}
     {% get_maintenance_welcome as maintenance_text %}
@@ -98,28 +129,6 @@
           </aside>
         {% endif %}
         <div class="pod-mainContent mt-2" id="pod-mainContent">
-          {% if not request.GET.is_iframe %}
-            {% if MAINTENANCE_SHEDULED %}
-              <div class="alert alert-warning" role="alert">{{MAINTENANCE_TEXT_SHEDULED|safe}}</div>
-            {% endif %}
-            <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between pb-2" id="mainbreadcrumb">
-              <ol class="breadcrumb p-0 mb-0">
-                {% block breadcrumbs %}
-                  {% if request.path == '/' %}
-                    <li class="breadcrumb-item active" aria-current="page">
-                      {% trans 'Home' %}
-                    </li>
-                  {% else %}
-                    <li class="breadcrumb-item">
-                      <a href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ TITLE_SITE }} - {% trans 'Home' %}">
-                        {% trans 'Home' %}
-                      </a>
-                    </li>
-                  {% endif %}
-                {% endblock breadcrumbs %}
-              </ol>
-            </nav>
-          {% endif %}
           <div class="container">
             <div class="pod-first-content">
               {% block main_page_title %}
