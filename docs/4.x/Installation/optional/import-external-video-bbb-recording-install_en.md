@@ -26,15 +26,15 @@ As a reminder, the meetings module of Esup-Pod is based on a Big Blue Button arc
 
 ## Esup-Pod Interface / My Big Blue Button Meetings
 
-![Meetings](import-external-video-bbb-recording_screens/meetings.png)
+![Meetings](import-external-video-bbb-recording_screens/meetings.webp)
 
 ## Big Blue Button
 
-![BBB](import-external-video-bbb-recording_screens/bbb.png)
+![BBB](import-external-video-bbb-recording_screens/bbb.webp)
 
 ## Esup-Pod Interface / Big Blue Button Meeting Recordings
 
-![Recordings](import-external-video-bbb-recording_screens/recordings.png)
+![Recordings](import-external-video-bbb-recording_screens/recordings.webp)
 
 > In this interface, the action "Upload to Esup-Pod as a video" is available because we are using a Big Blue Button 2.6 architecture with the video recording system (see paragraph below).
 

@@ -61,7 +61,7 @@ Dans votre `custom/settings-local.py`, les paramètres suivants concernent l’u
 
 Il est aussi nécessaire de créer, via l’interface d’administration, un nouvel Enregistreur de type **Studio** :
 
-![Modification de l’Enregistreur](opencast_screens/modif_recorder.png)
+![Modification de l’Enregistreur](opencast_screens/modif_recorder.webp)
 
 Il est indispensable que cet enregistreur ait comme type d’enregistrement **Studio**; concernant le répertoire des publications, mettre `opencast-files`, ou du moins, la valeur configurée dans le paramètre `OPENCAST_FILES_DIR`.
 
@@ -77,4 +77,4 @@ Les fichiers d’Opencast Studio sont générés dans le répertoire `/media/ope
 
 En effet, il est possible de retrouver les enregistrements réalisés par les usagers via le module Recorder / Enregistrement pour l’enregistreur de type Studio défini :
 
-![Modification de l’enregistrement](opencast_screens/enregistrement.png)
+![Modification de l’enregistrement](opencast_screens/enregistrement.webp)

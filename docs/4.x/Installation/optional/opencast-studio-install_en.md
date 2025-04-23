@@ -61,7 +61,7 @@ In your `custom/settings-local.py`, the following parameters concern the use of 
 
 It is also necessary to create, via the administration interface, a new Recorder of type **Studio**:
 
-![Modification of the Recorder](opencast_screens/modif_recorder.png)
+![Modification of the Recorder](opencast_screens/modif_recorder.webp)
 
 It is essential that this recorder has the recording type **Studio**; for the publication directory, use `opencast-files`, or at least the value configured in the `OPENCAST_FILES_DIR` parameter.
 
@@ -77,4 +77,4 @@ Opencast Studio files are generated in the `/media/opencast-files/` directory, a
 
 Indeed, it is possible to find the recordings made by users via the Recorder / Recording module for the defined Studio type recorder:
 
-![Modification of the recording](opencast_screens/enregistrement.png)
+![Modification of the recording](opencast_screens/enregistrement.webp)

@@ -55,7 +55,7 @@ Il paraît alors pertinent d’utiliser cette infrastructure en lien avec Pod.
 - **LTI** : Moodle (Plugin LTI), Chamillo, Sakaï etc. (toutes plateformes compatibles LTI)
 - **Portail national** : [https://classe-virtuelle.numerique-esr.fr](https://classe-virtuelle.numerique-esr.fr) authentification fédérée (Shibboleth)
 
-![Schéma technique](meeting_screens/technical_diagram.png)
+![Schéma technique](meeting_screens/technical_diagram.webp)
 
 *Schéma technique, en provenance de la présentation de Nicolas Can et Loïc Bonavent lors des Journées Esup-Pod#3 : "10 ans déjà" à l’Université d’Avignon, en mars 2024.*
 
@@ -99,7 +99,7 @@ Pour utiliser le module des réunions dans Pod, il suffit de réaliser le param�
 
 À la première connexion de l’usager, une salle de réunion personnelle lui est créée automatiquement.
 
-![Interface de gestion des réunions](meeting_screens/meetings.png)
+![Interface de gestion des réunions](meeting_screens/meetings.webp)
 
 Via cette interface, il est possible de :
 
@@ -121,7 +121,7 @@ Après avoir enregistré une réunion BigBlueButton, l’enregistrement apparaî
 
 A ce moment là, l’usager recevra un email l’avertissant de la disponibilité de l’enregistrement.
 
-![Interface d’enregistrements](meeting_screens/recordings.png)
+![Interface d’enregistrements](meeting_screens/recordings.webp)
 
 Il faut bien comprendre que les enregistrements réalisés sur BigBlueButton sont stockés dans l’infrastructure BBB source.
 
@@ -136,7 +136,7 @@ L’infrastructure BBB de l’ESR présente des différences avec une architectu
 
 Une fois l’enregistrement disponible dans cette interface, il est aussi possible à l’usager de téléverser directement la vidéo sur Pod, via l’icône de "Téléverser sur Pod en tant que vidéo".
 
-![Téléversement sur Pod](meeting_screens/upload.png)
+![Téléversement sur Pod](meeting_screens/upload.webp)
 
 Il faut bien comprendre qu’à ce moment là une nouvelle vidéo sera téléversée sur Pod, sera alors encodée par les serveurs d’encodage de Pod et sera stockée dans Pod.
 
@@ -146,7 +146,7 @@ Il faut bien comprendre qu’à ce moment là une nouvelle vidéo sera téléver
 
 Selon votre configuration, voici les options d’administration disponibles pour le module des réunions :
 
-![Interface d’administration](meeting_screens/administration_menu.png)
+![Interface d’administration](meeting_screens/administration_menu.webp)
 
 #### L’administration des sessions
 

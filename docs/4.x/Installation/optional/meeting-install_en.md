@@ -55,7 +55,7 @@ It therefore seems relevant to use this infrastructure in conjunction with Pod.
 - **LTI**: Moodle (LTI Plugin), Chamilo, Sakai etc. (all LTI-compatible platforms)
 - **National Portal**: [https://classe-virtuelle.numerique-esr.fr](https://classe-virtuelle.numerique-esr.fr) federated authentication (Shibboleth)
 
-![Technical Diagram](meeting_screens/technical_diagram.png)
+![Technical Diagram](meeting_screens/technical_diagram.webp)
 
 *Technical diagram, from the presentation by Nicolas Can and Loïc Bonavent during the Esup-Pod#3 Days: "10 years already" at the University of Avignon, in March 2024.*
 
@@ -99,7 +99,7 @@ To use the meetings module in Pod, simply perform the following mandatory config
 
 Upon the user’s first connection, a personal meeting room is automatically created for them.
 
-![Meeting Management Interface](meeting_screens/meetings.png)
+![Meeting Management Interface](meeting_screens/meetings.webp)
 
 Via this interface, it is possible to:
 
@@ -121,7 +121,7 @@ After recording a BigBlueButton meeting, the recording will automatically appear
 
 At this point, the user will receive an email notifying them of the availability of the recording.
 
-![Recordings Interface](meeting_screens/recordings.png)
+![Recordings Interface](meeting_screens/recordings.webp)
 
 It is important to understand that recordings made on BigBlueButton are stored in the source BBB infrastructure.
 
@@ -136,7 +136,7 @@ The BBB ESR infrastructure differs from a local architecture on the following 2 
 
 Once the recording is available in this interface, the user can also directly upload the video to Pod, via the "Upload to Pod as video" icon.
 
-![Upload to Pod](meeting_screens/upload.png)
+![Upload to Pod](meeting_screens/upload.webp)
 
 It is important to understand that at this point a new video will be uploaded to Pod, then encoded by Pod’s encoding servers and stored in Pod.
 
@@ -146,7 +146,7 @@ It is important to understand that at this point a new video will be uploaded to
 
 Depending on your configuration, here are the administration options available for the meetings module:
 
-![Administration Interface](meeting_screens/administration_menu.png)
+![Administration Interface](meeting_screens/administration_menu.webp)
 
 #### Session Administration
 

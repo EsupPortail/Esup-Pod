@@ -51,7 +51,7 @@ En terme d’interface dans Pod, voici ce que cela donne :
 
 - Édition d’un webinaire, par le présentateur (notion de modérateur dans BigBlueButton)
 
-![Editer la réunion](set-up-webinar-mode-bbb_screens/webinar.png)
+![Editer la réunion](set-up-webinar-mode-bbb_screens/webinar.webp)
 
 - Les explications sur le mode webinaire, accessible aux usagers
 
@@ -59,23 +59,23 @@ En terme d’interface dans Pod, voici ce que cela donne :
 
 - Liste des réunions et webinaires
 
-![Lister les réunions](set-up-webinar-mode-bbb_screens/meetings.png)
+![Lister les réunions](set-up-webinar-mode-bbb_screens/meetings.webp)
 
 - L’interface BigBlueButton, avec le compte streaming connecté
 
-![BBB](set-up-webinar-mode-bbb_screens/bbb.png)
+![BBB](set-up-webinar-mode-bbb_screens/bbb.webp)
 
 - La page des évènements en direct
 
-![Evènements](set-up-webinar-mode-bbb_screens/events.png)
+![Evènements](set-up-webinar-mode-bbb_screens/events.webp)
 
 - Le direct pour les auditeurs, avec le chat intégré (si activé par le présentateur)
 
-![Live](set-up-webinar-mode-bbb_screens/live.png)
+![Live](set-up-webinar-mode-bbb_screens/live.webp)
 
 - Les informations et actions réalisables sur un webinaire en cours
 
-![Webianire en cours](set-up-webinar-mode-bbb_screens/webinar_in_progress.png)
+![Webianire en cours](set-up-webinar-mode-bbb_screens/webinar_in_progress.webp)
 
 ## Architecture de la solution
 
@@ -88,7 +88,7 @@ Cette solution repose sur :
 
 Au final, techniquement, voici ce que cela donne :
 
-![Architecture](set-up-webinar-mode-bbb_screens/architecture.png)
+![Architecture](set-up-webinar-mode-bbb_screens/architecture.webp)
 
 Copie d’écran d’une présentation réalisée par Nicolas Can et Loïc Bonavent lors des Journées Esup-Pod#3 : "10 ans déjà" à l’Université d’Avignon, en mars 2024.
 
@@ -102,7 +102,7 @@ cf. <https://www.renater.fr/connecteur-de-salles-la-solution-dinteroperabilite-e
 
 Le but de ce projet est de mettre à disposition une brique fonctionnelle compatible avec les standards du protocole WebRTC permettant l’accès depuis un équipement de salle de visioconférence (Cisco, Polycom…) à des instances BigBlueButton / Jitsi-Meet.
 
-![SIPMediaGW](set-up-webinar-mode-bbb_screens/sipmediagw.png)
+![SIPMediaGW](set-up-webinar-mode-bbb_screens/sipmediagw.webp)
 
 RENATER a ajouté, dans les versions récentes de SIPMediaGW, une autre fonctionnalité permettant de réaliser une publication RTMP de la session, ce qui permet de réellement transformer une réunion en webinaire.
 
@@ -243,7 +243,7 @@ Pour ce faire, il est nécessaire d’accéder au module d’Administration de P
 
 Ces informations sont accessibles dans la partie **Administration / Sessions / Passerelles de live**
 
-![Passerelles de live](set-up-webinar-mode-bbb_screens/administration_livegateway1.png)
+![Passerelles de live](set-up-webinar-mode-bbb_screens/administration_livegateway1.webp)
 
 Pour ajouter une passerelle de live, il suffit de :
 
@@ -318,15 +318,15 @@ Le présentateur peut également modifier à sa convenance la date et la durée 
 
 ### L’administration des passerelles de live
 
-![Administration des passerelles de live](set-up-webinar-mode-bbb_screens/administration_livegateway1.png)
+![Administration des passerelles de live](set-up-webinar-mode-bbb_screens/administration_livegateway1.webp)
 
 ### L’administration des directs (au sens sessions BigBlueButton)
 
-![Administration des directs](set-up-webinar-mode-bbb_screens/administration_session.png)
+![Administration des directs](set-up-webinar-mode-bbb_screens/administration_session.webp)
 
 Il y a aussi le module de gestion des directs, en particulier pour les évènements :
 
-![Administration des évènements](set-up-webinar-mode-bbb_screens/administration_events.png)
+![Administration des évènements](set-up-webinar-mode-bbb_screens/administration_events.webp)
 
 ### Les fichiers de logs
 

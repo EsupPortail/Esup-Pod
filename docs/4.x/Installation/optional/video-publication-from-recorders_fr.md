@@ -34,7 +34,7 @@ Côté enregistreur, avant de réaliser une publication de vidéos vers un serve
 
 Par exemple, voici à quoi ressemble cet écran de paramétrage pour un enregistreur de type MultiCAM Systems :
 
-![FTP](video-publication-from-recorders_screens/multicam-ftp.png)
+![FTP](video-publication-from-recorders_screens/multicam-ftp.webp)
 
 Paramétrage côté Pod
 --------------------
@@ -45,36 +45,36 @@ Côté Pod, il est également nécessaire de réaliser le paramétrage via :
 
 Plusieurs propriétés sont indispensables pour le paramétrage dans le fichier de configuration :
 
-* ALLOW_MANUAL_RECORDING_CLAIMING : si True, un lien apparaîtra dans le menu du profil de l'utilisateur autorisé permettant de s'attribuer un enregistrement.  
+* ALLOW_MANUAL_RECORDING_CLAIMING : si True, un lien apparaîtra dans le menu du profil de l'utilisateur autorisé permettant de s'attribuer un enregistrement.
 
-* ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER : si True, le gestionnaire de l'enregistreur pourra choisir un propriétaire de l'enregistrement.  
+* ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER : si True, le gestionnaire de l'enregistreur pourra choisir un propriétaire de l'enregistrement.
 
-* DEFAULT_RECORDER_ID : ajoute un enregistreur par défaut à un enregistrement non identifiable (mauvais chemin dans le dépôt FTP).  
-    > ⚠️ Utile si le plugin Recorder était déjà utilisé auparavant.  
+* DEFAULT_RECORDER_ID : ajoute un enregistreur par défaut à un enregistrement non identifiable (mauvais chemin dans le dépôt FTP).
+    > ⚠️ Utile si le plugin Recorder était déjà utilisé auparavant.
 
-* DEFAULT_RECORDER_PATH : répertoire - de base - utilisé par les enregistreurs pour publier les vidéos  
-    > ⚠️ Chaque enregistreur devra publier les vidéos dans un sous-répertoire de ce répertoire de base (cf. explications ci-dessous).  
+* DEFAULT_RECORDER_PATH : répertoire - de base - utilisé par les enregistreurs pour publier les vidéos
+    > ⚠️ Chaque enregistreur devra publier les vidéos dans un sous-répertoire de ce répertoire de base (cf. explications ci-dessous).
 
-* DEFAULT_RECORDER_TYPE_ID : identifiant du type de vidéo par défaut (si non spécifié).  
-    > ⚠️ Il s'agit du type de la vidéo (_Exemple : _3 pour Colloque/conférence,_ 4 pour Cours..._) et non du type d'enregistrement.  
+* DEFAULT_RECORDER_TYPE_ID : identifiant du type de vidéo par défaut (si non spécifié).
+    > ⚠️ Il s'agit du type de la vidéo (_Exemple : _3 pour Colloque/conférence,_ 4 pour Cours..._) et non du type d'enregistrement.
 
-* DEFAULT_RECORDER_USER_ID : identifiant du propriétaire par défaut (si non spécifié) des enregistrements déposés.  
+* DEFAULT_RECORDER_USER_ID : identifiant du propriétaire par défaut (si non spécifié) des enregistrements déposés.
 
-* RECORDER_SKIP_FIRST_IMAGE : permet de ne pas prendre en compte la 1° image lors du traitement d'une fichier d'enregistrement de type AudioVideoCast.  
+* RECORDER_SKIP_FIRST_IMAGE : permet de ne pas prendre en compte la 1° image lors du traitement d'une fichier d'enregistrement de type AudioVideoCast.
 
-* RECORDER_TYPE : type d'enregistrement de la vidéo publiée par l'enregistreur.  
+* RECORDER_TYPE : type d'enregistrement de la vidéo publiée par l'enregistreur.
     A l'heure actuelle, 2 types existent et sont traités :
 
     1. video = l'enregistreur envoie un fichier vidéo, au format MP4, sur le serveur FTP,
     2. audiovideocast = l'enregistreur envoie un fichier compressé, au format ZIP (normé et contenant la vidéo, un fichier SMIL, des images...), sur le serveur FTP
 
-* USE_RECORD_PREVIEW : utiliser ou non la prévisualisation des fichiers sources des enregistrements dans l'interface de revendication.  
+* USE_RECORD_PREVIEW : utiliser ou non la prévisualisation des fichiers sources des enregistrements dans l'interface de revendication.
 
-* SELF_REQUESTS_PROXIES : Défini les proxy http et https qui seront utilisés pour la requête sur l'application en elle même. Par défaut on force la non utilisation de proxy  
+* SELF_REQUESTS_PROXIES : Défini les proxy http et https qui seront utilisés pour la requête sur l'application en elle même. Par défaut on force la non utilisation de proxy
 
-* ALLOW_INSECURE_REQUESTS : Autoriser la requête sur l'application en elle même sans vérifier le certificat SSL  
+* ALLOW_INSECURE_REQUESTS : Autoriser la requête sur l'application en elle même sans vérifier le certificat SSL
 
-* BASE_URL : sera nécessaire au job CRON (ci-dessous) afin d'envoyer la notification  
+* BASE_URL : sera nécessaire au job CRON (ci-dessous) afin d'envoyer la notification
 
 Exemple de paramétrage :
 
@@ -101,7 +101,7 @@ BASE_URL = 'https://pod.univ.fr/'
 
 Après avoir fait la configuration adéquate et s'être connecté avec un compte super-utilisateur à l'interface d'administration, nous obtenons un menu Recorder supplémentaire :
 
-![Enregistreur](video-publication-from-recorders_screens/recorder-admin.png)
+![Enregistreur](video-publication-from-recorders_screens/recorder-admin.webp)
 
 Quelques informations concernant ce menu :
 
@@ -114,7 +114,7 @@ Quelques informations concernant ce menu :
 
 Avant de réaliser une publication de vidéo, il est nécessaire de définir - à minima - un enregistreur :
 
-![Liste des enregistreurs](video-publication-from-recorders_screens/recorder-list.png)
+![Liste des enregistreurs](video-publication-from-recorders_screens/recorder-list.webp)
 
 Voici les informations utiles à la saisie d'un enregistreur :
 
@@ -127,7 +127,7 @@ Voici les informations utiles à la saisie d'un enregistreur :
 * Type d'enregistrement : type d'enregistrement qu'exporte cet enregistreur (_à l'heure actuelle, Video ou AudioVideoCast_).
 * Répertoire de publication : correspond au répertoire de base contenant les vidéos publiées par l'enregistreur.
 
-![Modification d'un enregistreur](video-publication-from-recorders_screens/recorder-modify.png)
+![Modification d'un enregistreur](video-publication-from-recorders_screens/recorder-modify.webp)
 
 ## Communication entre l'enregistreur et Pod
 
@@ -221,18 +221,18 @@ Ce lien renvoie l'utilisateur - _qui doit s'authentifier à ce moment là (si ce
 
 Pour un _**utilisateur de type "staff"****, avec le paramètre ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = False**_, ce formulaire est de la forme suivante :
 
-![Enregistreur](video-publication-from-recorders_screens/video-add1.png)
+![Enregistreur](video-publication-from-recorders_screens/video-add1.webp)
 
 Pour un _**utilisateur de type "staff"****, avec le paramètre ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = True**_, ce formulaire est de la forme suivante :
 
-![Enregistreur](video-publication-from-recorders_screens/video-add2.png)
+![Enregistreur](video-publication-from-recorders_screens/video-add2.webp)
 
 Dans ce cas là, le gestionnaire de l'enregistreur peut attribuer la vidéo à un autre utilisateur.
 {: .alert .alert-info}
 
 Pour un _**utilisateur de type "superadmin"**_, ce formulaire est de la forme suivante :
 
-![Enregistreur](video-publication-from-recorders_screens/video-add3.png)
+![Enregistreur](video-publication-from-recorders_screens/video-add3.webp)
 
 💡 _Un utilisateur de type "superadmin" peut, si nécessaire, réaliser le traitement de toutes les vidéos précédemment publiées sur n'importe quel enregistreur._
 
@@ -247,11 +247,11 @@ Cas d'un enregistreur paramétré sans gestionnaire et avec utilisation de ALLOW
 
 Dans cas précis, les utilisateurs ont la possibilité de revendiquer un enregistrement depuis le menu de profil :
 
-![Revendication](video-publication-from-recorders_screens/claim1.png)
+![Revendication](video-publication-from-recorders_screens/claim1.webp)
 
 Le fait de revendiquer un enregistrement affiche la liste de toutes les vidéos non attribuées :
 
-![Revendication](video-publication-from-recorders_screens/claim2.png)
+![Revendication](video-publication-from-recorders_screens/claim2.webp)
 
 💡 _Un utilisateur de type "superadmin" peut, si nécessaire, supprimer des enregistrements à partir de cette interface._
 
@@ -270,7 +270,7 @@ alias /data/www/%userpod%/uploads/;
 
 En revendiquant une vidéo, un formulaire apparaît :
 
-![Revendication](video-publication-from-recorders_screens/claim3.png)
+![Revendication](video-publication-from-recorders_screens/claim3.webp)
 
 Le fait de sauvegarder ce formulaire permet le traitement et l'encodage du fichier fourni par l'enregistreur, et de se l'affecter.
 
@@ -282,6 +282,6 @@ Il est également possible au super utilisateur d'ajouter manuellement un nouvel
 
 Cela peut être utile si la revendication n'est pas activée et qu'un utilisateur n'a pas cliqué sur le lien dans le mail de notification (_ce qui signifie que le fichier MP4 (ou ZIP) contenant la vidéo (et les slides) se trouve sur le serveur Pod, mais la vidéo n'a pas été traitée ni encodée_).
 
-![Liste des enregistrements](video-publication-from-recorders_screens/recorder-recording-list.png)
+![Liste des enregistrements](video-publication-from-recorders_screens/recorder-recording-list.webp)
 
-![Liste des enregistrements](video-publication-from-recorders_screens/recorder-recording-modify.png)
+![Liste des enregistrements](video-publication-from-recorders_screens/recorder-recording-modify.webp)

@@ -51,7 +51,7 @@ In terms of the interface in Pod, here is what it looks like:
 
 - Editing a webinar, by the presenter (notion of moderator in BigBlueButton)
 
-![Edit the meeting](set-up-webinar-mode-bbb_screens/webinar.png)
+![Edit the meeting](set-up-webinar-mode-bbb_screens/webinar.webp)
 
 - Explanations about webinar mode, accessible to users
 
@@ -59,23 +59,23 @@ In terms of the interface in Pod, here is what it looks like:
 
 - List of meetings and webinars
 
-![List of meetings](set-up-webinar-mode-bbb_screens/meetings.png)
+![List of meetings](set-up-webinar-mode-bbb_screens/meetings.webp)
 
 - The BigBlueButton interface, with the streaming account connected
 
-![BBB](set-up-webinar-mode-bbb_screens/bbb.png)
+![BBB](set-up-webinar-mode-bbb_screens/bbb.webp)
 
 - The live events page
 
-![Events](set-up-webinar-mode-bbb_screens/events.png)
+![Events](set-up-webinar-mode-bbb_screens/events.webp)
 
 - The live broadcast for the audience, with integrated chat (if enabled by the presenter)
 
-![Live](set-up-webinar-mode-bbb_screens/live.png)
+![Live](set-up-webinar-mode-bbb_screens/live.webp)
 
 - Information and actions that can be performed on an ongoing webinar
 
-![Ongoing webinar](set-up-webinar-mode-bbb_screens/webinar_in_progress.png)
+![Ongoing webinar](set-up-webinar-mode-bbb_screens/webinar_in_progress.webp)
 
 ## Architecture of the solution
 
@@ -88,7 +88,7 @@ This solution is based on:
 
 Technically, here is what it looks like:
 
-![Architecture](set-up-webinar-mode-bbb_screens/architecture.png)
+![Architecture](set-up-webinar-mode-bbb_screens/architecture.webp)
 
 Screenshot from a presentation by Nicolas Can and Loïc Bonavent during the Esup-Pod#3 Days: "10 years already" at the University of Avignon, in March 2024.
 
@@ -102,7 +102,7 @@ See <https://www.renater.fr/connecteur-de-salles-la-solution-dinteroperabilite-e
 
 The purpose of this project is to provide a functional component compatible with WebRTC protocol standards, allowing access from videoconferencing room equipment (Cisco, Polycom...) to BigBlueButton/Jitsi-Meet instances.
 
-![SIPMediaGW](set-up-webinar-mode-bbb_screens/sipmediagw.png)
+![SIPMediaGW](set-up-webinar-mode-bbb_screens/sipmediagw.webp)
 
 RENATER has added, in recent versions of SIPMediaGW, another feature that allows RTMP publication of the session, which truly transforms a meeting into a webinar.
 
@@ -243,7 +243,7 @@ To do this, you need to access the Pod Administration module and define this inf
 
 This information is accessible in the **Administration / Sessions / Live gateways** section
 
-![Live gateways](set-up-webinar-mode-bbb_screens/administration_livegateway1.png)
+![Live gateways](set-up-webinar-mode-bbb_screens/administration_livegateway1.webp)
 
 To add a live gateway, simply:
 
@@ -318,15 +318,15 @@ The presenter can also modify the date and duration of the webinar at their conv
 
 ### Administration of live gateways
 
-![Administration of live gateways](set-up-webinar-mode-bbb_screens/administration_livegateway1.png)
+![Administration of live gateways](set-up-webinar-mode-bbb_screens/administration_livegateway1.webp)
 
 ### Administration of live sessions (in the sense of BigBlueButton sessions)
 
-![Administration of live sessions](set-up-webinar-mode-bbb_screens/administration_session.png)
+![Administration of live sessions](set-up-webinar-mode-bbb_screens/administration_session.webp)
 
 There is also the live management module, particularly for events:
 
-![Administration of events](set-up-webinar-mode-bbb_screens/administration_events.png)
+![Administration of events](set-up-webinar-mode-bbb_screens/administration_events.webp)
 
 ### Log files
 

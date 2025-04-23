@@ -2,13 +2,13 @@
   https://jekyllcodex.org/without-plugin/breadcrumbs/#
 {% endcomment %}
 
-<nav aria-label="Fil d’Ariane">
+<nav aria-label="Fil d’Ariane" class="mx-3 my-2">
   {% assign crumbs = page.url | remove:'/index.html' | split: '/' %}
 
   <ol class="breadcrumb">
 
     <li class="breadcrumb-item">
-      <a href="/">Accueil</a>
+      <a href="/Esup-Pod/">Accueil</a>
     </li>
     {% for crumb in crumbs offset: 1 %}
       {% if forloop.last %}
@@ -17,7 +17,7 @@
         </li>
       {% else %}
         <li class="breadcrumb-item">
-          <a href="{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' | replace:'without-plugin/','without-plugins/' }}{% endfor %}">
+          <a href="/Esup-Pod{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' | replace:'without-plugin/','without-plugins/' }}{% endfor %}">
             {{ crumb | replace:'-',' ' | remove:'.html' | capitalize }}
           </a>
         </li>

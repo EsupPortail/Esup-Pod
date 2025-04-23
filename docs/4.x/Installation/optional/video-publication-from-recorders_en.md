@@ -34,7 +34,7 @@ Before publishing videos to an FTP server, the recorder must be configured as fo
 
 For example, here is what the configuration screen looks like for a MultiCAM Systems recorder:
 
-![FTP](video-publication-from-recorders_screens/multicam-ftp.png)
+![FTP](video-publication-from-recorders_screens/multicam-ftp.webp)
 
 ### Pod-Side Configuration
 
@@ -88,7 +88,7 @@ BASE_URL = 'https://pod.univ.fr/'
 
 After proper configuration and logging in with a superuser account to the administration interface, an additional Recorder menu is available:
 
-![Recorder](video-publication-from-recorders_screens/recorder-admin.png)
+![Recorder](video-publication-from-recorders_screens/recorder-admin.webp)
 
 Some information about this menu:
 
@@ -101,7 +101,7 @@ Some information about this menu:
 
 Before publishing a video, it is necessary to define at least one recorder:
 
-![Recorder List](video-publication-from-recorders_screens/recorder-list.png)
+![Recorder List](video-publication-from-recorders_screens/recorder-list.webp)
 
 Here is the useful information for entering a recorder:
 
@@ -114,7 +114,7 @@ Here is the useful information for entering a recorder:
 * Recording Type: Type of recording exported by this recorder (_currently, Video or AudioVideoCast_).
 * Publication Directory: Corresponds to the base directory containing the videos published by the recorder.
 
-![Modify Recorder](video-publication-from-recorders_screens/recorder-modify.png)
+![Modify Recorder](video-publication-from-recorders_screens/recorder-modify.webp)
 
 ## Communication Between the Recorder and Pod
 
@@ -208,18 +208,18 @@ This link redirects the user—_who must authenticate at this point (if not alre
 
 For a **_"staff" type user_**, with the parameter **_ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = False_**, the form is as follows:
 
-![Recorder](video-publication-from-recorders_screens/video-add1.png)
+![Recorder](video-publication-from-recorders_screens/video-add1.webp)
 
 For a **_"staff" type user_**, with the parameter **_ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = True_**, the form is as follows:
 
-![Recorder](video-publication-from-recorders_screens/video-add2.png)
+![Recorder](video-publication-from-recorders_screens/video-add2.webp)
 
 In this case, the recorder manager can assign the video to another user.
 {: .alert .alert-info}
 
 For a **_"superadmin" type user_**, the form is as follows:
 
-![Recorder](video-publication-from-recorders_screens/video-add3.png)
+![Recorder](video-publication-from-recorders_screens/video-add3.webp)
 
 💡 _A "superadmin" type user can, if necessary, process all previously published videos on any recorder._
 
@@ -234,11 +234,11 @@ Case of a recorder configured without a manager and with ALLOW_MANUAL_RECORDING_
 
 In this specific case, users have the possibility to claim a recording from the profile menu:
 
-![Claim](video-publication-from-recorders_screens/claim1.png)
+![Claim](video-publication-from-recorders_screens/claim1.webp)
 
 Claiming a recording displays the list of all unassigned videos:
 
-![Claim](video-publication-from-recorders_screens/claim2.png)
+![Claim](video-publication-from-recorders_screens/claim2.webp)
 
 💡 _A "superadmin" type user can, if necessary, delete recordings from this interface._
 
@@ -257,7 +257,7 @@ alias /data/www/%userpod%/uploads/;
 
 When claiming a video, a form appears:
 
-![Claim](video-publication-from-recorders_screens/claim3.png)
+![Claim](video-publication-from-recorders_screens/claim3.webp)
 
 Saving this form allows the processing and encoding of the file provided by the recorder and assigns it to the user.
 
@@ -269,6 +269,6 @@ The superuser can also manually add a new recording, corresponding to video file
 
 This can be useful if claiming is not activated and a user has not clicked on the link in the notification email (_which means the MP4 file (or ZIP) containing the video (and slides) is on the Pod server, but the video has not been processed or encoded_).
 
-![Recording List](video-publication-from-recorders_screens/recorder-recording-list.png)
+![Recording List](video-publication-from-recorders_screens/recorder-recording-list.webp)
 
-![Modify Recording](video-publication-from-recorders_screens/recorder-recording-modify.png)
+![Modify Recording](video-publication-from-recorders_screens/recorder-recording-modify.webp)

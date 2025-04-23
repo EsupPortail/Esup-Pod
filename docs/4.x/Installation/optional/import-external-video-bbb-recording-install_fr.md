@@ -26,15 +26,15 @@ Pour rappel, le module des réunions d’Esup-Pod repose sur une architecture Bi
 
 ## Interface Esup-Pod / Mes réunions Big Blue Button
 
-![Réunions](import-external-video-bbb-recording_screens/meetings.png)
+![Réunions](import-external-video-bbb-recording_screens/meetings.webp)
 
 ## Big Blue Button
 
-![BBB](import-external-video-bbb-recording_screens/bbb.png)
+![BBB](import-external-video-bbb-recording_screens/bbb.webp)
 
 ## Interface Esup-Pod / Enregistrements de réunion Big Blue Button
 
-![Enregistrements](import-external-video-bbb-recording_screens/recordings.png)
+![Enregistrements](import-external-video-bbb-recording_screens/recordings.webp)
 
 > Dans cette interface, l’action "Téléverser sur Esup-Pod en tant que vidéo" est disponible car nous utilisons une architecture Big Blue Button 2.6 avec le système d’enregistrement vidéo (cf. paragraphe ci-dessous).
 
