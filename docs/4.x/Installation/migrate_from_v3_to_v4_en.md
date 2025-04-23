@@ -4,22 +4,6 @@ version: 4.x
 lang: en
 ---
 
-- [Data migration system from Version 3 to Version 4](#data-migration-system-from-version-3-to-version-4)
-  - [Prerequisites](#prerequisites)
-  - [Exporting data from Pod v3](#exporting-data-from-pod-v3)
-    - [Description](#description)
-    - [Key features](#key-features)
-    - [Important notes](#important-notes)
-    - [Usage](#usage)
-  - [Importing data into Pod v4](#importing-data-into-pod-v4)
-    - [Description](#description-1)
-    - [Key features](#key-features-1)
-    - [Important notes](#important-notes-1)
-    - [Usage](#usage-1)
-      - [Arguments](#arguments)
-      - [Examples](#examples)
-
-
 # Data migration system from Version 3 to Version 4
 
 This document describes the data migration process for the Pod application from version 3.8.x to version 4.0.x.

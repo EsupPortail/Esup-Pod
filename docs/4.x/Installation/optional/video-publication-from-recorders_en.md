@@ -4,20 +4,6 @@ version: 4.x
 lang: en
 ---
 
-- [Setting up video publishing from recorders](#setting-up-video-publishing-from-recorders)
-- [The Publishing System](#the-publishing-system)
-  - [Recorder-Side Configuration](#recorder-side-configuration)
-  - [Pod-Side Configuration](#pod-side-configuration)
-    - [The custom/settings\_local.py Configuration File](#the-customsettings_localpy-configuration-file)
-    - [The Administration Interface](#the-administration-interface)
-- [Communication Between the Recorder and Pod](#communication-between-the-recorder-and-pod)
-- [Handling the Video on Pod](#handling-the-video-on-pod)
-  - [Notification and Addition by the Recorder Manager](#notification-and-addition-by-the-recorder-manager)
-    - [The Notification](#the-notification)
-    - [Adding the Video](#adding-the-video)
-  - [Claiming the Recording](#claiming-the-recording)
-  - [Tracking Published Videos](#tracking-published-videos)
-
 Setting up video publishing from recorders
 ==========================================
 

@@ -4,26 +4,6 @@ version: 4.x
 lang: fr
 ---
 
-- [Importer une vidéo externe / un enregistrement BigBlueButton au format vidéo](#importer-une-vidéo-externe--un-enregistrement-bigbluebutton-au-format-vidéo)
-  - [Contexte et application des réunions dans Esup-Pod](#contexte-et-application-des-réunions-dans-esup-pod)
-  - [Interface Esup-Pod / Mes réunions Big Blue Button](#interface-esup-pod--mes-réunions-big-blue-button)
-  - [Big Blue Button](#big-blue-button)
-  - [Interface Esup-Pod / Enregistrements de réunion Big Blue Button](#interface-esup-pod--enregistrements-de-réunion-big-blue-button)
-  - [Problématique et solution apportée](#problématique-et-solution-apportée)
-    - [La problématique](#la-problématique)
-    - [La solution](#la-solution)
-  - [Architecture de la solution](#architecture-de-la-solution)
-    - [Activer l'enregistrement au format vidéo dans Big Blue Button 2.6 et supérieure](#activer-lenregistrement-au-format-vidéo-dans-big-blue-button-26-et-supérieure)
-    - [Choix des modules Python utilisés et pré-requis](#choix-des-modules-python-utilisés-et-pré-requis)
-    - [Problématique en lien avec l'import des vidéos Youtube](#problématique-en-lien-avec-limport-des-vidéos-youtube)
-    - [Configuration de l'application Import\_Video](#configuration-de-lapplication-import_video)
-  - [Utilisation](#utilisation)
-    - [Création d'une vidéo externe](#création-dune-vidéo-externe)
-    - [Liste des vidéos externes](#liste-des-vidéos-externes)
-    - [Erreurs possibles](#erreurs-possibles)
-  - [Exploitation](#exploitation)
-
-
 # Importer une vidéo externe / un enregistrement BigBlueButton au format vidéo
 
 ## Contexte et application des réunions dans Esup-Pod

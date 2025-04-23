@@ -4,13 +4,6 @@ version: 4.x
 lang: fr
 ---
 
-- [Mise en place du studio Opencast](#mise-en-place-du-studio-opencast)
-  - [Installation](#installation)
-  - [Configuration et pré-requis](#configuration-et-pré-requis)
-    - [Configuration](#configuration)
-    - [Pré-requis](#pré-requis)
-  - [Exploitation](#exploitation)
-
 # Mise en place du studio Opencast
 
 ## Installation

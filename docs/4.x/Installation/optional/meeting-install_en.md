@@ -4,29 +4,6 @@ version: 4.x
 lang: en
 ---
 
-- [Pairing with BigBlueButton](#pairing-with-bigbluebutton)
-  - [Pod v4 Compatible with BigBlueButton](#pod-v4-compatible-with-bigbluebutton)
-  - [BigBlueButton Infrastructure of the Ministry of Higher Education and Research](#bigbluebutton-infrastructure-of-the-ministry-of-higher-education-and-research)
-  - [The BBB ESR Infrastructure](#the-bbb-esr-infrastructure)
-  - [Access to the BBB ESR Infrastructure](#access-to-the-bbb-esr-infrastructure)
-  - [The Pod Meetings Module](#the-pod-meetings-module)
-    - [Configuration](#configuration)
-      - [Additional Optional Configuration:](#additional-optional-configuration)
-  - [Features](#features)
-    - [Meeting Management](#meeting-management)
-    - [Recording Management](#recording-management)
-      - [Recordings](#recordings)
-      - [Uploading to Pod](#uploading-to-pod)
-  - [Operation](#operation)
-    - [Administration Interface](#administration-interface)
-      - [Session Administration](#session-administration)
-      - [Session Log Administration](#session-log-administration)
-    - [Log Files](#log-files)
-  - [Additional Features Related to the Coupling of Pod with BigBlueButton](#additional-features-related-to-the-coupling-of-pod-with-bigbluebutton)
-    - [Migration of BigBlueButton Infrastructure, with the Support of Pod](#migration-of-bigbluebutton-infrastructure-with-the-support-of-pod)
-    - [Importing an External Video / BigBlueButton Recording as a Video](#importing-an-external-video--bigbluebutton-recording-as-a-video)
-    - [Setting Up Webinar Mode for BigBlueButton Sessions for Pod](#setting-up-webinar-mode-for-bigbluebutton-sessions-for-pod)
-
 # Pairing with BigBlueButton
 
 ## Pod v4 Compatible with BigBlueButton

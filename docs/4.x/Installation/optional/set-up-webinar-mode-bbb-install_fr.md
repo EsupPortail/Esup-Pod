@@ -4,33 +4,6 @@ version: 4.x
 lang: fr
 ---
 
-- [Mise en place du mode webinaire pour les sessions BigBlueButton pour Pod](#mise-en-place-du-mode-webinaire-pour-les-sessions-bigbluebutton-pour-pod)
-  - [Contexte et solution apportée](#contexte-et-solution-apportée)
-    - [Contexte](#contexte)
-    - [Solution : le mode webinaire](#solution--le-mode-webinaire)
-    - [Interface dans Pod](#interface-dans-pod)
-  - [Architecture de la solution](#architecture-de-la-solution)
-    - [SIPMediaGW par RENATER](#sipmediagw-par-renater)
-      - [Présentation](#présentation)
-      - [Installation](#installation)
-        - [La machine virtuelle](#la-machine-virtuelle)
-        - [Installation et configuration](#installation-et-configuration)
-          - [Pré-requis](#pré-requis)
-          - [Installation effective](#installation-effective)
-          - [Configuration](#configuration)
-          - [Redémarrage du service](#redémarrage-du-service)
-      - [Vérification et exploitation](#vérification-et-exploitation)
-  - [Configuration et actions complémentaires dans Pod](#configuration-et-actions-complémentaires-dans-pod)
-    - [Configuration dans Pod](#configuration-dans-pod)
-    - [Actions complémentaires dans Pod](#actions-complémentaires-dans-pod)
-  - [Fonctionnement global](#fonctionnement-global)
-  - [Exploitation](#exploitation)
-    - [L'interface d'administration](#linterface-dadministration)
-    - [L'administration des passerelles de live](#ladministration-des-passerelles-de-live)
-    - [L'administration des directs (au sens sessions BigBlueButton)](#ladministration-des-directs-au-sens-sessions-bigbluebutton)
-    - [Les fichiers de logs](#les-fichiers-de-logs)
-
-
 # Mise en place du mode webinaire pour les sessions BigBlueButton pour Pod
 
 > ⚠️ Il ne faut pas confondre ce système avec l'ancien système utilisé pour Pod v2, devenu obsolète.

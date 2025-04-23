@@ -4,32 +4,6 @@ version: 4.x
 lang: en
 ---
 
-- [Setting up webinar mode for BigBlueButton sessions for Pod](#setting-up-webinar-mode-for-bigbluebutton-sessions-for-pod)
-  - [Context and provided solution](#context-and-provided-solution)
-    - [Context](#context)
-    - [Solution: Webinar mode](#solution-webinar-mode)
-    - [Interface in Pod](#interface-in-pod)
-  - [Architecture of the solution](#architecture-of-the-solution)
-    - [SIPMediaGW by RENATER](#sipmediagw-by-renater)
-      - [Presentation](#presentation)
-      - [Installation](#installation)
-        - [The virtual machine](#the-virtual-machine)
-        - [Installation and configuration](#installation-and-configuration)
-          - [Prerequisites](#prerequisites)
-          - [Effective installation](#effective-installation)
-          - [Configuration](#configuration)
-          - [Service restart](#service-restart)
-      - [Verification and operation](#verification-and-operation)
-  - [Configuration and additional actions in Pod](#configuration-and-additional-actions-in-pod)
-    - [Configuration in Pod](#configuration-in-pod)
-    - [Additional actions in Pod](#additional-actions-in-pod)
-  - [Overall operation](#overall-operation)
-  - [Operation](#operation)
-    - [The administration interface](#the-administration-interface)
-    - [Administration of live gateways](#administration-of-live-gateways)
-    - [Administration of live sessions (in the sense of BigBlueButton sessions)](#administration-of-live-sessions-in-the-sense-of-bigbluebutton-sessions)
-    - [Log files](#log-files)
-
 # Setting up webinar mode for BigBlueButton sessions for Pod
 
 > ⚠️ Do not confuse this system with the old system used for Pod v2, which has become obsolete.

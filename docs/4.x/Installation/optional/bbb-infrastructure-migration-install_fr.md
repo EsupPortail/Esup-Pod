@@ -4,45 +4,6 @@ version: 4.x
 lang: fr
 ---
 
-- [Migration d'infrastructure BigBlueButton, avec l'appui de Pod](#migration-dinfrastructure-bigbluebutton-avec-lappui-de-pod)
-  - [Contexte](#contexte)
-  - [Impacts](#impacts)
-  - [Contraintes](#contraintes)
-  - [Solution apportée](#solution-apportée)
-- [Architecture de la solution](#architecture-de-la-solution)
-  - [Plugin `bbb-recorder`](#plugin-bbb-recorder)
-    - [Fonctionnement de `bbb-recorder`](#fonctionnement-de-bbb-recorder)
-    - [Installation de `bbb-recorder` sur les serveurs d'encodage](#installation-de-bbb-recorder-sur-les-serveurs-dencodage)
-      - [Installation de Chrome et des pré-requis](#installation-de-chrome-et-des-pré-requis)
-      - [Installation effective](#installation-effective)
-    - [Paramétrage de `bbb-recorder`](#paramétrage-de-bbb-recorder)
-  - [Paramétrage](#paramétrage)
-    - [Configuration dans Pod](#configuration-dans-pod)
-    - [Script `migrate_bbb_recordings`](#script-migrate_bbb_recordings)
-      - [Fonctionnement du script](#fonctionnement-du-script)
-      - [Paramétrage interne au script](#paramétrage-interne-au-script)
-      - [Format des `DB_PARAMS`](#format-des-db_params)
-      - [Arguments du script](#arguments-du-script)
-      - [Exemples et cas d'utilisation](#exemples-et-cas-dutilisation)
-        - [Initialisation](#initialisation)
-        - [1. Revendication de tous les enregistrements (simulation)](#1-revendication-de-tous-les-enregistrements-simulation)
-        - [2. Revendication des 2 derniers enregistrements (simulation)](#2-revendication-des-2-derniers-enregistrements-simulation)
-        - [3. Import vidéo externe avec base Moodle (simulation)](#3-import-vidéo-externe-avec-base-moodle-simulation)
-        - [4. Import vidéo externe sans base Moodle (10 derniers, simulation)](#4-import-vidéo-externe-sans-base-moodle-10-derniers-simulation)
-        - [5. Export CSV avec base Moodle (10 derniers, simulation)](#5-export-csv-avec-base-moodle-10-derniers-simulation)
-  - [Exploitation](#exploitation)
-    - [Sortie du script](#sortie-du-script)
-    - [Interface d'administration](#interface-dadministration)
-      - [Enregistreur :](#enregistreur-)
-      - [Liste des enregistrements :](#liste-des-enregistrements-)
-      - [Import des vidéos externes :](#import-des-vidéos-externes-)
-    - [Logs de la solution](#logs-de-la-solution)
-      - [Tâches asynchrones (CELERY\_TO\_ENCODE = True)](#tâches-asynchrones-celery_to_encode--true)
-      - [RabbitMQ-Server](#rabbitmq-server)
-      - [bbb-recorder](#bbb-recorder)
-      - [Suppression des enregistrements externes du module d'import des vidéos](#suppression-des-enregistrements-externes-du-module-dimport-des-vidéos)
-
-
 # Migration d'infrastructure BigBlueButton, avec l'appui de Pod
 
 ## Contexte

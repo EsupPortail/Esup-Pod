@@ -4,21 +4,6 @@ version: 4.x
 lang: fr
 ---
 
-- [Mise en place de la publication de vidéos depuis des enregistreurs](#mise-en-place-de-la-publication-de-vidéos-depuis-des-enregistreurs)
-- [Le système de publication](#le-système-de-publication)
-  - [Paramétrage côté enregistreur](#paramétrage-côté-enregistreur)
-  - [Paramétrage côté Pod](#paramétrage-côté-pod)
-    - [Le fichier de configuration custom/settings\_local.py](#le-fichier-de-configuration-customsettings_localpy)
-    - [L'interface d'administration](#linterface-dadministration)
-- [Communication entre l'enregistreur et Pod](#communication-entre-lenregistreur-et-pod)
-- [Prise en compte de la vidéo sur Pod](#prise-en-compte-de-la-vidéo-sur-pod)
-  - [La notification et l'ajout par le gestionnaire de l'enregistreur](#la-notification-et-lajout-par-le-gestionnaire-de-lenregistreur)
-    - [La notification](#la-notification)
-    - [L'ajout de la vidéo](#lajout-de-la-vidéo)
-  - [La revendication de l'enregistrement](#la-revendication-de-lenregistrement)
-  - [Le suivi des vidéos publiées](#le-suivi-des-vidéos-publiées)
-
-
 Mise en place de la publication de vidéos depuis des enregistreurs
 ==================================================================
 
