@@ -41,3 +41,7 @@ footer {
   grid-template-rows: auto 1fr;
   grid-template-columns: 4fr 1fr;
 }
+
+img {
+  max-width: 100%;
+}

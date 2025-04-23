@@ -7,7 +7,8 @@ lang: fr
 # Système de migration des données entre la version 3 et la version 4
 
 Ce document décrit le processus de migration des données de l'application Pod depuis la version 3.8.x vers la version 4.0.x.
-Le système repose sur deux scripts principaux :
+Le système repose sur deux scripts principaux :
+
 - l'un pour exporter les données de Pod v3 vers un fichier JSON,
 - l'autre pour importer ce fichier JSON dans Pod v4.
 
@@ -28,7 +29,7 @@ Ce premier script exporte les données de la base de données Pod v3.8.x vers un
 
 *Attention, ce script doit être exécuté depuis un serveur de Pod v3.*
 
-La dernière version de ce script `export_data_from_v3_to_v4.py` est accessible ici : [https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands](https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands)
+La dernière version de ce script `export_data_from_v3_to_v4.py` est accessible ici : [https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands](https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands)
 
 Il est nécessaire de récupérer ce script et de le positionner dans le répertoire `pod/video/management/commands`, avec les bons droits.
 {: .alert .alert-warning}
@@ -42,8 +43,8 @@ Il est nécessaire de récupérer ce script et de le positionner dans le répert
 
 ### Remarques importantes
 
-- Le fichier JSON sera généré à ce niveau : `BASE_DIR/data_from_v3_to_v4/v3_exported_tables.json`.
-  - Exemple : `/usr/local/django_projects/data_from_v3_to_v4/v3_exported_tables.json`.
+- Le fichier JSON sera généré à ce niveau : `BASE_DIR/data_from_v3_to_v4/v3_exported_tables.json`.
+  - Exemple : `/usr/local/django_projects/data_from_v3_to_v4/v3_exported_tables.json`.
 
 Vérifier votre `custom/settings_local.py` pour trouver le répertoire configuré dans `BASE_DIR`.
 {: .alert .alert-warning}
@@ -52,7 +53,7 @@ Vérifier votre `custom/settings_local.py` pour trouver le répertoire configur�
 
 ### Utilisation
 
-Exécutez le script depuis un serveur Pod v3 en utilisant la commande suivante :
+Exécutez le script depuis un serveur Pod v3 en utilisant la commande suivante :
 
 ```bash
 python manage.py export_data_from_v3_to_v4
@@ -79,7 +80,7 @@ Ce script importe les données du fichier JSON généré précédemment dans une
 ### Remarques importantes
 
 - Le fichier JSON doit être trouvé à `BASE_DIR/data_from_v3_to_v4/v3_exported_tables.json`.
-  - Exemple : `/usr/local/django_projects/data_from_v3_to_v4/v3_exported_tables.json`.
+  - Exemple : `/usr/local/django_projects/data_from_v3_to_v4/v3_exported_tables.json`.
 
 Vérifier votre `custom/settings_local.py` pour trouver le répertoire configuré dans `BASE_DIR`.
 {: .alert .alert-warning}
@@ -95,10 +96,10 @@ Vérifier votre `custom/settings_local.py` pour trouver le répertoire configur�
 
 - Selon vos données, ce script peut prendre beaucoup de temps. Typiquement, l'importation de la table `video_viewcount` est longue.
   De plus, comme la librairie pour la gestion des mots-clés a changé entre la v3 et la v4, le traitement est spécifique et nécessite du temps pour éviter les erreurs de type "Too many connections".
-  
+
 - Après l'importation, n'oubliez pas de rendre le `MEDIA_ROOT` de Pod v3 accessible aux serveurs Pod v4.
-  
-- Après l'importation, n'oubliez pas de **réindexer toutes les vidéos** pour Elasticsearch avec :
+
+- Après l'importation, n'oubliez pas de **réindexer toutes les vidéos** pour Elasticsearch avec :
 
 ```bash
 python manage.py index_videos --all
@@ -106,7 +107,7 @@ python manage.py index_videos --all
 
 ### Utilisation
 
-Exécutez le script en utilisant la commande de gestion :
+Exécutez le script en utilisant la commande de gestion :
 
 ```bash
 python manage.py import_data_from_v3_to_v4
@@ -114,23 +115,26 @@ python manage.py import_data_from_v3_to_v4
 
 #### Arguments
 
-- `--dry` : Simule ce qui sera réalisé (par défaut=False).
-- `--createDB` : Exécute des commandes Bash pour créer des tables dans la base de données et ajouter des données initiales (voir `make createDB`). La base de données doit être vide (par défaut=False).
-- `--onlytags` : Traite uniquement les mots-clés (par défaut=False). Utile si vous rencontrez le problème 'Too many connections' pour la gestion des mots-clés.
+- `--dry` : Simule ce qui sera réalisé (par défaut=False).
+- `--createDB` : Exécute des commandes Bash pour créer des tables dans la base de données et ajouter des données initiales (voir `make createDB`). La base de données doit être vide (par défaut=False).
+- `--onlytags` : Traite uniquement les mots-clés (par défaut=False). Utile si vous rencontrez le problème 'Too many connections' pour la gestion des mots-clés.
 
 #### Exemples
 
-Mode simulation :
+Mode simulation :
+
 ```bash
 python manage.py import_data_from_v3_to_v4 --dry
 ```
 
-Si la base de données est totalement vide (sans tables), il est possible d'exécuter cette commande qui réalise un `make createDB` avant l'importation des données :
+Si la base de données est totalement vide (sans tables), il est possible d'exécuter cette commande qui réalise un `make createDB` avant l'importation des données :
+
 ```bash
 python manage.py import_data_from_v3_to_v4 --createDB
 ```
 
-Si vous avez rencontré une erreur de type "Too many connections" lors de l'importation des mots-clés, n'hésitez pas à augmenter la valeur de la variable `time_sleep` (genre 0.4 ou 0.5, en secondes) et relancer le traitement, mais seulement pour les mots-clés :
+Si vous avez rencontré une erreur de type "Too many connections" lors de l'importation des mots-clés, n'hésitez pas à augmenter la valeur de la variable `time_sleep` (genre 0.4 ou 0.5, en secondes) et relancer le traitement, mais seulement pour les mots-clés :
+
 ```bash
 python manage.py import_data_from_v3_to_v4 --onlytags
 ```

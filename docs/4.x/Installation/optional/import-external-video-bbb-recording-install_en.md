@@ -10,7 +10,7 @@ lang: en
 
 Since version 3.X of Esup-Pod, and the implementation of the meetings application - based on a Big Blue Button (BBB) architecture - users can now use this platform as a central point for everything related to videos as well as virtual classrooms and video conferencing meetings.
 
-As a reminder, the meetings module of Esup-Pod is based on a Big Blue Button architecture (https://bigbluebutton.org/) which is a virtual classroom tool, with the following features:
+As a reminder, the meetings module of Esup-Pod is based on a Big Blue Button architecture (<https://bigbluebutton.org>) which is a virtual classroom tool, with the following features:
 
 - Video/webcam
 - Audio
@@ -54,10 +54,10 @@ This solution is based on:
 
 - Recording sessions in Big Blue Button in video format, natively thanks to version 2.6 and above of Big Blue Button.
 - Developing, in Esup-Pod, the module for importing videos from the following sources:
-    - Big Blue Button (if video recording has been installed)
-    - Direct video file
-    - PeerTube
-    - YouTube
+  - Big Blue Button (if video recording has been installed)
+  - Direct video file
+  - PeerTube
+  - YouTube
 
 > Currently, this list is exhaustive but may evolve according to needs.
 
@@ -69,7 +69,7 @@ As explained above, if you want to be able to import Big Blue Button recordings 
 
 > ⚠️ Enabling this video format recording in Big Blue Button will require more storage space on the Big Blue Button architecture.
 
-To do this, here is the procedure to follow for each BBB 2.6+ server in the architecture (see documentation https://docs.bigbluebutton.org/administration/customize/#install-additional-recording-processing-formats):
+To do this, here is the procedure to follow for each BBB 2.6+ server in the architecture (see documentation <https://docs.bigbluebutton.org/administration/customize/#install-additional-recording-processing-formats>):
 
 - Install the additional recording processing video format via the following command:
 
@@ -126,9 +126,9 @@ In a second step, it will probably be interesting to create a script (if it does
 
 No specific Python module was useful for importing videos from Big Blue Button, PeerTube, or direct access.
 
-However, for importing videos from YouTube, I used the Python module **PyTube**, which seems to be a reference for importing YouTube videos: https://pytube.io/en/latest/
+However, for importing videos from YouTube, I used the Python module **PyTube**, which seems to be a reference for importing YouTube videos: <https://pytube.io/en/latest>
 
-It would also have been possible to use the Python module YT-DLP: https://github.com/yt-dlp/yt-dlp
+It would also have been possible to use the Python module YT-DLP: <https://github.com/yt-dlp/yt-dlp>
 
 ### Problem related to the import of YouTube videos
 
@@ -138,9 +138,9 @@ Following the YouTube update of June 2023, August 2023, and September 2023, PyTu
 
 It was then necessary to directly update the code in **/home/pod/.virtualenvs/django_pod4/lib/python3.11/site-packages/pytube/cipher.py**
 
-The update for July and August concerns the following chain: https://github.com/pytube/pytube/commit/22d20bd92b3bb16a5fb5d7d86572d97287161e8f with the more recent addition of https://github.com/pytube/pytube/issues/1750
+The update for July and August concerns the following chain: <https://github.com/pytube/pytube/commit/22d20bd92b3bb16a5fb5d7d86572d97287161e8f> with the more recent addition of <https://github.com/pytube/pytube/issues/1750>
 
-The update for September concerns an error of the type ('NoneType' object has no attribute 'span'): https://medium.com/@hasan.trz/pytube-cipher-py-attributeerror-nonetype-object-has-no-attribute-span-37ff564f1272
+The update for September concerns an error of the type ('NoneType' object has no attribute 'span'): <https://medium.com/@hasan.trz/pytube-cipher-py-attributeerror-nonetype-object-has-no-attribute-span-37ff564f1272>
 
 In the end, this involves changing the function_patterns variable on line 264 of the cipher.py file with this code:
 
@@ -169,7 +169,7 @@ The simplest way is to replace this cipher.py file with this one: [Cipher.py](im
 
 A PyTube update should be coming soon; it will be enough to update this module via the following command: python3 -m pip install --upgrade pytube
 
-⚠️ If this PyTube module is not regularly updated, I will replace it with the Python module YT-DLP: https://github.com/yt-dlp/yt-dlp
+⚠️ If this PyTube module is not regularly updated, I will replace it with the Python module YT-DLP: <https://github.com/yt-dlp/yt-dlp>
 
 ### Configuration of the Import_Video application
 

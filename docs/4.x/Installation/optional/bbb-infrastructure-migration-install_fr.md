@@ -10,7 +10,7 @@ lang: fr
 
 Dans le cadre du plan de relance, une solution de classe virtuelle du ministère de l'Enseignement Supérieur et de la Recherche (ESR), s'appuyant sur le logiciel libre et open source BigBlueButton (BBB), a été déployée à l'échelle nationale.
 
-Plus d'informations peuvent être retrouvées sur les sites suivants :
+Plus d'informations peuvent être retrouvées sur les sites suivants :
 
 - [Documentation Numérique ESR](https://doc.numerique-esr.fr/)
 - [Classes virtuelles et webinaires pour l'enseignement supérieur](https://www.enseignementsup-recherche.gouv.fr/fr/classes-virtuelles-et-webinaires-pour-l-enseignement-superieur-90257)
@@ -21,11 +21,11 @@ Cependant, pour les établissements ayant auparavant une infrastructure locale B
 
 ## Impacts
 
-Changer d'infrastructure est extrêmement simple, que cela soit pour n'importe quelle plateforme :
+Changer d'infrastructure est extrêmement simple, que cela soit pour n'importe quelle plateforme :
 
-- **Pod** : changer le paramétrage du module des Réunions dans le fichier `custom/settings_local.py`, à savoir `BBB_API_URL` et `BBB_SECRET_KEY`.
-- **Moodle (v4)** : changer le paramétrage, accessible via le module d'Administration du site, à savoir l'URL du serveur BigBlueButton et le Secret partagé BigBlueButton.
-- **Greenlight** : changer le paramétrage dans le fichier `.env`, à savoir `BIGBLUEBUTTON_ENDPOINT` et `BIGBLUEBUTTON_SECRET`.
+- **Pod** : changer le paramétrage du module des Réunions dans le fichier `custom/settings_local.py`, à savoir `BBB_API_URL` et `BBB_SECRET_KEY`.
+- **Moodle (v4)** : changer le paramétrage, accessible via le module d'Administration du site, à savoir l'URL du serveur BigBlueButton et le Secret partagé BigBlueButton.
+- **Greenlight** : changer le paramétrage dans le fichier `.env`, à savoir `BIGBLUEBUTTON_ENDPOINT` et `BIGBLUEBUTTON_SECRET`.
 
 En modifiant ces paramètres, la plateforme pointe alors sur la nouvelle architecture BBB.
 
@@ -35,15 +35,15 @@ Au final, lors d'un changement d'infrastructure, les anciens enregistrements ne 
 
 ## Contraintes
 
-Voici un rappel des contraintes à prendre en compte et qui explique la solution proposée :
+Voici un rappel des contraintes à prendre en compte et qui explique la solution proposée :
 
-- **Contrainte vis-à-vis de Pod** : nous ne souhaitons plus utiliser l'ancien module BBB de Pod, qui est amené à disparaître rapidement.
-- **Contrainte de l'API BBB** : les participants et modérateurs ne sont disponibles que lorsque la session BBB est en cours. Une fois arrêtée, l'information n'y est plus dans BBB. Nous n'avons alors ces informations que dans le client BBB, à savoir Pod ou Moodle (ou Greenlight...).
-- **Contrainte BBB** : par défaut, il est possible de reconstruire un enregistrement BBB (typiquement pour avoir l'enregistrement au format vidéo) que si les fichiers raw sont encore présents. Par défaut, ces fichiers raw sont supprimés au bout de 14 jours. On ne peut alors baser la solution sur la reconstruction des enregistrements.
+- **Contrainte vis-à-vis de Pod** : nous ne souhaitons plus utiliser l'ancien module BBB de Pod, qui est amené à disparaître rapidement.
+- **Contrainte de l'API BBB** : les participants et modérateurs ne sont disponibles que lorsque la session BBB est en cours. Une fois arrêtée, l'information n'y est plus dans BBB. Nous n'avons alors ces informations que dans le client BBB, à savoir Pod ou Moodle (ou Greenlight...).
+- **Contrainte BBB** : par défaut, il est possible de reconstruire un enregistrement BBB (typiquement pour avoir l'enregistrement au format vidéo) que si les fichiers raw sont encore présents. Par défaut, ces fichiers raw sont supprimés au bout de 14 jours. On ne peut alors baser la solution sur la reconstruction des enregistrements.
 
 ## Solution apportée
 
-L'idée est de se baser sur :
+L'idée est de se baser sur :
 
 - Le système de revendication des enregistrements de Pod (cf. [Documentation ESUP-Portail](https://www.esup-portail.org/wiki/x/DgB8Lw)).
 - Le système d'import des vidéos externes pour y ajouter la possibilité de convertir des enregistrements BBB, de type présentation, en vidéo (via le plugin `bbb-recorder`, cf. ci-dessous).
@@ -52,14 +52,14 @@ L'idée est de se baser sur :
 Cette solution repose totalement sur Pod et n'impacte en rien BigBlueButton. Aucune modification n'est à réaliser côté BigBlueButton.
 {: .alert .alert-info}
 
-Ce script de migration est configurable et offre plusieurs possibilités :
+Ce script de migration est configurable et offre plusieurs possibilités :
 
-1. **Pour ceux qui ont peu d'enregistrements à récupérer** :
+1. **Pour ceux qui ont peu d'enregistrements à récupérer** :
    - Ce script va convertir les présentations, de l'ancienne architecture BBB, en fichiers vidéo (via le plugin `bbb-recorder`) et positionner ces fichiers dans le répertoire pour la Revendication des enregistrements.
    - Bien sûr, s'il y a déjà des présentations en vidéo, le fichier vidéo sera directement copié.
    - Une fois que toutes les vidéos ont été encodées, l'architecture BBB locale peut être arrêtée. Les usagers devront aller chercher leurs vidéos dans l'onglet Revendication des enregistrements dans Pod.
 
-2. **Pour ceux qui ont beaucoup d'enregistrements à récupérer** :
+2. **Pour ceux qui ont beaucoup d'enregistrements à récupérer** :
    - L'idée est de laisser le temps aux usagers de choisir par eux-mêmes les enregistrements qu'ils souhaitent conserver (il n'est pas possible et utile de tout convertir).
    - Pour cela, il faudra laisser l'ancien serveur BBB/Scalelite ouvert au moins pendant quelques mois (juste pour accéder aux enregistrements).
    - Côté script, si besoin, il faudra un accès à la base de données de Moodle pour savoir qui a réalisé quoi.
@@ -67,7 +67,7 @@ Ce script de migration est configurable et offre plusieurs possibilités :
    - Au cas où, si des enregistrements ne sont pas identifiables, ils seront associés à un administrateur (à paramétrer dans le script).
    - De plus, si l'accès à la base de Moodle le permet, un message d'information sera positionné directement dans Moodle, au niveau des sessions BBB concernées.
 
-![Migration d'infrastructure BigBlueButton](bbb-infrastructure-migration_screens/external_videos.png)
+![Migration d'infrastructure BigBlueButton](bbb-infrastructure-migration_screens/external_videos.webp)
 
 Le script est prévu pour être paramétrable, avec possibilité de gérer un certain nombre d'enregistrements et de pouvoir le tester avant (utilisation d'un mode dry).
 
@@ -75,7 +75,7 @@ Le script est prévu pour être paramétrable, avec possibilité de gérer un ce
 
 ## Plugin `bbb-recorder`
 
-Pour convertir les playback présentation de BBB, je me suis basé sur le projet GitHub `bbb-recorder` : un plugin, indépendant de BigBlueButton, qui permet de convertir - via un script - une présentation Web BigBlueButton en fichier vidéo.
+Pour convertir les playback présentation de BBB, je me suis basé sur le projet GitHub `bbb-recorder` : un plugin, indépendant de BigBlueButton, qui permet de convertir - via un script - une présentation Web BigBlueButton en fichier vidéo.
 
 Si besoin, ce plugin permet également une diffusion en direct (flux RTMP) d'un cours BigBlueButton.
 
@@ -83,7 +83,7 @@ Ce plugin `bbb-recorder` avait déjà été utilisé pour l'ancien système, dan
 
 ### Fonctionnement de `bbb-recorder`
 
-Le fait d'exécuter le script `bbb-recorder` réalise les étapes suivantes :
+Le fait d'exécuter le script `bbb-recorder` réalise les étapes suivantes :
 
 1. Lance un navigateur Chrome en arrière-plan.
 2. Chrome visite le lien - correspondant à la présentation Web BigBlueButton - fourni.
@@ -120,7 +120,7 @@ npm install --ignore-scripts
 cp .env.example .env
 ```
 
-Gestion du répertoire contenant les vidéos : dans mon cas `/data/www/pod/bbb-recorder` et du répertoire de logs `/data/www/pod/bbb-recorder/logs`.
+Gestion du répertoire contenant les vidéos : dans mon cas `/data/www/pod/bbb-recorder` et du répertoire de logs `/data/www/pod/bbb-recorder/logs`.
 
 ```bash
 mkdir /data/www/pod/bbb-recorder
@@ -129,7 +129,7 @@ mkdir /data/www/pod/bbb-recorder/logs
 
 Si `bbb-recorder` n'a pas été installé avec le bon utilisateur (`pod`), les fichiers vidéos générés ne seront sûrement pas accessibles par l'utilisateur Pod et ne pourront alors être encodés par les serveurs d'encodage.
 
-Dans les faits, cela se traduit par un 1° encodage réussi : la présentation Web de BBB sera convertie en fichier vidéo, mais ce fichier vidéo ne sera pas accessible à Pod et ne pourra être converti en vidéo Pod.
+Dans les faits, cela se traduit par un 1° encodage réussi : la présentation Web de BBB sera convertie en fichier vidéo, mais ce fichier vidéo ne sera pas accessible à Pod et ne pourra être converti en vidéo Pod.
 
 ### Paramétrage de `bbb-recorder`
 
@@ -145,7 +145,7 @@ Dans les faits, cela se traduit par un 1° encodage réussi : la présentation W
 }
 ```
 
-- Si besoin, réaliser le paramétrage dans le fichier `examples/index.js` (pour réaliser un live ou enregistrer en direct une Web conférence) :
+- Si besoin, réaliser le paramétrage dans le fichier `examples/index.js` (pour réaliser un live ou enregistrer en direct une Web conférence) :
 
 ```javascript
 const BBBUrl = "https://xxxx.univ.fr/bigbluebutton/";
@@ -165,7 +165,7 @@ Il est nécessaire qu'un espace de stockage suffisant soit alors prévu.
 
 ### Configuration dans Pod
 
-Une fois `bbb-recorder` installé sur les différents serveurs d'encodage, il reste à configurer le plugin `bbb` directement dans Pod, via l'édition de fichier `custom/settings_local.py` (sur les encodeurs et sur le frontal) :
+Une fois `bbb-recorder` installé sur les différents serveurs d'encodage, il reste à configurer le plugin `bbb` directement dans Pod, via l'édition de fichier `custom/settings_local.py` (sur les encodeurs et sur le frontal) :
 
 ```py
 # Use import-video module
@@ -184,18 +184,18 @@ IMPORT_VIDEO_BBB_RECORDER_PLUGIN = '/home/pod/bbb-recorder/'
 IMPORT_VIDEO_BBB_RECORDER_PATH = '/data/www/pod/bbb-recorder/'
 ```
 
-Les éléments de paramétrage sont les suivants :
+Les éléments de paramétrage sont les suivants :
 
-- `USE_IMPORT_VIDEO` : utilisation (True/False) du module d'import des vidéos pour Pod.
-- `USE_IMPORT_VIDEO_BBB_RECORDER` : utilisation (True/False) du plugin `bbb-recorder` pour le module import-vidéo; utile pour convertir une présentation BigBlueButton en fichier vidéo.
-- `IMPORT_VIDEO_BBB_RECORDER_PLUGIN` : Répertoire du plugin `bbb-recorder` (voir la documentation [bbb-recorder](https://github.com/jibon57/bbb-recorder)). `bbb-recorder` doit être installé dans ce répertoire, sur tous les serveurs d'encodage. `bbb-recorder` crée un répertoire `Downloads`, au même niveau, qui nécessite de l'espace disque.
-- `IMPORT_VIDEO_BBB_RECORDER_PATH` : Répertoire qui contiendra les fichiers vidéo générés par `bbb-recorder`.
+- `USE_IMPORT_VIDEO` : utilisation (True/False) du module d'import des vidéos pour Pod.
+- `USE_IMPORT_VIDEO_BBB_RECORDER` : utilisation (True/False) du plugin `bbb-recorder` pour le module import-vidéo; utile pour convertir une présentation BigBlueButton en fichier vidéo.
+- `IMPORT_VIDEO_BBB_RECORDER_PLUGIN` : Répertoire du plugin `bbb-recorder` (voir la documentation [bbb-recorder](https://github.com/jibon57/bbb-recorder)). `bbb-recorder` doit être installé dans ce répertoire, sur tous les serveurs d'encodage. `bbb-recorder` crée un répertoire `Downloads`, au même niveau, qui nécessite de l'espace disque.
+- `IMPORT_VIDEO_BBB_RECORDER_PATH` : Répertoire qui contiendra les fichiers vidéo générés par `bbb-recorder`.
 
 Si vous utilisez la 1° option du script, à savoir le système de revendication des enregistrements, il vous est possible de ne pas donner la fonctionnalité de conversion des présentations BBB en fichier vidéo aux usagers. Ainsi, il vous est possible de mettre `USE_IMPORT_VIDEO_BBB_RECORDER = False` dans ce cas de figure.
 
 Les autres paramètres sont nécessaires, à minima, lors de l'exécution du script.
 
-Concernant le répertoire contenant les fichiers vidéos générés par `bbb-recorder` (`IMPORT_VIDEO_BBB_RECORDER_PATH`), il est à créer manuellement - en même temps que son sous-répertoire des logs - avec les lignes de commande suivantes; n'hésitez pas à les modifier à votre convenance selon votre architecture système et vos droits :
+Concernant le répertoire contenant les fichiers vidéos générés par `bbb-recorder` (`IMPORT_VIDEO_BBB_RECORDER_PATH`), il est à créer manuellement - en même temps que son sous-répertoire des logs - avec les lignes de commande suivantes; n'hésitez pas à les modifier à votre convenance selon votre architecture système et vos droits :
 
 ```bash
 mkdir /data/www/pod/bbb-recorder/logs -p
@@ -216,9 +216,9 @@ Voir [github.com/bigbluebutton/bigbluebutton/issues/10570](https://github.com/bi
 
 #### Fonctionnement du script
 
-Comme évoqué ci-dessus, ce script offre 2 possibilités :
+Comme évoqué ci-dessus, ce script offre 2 possibilités :
 
-1. **Pour ceux qui ont peu d'enregistrements à récupérer** :
+1. **Pour ceux qui ont peu d'enregistrements à récupérer** :
    - Ce script va convertir les présentations, de l'ancienne architecture BBB, en fichiers vidéo (via le plugin `bbb-recorder`) et positionner ces fichiers dans le répertoire d'un enregistreur pour la Revendication des enregistrements (cf. [Documentation ESUP-Portail](https://www.esup-portail.org/wiki/x/DgB8Lw)).
    - Bien sûr, s'il y a déjà des présentations en vidéo, le fichier vidéo sera directement copié.
    - Une fois que toutes les vidéos ont été encodées, l'architecture BBB locale peut être arrêtée. Les usagers devront aller chercher leurs vidéos dans l'onglet Revendication des enregistrements dans Pod.
@@ -226,7 +226,7 @@ Comme évoqué ci-dessus, ce script offre 2 possibilités :
    - Veuillez noter qu'en fonction de l'architecture de votre Pod, l'encodage sera effectué soit via des tâches Celery, soit directement, l'un après l'autre.
    - N'hésitez pas à tester sur quelques enregistrements et de lancer ce script en arrière-plan (en utilisant `&`).
 
-2. **Pour ceux qui ont beaucoup d'enregistrements à récupérer** :
+2. **Pour ceux qui ont beaucoup d'enregistrements à récupérer** :
    - L'idée est de laisser le temps aux usagers de choisir par eux-mêmes les enregistrements qu'ils souhaitent conserver (il n'est pas possible et utile de tout convertir).
    - Pour cela, il faudra laisser l'ancien serveur BBB/Scalelite ouvert au moins pendant quelques mois (juste pour accéder aux enregistrements).
    - Côté script, si besoin, il faudra un accès à la base de données de Moodle pour savoir qui a réalisé quoi.
@@ -237,7 +237,7 @@ Comme évoqué ci-dessus, ce script offre 2 possibilités :
 3. **Vous pouvez aussi faire uniquement un export au format CSV de la liste des enregistrements BBB** (ce qui vous permet de traiter ensuite ces derniers par ailleurs).
    - Ceci est possible en utilisant le paramètre `--use-export-csv`, le paramètre `--use-database-moodle` (optionnel) et la configuration directement dans ce fichier.
 
-Ce script vous permet également de :
+Ce script vous permet également de :
 
 - Simuler ce qui sera fait via le paramètre `--dry`.
 - Ne traiter que certaines lignes via les paramètres `--min-value-record-process` et `--max-value-record-process`.
@@ -341,51 +341,48 @@ python3 manage.py migrate_bbb_recordings --use_export_csv --use-database-moodle 
 ### Sortie du script
 
 Le script affiche un ensemble d'informations pour chaque ligne traitée; il ne faut pas hésiter à le lancer en mode dry.
-![Script](bbb-infrastructure-migration_screens/script.png)
+![Script](bbb-infrastructure-migration_screens/script.webp)
 
 > 💡 Il est possible de relancer le script plusieurs fois, cela ne va pas créé de doublons. Par contre, cela peut ré-encoder des enregistrements qui avaient déjà été encodés lors de la 1° passe.
 
 ### Interface d'administration
 
-#### Enregistreur :
+#### Enregistreur
 
-![Enregistreur](bbb-infrastructure-migration_screens/administration_recorder.png)
+![Enregistreur](bbb-infrastructure-migration_screens/administration_recorder.webp)
 
-#### Liste des enregistrements :
+#### Liste des enregistrements
 
-![Liste](bbb-infrastructure-migration_screens/administration_recordings.png)
+![Liste](bbb-infrastructure-migration_screens/administration_recordings.webp)
 
-#### Import des vidéos externes :
+#### Import des vidéos externes
 
-![Import](bbb-infrastructure-migration_screens/administration_import.png)
+![Import](bbb-infrastructure-migration_screens/administration_import.webp)
 
-### Logs de la solution 
+### Logs de la solution
 
-Selon votre environnement, les logs de Pod peuvent se retrouver dans le fichier /var/log/syslog. 
+Selon votre environnement, les logs de Pod peuvent se retrouver dans le fichier /var/log/syslog.
 
-#### Tâches asynchrones (CELERY_TO_ENCODE = True) 
+#### Tâches asynchrones (CELERY_TO_ENCODE = True)
 
 Sur les serveurs d'encodage, les logs celery se trouvent dans **/var/log/celery/worker1.log** (selon votre configuration, si vous utilisez plusieurs workers, vous pouvez avoir plusieurs fichiers).
 
-#### RabbitMQ-Server 
+#### RabbitMQ-Server
 
-Si vous utilisez RabbitMQ-Server, sur ce serveur, vous pouvez avoir des informations dans **/var/log/rabbitmq/rabbit@xxxxx.log**. 
+Si vous utilisez RabbitMQ-Server, sur ce serveur, vous pouvez avoir des informations dans **/var/log/rabbitmq/rabbit@xxxxx.log**.
 
-#### bbb-recorder 
+#### bbb-recorder
 
-Les logs des traitements de bbb-recorder sont accessibles dans le répertoire configuré via **IMPORT_VIDEO_BBB_RECORDER_PATH/logs**. 
+Les logs des traitements de bbb-recorder sont accessibles dans le répertoire configuré via **IMPORT_VIDEO_BBB_RECORDER_PATH/logs**.
 
+#### Suppression des enregistrements externes du module d'import des vidéos
 
-#### Suppression des enregistrements externes du module d'import des vidéos 
-
-Si vous avez opté pour la 2° possibilité, et l'utilisation du module d'import des vidéos : le jour de l'**arrêt complet de votre ancienne infrastructure**, les anciens liens ne fonctionneront plus.
-Si vous souhaitez supprimer les enregistrements externes qui concernaient votre ancienne infrastructure, il vous est possible de le faire directement via une requête SQL à exécuter dans la base de données de Pod, à savoir :
+Si vous avez opté pour la 2° possibilité, et l'utilisation du module d'import des vidéos : le jour de l'**arrêt complet de votre ancienne infrastructure**, les anciens liens ne fonctionneront plus.
+Si vous souhaitez supprimer les enregistrements externes qui concernaient votre ancienne infrastructure, il vous est possible de le faire directement via une requête SQL à exécuter dans la base de données de Pod, à savoir :
 
 ```sql
 # Remplacer SCRIPT_BBB_SERVER_URL par la bonne valeur, selon votre environnement
 DELETE FROM import_video_externalrecording WHERE source_url like 'SCRIPT_BBB_SERVER_URL%'
 ```
 
-
 > 💡 Je préfère ne pas mettre cette requête dans le script; à vous de voir quand vous souhaitez réaliser cette suppression. Bien entendu, pensez à réaliser une sauvegarde avant.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   

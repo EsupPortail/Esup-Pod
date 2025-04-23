@@ -4,8 +4,7 @@ version: 4.x
 lang: en
 ---
 
-Setting up video publishing from recorders
-==========================================
+# Setting up video publishing from recorders
 
 This documentation explains how to set up a semi-automated video publishing process from a recorder—which allows at least an _FTP export_—to the Pod video platform.
 
@@ -20,11 +19,9 @@ The publishing process is as follows:
     2. Or a user can preview and claim the recording directly from the video platform menu.
 4. In both cases, the video is encoded and assigned to the relevant user.
 
-The Publishing System
-=====================
+## The Publishing System
 
-Recorder-Side Configuration
----------------------------
+### Recorder-Side Configuration
 
 Before publishing videos to an FTP server, the recorder must be configured as follows:
 
@@ -39,12 +36,11 @@ For example, here is what the configuration screen looks like for a MultiCAM Sys
 
 ![FTP](video-publication-from-recorders_screens/multicam-ftp.png)
 
-Pod-Side Configuration
----------------------
+### Pod-Side Configuration
 
 On the Pod side, configuration is also required via:
 
-### The custom/settings_local.py Configuration File
+#### The custom/settings_local.py Configuration File
 
 Several properties are essential for configuration in the settings file:
 
@@ -88,7 +84,7 @@ ALLOW_INSECURE_REQUESTS = False
 BASE_URL = 'https://pod.univ.fr/'
 ```
 
-### The Administration Interface
+#### The Administration Interface
 
 After proper configuration and logging in with a superuser account to the administration interface, an additional Recorder menu is available:
 
@@ -120,8 +116,7 @@ Here is the useful information for entering a recorder:
 
 ![Modify Recorder](video-publication-from-recorders_screens/recorder-modify.png)
 
-Communication Between the Recorder and Pod
-=========================================
+## Communication Between the Recorder and Pod
 
 The recorder copies the video file (which can take a long time depending on the video size) to the configured FTP server in the defined publication directory. This directory must be set in **_DEFAULT_RECORDER_PATH_**.
 
@@ -134,8 +129,7 @@ Videos will be deposited in the directory: **_/data/www/%userpod%/uploads/test/_
 
 At this point, the video publication by the recorder is complete: the video file has been deposited on the Pod server in a specific directory.
 
-Handling the Video on Pod
-=========================
+## Handling the Video on Pod
 
 Once the copy is complete, a script—which runs regularly via a CRON job—processes this video file.
 
@@ -162,19 +156,18 @@ This script:
     1. Either sends a notification to the recorder manager,
     2. Or allows users to assign the video via recording claim.
 
-Notification and Addition by the Recorder Manager
-------------------------------------------------
+### Notification and Addition by the Recorder Manager
 
 Case of a recorder configured with a manager.
 
-### The Notification
+#### The Notification
 
 To enable notification to the recorder manager, the script will make an HTTPS request to the following address:
 
 **https://[WEB_HOSTNAME]/mediacourses_notify/?recordingPlace=[IP_ADDRESS_UNDERSCORED]&mediapath=[FILENAME.MP4]&key=[HASHKEY]**
 
 Example request:
-_https://xxxxx.umontpellier.fr/mediacourses_notify/?recordingPlace=192_168_1_1&mediapath=file.zip&key=77fac92a3f06....98187e50e5_
+<https://xxxxx.umontpellier.fr/mediacourses_notify/?recordingPlace=192_168_1_1&mediapath=file.zip&key=77fac92a3f06....98187e50e5>
 
 The URL used corresponds to:
 
@@ -205,7 +198,7 @@ Best regards
 ⚠️ _The link in this email depends on the CAS configuration (USE_CAS) in the custom/settings_local.py file._
 {: .alert .alert-info}
 
-### Adding the Video
+#### Adding the Video
 
 Once the email is received, the concerned user must click on the link in the email.
 
@@ -235,8 +228,7 @@ Saving this form allows the processing and encoding of the file provided by the 
 > 💡Technically, we use the model **_pod/recorder/models.py_**, classes **_Recorder_**, **_Recording_**, and **_RecordingFileTreatment_**, as well as the function **_process_recording()_**.
 This function uses the plugin **_pod/recorder/plugins/type_audiovideocast.py_** or **_pod/recorder/plugins/type_video.py_**, which allows copying slides (in the case of _type_audiovideocast.py_), as well as processing and encoding the video published by the recorder.
 
-Claiming the Recording
-----------------------
+### Claiming the Recording
 
 Case of a recorder configured without a manager and with ALLOW_MANUAL_RECORDING_CLAIMING = True
 
@@ -254,7 +246,7 @@ Claiming a recording displays the list of all unassigned videos:
 
 ⚠️ If preview mode is activated (USE_RECORD_PREVIEW = True), the public path (_PUBLIC_RECORD_DIR = 'records'_) of the recording deposit directory (DEFAULT_RECORDER_PATH = '/data/www/%userpod%/uploads/') must be specified, and the following must be added to the NGINX configuration:
 
-```bash
+```sh
 vi pod/custom/pod_nginx.conf
 ...
 location /records {
@@ -269,8 +261,7 @@ When claiming a video, a form appears:
 
 Saving this form allows the processing and encoding of the file provided by the recorder and assigns it to the user.
 
-Tracking Published Videos
--------------------------
+### Tracking Published Videos
 
 Once the videos are published by the recorder and processed by Pod, these recordings can be tracked via the Recordings module, accessible from the administration interface.
 

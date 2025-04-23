@@ -14,7 +14,7 @@ lang: en
 
 The meetings module of Pod is based on the use of BigBlueButton.
 
-For information, BigBlueButton (https://bigbluebutton.org/) is a virtual classroom tool with the following features:
+For information, BigBlueButton (<https://bigbluebutton.org/>) is a virtual classroom tool with the following features:
 
 - Video/webcam
 - Audio
@@ -28,7 +28,7 @@ For information, BigBlueButton (https://bigbluebutton.org/) is a virtual classro
 - Integration of external videos
 - Integration with Moodle and WordPress
 
-However, one of the biggest constraints of BigBlueButton is the limit of 200 students per session (see https://docs.bigbluebutton.org/support/faq.html#how-many-simultaneous-users-can-bigbluebutton-support).
+However, one of the biggest constraints of BigBlueButton is the limit of 200 students per session (see <https://docs.bigbluebutton.org/support/faq.html#how-many-simultaneous-users-can-bigbluebutton-support>).
 
 In most cases, this limit of 200 students per session is not a problem, but in some specific cases - for example, lectures for first-year students - this limit becomes a barrier to using BigBlueButton.
 
@@ -83,7 +83,7 @@ This solution is based on:
 
 - BigBlueButton, whether it is a local infrastructure or rather that of the ESR
 - SIPMediaGW, the videoconferencing room connector project by RENATER
-https://www.renater.fr/connecteur-de-salles-la-solution-dinteroperabilite-entre-les-differents-systemes-de-visioconference/
+<https://www.renater.fr/connecteur-de-salles-la-solution-dinteroperabilite-entre-les-differents-systemes-de-visioconference>
 - Pod, regarding the user interface and the connection with BigBlueButton.
 
 Technically, here is what it looks like:
@@ -98,7 +98,7 @@ Screenshot from a presentation by Nicolas Can and Loïc Bonavent during the Esup
 
 SIPMediaGW is a videoconferencing room connector, an interoperability solution between different videoconferencing systems by RENATER.
 
-See https://www.renater.fr/connecteur-de-salles-la-solution-dinteroperabilite-entre-les-differents-systemes-de-visioconference/
+See <https://www.renater.fr/connecteur-de-salles-la-solution-dinteroperabilite-entre-les-differents-systemes-de-visioconference>
 
 The purpose of this project is to provide a functional component compatible with WebRTC protocol standards, allowing access from videoconferencing room equipment (Cisco, Polycom...) to BigBlueButton/Jitsi-Meet instances.
 
@@ -122,7 +122,7 @@ From what I have seen, it is not necessary to have a VM with 8 vCPU: 6 (or even 
 
 ##### Installation and configuration
 
-Reference site: https://github.com/Renater/SIPMediaGW
+Reference site: <https://github.com/Renater/SIPMediaGW>
 
 ###### Prerequisites
 
@@ -194,11 +194,11 @@ Here are some commands useful for operating the SIPMediaGW application:
 
 | Commands | Comments |
 | --- | --- |
-| sudo systemctl restart sipmediagw | Restart the sipmediagw service |
-| sudo systemctl status sipmediagw | Check the status of the sipmediagw service.
+| `sudo systemctl restart sipmediagw` | Restart the sipmediagw service |
+| `sudo systemctl status sipmediagw` | Check the status of the sipmediagw service.
 Note: On the 1st start, the following error is normal: {'res':'error','type':'The gateway failed to launch'} |
-| sudo docker ps | Allows you to see the running containers, particularly renater/sipmediagw:1.5.5 during a webinar |
-| sudo docker logs container_id | Allows you to see the logs of sipmediagw during a webinar
+| `sudo docker ps` | Allows you to see the running containers, particularly renater/sipmediagw:1.5.5 during a webinar |
+| `sudo docker logs container_id` | Allows you to see the logs of sipmediagw during a webinar
 container_id corresponds to the id of the renater/sipmediagw:1.5.5 container |
 {: .table .table-striped}
 
@@ -252,19 +252,18 @@ To add a live gateway, simply:
 - Enter the URL address of a **SIPMediaGW** server (see installation of a SIPMediaGW server above).
 - Enter the **Bearer token** of the **SIPMediaGW** server used.
 
-For more information on live broadcasts, please refer to the documentation: https://www.esup-portail.org/wiki/x/BgC8KQ
+For more information on live broadcasts, please refer to the documentation: <https://www.esup-portail.org/wiki/x/BgC8KQ>
 
 For example, if you enter:
 
 - RTMP stream: rtmp://live.univ.fr/live/name
-- HLS stream (broadcaster): https://live.univ.fr/hls/name.m3u8
-- SIPMediaGW server URL: http://1.2.3.4:8080
+- HLS stream (broadcaster): <https://live.univ.fr/hls/name.m3u8>
+- SIPMediaGW server URL: <http://1.2.3.4:8080>
 - SIPMediaGW server token: 1234
 
-This live gateway will be able to manage a webinar; the video and audio stream will be sent by the **SIPMediaGW server http://1.2.3.4:8080** via the **RTMP** protocol to the **live.univ.fr** server, on the **live** application with the name ***name***.
+This live gateway will be able to manage a webinar; the video and audio stream will be sent by the **SIPMediaGW server <http://1.2.3.4:8080>** via the **RTMP** protocol to the **live.univ.fr** server, on the **live** application with the name ***name***.
 
-The webinar live broadcast, displayed on the Pod live page, will read the video and audio stream via the **HLS** protocol at the address **https://live.univ.fr/hls/name.m3u8**.
-
+The webinar live broadcast, displayed on the Pod live page, will read the video and audio stream via the **HLS** protocol at the address **<https://live.univ.fr/hls/name.m3u8>**.
 
 > 💡Each live gateway can then be used to conduct a webinar.
 > This means that it is possible to have multiple live gateways to manage **multiple webinars in parallel** (over overlapping time slots).
@@ -276,8 +275,8 @@ The principle of this webinar mode is to be as simple and intuitive as possible 
 
 - The presenter - if they have the **appropriate rights** (see configuration above) - creates a meeting in webinar mode. They can choose their options regarding:
 
-    - The **display and activation of the public chat**: to display the public chat in the live broadcast and give access to a chat on the live page for the audience.
-The messages sent in the chat on this live page will be found in the **public chat of BigBlueButton**.
+  - The **display and activation of the public chat**: to display the public chat in the live broadcast and give access to a chat on the live page for the audience.
+   The messages sent in the chat on this live page will be found in the **public chat of BigBlueButton**.
 
 > Creating a webinar will automatically create a new event accessible on the live page (according to the configuration of the broadcaster used by the live gateway).
 

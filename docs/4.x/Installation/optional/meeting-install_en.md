@@ -61,7 +61,7 @@ It therefore seems relevant to use this infrastructure in conjunction with Pod.
 
 At the University of Montpellier, we use a specific BBB ESR tenant for our institution.
 
-A dedicated instant messaging channel is available on Esup's RocketChat: [https://rocket.esup-portail.org/channel/plateformes_numeriques_ESR](https://rocket.esup-portail.org/channel/plateformes_numeriques_ESR)
+A dedicated instant messaging channel is available on Esup’s RocketChat: [https://rocket.esup-portail.org/channel/plateformes_numeriques_ESR](https://rocket.esup-portail.org/channel/plateformes_numeriques_ESR)
 
 ## The Pod Meetings Module
 
@@ -76,7 +76,7 @@ To use the meetings module in Pod, simply perform the following mandatory config
 | `BBB_SECRET_KEY` |  | Security key for BBB.<br>On an institutional installation, you can retrieve this key using the command: `bbb-conf --secret` on the BBB server.<br>On the BBB ESR infrastructure, it will be provided by FUN. |
 {: .table .table-striped}
 
-#### Additional Optional Configuration:
+#### Additional Optional Configuration
 
 | Parameter | Default Value | Comments |
 |-----------|---------------|----------|
@@ -97,7 +97,7 @@ To use the meetings module in Pod, simply perform the following mandatory config
 
 ### Meeting Management
 
-Upon the user's first connection, a personal meeting room is automatically created for them.
+Upon the user’s first connection, a personal meeting room is automatically created for them.
 
 ![Meeting Management Interface](meeting_screens/meetings.png)
 
@@ -138,7 +138,7 @@ Once the recording is available in this interface, the user can also directly up
 
 ![Upload to Pod](meeting_screens/upload.png)
 
-It is important to understand that at this point a new video will be uploaded to Pod, then encoded by Pod's encoding servers and stored in Pod.
+It is important to understand that at this point a new video will be uploaded to Pod, then encoded by Pod’s encoding servers and stored in Pod.
 
 ## Operation
 
@@ -192,7 +192,7 @@ In most cases, this limit of 200 students per session is not a blocker, but in s
 
 There may also be other cases where you want to separate the presenter interface from the audience interface, in terms of rights.
 
-This webinar mode allows information to be transmitted to a large audience via a live broadcast (accessible from the platform's live page) and interaction - if the user wishes - via an integrated chat.
+This webinar mode allows information to be transmitted to a large audience via a live broadcast (accessible from the platform’s live page) and interaction - if the user wishes - via an integrated chat.
 
 The idea is to separate the presenters from the audience:
 

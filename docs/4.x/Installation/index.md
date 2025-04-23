@@ -29,5 +29,4 @@ lang: fr
 
 * [Migration des données entre la version 3 et la version 4](migrate_from_v3_to_v4_fr)
 
-
 > Work in progress...

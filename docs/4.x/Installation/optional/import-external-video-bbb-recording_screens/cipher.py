@@ -418,9 +418,9 @@ def get_throttling_plan(js: str):
     transform_steps = []
     for match in matches:
         if match[4] != '':
-            transform_steps.append((match[0],match[1],match[4]))
+            transform_steps.append((match[0], match[1], match[4]))
         else:
-            transform_steps.append((match[0],match[1]))
+            transform_steps.append((match[0], match[1]))
 
     return transform_steps
 
@@ -477,7 +477,7 @@ def swap(arr: List, b: int):
     [3, 2, 1, 4]
     """
     r = b % len(arr)
-    return list(chain([arr[r]], arr[1:r], [arr[0]], arr[r + 1 :]))
+    return list(chain([arr[r]], arr[1:r], [arr[0]], arr[r + 1:]))
 
 
 def throttling_reverse(arr: list):

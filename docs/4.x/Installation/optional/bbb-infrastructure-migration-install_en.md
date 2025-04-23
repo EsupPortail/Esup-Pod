@@ -67,7 +67,7 @@ This migration script is configurable and offers several possibilities:
    - In case some recordings are not identifiable, they will be associated with an administrator (to be configured in the script).
    - Additionally, if access to the Moodle database allows, an informational message will be placed directly in Moodle, at the level of the concerned BBB sessions.
 
-![BigBlueButton Infrastructure Migration](bbb-infrastructure-migration_screens/external_videos.png)
+![BigBlueButton Infrastructure Migration](bbb-infrastructure-migration_screens/external_videos.webp)
 
 The script is designed to be configurable, with the ability to manage a certain number of recordings and to test it beforehand (using a dry mode).
 
@@ -341,23 +341,23 @@ python3 manage.py migrate_bbb_recordings --use_export_csv --use-database-moodle 
 ### Script Output
 
 The script displays a set of information for each processed line; do not hesitate to run it in dry mode.
-![Script](bbb-infrastructure-migration_screens/script.png)
+![Script](bbb-infrastructure-migration_screens/script.webp)
 
 > 💡 It is possible to run the script multiple times; this will not create duplicates. However, it may re-encode recordings that were already encoded during the first pass.
 
 ### Administration Interface
 
-#### Recorder:
+#### Recorder
 
-![Recorder](bbb-infrastructure-migration_screens/administration_recorder.png)
+![Recorder](bbb-infrastructure-migration_screens/administration_recorder.webp)
 
-#### List of Recordings:
+#### List of Recordings
 
-![List](bbb-infrastructure-migration_screens/administration_recordings.png)
+![List](bbb-infrastructure-migration_screens/administration_recordings.webp)
 
-#### Import of External Videos:
+#### Import of External Videos
 
-![Import](bbb-infrastructure-migration_screens/administration_import.png)
+![Import](bbb-infrastructure-migration_screens/administration_import.webp)
 
 ### Logs of the Solution
 

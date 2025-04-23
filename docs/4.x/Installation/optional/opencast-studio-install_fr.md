@@ -10,13 +10,13 @@ lang: fr
 
 Pour rajouter le studio d’Opencast dans votre instance d’Esup-Pod, voici les étapes à suivre :
 
-* Récupérer les sources Opencast Studio via la commande suivante :
+- Récupérer les sources Opencast Studio via la commande suivante :
 
 ```sh
 git clone https://github.com/elan-ev/opencast-studio/
 ```
 
-* Créer l’Opencast Studio avec la bonne configuration pour Pod via les commandes suivantes :
+- Créer l’Opencast Studio avec la bonne configuration pour Pod via les commandes suivantes :
 
 ```sh
 cd opencast-studio/
@@ -25,14 +25,14 @@ npm install
 npm run build:release
 ```
 
-* Un répertoire `build` est alors généré. Renommez ce répertoire `build` en `studio`, puis copier le dans le répertoire `pod/custom/static/opencast/`
+- Un répertoire `build` est alors généré. Renommez ce répertoire `build` en `studio`, puis copier le dans le répertoire `pod/custom/static/opencast/`
 
 ```sh
 mkdir -p pod/custom/static/opencast/studio
 cp -r build/* pod/custom/static/opencast/studio
 ```
 
-* Finalement, n’oubliez pas de collecter vos fichiers statiques pour la mise en production via la commande :
+- Finalement, n’oubliez pas de collecter vos fichiers statiques pour la mise en production via la commande :
 
 ```sh
 (django_pod) [userpod@video][/data/www/userpod/django_projects/podv2] python manage.py collectstatic

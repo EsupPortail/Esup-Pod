@@ -41,7 +41,7 @@ Pour faciliter la contruction de la stack plusieurs commandes préfixées de doc
     DJANGO_SUPERUSER_EMAIL=celine.didier@univ-lorraine.fr
     ```
 
-    Pour la variable DOCKER_ENV, vous pouvez choisir entre _light_ (1 docker pour Pod avec que l’encodage d’activé) ou _full_ (4 docker pour Pod : pod-back, encodage, transcription et xAPI)
+    Pour la variable DOCKER_ENV, vous pouvez choisir entre _light_ (1 docker pour Pod avec que l’encodage d’activé) ou _full_ (4 docker pour Pod : pod-back, encodage, transcription et xAPI)
 
     ```py
     DOCKER_ENV=light
@@ -49,7 +49,7 @@ Pour faciliter la contruction de la stack plusieurs commandes préfixées de doc
 
 2. Créer un fichier _pod/custom/settings_local.py_
 
-Renseignez le fichier _pod/custom/settings_local.py_ comme ceci :
+Renseignez le fichier _pod/custom/settings_local.py_ comme ceci :
 
 ```py
 USE_PODFILE = True
@@ -119,7 +119,7 @@ WEBPUSH_SETTINGS = {
 $ make docker-build
 ```
 
-Suppression des répertoires suivants :
+Suppression des répertoires suivants :
 
 ```sh
 ./pod/log
@@ -142,7 +142,7 @@ Vous devriez obtenir ce message une fois esup-pod lancé
 pod-dev-with-volumes | Superuser created successfully.
 ```
 
-L’application esup-pod est dès lors disponible via cette URL : pod.localhost:8000
+L’application esup-pod est dès lors disponible via cette URL : pod.localhost:8000
 
 ##### Arrêt de la stack
 
@@ -162,7 +162,7 @@ Cette commande supprime l’ensemble des données crées depuis le/les conteneur
 podv4$ make docker-reset
 ```
 
-Suppression des répertoires suivants :
+Suppression des répertoires suivants :
 
 ```sh
 ./pod/log

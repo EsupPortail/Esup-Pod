@@ -8,6 +8,7 @@ lang: en
 
 This document describes the data migration process for the Pod application from version 3.8.x to version 4.0.x.
 The system is based on two main scripts:
+
 - one to export data from Pod v3 to a JSON file,
 - the other to import that JSON file into Pod v4.
 
@@ -121,16 +122,19 @@ python manage.py import_data_from_v3_to_v4
 #### Examples
 
 Dry run:
+
 ```bash
 python manage.py import_data_from_v3_to_v4 --dry
 ```
 
 If the database is completely empty (no tables), you can run this command which will perform a `make createDB` before importing data:
+
 ```bash
 python manage.py import_data_from_v3_to_v4 --createDB
 ```
 
 If you encountered a "Too many connections" error while importing tags, feel free to increase the `time_sleep` value (e.g., 0.4 or 0.5 seconds) and re-run the process, but only for tags:
+
 ```bash
 python manage.py import_data_from_v3_to_v4 --onlytags
 ```

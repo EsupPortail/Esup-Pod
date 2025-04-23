@@ -36,7 +36,7 @@ pod@pod:~$ sudo pip3 install virtualenvwrapper
 
 > Depuis python 3.10, il n’est plus possible d’installer avec pip en dehors d’un environnement. Pour pouvoir installer _virtualenvwrapper_ il faut ajouter à la fin de la ligne **--break-system-packages**
 
-À la fin du `.bashrc`, il faut ajouter ces lignes :
+À la fin du `.bashrc`, il faut ajouter ces lignes :
 
 ```sh
 pod@pod:~$ vim .bashrc
@@ -47,13 +47,13 @@ pod@pod:~$ vim .bashrc
       [..]
 ```
 
-Puis prendre en charge ces modifications :
+Puis prendre en charge ces modifications :
 
 ```sh
 pod@pod:$ source .bashrc
 ```
 
-Et enfin créez l‘environnement virtuel :
+Et enfin créez l‘environnement virtuel :
 
 ```sh
 pod@pod:~$ mkvirtualenv --system-site-packages --python=/usr/bin/python3 django_pod3
@@ -79,20 +79,20 @@ Placez-vous dans le répertoire django_projects
 (django_pod3)pod@pod:~$ cd django_projects
 ```
 
-Donnez les droits à l’utilisateur pod de lire et d‘écrire dans le répertoire :
+Donnez les droits à l’utilisateur pod de lire et d‘écrire dans le répertoire :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects$ sudo chown pod:pod /usr/local/django_projects
 ```
 
-Vous pouvez enfin récupérer les sources :
-Si vous devez utiliser un proxy, vous pouvez le spécifier avec cette commande :
+Vous pouvez enfin récupérer les sources :
+Si vous devez utiliser un proxy, vous pouvez le spécifier avec cette commande :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects$ git config --global http.proxy http://PROXY:PORT
 ```
 
-La récupération des sources de la V3 se fait via cette commande :
+La récupération des sources de la V3 se fait via cette commande :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects$ git clone https://github.com/EsupPortail/Esup-Pod.git podv3
@@ -117,7 +117,7 @@ Sinon, il faut lancer la commande `$> workon django_pod3`
 (django_pod3) pod@pod:~/django_projects/podv3$ pip3 install -r requirements.txt
 ```
 
-De même, si vous devez utiliser un proxy :
+De même, si vous devez utiliser un proxy :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ pip3 install --proxy="PROXY:PORT" -r requirements.txt
@@ -141,7 +141,7 @@ Voir la doc officielle <https://redis.io/docs/getting-started/>
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo apt install redis-server
 ```
 
-En théorie le service démarre automatiquement. Si vous avez installé Redis sur la même machine que Pod, rien à faire de plus. Pour vérifier si le service est bien démarré :
+En théorie le service démarre automatiquement. Si vous avez installé Redis sur la même machine que Pod, rien à faire de plus. Pour vérifier si le service est bien démarré :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo service redis-server status
@@ -192,9 +192,9 @@ Pour utiliser Elasticsearch 6, il faut avoir java 11 sur sa machine.
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo apt-get install openjdk-11-jre
 ```
 
-Puis pour installer Elasticsearch sur Debian en utilisant les paquets, il faut suivre les instructions situées à cette adresse : <https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html>.
+Puis pour installer Elasticsearch sur Debian en utilisant les paquets, il faut suivre les instructions situées à cette adresse : <https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html>.
 
-Voici :
+Voici :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
@@ -204,13 +204,13 @@ OK
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo apt-get update && sudo apt-get install elasticsearch
 ```
 
-Ensuite il faut paramétrer l’instance :
+Ensuite il faut paramétrer l’instance :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo vim /etc/elasticsearch/elasticsearch.yml
 ```
 
-Puis préciser ces valeurs :
+Puis préciser ces valeurs :
 
 ```yml
 cluster.name: pod-application
@@ -226,7 +226,7 @@ Pour utiliser Elasticsearch 7 ou 8, il faut avoir java 17 sur sa machine.
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo apt-get install default-jdk
 ```
 
-Puis pour installer Elasticsearch sur Debian en utilisant les paquets, il faut suivre les instructions situées à cette adresse : <https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html>.
+Puis pour installer Elasticsearch sur Debian en utilisant les paquets, il faut suivre les instructions situées à cette adresse : <https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html>.
 
 Vous pouvez installer Elasticsearch en version 7 (plus maintenue) ou en version 8.
 
@@ -250,13 +250,13 @@ Vous pouvez installer Elasticsearch en version 7 (plus maintenue) ou en version 
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo apt-get update && sudo apt-get install elasticsearch
 ```
 
-Ensuite il faut paramétrer l’instance :
+Ensuite il faut paramétrer l’instance :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo vim /etc/elasticsearch/elasticsearch.yml
 ```
 
-Puis préciser ces valeurs :
+Puis préciser ces valeurs :
 
 ```yml
 cluster.name: pod-application
@@ -267,13 +267,13 @@ cluster.initial_master_nodes: ["pod-1"]
 
 ###### Mode security d’ES8 (recommandé)
 
-Générer l’utilisateur pod pour ES :
+Générer l’utilisateur pod pour ES :
 
 ```sh
 sudo /usr/share/elasticsearch/bin/elasticsearch-users useradd pod -p podpod -r superuser
 ```
 
-Génération des certificats (CA + cert) :
+Génération des certificats (CA + cert) :
 
 ```sh
 sudo /usr/share/elasticsearch/bin/elasticsearch-certutil ca
@@ -302,7 +302,7 @@ xpack.security.http.ssl.truststore.path: /etc/elasticsearch/elastic-certificates
 
 ##### Lancement et vérification d’Elasticsearch
 
-Il faut enfin le lancer et vérifier son bon fonctionnement :
+Il faut enfin le lancer et vérifier son bon fonctionnement :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo /etc/init.d/elasticsearch start
@@ -335,7 +335,7 @@ ou pour ES8
 }
 ```
 
-Pour utiliser la recherche dans Pod, nous allons avoir besoin également du plugin ICU :
+Pour utiliser la recherche dans Pod, nous allons avoir besoin également du plugin ICU :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ cd /usr/share/elasticsearch/
@@ -347,7 +347,7 @@ Pour utiliser la recherche dans Pod, nous allons avoir besoin également du plug
 [ ok ] Restarting elasticsearch (via systemctl): elasticsearch.service.
 ```
 
-Si vous utilisez un proxy :
+Si vous utilisez un proxy :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ cd /usr/share/elasticsearch/
@@ -359,7 +359,7 @@ Si vous utilisez un proxy :
 [ ok ] Restarting elasticsearch (via systemctl): elasticsearch.service.
 ```
 
-Attention, pour ES8 derrière un proxy :
+Attention, pour ES8 derrière un proxy :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ cd /usr/share/elasticsearch/
@@ -373,7 +373,7 @@ Attention, pour ES8 derrière un proxy :
 
 ### Création de l’index Pod
 
-Pour une utilisation d’elasticsearch 7 ou 8, il faut absolument :
+Pour une utilisation d’elasticsearch 7 ou 8, il faut absolument :
 
 Ajouter `ES_VERSION = 7` ou `ES_VERSION = 8`dans votre fichier de settings et modifier la version du client elasticsearch dans le fichier requirements.txt
 
@@ -393,7 +393,7 @@ Et ne pas oublier de relancer
 (django_pod3) pod@podv3:~/django_projects/podv3$ pip3 install -r requirements.txt
 ```
 
-Nous pouvons enfin vérifier le bon fonctionnement de l’ensemble (l’erreur affichée lors de la deletion est normale puisque l’indice n’existe pas, mais nous devons supprimer avant de créer un index dans ES) :
+Nous pouvons enfin vérifier le bon fonctionnement de l’ensemble (l’erreur affichée lors de la deletion est normale puisque l’indice n’existe pas, mais nous devons supprimer avant de créer un index dans ES) :
 
 ```sh
 (django_pod3) pod@pod:/usr/share/elasticsearch$ cd ~/django_projects/podv3
@@ -419,13 +419,13 @@ Si vous déportez l‘elastic search sur une autre machine, rajoutez dans le fic
 (django_pod3) pod@pod:~/django_projects/podv3$ vim pod/custom/settings_local.py
 ```
 
-Copiez la ligne suivante :
+Copiez la ligne suivante :
 
 ```py
 ES_URL = ["http://elastic.domaine.fr:9200/"]
 ```
 
-Avec le mode security et ES8, vous devrez parametrer les éléments suivants dans votre settings_local.py :
+Avec le mode security et ES8, vous devrez parametrer les éléments suivants dans votre settings_local.py :
 
 ```py
 ES_URL = ["https://127.0.0.1:9200/"] # ou votre instance déportée
@@ -448,7 +448,7 @@ La référence est ici: <https://github.com/nodesource/distributions>
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo corepack enable
 ```
 
-Alternativement, si vous êtes sur CentOS 8, installez les dépendances nodejs+npm et yarn ainsi :
+Alternativement, si vous êtes sur CentOS 8, installez les dépendances nodejs+npm et yarn ainsi :
 
 ```sh
 root@pod:~/$ dnf module reset nodejs
@@ -490,7 +490,7 @@ Lancez le script présent à la racine afin de créer les fichiers de migration,
 
 Vous devez créer un fichier de configuration local dans le dossier pod/custom.
 
-Vous mettez dans ce fichier uniquement les variables dont vous voulez changer la valeur par défaut. Vous trouverez ci-dessous un exemple de fichier avec les principales variables à modifier : connexion à la base de données, un fichier CSS custom, le thème green de pod, retirer le langage nl, etc. Vous pouvez adapter ce fichier et le coller dans le vôtre.
+Vous mettez dans ce fichier uniquement les variables dont vous voulez changer la valeur par défaut. Vous trouverez ci-dessous un exemple de fichier avec les principales variables à modifier : connexion à la base de données, un fichier CSS custom, le thème green de pod, retirer le langage nl, etc. Vous pouvez adapter ce fichier et le coller dans le vôtre.
 
 ```sh
 (django_pod3) pod@Pod:~/django_projects/podv3$ vim pod/custom/settings_local.py
@@ -621,7 +621,7 @@ Il faut créer un premier utilisateur qui aura tous les pouvoirs sur votre insta
 
 ### Lancement des tests unitaires
 
-Afin de vérifier que votre instance est opérationnelle, vous pouvez lancer les tests unitaires :
+Afin de vérifier que votre instance est opérationnelle, vous pouvez lancer les tests unitaires :
 
 ```sh
 (django_pod3) pod@Pod:~/django_projects/podv3$ python3 -m pip install -r requirements-dev.txt
@@ -662,7 +662,7 @@ N’hésitez pas à lancer le serveur de développement pour vérifier vos modif
 (django_pod3) pod@Pod:~/django_projects/podv3$ python3 manage.py runserver @IP/DNS:8080 --insecure
 ```
 
---> exemple :
+--> exemple :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ python manage.py runserver pod.univ.fr:8080 --insecure
