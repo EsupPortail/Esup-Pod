@@ -11,7 +11,7 @@ _Pour la version 3, merci de consulter le lien suivant : [Documentation Esup-Pod
 {: .alert .alert-warning}
 
 This documentation only concerns version 4 of the Esup-Pod project.
-For version 3, please consult the following link: [Esup-Pod v3 documentation](https://www.esup-portail.org/wiki/spaces/ES/pages/1113260038/Installation+de+Pod+V3)_
+_For version 3, please consult the following link: [Esup-Pod v3 documentation](https://www.esup-portail.org/wiki/spaces/ES/pages/1113260038/Installation+de+Pod+V3)_
 {: .alert .alert-warning}
 
 Choose your language / Choisissez votre langue :
