@@ -20,6 +20,7 @@ Key Features:
 Important notes:
  - The JSON file must be found at BASE_DIR/data_from_v3_to_v4/v3_exported_tables.json
 Example: /usr/local/django_projects/data_from_v3_to_v4/v3_exported_tables.json
+ - Elasticsearch must be installed, properly configured and running
  - Set DEBUG = False to settings_local.py to avoid warnings/debug/info noise.
  - Can be executed with a MariaDB/MySQL or Postgresql database.
  - If you encounter an error "Too many connections" type, you can increase the value of
