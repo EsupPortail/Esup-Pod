@@ -8,22 +8,27 @@ lang: en
 
 ## First installation
 
-* [Installation stand-alone](Installation_standalone)
-* [Installation Docker](Installation_Docker)
+* [Installation stand-alone](install_standalone_en)
+* [Installation Docker](install_docker_en)
 
 ### Optional features
 
-* [BigBlueButton / Pairing with BigBlueButton](optional/meeting-install_en)
-* [BigBlueButton / Migration of BigBlueButton Infrastructure](optional/bbb-infrastructure-migration-install_en)
-* [BigBlueButton / Setting up Webinar Mode for BigBlueButton sessions](optional/set-up-webinar-mode-bbb-install_en)
+#### BigBlueButton
+
+* [Pairing with BigBlueButton](optional/meeting-install_en)
+* [Migration of BigBlueButton Infrastructure](optional/bbb-infrastructure-migration-install_en)
+* [Setting up Webinar Mode for BigBlueButton sessions](optional/set-up-webinar-mode-bbb-install_en)
 * [Import an external video / BigBlueButton recording in video format](optional/import-external-video-bbb-recording-install_en)
+
+#### OpenCast Studio
+
 * [OpenCast Studio installation](optional/opencast-studio-install_en)
 * [Setting up video publishing from recorders](optional/video-publication-from-recorders_en)
 
 ## Upgrade
 
-* [Stand alone upgrade](upgrade_standalone)
-* [Upgrade with Docker](upgrade_docker)
+* [Stand alone upgrade](upgrade_standalone_en)
+* [Upgrade with Docker](upgrade_docker_en)
 
 ## Migration
 
