@@ -1,6 +1,6 @@
 ---
 layout: default
-lang: en
+lang: fr
 ---
 
 # Introduction
