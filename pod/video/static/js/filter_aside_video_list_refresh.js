@@ -174,6 +174,14 @@ function getSearchValue() {
   return document.getElementById("titlebox").value;
 }
 
+//---------------------------------------------//
+//------------------WORKING--------------------//
+//---------------------------------------------//
+
+// État global
+let checkedUsernames = new Set();
+let currentSearchResults = []; // [{ username, first_name, last_name }]
+
 /**
  * Get built url with filter and sort and page parameters
  * @returns {string}
@@ -208,8 +216,8 @@ function getUrlForRefresh() {
 
   urlParams.delete("owner");
 
-  checkedInputs.forEach((input) => {
-    urlParams.append(input.name, input.value);
+  checkedUsernames.forEach(username => {
+    urlParams.append("owner", username);
   });
 
   urlParams.set("page", "");
@@ -217,234 +225,157 @@ function getUrlForRefresh() {
   return `${baseUrl}?${urlParams.toString()}`;
 }
 
-//---------------------------------------------//
-//------------------WORKING--------------------//
-//---------------------------------------------//
-
-let checkedUsernames = new Set();
-let currentSearchResults = []; // tableau d’objets { username, first_name, last_name }
-
 /**
- * Add change event listener on inputs (filters, sort column and sort direction) to refresh video list
- * @param el
+ * Ajoute un listener change sur une checkbox et met à jour l'état + UI + vidéos
+ * @param {HTMLInputElement} inputEl
  */
-function setListenerChangeInputs(el) {
-  el.addEventListener("change", (e) => {
-    console.log("Changement détecté sur : ", e.target.value);
-    checkedInputs = [];
-    disabledInputs(true);
-    document
-      .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
-      .forEach((e) => {
-        checkedInputs.push(e);
-        console.log("Mis à jour de checkedInputs dans setListenerChangeInputs : ", e.value);
-      });
-    refreshActiveFiltersElement();
+function setListenerChangeInputs(inputEl) {
+  inputEl.addEventListener("change", () => {
+    const username = inputEl.value;
+    if (inputEl.checked) {
+      checkedUsernames.add(username);
+    } else {
+      checkedUsernames.delete(username);
+    }
+    console.log(`Checkbox ${inputEl.checked ? 'cochée' : 'décochée'} pour : ${username}`);
+    render();
     refreshVideosSearch();
   });
 }
 
-function refreshActiveFiltersElement() {
-  console.log("Entrée dans refreshActiveFiltersElement");
-  const container = document.getElementById("activeFilters");
-  container.innerHTML = ""; // On vide d'abord
-  checkedInputs.forEach((input) => {
-    console.log("refreshActiveFiltersElement input: ", input.value);
+/**
+ * Rendu unique : badges et liste de checkboxes
+ */
+function render() {
+  // 1) Badges
+  const badgeContainer = document.getElementById("activeFilters");
+  badgeContainer.innerHTML = "";
+  checkedUsernames.forEach(username => {
     const tag = document.createElement("div");
     tag.className = "badge bg-primary text-light me-2 mb-2 p-2";
-    tag.innerText = input.value;
+    tag.innerText = username;
 
-    // Optionnel : bouton pour retirer le filtre
     const closeBtn = document.createElement("button");
     closeBtn.className = "btn-close btn-close-white ms-2";
     closeBtn.style.fontSize = "0.6rem";
     closeBtn.onclick = () => {
-      input.checked = false;
-      input.dispatchEvent(new Event("change")); // Déclenche à nouveau le changement
-      console.log("Je retire le filtre pour l'utilisateur : ", input.value);
+      checkedUsernames.delete(username);
+      console.log(`Filtre retiré : ${username}`);
+      render();
+      refreshVideosSearch();
     };
 
     tag.appendChild(closeBtn);
-    container.appendChild(tag);
-  });
-}
-
-if (ownerBox) {
-  const userFilterDropdown = document.getElementById("user-filter-dropdown");
-
-  // Au clic sur le menu déroulant, on affiche les utilisateurs sélectionnés
-  userFilterDropdown.addEventListener("click", () => {
-    console.log("Menu déroulant cliqué, affichage des utilisateurs sélectionnés");
-    displayCheckedUsers();
+    badgeContainer.appendChild(tag);
   });
 
-  // Au changement dans l'input de recherche
-  ownerBox.addEventListener("input", () => {
-    const searchTerm = ownerBox.value;
-    console.log("Recherche en cours avec le terme : ", searchTerm);
+  // 2) Checkboxes
+  const listContainer = filterOwnerContainer;
+  listContainer.innerHTML = "";
 
-    if (searchTerm && searchTerm.length > 2) {
-      console.log("Termes de recherche trouvés, appel à getSearchListUsers()");
-      // Si l'utilisateur tape quelque chose, on effectue une recherche
-      getSearchListUsers(searchTerm).then((users) => {
-        updateUserList(users);
-      });
-    } else {
-      console.log("Recherche vide, affichage uniquement des utilisateurs sélectionnés");
-      // Sinon, on affiche uniquement les utilisateurs sélectionnés
-      displayCheckedUsers();
-    }
-  });
-}
-
-// Affiche uniquement les utilisateurs sélectionnés
-function displayCheckedUsers() {
-  console.log("Affichage des utilisateurs sélectionnés...");
-  const selectedUsernames = new Set(checkedInputs.map(u => u.value));
-
-  if (selectedUsernames.size === 0) {
-    console.log("Aucun utilisateur sélectionné, vider le container");
-    filterOwnerContainer.textContent = "";
-    return;
-  }
-
-  console.log("Utilisateurs sélectionnés : ", Array.from(selectedUsernames));
-
-  // On effectue une recherche vide (qui renvoie tous les utilisateurs)
-  getSearchListUsers("").then((users) => {
-    const selectedUsers = users.filter(user => selectedUsernames.has(user.username));
-    updateUserList(selectedUsers);
-  });
-}
-
-function updateUserList(users) {
-  console.log("Mise à jour de la liste des utilisateurs...");
-  filterOwnerContainer.textContent = ""; // Vider l'affichage précédent
-
-  // Récupérer les utilisateurs sélectionnés
-  const selectedUsernames = new Set(checkedInputs.map(u => u.value));
-
-  // Filtrer les utilisateurs pour ceux qui correspondent à la recherche
-  const filteredUsers = users.filter(user => !selectedUsernames.has(user.username));
-
-  console.log("Utilisateurs filtrés : ", filteredUsers);
-
-  // Fusionner les utilisateurs sélectionnés et filtrés (les sélectionnés viennent en premier)
-  const finalUserList = [
-    ...checkedInputs.map(input => ({
-      username: input.value,
-      first_name: "", // Remplir si nécessaire
-      last_name: "",  // Remplir si nécessaire
-    })),
-    ...filteredUsers
+  // Construction de la liste : cochés d'abord, puis résultats
+  const orderedUsers = [
+    ...[...checkedUsernames].map(u => ({ username: u, first_name: "", last_name: "" })),
+    ...currentSearchResults.filter(u => !checkedUsernames.has(u.username))
   ];
 
   const fragment = document.createDocumentFragment();
+  orderedUsers.forEach(user => {
+    const checkboxDiv = createUserCheckBox(user, checkedUsernames);
+    fragment.appendChild(checkboxDiv);
+    setListenerChangeInputs(checkboxDiv.querySelector("input.form-check-input"));
+  });
+  listContainer.appendChild(fragment);
 
-  // Ajouter chaque utilisateur dans le DOM
-  finalUserList.forEach((user) => {
-    const checkboxId = "id" + user.username;
-    if (!document.getElementById(checkboxId)) {
-      console.log("Ajout de l'utilisateur au DOM : ", user.username);
-      const checkbox = createUserCheckBox(user, selectedUsernames);
-      fragment.appendChild(checkbox);
-      setListenerChangeInputs(checkbox.querySelector("input"));
+  // Réactiver inputs
+  disabledInputs(false);
+}
+
+// Initialisation des événements
+if (ownerBox) {
+  const userFilterDropdown = document.getElementById("user-filter-dropdown");
+
+  // Affiche les cochés au clic sans vider
+  userFilterDropdown.addEventListener("click", () => {
+    currentSearchResults = [];
+    console.log("Dropdown cliqué : affichage des cochés");
+    render();
+  });
+
+  // Recherche live
+  ownerBox.addEventListener("input", () => {
+    const term = ownerBox.value.trim();
+    if (term.length > 2) {
+      console.log(`Recherche : ${term}`);
+      disabledInputs(true);
+      getSearchListUsers(term)
+        .then(users => {
+          currentSearchResults = users;
+          render();
+        })
+        .catch(err => {
+          console.error(err);
+          disabledInputs(false);
+        });
+    } else {
+      currentSearchResults = [];
+      console.log("Recherche courte ou vide : reset des résultats");
+      render();
     }
   });
 
-  filterOwnerContainer.appendChild(fragment);
+  document.getElementById("filterTags").addEventListener("click", () => {
+    checkedUsernames.clear();
+    currentSearchResults = [];
+    ownerBox.value = "";
+    console.log("Reset de tous les filtres");
+    render();
+    refreshVideosSearch();
+    window.history.pushState("", "", window.location.pathname);
+  });
 }
 
-
 /**
- * Create checkbox for user search
- * @param user
- * @returns {HTMLDivElement}
+ * Création d'un div.form-check avec input checkbox et label,
+ * basé sur l'état sélectionné.
+ * @param {{username:string, first_name:string, last_name:string}} user
+ * @param {Set<string>} selectedSet
  */
-function createUserCheckBox(user, selectedUsernames) {
-  console.log("Création de la checkbox pour l'utilisateur : ", user.username);
-  let div = document.createElement("div");
+function createUserCheckBox(user, selectedSet) {
+  const div = document.createElement("div");
   div.classList.add("form-check");
 
-  let checkbox = document.createElement("input");
+  const checkbox = document.createElement("input");
   checkbox.classList.add("form-check-input");
   checkbox.type = "checkbox";
   checkbox.name = "owner";
   checkbox.value = user.username;
   checkbox.id = "id" + user.username;
+  checkbox.checked = selectedSet.has(user.username);
 
-  // Coche si utilisateur déjà sélectionné
-  if (selectedUsernames.has(user.username)) {
-    checkbox.checked = true;
-    console.log("Utilisateur sélectionné : ", user.username);
-  }
-
-  let label = document.createElement("label");
+  const label = document.createElement("label");
   label.classList.add("form-check-label");
   label.setAttribute("for", checkbox.id);
-
   const fullName = `${user.first_name} ${user.last_name}`.trim();
-  label.innerHTML = (fullName !== "" ? fullName + " " : "") + `(${user.username})`;
+  label.textContent = fullName ? `${fullName} (${user.username})` : `(${user.username})`;
 
   div.appendChild(checkbox);
   div.appendChild(label);
-
-  console.log("Checkbox créée pour : ", user.username);
-
   return div;
 }
 
-
-
 /**
- * Add click event listener to manage reset of filters
- */
-document.getElementById("resetFilters").addEventListener("click", function () {
-  checkedInputs = [];
-  document
-    .querySelectorAll("#filters input[type=checkbox]:checked[class=form-check-input]")
-    .forEach((checkBox) => {
-      checkBox.checked = false;
-    });
-
-  document.querySelectorAll("#filters .categories-list-item").forEach((c_p) => {
-    c_p.classList.remove("active");
-  });
-
-  document.getElementById("titlebox").value = "";
-  if (filterOwnerContainer && ownerBox) {
-    filterOwnerContainer.textContent = "";
-    ownerBox.value = "";
-  }
-
-  window.history.pushState("", "", window.location.pathname);
-  refreshVideosSearch();
-});
-
-let teststst = document.querySelectorAll("input[type=checkbox]:checked[class=form-check-input]");
-console.log("Resutat querySelectorAll l370 : " + teststst.entries());
-checkedInputs = [];
-teststst.forEach((e) => {
-    checkedInputs.push(e);
-    console.log("Mis a jours de checkedInputs l370 : "+e.value);
-  });
-refreshActiveFiltersElement();
-
-/**
- * Toggle (enable/disable) inputs to prevent user actions during loading
- * @param value
+ * Active ou désactive toutes les checkboxes pendant le chargement
+ * @param {boolean} value
  */
 function disabledInputs(value) {
-  document
-    .querySelectorAll("input[type=checkbox][class=form-check-input]")
-    .forEach((checkbox) => {
-      checkbox.disabled = value;
-    });
+  document.querySelectorAll("input.form-check-input").forEach(cb => cb.disabled = value);
 }
 
 //---------------------------------------------//
 //----------------END-WORKING------------------//
 //---------------------------------------------//
+
 
 document
   .querySelectorAll("#filters .form-check-input,#sort,#sort_direction")
