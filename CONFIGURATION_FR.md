@@ -1088,6 +1088,15 @@ Mettre `USE_DUPLICATE` à True pour activer cette application.<br>
   >> Activation de duplicate.<br>
   >> Permet aux utilisateurs de dupliquer une vidéo<br>
 
+### Configuration de l’application Liens
+
+Application Liens permettant d'ajouter des liens à la vidéo.<br>
+Mettre `USE_HYPERLINKS` à True pour activer cette application.<br>
+
+* `USE_HYPERLINKS`
+  > valeur par défaut : `False`
+  >> Activation de l’application Liens<br>
+
 ### Configuration de l’application enrichment
 
 
