@@ -229,7 +229,7 @@ class SingleChoiceQuestion(Question):
         verbose_name=_("Choices"),
         default=dict,
         help_text=_(
-            "Choices must be like this: {'choice 1': true, 'choice 2': false, ...} | true for the right choice, false for the wrong choices."
+            'Choices must be like this: {"choice 1": true, "choice 2": false, …} | true for the right choice, false for the wrong choices.'
         ),
     )
 
@@ -322,7 +322,7 @@ class MultipleChoiceQuestion(Question):
         verbose_name=_("Choices"),
         default=dict,
         help_text=_(
-            "Choices must be like this: {'choice 1': true, 'choice 2': true, 'choice 3': false, ...} | true for the right choice, false for the wrong choices."
+            'Choices must be like this: {"choice 1": true, "choice 2": true, "choice 3": false, …} | true for the right choice, false for the wrong choices.'
         ),
     )
 
