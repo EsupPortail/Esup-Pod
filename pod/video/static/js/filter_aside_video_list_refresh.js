@@ -16,11 +16,9 @@
 /* global setSelectedVideos */
 
 var infinite;
-var checkedInputs = [];
 
 let infiniteLoading = document.querySelector(".infinite-loading");
-let ownerBox = document.getElementById("ownerbox");
-let filterOwnerContainer = document.getElementById("collapseFilterOwner");
+let filtersState = {};
 
 function onBeforePageLoad() {
   infiniteLoading.style.display = "block";
@@ -178,27 +176,27 @@ function getSearchValue() {
 //------------------WORKING--------------------//
 //---------------------------------------------//
 
-// État global
-let checkedUsernames = new Set();
-let currentSearchResults = []; // [{ username, first_name, last_name }]
-
-/**
- * Get built url with filter and sort and page parameters
- * @returns {string}
- */
 function getUrlForRefresh() {
-  let baseUrl = window.location.pathname;
-  let urlParams = new URLSearchParams(window.location.search);
+  const baseUrl = window.location.pathname;
+  const urlParams = new URLSearchParams(window.location.search);
 
-  urlParams.set("sort", document.getElementById("sort").value);
-  let sortDirectionAsc = document.getElementById("sort_direction").checked;
-  if (sortDirectionAsc) {
-    urlParams.set("sort_direction", document.getElementById("sort_direction").value);
+
+  const sort = document.getElementById("sort")?.value;
+  if (sort) {
+    urlParams.set("sort", sort);
+  } else {
+    urlParams.delete("sort");
+  }
+
+
+  const sortDirectionEl = document.getElementById("sort_direction");
+  if (sortDirectionEl?.checked) {
+    urlParams.set("sort_direction", sortDirectionEl.value);
   } else {
     urlParams.delete("sort_direction");
   }
 
-  let newTitle = getSearchValue();
+  const newTitle = getSearchValue();
   if (newTitle) {
     urlParams.set("title", newTitle);
   } else {
@@ -211,153 +209,136 @@ function getUrlForRefresh() {
 
   urlParams.delete("categories");
   document.querySelectorAll(".categories-list-item.active").forEach((cat) => {
-    urlParams.append("categories", cat.firstElementChild.dataset.slug);
+    const slug = cat.firstElementChild?.dataset.slug;
+    if (slug) {
+      urlParams.append("categories", slug);
+    }
   });
 
-  urlParams.delete("owner");
+  Object.keys(filtersState).forEach(param => {
+    urlParams.delete(param);
 
-  checkedUsernames.forEach(username => {
-    urlParams.append("owner", username);
+    const filter = filtersState[param];
+    filter.selectedItems.forEach((value, key) => {
+      urlParams.append(param, key);
+    });
   });
 
-  urlParams.set("page", "");
-
+  urlParams.delete("page");
   return `${baseUrl}?${urlParams.toString()}`;
 }
 
-/**
- * Ajoute un listener change sur une checkbox et met à jour l'état + UI + vidéos
- * @param {HTMLInputElement} inputEl
- */
-function setListenerChangeInputs(inputEl) {
-  inputEl.addEventListener("change", () => {
-    const username = inputEl.value;
-    if (inputEl.checked) {
-      checkedUsernames.add(username);
-    } else {
-      checkedUsernames.delete(username);
-    }
-    console.log(`Checkbox ${inputEl.checked ? 'cochée' : 'décochée'} pour : ${username}`);
-    render();
-    refreshVideosSearch();
+
+function saveFiltersToSession() {
+  Object.entries(filtersState).forEach(([param, filter]) => {
+    const itemsArray = Array.from(filter.selectedItems.values());
+    sessionStorage.setItem(param, JSON.stringify(itemsArray));
   });
 }
 
-/**
- * Rendu unique : badges et liste de checkboxes
- */
-function render() {
-  // 1) Badges
-  const badgeContainer = document.getElementById("activeFilters");
-  badgeContainer.innerHTML = "";
-  checkedUsernames.forEach(username => {
-    const tag = document.createElement("div");
-    tag.className = "badge bg-primary text-light me-2 mb-2 p-2";
-    tag.innerText = username;
-
-    const closeBtn = document.createElement("button");
-    closeBtn.className = "btn-close btn-close-white ms-2";
-    closeBtn.style.fontSize = "0.6rem";
-    closeBtn.onclick = () => {
-      checkedUsernames.delete(username);
-      console.log(`Filtre retiré : ${username}`);
-      render();
-      refreshVideosSearch();
-    };
-
-    tag.appendChild(closeBtn);
-    badgeContainer.appendChild(tag);
+function initializeFiltersFromSession() {
+  Object.entries(filtersState).forEach(([param, filter]) => {
+    const raw = sessionStorage.getItem(param);
+    if (raw) {
+      const items = JSON.parse(raw);
+      items.forEach(item => {
+        const key = filter.itemKey(item);
+        filter.selectedItems.set(key, item);
+      });
+    }
+    renderFilter(param);
   });
+}
 
-  // 2) Checkboxes
-  const listContainer = filterOwnerContainer;
+function setListenerChangeInputs(inputEl, param, item) {
+  const state = filtersState[param];
+  const key = state.itemKey(item);
+  inputEl.addEventListener("change", () => {
+    if (inputEl.checked) {
+      state.selectedItems.set(key, item);
+    } else {
+      state.selectedItems.delete(key);
+    }
+
+    renderFilter(param);
+    updateSelectedTags();
+    refreshVideosSearch();
+    saveFiltersToSession();
+  });
+}
+
+// Fonction d'initialisation des filtres à partir de l'URL ou de la session
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialiser les filtres à partir de la session
+  initializeFiltersFromSession();
+
+  // Mettre à jour les tags sélectionnés après l'initialisation des filtres
+  updateSelectedTags();
+});
+
+document.getElementById("filterTags").addEventListener("click", (e) => {
+  e.preventDefault();
+  clearAllFilters();
+});
+
+function clearAllFilters() {
+  Object.values(filtersState).forEach(filter => filter.selectedItems.clear());
+  document.querySelectorAll(".categories-list-item.active").forEach(item => {
+    item.classList.remove("active");
+  });
+  Object.keys(filtersState).forEach(param => {
+    sessionStorage.removeItem(param);
+  });
+  var input = document.getElementById("search_input");
+  if (input) input.value = "";
+  updateSelectedTags();
+  Object.keys(filtersState).forEach(renderFilter);
+  const baseUrl = window.location.pathname;
+  window.history.replaceState(null, "", baseUrl);
+  refreshVideosSearch();
+}
+
+
+// Rendre les éléments de filtre à partir des données et de l'état
+function renderFilter(param) {
+  const state = filtersState[param];
+  const listContainer = document.getElementById(`collapseFilter${capitalize(param)}`);
   listContainer.innerHTML = "";
 
-  // Construction de la liste : cochés d'abord, puis résultats
-  const orderedUsers = [
-    ...[...checkedUsernames].map(u => ({ username: u, first_name: "", last_name: "" })),
-    ...currentSearchResults.filter(u => !checkedUsernames.has(u.username))
+  const orderedItems = [
+    ...state.selectedItems.values(),
+    ...state.searchResults.filter(item => !state.selectedItems.has(state.itemKey(item)))
   ];
 
-  const fragment = document.createDocumentFragment();
-  orderedUsers.forEach(user => {
-    const checkboxDiv = createUserCheckBox(user, checkedUsernames);
-    fragment.appendChild(checkboxDiv);
-    setListenerChangeInputs(checkboxDiv.querySelector("input.form-check-input"));
+  const frag = document.createDocumentFragment();
+  orderedItems.forEach(item => {
+    const checkboxDiv = renderItem(item, state.selectedItems, state.itemLabel, param);
+    frag.appendChild(checkboxDiv);
   });
-  listContainer.appendChild(fragment);
-
-  // Réactiver inputs
-  disabledInputs(false);
+  listContainer.appendChild(frag);
 }
 
-// Initialisation des événements
-if (ownerBox) {
-  const userFilterDropdown = document.getElementById("user-filter-dropdown");
-
-  // Affiche les cochés au clic sans vider
-  userFilterDropdown.addEventListener("click", () => {
-    currentSearchResults = [];
-    console.log("Dropdown cliqué : affichage des cochés");
-    render();
-  });
-
-  // Recherche live
-  ownerBox.addEventListener("input", () => {
-    const term = ownerBox.value.trim();
-    if (term.length > 2) {
-      console.log(`Recherche : ${term}`);
-      disabledInputs(true);
-      getSearchListUsers(term)
-        .then(users => {
-          currentSearchResults = users;
-          render();
-        })
-        .catch(err => {
-          console.error(err);
-          disabledInputs(false);
-        });
-    } else {
-      currentSearchResults = [];
-      console.log("Recherche courte ou vide : reset des résultats");
-      render();
-    }
-  });
-
-  document.getElementById("filterTags").addEventListener("click", () => {
-    checkedUsernames.clear();
-    currentSearchResults = [];
-    ownerBox.value = "";
-    console.log("Reset de tous les filtres");
-    render();
-    refreshVideosSearch();
-    window.history.pushState("", "", window.location.pathname);
-  });
-}
-
-/**
- * Création d'un div.form-check avec input checkbox et label,
- * basé sur l'état sélectionné.
- * @param {{username:string, first_name:string, last_name:string}} user
- * @param {Set<string>} selectedSet
- */
-function createUserCheckBox(user, selectedSet) {
+// Rendre chaque élément de filtre (checkbox + label)
+function renderItem(item, selectedSet, itemLabel, param) {
   const div = document.createElement("div");
   div.classList.add("form-check");
+
+  const key = filtersState[param].itemKey(item);
 
   const checkbox = document.createElement("input");
   checkbox.classList.add("form-check-input");
   checkbox.type = "checkbox";
-  checkbox.name = "owner";
-  checkbox.value = user.username;
-  checkbox.id = "id" + user.username;
-  checkbox.checked = selectedSet.has(user.username);
+  checkbox.name = key;
+  checkbox.value = key;
+  checkbox.id = `id-${param}-${key}`;
+  checkbox.checked = selectedSet.has(key);
+
+  setListenerChangeInputs(checkbox, param, item);
 
   const label = document.createElement("label");
   label.classList.add("form-check-label");
   label.setAttribute("for", checkbox.id);
-  const fullName = `${user.first_name} ${user.last_name}`.trim();
-  label.textContent = fullName ? `${fullName} (${user.username})` : `(${user.username})`;
+  label.textContent = itemLabel(item);
 
   div.appendChild(checkbox);
   div.appendChild(label);
@@ -365,23 +346,175 @@ function createUserCheckBox(user, selectedSet) {
 }
 
 /**
- * Active ou désactive toutes les checkboxes pendant le chargement
- * @param {boolean} value
+ * Ajoute un filtre dynamique à l'interface.
+ * @param {Object} filterInfo Infos sur le filtre à ajouter
+ */
+function addFilter({ name, param, searchCallback, itemLabel, itemKey }) {
+  const slug = slugify(name);  // Créer un identifiant "propre" pour chaque filtre
+  const filterId = `${slug}-filter-dropdown`;
+
+  // Créer et ajouter le bloc de filtre dans le DOM
+  const filterEl = createFilter(name, param, slug, filterId);
+  console.log(filterEl.innerHTML);
+  const filtersBoxEl =  document.getElementById("filtersBox");
+  console.log(filtersBoxEl.innerHTML);
+  filtersBoxEl.appendChild(filterEl);
+  console.log(filtersBoxEl.innerHTML);
+  filtersState[param] = {
+    selectedItems: new Map(),
+    searchResults: [],
+    getSearch: searchCallback,
+    itemLabel,
+    itemKey
+  };
+
+  const inputBox = document.getElementById(`${slug}box`);
+  const dropdownBtn = document.getElementById(filterId);
+
+  // Affiche la liste des résultats lors du clic sur le dropdown
+  dropdownBtn.addEventListener("click", () => {
+    renderFilter(param);
+  });
+
+  // Recherche dynamique via le champ de recherche
+  inputBox.addEventListener("input", () => {
+    const term = inputBox.value.trim();
+    if (term.length > 2) {
+      disabledInputs(true);  // Désactive les entrées pendant la recherche
+      filtersState[param].getSearch(term)
+        .then(results => {
+          filtersState[param].searchResults = results;
+          renderFilter(param);
+        })
+        .finally(() => disabledInputs(false));
+    } else {
+      filtersState[param].searchResults = [];
+      renderFilter(param);
+    }
+  });
+}
+
+this.addFilter({
+  name: "Utilisateur",
+  param: "owner",
+  searchCallback: getSearchListUsers,
+  itemLabel: (u) => {
+    const hasFullName = u.first_name && u.last_name;
+    return hasFullName
+      ? `${u.first_name} ${u.last_name} (${u.username})`
+      : u.username;
+  },
+  itemKey: (u) => u.username
+});
+
+function updateSelectedTags() {
+  const selectedTagsContainer = document.getElementById("selectedTags");
+
+  // Effacer les tags existants
+  selectedTagsContainer.innerHTML = "";
+
+  // Ajouter de nouveaux tags
+  Object.entries(filtersState).forEach(([param, filter]) => {
+    filter.selectedItems.forEach(item => {
+      const label = filter.itemLabel(item);
+      const key = filter.itemKey(item);
+
+      const tag = document.createElement("div");
+      tag.className = "badge bg-primary text-white d-inline-flex align-items-center me-2 mb-2 p-2";
+
+      const text = document.createElement("span");
+      text.textContent = label;
+      tag.appendChild(text);
+
+      const closeBtn = document.createElement("button");
+      closeBtn.type = "button";
+      closeBtn.className = "btn-close btn-close-white btn-sm ms-2";
+      closeBtn.setAttribute("aria-label", "Remove filter");
+      closeBtn.onclick = () => {
+        filter.selectedItems.delete(key);
+        renderFilter(param);
+        updateSelectedTags();
+        refreshVideosSearch();
+        saveFiltersToSession(); // Sauvegarder l'état après modification
+      };
+      tag.appendChild(closeBtn);
+
+      selectedTagsContainer.appendChild(tag);
+    });
+  });
+}
+
+
+/**
+ * Crée un composant de filtre avec recherche et liste déroulante.
+ * @param {string} name Le nom du filtre
+ * @param {string} param Le paramètre du filtre
+ * @param {string} slug L'identifiant unique du filtre
+ * @param {string} filterId L'ID du filtre
+ * @returns {HTMLDivElement} Le composant du filtre
+ */
+function createFilter(name, param, slug, filterId) {
+  const dropdown = document.createElement('div');
+  dropdown.className = 'dropdown';
+
+  const button = document.createElement('button');
+  button.id = filterId;
+  button.className = 'btn btn-outline-primary dropdown-toggle';
+  button.type = 'button';
+  button.setAttribute('data-bs-toggle', 'dropdown');
+  button.setAttribute('aria-expanded', 'false');
+  button.innerText = name;
+
+  const menu = document.createElement('div');
+  menu.className = 'dropdown-menu p-2';
+  menu.style.minWidth = '200px';
+
+  const inputGroup = document.createElement('div');
+  inputGroup.className = 'input-group mb-3';
+
+  const input = document.createElement('input');
+  input.placeholder = `Recherche par ${slug}`;
+  input.id = `${slug}box`;
+  input.type = 'text';
+  input.className = 'form-control';
+  inputGroup.appendChild(input);
+
+  const listContainer = document.createElement('div');
+  listContainer.className = `form-group navList ${slug}s`;
+  listContainer.id = `collapseFilter${capitalize(param)}`;
+  listContainer.style.maxHeight = '300px';
+  listContainer.style.overflow = 'auto';
+
+  menu.appendChild(inputGroup);
+  menu.appendChild(listContainer);
+  dropdown.appendChild(button);
+  dropdown.appendChild(menu);
+
+  return dropdown;
+}
+
+/**
+ * Active ou désactive toutes les cases à cocher pendant le chargement.
+ * @param {boolean} value La valeur pour activer/désactiver les cases
  */
 function disabledInputs(value) {
   document.querySelectorAll("input.form-check-input").forEach(cb => cb.disabled = value);
 }
+
+
 
 //---------------------------------------------//
 //----------------END-WORKING------------------//
 //---------------------------------------------//
 
 
-document
-  .querySelectorAll("#filters .form-check-input,#sort,#sort_direction")
-  .forEach((el) => {
-    setListenerChangeInputs(el);
-  });
+
+
+// document
+//   .querySelectorAll("#filters .form-check-input,#sort,#sort_direction")
+//   .forEach((el) => {
+//     setListenerChangeInputs(el);
+//   });
 
 // First launch of the infinite scroll
 infinite = new InfiniteLoader(
@@ -405,4 +538,17 @@ if (urlParams.has("owner") && !ownerFilter) {
       location.pathname +
       urlParams.toString(),
   );
+}
+
+function slugify(nom) {
+  return nom
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/[^a-z0-9]/g, '');
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
