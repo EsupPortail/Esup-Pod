@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-13 16:20+0100\n"
+"POT-Creation-Date: 2025-03-12 14:19+0100\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -239,6 +239,10 @@ msgstr ""
 
 #: pod/completion/static/js/completion.js
 msgid "Are you sure you want to delete this overlay?"
+msgstr ""
+
+#: pod/completion/static/js/completion.js
+msgid "Are you sure you want to delete this hyperlink?"
 msgstr ""
 
 #: pod/completion/static/js/completion.js

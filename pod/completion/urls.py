@@ -8,6 +8,7 @@ from .views import video_completion_speaker
 from .views import video_completion_document
 from .views import video_completion_track
 from .views import video_completion_overlay
+from .views import video_completion_hyperlink
 
 app_name = "completion"
 
@@ -41,6 +42,11 @@ urlpatterns = [
         r"^overlay/(?P<slug>[\-\d\w]+)/$",
         video_completion_overlay,
         name="video_completion_overlay",
+    ),
+    re_path(
+        r"^hyperlinks/(?P<slug>[\-\d\w]+)/$",
+        video_completion_hyperlink,
+        name="video_completion_hyperlink",
     ),
     re_path(
         r"^(?P<slug>[\-\d\w]+)/$",
