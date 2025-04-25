@@ -5,11 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2025-04-10 12:29+0000\n"
-=======
-"POT-Creation-Date: 2025-03-12 14:19+0100\n"
->>>>>>> main
+"POT-Creation-Date: 2025-04-25 08:28+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -113,10 +109,10 @@ msgstr "Veuillez entrer un titre contenant entre 1 et %(max)s caractères."
 
 #: pod/ai_enhancement/forms.py
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html pod/live/models.py
-#: pod/main/forms.py pod/main/models.py pod/playlist/forms.py
-#: pod/playlist/models.py pod/video/forms.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#: pod/live/models.py pod/main/forms.py pod/main/models.py
+#: pod/playlist/forms.py pod/playlist/models.py pod/video/forms.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/dashboard.html
 msgid "Description"
 msgstr "Description"
@@ -866,7 +862,7 @@ msgstr "Liste des chapitres"
 #: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 #: pod/speaker/templates/speaker/list_speaker.html
 #: pod/speaker/templates/speaker/speakers_management.html
 #: pod/video/templates/channel/list_theme.html
@@ -1772,12 +1768,16 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid "Hyperlinks allow you to add external links related to your video."
-msgstr "Les hyperliens vous permettent d'ajouter des liens externes liés à votre vidéo."
-
+msgstr ""
+"Les hyperliens vous permettent d’ajouter des liens externes liés à votre "
+"vidéo."
 
 #: pod/completion/templates/video_completion.html
-msgid "You can add hyperlinks to this video by providing the URL and a description."
-msgstr "Vous pouvez ajouter des hyperliens à cette vidéo en fournissant l'URL et une description."
+msgid ""
+"You can add hyperlinks to this video by providing the URL and a description."
+msgstr ""
+"Vous pouvez ajouter des hyperliens à cette vidéo en fournissant l’URL et une "
+"description."
 
 #: pod/completion/templates/video_completion.html
 msgid ""
@@ -1839,16 +1839,18 @@ msgid "The speaker has been saved."
 msgstr "L’intervenant a été enregistré."
 
 #: pod/completion/views.py
+#, python-format
 msgid "Add a new hyperlink to the video “%s”"
 msgstr "Ajouter un nouvel hyperlien à la vidéo « %s »"
 
 #: pod/completion/views.py
 msgid "The hyperlink has been saved."
-msgstr "L'hyperlien a été enregistré."
+msgstr "L’hyperlien a été enregistré."
 
 #: pod/completion/views.py
+#, python-format
 msgid "Edit the hyperlink “%s”"
-msgstr "Modifier l'hyperlien « %s »"
+msgstr "Modifier l’hyperlien « %s »"
 
 #: pod/cut/apps.py pod/cut/models.py
 msgid "Video cuts"
@@ -2503,59 +2505,64 @@ msgstr ""
 
 #: pod/hyperlinks/admin.py
 msgid "Hyperlink Description"
-msgstr "Description de l'hyperlien"
+msgstr "Description de l’hyperlien"
 
+#: pod/hyperlinks/admin.py
 msgid "Hyperlink URL"
-msgstr "URL de l'hyperlien"
+msgstr "URL de l’hyperlien"
 
 #: pod/hyperlinks/forms.py
 msgid "You can search hyperlink by URL or description."
 msgstr "Vous pouvez rechercher un hyperlien par URL ou par description."
 
 #: pod/hyperlinks/templates/hyperlinks/add_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "Add Hyperlink"
 msgstr "Ajouter un hyperlien"
 
 #: pod/hyperlinks/templates/hyperlinks/edit_hyperlink.html
 msgid "Edit Hyperlink"
-msgstr "Modifier l'hyperlien"
+msgstr "Modifier l’hyperlien"
 
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "List of hyperlinks"
 msgstr "Liste des hyperliens"
 
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html pod/live/models.py
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#: pod/live/models.py
 msgid "URL"
 msgstr "URL"
 
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
+#, python-format
 msgid "Delete the hyperlink “%(hyperlink_description)s”"
-msgstr "Supprimer l'hyperlien « %(hyperlink_description)s »"
+msgstr "Supprimer l’hyperlien « %(hyperlink_description)s »"
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "Manage Hyperlinks"
 msgstr "Gérer les Hyperliens"
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "List of hyperlinks I can manage."
 msgstr "Liste des hyperliens que je peux gérer."
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#, python-format
 msgid "Edit the hyperlink “%(hyperlink_url)s”"
-msgstr "Modifier l'hyperlien « %(hyperlink_url)s »"
+msgstr "Modifier l’hyperlien « %(hyperlink_url)s »"
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "Please confirm you want to delete the hyperlink"
-msgstr "Veuillez confirmer que vous souhaitez supprimer l'hyperlien"
+msgstr "Veuillez confirmer que vous souhaitez supprimer l’hyperlien"
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#, python-format
 msgid "Delete the hyperlink “%(hyperlink_url)s”"
-msgstr "Supprimer l'hyperlien « %(hyperlink_url)s »"
+msgstr "Supprimer l’hyperlien « %(hyperlink_url)s »"
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "No hyperlinks found."
 msgstr "Aucun hyperlien trouvé."
 
@@ -5088,16 +5095,20 @@ msgid "Disciplines"
 msgstr "Disciplines"
 
 #: pod/main/templates/base.html
+msgid "Main navigation"
+msgstr "Navigation principale"
+
+#: pod/main/templates/base.html
+msgid "Breadcrumb"
+msgstr "Fil d’Ariane"
+
+#: pod/main/templates/base.html
 msgid "Side menu"
 msgstr "Menu latéral"
 
 #: pod/main/templates/base.html
 msgid "Toggle side menu"
 msgstr "Afficher/masquer le menu latéral"
-
-#: pod/main/templates/base.html
-msgid "Breadcrumb"
-msgstr "Fil d’Ariane"
 
 #: pod/main/templates/base.html
 msgid ""

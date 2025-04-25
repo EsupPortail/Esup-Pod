@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 14:19+0100\n"
-"PO-Revision-Date: 2025-02-13 16:23+0100\n"
+"POT-Creation-Date: 2025-04-25 08:25+0000\n"
+"PO-Revision-Date: 2025-04-25 10:36+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -109,10 +109,10 @@ msgstr ""
 
 #: pod/ai_enhancement/forms.py
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html pod/live/models.py
-#: pod/main/forms.py pod/main/models.py pod/playlist/forms.py
-#: pod/playlist/models.py pod/video/forms.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#: pod/live/models.py pod/main/forms.py pod/main/models.py
+#: pod/playlist/forms.py pod/playlist/models.py pod/video/forms.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/dashboard.html
 msgid "Description"
 msgstr ""
@@ -493,7 +493,7 @@ msgstr ""
 
 #: pod/ai_enhancement/views.py
 msgid "You cannot use AI to improve this video."
-msgstr "Vous ne pouvez pas utiliser l'IA pour améliorer cette vidéo."
+msgstr ""
 
 #: pod/ai_enhancement/views.py
 msgid "Video Caption Maker - Aristote AI Version"
@@ -832,7 +832,7 @@ msgstr ""
 #: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 #: pod/speaker/templates/speaker/list_speaker.html
 #: pod/speaker/templates/speaker/speakers_management.html
 #: pod/video/templates/channel/list_theme.html
@@ -2394,12 +2394,20 @@ msgstr ""
 msgid "You cannot access this playlist because it is private."
 msgstr ""
 
+#: pod/hyperlinks/admin.py
+msgid "Hyperlink Description"
+msgstr ""
+
+#: pod/hyperlinks/admin.py
+msgid "Hyperlink URL"
+msgstr ""
+
 #: pod/hyperlinks/forms.py
 msgid "You can search hyperlink by URL or description."
 msgstr ""
 
 #: pod/hyperlinks/templates/hyperlinks/add_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "Add Hyperlink"
 msgstr ""
 
@@ -2408,12 +2416,13 @@ msgid "Edit Hyperlink"
 msgstr ""
 
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "List of hyperlinks"
 msgstr ""
 
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html pod/live/models.py
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#: pod/live/models.py
 msgid "URL"
 msgstr ""
 
@@ -2422,29 +2431,29 @@ msgstr ""
 msgid "Delete the hyperlink “%(hyperlink_description)s”"
 msgstr ""
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "Manage Hyperlinks"
 msgstr ""
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "List of hyperlinks I can manage."
 msgstr ""
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 #, python-format
 msgid "Edit the hyperlink “%(hyperlink_url)s”"
 msgstr ""
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "Please confirm you want to delete the hyperlink"
 msgstr ""
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 #, python-format
 msgid "Delete the hyperlink “%(hyperlink_url)s”"
 msgstr ""
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "No hyperlinks found."
 msgstr ""
 
@@ -4832,15 +4841,19 @@ msgid "Disciplines"
 msgstr ""
 
 #: pod/main/templates/base.html
+msgid "Main navigation"
+msgstr ""
+
+#: pod/main/templates/base.html
+msgid "Breadcrumb"
+msgstr ""
+
+#: pod/main/templates/base.html
 msgid "Side menu"
 msgstr ""
 
 #: pod/main/templates/base.html
 msgid "Toggle side menu"
-msgstr ""
-
-#: pod/main/templates/base.html
-msgid "Breadcrumb"
 msgstr ""
 
 #: pod/main/templates/base.html
@@ -6708,16 +6721,15 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlist.html
 msgid "Select the video to move by clicking and holding."
-msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
+msgstr ""
 
 #: pod/playlist/templates/playlist/playlist.html
 msgid "While holding down the video, drag it to the desired location."
 msgstr ""
-"Tout en maintenant la vidéo, faites-la glisser vers l'emplacement souhaité."
 
 #: pod/playlist/templates/playlist/playlist.html
 msgid "Drop the video on another to swap their position."
-msgstr "Déposez la vidéo sur une autre pour échanger leur position."
+msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_card.html
 #, python-format
