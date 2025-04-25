@@ -1,0 +1,30 @@
+{% load i18n %}
+
+<div class="table-responsive">
+<table class="table table-striped table-condensed caption-top" id="list-hyperlink">
+    <caption>{% trans 'List of hyperlinks' %}&nbsp;({{list_hyperlink|length}})</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="hyperlink-url">{% trans 'URL' %}</th>
+        <th scope="col">{% trans 'Description' %}</th>
+        <th scope="col">{% trans 'Actions' %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for hyperlink in list_hyperlink %}
+        <tr class="hyperlink">
+          <td class="hyperlink-url">{{hyperlink.hyperlink.url}}</td>
+          <td class="hyperlink_description">{{hyperlink.hyperlink.description|default_if_none:'&nbsp;'}}</td>
+          <td>
+            <form class="form_delete completion d-inline-block" action="{% url 'video:completion:video_completion_hyperlink' slug=video.slug %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="id" value="{{hyperlink.id}}">
+              <input type="submit" title="{% blocktrans with hyperlink_description=hyperlink.hyperlink.description %}Delete the hyperlink “{{ hyperlink_description }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right" value="{% trans 'Delete' %}" class="edt_hyperlink btn btn-danger btn-sm">
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

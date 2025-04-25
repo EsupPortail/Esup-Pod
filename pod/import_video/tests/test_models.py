@@ -1,4 +1,4 @@
-"""Tests the models for import_video module."""
+"""Test the models for import_video module."""
 
 from ..models import ExternalRecording
 from datetime import datetime

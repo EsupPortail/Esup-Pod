@@ -1,6 +1,6 @@
 # Utilitaires shell pour Esup-Pod
 
-# Ne pas oublier de lancer un `workon django_pod` avant toute commande.
+# Ne pas oublier de lancer un `workon django_pod4` avant toute commande.
 # Lancer via `make $cmd`
 # (en remplacant $cmd par une commande ci-dessous)
 
@@ -43,6 +43,7 @@ upgrade:
 createDB:
 	find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
 	find . -path "*/migrations/*.pyc" -delete
+	python3 manage.py delete_flatpages_migrations
 	make updatedb
 	make migrate
 	python3 -Wd manage.py loaddata initial_data

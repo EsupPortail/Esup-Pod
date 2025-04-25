@@ -46,7 +46,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": "db-test.sqlite",
         "OPTIONS": {
-            "timeout": 40.0,  # in seconds
+            "timeout": 60.0,  # in seconds
             # see also https://docs.python.org/3.10/library/sqlite3.html#sqlite3.connect
         },
     }
@@ -57,6 +57,7 @@ LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]
 USE_CUT = True
 USE_DRESSING = True
+USE_DUPLICATE = True
 USE_FAVORITES = True
 USE_PODFILE = True
 USE_PLAYLIST = True

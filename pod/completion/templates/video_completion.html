@@ -183,6 +183,34 @@
           </div>
         </div>
       </div>
+
+      {% if USE_HYPERLINKS %}   
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compHyperlinks" aria-expanded="false" aria-controls="compHyperlinks">
+            {% trans 'Hyperlinks' %}
+          </button>
+        </h2>
+        <div id="compHyperlinks" class="accordion-collapse collapse">
+          <div class="accordion-body">
+            {% include 'hyperlinks/list_hyperlink.html' %}
+            <span id="form-hyperlink">
+              {% if form_hyperlink %}
+                {% include 'hyperlinks/form_hyperlink.html' with form_hyperlink=form_hyperlink %}
+              {% endif %}
+            </span>
+            <form class="form_new completion" id="form-new-hyperlink" action="{% url 'video:completion:video_completion_hyperlink' slug=video.slug %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="new">
+              {% if not form_hyperlink_is_active %}
+                <input type="submit" value="{% trans 'Add a new hyperlink' %}" class="new-hyperlink btn btn-primary">
+              {% endif %}
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
       {% if USE_QUIZ %}
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -331,6 +359,18 @@
           </p>
         </div>
       </div>
+      <!-- Hyperlinks -->
+      {% if USE_HYPERLINKS %}
+        <div id="hyperlink-info">
+          <button class="btn btn-link rounded-0 pod-btn" id="heading-5" data-bs-toggle="collapse" data-bs-target="#collapse-hyperlink" aria-expanded="false" aria-controls="collapse-hyperlink">
+            {% trans 'Hyperlinks' %}
+          </button>
+          <div id="collapse-hyperlink" class="collapse card-text small">
+            <p>{% trans 'Hyperlinks allow you to add external links related to your video.' %}</p>
+            <p>{% trans 'You can add hyperlinks to this video by providing the URL and a description.' %}</p>
+          </div>
+        </div>
+      {% endif %}
       <!-- Quiz -->
       {% if USE_QUIZ %}
         <div id="quiz-info">
