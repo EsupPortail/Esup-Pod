@@ -98,7 +98,7 @@ After research, it turns out that the encoding is done by default with the follo
 
 To modify this behavior, it is possible to tweak the following file:
 
-    - /usr/local/bigbluebutton/core/lib/recordandplayback/edl/video.rb: FFMPEG_WF_ARGS section
+- `/usr/local/bigbluebutton/core/lib/recordandplayback/edl/video.rb`: `FFMPEG_WF_ARGS` section
 
 ```py
 FFMPEG_WF_ARGS = [
@@ -176,7 +176,7 @@ A PyTube update should be coming soon; it will be enough to update this module v
 The configuration of the external video import module is done, as usual, via the settings_local.py file, using the following parameters:
 
 | Parameter | Minimum Version | Default Value | Description |
-|-----------|------------------|-------------------|-------------|
+|-----------|-----------------|---------------|-------------|
 | USE_IMPORT_VIDEO | 3.3.0 | True | Activation of the video import application (True / False) |
 | RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY | 3.3.0 | True | Only "staff" users can import videos (True / False) |
 | MAX_UPLOAD_SIZE_ON_IMPORT | 3.3.1 | 4 | Maximum size in GB of video files that can be uploaded to the platform via the import_video module (0 = no limit) |

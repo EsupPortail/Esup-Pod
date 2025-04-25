@@ -14,8 +14,8 @@ Le système repose sur deux scripts principaux :
 
 ## Prérequis
 
-- Une version de Pod en 3.8.x (3.8.1, 3.8.2, 3.8.3 et 3.8.4 à ce jour)
-- Une version de Pod en 4.0.x (4.0.alpha à ce jour)
+- Une version de Pod en 3.8.x (de 3.8.1 à 3.8.4 à ce jour)
+- Une version de Pod en 4.0.x (4.0.beta à ce jour)
 - Assurez-vous d'avoir accès à la base de données de Pod, en version 3.8.x (MariaDB/MySQL ou PostgreSQL).
 - Assurez-vous d'avoir accès à la base de données de Pod, en version 4.0.x (MariaDB/MySQL ou PostgreSQL).
 
@@ -23,7 +23,7 @@ Le système repose sur deux scripts principaux :
 
 ## Exportation des données de Pod v3
 
-### Description
+### Description de l’export
 
 Ce premier script exporte les données de la base de données Pod v3.8.x vers un fichier JSON. Il prend en charge les bases de données MariaDB/MySQL et PostgreSQL et adapte les requêtes SQL en conséquence.
 
@@ -34,14 +34,14 @@ La dernière version de ce script `export_data_from_v3_to_v4.py` est accessible 
 Il est nécessaire de récupérer ce script et de le positionner dans le répertoire `pod/video/management/commands`, avec les bons droits.
 {: .alert .alert-warning}
 
-### Fonctionnalités clés
+### Fonctionnalités clés de l’export
 
 - Exporte les tables spécifiées de la base de données Pod v3 vers un fichier JSON.
 - Prend en charge les bases de données MariaDB/MySQL et PostgreSQL.
 - Crée un répertoire pour stocker les données exportées s'il n'existe pas déjà.
 - Fournit des messages détaillés de succès et d'erreur.
 
-### Remarques importantes
+### Remarques importantes pour l’export
 
 - Le fichier JSON sera généré à ce niveau : `BASE_DIR/data_from_v3_to_v4/v3_exported_tables.json`.
   - Exemple : `/usr/local/django_projects/data_from_v3_to_v4/v3_exported_tables.json`.
@@ -51,7 +51,7 @@ Vérifier votre `custom/settings_local.py` pour trouver le répertoire configur�
 
 - Ce script peut être exécuté autant de fois que nécessaire ; le fichier JSON est régénéré à chaque exécution.
 
-### Utilisation
+### Exportation
 
 Exécutez le script depuis un serveur Pod v3 en utilisant la commande suivante :
 
@@ -63,11 +63,11 @@ python manage.py export_data_from_v3_to_v4
 
 ## Importation des données dans Pod v4
 
-### Description
+### Description de l’import
 
 Ce script importe les données du fichier JSON généré précédemment dans une base de données de Pod v4. Il prend en charge les bases de données MariaDB/MySQL et PostgreSQL, lit les données du fichier JSON spécifié, les traite et les insère dans les tables appropriées de la base de données de Pod v4.
 
-### Fonctionnalités clés
+### Fonctionnalités clés de l’import
 
 - Importe un fichier JSON généré avec les tables spécifiées de la base de données Pod v3.
 - Prend en charge les bases de données MariaDB/MySQL et PostgreSQL.
@@ -77,7 +77,7 @@ Ce script importe les données du fichier JSON généré précédemment dans une
 - Peut exécuter une commande Bash pour créer la base de données et initialiser les données.
 - Prend en charge une gestion sécurisée des erreurs et un mode de simulation.
 
-### Remarques importantes
+### Remarques importantes pour l’import
 
 - Le fichier JSON doit être trouvé à `BASE_DIR/data_from_v3_to_v4/v3_exported_tables.json`.
   - Exemple : `/usr/local/django_projects/data_from_v3_to_v4/v3_exported_tables.json`.
@@ -105,7 +105,7 @@ Vérifier votre `custom/settings_local.py` pour trouver le répertoire configur�
 python manage.py index_videos --all
 ```
 
-### Utilisation
+### Importation
 
 Exécutez le script en utilisant la commande de gestion :
 
@@ -143,4 +143,5 @@ Bien entendu, il est possible de mixer les différents arguments.
 
 ---
 
-En suivant ces instructions, vous devriez pouvoir migrer avec succès votre base de données de Pod v3.8.x vers Pod v4.0.x.
+En suivant ces instructions, vous devriez pouvoir migrer avec succès
+ votre base de données de Pod v3.8.x vers Pod v4.0.x.

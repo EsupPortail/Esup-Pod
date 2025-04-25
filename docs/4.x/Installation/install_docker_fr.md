@@ -26,7 +26,7 @@ puis
 (django_pod4) pod@pod:~/django_projects$ cd podv4/
 ```
 
-L’ensemble des fichiers dockerfile se trouvent dans le répertoire _/dockerfile-dev-with-volumes_
+L’ensemble des fichiers dockerfile se trouvent dans le répertoire `/dockerfile-dev-with-volumes`
 
 Pour faciliter la contruction de la stack plusieurs commandes préfixées de docker-xxx ont été ajoutées dans le fichier _Makefile_ est disponible à la racine du projet et utilise le fichier _env.dev_ pour les paramètres de construction.
 
@@ -110,7 +110,7 @@ WEBPUSH_SETTINGS = {
 #### Construction des conteneurs
 
 - Se positionner à la racine du projet
-- Sous windows, devez remplacer _make_ par _make.bat_.
+- Sous windows, devez remplacer `make` par `make.bat`.
 
 ##### Build et démarrage de la stack
 
@@ -146,7 +146,7 @@ L’application esup-pod est dès lors disponible via cette URL : pod.localhost
 
 ##### Arrêt de la stack
 
-`CTRL+C` dans la fenetre depuis laquelle l’application esup-pod a été lancée
+`CTRL+C` dans la fenêtre depuis laquelle l’application esup-pod a été lancée
 
 OU depuis une autre fenêtre via
 
@@ -181,8 +181,6 @@ Suppression des répertoires suivants :
 ### Conteneur ElasticSearch
 
 <http://elasticsearch.localhost:9200>
-
-#### elasticsearch:8.16.1
 
 #### OS/ARCH
 

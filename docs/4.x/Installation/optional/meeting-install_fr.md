@@ -37,7 +37,7 @@ Plus d’informations peuvent être retrouvées sur les sites suivants :
 
 ## L’infrastructure BBB ESR
 
-A ce jour, cette infrastructure est :
+À ce jour, cette infrastructure est :
 
 - accessible gratuitement à l’ensemble des établissements de l’enseignement supérieur,
 - financé par le MESR,
@@ -59,7 +59,7 @@ Il paraît alors pertinent d’utiliser cette infrastructure en lien avec Pod.
 
 *Schéma technique, en provenance de la présentation de Nicolas Can et Loïc Bonavent lors des Journées Esup-Pod#3 : "10 ans déjà" à l’Université d’Avignon, en mars 2024.*
 
-A l’université de Montpellier, nous utilisons un tenant BBB ESR spécifique à notre établissement.
+À l’université de Montpellier, nous utilisons un tenant BBB ESR spécifique à notre établissement.
 
 Un canal de messagerie instantanée dédié est accessible sur le RocketChat d’Esup : [https://rocket.esup-portail.org/channel/plateformes_numeriques_ESR](https://rocket.esup-portail.org/channel/plateformes_numeriques_ESR)
 
@@ -119,7 +119,7 @@ L’édition d’une réunion permet à l’usager de choisir ses options à sa 
 
 Après avoir enregistré une réunion BigBlueButton, l’enregistrement apparaîtra automatiquement - au bout d’un certain temps - dans l’interface d’enregistrements.
 
-A ce moment là, l’usager recevra un email l’avertissant de la disponibilité de l’enregistrement.
+À ce moment là, l’usager recevra un email l’avertissant de la disponibilité de l’enregistrement.
 
 ![Interface d’enregistrements](meeting_screens/recordings.webp)
 

@@ -195,11 +195,9 @@ Here are some commands useful for operating the SIPMediaGW application:
 | Commands | Comments |
 | --- | --- |
 | `sudo systemctl restart sipmediagw` | Restart the sipmediagw service |
-| `sudo systemctl status sipmediagw` | Check the status of the sipmediagw service.
-Note: On the 1st start, the following error is normal: {'res':'error','type':'The gateway failed to launch'} |
+| `sudo systemctl status sipmediagw` | Check the status of the sipmediagw service. Note: On the 1st start, the following error is normal: {'res':'error','type':'The gateway failed to launch'} |
 | `sudo docker ps` | Allows you to see the running containers, particularly renater/sipmediagw:1.5.5 during a webinar |
-| `sudo docker logs container_id` | Allows you to see the logs of sipmediagw during a webinar
-container_id corresponds to the id of the renater/sipmediagw:1.5.5 container |
+| `sudo docker logs container_id` | Allows you to see the logs of sipmediagw during a webinar. `container_id` corresponds to the id of the renater/sipmediagw:1.5.5 container |
 {: .table .table-striped}
 
 ## Configuration and additional actions in Pod
@@ -211,8 +209,7 @@ Here is the necessary configuration to be done in your **settings_local.py**:
 | Parameter | Default value | Description |
 | --- | --- | --- |
 | USE_MEETING_WEBINAR | False | Enable Webinar mode for the meetings module |
-| MEETING_WEBINAR_FIELDS | ("is_webinar", "enable_chat",) | Allows you to define the additional fields of the webinar creation form.
-These additional fields are displayed directly on the webinar form page. |
+| MEETING_WEBINAR_FIELDS | ("is_webinar", "enable_chat",) | Allows you to define the additional fields of the webinar creation form. These additional fields are displayed directly on the webinar form page. |
 | MEETING_WEBINAR_AFFILIATION | "['faculty', 'employee', 'staff']" | Access groups or affiliations of people authorized to create a webinar |
 | MEETING_WEBINAR_GROUP_ADMIN | webinar admin | Group of people authorized to create a webinar |
 {: .table .table-striped}
