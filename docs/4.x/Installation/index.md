@@ -6,6 +6,10 @@ lang: fr
 
 # Installation de Pod v4.x
 
+## Compatibilités et prérequis
+
+* [Compatibilités et prérequis](compatibility-and-requirements_fr)
+
 ## Installation
 
 * [Installation standard](install_standalone_fr)
@@ -33,5 +37,9 @@ lang: fr
 ## Migration
 
 * [Migration des données entre la version 3 et la version 4](migrate_from_v3_to_v4_fr)
+
+## Conseils et astuces, problèmes courants, FAQ
+
+* [Conseils et astuces](tricks_fr)
 
 > Work in progress...

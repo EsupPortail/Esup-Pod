@@ -6,6 +6,10 @@ lang: en
 
 # Esup-Pod v4 Install instructions
 
+## Compatibility and requirements
+
+* [Compatibility and requirements](compatibility-and-requirements_en)
+
 ## First installation
 
 * [Installation stand-alone](install_standalone_en)
@@ -33,5 +37,9 @@ lang: en
 ## Migration
 
 * [Data migration from version 3 to version 4](migrate_from_v3_to_v4_en)
+
+## Tips and tricks, common problems, FAQ
+
+* [Tips and tricks](tricks_en)
 
 > Work in progress...
