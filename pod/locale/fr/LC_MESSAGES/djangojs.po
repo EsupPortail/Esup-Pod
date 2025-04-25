@@ -190,7 +190,7 @@ msgstr "Une légende / sous-titre ne peut comporter plus de 110 caractères."
 
 #: pod/completion/static/js/caption_maker.js
 msgid ""
-"For your video's accessibility, we recommend a maximum of 80 characters."
+"For your video’s accessibility, we recommend a maximum of 80 characters."
 msgstr ""
 "Pour l’accessibilité de votre vidéo, nous recommandons un maximum de 80 "
 "caractères."

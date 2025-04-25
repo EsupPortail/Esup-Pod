@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 14:19+0100\n"
+"POT-Creation-Date: 2025-04-25 08:28+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -109,10 +109,10 @@ msgstr "Veuillez entrer un titre contenant entre 1 et %(max)s caractères."
 
 #: pod/ai_enhancement/forms.py
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html pod/live/models.py
-#: pod/main/forms.py pod/main/models.py pod/playlist/forms.py
-#: pod/playlist/models.py pod/video/forms.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#: pod/live/models.py pod/main/forms.py pod/main/models.py
+#: pod/playlist/forms.py pod/playlist/models.py pod/video/forms.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/dashboard.html
 msgid "Description"
 msgstr "Description"
@@ -862,7 +862,7 @@ msgstr "Liste des chapitres"
 #: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 #: pod/speaker/templates/speaker/list_speaker.html
 #: pod/speaker/templates/speaker/speakers_management.html
 #: pod/video/templates/channel/list_theme.html
@@ -1768,12 +1768,16 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid "Hyperlinks allow you to add external links related to your video."
-msgstr "Les hyperliens vous permettent d'ajouter des liens externes liés à votre vidéo."
-
+msgstr ""
+"Les hyperliens vous permettent d’ajouter des liens externes liés à votre "
+"vidéo."
 
 #: pod/completion/templates/video_completion.html
-msgid "You can add hyperlinks to this video by providing the URL and a description."
-msgstr "Vous pouvez ajouter des hyperliens à cette vidéo en fournissant l'URL et une description."
+msgid ""
+"You can add hyperlinks to this video by providing the URL and a description."
+msgstr ""
+"Vous pouvez ajouter des hyperliens à cette vidéo en fournissant l’URL et une "
+"description."
 
 #: pod/completion/templates/video_completion.html
 msgid ""
@@ -1835,16 +1839,18 @@ msgid "The speaker has been saved."
 msgstr "L’intervenant a été enregistré."
 
 #: pod/completion/views.py
+#, python-format
 msgid "Add a new hyperlink to the video “%s”"
 msgstr "Ajouter un nouvel hyperlien à la vidéo « %s »"
 
 #: pod/completion/views.py
 msgid "The hyperlink has been saved."
-msgstr "L'hyperlien a été enregistré."
+msgstr "L’hyperlien a été enregistré."
 
 #: pod/completion/views.py
+#, python-format
 msgid "Edit the hyperlink “%s”"
-msgstr "Modifier l'hyperlien « %s »"
+msgstr "Modifier l’hyperlien « %s »"
 
 #: pod/cut/apps.py pod/cut/models.py
 msgid "Video cuts"
@@ -2499,59 +2505,64 @@ msgstr ""
 
 #: pod/hyperlinks/admin.py
 msgid "Hyperlink Description"
-msgstr "Description de l'hyperlien"
+msgstr "Description de l’hyperlien"
 
+#: pod/hyperlinks/admin.py
 msgid "Hyperlink URL"
-msgstr "URL de l'hyperlien"
+msgstr "URL de l’hyperlien"
 
 #: pod/hyperlinks/forms.py
 msgid "You can search hyperlink by URL or description."
 msgstr "Vous pouvez rechercher un hyperlien par URL ou par description."
 
 #: pod/hyperlinks/templates/hyperlinks/add_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "Add Hyperlink"
 msgstr "Ajouter un hyperlien"
 
 #: pod/hyperlinks/templates/hyperlinks/edit_hyperlink.html
 msgid "Edit Hyperlink"
-msgstr "Modifier l'hyperlien"
+msgstr "Modifier l’hyperlien"
 
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "List of hyperlinks"
 msgstr "Liste des hyperliens"
 
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html pod/live/models.py
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#: pod/live/models.py
 msgid "URL"
 msgstr "URL"
 
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
+#, python-format
 msgid "Delete the hyperlink “%(hyperlink_description)s”"
-msgstr "Supprimer l'hyperlien « %(hyperlink_description)s »"
+msgstr "Supprimer l’hyperlien « %(hyperlink_description)s »"
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "Manage Hyperlinks"
 msgstr "Gérer les Hyperliens"
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "List of hyperlinks I can manage."
 msgstr "Liste des hyperliens que je peux gérer."
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#, python-format
 msgid "Edit the hyperlink “%(hyperlink_url)s”"
-msgstr "Modifier l'hyperlien « %(hyperlink_url)s »"
+msgstr "Modifier l’hyperlien « %(hyperlink_url)s »"
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "Please confirm you want to delete the hyperlink"
-msgstr "Veuillez confirmer que vous souhaitez supprimer l'hyperlien"
+msgstr "Veuillez confirmer que vous souhaitez supprimer l’hyperlien"
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#, python-format
 msgid "Delete the hyperlink “%(hyperlink_url)s”"
-msgstr "Supprimer l'hyperlien « %(hyperlink_url)s »"
+msgstr "Supprimer l’hyperlien « %(hyperlink_url)s »"
 
-#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 msgid "No hyperlinks found."
 msgstr "Aucun hyperlien trouvé."
 
@@ -3132,7 +3143,7 @@ msgstr ""
 #, python-format
 msgid ""
 "This video “%(name)s” was uploaded to Pod; its origin is PeerTube: <a "
-"href='%(url)s' target='blank'>%(url)s</a>."
+"href=\"%(url)s\" target=\"blank\">%(url)s</a>."
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "PeerTube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>."
@@ -3694,7 +3705,7 @@ msgstr "Ajouté par :"
 #: pod/video/templates/videos/video-info.html
 #, python-format
 msgid "Show video list of user “%(video_user_name)s”"
-msgstr "Afficher la liste des vidéos de l’utilisateur « %(video_user_name)s »"
+msgstr "Afficher la liste des vidéos de l’utilisateur « %(video_user_name)s »"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -5084,16 +5095,20 @@ msgid "Disciplines"
 msgstr "Disciplines"
 
 #: pod/main/templates/base.html
+msgid "Main navigation"
+msgstr "Navigation principale"
+
+#: pod/main/templates/base.html
+msgid "Breadcrumb"
+msgstr "Fil d’Ariane"
+
+#: pod/main/templates/base.html
 msgid "Side menu"
 msgstr "Menu latéral"
 
 #: pod/main/templates/base.html
 msgid "Toggle side menu"
 msgstr "Afficher/masquer le menu latéral"
-
-#: pod/main/templates/base.html
-msgid "Breadcrumb"
-msgstr "Fil d’Ariane"
 
 #: pod/main/templates/base.html
 msgid ""
@@ -6193,12 +6208,12 @@ msgstr ""
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
 "Shortly after clicking the “Start the webinar” button, the live stream will "
-"be available to users on the <i class='bi bi-broadcast mx-1' aria-"
-"hidden='true'></i> <strong>Lives</strong> page."
+"be available to users on the <i class=\"bi bi-broadcast mx-1\" aria-"
+"hidden=\"true\"></i> <strong>Lives</strong> page."
 msgstr ""
 "Peu de temps après avoir cliqué sur le bouton « Démarrer le webinaire », le "
-"direct sera disponible pour les utilisateurs sur la page <i class='bi bi-"
-"broadcast mx-1' aria-hidden='true'></i> <strong>Directs</strong>."
+"direct sera disponible pour les utilisateurs sur la page <i class=\"bi bi-"
+"broadcast mx-1\" aria-hidden=\"true\"></i> <strong>Directs</strong>."
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
@@ -6224,25 +6239,25 @@ msgstr ""
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
 "Once started, you can access the webinar information and additional actions "
-"via <i class='bi bi-person-video2 pod-add mx-1' aria-hidden='true'></i> "
+"via <i class=\"bi bi-person-video2 pod-add mx-1\" aria-hidden=\"true\"></i> "
 "<strong>Show webinar informations</strong> in the meetings list."
 msgstr ""
 "Une fois démarré, vous pouvez accéder aux informations sur le webinaire et à "
-"des actions supplémentaires via <i class='bi bi-person-video2 pod-add mx-1' "
-"aria-hidden='true'></i> <strong>Afficher les informations sur le webinaire</"
-"strong> dans la liste des réunions."
+"des actions supplémentaires via <i class=\"bi bi-person-video2 pod-add "
+"mx-1\" aria-hidden=\"true\"></i> <strong>Afficher les informations sur le "
+"webinaire</strong> dans la liste des réunions."
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
 "As you have the appropriate rights, once the webinar has been created, you "
-"can access additional settings for the created event via <i class='bi bi-"
-"broadcast mx-1' aria-hidden='true'></i> <strong>My Events</strong> in the "
+"can access additional settings for the created event via <i class=\"bi bi-"
+"broadcast mx-1\" aria-hidden=\"true\"></i> <strong>My Events</strong> in the "
 "main menu."
 msgstr ""
 "Comme vous disposez des droits appropriés, une fois le webinaire créé, vous "
 "pouvez accéder à des paramètres supplémentaires pour l’événement créé via <i "
-"class='bi bi-broadcast mx-1' aria-hidden='true'></i> <strong>Mes événements</"
-"strong> dans le menu principal."
+"class=\"bi bi-broadcast mx-1\" aria-hidden=\"true\"></i> <strong>Mes "
+"événements</strong> dans le menu principal."
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid "Recommendations"
@@ -6901,15 +6916,6 @@ msgid "Private"
 msgstr "Privé"
 
 #: pod/playlist/models.py
-#, python-brace-format
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
-msgstr ""
-"Veuillez entrer un titre contenant entre 1 et "
-"{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
-
-#: pod/playlist/models.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
@@ -7311,6 +7317,10 @@ msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
+msgid "Delete the playlist"
+msgstr "Supprimer la liste de lecture"
+
+#: pod/playlist/views.py
 #, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr "Modifier la liste de lecture « %(pname)s »"
@@ -7710,7 +7720,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -7749,11 +7759,11 @@ msgstr "Choix"
 
 #: pod/quiz/models.py
 msgid ""
-"Choices must be like this: {'choice 1': true, 'choice 2': false, ...} | true "
-"for the right choice, false for the wrong choices."
+"Choices must be like this: {\"choice 1\": true, \"choice 2\": false, …} | "
+"true for the right choice, false for the wrong choices."
 msgstr ""
-"Les choix doivent ressembler à ceci : {'choix 1': true, 'choix 2': false, …} "
-"| true pour le bon choix, false pour les mauvais choix."
+"Les choix doivent ressembler à ceci : {\"choix 1\": true, \"choix 2\": "
+"false, …} | true pour le bon choix, false pour les mauvais choix."
 
 #: pod/quiz/models.py
 msgid "Single choice questions"
@@ -7773,11 +7783,12 @@ msgstr "Format JSON invalide pour les choix."
 
 #: pod/quiz/models.py
 msgid ""
-"Choices must be like this: {'choice 1': true, 'choice 2': true, 'choice 3': "
-"false, ...} | true for the right choice, false for the wrong choices."
+"Choices must be like this: {\"choice 1\": true, \"choice 2\": true, \"choice "
+"3\": false, …} | true for the right choice, false for the wrong choices."
 msgstr ""
-"Les choix doivent ressembler à ceci : {'choix 1': true, 'choix 2': true, "
-"'choix 3': false, …} | true pour le bon choix, false pour les mauvais choix."
+"Les choix doivent ressembler à ceci : {\"choix 1\": true, \"choix 2\": true, "
+"\"choix 3\": false, …} | true pour le bon choix, false pour les mauvais "
+"choix."
 
 #: pod/quiz/models.py
 msgid "Multiple choice questions"
@@ -7913,7 +7924,7 @@ msgstr "Votre score est de :"
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "That’s great! Bravo!"
-msgstr "C’est super ! Bravo !"
+msgstr "C’est super ! Bravo !"
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Can do better."
@@ -7921,7 +7932,7 @@ msgstr "Peut mieux faire."
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "It’s not terrible, but there’s room for improvement!"
-msgstr "Ce n’est pas terrible, mais de l’amélioration est possible !"
+msgstr "Ce n’est pas terrible, mais de l’amélioration est possible !"
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Error found in form"
@@ -8555,7 +8566,7 @@ msgstr "Aucune fonction associée"
 #: pod/speaker/templates/speaker/speakers_management.html
 #, python-format
 msgid "Edit the speaker “%(speaker_firstname)s %(speaker_lastname)s”"
-msgstr "Modifier l’intervenant « %(speaker_firstname)s %(speaker_lastname)s »"
+msgstr "Modifier l’intervenant « %(speaker_firstname)s %(speaker_lastname)s »"
 
 #: pod/speaker/templates/speaker/speakers_management.html
 msgid "Please confirm you want to delete the speaker"
@@ -8564,7 +8575,7 @@ msgstr "Veuillez confirmer que vous souhaitez supprimer l’intervenant"
 #: pod/speaker/templates/speaker/speakers_management.html
 #, python-format
 msgid "Delete the speaker “%(speaker_firstname)s %(speaker_lastname)s”"
-msgstr "Supprimer l’intervenant « %(speaker_firstname)s %(speaker_lastname)s »"
+msgstr "Supprimer l’intervenant « %(speaker_firstname)s %(speaker_lastname)s »"
 
 #: pod/speaker/templates/speaker/speakers_management.html
 msgid "No speakers found."
@@ -8778,7 +8789,7 @@ msgstr "Visibilité"
 
 #: pod/video/forms.py
 msgid "In “Public” mode, the content is visible to everyone."
-msgstr "Dans le mode « Public », le contenu est visible par tout le monde."
+msgstr "Dans le mode « Public », le contenu est visible par tout le monde."
 
 #: pod/video/forms.py
 msgid ""
@@ -8793,7 +8804,7 @@ msgstr ""
 msgid ""
 "In “Restricted access” mode, you can choose the restrictions for the video."
 msgstr ""
-"En mode « Accès restreint », vous pouvez choisir les restrictions pour la "
+"En mode « Accès restreint », vous pouvez choisir les restrictions pour la "
 "video."
 
 #: pod/video/forms.py
@@ -8802,7 +8813,7 @@ msgid ""
 "anybody willing to watch your content. You can add tokens for allow direct "
 "access by link."
 msgstr ""
-"En mode « Accès restreint », vous pouvez ajouter un mot de passe qui sera "
+"En mode « Accès restreint », vous pouvez ajouter un mot de passe qui sera "
 "demandé à toute personne souhaitant regarder votre contenu. Vous pouvez "
 "ajouter des jetons pour permettre un accès direct par lien."
 
@@ -8823,7 +8834,7 @@ msgid ""
 "In “Restricted access” mode, you can restrict the content access to only "
 "people who can log in"
 msgstr ""
-"En mode « Accès restreint », vous pouvez restreindre l’accès au contenu aux "
+"En mode « Accès restreint », vous pouvez restreindre l’accès au contenu aux "
 "personnes qui peuvent se connecter"
 
 #: pod/video/forms.py
@@ -8831,7 +8842,7 @@ msgid ""
 "In “Restricted access” mode, you can restrict the content access to only "
 "people who are in these groups."
 msgstr ""
-"Dans le mode « Accès restreint », vous pouvez restreindre l’accès au contenu "
+"Dans le mode « Accès restreint », vous pouvez restreindre l’accès au contenu "
 "aux personnes qui sont dans ces groupes."
 
 #: pod/video/forms.py pod/video/templates/videos/add_video.html
@@ -8961,7 +8972,7 @@ msgstr "Bonjour %(name)s,"
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid ""
-"Your video intitled <a href=\"//%(url)s\">\"%(title)s\"</a> will soon arrive "
+"Your video entitled <a href=\"//%(url)s\">“%(title)s”</a> will soon arrive "
 "at the deletion deadline."
 msgstr ""
 "Votre vidéo intitulée « <a href=\"//%(url)s\">%(title)s</a> » arrive bientôt "
@@ -8969,41 +8980,33 @@ msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
+msgid "It will be deleted on %(date_delete)s."
+msgstr "Elle sera supprimée le %(date_delete)s."
+
+#: pod/video/management/commands/check_obsolete_videos.py
 msgid ""
-"It will be deleted on %(date_delete)s.<br>\n"
-"If you want to keep it, "
+"If you want to keep it, you can change the removal date by editing your "
+"video:"
 msgstr ""
-"Elle sera supprimée le %(date_delete)s.<br>\n"
-"Si vous souhaitez la conserver, "
+"Si vous souhaitez la conserver, vous pouvez modifier la date de suppression "
+"en éditant votre vidéo :"
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid ""
-"you can change the removal date by editing your video:</p>\n"
-"<p><a href='%(scheme)s:%(url)s' rel='noopener' target='_blank'>%(scheme)s:"
-"%(url)s</a></p>\n"
+"Your video entitled “%(title)s” will soon arrive at the deletion deadline."
 msgstr ""
-"vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
-"target=\"_blank\">%(scheme)s:%(url)s</a></p>\n"
-"\n"
-
-#: pod/video/management/commands/check_obsolete_videos.py
-#, python-format
-msgid ""
-"Your video intitled \"%(title)s\" will soon arrive at the deletion deadline."
-msgstr ""
-"Votre vidéo intitulée \"%(title)s\" arrive bientôt à la date limite de "
+"Votre vidéo intitulée « %(title)s » arrive bientôt à la date limite de "
 "suppression."
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid ""
-"please contact the manager(s) in charge of your establishment at this "
-"address(es): %(email_address)s</p>\n"
+"If you want to keep it, please contact the manager(s) in charge of your "
+"establishment at this address(es): %(email_address)s."
 msgstr ""
-"veuillez contacter le(s) gestionnaire(s) en charge de votre établissement à "
-"l’adresse suivante : %(email_address)s</p>\n"
+"Si vous souhaitez la conserver, veuillez contacter le(s) gestionnaire(s) en "
+"charge de votre établissement à l’adresse suivante : %(email_address)s."
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
@@ -9172,7 +9175,7 @@ msgid ""
 "#ff0000 for red"
 msgstr ""
 "La couleur d’arrière-plan pour votre chaîne. Vous pouvez utiliser le format "
-"#. i.e.: #ff0000 pour le rouge"
+"#. exemple : #ff0000 pour le rouge"
 
 #: pod/video/models.py
 msgid "The style will be added to your channel to show it"
@@ -9426,7 +9429,7 @@ msgstr "Nom du jeton"
 
 #: pod/video/models.py
 msgid "Change me!"
-msgstr "Changez-moi !"
+msgstr "Changez-moi !"
 
 #: pod/video/models.py
 msgid "Video access token"
@@ -10047,7 +10050,7 @@ msgstr "Mots clés :"
 #: pod/video/templates/videos/video-info.html
 #, python-format
 msgid "Show video list having tag “%(video_tag)s”"
-msgstr "Afficher la liste des vidéos ayant le tag « %(video_tag)s »"
+msgstr "Afficher la liste des vidéos ayant le tag « %(video_tag)s »"
 
 #: pod/video/templates/videos/video-info.html
 msgid "No information available"
@@ -10087,7 +10090,7 @@ msgstr[1] " Chaînes :"
 #: pod/video/templates/videos/video-info.html
 #, python-format
 msgid "Show video list of type “%(type_title)s”"
-msgstr "Afficher la liste des vidéos de type « %(type_title)s »"
+msgstr "Afficher la liste des vidéos de type « %(type_title)s »"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Main language:"
@@ -10108,7 +10111,7 @@ msgstr "Discipline(s) :"
 #: pod/video/templates/videos/video-info.html
 #, python-format
 msgid "Show video list of discipline “%(discipline_title)s”"
-msgstr "Afficher la liste des vidéos de la discipline « %(discipline_title)s »"
+msgstr "Afficher la liste des vidéos de la discipline « %(discipline_title)s »"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Licence:"
@@ -10955,11 +10958,26 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#, python-format
+#~ msgid ""
+#~ "you can change the removal date by editing your video:</p>\n"
+#~ "<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
+#~ "target=\"_blank\">%(scheme)s:%(url)s</a></p>"
+#~ msgstr ""
+#~ "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
+#~ "<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
+#~ "target=\"_blank\">%(scheme)s:%(url)s</a></p>"
+
+#, python-brace-format
+#~ msgid ""
+#~ "Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+#~ "characters."
+#~ msgstr ""
+#~ "Veuillez entrer un titre contenant entre 1 et "
+#~ "{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
+
 #~ msgid "Summary"
 #~ msgstr "Description"
-
-#~ msgid "Delete the playlist"
-#~ msgstr "Supprimer la liste de lecture"
 
 #, python-format
 #~ msgid "tags_for_model tag was given an invalid model: %s"

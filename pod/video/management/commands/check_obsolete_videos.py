@@ -225,39 +225,43 @@ class Command(BaseCommand):
             msg_html = _("Hello %(name)s,") % {"name": name}
             msg_html += "<br>\n"
             msg_html += "<p>" + _(
-                'Your video intitled <a href="//%(url)s">"%(title)s"</a> will soon arrive'
+                'Your video entitled <a href="//%(url)s">“%(title)s”</a> will soon arrive'
                 + " at the deletion deadline."
             ) % {"url": video.get_full_url(), "title": video.title}
             msg_html += "<br>\n"
             msg_html += _(
-                "It will be deleted on %(date_delete)s.<br>\n"
-                + "If you want to keep it, "
+                "It will be deleted on %(date_delete)s."
             ) % {"date_delete": video.date_delete}
+            msg_html += "</p>\n<p>"
             msg_html += _(
-                "you can change the removal date "
-                + "by editing your video:</p>\n"
-                + "<p><a href='%(scheme)s:%(url)s' "
-                + "rel='noopener' target='_blank'>"
-                + "%(scheme)s:%(url)s</a></p>\n"
+                "If you want to keep it, "
+                + "you can change the removal date "
+                + "by editing your video:")
+            msg_html += (
+                "\n"
+                + "<a href=\"%(scheme)s:%(url)s\" "
+                + "rel=\"noopener\" target=\"_blank\">"
+                + "%(scheme)s:%(url)s</a></p>"
             ) % {"scheme": URL_SCHEME, "url": video.get_full_url()}
-            msg_html += "<p>" + _("Regards") + "</p>\n"
+            msg_html += "\n<p>" + _("Regards") + "</p>\n"
         else:
             msg_html = _("Hello %(name)s,") % {"name": name}
             msg_html += "<br>\n"
             msg_html += "<p>" + _(
-                'Your video intitled "%(title)s" will soon arrive '
+                'Your video entitled “%(title)s” will soon arrive '
                 + "at the deletion deadline."
             ) % {"title": video.title}
             msg_html += "<br>\n"
             msg_html += _(
-                "It will be deleted on %(date_delete)s.<br>\n"
-                + "If you want to keep it, "
+                "It will be deleted on %(date_delete)s."
             ) % {"date_delete": video.date_delete}
+            msg_html += "<br>\n"
             msg_html += _(
-                "please contact the manager(s) in charge of your "
-                + "establishment at this address(es): %(email_address)s</p>\n"
+                "If you want to keep it, "
+                + "please contact the manager(s) in charge of your "
+                + "establishment at this address(es): %(email_address)s."
             ) % {"email_address": ", ".join(self.get_manager_emails(video))}
-            msg_html += "<p>" + _("Regards") + "</p>\n"
+            msg_html += "</p>\n<p>" + _("Regards") + "</p>\n"
 
         to_email = [video.owner.email]
         for additional in video.additional_owners.all():
