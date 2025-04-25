@@ -229,18 +229,19 @@ class Command(BaseCommand):
                 + " at the deletion deadline."
             ) % {"url": video.get_full_url(), "title": video.title}
             msg_html += "<br>\n"
-            msg_html += _(
-                "It will be deleted on %(date_delete)s."
-            ) % {"date_delete": video.date_delete}
+            msg_html += _("It will be deleted on %(date_delete)s.") % {
+                "date_delete": video.date_delete
+            }
             msg_html += "</p>\n<p>"
             msg_html += _(
                 "If you want to keep it, "
                 + "you can change the removal date "
-                + "by editing your video:")
+                + "by editing your video:"
+            )
             msg_html += (
                 "\n"
-                + "<a href=\"%(scheme)s:%(url)s\" "
-                + "rel=\"noopener\" target=\"_blank\">"
+                + '<a href="%(scheme)s:%(url)s" '
+                + 'rel="noopener" target="_blank">'
                 + "%(scheme)s:%(url)s</a></p>"
             ) % {"scheme": URL_SCHEME, "url": video.get_full_url()}
             msg_html += "\n<p>" + _("Regards") + "</p>\n"
@@ -248,13 +249,13 @@ class Command(BaseCommand):
             msg_html = _("Hello %(name)s,") % {"name": name}
             msg_html += "<br>\n"
             msg_html += "<p>" + _(
-                'Your video entitled “%(title)s” will soon arrive '
+                "Your video entitled “%(title)s” will soon arrive "
                 + "at the deletion deadline."
             ) % {"title": video.title}
             msg_html += "<br>\n"
-            msg_html += _(
-                "It will be deleted on %(date_delete)s."
-            ) % {"date_delete": video.date_delete}
+            msg_html += _("It will be deleted on %(date_delete)s.") % {
+                "date_delete": video.date_delete
+            }
             msg_html += "<br>\n"
             msg_html += _(
                 "If you want to keep it, "
