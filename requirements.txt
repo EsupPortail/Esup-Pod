@@ -16,7 +16,7 @@ sorl-thumbnail==12.11.0
 django-lti-provider==1.0.0
 django-auth-mixins==1.0.1
 pandas
-django-shibboleth-remoteuser
+django-shibboleth-remoteuser@git+https://gitlab.gwdg.de/discuss-data/django-shibboleth-remoteuser
 django-select2
 django-redis
 chardet==5.2.0
@@ -35,4 +35,4 @@ djangorestframework-simplejwt==5.3.1
 django-pwa==2.0.1
 django-webpush==0.3.6
 defusedxml==0.7.1
-git+https://github.com/juliomalegria/django-chunked-upload.git@master
+django-chunked-upload@git+https://github.com/juliomalegria/django-chunked-upload.git@master
