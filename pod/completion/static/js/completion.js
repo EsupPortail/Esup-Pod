@@ -46,10 +46,12 @@ var ajaxfail = function (data, form) {
 };
 
 //  Hide/Show the add hyperlink button
-document.getElementById("add-hyperlink-btn").addEventListener("click", function () {
-  document.getElementById("hyperlink-form").style.display = "block";
-  this.style.display = "none";
-});
+document
+  .getElementById("add-hyperlink-btn")
+  .addEventListener("click", function () {
+    document.getElementById("hyperlink-form").style.display = "block";
+    this.style.display = "none";
+  });
 
 //SUBMIT
 
