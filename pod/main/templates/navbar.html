@@ -353,6 +353,12 @@
                   {% trans 'Speakers management' %}
                 </a>
               {% endif %}
+              {% if request.user.is_superuser and USE_HYPERLINKS %}
+                <a class="nav-item nav-link" href="{% url 'hyperlinks:hyperlinks_management' %}">
+                  <i class="bi bi-link-45deg pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'Hyperlinks management' %}
+                </a>
+              {% endif %}
               {% if USE_NOTIFICATIONS %}
                 <div class="nav-item">
                   <button class="nav-link" onclick="new bootstrap.Toast(document.querySelector('#notification-toast')).show()">

@@ -40,6 +40,7 @@ USE_QUIZ = getattr(settings, "USE_QUIZ", False)
 USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
 WEBTV_MODE = getattr(settings, "WEBTV_MODE", False)
 USE_DUPLICATE = getattr(settings, "USE_DUPLICATE", False)
+USE_HYPERLINKS = getattr(settings, "USE_HYPERLINKS", False)
 
 if USE_CAS:
     from django_cas_ng import views as cas_views
@@ -190,6 +191,12 @@ if USE_DRESSING:
 if USE_SPEAKER:
     urlpatterns += [
         path("speaker/", include("pod.speaker.urls", namespace="speaker")),
+    ]
+
+# HYPERLINKS
+if USE_HYPERLINKS:
+    urlpatterns += [
+        path("hyperlinks/", include("pod.hyperlinks.urls", namespace="hyperlinks")),
     ]
 
 # IMPORT_VIDEO
