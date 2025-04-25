@@ -71,9 +71,9 @@ This migration script is configurable and offers several possibilities:
 
 The script is designed to be configurable, with the ability to manage a certain number of recordings and to test it beforehand (using a dry mode).
 
-# Architecture of the Solution
+## Architecture of the Solution
 
-## Plugin `bbb-recorder`
+### Plugin `bbb-recorder`
 
 To convert BBB playback presentations, I based it on the GitHub project `bbb-recorder`: a plugin, independent of BigBlueButton, that allows converting - via a script - a BigBlueButton web presentation into a video file.
 
@@ -81,7 +81,7 @@ If needed, this plugin also allows live streaming (RTMP stream) of a BigBlueButt
 
 This plugin `bbb-recorder` had already been used for the old system, in Pod v2 (see [ESUP-Portail Documentation](https://www.esup-portail.org/wiki/x/AgCBNg)) and has been used successfully many times.
 
-### Functioning of `bbb-recorder`
+#### Functioning of `bbb-recorder`
 
 Running the `bbb-recorder` script performs the following steps:
 
@@ -89,13 +89,13 @@ Running the `bbb-recorder` script performs the following steps:
 2. Chrome visits the provided link corresponding to the BigBlueButton web presentation.
 3. It performs screen recording in the form of a video file.
 
-### Installation of `bbb-recorder` on Encoding Servers
+#### Installation of `bbb-recorder` on Encoding Servers
 
 The reference documentation is accessible [here](https://github.com/jibon57/bbb-recorder).
 
 For my part, on Debian 11 servers, here is what was done.
 
-#### Installation of Chrome and Prerequisites
+##### Installation of Chrome and Prerequisites
 
 ```bash
 sudo -i
@@ -108,7 +108,7 @@ apt-get -y install google-chrome-stable
 
 (info) Being an encoding server, I assume that `ffmpeg` is already installed. If necessary, `ffmpeg` must be installed.
 
-#### Effective Installation
+##### Effective Installation
 
 Here is the installation for a `pod` user.
 
@@ -131,7 +131,7 @@ If `bbb-recorder` was not installed with the correct user (`pod`), the generated
 
 In practice, this results in a 1° successful encoding: the BBB web presentation will be converted into a video file, but this video file will not be accessible to Pod and cannot be converted into a Pod video.
 
-### Configuration of `bbb-recorder`
+#### Configuration of `bbb-recorder`
 
 - Edit the configuration file `~/bbb-recorder/.env` to configure the RTMP (not useful here) and especially the video directory.
 
@@ -161,9 +161,9 @@ Thus, in the case of an installation in the home directory of the `pod` user, th
 
 It is necessary to ensure sufficient storage space is available.
 
-## Configuration
+### Configuration
 
-### Configuration in Pod
+#### Configuration in Pod
 
 Once `bbb-recorder` is installed on the various encoding servers, the `bbb` plugin must be configured directly in Pod, by editing the `custom/settings_local.py` file (on the encoders and on the frontend):
 
@@ -204,7 +204,7 @@ chown pod:nginx /data/www/pod/bbb-recorder/logs
 
 While automatic creation of these directories would have been possible, considering the potential issues related to architecture and permissions, it seemed preferable for the Pod administrator to create these two directories manually. They know what they are doing and can choose the location, permissions, or other aspects.
 
-### Script `migrate_bbb_recordings`
+#### Script `migrate_bbb_recordings`
 
 This script is accessible in Pod, in the `pod/video/management/commands/migrate_bbb_recordings` directory.
 
@@ -214,7 +214,7 @@ If you have a large number of recordings on an old version of BBB (tested in 2.2
 
 See [github.com/bigbluebutton/bigbluebutton/issues/10570](https://github.com/bigbluebutton/bigbluebutton/issues/10570)
 
-#### Script Functioning
+##### Script Functioning
 
 As mentioned above, this script offers 2 possibilities:
 
@@ -244,22 +244,22 @@ This script also allows you to:
 
 This script has been tested with Moodle 4.
 
-#### Internal Script Configuration
+##### Internal Script Configuration
 
-| Parameter                  | Description                                                                                                                                                       | Default Value / Format                                                                                                                                              |
-|---------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `SCRIPT_BBB_SERVER_URL`   | Old URL of the BigBlueButton/Scalelite server                                                                                                                  | `'https://bbb.univ.fr/'`                                                                                                                                                |
-| `SCRIPT_BBB_SECRET_KEY`   | BigBlueButton or Scalelite `LOADBALANCER_SECRET` key                                                                                                              | `'xxxxxxxxxx'`                                                                                                                                                          |
-| `SCRIPT_PLAYBACK_URL_23`  | Is the BBB version greater than 2.3, regarding playback URLs? Useful for reading presentations in 2.0 format (<=2.2) or 2.3 format (>=2.3)                         | `True`                                                                                                                                                                  |
-| `SCRIPT_RECORDER_ID`      | Recorder used to retrieve BBB recordings (useful with `--use-manual-claim`)                                                                                      | `1`                                                                                                                                                                     |
-| `SCRIPT_ADMIN_ID`         | Administrator to whom the recordings will be added if the moderators are not identified (useful with `--use-import-video`)                                        | `1`                                                                                                                                                                     |
-| `DB_PARAMS`               | Moodle database connection parameters (useful with `--use-import-video` and `--use-database-moodle`)                                                             | See details below                                                                                                                                                 |
-| `SCRIPT_INFORM`           | Informational message that will be set in Moodle (`mdl_bigbluebuttonbn.intro`)                                                                                   | *Preliminary message for the University of Montpellier*                                                                                                                 |
-| `IGNORED_SERVERS`         | List of servers to ignore                                                                                                                                       | `["not-a-moodle.univ.fr"]`                                                                                                                                              |
-| `USE_CACHE`               | Use the last BBB response stored in an XML file instead of re-running the request                                                                              | `False`                                                                                                                                                                 |
+| Parameter                | Description                                          | Default Value / Format   |
+|--------------------------|------------------------------------------------------|--------------------------|
+| `SCRIPT_BBB_SERVER_URL`  | Old URL of the BigBlueButton/Scalelite server        | `'https://bbb.univ.fr/'` |
+| `SCRIPT_BBB_SECRET_KEY`  | BigBlueButton or Scalelite `LOADBALANCER_SECRET` key | `'xxxxxxxxxx'`           |
+| `SCRIPT_PLAYBACK_URL_23` | Is the BBB version greater than 2.3, regarding playback URLs? Useful for reading presentations in 2.0 format (<=2.2) or 2.3 format (>=2.3) | `True` |
+| `SCRIPT_RECORDER_ID`     | Recorder used to retrieve BBB recordings (useful with `--use-manual-claim`) | `1` |
+| `SCRIPT_ADMIN_ID`        | Administrator to whom the recordings will be added if the moderators are not identified (useful with `--use-import-video`) | `1` |
+| `DB_PARAMS`              | Moodle database connection parameters (useful with `--use-import-video` and `--use-database-moodle`) | See details below |
+| `SCRIPT_INFORM`          | Informational message that will be set in Moodle (`mdl_bigbluebuttonbn.intro`) | *Preliminary message for the University of Montpellier* |
+| `IGNORED_SERVERS`        | List of servers to ignore   | `["not-a-moodle.univ.fr"]` |
+| `USE_CACHE`              | Use the last BBB response stored in an XML file instead of re-running the request | `False` |
 {: .table .table-striped}
 
-#### Format of `DB_PARAMS`
+##### Format of `DB_PARAMS`
 
 ```json
 {
@@ -282,100 +282,100 @@ This script has been tested with Moodle 4.
 }
 ```
 
-#### Script Arguments
+##### Script Arguments
 
-| Argument                     | Description                                                                                                                            | Default Value / Format |
-|-----------------------------|----------------------------------------------------------------------------------------------------------------------------------------|----------------------------|
-| `--use-manual-claim`        | Use manual claim                                                                                                                       | `False`                    |
-| `--use-import-video`        | Use video import module                                                                                                                 | `False`                    |
-| `--use-database-moodle`     | Use Moodle database to search for moderators (requires `--use-import-video` or `--use-export-csv`)                                    | `False`                    |
-| `--min-value-record-process`| Minimum value of recordings to process                                                                                                  | `1`                        |
-| `--max-value-record-process`| Maximum value of recordings to process                                                                                                  | `10000`                    |
-| `--dry`                     | Simulate what will be done                                                                                                             | `False`                    |
-| `--use-export-csv`          | Export recordings to CSV format (with `--use-database-moodle` to include moderators)                                                  | `False`                    |
+| Argument                    | Description                           | Default Value / Format |
+|-----------------------------|---------------------------------------|------------------------|
+| `--use-manual-claim`        | Use manual claim                      | `False` |
+| `--use-import-video`        | Use video import module               | `False` |
+| `--use-database-moodle`     | Use Moodle database to search for moderators (requires `--use-import-video` or `--use-export-csv`)| `False` |
+| `--min-value-record-process`| Minimum value of recordings to process | `1`     |
+| `--max-value-record-process`| Maximum value of recordings to process | `10000` |
+| `--dry`                     | Simulate what will be done             | `False` |
+| `--use-export-csv`          | Export recordings to CSV format (with `--use-database-moodle` to include moderators)            | `False` |
 {: .table .table-striped}
 
-#### Examples and Use Cases
+##### Examples and Use Cases
 
 ⚠️ Before executing this script without simulation, **remember to perform the necessary backups** (Pod database, Moodle database if write access is required).
 
-##### Initialization
+###### Initialization
 
 ```bash
 cd /usr/local/django_projects/podv3
 workon django_pod3
 ```
 
-##### 1. Claiming All Recordings (Simulation)
+###### 1. Claiming All Recordings (Simulation)
 
 ```bash
 python -W ignore manage.py migrate_bbb_recordings --use-manual-claim --dry
 ```
 
-##### 2. Claiming the Last 2 Recordings (Simulation)
+###### 2. Claiming the Last 2 Recordings (Simulation)
 
 ```bash
 python -W ignore manage.py migrate_bbb_recordings --min-value-record-process=1 --max-value-record-process=2 --use-manual-claim --dry &
 ```
 
-##### 3. External Video Import with Moodle Database (Simulation)
+###### 3. External Video Import with Moodle Database (Simulation)
 
 ```bash
 python -W ignore manage.py migrate_bbb_recordings --use-import-video --use-database-moodle --dry
 ```
 
-##### 4. External Video Import without Moodle Database (Last 10, Simulation)
+###### 4. External Video Import without Moodle Database (Last 10, Simulation)
 
 ```bash
 python -W ignore manage.py migrate_bbb_recordings --min-value-record-process=1 --max-value-record-process=10 --use-import-video --dry
 ```
 
-##### 5. CSV Export with Moodle Database (Last 10, Simulation)
+###### 5. CSV Export with Moodle Database (Last 10, Simulation)
 
 ```bash
 python3 manage.py migrate_bbb_recordings --use_export_csv --use-database-moodle --max-value-record-process=10 --dry
 ```
 
-## Operation
+### Operation
 
-### Script Output
+#### Script Output
 
 The script displays a set of information for each processed line; do not hesitate to run it in dry mode.
 ![Script](bbb-infrastructure-migration_screens/script.webp)
 
 > 💡 It is possible to run the script multiple times; this will not create duplicates. However, it may re-encode recordings that were already encoded during the first pass.
 
-### Administration Interface
+#### Administration Interface
 
-#### Recorder
+##### Recorder
 
 ![Recorder](bbb-infrastructure-migration_screens/administration_recorder.webp)
 
-#### List of Recordings
+##### List of Recordings
 
 ![List](bbb-infrastructure-migration_screens/administration_recordings.webp)
 
-#### Import of External Videos
+##### Import of External Videos
 
 ![Import](bbb-infrastructure-migration_screens/administration_import.webp)
 
-### Logs of the Solution
+#### Logs of the Solution
 
 Depending on your environment, Pod logs can be found in the `/var/log/syslog` file.
 
-#### Asynchronous Tasks (CELERY_TO_ENCODE = True)
+##### Asynchronous Tasks (CELERY_TO_ENCODE = True)
 
 On encoding servers, Celery logs are located in **/var/log/celery/worker1.log** (depending on your configuration, if you use multiple workers, you may have multiple files).
 
-#### RabbitMQ-Server
+##### RabbitMQ-Server
 
 If you use RabbitMQ-Server, on this server, you can find information in **/var/log/rabbitmq/rabbit@xxxxx.log**.
 
-#### bbb-recorder
+##### bbb-recorder
 
 The logs of `bbb-recorder` processes are accessible in the directory configured via **IMPORT_VIDEO_BBB_RECORDER_PATH/logs**.
 
-#### Deletion of External Recordings from the Video Import Module
+##### Deletion of External Recordings from the Video Import Module
 
 If you opted for the 2° possibility and the use of the video import module: on the day of the **complete shutdown of your old infrastructure**, the old links will no longer work.
 If you wish to delete the external recordings that concerned your old infrastructure, you can do so directly via an SQL query to be executed in the Pod database, namely:

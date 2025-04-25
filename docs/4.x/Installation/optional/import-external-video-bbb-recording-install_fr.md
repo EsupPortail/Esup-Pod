@@ -98,7 +98,7 @@ Après recherche, il s’avère que l’encodage se réalise par défaut avec le
 
 Pour modifier ce comportement, il est possible de jouer sur le fichier suivant :
 
-    - /usr/local/bigbluebutton/core/lib/recordandplayback/edl/video.rb : partie FFMPEG_WF_ARGS
+- `/usr/local/bigbluebutton/core/lib/recordandplayback/edl/video.rb` : partie `FFMPEG_WF_ARGS`
 
 ```py
 FFMPEG_WF_ARGS = [

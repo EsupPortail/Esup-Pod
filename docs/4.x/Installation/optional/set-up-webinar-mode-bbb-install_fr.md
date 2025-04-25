@@ -195,11 +195,9 @@ Voici quelques commandes utiles à l’exploitation de l’application SIPMediaG
 | Commandes | Commentaires |
 | --- | --- |
 |`sudo systemctl restart sipmediagw` | Redémarrage du service sipmediagw |
-|`sudo systemctl status sipmediagw` | Vérifie l’état du service sipmediagw.
-Remarque : au 1° démarrage, l’erreur suivante est normale: `{'res':'error','type':'The gateway failed to launch'}` |
+|`sudo systemctl status sipmediagw` | Vérifie l’état du service sipmediagw. Remarque : au 1° démarrage, l’erreur suivante est normale: `{'res':'error','type':'The gateway failed to launch'}` |
 | `sudo docker ps` | Permet de voir les containers qui tournent, en particulier renater/sipmediagw:1.5.5 lors d’un webinaire |
-| `sudo docker logs container_id` | Permet de voir les logs de sipmediagw lors d’un webinaire
-container_id correspond à l’id du container renater/sipmediagw:1.5.5 |
+| `sudo docker logs container_id` | Permet de voir les logs de sipmediagw lors d’un webinaire. `container_id` correspond à l’id du container renater/sipmediagw:1.5.5 |
 {: .table .table-striped}
 
 ## Configuration et actions complémentaires dans Pod
@@ -211,8 +209,7 @@ Voici la configuration nécessaire à réaliser dans son **settings_local.py** 
 | Paramètre | Valeur par défaut | Description |
 | --- | --- | --- |
 | USE_MEETING_WEBINAR | False | Activation du mode Webinaire pour le module des réunions |
-| MEETING_WEBINAR_FIELDS | ("is_webinar", "enable_chat",) | Permet de définir les champs complémentaires du formulaire de création d’un webinaire.
-Ces champs complémentaires sont affichés directement dans la page de formulaire d’un webinaire. |
+| MEETING_WEBINAR_FIELDS | ("is_webinar", "enable_chat",) | Permet de définir les champs complémentaires du formulaire de création d’un webinaire. Ces champs complémentaires sont affichés directement dans la page de formulaire d’un webinaire. |
 | MEETING_WEBINAR_AFFILIATION | `"['faculty', 'employee', 'staff']"` | Groupes d’accès ou affiliations des personnes autorisées à créer un webinaire |
 | MEETING_WEBINAR_GROUP_ADMIN | webinar admin | Groupe des personnes autorisées à créer un webinaire |
 {: .table .table-striped}

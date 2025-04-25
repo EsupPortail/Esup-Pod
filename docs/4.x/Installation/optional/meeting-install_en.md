@@ -78,9 +78,9 @@ To use the meetings module in Pod, simply perform the following mandatory config
 
 #### Additional Optional Configuration
 
-| Parameter | Default Value | Comments |
-|-----------|---------------|----------|
-| `BBB_LOGOUT_URL` |  | Indicate the URL to return to when you leave the BBB meeting |
+| Parameter          | Default Value | Comments |
+|--------------------|---------------|----------|
+| `BBB_LOGOUT_URL`   |      | Indicate the URL to return to when you leave the BBB meeting |
 | `BBB_MEETING_INFO` | `{}` | Dictionary of `key:value` to display information from a meeting session in BBB. |
 | `DEFAULT_MEETING_THUMBNAIL` | `/img/default-meeting.svg` | Default image displayed as a poster or thumbnail, used to present the meeting.<br>This image must be located in the `static` directory. |
 | `MEETING_DATE_FIELDS` | `("start", "start_time", "expected_duration",)` | List of fields in the meeting creation form. |

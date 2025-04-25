@@ -97,7 +97,7 @@ Some information about this menu:
 * **Recording Files**: List of recording files published via HTTP API Rest (and not FTP).
 * **Treatments**: List of files published from the recorder(s) and processed by the CRON job (see explanations below).
 
-> 💡Technically, we use the model **_pod/recorder/models.py_**, classes **_Recorder_**, **_Recording_**, and **_RecordingFileTreatment_**, and the administration page **_pod/recorder/admin.py_**.
+> 💡Technically, we use the model `pod/recorder/models.py`, classes `Recorder`, `Recording`, and `RecordingFileTreatment`, and the administration page `pod/recorder/admin.py`.
 
 Before publishing a video, it is necessary to define at least one recorder:
 
@@ -118,14 +118,14 @@ Here is the useful information for entering a recorder:
 
 ## Communication Between the Recorder and Pod
 
-The recorder copies the video file (which can take a long time depending on the video size) to the configured FTP server in the defined publication directory. This directory must be set in **_DEFAULT_RECORDER_PATH_**.
+The recorder copies the video file (which can take a long time depending on the video size) to the configured FTP server in the defined publication directory. This directory must be set in `DEFAULT_RECORDER_PATH`.
 
 For example, with the following configuration:
 
-* **_DEFAULT_RECORDER_PATH = '/data/www/%userpod%/uploads/_'**
-* Recorder publication directory = **_test_**
+* `DEFAULT_RECORDER_PATH = '/data/www/%userpod%/uploads/'`
+* Recorder publication directory = `test`
 
-Videos will be deposited in the directory: **_/data/www/%userpod%/uploads/test/_**
+Videos will be deposited in the directory: `/data/www/%userpod%/uploads/test/`
 
 At this point, the video publication by the recorder is complete: the video file has been deposited on the Pod server in a specific directory.
 
@@ -133,9 +133,9 @@ At this point, the video publication by the recorder is complete: the video file
 
 Once the copy is complete, a script—which runs regularly via a CRON job—processes this video file.
 
-This script corresponds to a video management command. Technically, it is the script **_pod/video/management/commands/recorder.py_**.
+This script corresponds to a video management command. Technically, it is the script `pod/video/management/commands/recorder.py`.
 
-It will be called via a CRON job, but if necessary, it can be executed manually via: **_python manage.py recorder checkDirectory_**
+It will be called via a CRON job, but if necessary, it can be executed manually via: `python manage.py recorder checkDirectory`
 
 _It is possible to run this script in debug mode by modifying the DEBUG parameter in its settings_local._
 {: .alert .alert-info}
@@ -178,7 +178,7 @@ The URL used corresponds to:
 
 At this point, the video file has been deposited on the Pod server, and an HTTPS request has been sent.
 
-> 💡 Technically, the previous request is handled by Pod via the view **_pod/recorder/views.py_**, function **_recorder_notify()_**.
+> 💡 Technically, the previous request is handled by Pod via the view `pod/recorder/views.py`, function `recorder_notify()`.
 
 The email is in the following format:
 
@@ -204,20 +204,20 @@ Once the email is received, the concerned user must click on the link in the ema
 
 This link redirects the user—_who must authenticate at this point (if not already authenticated)_—to the video addition form. From this form, they can also delete the recording (if it is an error, for example) by checking the box and validating the form.
 
-> 💡Technically, this form is defined by the page **_pod/recorder/forms.py_**, class **_RecordingForm()_** as well as the view **_pod/recorder/templates/recorder/add_recording.html_**.
+> 💡Technically, this form is defined by the page `pod/recorder/forms.py`, class `RecordingForm()` as well as the view `pod/recorder/templates/recorder/add_recording.html`.
 
-For a **_"staff" type user_**, with the parameter **_ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = False_**, the form is as follows:
+For a `"staff" type user`, with the parameter `ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = False`, the form is as follows:
 
 ![Recorder](video-publication-from-recorders_screens/video-add1.webp)
 
-For a **_"staff" type user_**, with the parameter **_ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = True_**, the form is as follows:
+For a `"staff" type user`, with the parameter `ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = True`, the form is as follows:
 
 ![Recorder](video-publication-from-recorders_screens/video-add2.webp)
 
 In this case, the recorder manager can assign the video to another user.
 {: .alert .alert-info}
 
-For a **_"superadmin" type user_**, the form is as follows:
+For a `"superadmin" type user`, the form is as follows:
 
 ![Recorder](video-publication-from-recorders_screens/video-add3.webp)
 
@@ -225,8 +225,8 @@ For a **_"superadmin" type user_**, the form is as follows:
 
 Saving this form allows the processing and encoding of the file provided by the recorder and assigns it to the concerned user (depending on the case).
 
-> 💡Technically, we use the model **_pod/recorder/models.py_**, classes **_Recorder_**, **_Recording_**, and **_RecordingFileTreatment_**, as well as the function **_process_recording()_**.
-This function uses the plugin **_pod/recorder/plugins/type_audiovideocast.py_** or **_pod/recorder/plugins/type_video.py_**, which allows copying slides (in the case of _type_audiovideocast.py_), as well as processing and encoding the video published by the recorder.
+> 💡Technically, we use the model `pod/recorder/models.py`, classes `Recorder`, `Recording`, and `RecordingFileTreatment`, as well as the function `process_recording()`.
+This function uses the plugin `pod/recorder/plugins/type_audiovideocast.py` or `pod/recorder/plugins/type_video.py`, which allows copying slides (in the case of _type_audiovideocast.py_), as well as processing and encoding the video published by the recorder.
 
 ### Claiming the Recording
 

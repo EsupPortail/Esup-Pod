@@ -26,13 +26,13 @@ then
 (django_pod4) pod@pod:~/django_projects$ cd podv4/
 ```
 
-All dockerfile files are located in the _/dockerfile-dev-with-volumes_ directory.
+All dockerfile files are located in the `/dockerfile-dev-with-volumes` directory.
 
-To facilitate stack construction, several prefixed docker-xxx commands have been added to the _Makefile_ file, which is available at the root of the project and uses the _env.dev_ file for construction parameters.
+To facilitate stack construction, several prefixed docker-xxx commands have been added to the `Makefile` file, which is available at the root of the project and uses the `env.dev` file for construction parameters.
 
 ### Settings
 
-1. Rename the _.env.dev-example_ file to _.env.dev_ located at the root of the project and fill it in.
+1. Rename the `.env.dev-example` file to `.env.dev` located at the root of the project and fill it in.
     You must change the values for login, password and e-mail.
 
     ```py
@@ -41,15 +41,15 @@ To facilitate stack construction, several prefixed docker-xxx commands have been
     DJANGO_SUPERUSER_EMAIL=celine.didier@univ-lorraine.fr
     ```
 
-    For the DOCKER_ENV variable, you can choose between _light_ (1 Pod docker with only encoding enabled) or _full_ (4 Pod dockers: pod-back, encoding, transcription and xAPI).
+    For the DOCKER_ENV variable, you can choose between `light` (1 Pod docker with only encoding enabled) or `full` (4 Pod dockers: pod-back, encoding, transcription and xAPI).
 
     ```py
     DOCKER_ENV=light
     ```
 
-2. Create a _pod/custom/settings_local.py_ file
+2. Create a `pod/custom/settings_local.py` file
 
-Fill in the _pod/custom/settings_local.py_ file as follows:
+Fill in the `pod/custom/settings_local.py` file as follows:
 
 ```py
 USE_PODFILE = True
@@ -110,7 +110,7 @@ WEBPUSH_SETTINGS = {
 #### Container construction
 
 - Position at project root
-- Under Windows, replace _make_ with _make.bat_.
+- Under Windows, replace `make` with `make.bat`.
 
 ##### Build and start stack
 
@@ -146,7 +146,7 @@ The esup-pod application is now available via this URL: pod.localhost:8000
 
 ##### Stack stop
 
-CTRL+C` in the window from which the esup-pod application was launched
+`CTRL+C` in the window from which the esup-pod application was launched
 
 OR from another window via
 
@@ -183,8 +183,6 @@ Deletes the following directories:
 ### ElasticSearch container
 
 <http://elasticsearch.localhost:9200>
-
-#### elasticsearch:8.16.1
 
 #### OS/ARCH
 
