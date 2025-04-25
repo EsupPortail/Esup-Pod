@@ -20,6 +20,19 @@ var infinite;
 let infiniteLoading = document.querySelector(".infinite-loading");
 let filtersState = {};
 
+const categorySet = new Set([
+  "Mathématiques",
+  "Biologie",
+  "Physique",
+  "Histoire",
+  "Informatique",
+  "Mathématiques2",
+  "Biologie2",
+  "Physique2",
+  "Histoire2",
+  "Informatique2",
+]);
+
 function onBeforePageLoad() {
   infiniteLoading.style.display = "block";
 }
@@ -356,10 +369,11 @@ function addFilter({ name, param, searchCallback, itemLabel, itemKey }) {
   // Créer et ajouter le bloc de filtre dans le DOM
   const filterEl = createFilter(name, param, slug, filterId);
   console.log(filterEl.innerHTML);
-  const filtersBoxEl =  document.getElementById("filtersBox");
+  const filtersBoxEl = document.getElementById("filtersBox");
   console.log(filtersBoxEl.innerHTML);
   filtersBoxEl.appendChild(filterEl);
   console.log(filtersBoxEl.innerHTML);
+
   filtersState[param] = {
     selectedItems: new Map(),
     searchResults: [],
@@ -371,28 +385,33 @@ function addFilter({ name, param, searchCallback, itemLabel, itemKey }) {
   const inputBox = document.getElementById(`${slug}box`);
   const dropdownBtn = document.getElementById(filterId);
 
-  // Affiche la liste des résultats lors du clic sur le dropdown
+  // Affiche tous les résultats lors du clic sur le bouton du dropdown
   dropdownBtn.addEventListener("click", () => {
-    renderFilter(param);
+    // Si tu veux afficher tous les éléments, utilise getSearch pour obtenir tous les éléments
+    filtersState[param].getSearch('')
+      .then(results => {
+        // Assigner tous les résultats à searchResults
+        filtersState[param].searchResults = results;
+        renderFilter(param);
+      });
   });
 
   // Recherche dynamique via le champ de recherche
   inputBox.addEventListener("input", () => {
     const term = inputBox.value.trim();
-    if (term.length > 2) {
-      disabledInputs(true);  // Désactive les entrées pendant la recherche
-      filtersState[param].getSearch(term)
-        .then(results => {
-          filtersState[param].searchResults = results;
-          renderFilter(param);
-        })
-        .finally(() => disabledInputs(false));
-    } else {
-      filtersState[param].searchResults = [];
-      renderFilter(param);
-    }
+    disabledInputs(true);  // Désactive les entrées pendant la recherche
+    filtersState[param].getSearch(term)
+      .then(results => {
+        filtersState[param].searchResults = results;
+        renderFilter(param);
+      })
+      .finally(() => disabledInputs(false));
+
+    filtersState[param].searchResults = [];
+    renderFilter(param);
   });
 }
+
 
 this.addFilter({
   name: "Utilisateur",
@@ -406,6 +425,16 @@ this.addFilter({
   },
   itemKey: (u) => u.username
 });
+
+this.addFilter({
+  name: "Disciplines",
+  param: "disciplines",
+  searchCallback: (searchTerm) => searchInSet(categorySet, searchTerm),
+  itemLabel: (category) => category,
+  itemKey: (category) => category
+});
+
+console.log(filtersState);
 
 function updateSelectedTags() {
   const selectedTagsContainer = document.getElementById("selectedTags");
@@ -442,6 +471,7 @@ function updateSelectedTags() {
       selectedTagsContainer.appendChild(tag);
     });
   });
+  console.log(filtersState);
 }
 
 
@@ -457,6 +487,7 @@ function createFilter(name, param, slug, filterId) {
   const dropdown = document.createElement('div');
   dropdown.className = 'dropdown';
 
+  // Bouton du menu déroulant
   const button = document.createElement('button');
   button.id = filterId;
   button.className = 'btn btn-outline-primary dropdown-toggle';
@@ -465,10 +496,12 @@ function createFilter(name, param, slug, filterId) {
   button.setAttribute('aria-expanded', 'false');
   button.innerText = name;
 
+  // Menu déroulant
   const menu = document.createElement('div');
   menu.className = 'dropdown-menu p-2';
-  menu.style.minWidth = '200px';
+  menu.style.minWidth = '100px';
 
+  // Groupe de recherche (input)
   const inputGroup = document.createElement('div');
   inputGroup.className = 'input-group mb-3';
 
@@ -479,11 +512,14 @@ function createFilter(name, param, slug, filterId) {
   input.className = 'form-control';
   inputGroup.appendChild(input);
 
+  // Liste des éléments avec barre de défilement
   const listContainer = document.createElement('div');
   listContainer.className = `form-group navList ${slug}s`;
   listContainer.id = `collapseFilter${capitalize(param)}`;
-  listContainer.style.maxHeight = '300px';
-  listContainer.style.overflow = 'auto';
+
+  // Utilisation des classes Bootstrap pour gérer le défilement
+  listContainer.classList.add('overflow-auto'); // Ajoute la classe Bootstrap pour scroll
+  listContainer.style.maxHeight = '200px'; // Limite la hauteur du conteneur
 
   menu.appendChild(inputGroup);
   menu.appendChild(listContainer);
@@ -493,6 +529,7 @@ function createFilter(name, param, slug, filterId) {
   return dropdown;
 }
 
+
 /**
  * Active ou désactive toutes les cases à cocher pendant le chargement.
  * @param {boolean} value La valeur pour activer/désactiver les cases
@@ -500,6 +537,34 @@ function createFilter(name, param, slug, filterId) {
 function disabledInputs(value) {
   document.querySelectorAll("input.form-check-input").forEach(cb => cb.disabled = value);
 }
+
+function searchInSet(originalSet, searchTerm) {
+  return new Promise((resolve) => {
+    const items = Array.from(originalSet);
+    const normalizedTerm = searchTerm.trim().toLowerCase();
+
+    if (!normalizedTerm) {
+      return resolve(items);  // Retourne tout si la recherche est vide
+    }
+
+    const matching = [];
+    const nonMatching = [];
+
+    // Simule un délai (par exemple un appel API) avec setTimeout
+    setTimeout(() => {
+      for (const item of items) {
+        if (item.toLowerCase().includes(normalizedTerm)) {
+          matching.push(item);
+        } else {
+          nonMatching.push(item);
+        }
+      }
+      // Retourne les éléments triés
+      resolve([...matching, ...nonMatching]);
+    }, 300);  // Délai simulé de 300ms
+  });
+}
+
 
 
 
