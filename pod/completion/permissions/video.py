@@ -25,13 +25,19 @@ def has_video_rights(permissions: list[str], message: str, prefetch_callback=Non
 
             is_one_of_additional_owners = current_user in video.additional_owners.all()
             has_permission = current_user.has_perms(permissions)
-            is_owner_or_superuser = current_user == video.owner or current_user.is_superuser
-            if not any((is_owner_or_superuser, is_one_of_additional_owners, has_permission)):
-                messages.add_message(
-                    request, messages.ERROR, _(message)
+            is_owner_or_superuser = (
+                current_user == video.owner or current_user.is_superuser
+            )
+            if not any(
+                (is_owner_or_superuser, is_one_of_additional_owners, has_permission)
+            ):
+                messages.add_message(request, messages.ERROR, _(message))
+                raise PermissionDenied(
+                    _(f"{func.__name__}: Permission denied for user {current_user.pk}.")
                 )
-                raise PermissionDenied(_(f"{func.__name__}: Permission denied for user {current_user.pk}."))
 
             return func(request, slug, video, *args, **kwargs)
+
         return wrapper
+
     return decorator

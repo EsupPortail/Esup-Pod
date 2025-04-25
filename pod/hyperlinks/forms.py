@@ -38,7 +38,9 @@ class VideoHyperlinkForm(forms.ModelForm):
         widgets = {
             "hyperlink": HyperlinkWidget(
                 attrs={
-                    "data-placeholder": _("You can search hyperlink by URL or description."),
+                    "data-placeholder": _(
+                        "You can search hyperlink by URL or description."
+                    ),
                     "class": "w-100",
                 }
             )

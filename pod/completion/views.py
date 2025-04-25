@@ -609,7 +609,7 @@ def video_completion_speaker_delete(request: WSGIRequest, video: Video):
 @has_video_rights(
     ["completion.add_hyperlink"],
     "You cannot complement this video.",
-    prefetch_video_completion_hyperlink
+    prefetch_video_completion_hyperlink,
 )
 @login_required(redirect_field_name="referrer")
 def video_completion_hyperlink(request: WSGIRequest, slug: str, video: Video):
