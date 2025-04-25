@@ -28,9 +28,10 @@ As of the writing of this documentation, this would be version 4.2.20.
 
 ## Which version of Python can I use with Esup-Pod v4 / Django 4.2?
 
-| Django Version | Supported Python Versions                 |
+| Django Version    | Supported Python Versions                           |
 |-------------------|-----------------------------------------------------|
-| 4.2               | 3.8, 3.9, 3.10, 3.11, 3.12 (added in 4.2.8)        |
+| 4.2               | 3.8, 3.9, 3.10, 3.11, 3.12 (added in 4.2.8)         |
+{: .table .table-striped}
 
 💡It is recommended to take the latest stable version of Python that is supported by Django.
 See [https://docs.djangoproject.com/en/5.0/faq/install/#what-python-version-can-i-use-with-django](https://docs.djangoproject.com/en/5.0/faq/install/#what-python-version-can-i-use-with-django)

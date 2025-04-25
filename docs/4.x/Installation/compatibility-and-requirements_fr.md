@@ -31,6 +31,7 @@ Au jour de la rédaction de cette documentation, cela serait la version 4.2.20.
 | Version de Django | Versions de Python prises en charge                 |
 |-------------------|-----------------------------------------------------|
 | 4.2               | 3.8, 3.9, 3.10, 3.11, 3.12 (ajouté en 4.2.8)        |
+{: .table .table-striped}
 
 💡Il est recommandé de prendre la dernière version stable de Python qui est prise en charge par Django.
 Cf. [https://docs.djangoproject.com/en/5.0/faq/install/#what-python-version-can-i-use-with-django](https://docs.djangoproject.com/en/5.0/faq/install/#what-python-version-can-i-use-with-django)
