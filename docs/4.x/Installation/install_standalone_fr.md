@@ -54,7 +54,7 @@ pod@pod:$ source .bashrc
 Et enfin créez l‘environnement virtuel :
 
 ```sh
-pod@pod:~$ mkvirtualenv --system-site-packages --python=/usr/bin/python3 django_pod3
+pod@pod:~$ mkvirtualenv --system-site-packages --python=/usr/bin/python3 django_pod4
 ```
 
 ### Récupération des sources
@@ -62,25 +62,25 @@ pod@pod:~$ mkvirtualenv --system-site-packages --python=/usr/bin/python3 django_
 Concernant l’emplacement du projet, je conseille de le mettre dans _/usr/local/django_projects_
 
 ```sh
-(django_pod3)pod@pod:~$ sudo mkdir /usr/local/django_projects
+(django_pod4)pod@pod:~$ sudo mkdir /usr/local/django_projects
 ```
 
 Vous pouvez faire un lien symbolique dans votre home pour arriver plus vite dans le répertoire _django_projects_ :
 
 ```sh
-(django_pod3)pod@pod:~$ ln -s /usr/local/django_projects _django_projects_
+(django_pod4)pod@pod:~$ ln -s /usr/local/django_projects django_projects
 ```
 
 Placez-vous dans le répertoire django_projects
 
 ```sh
-(django_pod3)pod@pod:~$ cd django_projects
+(django_pod4)pod@pod:~$ cd django_projects
 ```
 
 Donnez les droits à l'utilisateur pod de lire et d‘écrire dans le répertoire :
 
 ```sh
-(django_pod3) pod@pod:~/django_projects$ sudo chown pod:pod /usr/local/django_projects
+(django_pod4) pod@pod:~/django_projects$ sudo chown pod:pod /usr/local/django_projects
 ```
 
 Vous pouvez enfin récupérer les sources
@@ -89,37 +89,37 @@ Vous pouvez enfin récupérer les sources
 > Si vous devez utiliser un proxy, vous pouvez le spécifier avec cette commande :
 >
 > ```sh
-> (django_pod3) pod@pod:~/django_projects$ git config --global http.proxy http://PROXY:PORT
+> (django_pod4) pod@pod:~/django_projects$ git config --global http.proxy http://PROXY:PORT
 > ```
 
-La récupération des sources de la V3 se fait via cette commande : `git clone https://github.com/EsupPortail/Esup-Pod.git podv3`
+La récupération des sources de la v4 se fait via cette commande : `git clone https://github.com/EsupPortail/Esup-Pod.git podv4`
 
 ```sh
-(django_pod3) pod@pod:~/django_projects$ git clone https://github.com/EsupPortail/Esup-Pod.git podv3
-Clonage dans 'podv3'...
+(django_pod4) pod@pod:~/django_projects$ git clone https://github.com/EsupPortail/Esup-Pod.git podv4
+Clonage dans 'podv4'...
 remote: Counting objects: 4578, done.
 remote: Compressing objects: 100% (378/378), done.
 remote: Total 4578 (delta 460), reused 564 (delta 348), pack-reused 3847
 Réception d'objets: 100% (4578/4578), 4.40 MiB | 3.88 MiB/s, fait.
 Résolution des deltas: 100% (3076/3076), fait.
 
-(django_pod3) pod@pod:~/django_projects$ cd podv3/
+(django_pod4) pod@pod:~/django_projects$ cd podv4/
 ```
 
 ## Applications tierces
 
 ### Installation de toutes les librairies python
 
-Il faut vérifier que l’on se trouve bien dans l’environnement virtuel (présence de "(django_pod3)" au début l'invite de commande. Sinon, il faut lancer la commande **$> workon django_pod3**
+Il faut vérifier que l’on se trouve bien dans l’environnement virtuel (présence de "(django_pod4)" au début l'invite de commande. Sinon, il faut lancer la commande **$> workon django_pod4**
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ pip3 install -r requirements.txt
+(django_pod4) pod@pod:~/django_projects/podv4$ pip3 install -r requirements.txt
 ```
 
 De même, si vous devez utiliser un proxy :
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ pip3 install --proxy="PROXY:PORT" -r requirements.txt
+(django_pod4) pod@pod:~/django_projects/podv4$ pip3 install --proxy="PROXY:PORT" -r requirements.txt
 ```
 
 ### FFMPEG
@@ -127,7 +127,7 @@ De même, si vous devez utiliser un proxy :
 Pour l'encodage des vidéos et la creation des vignettes, il faut installer ffmpeg, ffmpegthumbnailer et imagemagick (ne pas installer sur le serveur frontal si vous déportez l'encodage)
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo apt install ffmpeg ffmpegthumbnailer imagemagick
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install ffmpeg ffmpegthumbnailer imagemagick
 ```
 
 ### Redis
@@ -137,13 +137,13 @@ Voir la doc officielle <https://redis.io/docs/getting-started/>
 Pour installer le cache Redis
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo apt install redis-server
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install redis-server
 ```
 
 En théorie le service démarre automatiquement. Si vous avez installé Redis sur la même machine que Pod, rien à faire de plus. Pour vérifier si le service est bien démarré :
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo service redis-server status
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo service redis-server status
 ```
 
 Si vous utilisez Redis sur une autre machine, n'oubliez pas de modifier le bind dans le fichier de configuration _/etc/redis/redis.conf_
@@ -188,7 +188,7 @@ Selon la version d'Elasticsearch que vous allez utiliser, les versions des dépe
 Pour utiliser Elasticsearch 8, il faut avoir java 17 sur sa machine.
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo apt-get install default-jdk
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get install default-jdk
 ```
 
 Puis pour installer Elasticsearch sur Debian en utilisant les paquets, il faut suivre les instructions situées à cette adresse : <https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html>.
@@ -198,17 +198,17 @@ Vous pouvez installer Elasticsearch en version 7 (plus maintenue) ou en version 
 Voici pour ES8 :
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
+(django_pod4) pod@pod:~/django_projects/podv4$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
  OK
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo apt-get install apt-transport-https
-(django_pod3) pod@pod:~/django_projects/podv3$ echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo apt-get update && sudo apt-get install elasticsearch
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get install apt-transport-https
+(django_pod4) pod@pod:~/django_projects/podv4$ echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get update && sudo apt-get install elasticsearch
 ```
 
 Ensuite il faut paramétrer l’instance :
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo vim /etc/elasticsearch/elasticsearch.yml
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo vim /etc/elasticsearch/elasticsearch.yml
 ```
 
 Puis préciser ces valeurs :
@@ -259,10 +259,10 @@ xpack.security.http.ssl.truststore.path: /etc/elasticsearch/elastic-certificates
 Il faut enfin le lancer et vérifier son bon fonctionnement :
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo /etc/init.d/elasticsearch start
-(django_pod3) pod@pod:~/django_projects/podv3$ curl -XGET "127.0.0.1:9200"
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo /etc/init.d/elasticsearch start
+(django_pod4) pod@pod:~/django_projects/podv4$ curl -XGET "127.0.0.1:9200"
 ou pour ES8
-(django_pod3) pod@pod:~/django_projects/podv3$ curl -k -XGET 'https://127.0.0.1:9200' -u pod:podpod
+(django_pod4) pod@pod:~/django_projects/podv4$ curl -k -XGET 'https://127.0.0.1:9200' -u pod:podpod
 ```
 
 ```json
@@ -288,36 +288,36 @@ ou pour ES8
 Pour utiliser la recherche dans Pod, nous allons avoir besoin également du plugin ICU :
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ cd /usr/share/elasticsearch/
-(django_pod3) pod@pod:/usr/share/elasticsearch$ sudo bin/elasticsearch-plugin install analysis-icu
+(django_pod4) pod@pod:~/django_projects/podv4$ cd /usr/share/elasticsearch/
+(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo bin/elasticsearch-plugin install analysis-icu
 -> Downloading analysis-icu from elastic
 [=================================================] 100%
 -> Installed analysis-icu
-(django_pod3) pod@pod:/usr/share/elasticsearch$ sudo /etc/init.d/elasticsearch restart
+(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo /etc/init.d/elasticsearch restart
 [ ok ] Restarting elasticsearch (via systemctl): elasticsearch.service.
 ```
 
 Si vous utilisez derrière un proxy :
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ cd /usr/share/elasticsearch/
-(django_pod3) pod@pod:/usr/share/elasticsearch$ sudo ES_JAVA_OPTS="-Dhttp.proxyHost=proxy.univ.fr -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.univ.fr -Dhttps.proxyPort=3128" /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
+(django_pod4) pod@pod:~/django_projects/podv4$ cd /usr/share/elasticsearch/
+(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo ES_JAVA_OPTS="-Dhttp.proxyHost=proxy.univ.fr -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.univ.fr -Dhttps.proxyPort=3128" /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
  -> Downloading analysis-icu from elastic
 [=================================================] 100%
 -> Installed analysis-icu
-(django_pod3) pod@pod:/usr/share/elasticsearch$ sudo /etc/init.d/elasticsearch restart
+(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo /etc/init.d/elasticsearch restart
 [ ok ] Restarting elasticsearch (via systemctl): elasticsearch.service.
 ```
 
 Attention, pour ES8 derrière un proxy :
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ cd /usr/share/elasticsearch/
-(django_pod3) pod@pod:/usr/share/elasticsearch$ sudo CLI_JAVA_OPTS="-Dhttp.proxyHost=proxy.univ.fr -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.univ.fr -Dhttps.proxyPort=3128" /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
+(django_pod4) pod@pod:~/django_projects/podv4$ cd /usr/share/elasticsearch/
+(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo CLI_JAVA_OPTS="-Dhttp.proxyHost=proxy.univ.fr -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.univ.fr -Dhttps.proxyPort=3128" /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
  -> Downloading analysis-icu from elastic
 [=================================================] 100%
 -> Installed analysis-icu
-(django_pod3) pod@pod:/usr/share/elasticsearch$ sudo /etc/init.d/elasticsearch restart
+(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo /etc/init.d/elasticsearch restart
 [ ok ] Restarting elasticsearch (via systemctl): elasticsearch.service.
 ```
 
@@ -333,18 +333,18 @@ Attention, pour ES8 derrière un proxy :
 > Et ne pas oublier de relancer
 >
 > ```sh
-> (django_pod3) pod@podv3:~/django_projects/podv3$ pip3 install -r requirements.txt
+> (django_pod4) pod@podv4:~/django_projects/podv4$ pip3 install -r requirements.txt
 > ```
 
 Nous pouvons enfin vérifier le bon fonctionnement de l'ensemble (l’erreur affichée lors de la deletion est normale puisque l'indice n'existe pas, mais nous devons supprimer avant de créer un index dans ES) :
 
 ```sh
-(django_pod3) pod@pod:/usr/share/elasticsearch$ cd ~/django_projects/podv3
-(django_pod3) pod@pod:~/django_projects/podv3$ python manage.py create_pod_index
+(django_pod4) pod@pod:/usr/share/elasticsearch$ cd ~/django_projects/podv4
+(django_pod4) pod@pod:~/django_projects/podv4$ python manage.py create_pod_index
 DELETE http://127.0.0.1:9200/pod [status:404 request:0.140s]
 An error occured during index video deletion: 404-index_not_found_exception : no such index
 Successfully create index Video
-(django_pod3) pod@pod:~/django_projects/podv3$ curl -XGET "127.0.0.1:9200/pod/_search"
+(django_pod4) pod@pod:~/django_projects/podv4$ curl -XGET "127.0.0.1:9200/pod/_search"
 {"took":35,"timed_out":false,"_shards":{"total":2,"successful":2,"skipped":0,"failed":0},"hits":{"total":0,"max_score":null,"hits":[]}}
 ```
 
@@ -353,7 +353,7 @@ Si la commande python ne fonctionne pas, créez d'abord l'index à la main avec 
 Si vous déportez l'elastic search sur une autre machine, rajoutez dans le fichier _settings_local.py_ son URL d'accès :
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ vim pod/custom/settings_local.py
+(django_pod4) pod@pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
 ```
 
 Copiez la ligne suivante :
@@ -379,13 +379,13 @@ La référence est ici : <https://github.com/nodesource/distributions>
 #### Debian
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo apt-get update
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo apt-get install -y ca-certificates curl gnupg
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo mkdir -p /etc/apt/keyrings
-(django_pod3) pod@pod:~/django_projects/podv3$ curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-(django_pod3) pod@pod:~/django_projects/podv3$ NODE_MAJOR=18 && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo apt update && sudo apt install -y nodejs
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo corepack enable
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get update
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get install -y ca-certificates curl gnupg
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo mkdir -p /etc/apt/keyrings
+(django_pod4) pod@pod:~/django_projects/podv4$ curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+(django_pod4) pod@pod:~/django_projects/podv4$ NODE_MAJOR=18 && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt update && sudo apt install -y nodejs
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo corepack enable
 ```
 
 **CentOS**
@@ -402,19 +402,19 @@ root@pod:~/$ npm install yarn -g
 Se placer dans le répertoire où est installé le package.json
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ cd pod
+(django_pod4) pod@pod:~/django_projects/podv4$ cd pod
 ```
 
 Installez les dépendances.
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3/pod$ yarn
+(django_pod4) pod@pod:~/django_projects/podv4/pod$ yarn
 ```
 
 Enfin, déployez les fichiers statiques.
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ python manage.py collectstatic --no-input --clear
+(django_pod4) pod@pod:~/django_projects/podv4$ python manage.py collectstatic --no-input --clear
 ```
 
 ## Mise en route
@@ -424,7 +424,7 @@ Enfin, déployez les fichiers statiques.
 Lancez le script présent à la racine afin de créer les fichiers de migration, puis de les lancer pour créer la base de données SQLite intégrée.
 
 ```sh
-(django_pod3) pod@Pod:~/django_projects/podv3$ make createDB
+(django_pod4) pod@Pod:~/django_projects/podv4$ make createDB
 ```
 
 Fichier de configuration _settings_local.py_
@@ -433,7 +433,7 @@ Vous devez créer un fichier de configuration local dans le dossier _pod/custom_
 Vous mettez dans ce fichier uniquement les variables dont vous voulez changer la valeur par défaut. Vous trouverez ci-dessous un exemple de fichier avec les principales variables à modifier : connexion à la base de données, un fichier CSS custom, le thème green de pod, retirer le langage nl, etc. Vous pouvez adapter ce fichier et le coller dans le vôtre.
 
 ```sh
-(django_pod3) pod@Pod:~/django_projects/podv3$ vim pod/custom/settings_local.py
+(django_pod4) pod@Pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
 ```
 
 ```py
@@ -555,7 +555,7 @@ Vous trouverez l'ensemble des variables disponibles sur cette page :
 Il faut créer un premier utilisateur qui aura tous les pouvoirs sur votre instance.
 
 ```sh
-(django_pod3) pod@Pod:~/django_projects/podv3$ python manage.py createsuperuser
+(django_pod4) pod@Pod:~/django_projects/podv4$ python manage.py createsuperuser
 ```
 
 ## Lancement des tests unitaires
@@ -563,13 +563,13 @@ Il faut créer un premier utilisateur qui aura tous les pouvoirs sur votre insta
 Afin de vérifier que votre instance est opérationnelle, vous pouvez lancer les tests unitaires :
 
 ```sh
-(django_pod3) pod@Pod:~/django_projects/podv3$ python3 -m pip install -r requirements-dev.txt
-(django_pod3) pod@Pod:~/django_projects/podv3$ python manage.py test --settings=pod.main.test_settings
+(django_pod4) pod@Pod:~/django_projects/podv4$ python3 -m pip install -r requirements-dev.txt
+(django_pod4) pod@Pod:~/django_projects/podv4$ python manage.py test --settings=pod.main.test_settings
 ```
 
 ## Modules complémentaires
 
-Ce paragraphe a été rédigé pour pod v2.9.x, il est possible que cela ne concerne pas pod v3
+Ce paragraphe a été rédigé pour pod v2.9.x, il est possible que cela ne concerne pas pod v4
 
 Il existe plusieurs modules complémentaires pouvant être ajoutés à pod (enrichissement, diffusion en direct, etc). Pour activer ces modules, il faut ajouter la ligne suivante au _settings_local.py_
 
@@ -598,8 +598,8 @@ N'hésitez pas à lancer le serveur de développement pour vérifier vos modific
 À ce niveau, vous devriez avoir le site en français et en anglais et voir l'ensemble de la page d'accueil.
 
 ```sh
-(django_pod3) pod@Pod:~/django_projects/podv3$ python3 manage.py runserver @IP/DNS:8080 --insecure
---> exemple : (django_pod3) pod@pod:~/django_projects/podv3$ python manage.py runserver pod.univ.fr:8080 --insecure
+(django_pod4) pod@Pod:~/django_projects/podv4$ python3 manage.py runserver @IP/DNS:8080 --insecure
+--> exemple : (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py runserver pod.univ.fr:8080 --insecure
 ```
 
 ---
