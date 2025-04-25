@@ -57,7 +57,9 @@ class Command(BaseCommand):
     def handle(self, *args: Any, **options: Any) -> None:
         """Handle the command call."""
 
-        self.stdout.write(self.style.SUCCESS("***Start export Pod3 database tables to a JSON file***"))
+        self.stdout.write(
+            self.style.SUCCESS("***Start export Pod3 database tables to a JSON file***")
+        )
 
         # Manage Pod version
         if VERSION[:3] == "3.8":
@@ -90,142 +92,142 @@ class Command(BaseCommand):
     def get_table_names(self) -> List[str]:
         """Return the list of tables to export."""
         return [
-            'ai_enhancement_aienhancement',
-            'authentication_accessgroup',
-            'authentication_accessgroup_sites',
-            'authentication_accessgroup_users',
-            'authentication_groupsite',
-            'authentication_groupsite_sites',
-            'authentication_owner',
-            'authentication_owner_accessgroups',
-            'authentication_owner_sites',
-            'authtoken_token',
-            'auth_group',
-            'auth_group_permissions',
-            'auth_permission',
-            'auth_user',
-            'auth_user_groups',
-            'auth_user_user_permissions',
-            'captcha_captchastore',
-            'chapter_chapter',
-            'chunked_upload_chunkedupload',
-            'completion_contributor',
-            'completion_document',
-            'completion_enrichmodelqueue',
-            'completion_overlay',
-            'completion_track',
-            'cut_cutvideo',
-            'django_admin_log',
-            'django_content_type',
-            'django_flatpage',
-            'django_flatpage_sites',
-            'django_site',
-            'dressing_dressing',
-            'dressing_dressing_allow_to_groups',
-            'dressing_dressing_owners',
-            'dressing_dressing_users',
-            'dressing_dressing_videos',
-            'enrichment_enrichment',
-            'enrichment_enrichmentgroup',
-            'enrichment_enrichmentgroup_groups',
-            'enrichment_enrichmentvtt',
-            'import_video_externalrecording',
-            'live_broadcaster',
-            'live_broadcaster_manage_groups',
-            'live_building',
-            'live_building_sites',
-            'live_event',
-            'live_event_additional_owners',
-            'live_event_restrict_access_to_groups',
-            'live_event_videos',
-            'live_event_viewers',
-            'live_heartbeat',
-            'live_livetranscriptrunningtask',
-            'main_additionalchanneltab',
-            'main_block',
-            'main_block_sites',
-            'main_configuration',
-            'main_customfilemodel',
-            'main_customimagemodel',
-            'main_linkfooter',
-            'main_linkfooter_sites',
-            'meeting',
-            'meeting_additional_owners',
-            'meeting_internalrecording',
-            'meeting_livegateway',
-            'meeting_livestream',
-            'meeting_meetingsessionlog',
-            'meeting_restrict_access_to_groups',
-            'playlist_playlist',
-            'playlist_playlistcontent',
-            'playlist_playlist_additional_owners',
-            'podfile_customfilemodel',
-            'podfile_customimagemodel',
-            'podfile_userfolder',
-            'podfile_userfolder_access_groups',
-            'podfile_userfolder_users',
-            'quiz_multiplechoicequestion',
-            'quiz_quiz',
-            'quiz_shortanswerquestion',
-            'quiz_singlechoicequestion',
-            'quiz_truefalsequestion',
-            'recorder_recorder',
-            'recorder_recorder_additional_users',
-            'recorder_recorder_channel',
-            'recorder_recorder_discipline',
-            'recorder_recorder_restrict_access_to_groups',
-            'recorder_recorder_sites',
-            'recorder_recorder_theme',
-            'recorder_recording',
-            'recorder_recordingfile',
-            'recorder_recordingfiletreatment',
-            'speaker_job',
-            'speaker_jobvideo',
-            'speaker_speaker',
-            'thumbnail_kvstore',
-            'video_advancednotes',
-            'video_category',
-            'video_category_video',
-            'video_channel',
-            'video_channel_add_channels_tab',
-            'video_channel_allow_to_groups',
-            'video_channel_owners',
-            'video_channel_users',
-            'video_comment',
-            'video_discipline',
-            'video_encode_transcript_encodingaudio',
-            'video_encode_transcript_encodinglog',
-            'video_encode_transcript_encodingstep',
-            'video_encode_transcript_encodingvideo',
-            'video_encode_transcript_playlistvideo',
-            'video_encode_transcript_videorendition',
-            'video_encode_transcript_videorendition_sites',
-            'video_notecomments',
-            'video_notes',
-            'video_theme',
-            'video_type',
-            'video_type_sites',
-            'video_updateowner',
-            'video_usermarkertime',
-            'video_video',
-            'video_videoaccesstoken',
-            'video_videotodelete',
-            'video_videotodelete_video',
-            'video_videoversion',
-            'video_video_additional_owners',
-            'video_video_channel',
-            'video_video_discipline',
-            'video_video_restrict_access_to_groups',
-            'video_video_sites',
-            'video_video_theme',
-            'video_viewcount',
-            'video_vote',
-            'webpush_group',
-            'webpush_pushinformation',
-            'webpush_subscriptioninfo',
+            "ai_enhancement_aienhancement",
+            "authentication_accessgroup",
+            "authentication_accessgroup_sites",
+            "authentication_accessgroup_users",
+            "authentication_groupsite",
+            "authentication_groupsite_sites",
+            "authentication_owner",
+            "authentication_owner_accessgroups",
+            "authentication_owner_sites",
+            "authtoken_token",
+            "auth_group",
+            "auth_group_permissions",
+            "auth_permission",
+            "auth_user",
+            "auth_user_groups",
+            "auth_user_user_permissions",
+            "captcha_captchastore",
+            "chapter_chapter",
+            "chunked_upload_chunkedupload",
+            "completion_contributor",
+            "completion_document",
+            "completion_enrichmodelqueue",
+            "completion_overlay",
+            "completion_track",
+            "cut_cutvideo",
+            "django_admin_log",
+            "django_content_type",
+            "django_flatpage",
+            "django_flatpage_sites",
+            "django_site",
+            "dressing_dressing",
+            "dressing_dressing_allow_to_groups",
+            "dressing_dressing_owners",
+            "dressing_dressing_users",
+            "dressing_dressing_videos",
+            "enrichment_enrichment",
+            "enrichment_enrichmentgroup",
+            "enrichment_enrichmentgroup_groups",
+            "enrichment_enrichmentvtt",
+            "import_video_externalrecording",
+            "live_broadcaster",
+            "live_broadcaster_manage_groups",
+            "live_building",
+            "live_building_sites",
+            "live_event",
+            "live_event_additional_owners",
+            "live_event_restrict_access_to_groups",
+            "live_event_videos",
+            "live_event_viewers",
+            "live_heartbeat",
+            "live_livetranscriptrunningtask",
+            "main_additionalchanneltab",
+            "main_block",
+            "main_block_sites",
+            "main_configuration",
+            "main_customfilemodel",
+            "main_customimagemodel",
+            "main_linkfooter",
+            "main_linkfooter_sites",
+            "meeting",
+            "meeting_additional_owners",
+            "meeting_internalrecording",
+            "meeting_livegateway",
+            "meeting_livestream",
+            "meeting_meetingsessionlog",
+            "meeting_restrict_access_to_groups",
+            "playlist_playlist",
+            "playlist_playlistcontent",
+            "playlist_playlist_additional_owners",
+            "podfile_customfilemodel",
+            "podfile_customimagemodel",
+            "podfile_userfolder",
+            "podfile_userfolder_access_groups",
+            "podfile_userfolder_users",
+            "quiz_multiplechoicequestion",
+            "quiz_quiz",
+            "quiz_shortanswerquestion",
+            "quiz_singlechoicequestion",
+            "quiz_truefalsequestion",
+            "recorder_recorder",
+            "recorder_recorder_additional_users",
+            "recorder_recorder_channel",
+            "recorder_recorder_discipline",
+            "recorder_recorder_restrict_access_to_groups",
+            "recorder_recorder_sites",
+            "recorder_recorder_theme",
+            "recorder_recording",
+            "recorder_recordingfile",
+            "recorder_recordingfiletreatment",
+            "speaker_job",
+            "speaker_jobvideo",
+            "speaker_speaker",
+            "thumbnail_kvstore",
+            "video_advancednotes",
+            "video_category",
+            "video_category_video",
+            "video_channel",
+            "video_channel_add_channels_tab",
+            "video_channel_allow_to_groups",
+            "video_channel_owners",
+            "video_channel_users",
+            "video_comment",
+            "video_discipline",
+            "video_encode_transcript_encodingaudio",
+            "video_encode_transcript_encodinglog",
+            "video_encode_transcript_encodingstep",
+            "video_encode_transcript_encodingvideo",
+            "video_encode_transcript_playlistvideo",
+            "video_encode_transcript_videorendition",
+            "video_encode_transcript_videorendition_sites",
+            "video_notecomments",
+            "video_notes",
+            "video_theme",
+            "video_type",
+            "video_type_sites",
+            "video_updateowner",
+            "video_usermarkertime",
+            "video_video",
+            "video_videoaccesstoken",
+            "video_videotodelete",
+            "video_videotodelete_video",
+            "video_videoversion",
+            "video_video_additional_owners",
+            "video_video_channel",
+            "video_video_discipline",
+            "video_video_restrict_access_to_groups",
+            "video_video_sites",
+            "video_video_theme",
+            "video_viewcount",
+            "video_vote",
+            "webpush_group",
+            "webpush_pushinformation",
+            "webpush_subscriptioninfo",
             # Specific for tags management
-            'video_tagging_tag_2_tagulous',
-            'recorder_tagging_tag_2_tagulous'
+            "video_tagging_tag_2_tagulous",
+            "recorder_tagging_tag_2_tagulous",
         ]
 
     def check_table_existence(self, cursor, table_names: List[str]) -> List[str]:
@@ -237,7 +239,9 @@ class Command(BaseCommand):
         tables.append("recorder_tagging_tag_2_tagulous")
         return [table for table in table_names if table in tables]
 
-    def fetch_table_data(self, cursor, table: str) -> Tuple[List[Tuple[Any, ...]], List[str]]:
+    def fetch_table_data(
+        self, cursor, table: str
+    ) -> Tuple[List[Tuple[Any, ...]], List[str]]:
         """Fetch data from a specific table."""
         cursor.execute(f"SELECT * FROM {table}")
         rows = cursor.fetchall()
@@ -245,7 +249,9 @@ class Command(BaseCommand):
         columns = [row[0] for row in cursor.fetchall()]
         return rows, columns
 
-    def fetch_tag_data(self, cursor, table: str, db_type: str) -> Tuple[List[Tuple[Any, ...]], List[str]]:
+    def fetch_tag_data(
+        self, cursor, table: str, db_type: str
+    ) -> Tuple[List[Tuple[Any, ...]], List[str]]:
         """Fetch tag data for specific management."""
         if table == "video_tagging_tag_2_tagulous":
             query = (
@@ -273,10 +279,16 @@ class Command(BaseCommand):
             )
         cursor.execute(query)
         rows = cursor.fetchall()
-        columns = ["video_id", "tag_name"] if table == "video_tagging_tag_2_tagulous" else ["recorder_id", "tag_name"]
+        columns = (
+            ["video_id", "tag_name"]
+            if table == "video_tagging_tag_2_tagulous"
+            else ["recorder_id", "tag_name"]
+        )
         return rows, columns
 
-    def convert_to_json(self, rows: List[Tuple[Any, ...]], columns: List[str]) -> List[Dict[str, Any]]:
+    def convert_to_json(
+        self, rows: List[Tuple[Any, ...]], columns: List[str]
+    ) -> List[Dict[str, Any]]:
         """Convert rows to JSON format."""
         data = []
         for row in rows:
@@ -295,7 +307,9 @@ class Command(BaseCommand):
             data.append(row_dict)
         return data
 
-    def export_tables_to_json(self, table_names: List[str], output_directory: str, output_file: str) -> None:
+    def export_tables_to_json(
+        self, table_names: List[str], output_directory: str, output_file: str
+    ) -> None:
         """Export the specified tables to a JSON file."""
         data = {}
         db_type = settings.DATABASES["default"]["ENGINE"].split(".")[-1]
@@ -303,16 +317,25 @@ class Command(BaseCommand):
             existing_tables = self.check_table_existence(cursor, table_names)
             for table in existing_tables:
                 try:
-                    if table in ["video_tagging_tag_2_tagulous", "recorder_tagging_tag_2_tagulous"]:
+                    if table in [
+                        "video_tagging_tag_2_tagulous",
+                        "recorder_tagging_tag_2_tagulous",
+                    ]:
                         # Management for tags
                         rows, columns = self.fetch_tag_data(cursor, table, db_type)
                     else:
                         # Management for others data
                         rows, columns = self.fetch_table_data(cursor, table)
                     data[table] = self.convert_to_json(rows, columns)
-                    self.stdout.write(self.style.SUCCESS(f" - Table {table} has been processed."))
+                    self.stdout.write(
+                        self.style.SUCCESS(f" - Table {table} has been processed.")
+                    )
                 except Exception as e:
-                    self.stdout.write(self.style.ERROR(f" - Table {table} could not be processed. Error: {e}"))
+                    self.stdout.write(
+                        self.style.ERROR(
+                            f" - Table {table} could not be processed. Error: {e}"
+                        )
+                    )
 
         # Write the JSON file
         json_file = os.path.join(BASE_DIR, f"{output_directory}{output_file}")
@@ -339,6 +362,10 @@ class Command(BaseCommand):
         # Path of the JSON file
         json_file = os.path.join(BASE_DIR, f"{output_directory}{output_json_file}")
         if os.path.exists(json_file):
-            self.stdout.write(self.style.SUCCESS(f' - The JSON file {json_file} was created.'))
+            self.stdout.write(
+                self.style.SUCCESS(f" - The JSON file {json_file} was created.")
+            )
         else:
-            self.stdout.write(self.style.ERROR(f' - The JSON file {json_file} was not created.'))
+            self.stdout.write(
+                self.style.ERROR(f" - The JSON file {json_file} was not created.")
+            )
