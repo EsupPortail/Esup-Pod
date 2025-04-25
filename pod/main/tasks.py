@@ -2,6 +2,8 @@
 
 from pod.main.celery import app
 from pod.live.models import LiveTranscriptRunningTask, Broadcaster
+from django.utils.timezone import now
+from pod.video.models import Video
 
 
 @app.task(bind=True)
@@ -78,3 +80,15 @@ def task_start_bbb_presentation_encode_and_move_to_destination(
     from pod.import_video.views import bbb_encode_presentation_and_move_to_destination
 
     bbb_encode_presentation_and_move_to_destination(filename, url, dest_file)
+
+
+@app.task(bind=True)
+def publish_scheduled_videos():
+    """Publish videos that are scheduled to be published."""
+    videos_to_publish = Video.objects.filter(
+        scheduled_publish_date__lte=now(), 
+        is_published=False
+    )
+    for video in videos_to_publish:
+        video.is_published = True
+        video.save()

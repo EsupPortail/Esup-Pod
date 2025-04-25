@@ -118,6 +118,7 @@ class VideoAdmin(admin.ModelAdmin):
         "date_added",
         "viewcount",
         "is_draft",
+        "scheduled_publish_date",
         "is_restricted",
         "password",
         "duration_in_time",
@@ -164,6 +165,8 @@ class VideoAdmin(admin.ModelAdmin):
         "theme",
     )
     readonly_fields = ("duration", "encoding_in_progress", "get_encoding_step")
+    
+    exclude = ()
 
     inlines = []
 

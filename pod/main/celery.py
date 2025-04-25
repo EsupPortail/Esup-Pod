@@ -20,6 +20,15 @@ app.conf.task_routes = {
     "pod.main.tasks.*": {"queue": "celery"},
     "pod.main.celery.*": {"queue": "celery"},
 }
+app.conf.task_routes.update({
+    "pod.main.tasks.publish_scheduled_videos": {"queue": "celery"},
+})
+app.conf.beat_schedule = {
+    'publish-scheduled-videos-every-minute': {
+        'task': 'pod.main.tasks.publish_scheduled_videos',
+        'schedule': 60.0,  
+    },
+}
 
 
 @app.task(bind=True)
