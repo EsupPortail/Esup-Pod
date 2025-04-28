@@ -127,7 +127,6 @@ export function refreshVideosSearch() {
   showLoader(videosListLoader, true);
   let url = getUrlForRefresh();
   // Async GET request wth parameters by fetch method
-  console.log("Fetch URL : "+ url);
   fetch(url, {
     method: "GET",
     headers: {
