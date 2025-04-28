@@ -1,5 +1,3 @@
-import FilterManager from "./FilterManager.js";
-
 // Liste simulant les catégories
 const categorySet = new Set([
   "Mathématiques",

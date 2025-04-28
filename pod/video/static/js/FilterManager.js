@@ -1,5 +1,3 @@
-import { refreshVideosSearch } from "./filter_aside_video_list_refresh.js";
-
 /**
  * FilterManager
  *
@@ -38,7 +36,7 @@ import { refreshVideosSearch } from "./filter_aside_video_list_refresh.js";
  * manager.initializeFilters();
  */
 
-export default class FilterManager {
+class FilterManager {
 
   /**
    * Ajoute un filtre au manager.

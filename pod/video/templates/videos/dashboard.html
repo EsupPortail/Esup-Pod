@@ -183,9 +183,10 @@
   {% endif %}
 </script>
 <script src="{% static 'js/infinite.js' %}"></script>
+<script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
-<script type="module" src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
-<script type="module" src="{% static 'js/filter.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/FilterManager.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/filter.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/dashboard.js' %}?ver={{VERSION}}"></script>
 {% if use_category %}
   <script>

@@ -121,7 +121,7 @@ function getSearchValue() {
 /*
  * Async request to refresh view with filtered and sorted video list
  */
-export function refreshVideosSearch() {
+function refreshVideosSearch() {
   // Erase videos list and show loader
   document.getElementById("videos_list").textContent = "";
   showLoader(videosListLoader, true);
