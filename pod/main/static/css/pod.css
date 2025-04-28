@@ -435,6 +435,8 @@ a.btn-outline-primary:not(:hover) svg {
   z-index: 900;
 }
 
+
+
 /***
  * tab
  ***/
@@ -721,6 +723,44 @@ div.card a img {
 }
 
 /** Dashboard **/
+
+/** Dashboard **/
+
+.user-btn {
+  /* Reprendre les dimensions par défaut des .btn Bootstrap */
+  padding: var(--bs-btn-padding-y) var(--bs-btn-padding-x);
+  font-size: var(--bs-btn-font-size);
+  line-height: var(--bs-btn-line-height);
+  border-radius: var(--bs-btn-border-radius);
+
+  /* Conserver vos couleurs et bordure */
+  background-color: var(--pod-background-neutre2-bloc); /* Votre couleur personnalisée */
+  border: 1px solid var(--bs-gray-400);
+
+  display: inline-flex;
+  align-items: center;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.user-btn:hover {
+  background-color: var(--bs-gray-200); /* Garde la couleur de survol */
+  border-color: var(--bs-gray-400); /* Garde la couleur de bordure */
+}
+
+.user-btn .close-icon {
+  font-size: 1.25rem; /* Taille de l'icône */
+  margin-left: 0.5rem; /* Espace entre le texte et l'icône */
+  cursor: pointer; /* Curseur en forme de main */
+}
+
+/* Extension pour un bouton plus grand */
+.user-btn--large {
+  --bs-btn-padding-y: 0.5rem;
+  --bs-btn-padding-x: 1rem;
+  --bs-btn-font-size: 1.125rem; /* Taille de police augmentée */
+}
+
+
 #bulk-update-container {
   background-color: var(--pod-background-neutre2-bloc);
   padding: 1em;

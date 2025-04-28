@@ -91,13 +91,15 @@ function replaceCountVideos(newCount) {
 /**
  * Add click event listener to manage sort direction
  */
-document
-  .getElementById("sort_direction_label")
-  .addEventListener("click", function (e) {
+const sortDirectionLabel = document.getElementById("sort_direction_label");
+
+if (sortDirectionLabel) {
+  sortDirectionLabel.addEventListener("click", function (e) {
     e.preventDefault();
     toggleSortDirection();
     refreshVideosSearch();
   });
+}
 
 /**
  * Handles the search form submission.
