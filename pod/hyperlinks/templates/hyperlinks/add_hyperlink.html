@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_content %}
+  <h1 class="page-title">{% trans "Add Hyperlink" %}</h1>
+  <form method="post" action="{% url 'hyperlinks:add_hyperlink' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+    <a href="{% url 'hyperlinks:manage_hyperlinks' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+  </form>
+{% endblock page_content %}

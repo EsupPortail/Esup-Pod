@@ -8,7 +8,7 @@ import random
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings, RequestFactory
-from unittest import mock, skip
+from unittest import mock
 from importlib import reload
 from ldap3 import Server, Connection, MOCK_SYNC
 
@@ -406,7 +406,6 @@ class PopulatedLDAPTestCase(TestCase):
         )
 
 
-@skip("# Esup-Pod 4.0 is no more compatible with Shibb (until someone correct this)")
 class PopulatedShibTestCase(TestCase):
     def setUp(self) -> None:
         """Set up PopulatedShibTestCase create user Pod."""
@@ -469,8 +468,12 @@ class PopulatedShibTestCase(TestCase):
         # Test if user can be staff if SHIBBOLETH_STAFF_ALLOWED_DOMAINS is None.
         settings.SHIBBOLETH_STAFF_ALLOWED_DOMAINS = None
         reload(shibmiddleware)
+
+        def get_dummy_response(request):  # pragma: no cover
+            return None
+
         shibmiddleware.ShibbMiddleware.make_profile(
-            shibmiddleware.ShibbMiddleware(), user, shib_meta
+            shibmiddleware.ShibbMiddleware(get_dummy_response), user, shib_meta
         )
         self.assertTrue(user.is_staff)
 
@@ -487,7 +490,7 @@ class PopulatedShibTestCase(TestCase):
         user.save()
         reload(shibmiddleware)
         shibmiddleware.ShibbMiddleware.make_profile(
-            shibmiddleware.ShibbMiddleware(), user, shib_meta
+            shibmiddleware.ShibbMiddleware(get_dummy_response), user, shib_meta
         )
         self.assertFalse(user.is_staff)
 
@@ -496,7 +499,7 @@ class PopulatedShibTestCase(TestCase):
         settings.SHIBBOLETH_STAFF_ALLOWED_DOMAINS = ("univ.fr",)
         reload(shibmiddleware)
         shibmiddleware.ShibbMiddleware.make_profile(
-            shibmiddleware.ShibbMiddleware(), user, shib_meta
+            shibmiddleware.ShibbMiddleware(get_dummy_response), user, shib_meta
         )
         self.assertTrue(user.is_staff)
 
@@ -513,7 +516,7 @@ class PopulatedShibTestCase(TestCase):
             }
         )
         shibmiddleware.ShibbMiddleware.make_profile(
-            shibmiddleware.ShibbMiddleware(), user, shib_meta
+            shibmiddleware.ShibbMiddleware(get_dummy_response), user, shib_meta
         )
         self.assertTrue(user.is_staff)  # Staff status is not remove
 
@@ -533,7 +536,7 @@ class PopulatedShibTestCase(TestCase):
             }
         )
         shibmiddleware.ShibbMiddleware.make_profile(
-            shibmiddleware.ShibbMiddleware(), user, shib_meta
+            shibmiddleware.ShibbMiddleware(get_dummy_response), user, shib_meta
         )
         self.assertFalse(user.is_staff)
 
