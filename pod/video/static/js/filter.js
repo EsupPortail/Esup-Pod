@@ -1,69 +1,119 @@
-// Liste simulant les catégories
-const categorySet = new Set([
-  "Mathématiques",
-  "Biologie",
-  "Physique",
-  "Histoire",
-  "Informatique",
-  "Mathématiques2",
-  "Biologie2",
-  "Physique2",
-  "Histoire2",
-  "Informatique2",
-]);
-
-const filtersConfig = [
+const FILTER_DEFS = [
+  // filtre “statique” : liste d’utilisateurs
   {
+    type: "static",
     name: "Utilisateur",
     param: "owner",
-    searchCallback: getSearchListUsers,
+    searchCallback: getSearchListUsers, // on suppose déjà debounce / memoisé
     itemLabel: u =>
       u.first_name && u.last_name
         ? `${u.first_name} ${u.last_name} (${u.username})`
         : u.username,
-    itemKey: u => u.username,
+    itemKey: u => u.username
   },
-  {
-    name: "Disciplines",
-    param: "disciplines",
-    searchCallback: term => searchInSet(categorySet, term),
-    itemLabel: category => category,
-    itemKey: category => category,
-  }
+  // filtres “API”
+  { type: "api", apiKey: "DISCIPLINES", name: "Disciplines", labelProp: "title", valueProp: "slug" },
+  { type: "api", apiKey: "TYPES",       name: "Types",       labelProp: "title", valueProp: "slug" },
+  { type: "api", apiKey: "TAGS",        name: "Tags",        labelProp: "title", valueProp: "slug" }
 ];
 
-const filterManager = new FilterManager({
-  filtersBoxId: 'filtersBox',
-  activeFiltersId: 'selectedTags',
-  resetFiltersId: 'filterTags'
-});
+function debouncePromise(fn, delay = 200) {
+  let timer = null;
+  let lastReject = null;
 
-filtersConfig.forEach(cfg => filterManager.addFilter(cfg));
-filterManager.initializeFilters();
-
-
-/* Fonction qui simule un fetch via un Set */
-function searchInSet(originalSet, searchTerm) {
-  return new Promise((resolve) => {
-    const items = Array.from(originalSet);
-    const normalizedTerm = searchTerm.trim().toLowerCase();
-
-    if (!normalizedTerm) {
-      return resolve(items);
+  return function(...args) {
+    if (timer) {
+      clearTimeout(timer);
+      lastReject && lastReject({ canceled: true });
     }
 
-    const matching = [];
-    const nonMatching = [];
+    return new Promise((resolve, reject) => {
+      lastReject = reject;
 
-    setTimeout(() => {
-      for (const item of items) {
-        if (item.toLowerCase().includes(normalizedTerm)) {
-          matching.push(item);
-        } else {
-          nonMatching.push(item);
+      timer = setTimeout(async () => {
+        try {
+          const result = await fn.apply(this, args);
+          resolve(result);
+        } catch (err) {
+          reject(err);
+        } finally {
+          timer = null;
+          lastReject = null;
         }
-      }
-      resolve([...matching, ...nonMatching]);
-    }, 100);
-  });
+      }, delay);
+    });
+  };
 }
+
+function makeSearchInArray(items, labelProp, delay = 200) {
+  const searchFn = term => {
+    const q = term.trim().toLowerCase();
+    if (!q) {
+      return Promise.resolve(items);
+    }
+    const [match, rest] = items.reduce(
+      ([m, r], obj) => {
+        const txt = String(obj[labelProp]).toLowerCase();
+        if (txt.includes(q)) m.push(obj);
+        else r.push(obj);
+        return [m, r];
+      },
+      [[], []]
+    );
+    return Promise.resolve(match.concat(rest));
+  };
+
+  return debouncePromise(searchFn, delay);
+}
+
+function buildFilterConfig(def, data) {
+  if (def.type === "static") {
+    return {
+      name: def.name,
+      param: def.param,
+      searchCallback: def.searchCallback,
+      itemLabel: def.itemLabel,
+      itemKey: def.itemKey
+    };
+  }
+
+  const items = Array.isArray(data[def.apiKey]) ? data[def.apiKey] : [];
+  if (items.length === 0) {
+    return null;
+  }
+  return {
+    name: def.name,
+    param: def.apiKey.toLowerCase(),
+    searchCallback: makeSearchInArray(items, def.labelProp, 200),
+    itemLabel: obj => obj[def.labelProp],
+    itemKey:   obj => obj[def.valueProp]
+  };
+}
+
+async function initFilters() {
+  try {
+    const res = await fetch(urlVideoStatistics, {
+      headers: { "X-Requested-With": "XMLHttpRequest" }
+    });
+    if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
+
+    const data = await res.json();
+
+    const filtersConfig = FILTER_DEFS
+      .map(def => buildFilterConfig(def, data))
+      .filter(Boolean);
+
+    const filterManager = new FilterManager({
+      filtersBoxId:    "filtersBox",
+      activeFiltersId: "selectedTags",
+      resetFiltersId:  "filterTags"
+    });
+
+    filtersConfig.forEach(cfg => filterManager.addFilter(cfg));
+    filterManager.initializeFilters();
+  } catch (err) {
+    console.error("Impossible d'initialiser les filtres :", err);
+  }
+}
+
+initFilters();

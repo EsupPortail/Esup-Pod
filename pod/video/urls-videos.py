@@ -3,6 +3,7 @@ from .views import videos , dashboard
 
 app_name = "videos"
 
-urlpatterns = [path("", videos, name="videos"),
-               path('dashboard/', dashboard, name='dashboard'),
-               ]
+urlpatterns = [
+    path("", videos, name="videos"),
+    path('dashboard/', dashboard, name='dashboard'),
+]

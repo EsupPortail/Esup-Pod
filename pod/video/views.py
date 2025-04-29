@@ -70,7 +70,7 @@ from .utils import (
     change_owner,
     get_id_from_request,
 )
-from .context_processors import get_available_videos
+from .context_processors import get_available_videos, context_video_data
 from .utils import sort_videos_list
 
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -3544,6 +3544,41 @@ def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> Json
     channel = Channel.objects.get(slug=slug)
     return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
 
+
+
+def retrieve_cached_video_statistics(request):
+    """
+    Retrieves cached video statistics and serializes them into JSON.
+
+    This function calls `context_video_data(request)` to fetch video data (types, disciplines,
+    video count, and total duration) stored in the cache. If some data is missing from the cache,
+    it is calculated and cached for future use.
+
+    Args:
+        request (HttpRequest): The HTTP request object used to obtain video data.
+
+    Returns:
+        JsonResponse: A JSON response containing the cached video data.
+    """
+    video_data = context_video_data(request)
+
+    def serialize_data(data):
+        """
+        Serializes Django objects (e.g., QuerySets) into simple data types for JSON response.
+
+        Args:
+            data (any): The data to serialize (can be a QuerySet or a simple object).
+
+        Returns:
+            list or any: The serialized data as a list (for QuerySets) or unchanged if it's a simple object.
+        """
+        if isinstance(data, QuerySet):
+            return list(data.values())
+        return data
+
+    serialized_data = {key: serialize_data(value) for key, value in video_data.items()}
+
+    return JsonResponse(serialized_data)
 
 """
 # check access to video

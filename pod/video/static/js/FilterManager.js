@@ -106,7 +106,7 @@ class FilterManager {
     // Menu déroulant
     const menu = document.createElement('div');
     menu.className = 'dropdown-menu p-2';
-    menu.style.minWidth = '100px';
+    menu.style.minWidth = '17em';
 
     // Groupe de recherche (input)
     const inputGroup = document.createElement('div');
@@ -217,7 +217,7 @@ class FilterManager {
       button.id = `${slugify(key)}-tag`;
 
       const label = document.createElement('span');
-      label.innerText = key;
+      label.innerText = currentFilter.name +" : "+ currentFilter.itemLabel(????);
 
       const closeIcon = document.createElement('span');
       closeIcon.className = 'bi bi-x-lg';
@@ -250,9 +250,9 @@ class FilterManager {
 
       const checkbox = document.createElement('input');
       checkbox.className = 'form-check-input';
-      checkbox.type      = 'checkbox';
-      checkbox.id        = key;
-      checkbox.checked   = true;
+      checkbox.type = 'checkbox';
+      checkbox.id = key;
+      checkbox.checked = true;
 
       checkbox.addEventListener('change', () => {
         if (checkbox.checked) {
