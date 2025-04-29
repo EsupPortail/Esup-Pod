@@ -2875,14 +2875,29 @@
                             "default_value": 50,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Tags entered when adding a video cannot exceed this length."
                                 ],
                                 "fr": [
-                                    "Les mots clés saisis lors de l’ajout de vidéo ne peuvent dépasser cette longueur."
+                                    "Les mots-clés saisis lors de l’ajout de vidéo ne peuvent dépasser cette longueur."
                                 ]
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "NUMBER_TAGS_CLOUD": {
+                            "default_value": 20,
+                            "description": {
+                                "en": [
+                                    "Number of most important tags displayed in the cloud on the home page.",
+                                    "TAGULOUS_WEIGHT_MIN and TAGULOUS_WEIGHT_MAX parameters are not used."
+                                ],
+                                "fr": [
+                                    "Nombre de mots-clés les plus importants affichés dans le nuage de la page d'accueil.",
+                                    "Les paramètres TAGULOUS_WEIGHT_MIN et TAGULOUS_WEIGHT_MAX ne sont pas utilisés."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.0.0"
                         },
                         "NOTES_STATUS": {
                             "default_value": "()",
