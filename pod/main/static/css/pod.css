@@ -765,37 +765,16 @@ div.card a img {
 }
 
 /** Dashboard **/
-
-.user-btn {
-  padding: var(--bs-btn-padding-y) var(--bs-btn-padding-x);
-  font-size: var(--bs-btn-font-size);
-  line-height: var(--bs-btn-line-height);
-  border-radius: var(--bs-border-radius);
+#selectedTags .btn-secondary {
   background-color: var(--pod-background-neutre2-bloc);
   border: 1px solid var(--bs-gray-400);
-
-  display: inline-flex;
-  align-items: center;
-  transition: background-color 0.2s, border-color 0.2s;
+  color: var(--bs-body-color); /* ou une couleur qui correspond à votre design */
 }
 
-.user-btn:hover {
+#selectedTags .btn-secondary:hover {
   background-color: var(--bs-gray-200);
   border-color: var(--bs-gray-400);
 }
-
-.user-btn .close-icon {
-  font-size: 1.25rem;
-  margin-left: 0.5rem;
-  cursor: pointer;
-}
-
-.user-btn--large {
-  --bs-btn-padding-x: 0.75rem;
-  --bs-btn-padding-y: 0.375rem;
-  --bs-btn-font-size: 1rem;
-}
-
 
 #bulk-update-container {
   background-color: var(--pod-background-neutre2-bloc);

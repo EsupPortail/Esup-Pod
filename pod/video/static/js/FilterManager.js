@@ -114,7 +114,7 @@ class FilterManager {
 
     const input = document.createElement('input');
     const inputId = `${param}-box`;
-    input.placeholder = `Recherche par ${name}`;
+    input.placeholder = gettext("Search for a") +" "+ name;
     input.id = inputId;
     input.type = 'text';
     input.className = 'form-control';
@@ -213,7 +213,7 @@ class FilterManager {
 
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'user-btn user-btn--large';
+      button.className = 'btn btn-secondary';
       button.id = `${slugify(key)}-tag`;
 
       const label = document.createElement('span');
@@ -240,8 +240,6 @@ class FilterManager {
    */
   createCheckboxesForFilter(param, results) {
     const container = document.getElementById(`collapseFilter${capitalize(param)}`);
-    console.log(container.innerHTML);
-    console.log(container.outerHTML);
     container.innerHTML = '';
     const filter = this.filters[param];
     const fragment = document.createDocumentFragment();

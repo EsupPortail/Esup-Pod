@@ -16,12 +16,16 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.5\n"
 
+#: pod/video/templates/videos/dashboard.html
+msgid "Clear filters"
+msgstr "Effacer les filtres"
+
 #: pod/video/views.py
 msgid "No videos matched your filters. Please try adjusting them."
 msgstr "Aucune vidéo ne correspond à vos filtres. Veuillez les modifier."
 
 #: pod/video/views.py
-msgid "You haven't uploaded any videos yet. Click 'Add a new video' to get started."
+msgid "You haven't uploaded any videos yet. Click ”Add a new video” to get started."
 msgstr "Vous n'avez pas encore mis en ligne de vidéos. Cliquez sur « Ajouter une nouvelle vidéo » pour commencer."
 
 #: pod/video/templates/videos/filter_aside_dashboard.html
@@ -7146,6 +7150,11 @@ msgstr "Gérer la liste de lecture"
 #: pod/video/views.py
 msgid "Sorry, no video found."
 msgstr "Désolé, aucune vidéo trouvée."
+
+#: pod/video/templates/videos/video_list_table_selectable.html
+#: pod/video/templates/videos/video_list_grid_selectable.html
+msgid "Click on “Add a video” to start populating your dashboard."
+msgstr "Cliquez sur « Ajouter une vidéo » pour commencer à remplir votre tableau de bord. La vidéo apparaîtra une fois ajoutée."
 
 #: pod/playlist/templates/playlist/playlist-videos-list.html
 #: pod/recorder/templates/recorder/record_list.html

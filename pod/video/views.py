@@ -608,17 +608,15 @@ def dashboard(request):
     sorted_videos_list = sort_videos_list(
         filtered_videos_list, sort_field, sort_direction
     )
-    error_message = None
-    if not filtered_videos_list:
-        error_message = _("No videos matched your filters. Please try adjusting them.")
-    if not videos_list:
-        error_message = _("You haven't uploaded any videos yet. Click 'Add a new video' to get started.")
 
-    error_message = None
+    error_message = {}
     if not filtered_videos_list:
-        error_message = _("No videos matched your filters. Please try adjusting them.")
+        error_message["main"] = "No videos matched your filters. Please try adjusting them."
+        error_message["types"] = ""
+
     if not videos_list:
-        error_message = _("You haven't uploaded any videos yet. Click 'Add a new video' to get started.")
+        error_message["main"] = "You haven't uploaded any videos yet."
+        error_message["types"] = "Click on “Add a video” to start populating your dashboard."
 
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
@@ -651,6 +649,7 @@ def dashboard(request):
                 "count_videos": count_videos,
                 "cursus_codes": CURSUS_CODES,
                 "owner_filter": owner_filter,
+                "error_message": error_message
             },
         )
 

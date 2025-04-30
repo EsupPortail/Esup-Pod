@@ -17,16 +17,12 @@ msgstr ""
 "X-Generator: Poedit 3.5\n"
 
 #: pod/video/static/js/FilterManager.js
-msgid "Search for a %(name)s"
-msgstr "Rechercher un %(name)s"
+msgid "User"
+msgstr "Utilisateur"
 
 #: pod/video/static/js/FilterManager.js
-msgid "Remove Filter"
-msgstr "Retirer le filtre"
-
-#: pod/video/static/js/FilterManager.js
-msgid "%(filter)s: %(key)s"
-msgstr "%(filter)s : %(key)s"
+msgid "Search for a"
+msgstr "Rechercher un/e"
 
 #: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
 msgid "No discipline"

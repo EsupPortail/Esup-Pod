@@ -5,7 +5,7 @@ let tagSet = new Set();
 
 const filtersConfig = [
   {
-    name: "Utilisateur",
+    name: gettext("User"),
     param: "owner",
     searchCallback: getSearchListUsers,
     itemLabel: u =>
@@ -74,7 +74,6 @@ function searchInSet(originalSet, searchTerm) {
 }
 
 async function initFilters() {
-  console.log("COUCOU");
   try {
     const res = await fetch(urlVideoStatistics, {
       headers: { "X-Requested-With": "XMLHttpRequest" }
@@ -83,9 +82,9 @@ async function initFilters() {
 
     const data = await res.json();
     help(data);
-    typeSet = new Set(data.TYPES.map(type => type.title));
-    disciplineSet = new Set(data.DISCIPLINES.map(discipline => discipline.title));
-    tagSet = new Set(data.TAGS.map(tag => tag.title));
+    typeSet = new Set(data.TYPES.map(type => gettext(type.title)));
+    disciplineSet = new Set(data.DISCIPLINES.map(discipline => gettext(discipline.title)));
+    tagSet = new Set(data.TAGS.map(tag => gettext(tag.title)));
 
   } catch (err) {
     console.error("Impossible d'initialiser les filtres :", err);
