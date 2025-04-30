@@ -1,96 +1,80 @@
-const FILTER_DEFS = [
-  // filtre “statique” : liste d’utilisateurs
+// Filtes
+let typeSet = new Set();
+let disciplineSet = new Set();
+let tagSet = new Set();
+
+const filtersConfig = [
   {
-    type: "static",
     name: "Utilisateur",
     param: "owner",
-    searchCallback: getSearchListUsers, // on suppose déjà debounce / memoisé
+    searchCallback: getSearchListUsers,
     itemLabel: u =>
       u.first_name && u.last_name
         ? `${u.first_name} ${u.last_name} (${u.username})`
         : u.username,
-    itemKey: u => u.username
+    itemKey: u => u.username,
   },
-  // filtres “API”
-  { type: "api", apiKey: "DISCIPLINES", name: "Disciplines", labelProp: "title", valueProp: "slug" },
-  { type: "api", apiKey: "TYPES",       name: "Types",       labelProp: "title", valueProp: "slug" },
-  { type: "api", apiKey: "TAGS",        name: "Tags",        labelProp: "title", valueProp: "slug" }
+  {
+    name: "Types",
+    param: "type",
+    searchCallback: term => searchInSet(typeSet, term),
+    itemLabel: type => type,
+    itemKey: type => type,
+  },
+  {
+    name: "Disciplines",
+    param: "dicipline",
+    searchCallback: term => searchInSet(disciplineSet, term),
+    itemLabel: dicipline => dicipline,
+    itemKey: dicipline => dicipline,
+  },
+  {
+    name: "Tags",
+    param: "tag",
+    searchCallback: term => searchInSet(tagSet, term),
+    itemLabel: tag => tag,
+    itemKey: tag => tag,
+  }
 ];
 
-function debouncePromise(fn, delay = 200) {
-  let timer = null;
-  let lastReject = null;
+const filterManager = new FilterManager({
+  filtersBoxId: 'filtersBox',
+  activeFiltersId: 'selectedTags',
+  resetFiltersId: 'filterTags'
+});
 
-  return function(...args) {
-    if (timer) {
-      clearTimeout(timer);
-      lastReject && lastReject({ canceled: true });
+filtersConfig.forEach(cfg => filterManager.addFilter(cfg));
+filterManager.initializeFilters();
+
+
+/* Fonction qui simule un fetch via un Set */
+function searchInSet(originalSet, searchTerm) {
+  return new Promise((resolve) => {
+    const items = Array.from(originalSet);
+    const normalizedTerm = searchTerm.trim().toLowerCase();
+
+    if (!normalizedTerm) {
+      return resolve(items);
     }
 
-    return new Promise((resolve, reject) => {
-      lastReject = reject;
+    const matching = [];
+    const nonMatching = [];
 
-      timer = setTimeout(async () => {
-        try {
-          const result = await fn.apply(this, args);
-          resolve(result);
-        } catch (err) {
-          reject(err);
-        } finally {
-          timer = null;
-          lastReject = null;
+    setTimeout(() => {
+      for (const item of items) {
+        if (item.toLowerCase().includes(normalizedTerm)) {
+          matching.push(item);
+        } else {
+          nonMatching.push(item);
         }
-      }, delay);
-    });
-  };
-}
-
-function makeSearchInArray(items, labelProp, delay = 200) {
-  const searchFn = term => {
-    const q = term.trim().toLowerCase();
-    if (!q) {
-      return Promise.resolve(items);
-    }
-    const [match, rest] = items.reduce(
-      ([m, r], obj) => {
-        const txt = String(obj[labelProp]).toLowerCase();
-        if (txt.includes(q)) m.push(obj);
-        else r.push(obj);
-        return [m, r];
-      },
-      [[], []]
-    );
-    return Promise.resolve(match.concat(rest));
-  };
-
-  return debouncePromise(searchFn, delay);
-}
-
-function buildFilterConfig(def, data) {
-  if (def.type === "static") {
-    return {
-      name: def.name,
-      param: def.param,
-      searchCallback: def.searchCallback,
-      itemLabel: def.itemLabel,
-      itemKey: def.itemKey
-    };
-  }
-
-  const items = Array.isArray(data[def.apiKey]) ? data[def.apiKey] : [];
-  if (items.length === 0) {
-    return null;
-  }
-  return {
-    name: def.name,
-    param: def.apiKey.toLowerCase(),
-    searchCallback: makeSearchInArray(items, def.labelProp, 200),
-    itemLabel: obj => obj[def.labelProp],
-    itemKey:   obj => obj[def.valueProp]
-  };
+      }
+      resolve([...matching, ...nonMatching]);
+    }, 100);
+  });
 }
 
 async function initFilters() {
+  console.log("COUCOU");
   try {
     const res = await fetch(urlVideoStatistics, {
       headers: { "X-Requested-With": "XMLHttpRequest" }
@@ -98,22 +82,26 @@ async function initFilters() {
     if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
 
     const data = await res.json();
+    help(data);
+    typeSet = new Set(data.TYPES.map(type => type.title));
+    disciplineSet = new Set(data.DISCIPLINES.map(discipline => discipline.title));
+    tagSet = new Set(data.TAGS.map(tag => tag.title));
 
-    const filtersConfig = FILTER_DEFS
-      .map(def => buildFilterConfig(def, data))
-      .filter(Boolean);
-
-    const filterManager = new FilterManager({
-      filtersBoxId:    "filtersBox",
-      activeFiltersId: "selectedTags",
-      resetFiltersId:  "filterTags"
-    });
-
-    filtersConfig.forEach(cfg => filterManager.addFilter(cfg));
-    filterManager.initializeFilters();
   } catch (err) {
     console.error("Impossible d'initialiser les filtres :", err);
   }
 }
 
 initFilters();
+
+function help(data) {
+  console.log(data);
+  data.TYPES.forEach(type => {
+    console.log(type.title);
+  });
+  console.log(data.DISCIPLINES);
+  console.log(data.VIDEOS_COUNT);
+  console.log(data.VIDEOS_DURATION);
+  console.log(data.CHANNELS_PER_BATCH);
+  console.log(data.TAGS);
+}
