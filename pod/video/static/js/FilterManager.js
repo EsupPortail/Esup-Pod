@@ -1,19 +1,19 @@
 /**
  * FilterManager
  *
- * Classe permettant de créer et gérer dynamiquement des filtres interactifs
- * sous forme de dropdowns avec recherche asynchrone, cases à cocher, et affichage
- * des filtres actifs sous forme de badges.
+ * Class for dynamically creating and managing interactive filters
+ * in the form of dropdowns with asynchronous search, checkboxes,
+ * and active filter display as badges.
  *
- * Fonctionnalités principales :
- * - Génération automatique d'interfaces de filtre (dropdown + champ de recherche).
- * - Recherche asynchrone sur chaque filtre via des callbacks retournant des Promises.
- * - Gestion des sélections : les éléments sélectionnés sont mis en avant.
- * - Synchronisation avec l'URL (query params) et sessionStorage.
- * - Rafraîchissement automatique de la liste de résultats via `refreshVideosSearch()`.
+ * Main features:
+ * - Automatic generation of filter interfaces (dropdown + search field).
+ * - Asynchronous search for each filter using callbacks returning Promises.
+ * - Selection management: selected items are highlighted.
+ * - Synchronization with the URL (query params) and sessionStorage.
+ * - Automatic refresh of the results list via `refreshVideosSearch()`.
  *
  * @example
- * // 1. Importer et initialiser
+ * // 1. Import and initialize
  * import FilterManager from "./FilterManager.js";
  *
  * const manager = new FilterManager({
@@ -22,7 +22,7 @@
  *   resetFiltersId: 'filterTags'
  * });
  *
- * // 2. Définir les filtres à utiliser
+ * // 2. Define the filters to use
  * const filtersConfig = [{
  *   name: 'Disciplines',
  *   param: 'disciplines',
@@ -31,21 +31,20 @@
  *   itemKey: item => item
  * }];
  *
- * // 3. Ajouter les filtres et initialiser
+ * // 3. Add the filters and initialize
  * filtersConfig.forEach(cfg => manager.addFilter(cfg));
  * manager.initializeFilters();
  */
-
 class FilterManager {
 
   /**
-   * Ajoute un filtre au manager.
+   * Adds a filter to the manager.
    * @param {Object} options
-   * @param {Object} options.filters - Définitions initiales des filtres.
-   * @param {string} [options.filtersBoxId='filtersBox'] - ID du container des filtres.
-   * @param {string} [options.activeFiltersId='selectedTags'] - ID du container des filtres actifs.
-   * @param {string} [options.activeFiltersWrapId='activeFilters'] - ID du container.
-   * @param {string} [options.resetFiltersId='filterTags'] - ID du bouton de réinitialisation.
+   * @param {Object} options.filters - Initial filter definitions.
+   * @param {string} [options.filtersBoxId='filtersBox'] - ID of the filters container.
+   * @param {string} [options.activeFiltersId='selectedTags'] - ID of the active filters container.
+   * @param {string} [options.activeFiltersWrapId='activeFilters'] - ID of the wrapper container.
+   * @param {string} [options.resetFiltersId='filterTags'] - ID of the reset button.
    */
   constructor({
     filters = {},
@@ -63,15 +62,13 @@ class FilterManager {
     this.currentResults = {};
   }
 
-
-
   /**
-   * Ajoute un filtre et génère son composant.
-   * @param {string} config.name - Libellé du filtre.
-   * @param {string} config.param - Clé de paramètre dans l'URL.
-   * @param {Function} config.searchCallback - Fonction de recherche renvoyant une promesse.
-   * @param {Function} config.itemLabel - Fonction renvoyant le libellé d'un élément.
-   * @param {Function} config.itemKey - Fonction renvoyant la clé unique d'un élément.
+   * Adds a filter and generates its component.
+   * @param {string} config.name - Label of the filter.
+   * @param {string} config.param - Parameter key used in the URL.
+   * @param {Function} config.searchCallback - Search function that returns a promise.
+   * @param {Function} config.itemLabel - Function that returns the label of an item.
+   * @param {Function} config.itemKey - Function that returns the unique key of an item.
    */
   addFilter({ name, param, searchCallback, itemLabel, itemKey }) {
     this.filters[param] = {
@@ -85,15 +82,15 @@ class FilterManager {
   }
 
   /**
-   * Génère le DOM du filtre (bouton et liste déroulante).
-   * @param {string} name - Libellé du filtre.
-   * @param {string} param - Clé de paramètre.
+   * Generates the DOM structure for the filter (button and dropdown list).
+   * @param {string} name - Label of the filter.
+   * @param {string} param - Parameter key.
    */
   createFilterComponent(name, param) {
     const dropdown = document.createElement('div');
     dropdown.className = 'dropdown';
 
-    // Bouton du menu déroulant
+    // Dropdown menu button
     const button = document.createElement('button');
     const buttonId = `${param}-filter-btn`;
     button.id = buttonId;
@@ -103,12 +100,12 @@ class FilterManager {
     button.setAttribute('aria-expanded', 'false');
     button.innerText = name;
 
-    // Menu déroulant
+    // Dropdown menu
     const menu = document.createElement('div');
     menu.className = 'dropdown-menu p-2';
     menu.style.minWidth = '17em';
 
-    // Groupe de recherche (input)
+    // Search group (input)
     const inputGroup = document.createElement('div');
     inputGroup.className = 'input-group mb-3';
 
@@ -137,8 +134,8 @@ class FilterManager {
   }
 
   /**
-   * Lie les événements de recherche et d'affichage.
-   * @param {string} param - Clé de paramètre.
+   * Binds search and display events.
+   * @param {string} param - Parameter key.
    */
   addSearchInputListener(param) {
     const inputEl  = document.getElementById(`${param}-box`);
@@ -156,9 +153,9 @@ class FilterManager {
   }
 
   /**
-   * Lance la recherche via la callback et met à jour l'affichage.
-   * @param {string} param - Clé de paramètre.
-   * @param {string} [searchTerm=''] - Terme de recherche.
+   * Initiates the search via the callback and updates the display.
+   * @param {string} param - Parameter key.
+   * @param {string} [searchTerm=''] - Search term.
    */
   async searchFilter(param, searchTerm = '') {
     const filter = this.filters[param];
@@ -175,8 +172,8 @@ class FilterManager {
 
 
   /**
-   * Supprime un filtre appliqué.
-   * @param {string} param - Le paramètre du filtre.
+   * Removes an applied filter.
+   * @param {string} param - The filter parameter.
    */
   removeFilter(currentFilter, key) {
     if (currentFilter) {
@@ -188,7 +185,7 @@ class FilterManager {
   }
 
   /**
-   * Initialise les filtres depuis la session.
+   * Initializes the filters from the session.
    */
   initializeFilters() {
     Object.keys(this.filters).forEach(param => {
@@ -203,9 +200,9 @@ class FilterManager {
   }
 
   /**
-   * Affiche un badge pour chaque filtre actif.
-   * @param {Object} filter - Objet de configuration du filtre.
-   * @param {string} key - Clé de l'élément sélectionné.
+   * Displays a badge for each active filter.
+   * @param {Object} filter - Filter configuration object.
+   * @param {string} key - Key of the selected item.
    */
   renderActiveFilter(currentFilter, key) {
     if (currentFilter) {
@@ -234,9 +231,9 @@ class FilterManager {
   }
 
   /**
-   * Construit et insère les cases à cocher en optimisant avec DocumentFragment.
-   * @param {string} param - Clé de paramètre.
-   * @param {Array} results - Résultats de recherche.
+   * Builds and inserts the checkboxes, optimized with DocumentFragment.
+   * @param {string} param - Parameter key.
+   * @param {Array} results - Search results.
    */
   createCheckboxesForFilter(param, results) {
     const container = document.getElementById(`collapseFilter${capitalize(param)}`);
@@ -317,7 +314,7 @@ class FilterManager {
 
 
   /**
-   * Met à jour la sessionStorage et l'URL avec les filtres sélectionnés.
+   * Updates the sessionStorage and URL with the selected filters.
    */
   update() {
     const query = new URLSearchParams();
@@ -339,16 +336,15 @@ class FilterManager {
     refreshVideosSearch();
   }
 
-   /**
-   * Positionne le lien "Effacer les filtres" :
-   * - dans filtersBox s'il n'y a aucun tag actif
-   * - dans activeFiltersWrap (à droite) sinon
-   */
-   _syncResetLink() {
+  /**
+  * Positions the "Clear filters" link:
+  * - in filtersBox if there are no active tags
+  * - in activeFiltersWrap (on the right) otherwise
+  */
+  _syncResetLink() {
     const hasTags = this.activeFiltersBox.children.length > 0;
 
     if (!hasTags) {
-      // aucun filtre actif → lien dans filtersBox
       if (!this.filtersBox.contains(this.resetFiltersButton)) {
         this.filtersBox.appendChild(this.resetFiltersButton);
       }
@@ -366,16 +362,16 @@ class FilterManager {
 
 
   /**
-   * Supprime tous les tags affichés en tant que filtres actifs.
+   * Removes all tags displayed as active filters.
    */
   removeAllActiveFiltersUI() {
     this.activeFiltersBox.querySelectorAll('span.badge').forEach(badge => badge.remove());
   }
 
   /**
-   * Supprime un filtre actif et rafraîchit.
-   * @param {Object} filter - Objet de configuration du filtre.
-   * @param {string} key - Clé de l'élément à retirer.
+   * Removes an active filter and refreshes.
+   * @param {Object} filter - Filter configuration object.
+   * @param {string} key - Key of the item to remove.
    */
   resetFilters() {
     Object.values(this.filters).forEach(filter => {
@@ -387,20 +383,20 @@ class FilterManager {
   }
 
   /**
-   * Initialisation du bouton de réinitialisation des filtres.
+   * Initialization of the filter reset button.
    */
   initializeResetButton() {
     if (this.resetFiltersButton) {
       this.resetFiltersButton.addEventListener('click', (e) => {
         e.preventDefault();
-        this.resetFilters(); // Réinitialiser les filtres
+        this.resetFilters();
       });
     }
   }
 }
 
 /**
- * Convertit une chaîne en slug utilisable dans un ID.
+ * Converts a string into a slug usable in an ID.
  * @param {string} str
  * @returns {string}
  */
@@ -414,7 +410,7 @@ function slugify(nom) {
 }
 
 /**
- * Met la première lettre en majuscule.
+ * Capitalizes the first letter of a string.
  * @param {string} s
  * @returns {string}
  */
@@ -423,7 +419,7 @@ function capitalize(str) {
 }
 
 /**
- * Applique un délai avant d'exécuter la fonction.
+ * Applies a delay before executing the function.
  * @param {Function} fn
  * @param {number} delay
  * @returns {Function}
