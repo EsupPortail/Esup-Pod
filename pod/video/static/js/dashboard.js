@@ -41,7 +41,6 @@ var dashboardAction = "";
 var dashboardValue;
 selectedVideos[videosListContainerId] = [];
 
-
 /**
  * Add change event listener on select action to get related inputs
  */

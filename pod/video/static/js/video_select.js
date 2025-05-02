@@ -157,6 +157,7 @@ function clearSelectedVideo(container) {
  **/
 function resetDashboardElements() {
   clearSelectedVideo(videosListContainerId);
+  toggleBulkUpdateVisibility();
   dashboardActionReset();
   window.scrollTo(0, 0);
 }
@@ -190,4 +191,23 @@ function selectAllVideos(container) {
   });
   setListSelectedVideos(container);
   replaceSelectedCountVideos(container);
+  toggleBulkUpdateVisibility();
 }
+
+function selectAllManger() {
+  const checkbox = document.getElementById('selectAll');
+  if (!checkbox) return;
+
+  checkbox.addEventListener('change', () => {
+    console.log("toggleBulkUpdateVisibility");
+    if (checkbox.checked) {
+      selectAllVideos(videosListContainerId);
+    } else {
+      resetDashboardElements();
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  selectAllManger();
+});

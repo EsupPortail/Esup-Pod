@@ -81,7 +81,6 @@ async function initFilters() {
     if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
 
     const data = await res.json();
-    help(data);
     typeSet = new Set(data.TYPES.map(type => gettext(type.title)));
     disciplineSet = new Set(data.DISCIPLINES.map(discipline => gettext(discipline.title)));
     tagSet = new Set(data.TAGS.map(tag => gettext(tag.title)));
@@ -93,14 +92,3 @@ async function initFilters() {
 
 initFilters();
 
-function help(data) {
-  console.log(data);
-  data.TYPES.forEach(type => {
-    console.log(type.title);
-  });
-  console.log(data.DISCIPLINES);
-  console.log(data.VIDEOS_COUNT);
-  console.log(data.VIDEOS_DURATION);
-  console.log(data.CHANNELS_PER_BATCH);
-  console.log(data.TAGS);
-}
