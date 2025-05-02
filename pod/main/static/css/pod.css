@@ -768,7 +768,7 @@ div.card a img {
 #selectedTags .btn-secondary {
   background-color: var(--pod-background-neutre2-bloc);
   border: 1px solid var(--bs-gray-400);
-  color: var(--bs-body-color); /* ou une couleur qui correspond à votre design */
+  color: var(--bs-body-color);
 }
 
 #selectedTags .btn-secondary:hover {
@@ -777,9 +777,37 @@ div.card a img {
 }
 
 #bulk-update-container {
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-20px);
+  max-height: 0;
+  margin-bottom: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease, margin-bottom 0.4s ease;
   background-color: var(--pod-background-neutre2-bloc);
+  border: 2px solid var(--bs-gray-400);
+  color: var(--bs-body-color);
+}
+
+#bulk-update-container > * {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease, max-height 0.3s ease;
+}
+
+#bulk-update-container.visible > * {
+  opacity: 1;
+  max-height: 1000px;
+}
+
+#bulk-update-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 500px;
+  margin-bottom: 1em;
+  visibility: visible;
   padding: 1em;
-  border-radius: var(--bs-border-radius);
 }
 
 #bulk-update-container .select2 {

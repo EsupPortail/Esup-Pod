@@ -19,6 +19,8 @@ var countSelectedVideosBadge = document.getElementById(
   "countSelectedVideosBadge",
 );
 
+document.addEventListener("DOMContentLoaded", toggleBulkUpdateVisibility);
+
 /**
  * Get list of selected videos's titles based on selected videos
  *
@@ -117,6 +119,21 @@ function toggleSelectedVideo(item, container) {
   }
   if (container === videosListContainerId) {
     replaceSelectedCountVideos(container);
+  }
+  toggleBulkUpdateVisibility();
+}
+
+function toggleBulkUpdateVisibility() {
+  const c = document.getElementById('bulk-update-container');
+  const hasSelectedVideos = Object.values(selectedVideos).some(arr => arr.length > 0);
+  const hr = document.getElementById('bottom-ht-filtre');
+
+  if (hasSelectedVideos) {
+    hr.style.display = 'none';
+    c.classList.add('visible');
+  } else {
+    hr.style.display = 'block';
+    c.classList.remove('visible');
   }
 }
 
