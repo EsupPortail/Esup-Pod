@@ -52,7 +52,7 @@ SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 
-NUMBER_TAGS_CLOUD = getattr(settings, 'NUMBER_TAGS_CLOUD', 20)
+NUMBER_TAGS_CLOUD = getattr(settings, "NUMBER_TAGS_CLOUD", 20)
 
 ###############################################################
 # EMAIL
