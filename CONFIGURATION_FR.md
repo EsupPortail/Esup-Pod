@@ -1683,7 +1683,11 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
   >> Par défaut : 10 (Année courante + 10 ans).<br>
 * `MAX_TAG_LENGTH`
   > valeur par défaut : `50`
-  >> Les mots clés saisis lors de l’ajout de vidéo ne peuvent dépasser cette longueur.<br>
+  >> Les mots-clés saisis lors de l’ajout de vidéo ne peuvent dépasser cette longueur.<br>
+* `NUMBER_TAGS_CLOUD`
+  > valeur par défaut : `20`
+  >> Nombre de mots-clés les plus importants affichés dans le nuage de la page d'accueil.<br>
+  >> Les paramètres TAGULOUS_WEIGHT_MIN et TAGULOUS_WEIGHT_MAX ne sont pas utilisés.<br>
 * `NOTES_STATUS`
   > valeur par défaut : `()`
   >> Valeurs possible pour l’accès à une note.<br>
