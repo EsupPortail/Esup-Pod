@@ -338,27 +338,24 @@ class FilterManager {
 
   /**
   * Positions the "Clear filters" link:
-  * - in filtersBox if there are no active tags
   * - in activeFiltersWrap (on the right) otherwise
   */
   _syncResetLink() {
     const hasTags = this.activeFiltersBox.children.length > 0;
 
     if (!hasTags) {
-      if (!this.filtersBox.contains(this.resetFiltersButton)) {
-        this.filtersBox.appendChild(this.resetFiltersButton);
-      }
-      this.resetFiltersButton.classList.add('ms-auto');
-      this.filtersBox.classList.remove('mb-3');
-    } else {
-      if (!this.activeFiltersWrap.contains(this.resetFiltersButton)) {
-        this.activeFiltersWrap.appendChild(this.resetFiltersButton);
-      }
-      this.resetFiltersButton.classList.add('ms-auto');
-      this.filtersBox.classList.add('mb-3');
+      this.resetFiltersButton.style.display = 'none';
+      return;
     }
+
+    if (!this.activeFiltersWrap.contains(this.resetFiltersButton)) {
+      this.activeFiltersWrap.appendChild(this.resetFiltersButton);
+    }
+    this.resetFiltersButton.classList.add('ms-auto');
+    this.filtersBox.classList.add('mb-3');
     this.resetFiltersButton.style.display = 'block';
   }
+
 
 
   /**

@@ -130,27 +130,42 @@
   </div>
 
   <div>
-      <div class="row mt-3">
-        <h2 id="video_count" class="col-5">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
-        <div class="btn-group col-3" role="group">
-          <div class="mb-3">
-            <input type="checkbox" id="selectAll" class="form-check-input me-2">
-            <label for="selectAll">Tout sélectionner</label>
-          </div>
-          <button style="display: none;" id="select-all-dashboard-elements-btn" type="button" class="btn btn-primary mt-2" onclick="selectAllVideos(videosListContainerId)">{% trans "Select all" %}</button>
-          <button style="display: none;" id="reset-dashboard-elements-btn" type="button" class="btn btn-secondary mt-2" onclick="resetDashboardElements()" disabled>{% trans "Clear selection" %}</button>
-          <button title="{% trans 'Grid display mode' %}" class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == "grid" %}active{% endif %}" aria-current="page" onclick="changeDisplayMode('grid')"></button>
+    <div class="row align-items-center">
+      <div class="col-auto">
+        <div class="form-check">
+          <input type="checkbox"
+                 id="selectAll"
+                 class="form-check-input me-2"
+                 data-bs-toggle="tooltip"
+                 data-bs-placement="bottom"
+                 data-bs-original-title="{% trans 'Select/Deselect all videos' %}"
+                 aria-label="{% trans 'Select/Deselect all videos' %}">
+          <label for="selectAll">{% trans "Select all" %}</label>
+        </div>
+      </div>
+      <div class="col d-flex align-items-center justify-content-end flex-wrap gap-2">
+        <div class="btn-group" role="group">
+          <button style="display: none;" id="select-all-dashboard-elements-btn" type="button" class="btn btn-primary" onclick="selectAllVideos(videosListContainerId)">
+            {% trans "Select all" %}
+          </button>
+          <button style="display: none;" id="reset-dashboard-elements-btn" type="button" class="btn btn-secondary" onclick="resetDashboardElements()" disabled>
+            {% trans "Clear selection" %}
+          </button>
+          <button title="{% trans 'Grid display mode' %}" class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == "grid" %}active{% endif %}" onclick="changeDisplayMode('grid')"></button>
           <button title="{% trans 'List display mode' %}" class="btn btn-outline-primary bi bi-list-check btn-dashboard-display-mode {% if display_mode == "list" %}active{% endif %}" onclick="changeDisplayMode('list')"></button>
         </div>
-        <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-4 mb-2">
+
+        <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms mb-0">
           {% include "videos/video_sort_select.html" %}
         </form>
       </div>
-
-      <div id="video_list_content">
-        {% include 'loader.html' with loaderid="videosListLoader" %}
-        {% include video_list_template %}
-      </div>
+    </div>
+    <hr>
+    <p id="video_count" class="col-5">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
+    <div id="video_list_content">
+      {% include 'loader.html' with loaderid="videosListLoader" %}
+      {% include video_list_template %}
+    </div>
   </div>
 
 {% endblock page_content %}

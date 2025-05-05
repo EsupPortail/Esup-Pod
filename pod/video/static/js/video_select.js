@@ -199,7 +199,6 @@ function selectAllManger() {
   if (!checkbox) return;
 
   checkbox.addEventListener('change', () => {
-    console.log("toggleBulkUpdateVisibility");
     if (checkbox.checked) {
       selectAllVideos(videosListContainerId);
     } else {
