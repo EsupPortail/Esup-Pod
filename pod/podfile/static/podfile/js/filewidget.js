@@ -111,7 +111,7 @@ if (typeof loaded == "undefined") {
 
   document.addEventListener("change", (e) => {
     if (e.target.id != "ufile") return;
-    document.getElementById("formuploadfile").querySelector("button").click();
+    submitFormFile(document.getElementById("formuploadfile"));
   });
 
   /****** CHANGE FILE ********/
@@ -122,54 +122,9 @@ if (typeof loaded == "undefined") {
       e.target.id != "formuploadfile"
     )
       return;
-    e.preventDefault();
-    e.target.style.display = "none";
-    document.querySelectorAll(".loadingformfiles").forEach((el) => {
-      el.style.display = "block";
-    });
-    document.getElementById("listfiles").style.display = "none";
-
-    var data_form = new FormData(e.target);
-
-    var url = e.target.getAttribute("action");
-
-    fetch(url, {
-      method: "POST",
-      body: data_form,
-      processData: false,
-      contentType: false,
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest', //Necessary to work with is_ajax
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        document.querySelectorAll(".loadingformfiles").forEach((el) => {
-          el.style.display = "none";
-        });
-        document.getElementById("listfiles").style.display = "block";
-        e.target.style.display = "block";
-        show_folder_files(data);
-      })
-
-      .catch((error) => {
-        e.target.style.display = "block";
-        document.querySelectorAll(".loadingformfiles").forEach((el) => {
-          el.style.display = "none";
-        });
-        document.getElementById("listfiles").style.display = "block";
-        var data = error.status + " " + error.statusText;
-
-        showalert(
-          gettext("Error during exchange") +
-          "(" +
-          data +
-          ")<br>" +
-          gettext("No data could be stored."),
-          "alert-danger"
-        );
-      });
+    submitFormFile(e.target);
   });
+
   /****** CHANGE FILE ********/
   document.addEventListener("hide.bs.modal", (event) => {
     if (event.target.id != "folderModalCenter") return;
@@ -937,4 +892,72 @@ if (typeof loaded == "undefined") {
     }, 500);
   });
 */
+}
+
+/**
+ * Handles the submission of a form containing file data via an AJAX request.
+ *
+ * This function hides the target form, displays a loading indicator, and sends the form data
+ * to the server using the Fetch API. Upon receiving a response, it updates the UI to reflect
+ * the result of the operation. If an error occurs during the request, it displays an error alert.
+ *
+ * @param {HTMLFormElement} target - The form element being submitted. It must have an "action" attribute
+ *                                   specifying the URL to which the form data will be sent.
+ *
+ * @returns {void}
+ *
+ * @throws {Error} If the fetch request fails, an error message is displayed to the user.
+ *
+ * @example
+ * // Assuming there is a form element with id "uploadForm" in the DOM:
+ * const form = document.getElementById("uploadForm");
+ * submitFormFile(form);
+ */
+function submitFormFile(target) {
+  target.style.display = "none";
+  document.querySelectorAll(".loadingformfiles").forEach((el) => {
+    el.style.display = "block";
+  });
+  document.getElementById("listfiles").style.display = "none";
+
+  var data_form = new FormData(target);
+
+  var url = target.getAttribute("action");
+
+  fetch(url, {
+    method: "POST",
+    body: data_form,
+    processData: false,
+    contentType: false,
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest', // Necessary to work with is_ajax
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      document.querySelectorAll(".loadingformfiles").forEach((el) => {
+        el.style.display = "none";
+      });
+      document.getElementById("listfiles").style.display = "block";
+      target.style.display = "block";
+      show_folder_files(data);
+    })
+
+    .catch((error) => {
+      target.style.display = "block";
+      document.querySelectorAll(".loadingformfiles").forEach((el) => {
+        el.style.display = "none";
+      });
+      document.getElementById("listfiles").style.display = "block";
+      var data = error.status + " " + error.statusText;
+
+      showalert(
+        gettext("Error during exchange") +
+        "(" +
+        data +
+        ")<br>" +
+        gettext("No data could be stored."),
+        "alert-danger"
+      );
+    });
 }

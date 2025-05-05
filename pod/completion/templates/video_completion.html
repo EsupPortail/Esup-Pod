@@ -389,7 +389,9 @@
   </div>
 {% endblock page_aside %}
 {% block more_script %}
-  <script src="{% static 'admin/js/vendor/select2/select2.full.min.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'django_select2/django_select2.js' %}?ver={{VERSION}}"></script>
+  {% if USE_SPEAKER %}
+    <script src="{% static 'admin/js/vendor/select2/select2.full.min.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'admin/js/vendor/select2/i18n/' %}{{ LANGUAGE_CODE }}.js?ver={{VERSION}}"></script>
+  {% endif %}
   <script src="{% static 'js/completion.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}
