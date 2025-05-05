@@ -49,7 +49,10 @@ USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 MANAGERS = getattr(settings, "MANAGERS", {})
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
+
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
+
+NUMBER_TAGS_CLOUD = getattr(settings, 'NUMBER_TAGS_CLOUD', 20)
 
 ###############################################################
 # EMAIL
@@ -199,12 +202,17 @@ def get_videos(
 
 
 def get_tag_cloud() -> list:
-    """Get only tags with weight between TAGULOUS_WEIGHT_MIN and TAGULOUS_WEIGHT_MAX."""
+    """Get a list of the most popular tags (weight concept)."""
     # Convert tag cloud to list of dict, so it can be stored in CACHE
     tags = []
     for tag in Video.tags.tag_model.objects.weight():
         tags.append({"name": tag.name, "weight": tag.weight, "slug": tag.slug})
-    return tags
+
+    # Sort tags by weight in descending order
+    tags_sorted = sorted(tags, key=lambda x: x["weight"], reverse=True)
+
+    # Return only the top tags
+    return tags_sorted[:NUMBER_TAGS_CLOUD]
 
 
 def sort_videos_list(videos_list: list, sort_field: str, sort_direction: str = ""):
