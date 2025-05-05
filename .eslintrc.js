@@ -49,9 +49,7 @@ module.exports = {
       // Allow use of import & export functions
       files: [
         "pod/main/static/js/utils.js",
-        "pod/video/static/js/regroup_videos_by_theme.js",
-        "pod/video/static/js/FilterManager.js",
-        "pod/video/static/js/filter_aside_video_list_refresh.js"
+        "pod/video/static/js/regroup_videos_by_theme.js"
       ],
       parserOptions: { sourceType: "module" },
     }
