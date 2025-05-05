@@ -1,4 +1,3 @@
-// Filtes
 let typeSet = new Set();
 let disciplineSet = new Set();
 let tagSet = new Set();

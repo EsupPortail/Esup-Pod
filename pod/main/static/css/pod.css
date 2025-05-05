@@ -771,11 +771,6 @@ div.card a img {
   color: var(--bs-body-color);
 }
 
-#selectedTags .btn-secondary:hover {
-  background-color: var(--bs-gray-200);
-  border-color: var(--bs-gray-400);
-}
-
 #bulk-update-container {
   overflow: hidden;
   opacity: 0;

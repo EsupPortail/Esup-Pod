@@ -91,11 +91,11 @@ function replaceSelectedCountVideos(container) {
   videoCountStr = interpolate(videoCountStr, { count: newCount }, true);
   countSelectedVideosBadge.textContent = videoCountStr;
   countSelectedVideosBadge.setAttribute("title", videoCountTit);
-  manageDisableBtn(
-    applyMultipleActionsBtn,
-    newCount > 0 && dashboardAction.length !== 0,
-  );
-  manageDisableBtn(resetDashboardElementsBtn, newCount > 0);
+  // manageDisableBtn(
+  //   applyMultipleActionsBtn,
+  //   newCount > 0 && dashboardAction.length !== 0,
+  // );
+  // manageDisableBtn(resetDashboardElementsBtn, newCount > 0);
 }
 
 /**
@@ -197,7 +197,7 @@ function selectAllVideos(container) {
 function selectAllManger() {
   const checkbox = document.getElementById('selectAll');
   if (!checkbox) return;
-
+  if (selectedVideos.videos_list.length === 0) checkbox.checked = false;
   checkbox.addEventListener('change', () => {
     if (checkbox.checked) {
       selectAllVideos(videosListContainerId);

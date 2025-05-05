@@ -145,12 +145,6 @@
       </div>
       <div class="col d-flex align-items-center justify-content-end flex-wrap gap-2">
         <div class="btn-group" role="group">
-          <button style="display: none;" id="select-all-dashboard-elements-btn" type="button" class="btn btn-primary" onclick="selectAllVideos(videosListContainerId)">
-            {% trans "Select all" %}
-          </button>
-          <button style="display: none;" id="reset-dashboard-elements-btn" type="button" class="btn btn-secondary" onclick="resetDashboardElements()" disabled>
-            {% trans "Clear selection" %}
-          </button>
           <button title="{% trans 'Grid display mode' %}" class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == "grid" %}active{% endif %}" onclick="changeDisplayMode('grid')"></button>
           <button title="{% trans 'List display mode' %}" class="btn btn-outline-primary bi bi-list-check btn-dashboard-display-mode {% if display_mode == "list" %}active{% endif %}" onclick="changeDisplayMode('list')"></button>
         </div>
