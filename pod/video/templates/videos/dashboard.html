@@ -24,10 +24,18 @@
 
   <div id="activeFilters" class="d-flex align-items-center flex-wrap gap-2 mb-3">
     <div id="selectedTags" class="d-flex flex-wrap gap-2"></div>
-    <a href="#" class="text-primary" id="filterTags">{% trans 'Clear filters' %}</a>
+    <button type="button"
+      id="filterTags"
+      class="btn btn-link text-primary p-0"
+      aria-label="{% trans 'Clear all filters' %}"
+      data-bs-toggle="tooltip"
+      data-bs-placement="bottom"
+      data-bs-original-title="{% trans 'Clear all filters' %}">
+    {% trans 'Clear filters' %}
+    </button>
   </div>
 
-  <hr id="bottom-ht-filtre">
+  <hr role="separator" id="bottom-ht-filtre">
 
   <div id="bulk-update-container">
 
@@ -129,38 +137,76 @@
     {% blocktrans count counter=0 %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}</span></button>
   </div>
 
-  <div>
-    <div class="row align-items-center">
-      <div class="col-auto">
-        <div class="form-check">
+  <div role="toolbar" aria-label="Video controls">
+    <div class="row align-items-center gy-2">
+      <div class="col-12 col-md-auto">
+        <div class="form-check d-flex align-items-center">
           <input type="checkbox"
                  id="selectAll"
                  class="form-check-input me-2"
                  data-bs-toggle="tooltip"
                  data-bs-placement="bottom"
-                 data-bs-original-title="{% trans 'Select/Deselect all videos' %}"
-                 aria-label="{% trans 'Select/Deselect all videos' %}">
-          <label for="selectAll">{% trans "Select all" %}</label>
+                 aria-label="Select/Deselect all videos"
+                 data-bs-original-title="Select/Deselect all videos">
+          <label for="selectAll" class="form-check-label">
+            {% trans 'Select all' %}
+          </label>
         </div>
       </div>
-      <div class="col d-flex align-items-center justify-content-end flex-wrap gap-2">
-        <div class="btn-group" role="group">
-          <button title="{% trans 'Grid display mode' %}" class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == "grid" %}active{% endif %}" onclick="changeDisplayMode('grid')"></button>
-          <button title="{% trans 'List display mode' %}" class="btn btn-outline-primary bi bi-list-check btn-dashboard-display-mode {% if display_mode == "list" %}active{% endif %}" onclick="changeDisplayMode('list')"></button>
+      <div class="col-12 col-md d-flex flex-wrap justify-content-md-end align-items-center gap-2">
+        <div class="btn-group" role="group" aria-label="Display mode">
+          <button type="button"
+                  {% if display_mode == 'grid' %}
+                    aria-pressed="true"
+                  {% else %}
+                    aria-pressed="false"
+                  {% endif %}
+                  aria-label="{% trans 'Grid display mode' %}"
+                  class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == 'grid' %}active{% endif %}"
+                  onclick="changeDisplayMode('grid')"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  data-bs-original-title="{% trans 'Grid display mode' %}">
+          </button>
+          <button type="button"
+                  {% if display_mode == 'list' %}
+                    aria-pressed="true"
+                  {% else %}
+                    aria-pressed="false"
+                  {% endif %}
+                  aria-label="{% trans 'List display mode' %}"
+                  class="btn btn-outline-primary bi bi-list-check btn-dashboard-display-mode {% if display_mode == 'list' %}active{% endif %}"
+                  onclick="changeDisplayMode('list')"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  data-bs-original-title="{% trans 'List display mode' %}">
+          </button>
         </div>
-
-        <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms mb-0">
+        <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms mb-0 flex-grow-1 flex-md-grow-0">
+          <label for="sortSelect" class="visually-hidden">{% trans 'Sort videos' %}</label>
           {% include "videos/video_sort_select.html" %}
         </form>
       </div>
     </div>
-    <hr>
-    <p id="video_count" class="col-5">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
+  </div>
+
+  <hr role="separator">
+
+  <section role="region" aria-labelledby="video_count" aria-live="polite">
+    <p id="video_count" class="col-5">
+      {% blocktrans count counter=count_videos %}
+        {{ counter }} video found
+      {% plural %}
+        {{ counter }} videos found
+      {% endblocktrans %}
+    </p>
     <div id="video_list_content">
       {% include 'loader.html' with loaderid="videosListLoader" %}
       {% include video_list_template %}
     </div>
-  </div>
+  </section>
+
+
 
 {% endblock page_content %}
 

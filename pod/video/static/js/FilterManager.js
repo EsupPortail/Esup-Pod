@@ -98,6 +98,7 @@ class FilterManager {
     button.type = 'button';
     button.setAttribute('data-bs-toggle', 'dropdown');
     button.setAttribute('aria-expanded', 'false');
+    button.setAttribute('aria-label', gettext(`Show or hide filter options for ${name}`));
     button.innerText = name;
 
     // Dropdown menu
@@ -111,7 +112,8 @@ class FilterManager {
 
     const input = document.createElement('input');
     const inputId = `${param}-box`;
-    input.placeholder = gettext("Search for a") +" "+ name;
+    input.placeholder = gettext('Search for a') +" "+ name;
+    input.setAttribute('aria-label', gettext('Search for a') +" "+ name);
     input.id = inputId;
     input.type = 'text';
     input.className = 'form-control';
@@ -123,6 +125,7 @@ class FilterManager {
     listContainer.id = listContainerId;
     listContainer.classList.add('overflow-auto');
     listContainer.style.maxHeight = '200px';
+    listContainer.setAttribute('aria-label', gettext(`Filter option for`) +" "+ name);
 
     menu.appendChild(inputGroup);
     menu.appendChild(listContainer);
@@ -207,23 +210,28 @@ class FilterManager {
   renderActiveFilter(currentFilter, key) {
     if (currentFilter) {
       const container = this.activeFiltersBox;
-
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'btn btn-secondary';
       button.id = `${slugify(key)}-tag`;
-
       const label = document.createElement('span');
-      label.innerText = currentFilter.name +" : "+key;
-
+      label.innerText = `${currentFilter.name}: ${key}`;
       const closeIcon = document.createElement('span');
       closeIcon.className = 'bi bi-x-lg';
       closeIcon.style.marginLeft = '0.5rem';
-      closeIcon.setAttribute('aria-label', 'Remove Filter');
+      closeIcon.setAttribute('role', 'button');
+      closeIcon.setAttribute('tabindex', '0');
+      closeIcon.setAttribute('data-bs-toggle', 'tooltip');
+      closeIcon.setAttribute('data-bs-placement', 'top');
+      closeIcon.setAttribute('aria-label', gettext('Click to remove the filter') +": "+currentFilter.name+" - "+key);
       closeIcon.addEventListener('click', () => {
         this.removeFilter(currentFilter, key);
       });
-
+      closeIcon.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          this.removeFilter(currentFilter, key);
+        }
+      });
       button.appendChild(label);
       button.appendChild(closeIcon);
       container.appendChild(button);

@@ -17,8 +17,8 @@ msgstr ""
 "X-Generator: Poedit 3.5\n"
 
 #: pod/video/templates/videos/dashboard.html
-msgid "Clear filters"
-msgstr "Effacer les filtres"
+msgid "Clear all filters"
+msgstr "Effacer tous les filtres"
 
 #: pod/video/views.py
 msgid "No videos matched your filters. Please try adjusting them."
@@ -5019,9 +5019,7 @@ msgstr "Doit être authentifié"
 
 #: pod/main/models.py
 msgid "Check this box if users must be authenticated to view content."
-msgstr ""
-"Cochez cette case si les utilisateurs doivent être authentifiés pour voir le "
-"contenu."
+msgstr "Cochez cette case si les utilisateurs doivent être authentifiés pour voir le contenu."
 
 #: pod/main/models.py
 msgid "Auto slide"
@@ -9800,7 +9798,7 @@ msgstr "Filtrer par titre"
 msgid "Select video(s) to edit"
 msgstr "Sélectionnez la/les vidéo(s) à éditer"
 
-#: pod/video/templates/videos/change_video_owner.html
+#: pod/video/templates/videos/dashboard.html
 msgid "Select/Deselect all videos"
 msgstr "Sélectionner/Désélectionner toutes les vidéos"
 

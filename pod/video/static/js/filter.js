@@ -46,7 +46,14 @@ filtersConfig.forEach(cfg => filterManager.addFilter(cfg));
 filterManager.initializeFilters();
 
 
-/* Fonction qui simule un fetch via un Set */
+/**
+ * Simulates a fetch operation by searching within a Set.
+ * Returns a Promise that resolves with the items sorted by match relevance.
+ *
+ * @param {Set<string>} originalSet - The set of strings to search in.
+ * @param {string} searchTerm - The term to search for.
+ * @returns {Promise<string[]>} A Promise resolving to an array of strings sorted by relevance.
+ */
 function searchInSet(originalSet, searchTerm) {
   return new Promise((resolve) => {
     const items = Array.from(originalSet);
@@ -77,7 +84,7 @@ async function initFilters() {
     const res = await fetch(urlVideoStatistics, {
       headers: { "X-Requested-With": "XMLHttpRequest" }
     });
-    if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
+    if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
 
     const data = await res.json();
     typeSet = new Set(data.TYPES.map(type => gettext(type.title)));
@@ -85,7 +92,7 @@ async function initFilters() {
     tagSet = new Set(data.TAGS.map(tag => gettext(tag.title)));
 
   } catch (err) {
-    console.error("Impossible d'initialiser les filtres :", err);
+    console.error("Filters cannot be initialized :", err);
   }
 }
 

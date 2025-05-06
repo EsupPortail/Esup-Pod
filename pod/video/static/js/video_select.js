@@ -11,7 +11,7 @@
 /* exported resetDashboardElements getHTMLBadgesSelectedTitles toggleSelectedVideo setSelectedVideos */
 
 var selectedVideos = {};
-var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
+// var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
 var resetDashboardElementsBtn = document.getElementById(
   "reset-dashboard-elements-btn",
 );
