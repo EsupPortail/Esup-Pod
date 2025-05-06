@@ -17,6 +17,10 @@ msgstr ""
 "X-Generator: Poedit 3.5\n"
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Go to ”Multiple actions”"
+msgstr "Aller vers « Actions multiples »"
+
+#: pod/video/templates/videos/dashboard.html
 msgid "Clear all filters"
 msgstr "Effacer tous les filtres"
 
@@ -9815,13 +9819,13 @@ msgstr "Actions multiples"
 msgid ""
 "To edit several videos at the same time, you can check the ones you want "
 "then select an action to perform using the drop-down menu below, finally "
-"apply the modification. You can also refine your video search using the "
-"filters in the right menu."
+"apply the modification. You can also use the filters at the top of the "
+"page to refine your video selection."
 msgstr ""
 "Pour éditer plusieurs vidéos en même temps, vous pouvez cocher celles que "
 "vous voulez modifier, puis sélectionner une action à effectuer dans le "
-"formulaire ci-dessous puis appliquer. Vous pouvez également affiner votre "
-"recherche de vidéos en utilisant les filtres du menu de droite."
+"formulaire ci-dessous puis appliquer. Vous pouvez également utiliser"
+"les filtres en haut de page pour affiner votre sélection de vidéos."
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Choose an action"
@@ -9861,8 +9865,8 @@ msgstr[0] "%(counter)s vidéo"
 msgstr[1] "%(counter)s vidéos"
 
 #: pod/video/templates/videos/dashboard.html
-msgid "Select all"
-msgstr "Tout sélectionner"
+msgid "Select all videos"
+msgstr "Sélectionner toutes les vidéos"
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Clear selection"

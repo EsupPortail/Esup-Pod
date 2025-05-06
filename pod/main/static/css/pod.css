@@ -172,6 +172,32 @@ tr,
   margin-right: 0.5em;
 }
 
+.visually-hidden-focusable {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.visually-hidden-focusable:focus,
+.visually-hidden-focusable.is-visible:focus {
+  position: static;
+  left: auto;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  margin-left: 0.5rem;
+  text-decoration: none;
+  border-radius: 0.25rem;
+  display: inline-flex;
+}
+
+.visually-hidden-focusable:not(:focus):not(.is-visible) {
+  display: none;
+}
+
 /** TAGs Cloud */
 .tag-cloud {
   display: flex;

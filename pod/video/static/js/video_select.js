@@ -127,13 +127,16 @@ function toggleBulkUpdateVisibility() {
   const c = document.getElementById('bulk-update-container');
   const hasSelectedVideos = Object.values(selectedVideos).some(arr => arr.length > 0);
   const hr = document.getElementById('bottom-ht-filtre');
+  const skipLink = document.getElementById('skipToBulk');
 
   if (hasSelectedVideos) {
     hr.style.display = 'none';
     c.classList.add('visible');
+    skipLink.classList.add('is-visible');
   } else {
     hr.style.display = 'block';
     c.classList.remove('visible');
+    skipLink.classList.remove('is-visible');
   }
 }
 

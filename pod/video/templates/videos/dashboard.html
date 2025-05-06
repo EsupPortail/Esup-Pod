@@ -41,7 +41,7 @@
 
     <h2>{% trans 'Multiple actions' %}</h2>
     <p id="bulk-update-instructions">
-      {% trans "To edit several videos at the same time, you can check the ones you want then select an action to perform using the drop-down menu below, finally apply the modification. You can also refine your video search using the filters in the right menu." %}
+      {% trans "To edit several videos at the same time, you can check the ones you want then select an action to perform using the drop-down menu below, finally apply the modification. You can also use the filters at the top of the page to refine your video selection." %}
     </p>
 
     <select id="bulk-update-action-select" name="action" class="form-select mb-2" aria-label="{% trans 'Choose an action' %}">
@@ -149,8 +149,18 @@
                  aria-label="Select/Deselect all videos"
                  data-bs-original-title="Select/Deselect all videos">
           <label for="selectAll" class="form-check-label">
-            {% trans 'Select all' %}
+            {% trans 'Select all videos' %}
           </label>
+          <a href="#bulk-update-action-select"
+             id="skipToBulk"
+             class="visually-hidden-focusable align-items-center gap-1"
+             tabindex="0"
+             aria-label="{% trans 'Go to ”Multiple actions”' %}"
+             data-bs-toggle="tooltip"
+             data-bs-placement="bottom"
+             data-bs-original-title="{% trans 'Go to ”Multiple actions”' %}">
+             <i class="bi bi-arrow-up" aria-hidden="true"></i>
+          </a>
         </div>
       </div>
       <div class="col-12 col-md d-flex flex-wrap justify-content-md-end align-items-center gap-2">
