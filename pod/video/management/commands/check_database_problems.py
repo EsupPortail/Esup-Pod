@@ -45,6 +45,8 @@ from typing import Any, Dict
 class Command(BaseCommand):
     """Main command class to check whether the data in the database is inconsistent."""
 
+    nb_errors_found = 0
+
     help = "Check for problems with database data"
 
     def add_arguments(self, parser) -> None:
@@ -77,44 +79,45 @@ class Command(BaseCommand):
 
     def process(self, options: Dict[str, Any]) -> None:
         """Main process to check database data."""
-        errors_found = False
+
         # Check all videos
         videos = Video.objects.filter()
         for video in videos:
             # Step 1: check problems in video_encode_transcript_* tables
             # Problem due to change of video owner in the Pod administration
-            error_found = self.check_change_owner_problems(video, options)
-            # At least, one error found
-            if error_found:
-                errors_found = True
-        if not errors_found:
+            self.check_change_owner_problems(video, options)
+        if self.nb_errors_found == 0:
             self.stdout.write(
                 self.style.SUCCESS("No problems found in connection with the change of ownership.")
             )
 
-    def check_change_owner_problems(
-        self, video: Video, options: Dict[str, Any]
-    ) -> bool:
+    def check_change_owner_problems(self, video: Video, options: Dict[str, Any]) -> None:
         """Checks for problems in the database relating to changes of ownership."""
-        error_found = False
+
         # Try to identify the problem for this video
         encodings_video = EncodingVideo.objects.filter(video=video)
         if encodings_video:
             encoding_video = encodings_video[0]
             if encoding_video.source_file.name.find(video.owner.owner.hashkey) == -1:
-                error_found = True
+                self.nb_errors_found += 1
                 # Problem found for a video
                 if options["dry"]:
+                    if self.nb_errors_found == 1:
+                        self.stdout.write(
+                            self.style.WARNING(
+                                "Problems found:\n"
+                                "VIDEO ID; TYPE; DETAIL"
+                            )
+                        )
                     self.stdout.write(
                         self.style.WARNING(
-                            f"Video {video.id}; problem with change of owner;  "
+                            f"{video.id}; change of owner;  "
                             f"encoding {encoding_video.source_file.name} not in "
                             f"{video.owner.owner.hashkey} folder."
                         )
                     )
                 else:
                     self.solve_change_owner_problems(video)
-        return error_found
 
     def solve_change_owner_problems(self, video: Video) -> None:
         """Solves problems in the database relating to changes of ownership."""
