@@ -48,8 +48,8 @@
               novalidate>
             {% csrf_token %}
             {{ form_file }}
-            <input type="hidden" name="file_id" value="">
-            <input type="hidden" name="file_type" value="">
+            <input type="hidden" name="file_id" id="file_id" value="">
+            <input type="hidden" name="file_type" id="file_type" value="">
         </form>
 
         <form method="post" enctype="multipart/form-data" id="formchangeimage"
@@ -57,8 +57,8 @@
               novalidate>
             {% csrf_token %}
             {{ form_image }}
-            <input type="hidden" name="file_id" value="">
-            <input type="hidden" name="file_type" value="">
+            <input type="hidden" name="file_id" id="file_id" value="">
+            <input type="hidden" name="file_type" id="file_type" value="">
         </form>
 
         <div class="row loadingformfiles" style="display: none">
