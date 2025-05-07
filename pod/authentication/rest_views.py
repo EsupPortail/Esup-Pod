@@ -74,7 +74,7 @@ class SiteSerializer(serializers.HyperlinkedModelSerializer):
 class AccessGroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = AccessGroup
-        fields = ("display_name", "code_name", "sites", "users", "sites")
+        fields = ("id", "display_name", "code_name", "sites", "users", "sites")
 
 
 # ViewSets define the view behavior.
