@@ -12,6 +12,8 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
+from pod.video_encode_transcript.models import PlaylistVideo
 
 from .models import Video
 
@@ -146,7 +148,17 @@ def move_video_file(video, new_owner) -> None:
         )
         video_playlist_master.save()
 
-    # update video path
+    # Change the path of encodings related to a video
+    models_to_update = [EncodingVideo, EncodingAudio, PlaylistVideo]
+    for model in models_to_update:
+        encodings = model.objects.filter(video=video)
+        for encoding in encodings:
+            encoding.source_file = re.sub(
+                r"\w{64}", new_owner.owner.hashkey, encoding.source_file.name.__str__()
+            )
+            encoding.save()
+
+    # Update video path
     video_file_pattern = r"[\w-]+\.\w+"
     old_video_path = video.video.path
     new_video_path = re.sub(r"\w{64}", new_owner.owner.hashkey, old_video_path)

@@ -213,9 +213,16 @@ if (typeof loaded == "undefined") {
         var modalTitle = gettext("Change file “%s”");
         document.getElementById("folderModalCenterTitle").innerHTML =
           interpolate(modalTitle, [button.dataset.filename]);
-        modal.getElementById("id_folder").value = folder_id;
-        modal.getElementById("file_id").value = button.dataset.fileid;
-        modal.getElementById("file_type").value = button.dataset.filetype;
+        modal.querySelectorAll(".modal-body input#id_folder").forEach((e) => {
+          e.value = folder_id;
+        });
+        modal.querySelectorAll(".modal-body input#file_id").forEach((e) => {
+          e.value = button.dataset.fileid;
+        });
+        modal.querySelectorAll(".modal-body input#file_type").forEach((e) => {
+          e.value = button.dataset.filetype;
+        });
+
         document.getElementById("formchangefile").style.display = "block";
         break;
       default: // Extract info from data-* attributes
