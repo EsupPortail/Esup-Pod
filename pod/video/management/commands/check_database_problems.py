@@ -106,7 +106,11 @@ class Command(BaseCommand):
                 # Problem found for a video
                 if options["dry"]:
                     self.stdout.write(
-                        self.style.ERROR(f"Owner change: problem found for video {video.id}.")
+                        self.style.WARNING(
+                            f"Video {video.id}; problem with change of owner;  "
+                            f"encoding {encoding_video.source_file.name} not in "
+                            f"{video.owner.owner.hashkey} folder."
+                        )
                     )
                 else:
                     self.solve_change_owner_problems(video)
