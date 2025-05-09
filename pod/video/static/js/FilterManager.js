@@ -146,6 +146,7 @@ class FilterManager {
     if (!inputEl || !buttonEl) return;
 
     inputEl.addEventListener('input', debounce(e => {
+      e.preventDefault();
       this.searchFilter(param, e.target.value.trim());
     }, 100));
 
@@ -180,12 +181,19 @@ class FilterManager {
    */
   removeFilter(currentFilter, key) {
     if (currentFilter) {
+      const filterElement = document.getElementById(`${slugify(key)}-tag`);
+      const closeButton = document.getElementById(`remove-filter-${slugify(key)}`);
+      if (closeButton) {
+        const tooltip = bootstrap.Tooltip.getInstance(closeButton);
+        if (tooltip) tooltip.dispose();
+      }
+      if (filterElement) filterElement.remove();
       currentFilter.selectedItems.delete(key);
-      document.getElementById(`${slugify(key)}-tag`).remove();
       sessionStorage.setItem(`filter-${currentFilter.param}`, JSON.stringify(Array.from(currentFilter.selectedItems.keys())));
       this.update();
     }
   }
+
 
   /**
    * Initializes the filters from the session.
@@ -210,31 +218,37 @@ class FilterManager {
   renderActiveFilter(currentFilter, key) {
     if (currentFilter) {
       const container = this.activeFiltersBox;
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'btn btn-secondary';
-      button.id = `${slugify(key)}-tag`;
+      const filterContainer = document.createElement('div');
+      filterContainer.className = 'btn btn-secondary align-items-center d-flex';
+      filterContainer.id = `${slugify(key)}-tag`;
+      filterContainer.setAttribute('role', 'button');
+      filterContainer.setAttribute('tabindex', '0');
+      filterContainer.setAttribute('aria-label', `${currentFilter.name}: ${key}`);
       const label = document.createElement('span');
       label.innerText = `${currentFilter.name}: ${key}`;
-      const closeIcon = document.createElement('span');
-      closeIcon.className = 'bi bi-x-lg';
-      closeIcon.style.marginLeft = '0.5rem';
-      closeIcon.setAttribute('role', 'button');
-      closeIcon.setAttribute('tabindex', '0');
-      closeIcon.setAttribute('data-bs-toggle', 'tooltip');
-      closeIcon.setAttribute('data-bs-placement', 'top');
-      closeIcon.setAttribute('aria-label', gettext('Click to remove the filter') +": "+currentFilter.name+" - "+key);
-      closeIcon.addEventListener('click', () => {
+      const closeButton = document.createElement('button');
+      closeButton.type = 'button';
+      closeButton.className = 'btn-close';
+      closeButton.style.marginLeft = '0.5rem';
+      closeButton.id = `remove-filter-${slugify(key)}`;
+      closeButton.setAttribute('data-bs-toggle', 'tooltip');
+      closeButton.setAttribute('data-bs-placement', 'top');
+      closeButton.setAttribute('title', 'Remove filter');
+      closeButton.setAttribute('aria-label', `Click to remove the filter: ${currentFilter.name} - ${key}`);
+      closeButton.addEventListener('click', (e) => {
+        e.preventDefault();
         this.removeFilter(currentFilter, key);
       });
-      closeIcon.addEventListener('keydown', (e) => {
+      closeButton.addEventListener('keydown', (e) => {
+        e.preventDefault();
         if (e.key === 'Enter' || e.key === ' ') {
           this.removeFilter(currentFilter, key);
         }
       });
-      button.appendChild(label);
-      button.appendChild(closeIcon);
-      container.appendChild(button);
+      filterContainer.appendChild(label);
+      filterContainer.appendChild(closeButton);
+      container.appendChild(filterContainer);
+      new bootstrap.Tooltip(closeButton);
     }
   }
 
@@ -255,11 +269,11 @@ class FilterManager {
 
       const checkbox = document.createElement('input');
       checkbox.className = 'form-check-input';
-      checkbox.type      = 'checkbox';
-      checkbox.id        = key;
-      checkbox.checked   = true;
+      checkbox.type = 'checkbox';
+      checkbox.id = key;
+      checkbox.checked = true;
 
-      checkbox.addEventListener('change', () => {
+      checkbox.addEventListener('change', (e) => {
         if (checkbox.checked) {
           filter.selectedItems.set(key, true);
           this.renderActiveFilter(filter, key);
@@ -296,7 +310,8 @@ class FilterManager {
       checkbox.id        = key;
       checkbox.checked   = false;
 
-      checkbox.addEventListener('change', () => {
+      checkbox.addEventListener('change', (e) => {
+        e.preventDefault();
         if (checkbox.checked) {
           filter.selectedItems.set(key, true);
           this.renderActiveFilter(filter, key);
@@ -342,6 +357,7 @@ class FilterManager {
     window.history.replaceState(null, '', newUrl);
     this._syncResetLink();
     refreshVideosSearch();
+    selectAllManger(); // Fonction appeller dans videoSelect
   }
 
   /**
@@ -352,6 +368,7 @@ class FilterManager {
     const hasTags = this.activeFiltersBox.children.length > 0;
 
     if (!hasTags) {
+      this.filtersBox.classList.remove('mb-3');
       this.resetFiltersButton.style.display = 'none';
       return;
     }

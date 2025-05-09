@@ -172,17 +172,8 @@ tr,
   margin-right: 0.5em;
 }
 
-.visually-hidden-focusable {
-  position: absolute;
-  left: -9999px;
-  top: auto;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
-.visually-hidden-focusable:focus,
-.visually-hidden-focusable.is-visible:focus {
+.pod-skip-link {
+  display: none;
   position: static;
   left: auto;
   width: auto;
@@ -191,11 +182,11 @@ tr,
   margin-left: 0.5rem;
   text-decoration: none;
   border-radius: 0.25rem;
-  display: inline-flex;
 }
 
-.visually-hidden-focusable:not(:focus):not(.is-visible) {
-  display: none;
+.pod-skip-link.is-visible,
+.pod-skip-link:focus {
+  display: inline-flex;
 }
 
 /** TAGs Cloud */

@@ -18,11 +18,11 @@
            aria-hidden="true"></div>
   {% endif %}
 
-  <hr>
+  <hr role="separator">
   <!-- Filtres -->
   <div class="d-flex align-items-center flex-wrap gap-2" id="filtersBox"></div>
 
-  <div id="activeFilters" class="d-flex align-items-center flex-wrap gap-2 mb-3">
+  <div id="activeFilters" class="d-flex align-items-center flex-wrap gap-2">
     <div id="selectedTags" class="d-flex flex-wrap gap-2"></div>
     <button type="button"
       id="filterTags"
@@ -37,7 +37,7 @@
 
   <hr role="separator" id="bottom-ht-filtre">
 
-  <div id="bulk-update-container">
+  <div id="bulk-update-container" class="mt-3">
 
     <h2>{% trans 'Multiple actions' %}</h2>
     <p id="bulk-update-instructions">
@@ -153,7 +153,7 @@
           </label>
           <a href="#bulk-update-action-select"
              id="skipToBulk"
-             class="visually-hidden-focusable align-items-center gap-1"
+             class="pod-skip-link visually-hidden-focusable align-items-center gap-1"
              tabindex="0"
              aria-label="{% trans 'Go to ”Multiple actions”' %}"
              data-bs-toggle="tooltip"

@@ -19,7 +19,10 @@ var countSelectedVideosBadge = document.getElementById(
   "countSelectedVideosBadge",
 );
 
-document.addEventListener("DOMContentLoaded", toggleBulkUpdateVisibility);
+document.addEventListener("DOMContentLoaded", () => {
+  toggleBulkUpdateVisibility();
+  selectAllManger();
+});
 
 /**
  * Get list of selected videos's titles based on selected videos
@@ -209,7 +212,3 @@ function selectAllManger() {
     }
   });
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  selectAllManger();
-});
