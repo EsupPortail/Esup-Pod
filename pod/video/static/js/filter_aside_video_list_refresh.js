@@ -15,12 +15,10 @@
 // Read-only globals defined in video_select.js
 /* global setSelectedVideos */
 
+
 var infinite;
-var checkedInputs = [];
 
 let infiniteLoading = document.querySelector(".infinite-loading");
-let ownerBox = document.getElementById("ownerbox");
-let filterOwnerContainer = document.getElementById("collapseFilterOwner");
 
 function onBeforePageLoad() {
   infiniteLoading.style.display = "block";
@@ -91,6 +89,36 @@ function replaceCountVideos(newCount) {
 }
 
 /**
+ * Add click event listener to manage sort direction
+ */
+const sortDirectionLabel = document.getElementById("sort_direction_label");
+
+if (sortDirectionLabel) {
+  sortDirectionLabel.addEventListener("click", function (e) {
+    e.preventDefault();
+    toggleSortDirection();
+    refreshVideosSearch();
+  });
+}
+
+/**
+ * Handles the search form submission.
+ * Prevents default behavior, gets the title input,
+ */
+document.getElementById("searchForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  refreshVideosSearch();
+});
+
+/**
+ * Retrieves the current value entered in the video title search input field.
+ *
+ * @returns {string} The current value of the search input with ID "titlebox".
+ */
+function getSearchValue() {
+  return document.getElementById("titlebox").value;
+}
+/*
  * Async request to refresh view with filtered and sorted video list
  */
 function refreshVideosSearch() {
@@ -145,163 +173,52 @@ function refreshVideosSearch() {
     });
 }
 
-/**
- * Add click event listener to manage sort direction
- */
-document
-  .getElementById("sort_direction_label")
-  .addEventListener("click", function (e) {
-    e.preventDefault();
-    toggleSortDirection();
-    refreshVideosSearch();
-  });
-
-/**
- * Get built url with filter and sort and page parameters
- * @returns {string}
- */
+// Fonction pour récupérer l'URL pour rafraîchir la page avec les filtres appliqués
 function getUrlForRefresh() {
-  let newUrl = window.location.pathname;
-  // Add sort-related parameters
-  newUrl += "?sort=" + document.getElementById("sort").value + "&";
-  var sortDirectionAsc = document.getElementById("sort_direction").checked;
+  const baseUrl = window.location.pathname;
+  const urlParams = new URLSearchParams(window.location.search);
 
-  if (sortDirectionAsc) {
-    newUrl +=
-      "sort_direction=" + document.getElementById("sort_direction").value + "&";
+  const sort = document.getElementById("sort")?.value;
+  if (sort) {
+    urlParams.set("sort", sort);
+  } else {
+    urlParams.delete("sort");
   }
-  // Add dashboard display mode param
-  if (urlVideos === "/video/dashboard/" && displayMode !== undefined) {
-    newUrl += "display_mode=" + displayMode + "&";
-  }
-  // Add categories checked if exists
-  if (document.querySelectorAll(".categories-list-item.active").length !== 0) {
-    Array.from(
-      document.querySelectorAll(".categories-list-item.active"),
-    ).forEach((cat) => {
-      newUrl += "categories=" + cat.firstElementChild["dataset"]["slug"] + "&";
-    });
-  }
-  // Add all other parameters (filters)
-  checkedInputs.forEach((input) => {
-    newUrl += input.name + "=" + input.value + "&";
-  });
-  // Add page parameter
-  newUrl += "page=";
-  return newUrl;
-}
 
-/**
- * Add change event listener on inputs (filters, sort column and sort direction) to refresh video list
- * @param el
- */
-function setListenerChangeInputs(el) {
-  el.addEventListener("change", (e) => {
-    checkedInputs = [];
-    disabledInputs(true);
-    document
-      .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
-      .forEach((e) => {
-        checkedInputs.push(e);
-      });
-    refreshVideosSearch();
-  });
-}
+  const sortDirectionEl = document.getElementById("sort_direction");
+  if (sortDirectionEl?.checked) {
+    urlParams.set("sort_direction", sortDirectionEl.value);
+  } else {
+    urlParams.delete("sort_direction");
+  }
 
-/**
- * Add event listener to search user input to create checkboxes
- */
-if (ownerBox) {
-  ownerBox.addEventListener("input", () => {
-    if (ownerBox.value && ownerBox.value.length > 2) {
-      var searchTerm = ownerBox.value;
-      getSearchListUsers(searchTerm).then((users) => {
-        filterOwnerContainer.textContent = "";
-        users.forEach((user) => {
-          filterOwnerContainer.appendChild(createUserCheckBox(user));
-          setListenerChangeInputs(
-            document.getElementById("id" + user.username),
-          );
-        });
-      });
-    } else {
-      filterOwnerContainer.textContent = "";
+  const newTitle = getSearchValue();
+  if (newTitle) {
+    urlParams.set("title", newTitle);
+  } else {
+    urlParams.delete("title");
+  }
+
+  if (typeof displayMode !== "undefined") {
+    urlParams.set("display_mode", displayMode);
+  }
+
+  urlParams.delete("categories");
+  document.querySelectorAll(".categories-list-item.active").forEach((cat) => {
+    const slug = cat.firstElementChild?.dataset.slug;
+    if (slug) {
+      urlParams.append("categories", slug);
     }
   });
+
+  urlParams.delete("page");
+  return `${baseUrl}?${urlParams.toString()}`;
 }
 
-/**
- * Create checkbox for user search
- * @param user
- * @returns {HTMLDivElement}
- */
-function createUserCheckBox(user) {
-  let div = document.createElement("div");
-  div.classList.add("form-check");
-  let checkbox = document.createElement("input");
-  checkbox.classList.add("form-check-input");
-  checkbox.type = "checkbox";
-  checkbox.name = "owner";
-  checkbox.value = user.username;
-  checkbox.id = "id" + user.username;
-  let label = document.createElement("label");
-  label.classList.add("form-check-label");
-  label.setAttribute("for", "id" + user.username);
-  if (user.first_name !== "" && user.last_name !== "") {
-    label.innerHTML = user.first_name + " " + user.last_name + " ";
-  }
-  label.innerHTML += "(" + user.username + ")";
-  div.appendChild(checkbox);
-  div.appendChild(label);
-  return div;
-}
-
-/**
- * Add click event listener to manage reset of filters
- */
-document.getElementById("resetFilters").addEventListener("click", function () {
-  checkedInputs = [];
-  document
-    .querySelectorAll(
-      "#filters input[type=checkbox]:checked[class=form-check-input]",
-    )
-    .forEach((checkBox) => {
-      checkBox.checked = false;
-    });
-  document.querySelectorAll("#filters .categories-list-item").forEach((c_p) => {
-    c_p.classList.remove("active");
-  });
-  if (filterOwnerContainer && ownerBox) {
-    filterOwnerContainer.textContent = "";
-    ownerBox.value = "";
-  }
-  window.history.pushState("", "", window.location.pathname);
-  refreshVideosSearch();
-});
-
-/**
- * Toggle (enable/disable) inputs to prevent user actions during loading
- * @param value
- */
+// Fonction pour activer ou désactiver les cases à cocher pendant le chargement
 function disabledInputs(value) {
-  document
-    .querySelectorAll("input[type=checkbox][class=form-check-input]")
-    .forEach((checkbox) => {
-      checkbox.disabled = value;
-    });
+  document.querySelectorAll("input.form-check-input").forEach(cb => cb.disabled = value);
 }
-
-document
-  .querySelectorAll("#filters .form-check-input,#sort,#sort_direction")
-  .forEach((el) => {
-    setListenerChangeInputs(el);
-  });
-
-document
-  .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
-  .forEach((e) => {
-    checkedInputs.push(e);
-  });
 
 // First launch of the infinite scroll
 infinite = new InfiniteLoader(
@@ -326,3 +243,4 @@ if (urlParams.has("owner") && !ownerFilter) {
       urlParams.toString(),
   );
 }
+

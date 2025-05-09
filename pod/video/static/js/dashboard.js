@@ -34,8 +34,8 @@ var resetDashboardElementsBtn = document.getElementById(
 );
 var modalLoader = document.getElementById("bulkUpdateLoader");
 var modal = document.getElementById("modalBulkUpdate");
-var confirmModalBtn = document.getElementById("confirmModalBtn");
-var cancelModalBtn = document.getElementById("cancelModalBtn");
+// var confirmModalBtn = document.getElementById("confirmModalBtn");
+// var cancelModalBtn = document.getElementById("cancelModalBtn");
 var btnDisplayMode = document.querySelectorAll(".btn-dashboard-display-mode");
 var dashboardAction = "";
 var dashboardValue;
@@ -87,20 +87,20 @@ applyBulkUpdateBtn.addEventListener("click", () => {
 /**
  * Add click event listener on confirmation modal button to perform bulk update
  */
-confirmModalBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  showLoader(modalLoader, true);
-  manageDisableBtn(cancelModalBtn, false);
-  manageDisableBtn(confirmModalBtn, false);
-  modalLoader.focus();
-  bulkUpdate().then(() => {
-    showLoader(modalLoader, false);
-    bootstrap.Modal.getInstance(modal).toggle();
-    manageDisableBtn(cancelModalBtn, true);
-    manageDisableBtn(confirmModalBtn, true);
-  });
-  resetDashboardElements();
-});
+// confirmModalBtn.addEventListener("click", (e) => {
+//   e.preventDefault();
+//   showLoader(modalLoader, true);
+//   manageDisableBtn(cancelModalBtn, false);
+//   manageDisableBtn(confirmModalBtn, false);
+//   modalLoader.focus();
+//   bulkUpdate().then(() => {
+//     showLoader(modalLoader, false);
+//     bootstrap.Modal.getInstance(modal).toggle();
+//     manageDisableBtn(cancelModalBtn, true);
+//     manageDisableBtn(confirmModalBtn, true);
+//   });
+//   resetDashboardElements();
+// });
 
 /**
  * Reset action and value of dashboard form elements when reset button is clicked.

@@ -11,13 +11,15 @@
 /* exported resetDashboardElements getHTMLBadgesSelectedTitles toggleSelectedVideo setSelectedVideos */
 
 var selectedVideos = {};
-var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
+// var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
 var resetDashboardElementsBtn = document.getElementById(
   "reset-dashboard-elements-btn",
 );
 var countSelectedVideosBadge = document.getElementById(
   "countSelectedVideosBadge",
 );
+
+document.addEventListener("DOMContentLoaded", toggleBulkUpdateVisibility);
 
 /**
  * Get list of selected videos's titles based on selected videos
@@ -89,11 +91,11 @@ function replaceSelectedCountVideos(container) {
   videoCountStr = interpolate(videoCountStr, { count: newCount }, true);
   countSelectedVideosBadge.textContent = videoCountStr;
   countSelectedVideosBadge.setAttribute("title", videoCountTit);
-  manageDisableBtn(
-    applyMultipleActionsBtn,
-    newCount > 0 && dashboardAction.length !== 0,
-  );
-  manageDisableBtn(resetDashboardElementsBtn, newCount > 0);
+  // manageDisableBtn(
+  //   applyMultipleActionsBtn,
+  //   newCount > 0 && dashboardAction.length !== 0,
+  // );
+  // manageDisableBtn(resetDashboardElementsBtn, newCount > 0);
 }
 
 /**
@@ -118,6 +120,24 @@ function toggleSelectedVideo(item, container) {
   if (container === videosListContainerId) {
     replaceSelectedCountVideos(container);
   }
+  toggleBulkUpdateVisibility();
+}
+
+function toggleBulkUpdateVisibility() {
+  const c = document.getElementById('bulk-update-container');
+  const hasSelectedVideos = Object.values(selectedVideos).some(arr => arr.length > 0);
+  const hr = document.getElementById('bottom-ht-filtre');
+  const skipLink = document.getElementById('skipToBulk');
+
+  if (hasSelectedVideos) {
+    hr.style.display = 'none';
+    c.classList.add('visible');
+    skipLink.classList.add('is-visible');
+  } else {
+    hr.style.display = 'block';
+    c.classList.remove('visible');
+    skipLink.classList.remove('is-visible');
+  }
 }
 
 /**
@@ -140,6 +160,7 @@ function clearSelectedVideo(container) {
  **/
 function resetDashboardElements() {
   clearSelectedVideo(videosListContainerId);
+  toggleBulkUpdateVisibility();
   dashboardActionReset();
   window.scrollTo(0, 0);
 }
@@ -173,4 +194,22 @@ function selectAllVideos(container) {
   });
   setListSelectedVideos(container);
   replaceSelectedCountVideos(container);
+  toggleBulkUpdateVisibility();
 }
+
+function selectAllManger() {
+  const checkbox = document.getElementById('selectAll');
+  if (!checkbox) return;
+  if (selectedVideos.videos_list.length === 0) checkbox.checked = false;
+  checkbox.addEventListener('change', () => {
+    if (checkbox.checked) {
+      selectAllVideos(videosListContainerId);
+    } else {
+      resetDashboardElements();
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  selectAllManger();
+});
