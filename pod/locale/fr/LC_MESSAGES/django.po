@@ -18,7 +18,7 @@ msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Go to ”Multiple actions”"
-msgstr "Aller vers « Actions multiples »"
+msgstr "Aller vers « Actions multiples »"
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Clear all filters"
@@ -30,7 +30,7 @@ msgstr "Aucune vidéo ne correspond à vos filtres. Veuillez les modifier."
 
 #: pod/video/views.py
 msgid "You haven't uploaded any videos yet. Click ”Add a new video” to get started."
-msgstr "Vous n'avez pas encore mis en ligne de vidéos. Cliquez sur « Ajouter une nouvelle vidéo » pour commencer."
+msgstr "Vous n'avez pas encore mis en ligne de vidéos. Cliquez sur « Ajouter une nouvelle vidéo » pour commencer."
 
 #: pod/video/templates/videos/filter_aside_dashboard.html
 msgid "Dashboard Filters"
@@ -451,7 +451,7 @@ msgid ""
 "“%(content_title)s” was processed by the AI. Suggestions for improvement are "
 "available on %(site_title)s."
 msgstr ""
-"« %(content_title)s » a été traité par l’IA. Des suggestions d’amélioration "
+"« %(content_title)s » a été traité par l’IA. Des suggestions d’amélioration"
 "sont disponibles sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py
@@ -470,7 +470,7 @@ msgid ""
 "IA improvement “%(content_title)s” has been completed, and is now available "
 "on %(site_title)s."
 msgstr ""
-"Amélioration de l’AI « %(content_title)s » a été achevée, et est maintenant "
+"Amélioration de l’IA « %(content_title)s » achevée, elle est maintenant"
 "disponible sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py pod/meeting/utils.py
@@ -7156,7 +7156,7 @@ msgstr "Désolé, aucune vidéo trouvée."
 #: pod/video/templates/videos/video_list_table_selectable.html
 #: pod/video/templates/videos/video_list_grid_selectable.html
 msgid "Click on “Add a video” to start populating your dashboard."
-msgstr "Cliquez sur « Ajouter une vidéo » pour commencer à remplir votre tableau de bord. La vidéo apparaîtra une fois ajoutée."
+msgstr "Cliquez sur « Ajouter une vidéo » pour commencer à remplir votre tableau de bord. La vidéo apparaîtra une fois ajoutée."
 
 #: pod/playlist/templates/playlist/playlist-videos-list.html
 #: pod/recorder/templates/recorder/record_list.html
