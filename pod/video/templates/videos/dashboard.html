@@ -6,6 +6,8 @@
   {% if use_category %}
     <link rel="stylesheet" href="{% static 'css/video_category.css' %}?ver={{VERSION}}">
   {% endif %}
+  {{form.media.css}}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>{% endblock %}
@@ -149,55 +151,55 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
-{{form.media}}
-<script>
-  const urlVideos = "{% url 'video:dashboard' %}";
-  const urlUpdateVideos = "{% url 'video:bulk_update' %}";
-  const videosListLoader = document.getElementById("videosListLoader");
-  const videosListContainerId = "videos_list";
-  var displayMode = "{{ display_mode }}";
-  var csrftoken = "{{ csrf_token }}";
-  var page = 1;
-  var nextPage = false;
-  var ownerFilter = {{ owner_filter|yesno:'true,false'}};
-  var formFieldsets = {{ fieldsets_dashboard|safe }};
-  var listTheme = {{listTheme | safe}};
+  <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+  {{form.media.js}}
 
-  {% if videos.has_next %}
-    page = parseInt("{{videos.next_page_number}}", 10);
-    nextPage = true;
-  {% endif %}
-</script>
-<script src="{% static 'js/infinite.js' %}"></script>
-<script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/dashboard.js' %}?ver={{VERSION}}"></script>
-{% if use_category %}
   <script>
-    const USE_CATEGORY = true;
-    const categoryModal = document.getElementById("category-modal");
-    const CATEGORIES_ADD_URL = "{% url 'video:add_category' %}";
-    const CATEGORIES_EDIT_URL = `${window.location.origin}/video/category/edit/`;
-    const CATEGORIES_DELETE_URL = `${window.location.origin}/video/category/delete/`;
-    const CATEGORIES_LIST_URL = "{% url 'video:get_categories_list' %}";
-    const categoriesListContainer = document.getElementById("categories-list");
-    //const BASE_URL = `${window.location.origin}/video/my/categories/`;
-    {# create base url link for video management #}
-    {% url 'video:video_edit' slug="abcd" as video_edit %}
-    const EDIT_URL = `{{ video_edit|slice:"-5" }}`;
-    {% url 'video:completion:video_completion' slug="abcd" as video_completion %}
-    const COMPLETION_URL = `{{ video_completion|slice:"-5" }}`;
-    {% url 'video:chapter:video_chapter' slug="abcd" as video_chapter %}
-    const CHAPTER_URL = `{{ video_chapter|slice:"-5" }}`;
-    {% url 'video:video_delete' slug="abcd" as video_delete %}
-    const DELETE_URL = `{{ video_delete|slice:"-5" }}`;
-    const VIDEO_URL = `${window.location.origin}/video/`;
-    var all_categories_videos = JSON.parse("{{ all_categories_videos|escapejs }}");
+    const urlVideos = "{% url 'video:dashboard' %}";
+    const urlUpdateVideos = "{% url 'video:bulk_update' %}";
+    const videosListLoader = document.getElementById("videosListLoader");
+    const videosListContainerId = "videos_list";
+    var displayMode = "{{ display_mode }}";
+    var csrftoken = "{{ csrf_token }}";
+    var page = 1;
+    var nextPage = false;
+    var ownerFilter = {{ owner_filter|yesno:'true,false'}};
+    var formFieldsets = {{ fieldsets_dashboard|safe }};
+    var listTheme = {{listTheme | safe}};
+
+    {% if videos.has_next %}
+      page = parseInt("{{videos.next_page_number}}", 10);
+      nextPage = true;
+    {% endif %}
   </script>
-  <script src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
-{% else %}
-  <script>const USE_CATEGORY = false;</script>
-{% endif %}
+  <script src="{% static 'js/infinite.js' %}"></script>
+  <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/dashboard.js' %}?ver={{VERSION}}"></script>
+  {% if use_category %}
+    <script>
+      const USE_CATEGORY = true;
+      const categoryModal = document.getElementById("category-modal");
+      const CATEGORIES_ADD_URL = "{% url 'video:add_category' %}";
+      const CATEGORIES_EDIT_URL = `${window.location.origin}/video/category/edit/`;
+      const CATEGORIES_DELETE_URL = `${window.location.origin}/video/category/delete/`;
+      const CATEGORIES_LIST_URL = "{% url 'video:get_categories_list' %}";
+      const categoriesListContainer = document.getElementById("categories-list");
+      //const BASE_URL = `${window.location.origin}/video/my/categories/`;
+      {# create base url link for video management #}
+      {% url 'video:video_edit' slug="abcd" as video_edit %}
+      const EDIT_URL = `{{ video_edit|slice:"-5" }}`;
+      {% url 'video:completion:video_completion' slug="abcd" as video_completion %}
+      const COMPLETION_URL = `{{ video_completion|slice:"-5" }}`;
+      {% url 'video:chapter:video_chapter' slug="abcd" as video_chapter %}
+      const CHAPTER_URL = `{{ video_chapter|slice:"-5" }}`;
+      {% url 'video:video_delete' slug="abcd" as video_delete %}
+      const DELETE_URL = `{{ video_delete|slice:"-5" }}`;
+      const VIDEO_URL = `${window.location.origin}/video/`;
+      var all_categories_videos = JSON.parse("{{ all_categories_videos|escapejs }}");
+    </script>
+    <script src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
+  {% else %}
+    <script>const USE_CATEGORY = false;</script>
+  {% endif %}
 {% endblock more_script %}
