@@ -17,24 +17,32 @@ msgstr ""
 "X-Generator: Poedit 3.5\n"
 
 #: pod/video/static/js/FilterManager.js
-msgid "Filter option for"
-msgstr "Options de filtre pour"
+msgid "Filter : %s - %s"
+msgstr "Filtre : %s - %s"
 
 #: pod/video/static/js/FilterManager.js
-msgid "Click to remove the filter"
-msgstr "Cliquez pour supprimer le filtre"
+msgid "Remove filter"
+msgstr "Effacer le filtre"
 
 #: pod/video/static/js/FilterManager.js
-msgid "Show or hide filter options for"
-msgstr "Afficher ou masquer les options du filtre"
+msgid "Filter option for %s"
+msgstr "Options de filtre pour %s"
+
+#: pod/video/static/js/FilterManager.js
+msgid "Click to remove the filter: %s - %s"
+msgstr "Cliquez pour supprimer le filtre : %s - %s"
+
+#: pod/video/static/js/FilterManager.js
+msgid "Show or hide filter options for %s"
+msgstr "Afficher ou masquer les options du filtre %s"
 
 #: pod/video/static/js/FilterManager.js
 msgid "User"
 msgstr "Utilisateur"
 
 #: pod/video/static/js/FilterManager.js
-msgid "Search for a"
-msgstr "Rechercher un/e"
+msgid "Search for a %s"
+msgstr "Rechercher un/e %s"
 
 #: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
 msgid "No discipline"

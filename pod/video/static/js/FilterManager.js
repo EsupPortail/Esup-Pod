@@ -98,7 +98,8 @@ class FilterManager {
     button.type = 'button';
     button.setAttribute('data-bs-toggle', 'dropdown');
     button.setAttribute('aria-expanded', 'false');
-    button.setAttribute('aria-label', gettext(`Show or hide filter options for ${name}`));
+    const searchAria = gettext("Show or hide filter options for %s");
+    button.setAttribute('aria-label', interpolate(searchAria, [name]));
     button.innerText = name;
 
     // Dropdown menu
@@ -112,8 +113,9 @@ class FilterManager {
 
     const input = document.createElement('input');
     const inputId = `${param}-box`;
-    input.placeholder = gettext('Search for a') +" "+ name;
-    input.setAttribute('aria-label', gettext('Search for a') +" "+ name);
+    const searchMessage = gettext("Search for a %s");
+    input.placeholder= interpolate(searchMessage, [name]);
+    input.setAttribute('aria-label', interpolate(searchMessage, [name]));
     input.id = inputId;
     input.type = 'text';
     input.className = 'form-control';
@@ -125,7 +127,8 @@ class FilterManager {
     listContainer.id = listContainerId;
     listContainer.classList.add('overflow-auto');
     listContainer.style.maxHeight = '200px';
-    listContainer.setAttribute('aria-label', gettext(`Filter option for`) +" "+ name);
+    const filterOptionAria = gettext(`Filter option for %s`)
+    listContainer.setAttribute('aria-label', interpolate(filterOptionAria, [name]));
 
     menu.appendChild(inputGroup);
     menu.appendChild(listContainer);
@@ -223,18 +226,20 @@ class FilterManager {
       filterContainer.id = `${slugify(key)}-tag`;
       filterContainer.setAttribute('role', 'button');
       filterContainer.setAttribute('tabindex', '0');
-      filterContainer.setAttribute('aria-label', `${currentFilter.name}: ${key}`);
-      const label = document.createElement('span');
-      label.innerText = `${currentFilter.name}: ${key}`;
+      const ariaLabel = interpolate(gettext("Filter: %s - %s"), [currentFilter.name, key]);
+      filterContainer.setAttribute('aria-label', ariaLabel);
+
+      const label = document.createElement('a');
+      label.innerText = interpolate(gettext("%s : %s"), [currentFilter.name, key]);
       const closeButton = document.createElement('button');
       closeButton.type = 'button';
-      closeButton.className = 'btn-close';
-      closeButton.style.marginLeft = '0.5rem';
+      closeButton.className = 'btn-close ms-2';
       closeButton.id = `remove-filter-${slugify(key)}`;
       closeButton.setAttribute('data-bs-toggle', 'tooltip');
       closeButton.setAttribute('data-bs-placement', 'top');
-      closeButton.setAttribute('title', 'Remove filter');
-      closeButton.setAttribute('aria-label', `Click to remove the filter: ${currentFilter.name} - ${key}`);
+      closeButton.setAttribute('data-bs-title', gettext("Remove filter"));
+      const closeButtonAriaLabel = interpolate(gettext("Click to remove the filter: %s - %s"), [currentFilter.name, key]);
+      closeButton.setAttribute('aria-label', closeButtonAriaLabel);
       closeButton.addEventListener('click', (e) => {
         e.preventDefault();
         this.removeFilter(currentFilter, key);
@@ -245,12 +250,15 @@ class FilterManager {
           this.removeFilter(currentFilter, key);
         }
       });
+
       filterContainer.appendChild(label);
       filterContainer.appendChild(closeButton);
       container.appendChild(filterContainer);
       new bootstrap.Tooltip(closeButton);
     }
   }
+
+
 
   /**
    * Builds and inserts the checkboxes, optimized with DocumentFragment.
@@ -306,9 +314,9 @@ class FilterManager {
 
       const checkbox = document.createElement('input');
       checkbox.className = 'form-check-input';
-      checkbox.type      = 'checkbox';
-      checkbox.id        = key;
-      checkbox.checked   = false;
+      checkbox.type = 'checkbox';
+      checkbox.id = key;
+      checkbox.checked = false;
 
       checkbox.addEventListener('change', (e) => {
         e.preventDefault();

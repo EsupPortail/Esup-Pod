@@ -9806,6 +9806,10 @@ msgstr "Sélectionnez la/les vidéo(s) à éditer"
 msgid "Select/Deselect all videos"
 msgstr "Sélectionner/Désélectionner toutes les vidéos"
 
+#: pod/video/templates/videos/dashboard.html
+msgid "Clear filters"
+msgstr "Effacer les filtres"
+
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Submit changes"
 msgstr "Soumettre les changements"

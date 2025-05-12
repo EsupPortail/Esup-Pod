@@ -782,10 +782,11 @@ div.card a img {
 }
 
 /** Dashboard **/
+
 #selectedTags .btn-secondary {
-  background-color: var(--pod-background-neutre2-bloc);
-  border: 1px solid var(--bs-gray-400);
-  color: var(--bs-body-color);
+  --bs-btn-color: var(--bs-body-color);
+  --bs-btn-bg: var(--pod-background-neutre2-bloc);
+  --bs-btn-border-color: var(--bs-gray-400);
 }
 
 #bulk-update-container {
@@ -836,6 +837,7 @@ div.card a img {
 }
 
 /* Dashboard infinite container */
+
 .dashboard-container {
   margin: 1rem 0;
 }
