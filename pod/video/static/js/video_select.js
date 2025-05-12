@@ -14,6 +14,7 @@ var selectedVideos = {};
 // var resetDashboardElementsBtn = document.getElementById(
 //   "reset-dashboard-elements-btn",
 // );
+const checkbox = document.getElementById('selectAll');
 var countSelectedVideosBadge = document.getElementById(
   "countSelectedVideosBadge",
 );
@@ -126,13 +127,22 @@ function toggleSelectedVideo(item, container) {
   }
 }
 
+/**
+ * Toggles the bulk update UI visibility based on video selection and total count.
+ *
+ * Shows the container and related elements if videos are selected and count > 0.
+ * Otherwise, hides the container and restores default display.
+ */
 function toggleBulkUpdateVisibility() {
   const c = document.getElementById('bulk-update-container');
-  const videoSelected = hasSelectedVideos();
+  const hasSelection = hasSelectedVideos();
   const hr = document.getElementById('bottom-ht-filtre');
   const skipLink = document.getElementById('skipToBulk');
+  const countVideos = document.getElementById("videos_list").dataset.countvideos;
 
-  if (videoSelected) {
+  const shouldShow = hasSelection && countVideos > 0;
+
+  if (shouldShow) {
     hr.style.display = 'none';
     c.classList.add('visible');
     skipLink.classList.add('is-visible');
@@ -171,6 +181,7 @@ function clearSelectedVideo(container) {
  * @see resetDashboardElementsBtn
  **/
 function resetDashboardElements() {
+  checkbox.checked = false;
   toggleBulkUpdateVisibility();
   clearSelectedVideo(videosListContainerId);
   dashboardActionReset();
@@ -210,10 +221,7 @@ function selectAllVideos(container) {
 }
 
 function selectAllManger() {
-  const checkbox = document.getElementById('selectAll');
-  const videoSelected = hasSelectedVideos();
   if (!checkbox) return;
-  if (!videoSelected) checkbox.checked = false;
   checkbox.addEventListener('change', () => {
     if (checkbox.checked) {
       selectAllVideos(videosListContainerId);

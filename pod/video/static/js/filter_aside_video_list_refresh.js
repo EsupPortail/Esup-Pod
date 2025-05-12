@@ -86,6 +86,7 @@ function replaceCountVideos(newCount) {
   );
   videoFoundStr = interpolate(videoFoundStr, { count: newCount }, true);
   document.getElementById("video_count").textContent = videoFoundStr;
+  resetDashboardElements();
 }
 
 /**

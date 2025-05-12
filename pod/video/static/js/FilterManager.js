@@ -365,7 +365,6 @@ class FilterManager {
     window.history.replaceState(null, '', newUrl);
     this._syncResetLink();
     refreshVideosSearch();
-    selectAllManger(); // Fonction appeller dans videoSelect
   }
 
   /**
