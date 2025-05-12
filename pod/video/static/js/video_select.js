@@ -11,10 +11,9 @@
 /* exported resetDashboardElements getHTMLBadgesSelectedTitles toggleSelectedVideo setSelectedVideos */
 
 var selectedVideos = {};
-// var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
-var resetDashboardElementsBtn = document.getElementById(
-  "reset-dashboard-elements-btn",
-);
+// var resetDashboardElementsBtn = document.getElementById(
+//   "reset-dashboard-elements-btn",
+// );
 var countSelectedVideosBadge = document.getElementById(
   "countSelectedVideosBadge",
 );
@@ -84,6 +83,7 @@ function setSelectedVideos(container) {
  * @param {string} container - Identifier of container = selectedVideos's key
  */
 function replaceSelectedCountVideos(container) {
+  const applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
   let newCount = selectedVideos[container].length;
   let videoCountStr = ngettext("%(count)s video", "%(count)s videos", newCount);
   let videoCountTit = ngettext(
@@ -94,10 +94,10 @@ function replaceSelectedCountVideos(container) {
   videoCountStr = interpolate(videoCountStr, { count: newCount }, true);
   countSelectedVideosBadge.textContent = videoCountStr;
   countSelectedVideosBadge.setAttribute("title", videoCountTit);
-  // manageDisableBtn(
-  //   applyMultipleActionsBtn,
-  //   newCount > 0 && dashboardAction.length !== 0,
-  // );
+  manageDisableBtn(
+    applyMultipleActionsBtn,
+    newCount > 0 && dashboardAction.length !== 0,
+  );
   // manageDisableBtn(resetDashboardElementsBtn, newCount > 0);
 }
 
@@ -120,19 +120,19 @@ function toggleSelectedVideo(item, container) {
       );
     }
   }
+  toggleBulkUpdateVisibility();
   if (container === videosListContainerId) {
     replaceSelectedCountVideos(container);
   }
-  toggleBulkUpdateVisibility();
 }
 
 function toggleBulkUpdateVisibility() {
   const c = document.getElementById('bulk-update-container');
-  const hasSelectedVideos = Object.values(selectedVideos).some(arr => arr.length > 0);
+  const videoSelected = hasSelectedVideos();
   const hr = document.getElementById('bottom-ht-filtre');
   const skipLink = document.getElementById('skipToBulk');
 
-  if (hasSelectedVideos) {
+  if (videoSelected) {
     hr.style.display = 'none';
     c.classList.add('visible');
     skipLink.classList.add('is-visible');
@@ -141,6 +141,15 @@ function toggleBulkUpdateVisibility() {
     c.classList.remove('visible');
     skipLink.classList.remove('is-visible');
   }
+}
+
+/**
+ * Checks whether at least one video has been selected.
+ *
+ * @returns {boolean} `true` if any entry in `selectedVideos` contains one or more videos, otherwise `false`.
+ */
+function hasSelectedVideos() {
+  return Object.values(selectedVideos).some(arr => arr.length > 0);
 }
 
 /**
@@ -162,8 +171,8 @@ function clearSelectedVideo(container) {
  * @see resetDashboardElementsBtn
  **/
 function resetDashboardElements() {
-  clearSelectedVideo(videosListContainerId);
   toggleBulkUpdateVisibility();
+  clearSelectedVideo(videosListContainerId);
   dashboardActionReset();
   window.scrollTo(0, 0);
 }
@@ -196,14 +205,15 @@ function selectAllVideos(container) {
     elt.checked = true;
   });
   setListSelectedVideos(container);
-  replaceSelectedCountVideos(container);
   toggleBulkUpdateVisibility();
+  replaceSelectedCountVideos(container);
 }
 
 function selectAllManger() {
   const checkbox = document.getElementById('selectAll');
+  const videoSelected = hasSelectedVideos();
   if (!checkbox) return;
-  if (selectedVideos.videos_list.length === 0) checkbox.checked = false;
+  if (!videoSelected) checkbox.checked = false;
   checkbox.addEventListener('change', () => {
     if (checkbox.checked) {
       selectAllVideos(videosListContainerId);
