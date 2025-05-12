@@ -26,13 +26,15 @@ pod@pod:~$ sudo apt-get install git curl vim
 ### Virtual environment creation
 
 ```sh
+# Check python version
 pod@pod:~$ sudo python3 -V
-pod@pod:~$ sudo python -V
+# Pod v4.0 is compatible with Python versions 3.9 to 3.12.
+# Check also [Status of Python versions](https://devguide.python.org/versions/) to ensure you're not using an obsolete one.
 pod@pod:~$ sudo apt-get install -y python3-pip
 pod@pod:~$ sudo pip3 install virtualenvwrapper
 ```
 
-Since python 3.10, it is no longer possible to install pip outside an environment. To install _virtualenvwrapper_, you must add **--break-system-packages** at the end of the line.
+Since python 3.10, it is no longer possible to install pip outside an environment. To install *virtualenvwrapper*, you must add **--break-system-packages** at the end of the line.
 
 At the end of the .bashrc file, add these lines:
 
@@ -59,13 +61,13 @@ pod@pod:~$ mkvirtualenv --system-site-packages --python=/usr/bin/python3 django_
 
 ## Getting the sources
 
-Regarding the location of the project, I recommend putting it in _/usr/local/django_projects_.
+Regarding the location of the project, I recommend putting it in `/usr/local/django_projects`.
 
 ```sh
 (django_pod4)pod@pod:~$ sudo mkdir /usr/local/django_projects
 ```
 
-You can make a symbolic link in your home to get to the _django_projects_ directory faster:
+You can make a symbolic link in your home to get to the `django_projects` directory faster:
 
 ```sh
 (django_pod4)pod@pod:~$ ln -s /usr/local/django_projects django_projects
@@ -146,9 +148,9 @@ In theory, the service starts automatically. If you've installed Redis on the sa
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo service redis-server status
 ```
 
-If you're using Redis on another machine, don't forget to modify the bind in the _/etc/redis/redis.conf_ configuration file.
+If you're using Redis on another machine, don't forget to modify the bind in the `/etc/redis/redis.conf` configuration file.
 
-If you don't want to change the bind, you can also modify your _settings_local.py_ and customize this extract from the default _settings.py_ with your <my_redis_host>.
+If you don't want to change the bind, you can also modify your `settings_local.py` and customize this extract from the default `settings.py` with your <my_redis_host>.
 
 ```py
 CACHES = {
@@ -181,7 +183,7 @@ SESSION_REDIS = {
 
 ### Elasticsearch
 
-Depending on the version of Elasticsearch you're going to use, the dependency versions may change. Versions 6 and 7 are currently no longer maintained. Version 8 is to be configured below. Version 6 is the default in Pod.
+Depending on the version of Elasticsearch you're going to use, the dependency versions may change. Versions 6 and 7 are currently no longer maintained. Version 8 is the default in Pod.
 
 #### Elasticsearch 8
 
@@ -301,18 +303,6 @@ If you are using a proxy:
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ cd /usr/share/elasticsearch/
-(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo ES_JAVA_OPTS="-Dhttp.proxyHost=proxy.univ.fr -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.univ.fr -Dhttps.proxyPort=3128" /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
- -> Downloading analysis-icu from elastic
-[=================================================] 100%
--> Installed analysis-icu
-(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo /etc/init.d/elasticsearch restart
-[ ok ] Restarting elasticsearch (via systemctl): elasticsearch.service.
-```
-
-Warning, for ES8 behind a proxy:
-
-```sh
-(django_pod4) pod@pod:~/django_projects/podv4$ cd /usr/share/elasticsearch/
 (django_pod4) pod@pod:/usr/share/elasticsearch$ sudo CLI_JAVA_OPTS="-Dhttp.proxyHost=proxy.univ.fr -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.univ.fr -Dhttps.proxyPort=3128" /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
  -> Downloading analysis-icu from elastic
 [=================================================] 100%
@@ -323,8 +313,8 @@ Warning, for ES8 behind a proxy:
 
 #### Pod index creation
 
-> To use elasticsearch 7 or 8, you must:
-> Add ES_VERSION = 7 or ES_VERSION = 8 to your settings file and modify the elasticsearch client version in the _requirements.txt_ file.
+> To use elasticsearch 7, you must:
+> Add ES_VERSION = 7 to your settings file and modify the elasticsearch client version in the `requirements.txt` file.
 >
 > ```conf
 > elasticsearch==8.9.0
@@ -349,7 +339,7 @@ Successfully create index Video
 ```
 
 If the python command doesn't work, first create the index by hand with a `curl -XPUT “http://127.0.0.1:9200/pod” (options -k --noproxy -u <user>:<pwd>` to be expected if ES8 in security mode)
-If you're moving elastic search to another machine, add its access URL to the _settings_local.py_ file:
+If you're moving elastic search to another machine, add its access URL to the `settings_local.py` file:
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
@@ -427,8 +417,8 @@ Run the root script to create the migration files, then run them to create the e
 (django_pod4) pod@Pod:~/django_projects/podv4$ make createDB
 ```
 
-_settings_local.py_ configuration file
-Create a local configuration file in the _pod/custom_ folder.
+`settings_local.py` configuration file
+Create a local configuration file in the `pod/custom` folder.
 
 This file contains only those variables whose default values you wish to change. Below is an example of a file with the main variables to be modified: database connection, a custom CSS file, pod green theme, remove nl language, etc. You can adapt this file and paste it into your own.
 
@@ -571,7 +561,7 @@ To check that your instance is operational, you can run the unit tests:
 
 This paragraph was written for pod v2.9.x; it may not apply to pod v4.
 
-There are several add-on modules that can be added to pod (enrichment, live broadcast, etc.). To activate these modules, add the following line to _settings_local.py_.
+There are several add-on modules that can be added to pod (enrichment, live broadcast, etc.). To activate these modules, add the following line to `settings_local.py`.
 
 ```py
 ##
@@ -583,7 +573,7 @@ THIRD_PARTY_APPS = ["live", "enrichment"]
 > Enrichment
 >
 > Depending on your system settings, enrichments may return a 403 forbidden error.
-> To avoid this problem, you can add this line to _settings_local.py_.
+> To avoid this problem, you can add this line to `settings_local.py`.
 >
 > ```py
 > FILE_UPLOAD_PERMISSIONS = 0o644 # Octal number
