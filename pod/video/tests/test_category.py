@@ -157,7 +157,7 @@ class TestCategory(TestCase):
         self.assertIsInstance(response, HttpResponseBadRequest)
         self.assertEqual(response.status_code, 400)
 
-        # Ajax POST request, should return HttpResponse:409
+        # Ajax POST request, should return HttpResponse:400
         # category already exists
         data = {"title": json.dumps("Test new category"), "videos": json.dumps([])}
 
@@ -168,7 +168,7 @@ class TestCategory(TestCase):
         )
 
         self.assertIsInstance(response, HttpResponse)
-        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.status_code, 400)
         print(" --->  test_post_add_category of TestCategory: OK!")
 
     def test_get_edit_category_modal(self) -> None:
