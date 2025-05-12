@@ -130,12 +130,12 @@
     {% endfor %}
     </form>
 
-    {% include "videos/dashboard_modal.html" %}
-
     <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalBulkUpdate" disabled>
       {% trans 'Apply' %} <span id="countSelectedVideosBadge" class="badge" title="{% trans 'No video found' %}">
     {% blocktrans count counter=0 %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}</span></button>
   </div>
+
+  {% include "videos/dashboard_modal.html" %}
 
   <div role="toolbar" aria-label="Video controls">
     <div class="row align-items-center gy-2">
