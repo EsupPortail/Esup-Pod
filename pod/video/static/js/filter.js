@@ -67,12 +67,16 @@ function searchInList(list, searchTerm) {
     const matching = [];
     const nonMatching = [];
 
-    for (const item of list) {
-      if (item.label.toLowerCase().includes(normalizedTerm)) {
-        matching.push(item);
-      } else {
-        nonMatching.push(item);
+    try {
+      for (const item of list) {
+        if (item.label.toLowerCase().includes(normalizedTerm)) {
+          matching.push(item);
+        } else {
+          nonMatching.push(item);
+        }
       }
+    } catch (err) {
+      console.error(`Error in filter.js (searchInList) while processing list: ${err.message || err}`);
     }
 
     resolve([...matching, ...nonMatching]);
@@ -103,30 +107,31 @@ async function initFilters() {
     const res = await fetch(urlVideoStatistics, {
       headers: { "X-Requested-With": "XMLHttpRequest" }
     });
-
-    if (!res.ok) {
-      throw new Error(`HTTP Error ${res.status}`);
-    }
-
+    if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
     const data = await res.json();
-    console.log(data);
-    typeList = data.TYPES.map(type => ({
-      label: gettext(type.title),
-      value: type.slug
-    }));
 
-    disciplineList = data.DISCIPLINES.map(discipline => ({
-      label: gettext(discipline.title),
-      value: discipline.slug
-    }));
-
-    tagList = data.TAGS.map(tag => ({
-      label: gettext(tag.title),
-      value: tag.slug
-    }));
+    if (data.TYPES) {
+      typeList = data.TYPES.map(type => ({
+        label: gettext(type.title),
+        value: type.slug
+      }));
+    }
+    if (data.DISCIPLINES) {
+      disciplineList = data.DISCIPLINES.map(discipline => ({
+        label: gettext(discipline.title),
+        value: discipline.slug
+      }));
+    }
+    if (data.TAGS) {
+      tagList = data.TAGS.map(tag => ({
+        label: gettext(tag.name),
+        value: tag.slug
+      }));
+    }
   } catch (err) {
-    console.error(err);
+    console.error(`Error in filter.js (initFilters function) while fetching or processing data: ${err.message || err}\nStack trace: ${err.stack || 'No stack trace available'}`);
   }
 }
+
 
 initFilters();

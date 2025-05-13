@@ -71,15 +71,20 @@ class FilterManager {
    * @param {Function} config.itemKey - Function that returns the unique key of an item.
    */
   addFilter({ name, param, searchCallback, itemLabel, itemKey }) {
-    this.filters[param] = {
-      name,
-      searchCallback,
-      itemLabel,
-      itemKey,
-      selectedItems: new Map(),
-    };
-    this.createFilterComponent(name, param);
+    try {
+      this.filters[param] = {
+        name,
+        searchCallback,
+        itemLabel,
+        itemKey,
+        selectedItems: new Map(),
+      };
+      this.createFilterComponent(name, param);
+    } catch (err) {
+      console.error(`Error in filter.js  (addFilter function). Failed to load filter "${name}" (param="${param}"): ${err.message || err}`);
+    }
   }
+
 
   /**
    * Generates the DOM structure for the filter (button and dropdown list).
@@ -146,7 +151,10 @@ class FilterManager {
   addSearchInputListener(param) {
     const inputEl  = document.getElementById(`${param}-box`);
     const buttonEl = document.getElementById(`${param}-filter-btn`);
-    if (!inputEl || !buttonEl) return;
+    if (!inputEl || !buttonEl) {
+      console.error(`Error in filter.js (addSearchInputListener function). Failed to initialize search input for filter "${param}". Missing elements: ${!inputEl ? 'input element' : ''} ${!buttonEl ? 'button element' : ''}`);
+      return;
+    }
 
     inputEl.addEventListener('input', debounce(e => {
       e.preventDefault();
@@ -173,7 +181,7 @@ class FilterManager {
       this.currentResults[param] = results;
       this.createCheckboxesForFilter(param, results);
     } catch (err) {
-      console.error(err);
+      console.error(`Error in filter.js (searchFilter function). Failed to fetch search results for filter "${param}" with searchTerm "${searchTerm}": ${err.message || err}`);
     }
   }
 
@@ -210,7 +218,7 @@ class FilterManager {
       try {
         allItems = await filter.searchCallback('');
       } catch (err) {
-        console.error(`Error loading initial items for filter '${param}':`, err);
+        console.error(`Error in filter.js (initializeFilters function). Failed to load initial items for filter "${param}": ${err.message || err}`);
         continue;
       }
       this.currentResults[param] = allItems;
@@ -274,6 +282,8 @@ class FilterManager {
       filterContainer.appendChild(closeButton);
       container.appendChild(filterContainer);
       new bootstrap.Tooltip(closeButton);
+    }else {
+      console.error(`Error in filter.js (renderActiveFilter function). Failed to render active filter because currentFilter is null`);
     }
   }
 
@@ -285,7 +295,6 @@ class FilterManager {
     const filter = this.filters[param];
     const fragment = document.createDocumentFragment();
 
-    // 1. Rendu des items sélectionnés
     filter.selectedItems.forEach((obj, key) => {
       const formCheck = document.createElement('div');
       formCheck.className = 'form-check mb-2';
@@ -317,7 +326,6 @@ class FilterManager {
       fragment.appendChild(formCheck);
     });
 
-    // 2. Rendu des résultats non sélectionnés
     results.forEach(res => {
       const value = filter.itemKey(res);
       const key = slugify(value);
