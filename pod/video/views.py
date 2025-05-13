@@ -561,7 +561,6 @@ def theme_edit_save(request, channel):
 # ############################################################################
 
 
-
 @login_required(redirect_field_name="referrer")
 def dashboard(request):
     """
@@ -694,7 +693,6 @@ def dashboard(request):
     data_context["error_message"] = error_message
 
     return render(request, "videos/dashboard.html", data_context)
-
 
 
 @login_required(redirect_field_name="referrer")
@@ -3544,7 +3542,6 @@ def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> Json
     return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
 
 
-
 def retrieve_cached_video_statistics(request):
     """
     Retrieves cached video statistics and serializes them into JSON.
@@ -3578,6 +3575,7 @@ def retrieve_cached_video_statistics(request):
     serialized_data = {key: serialize_data(value) for key, value in video_data.items()}
 
     return JsonResponse(serialized_data)
+
 
 """
 # check access to video
