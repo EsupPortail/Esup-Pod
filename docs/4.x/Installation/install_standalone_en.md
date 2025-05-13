@@ -87,7 +87,8 @@ Give the pod user rights to read and write the:
 
 Finally, you can retrieve the sources
 
-> Note
+> **Note**
+>
 > If you need to use a proxy, you can specify it with this command:
 >
 > ```sh

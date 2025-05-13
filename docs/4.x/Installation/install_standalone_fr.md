@@ -87,7 +87,8 @@ Donnez les droits à l’utilisateur pod de lire et d‘écrire dans le réperto
 
 Vous pouvez enfin récupérer les sources
 
-> Remarque
+> **Remarque**
+>
 > Si vous devez utiliser un proxy, vous pouvez le spécifier avec cette commande :
 >
 > ```sh

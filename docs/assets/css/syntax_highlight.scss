@@ -11,6 +11,14 @@ pre.highlight{
   padding: 1rem;
 }
 
+.highlight .bp {
+  color: #7B7070;
+}
+
+.highlight .mi {
+  color: #237F7B;
+}
+
 .highlight .nv,
 .highlight .na {
   color: #027F88
@@ -23,4 +31,8 @@ pre.highlight{
 /* Commentaires */
 .highlight .c1 {
   color: #73736B;
+}
+.highlight .c,
+.highlight .cd {
+  color: #767453;
 }
