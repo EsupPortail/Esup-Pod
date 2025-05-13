@@ -1,100 +1,132 @@
-let typeSet = new Set();
-let disciplineSet = new Set();
-let tagSet = new Set();
+/**
+ * @typedef {Object} FilterItem
+ * @property {string} label - The display name shown in the UI
+ * @property {string} value - The internal value used for filtering (e.g., slug)
+ */
 
+/** @type {FilterItem[]} */
+let typeList = [];
+
+/** @type {FilterItem[]} */
+let disciplineList = [];
+
+/** @type {FilterItem[]} */
+let tagList = [];
+
+/**
+ * Array of filter configurations to be used in FilterManager.
+ * Each object defines how a specific filter behaves and how items are displayed and matched.
+ * @type {Array<Object>}
+ */
 const filtersConfig = [
   {
     name: gettext("User"),
     param: "owner",
     searchCallback: getSearchListUsers,
-    itemLabel: u =>
-      u.first_name && u.last_name
-        ? `${u.first_name} ${u.last_name} (${u.username})`
-        : u.username,
-    itemKey: u => u.username,
+    itemLabel: user =>
+      user.first_name && user.last_name
+        ? `${user.first_name} ${user.last_name} (${user.username})`
+        : user.username,
+    itemKey: user => user.username,
   },
   {
     name: gettext("Type"),
     param: "type",
-    searchCallback: term => searchInSet(typeSet, term),
-    itemLabel: type => type,
-    itemKey: type => type,
+    searchCallback: term => searchInList(typeList, term),
+    itemLabel: type => type.label,
+    itemKey: type => type.value,
   },
   {
     name: gettext("Discipline"),
-    param: "dicipline",
-    searchCallback: term => searchInSet(disciplineSet, term),
-    itemLabel: dicipline => dicipline,
-    itemKey: dicipline => dicipline,
+    param: "discipline",
+    searchCallback: term => searchInList(disciplineList, term),
+    itemLabel: discipline => discipline.label,
+    itemKey: discipline => discipline.value,
   },
   {
     name: gettext("Tag"),
     param: "tag",
-    searchCallback: term => searchInSet(tagSet, term),
-    itemLabel: tag => tag,
-    itemKey: tag => tag,
+    searchCallback: term => searchInList(tagList, term),
+    itemLabel: tag => tag.label,
+    itemKey: tag => tag.value,
   }
 ];
 
+/**
+ * Searches within a list of filter items by a search term, prioritizing matches first.
+ *
+ * @param {FilterItem[]} list - The list of filter items to search.
+ * @param {string} searchTerm - The user-provided search input.
+ * @returns {Promise<FilterItem[]>} A promise resolving to an ordered list of matched items.
+ */
+function searchInList(list, searchTerm) {
+  return new Promise(resolve => {
+    const normalizedTerm = searchTerm.trim().toLowerCase();
+    if (!normalizedTerm) return resolve(list);
+
+    const matching = [];
+    const nonMatching = [];
+
+    for (const item of list) {
+      if (item.label.toLowerCase().includes(normalizedTerm)) {
+        matching.push(item);
+      } else {
+        nonMatching.push(item);
+      }
+    }
+
+    resolve([...matching, ...nonMatching]);
+  });
+}
+
+// Initialize the filter manager
 const filterManager = new FilterManager({
   filtersBoxId: 'filtersBox',
   activeFiltersId: 'selectedTags',
   resetFiltersId: 'filterTags'
 });
 
+// Inject filter configuration into the manager
 filtersConfig.forEach(cfg => filterManager.addFilter(cfg));
 filterManager.initializeFilters();
 
-
 /**
- * Simulates a fetch operation by searching within a Set.
- * Returns a Promise that resolves with the items sorted by match relevance.
+ * Initializes filters by fetching data from the statistics API and preparing
+ * the internal filter lists for types, disciplines, and tags.
  *
- * @param {Set<string>} originalSet - The set of strings to search in.
- * @param {string} searchTerm - The term to search for.
- * @returns {Promise<string[]>} A Promise resolving to an array of strings sorted by relevance.
+ * @async
+ * @function
+ * @returns {Promise<void>}
  */
-function searchInSet(originalSet, searchTerm) {
-  return new Promise((resolve) => {
-    const items = Array.from(originalSet);
-    const normalizedTerm = searchTerm.trim().toLowerCase();
-
-    if (!normalizedTerm) {
-      return resolve(items);
-    }
-
-    const matching = [];
-    const nonMatching = [];
-
-    setTimeout(() => {
-      for (const item of items) {
-        if (item.toLowerCase().includes(normalizedTerm)) {
-          matching.push(item);
-        } else {
-          nonMatching.push(item);
-        }
-      }
-      resolve([...matching, ...nonMatching]);
-    }, 100);
-  });
-}
-
 async function initFilters() {
   try {
     const res = await fetch(urlVideoStatistics, {
       headers: { "X-Requested-With": "XMLHttpRequest" }
     });
-    if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
+
+    if (!res.ok) {
+      throw new Error(`HTTP Error ${res.status}`);
+    }
 
     const data = await res.json();
-    typeSet = new Set(data.TYPES.map(type => gettext(type.title)));
-    disciplineSet = new Set(data.DISCIPLINES.map(discipline => gettext(discipline.title)));
-    tagSet = new Set(data.TAGS.map(tag => gettext(tag.title)));
+    console.log(data);
+    typeList = data.TYPES.map(type => ({
+      label: gettext(type.title),
+      value: type.slug
+    }));
 
+    disciplineList = data.DISCIPLINES.map(discipline => ({
+      label: gettext(discipline.title),
+      value: discipline.slug
+    }));
+
+    tagList = data.TAGS.map(tag => ({
+      label: gettext(tag.title),
+      value: tag.slug
+    }));
   } catch (err) {
-    console.error("Filters cannot be initialized :", err);
+    console.error(err);
   }
 }
 
 initFilters();
-

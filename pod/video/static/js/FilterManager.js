@@ -190,6 +190,7 @@ class FilterManager {
         const tooltip = bootstrap.Tooltip.getInstance(closeButton);
         if (tooltip) tooltip.dispose();
       }
+      const data = currentFilter.selectedItems.get(key);
       if (filterElement) filterElement.remove();
       currentFilter.selectedItems.delete(key);
       sessionStorage.setItem(`filter-${currentFilter.param}`, JSON.stringify(Array.from(currentFilter.selectedItems.keys())));
@@ -201,15 +202,29 @@ class FilterManager {
   /**
    * Initializes the filters from the session.
    */
-  initializeFilters() {
-    Object.keys(this.filters).forEach(param => {
+  async initializeFilters() {
+    for (const param of Object.keys(this.filters)) {
       const filter = this.filters[param];
-      const selectedItems = JSON.parse(sessionStorage.getItem(`filter-${param}`)) || [];
-      selectedItems.forEach(item => {
-        filter.selectedItems.set(item, true);
-        this.renderActiveFilter(filter, item);
+      const selectedKeys = JSON.parse(sessionStorage.getItem(`filter-${param}`)) || [];
+      let allItems = [];
+      try {
+        allItems = await filter.searchCallback('');
+      } catch (err) {
+        console.error(`Error loading initial items for filter '${param}':`, err);
+        continue;
+      }
+      this.currentResults[param] = allItems;
+      selectedKeys.forEach(slugKey => {
+        const match = allItems.find(item => slugify(filter.itemKey(item)) === slugKey);
+        if (match) {
+          filter.selectedItems.set(slugKey, {
+            label: filter.itemLabel(match),
+            value: filter.itemKey(match)
+          });
+          this.renderActiveFilter(filter, slugKey);
+        }
       });
-    });
+    }
     this.update();
   }
 
@@ -226,11 +241,13 @@ class FilterManager {
       filterContainer.id = `${slugify(key)}-tag`;
       filterContainer.setAttribute('role', 'button');
       filterContainer.setAttribute('tabindex', '0');
-      const ariaLabel = interpolate(gettext("Filter: %s - %s"), [currentFilter.name, key]);
+
+      const data = currentFilter.selectedItems.get(key);
+      const ariaLabel = interpolate(gettext("Filter: %s - %s"), [currentFilter.name, data.label]);
       filterContainer.setAttribute('aria-label', ariaLabel);
 
       const label = document.createElement('a');
-      label.innerText = interpolate(gettext("%s : %s"), [currentFilter.name, key]);
+      label.innerText = interpolate(gettext("%s : %s"), [currentFilter.name, data.label]);
       const closeButton = document.createElement('button');
       closeButton.type = 'button';
       closeButton.className = 'btn-close ms-2';
@@ -238,7 +255,9 @@ class FilterManager {
       closeButton.setAttribute('data-bs-toggle', 'tooltip');
       closeButton.setAttribute('data-bs-placement', 'top');
       closeButton.setAttribute('data-bs-title', gettext("Remove filter"));
-      const closeButtonAriaLabel = interpolate(gettext("Click to remove the filter: %s - %s"), [currentFilter.name, key]);
+
+      const closeButtonAriaLabel = interpolate(gettext("Click to remove the filter: %s - %s"), [currentFilter.name, data.label]);
+
       closeButton.setAttribute('aria-label', closeButtonAriaLabel);
       closeButton.addEventListener('click', (e) => {
         e.preventDefault();
@@ -260,18 +279,14 @@ class FilterManager {
 
 
 
-  /**
-   * Builds and inserts the checkboxes, optimized with DocumentFragment.
-   * @param {string} param - Parameter key.
-   * @param {Array} results - Search results.
-   */
   createCheckboxesForFilter(param, results) {
     const container = document.getElementById(`collapseFilter${capitalize(param)}`);
     container.innerHTML = '';
     const filter = this.filters[param];
     const fragment = document.createDocumentFragment();
 
-    filter.selectedItems.forEach((_, key) => {
+    // 1. Rendu des items sélectionnés
+    filter.selectedItems.forEach((obj, key) => {
       const formCheck = document.createElement('div');
       formCheck.className = 'form-check mb-2';
 
@@ -283,7 +298,7 @@ class FilterManager {
 
       checkbox.addEventListener('change', (e) => {
         if (checkbox.checked) {
-          filter.selectedItems.set(key, true);
+          filter.selectedItems.set(key, obj);
           this.renderActiveFilter(filter, key);
         } else {
           filter.selectedItems.delete(key);
@@ -296,19 +311,19 @@ class FilterManager {
       const label = document.createElement('label');
       label.className = 'form-check-label';
       label.setAttribute('for', key);
-      const matching = (this.currentResults[param] || [])
-                        .find(r => slugify(filter.itemKey(r)) === key);
-      label.innerText = matching ? filter.itemLabel(matching) : key;
+      label.innerText = obj.label;
 
       formCheck.append(checkbox, label);
       fragment.appendChild(formCheck);
     });
 
+    // 2. Rendu des résultats non sélectionnés
     results.forEach(res => {
-      const temp = filter.itemKey(res);
-      const key  = slugify(temp);
+      const value = filter.itemKey(res);
+      const key = slugify(value);
       if (filter.selectedItems.has(key)) return;
 
+      const labelStr = filter.itemLabel(res);
       const formCheck = document.createElement('div');
       formCheck.className = 'form-check mb-2';
 
@@ -321,7 +336,7 @@ class FilterManager {
       checkbox.addEventListener('change', (e) => {
         e.preventDefault();
         if (checkbox.checked) {
-          filter.selectedItems.set(key, true);
+          filter.selectedItems.set(key, { label: labelStr, value });
           this.renderActiveFilter(filter, key);
         } else {
           filter.selectedItems.delete(key);
@@ -334,7 +349,7 @@ class FilterManager {
       const label = document.createElement('label');
       label.className = 'form-check-label';
       label.setAttribute('for', key);
-      label.innerText = filter.itemLabel(res);
+      label.innerText = labelStr;
 
       formCheck.append(checkbox, label);
       fragment.appendChild(formCheck);
@@ -342,6 +357,7 @@ class FilterManager {
 
     container.appendChild(fragment);
   }
+
 
 
   /**
