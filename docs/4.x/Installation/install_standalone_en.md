@@ -272,7 +272,7 @@ In theory, the service starts automatically. If you've installed Redis on the sa
 
 If you're using Redis on another machine, don't forget to modify the bind in the `/etc/redis/redis.conf` configuration file.
 
-If you don't want to change the bind, you can also modify your `settings_local.py` and customize this extract from the default `settings.py` with your <my_redis_host>.
+If you don't want to change the bind, you can also modify your `settings_local.py` and customize this extract from the default `settings.py` with your `<my_redis_host>`.
 
 ```py
 CACHES = {
@@ -340,7 +340,7 @@ discovery.seed_hosts: ["127.0.0.1"]
 cluster.initial_master_nodes: ["pod-1"]
 ```
 
-**Il est recommandé d'utiliser le mode security d'ES8.**
+**ES8 security mode is recomended.**
 Generate pod user for ES:
 
 ```sh
@@ -456,7 +456,7 @@ Successfully create index Video
 {“took”:35,“timed_out”:false,“_shards”:{“total”:2,“successful”:2,“skipped”:0,“failed”:0},“hits”:{“total”:0,“max_score”:null,“hits”:[]}}
 ```
 
-If the python command doesn't work, first create the index by hand with a `curl -XPUT “http://127.0.0.1:9200/pod” (options -k --noproxy -u <user>:<pwd>` to be expected if ES8 in security mode)
+If the python command doesn't work, first create the index by hand with a `curl -XPUT "http://127.0.0.1:9200/pod"` (options `-k --noproxy -u <user>:<pwd>` to be expected if ES8 in security mode)
 If you're moving elastic search to another machine, add its access URL to the `settings_local.py` file:
 
 ```sh
@@ -519,7 +519,7 @@ Install dependencies.
 (django_pod4) pod@pod:~/django_projects/podv4/pod$ yarn
 ```
 
-Finally, deploy the static files.
+Finally, deploy the static files. (execution takes several minutes)
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py collectstatic --no-input --clear

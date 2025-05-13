@@ -231,7 +231,7 @@ TIME_ZONE = "Europe/Paris"
 
 ### Installation de toutes les librairies python
 
-Il faut vérifier que l’on se trouve bien dans l’environnement virtuel (présence de "(django_pod4)" au début l’invite de commande. Sinon, il faut lancer la commande **$> workon django_pod4**
+Il faut vérifier que l’on se trouve bien dans l’environnement virtuel (présence de `(django_pod4)` au début l’invite de commande. Sinon, il faut lancer la commande `$> workon django_pod4`
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ pip3 install -r requirements.txt
@@ -269,7 +269,7 @@ En théorie le service démarre automatiquement. Si vous avez installé Redis su
 
 Si vous utilisez Redis sur une autre machine, n’oubliez pas de modifier le bind dans le fichier de configuration _/etc/redis/redis.conf_
 
-Si vous ne souhaitez pas toucher au bind, vous pouvez aussi modifier votre `settings_local.py` et personnaliser cette extrait du _settings.py_ par défaut avec votre <my_redis_host>
+Si vous ne souhaitez pas toucher au bind, vous pouvez aussi modifier votre `settings_local.py` et personnaliser cette extrait du _settings.py_ par défaut avec votre `<my_redis_host>`
 
 ```py
 CACHES = {
@@ -453,9 +453,9 @@ Successfully create index Video
 {"took":35,"timed_out":false,"_shards":{"total":2,"successful":2,"skipped":0,"failed":0},"hits":{"total":0,"max_score":null,"hits":[]}}
 ```
 
-Si la commande python ne fonctionne pas, créez d’abord l’index à la main avec un `curl  -XPUT "http://127.0.0.1:9200/pod" (options -k --noproxy -u <user>:<pwd>` à prévoir si ES8 en mode security)
+Si la commande python ne fonctionne pas, créez d’abord l’index à la main avec un `curl  -XPUT "http://127.0.0.1:9200/pod"` (options `-k --noproxy -u <user>:<pwd>` à prévoir si ES8 en mode security)
 
-Si vous déportez l’elastic search sur une autre machine, rajoutez dans le fichier `settings_local.py` son URL d’accès :
+Si vous déportez elasticsearch sur une autre machine, rajoutez dans le fichier `settings_local.py` son URL d’accès :
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
@@ -467,7 +467,7 @@ Copiez la ligne suivante :
 ES_URL = ["http://elastic.domaine.fr:9200/"]
 ```
 
-Avec le mode security et ES8, vous devrez parametrer les éléments suivants dans votre settings_local.py :
+Avec le mode security et ES8, vous devrez paramétrer les éléments suivants dans votre settings_local.py :
 
 ```py
 ES_URL = ["https://127.0.0.1:9200/"] # ou votre instance déportée
@@ -516,7 +516,7 @@ Installez les dépendances.
 (django_pod4) pod@pod:~/django_projects/podv4/pod$ yarn
 ```
 
-Enfin, déployez les fichiers statiques.
+Enfin, déployez les fichiers statiques (l'exécution prend plusieurs minutes).
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py collectstatic --no-input --clear
@@ -526,7 +526,7 @@ Enfin, déployez les fichiers statiques.
 
 ### Base de données SQLite intégrée
 
-Lancez le script présent à la racine afin de créer les fichiers de migration, puis de les lancer pour créer la base de données SQLite intégrée.
+Utilisez le script présent à la racine afin de créer les fichiers de migration, puis de les lancer pour créer la base de données SQLite intégrée.
 
 ```sh
 (django_pod4) pod@Pod:~/django_projects/podv4$ make createDB
