@@ -1,9 +1,10 @@
 
 :root {
-  --bs-primary-rgb: 21,129,158;
+  --bs-primary-rgb: 21, 129, 158;
+  --bs-code-color: #C44581;
 }
 
-.btn-primary{
+.btn-primary {
   --bs-btn-bg: #9C5514;
   --bs-btn-border-color: #9C5514;
   --bs-btn-hover-bg: #473321;
@@ -21,6 +22,13 @@
   --bs-btn-active-border-color: #473321;
   --bs-btn-disabled-color: #9C5514;
   --bs-btn-disabled-border-color: #473321;
+}
+
+blockquote {
+  padding: .75rem 1.25rem;
+  border-radius: calc(var(--bs-border-radius) - 1px);
+  background-color: #FEFAFE;
+  border-left: .25rem solid #a3864e;
 }
 
 .navbar {

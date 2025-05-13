@@ -94,7 +94,7 @@ Finally, you can retrieve the sources
 > (django_pod4) pod@pod:~/django_projects$ git config --global http.proxy http://PROXY:PORT
 > ```
 
-To retrieve the V4 sources, use this command: `git clone https://github.com/EsupPortail/Esup-Pod.git podv4`
+To retrieve the V4 sources, use this command:
 
 ```sh
 (django_pod4) pod@pod:~/django_projects$ git clone https://github.com/EsupPortail/Esup-Pod.git podv4
@@ -107,6 +107,127 @@ Delta resolution: 100% (3076/3076), done.
 
 (django_pod4) pod@pod:~/django_projects$ cd podv4/
 ```
+
+### `settings_local.py` configuration file
+
+Create a local configuration file in the `pod/custom` folder.
+
+This file contains only those variables whose default values you wish to change. Below is an example of a file with the main variables to be modified: database connection, a custom CSS file, remove nl language, etc. You can adapt this file and paste it into your own.
+
+```sh
+(django_pod4) pod@Pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
+```
+
+```py
+"""Django local settings for pod_project.Django version: 4.2"""
+
+##
+# The secret key for your particular Django installation.
+#
+# This is used to provide cryptographic signing,
+# and should be set to a unique, unpredictable value.
+#
+# Django will not start if this is not set.
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#secret-key
+#
+# SECURITY WARNING: keep the secret key used in production secret!
+# You can visit https://djecrety.ir/ to get it
+SECRET_KEY = 'A_CHANGER'
+
+##
+# DEBUG mode activation
+#
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#debug
+#
+# SECURITY WARNING: MUST be set to False when deploying into production.
+DEBUG = True
+
+##
+# A list of strings representing the host/domain names
+# that this Django site is allowed to serve.
+#
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = ['localhost']
+
+##
+# A tuple that lists people who get code error notifications
+#   when DEBUG=False and a view raises an exception.
+#
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-ADMINS
+#
+ADMINS = (
+    ('Name', 'adminmail@univ.fr'),
+)
+
+##
+# Internationalization and localization.
+#
+# https://docs.djangoproject.com/fr/4.2/topics/i18n/
+# https://github.com/django/django/blob/master/django/conf/global_settings.py
+LANGUAGES = (
+    ('fr', 'Français'),
+    ('en', 'English')
+)
+
+# Hide Users in navbar
+HIDE_USER_TAB = True
+# Hide Types tab in navbar
+HIDE_TYPES_TAB = True
+# Hide Tags
+HIDE_TAGS = True
+# Hide disciplines in navbar
+HIDE_DISCIPLINES = True
+
+##
+# eMail settings
+#
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#email-host
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#email-port
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#default-from-email
+#
+#   username: EMAIL_HOST_USER
+#   password: EMAIL_HOST_PASSWORD
+#
+EMAIL_HOST = 'smtp.univ.fr'
+EMAIL_PORT = 25
+DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
+
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-SERVER_EMAIL
+SERVER_EMAIL = 'noreply@univ.fr'
+
+##
+# THIRD PARTY APPS OPTIONNAL
+#
+USE_PODFILE = True
+
+##
+# TEMPLATE Settings
+#
+TEMPLATE_VISIBLE_SETTINGS = {
+    "TITLE_SITE": "Esup.Pod",
+    "TITLE_ETB": "Consortium Esup",
+    "LOGO_SITE": "img/logoPod.svg",
+    "LOGO_COMPACT_SITE": "img/logoPod.svg",
+    "LOGO_ETB": "img/logo_etb.svg",
+    "LOGO_PLAYER": "img/logoPod.svg",
+    "FOOTER_TEXT": (
+        "La Maison des Universités 103 Bvd St Michel",
+        "75005  PARIS - France"
+    ),
+    "LINK_PLAYER": "http://www.univ.fr",
+    "CSS_OVERRIDE": "custom/mycss.css",
+    "PRE_HEADER_TEMPLATE": ""
+}
+
+##
+# A string representing the time zone for this installation. (default=UTC)
+#
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+TIME_ZONE = 'Europe/Paris'
+```
+
+All available variables can be found on this page:
+[LINK TODO] Platform configuration
 
 ## Third-party applications
 
@@ -194,10 +315,6 @@ To use Elasticsearch 8, you need java 17 on your machine.
 ```
 
 To install Elasticsearch on Debian using packages, follow the instructions at <https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html>.
-
-You can install Elasticsearch in version 7 (more maintained) or version 8.
-
-Here’s how to install ES8:
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
@@ -314,10 +431,10 @@ If you are using a proxy:
 #### Pod index creation
 
 > To use elasticsearch 7, you must:
-> Add ES_VERSION = 7 to your settings file and modify the elasticsearch client version in the `requirements.txt` file.
+> Add `ES_VERSION = 7` to your settings file and modify the elasticsearch client version in the `requirements.txt` file.
 >
 > ```conf
-> elasticsearch==8.9.0
+> elasticsearch==7.17.9
 > ```
 >
 > And don't forget to relaunch
@@ -416,129 +533,6 @@ Run the root script to create the migration files, then run them to create the e
 ```sh
 (django_pod4) pod@Pod:~/django_projects/podv4$ make createDB
 ```
-
-`settings_local.py` configuration file
-Create a local configuration file in the `pod/custom` folder.
-
-This file contains only those variables whose default values you wish to change. Below is an example of a file with the main variables to be modified: database connection, a custom CSS file, pod green theme, remove nl language, etc. You can adapt this file and paste it into your own.
-
-```sh
-(django_pod4) pod@Pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
-```
-
-```py
-"""Django local settings for pod_project.Django version: 3.2"""
-
-##
-# The secret key for your particular Django installation.
-#
-# This is used to provide cryptographic signing,
-# and should be set to a unique, unpredictable value.
-#
-# Django will not start if this is not set.
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key
-#
-# SECURITY WARNING: keep the secret key used in production secret!
-# You can visit https://djecrety.ir/ to get it
-SECRET_KEY = 'A_CHANGER'
-
-##
-# DEBUG mode activation
-#
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#debug
-#
-# SECURITY WARNING: MUST be set to False when deploying into production.
-DEBUG = True
-
-##
-# A list of strings representing the host/domain names
-# that this Django site is allowed to serve.
-#
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['localhost']
-
-##
-# A tuple that lists people who get code error notifications
-#   when DEBUG=False and a view raises an exception.
-#
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-ADMINS
-#
-ADMINS = (
-    ('Name', 'adminmail@univ.fr'),
-)
-
-
-##
-# Internationalization and localization.
-#
-# https://docs.djangoproject.com/fr/3.2/topics/i18n/
-# https://github.com/django/django/blob/master/django/conf/global_settings.py
-LANGUAGES = (
-    ('fr', 'Français'),
-    ('en', 'English')
-)
-
-#Hide Users in navbar
-HIDE_USER_TAB = True
-# Hide Types tab in navbar
-HIDE_TYPES_TAB = True
-# Hide Tags
-HIDE_TAGS = True
-# Hide disciplines in navbar
-HIDE_DISCIPLINES = True
-
-##
-# eMail settings
-#
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#email-port
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#default-from-email
-#
-#   username: EMAIL_HOST_USER
-#   password: EMAIL_HOST_PASSWORD
-#
-EMAIL_HOST = 'smtp.univ.fr'
-EMAIL_PORT = 25
-DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
-
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-SERVER_EMAIL
-SERVER_EMAIL = 'noreply@univ.fr'
-
-##
-# THIRD PARTY APPS OPTIONNAL
-#
-USE_PODFILE = True
-
-##
-# TEMPLATE Settings
-#
-TEMPLATE_VISIBLE_SETTINGS = {
-    'TITLE_SITE': 'Lille.Pod',
-    'TITLE_ETB': 'Université de Lille',
-    'LOGO_SITE': 'img/logoPod.svg',
-    'LOGO_COMPACT_SITE': 'img/logoPod.svg',
-    'LOGO_ETB': 'img/logo_etb.svg',
-    'LOGO_PLAYER': 'img/logoPod.svg',
-    'FOOTER_TEXT': (
-        '42, rue Paul Duez',
-        '59000 Lille - France',
-        ('<a href="https://goo.gl/maps/AZnyBK4hHaM2"'
-            ' target="_blank">Google maps</a>')
-    ),
-    'LINK_PLAYER': 'http://www.univ-lille.fr',
-    'CSS_OVERRIDE': 'custom/mycss.css',
-    'PRE_HEADER_TEMPLATE': ''
-}
-
-##
-# A string representing the time zone for this installation. (default=UTC)
-#
-# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-TIME_ZONE = 'Europe/Paris'
-```
-
-All available variables can be found on this page:
-[LINK TODO] Platform configuration
 
 ### SuperUser
 

@@ -94,7 +94,7 @@ Vous pouvez enfin récupérer les sources
 > (django_pod4) pod@pod:~/django_projects$ git config --global http.proxy http://PROXY:PORT
 > ```
 
-La récupération des sources de la v4 se fait via cette commande : `git clone https://github.com/EsupPortail/Esup-Pod.git podv4`
+La récupération des sources de la v4 se fait via cette commande :
 
 ```sh
 (django_pod4) pod@pod:~/django_projects$ git clone https://github.com/EsupPortail/Esup-Pod.git podv4
@@ -106,6 +106,124 @@ Réception d’objets: 100% (4578/4578), 4.40 MiB | 3.88 MiB/s, fait.
 Résolution des deltas: 100% (3076/3076), fait.
 
 (django_pod4) pod@pod:~/django_projects$ cd podv4/
+```
+
+### Fichier de configuration `settings_local.py`
+
+Vous devez créer un fichier de configuration local dans le dossier `pod/custom`.
+
+Indiquez dans ce fichier uniquement les variables dont vous voulez changer la valeur par défaut. Vous trouverez ci-dessous un exemple de fichier avec les principales variables à modifier : connexion à la base de données, un fichier CSS custom, retirer le langage nl, etc. Vous pouvez adapter ce fichier et le coller dans le vôtre.
+
+```sh
+(django_pod4) pod@Pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
+```
+
+```py
+"""Django local settings for pod_project.Django version : 4.2"""
+
+##
+# The secret key for your particular Django installation.
+#
+# This is used to provide cryptographic signing,
+# and should be set to a unique, unpredictable value.
+#
+# Django will not start if this is not set.
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#secret-key
+#
+# SECURITY WARNING: keep the secret key used in production secret!
+# You can visit https://djecrety.ir/ to get it
+SECRET_KEY = "A_CHANGER"
+
+##
+# DEBUG mode activation
+#
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#debug
+#
+# SECURITY WARNING: MUST be set to False when deploying into production.
+DEBUG = True
+
+##
+# A list of strings representing the host/domain names
+# that this Django site is allowed to serve.
+#
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = ["localhost"]
+
+##
+# A tuple that lists people who get code error notifications
+#   when DEBUG=False and a view raises an exception.
+#
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-ADMINS
+#
+ADMINS = (
+    ("Name", "adminmail@univ.fr"),
+)
+
+##
+# Internationalization and localization.
+#
+# https://docs.djangoproject.com/fr/4.2/topics/i18n/
+# https://github.com/django/django/blob/master/django/conf/global_settings.py
+LANGUAGES = (
+    ("fr", "Français"),
+    ("en", "English")
+)
+
+# Hide Users in navbar
+HIDE_USER_TAB = True
+# Hide Types tab in navbar
+HIDE_TYPES_TAB = True
+# Hide Tags
+HIDE_TAGS = True
+# Hide disciplines in navbar
+HIDE_DISCIPLINES = True
+
+##
+# eMail settings
+#
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#email-host
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#email-port
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#default-from-email
+#
+#   username: EMAIL_HOST_USER
+#   password: EMAIL_HOST_PASSWORD
+#
+EMAIL_HOST = "smtp.univ.fr"
+EMAIL_PORT = 25
+DEFAULT_FROM_EMAIL = "noreply@univ.fr"
+
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-SERVER_EMAIL
+SERVER_EMAIL = "noreply@univ.fr"
+
+##
+# THIRD PARTY APPS OPTIONNAL
+#
+USE_PODFILE = True
+
+##
+# TEMPLATE Settings
+#
+TEMPLATE_VISIBLE_SETTINGS = {
+    "TITLE_SITE": "Esup.Pod",
+    "TITLE_ETB": "Consortium Esup",
+    "LOGO_SITE": "img/logoPod.svg",
+    "LOGO_COMPACT_SITE": "img/logoPod.svg",
+    "LOGO_ETB": "img/logo_etb.svg",
+    "LOGO_PLAYER": "img/logoPod.svg",
+    "FOOTER_TEXT": (
+        "La Maison des Universités 103 Bvd St Michel",
+        "75005  PARIS - France"
+    ),
+    "LINK_PLAYER": "http://www.univ.fr",
+    "CSS_OVERRIDE": "custom/mycss.css",
+    "PRE_HEADER_TEMPLATE": ""
+}
+
+##
+# A string representing the time zone for this installation. (default=UTC)
+#
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+TIME_ZONE = "Europe/Paris"
 ```
 
 ## Applications tierces
@@ -310,7 +428,7 @@ Si vous êtes derrière un proxy :
 #### Création de l’index Pod
 
 > Si vous utilisez elasticsearch 7, vous devez :
-> Définir `ES_VERSION = 7` dans votre fichier `settings` et modifier la version du client elesticsearch dans votre fichier `requirements.txt`.
+> Définir `ES_VERSION = 7` dans votre fichier `settings` et modifier la version du client elasticsearch dans votre fichier `requirements.txt`.
 >
 > ```conf
 > elasticsearch==7.17.9
@@ -411,126 +529,6 @@ Lancez le script présent à la racine afin de créer les fichiers de migration,
 
 ```sh
 (django_pod4) pod@Pod:~/django_projects/podv4$ make createDB
-```
-
-Fichier de configuration `settings_local.py`
-Vous devez créer un fichier de configuration local dans le dossier `pod/custom`.
-
-Vous mettez dans ce fichier uniquement les variables dont vous voulez changer la valeur par défaut. Vous trouverez ci-dessous un exemple de fichier avec les principales variables à modifier : connexion à la base de données, un fichier CSS custom, le thème green de pod, retirer le langage nl, etc. Vous pouvez adapter ce fichier et le coller dans le vôtre.
-
-```sh
-(django_pod4) pod@Pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
-```
-
-```py
-"""Django local settings for pod_project.Django version : 3.2"""
-
-##
-# The secret key for your particular Django installation.
-#
-# This is used to provide cryptographic signing,
-# and should be set to a unique, unpredictable value.
-#
-# Django will not start if this is not set.
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key
-#
-# SECURITY WARNING: keep the secret key used in production secret!
-# You can visit https://djecrety.ir/ to get it
-SECRET_KEY = "A_CHANGER"
-
-##
-# DEBUG mode activation
-#
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#debug
-#
-# SECURITY WARNING: MUST be set to False when deploying into production.
-DEBUG = True
-
-##
-# A list of strings representing the host/domain names
-# that this Django site is allowed to serve.
-#
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["localhost"]
-
-##
-# A tuple that lists people who get code error notifications
-#   when DEBUG=False and a view raises an exception.
-#
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-ADMINS
-#
-ADMINS = (
-    ("Name", "adminmail@univ.fr"),
-)
-
-
-##
-# Internationalization and localization.
-#
-# https://docs.djangoproject.com/fr/3.2/topics/i18n/
-# https://github.com/django/django/blob/master/django/conf/global_settings.py
-LANGUAGES = (
-    ("fr", "Français"),
-    ("en", "English")
-)
-
-#Hide Users in navbar
-HIDE_USER_TAB = True
-# Hide Types tab in navbar
-HIDE_TYPES_TAB = True
-# Hide Tags
-HIDE_TAGS = True
-# Hide disciplines in navbar
-HIDE_DISCIPLINES = True
-
-##
-# eMail settings
-#
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#email-port
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#default-from-email
-#
-#   username: EMAIL_HOST_USER
-#   password: EMAIL_HOST_PASSWORD
-#
-EMAIL_HOST = "smtp.univ.fr"
-EMAIL_PORT = 25
-DEFAULT_FROM_EMAIL = "noreply@univ.fr"
-
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-SERVER_EMAIL
-SERVER_EMAIL = "noreply@univ.fr"
-
-##
-# THIRD PARTY APPS OPTIONNAL
-#
-USE_PODFILE = True
-
-##
-# TEMPLATE Settings
-#
-TEMPLATE_VISIBLE_SETTINGS = {
-    "TITLE_SITE": "Lille.Pod",
-    "TITLE_ETB": "Université de Lille",
-    "LOGO_SITE": "img/logoPod.svg",
-    "LOGO_COMPACT_SITE": "img/logoPod.svg",
-    "LOGO_ETB": "img/logo_etb.svg",
-    "LOGO_PLAYER": "img/logoPod.svg",
-    "FOOTER_TEXT": (
-        "42, rue Paul Duez",
-        "59000 Lille - France",
-        ("<a href=\"https://goo.gl/maps/AZnyBK4hHaM2\""
-            " target=\"_blank\">Google maps</a>")
-    ),
-    "LINK_PLAYER": "http://www.univ-lille.fr",
-    "CSS_OVERRIDE": "custom/mycss.css",
-    "PRE_HEADER_TEMPLATE": ""
-}
-
-##
-# A string representing the time zone for this installation. (default=UTC)
-#
-# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-TIME_ZONE = "Europe/Paris"
 ```
 
 Vous trouverez l’ensemble des variables disponibles sur cette page :

@@ -11,10 +11,16 @@ pre.highlight{
   padding: 1rem;
 }
 
-.highlight .nv {
-  color: #027F88;
+.highlight .nv,
+.highlight .na {
+  color: #027F88
 }
 
-.highlight .nb{
+.highlight .nb {
   color: #0B7AAC;
+}
+
+/* Commentaires */
+.highlight .c1 {
+  color: #73736B;
 }
