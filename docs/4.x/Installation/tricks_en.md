@@ -10,13 +10,17 @@ lang: en
 
 During tests or migration, you may encounter an error like this:
 
-> django.db.migrations.exceptions.NodeNotFoundError: Migration main.0001_initial dependencies reference nonexistent parent node ('flatpages', '0001_initial')
+```log
+django.db.migrations.exceptions.NodeNotFoundError: Migration main.0001_initial dependencies reference nonexistent parent node ('flatpages', '0001_initial')
+```
 
 You should know that the management of static pages is done via a Django flatpages application.
 Since this application is not specific to Esup-Pod, its installation directory is located directly in the virtual environment.
 Typically, _depending on your version of Python and your virtual environment_, it is:
 
-> /home/pod/.virtualenvs/django_pod4/lib/python3.11/site-packages/django/contrib/flatpages
+```sh
+/home/pod/.virtualenvs/django_pod4/lib/python3.11/site-packages/django/contrib/flatpages
+```
 
 ### Case 1: Issue during the initial creation of the database
 

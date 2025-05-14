@@ -8,15 +8,19 @@ lang: fr
 
 ## Astuce #1 : problème en lien avec les flatpages
 
-Lors de tests ou d'une migration, il est possible d'avoir une erreur de ce type :
+Lors de tests ou d'une migration, il est possible d'avoir une erreur de ce type :
 
-> django.db.migrations.exceptions.NodeNotFoundError: Migration main.0001_initial dependencies reference nonexistent parent node ('flatpages', '0001_initial')
+```log
+django.db.migrations.exceptions.NodeNotFoundError: Migration main.0001_initial dependencies reference nonexistent parent node ('flatpages', '0001_initial')
+```
 
 Il faut savoir que la gestion des pages statiques se réalise via une application Django flatpages.
 Cette application n'étant pas spécifique à Esup-Pod, son répertoire d'installation est situé directement dans l'environnement virtuel.
 Typiquement, _selon votre version de Python et votre environnement virtuel_, il s'agit de :
 
-> /home/pod/.virtualenvs/django_pod4/lib/python3.11/site-packages/django/contrib/flatpages
+```sh
+/home/pod/.virtualenvs/django_pod4/lib/python3.11/site-packages/django/contrib/flatpages
+```
 
 ### Cas 1 : problème lors de la création initiale de la base de données
 

@@ -14,6 +14,7 @@ lang: fr
 
 * [Installation standard](install_standalone_fr)
 * [Installation via Docker](install_docker_fr)
+* [Mise en production](production-mode_fr)
 
 ### Fonctionnalités optionnelles
 
