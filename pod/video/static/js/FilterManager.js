@@ -449,8 +449,8 @@ class FilterManager {
 }
 
 /**
- * Converts a string into a slug usable in an ID.
- * @param {string} str
+ * Converts a string into a slug usable in an ID, allowing hyphens.
+ * @param {string} nom
  * @returns {string}
  */
 function slugify(nom) {
@@ -458,8 +458,10 @@ function slugify(nom) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
-    .replace(/\s+/g, '')
-    .replace(/[^a-z0-9]/g, '');
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
 /**

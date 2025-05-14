@@ -13,6 +13,9 @@ let disciplineList = [];
 /** @type {FilterItem[]} */
 let tagList = [];
 
+/** @type {FilterItem[]} */
+let categoryList = [];
+
 /**
  * Array of filter configurations to be used in FilterManager.
  * Each object defines how a specific filter behaves and how items are displayed and matched.
@@ -49,6 +52,13 @@ const filtersConfig = [
     searchCallback: term => searchInList(tagList, term),
     itemLabel: tag => tag.label,
     itemKey: tag => tag.value,
+  },
+  {
+    name: gettext("Catégorie"),
+    param: "categories",
+    searchCallback: term => searchInList(categoryList, term),
+    itemLabel: category => category.label,
+    itemKey: category => category.value,
   }
 ];
 
@@ -109,7 +119,6 @@ async function initFilters() {
     });
     if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
     const data = await res.json();
-
     if (data.TYPES) {
       typeList = data.TYPES.map(type => ({
         label: gettext(type.title),
@@ -128,10 +137,27 @@ async function initFilters() {
         value: tag.slug
       }));
     }
+    if (data.CATEGORY) {
+      categoryList = Object.keys(data.CATEGORY).map(slug => ({
+        label: gettext(cleanLabel(slug)),
+        value: slug
+      }));
+    }
   } catch (err) {
     console.error(`Error in filter.js (initFilters function) while fetching or processing data: ${err.message || err}\nStack trace: ${err.stack || 'No stack trace available'}`);
   }
 }
 
-
 initFilters();
+
+/**
+ * Cleans a slug by removing the prefix before the first hyphen
+ * and capitalizing the first letter of the remaining string.
+ * @param {string} slug
+ * @returns {string}
+ */
+function cleanLabel(slug) {
+  const partie = slug.split('-').slice(1).join('-');
+  if (!partie) return '';
+  return partie.charAt(0).toUpperCase() + partie.slice(1);
+}

@@ -127,6 +127,7 @@ function refreshVideosSearch() {
   document.getElementById("videos_list").textContent = "";
   showLoader(videosListLoader, true);
   let url = getUrlForRefresh();
+  console.log(url);
   // Async GET request wth parameters by fetch method
   fetch(url, {
     method: "GET",
@@ -204,13 +205,13 @@ function getUrlForRefresh() {
     urlParams.set("display_mode", displayMode);
   }
 
-  urlParams.delete("categories");
-  document.querySelectorAll(".categories-list-item.active").forEach((cat) => {
-    const slug = cat.firstElementChild?.dataset.slug;
-    if (slug) {
-      urlParams.append("categories", slug);
-    }
-  });
+  // urlParams.delete("categories");
+  // document.querySelectorAll(".categories-list-item.active").forEach((cat) => {
+  //   const slug = cat.firstElementChild?.dataset.slug;
+  //   if (slug) {
+  //     urlParams.append("categories", slug);
+  //   }
+  // });
 
   urlParams.delete("page");
   return `${baseUrl}?${urlParams.toString()}`;

@@ -3041,7 +3041,7 @@ def get_videos_for_category(request, videos_list: dict, category=None):
 
 @login_required(redirect_field_name="referrer")
 @ajax_required
-def get_categories_list(request):
+def get_render_categories_list(request):
     """
     Get actual categories list for filter_aside elements.
 
@@ -3057,24 +3057,26 @@ def get_categories_list(request):
     return render(request, "videos/filter_aside_categories_list.html", data_context)
 
 
+def get_categories_for_user(user):
+    """Pure fonction de données sans dépendance à request"""
+    categories = Category.objects.prefetch_related("video").filter(owner=user)
+    return {
+        cat.slug: list(cat.video.all().values_list("slug", flat=True))
+        for cat in categories
+    }
+
+def get_videos_categories_list(request):
+    """Fonction utilisée ailleurs dans le backend"""
+    if not request.user.is_authenticated:
+        # Option : raise une exception ou retourner une valeur neutre
+        return {}  # ou raise PermissionDenied
+    return get_categories_for_user(request.user)
+
+
 @login_required(redirect_field_name="referrer")
 def get_json_videos_categories(request):
-    """
-    Get categories with associated videos in json object.
-
-    Args:
-        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
-
-    Returns:
-        Json object with category slug as key and array of video(s) as value.
-    """
-    categories = Category.objects.prefetch_related("video").filter(owner=request.user)
-    all_categories_videos = {}
-    for cat in categories:
-        videos = list(cat.video.all().values_list("slug", flat=True))
-        all_categories_videos[cat.slug] = videos
-    return json.dumps(all_categories_videos)
-
+    """Vue protégée qui renvoie les catégories en JSON"""
+    return JsonResponse(get_categories_for_user(request.user))
 
 @login_required(redirect_field_name="referrer")
 @ajax_required
