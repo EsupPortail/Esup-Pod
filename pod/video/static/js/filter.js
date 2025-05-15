@@ -148,7 +148,8 @@ async function initFilters() {
   }
 }
 
-initFilters();
+document.addEventListener("DOMContentLoaded",initFilters);
+document.getElementById("filtersBox").addEventListener("click", initFilters);
 
 /**
  * Cleans a slug by removing the prefix before the first hyphen

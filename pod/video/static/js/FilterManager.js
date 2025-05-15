@@ -215,12 +215,6 @@ class FilterManager {
       const filter = this.filters[param];
       const selectedKeys = JSON.parse(sessionStorage.getItem(`filter-${param}`)) || [];
       let allItems = [];
-      try {
-        allItems = await filter.searchCallback('');
-      } catch (err) {
-        console.error(`Error in filter.js (initializeFilters function). Failed to load initial items for filter "${param}": ${err.message || err}`);
-        continue;
-      }
       this.currentResults[param] = allItems;
       selectedKeys.forEach(slugKey => {
         const match = allItems.find(item => slugify(filter.itemKey(item)) === slugKey);
