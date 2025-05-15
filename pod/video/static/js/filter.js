@@ -148,7 +148,6 @@ async function initFilters() {
   }
 }
 
-document.addEventListener("DOMContentLoaded",initFilters);
 document.getElementById("filtersBox").addEventListener("click", initFilters);
 
 /**

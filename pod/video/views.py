@@ -3043,13 +3043,19 @@ def get_videos_for_category(request, videos_list: dict, category=None):
 @ajax_required
 def get_render_categories_list(request):
     """
-    Get actual categories list for filter_aside elements.
+    Authenticated AJAX view that returns a partial HTML render of the list of video
+    categories owned by the current user.
+
+    This function is typically used to dynamically inject the list of categories
+    into the frontend UI (e.g., sidebar filters).
+
+    Template rendered: 'videos/filter_aside_categories_list.html'
 
     Args:
-        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        request (HttpRequest): The HTTP request object from the client.
 
     Returns:
-        Template of categories list item in filter aside.
+        HttpResponse: Rendered HTML containing the user's categories.
     """
     data_context = {}
     categories = Category.objects.prefetch_related("video").filter(owner=request.user)
@@ -3058,27 +3064,68 @@ def get_render_categories_list(request):
 
 
 def get_categories_for_user(user):
-    """Pure fonction de données sans dépendance à request"""
+    """
+    Returns a dictionary mapping each category slug to a list of associated video slugs
+    for a given user.
+
+    This function is backend-only and is used to extract user-specific video-category
+    associations in a simple serializable format.
+
+    Args:
+        user (User): The Django user whose categories are queried.
+
+    Returns:
+        dict[str, list[str]]: A dictionary where each key is a category slug,
+                              and the value is a list of video slugs.
+    """
     categories = Category.objects.prefetch_related("video").filter(owner=user)
     return {
         cat.slug: list(cat.video.all().values_list("slug", flat=True))
         for cat in categories
     }
 
+
 def get_videos_categories_list(request):
-    """Fonction utilisée ailleurs dans le backend"""
+    """
+    Returns a dictionary of video categories for the currently authenticated user.
+    If the user is not authenticated, an empty dictionary is returned.
+
+    This function is intended for backend logic or as part of an API response.
+
+    Args:
+        request (HttpRequest): The HTTP request containing the user session.
+
+    Returns:
+        dict[str, list[str]]: A dictionary mapping category slugs to lists of
+                              associated video slugs, or an empty dict if not logged in.
+    """
     if not request.user.is_authenticated:
-        # Option : raise une exception ou retourner une valeur neutre
-        return {}  # ou raise PermissionDenied
+        return {}
     return get_categories_for_user(request.user)
 
 
 @login_required(redirect_field_name="referrer")
 def get_json_videos_categories(request):
-    """Vue protégée qui renvoie les catégories en JSON"""
+    """
+    Authenticated view that returns the user's video categories as a JSON-formatted string.
+
+    This function retrieves the categories associated with the authenticated user,
+    and serializes the result (a dict of category slugs to video slugs) into JSON.
+
+    Note:
+        This view returns a raw JSON string (not a JsonResponse), which may not be
+        compatible with standard AJAX expectations unless manually handled.
+
+    Args:
+        request (HttpRequest): The HTTP request containing the authenticated user.
+
+    Returns:
+        str: A JSON string mapping category slugs to lists of video slugs.
+    """
     data = get_categories_for_user(request.user)
     json_data = json.dumps(data)
     return json_data
+
 
 @login_required(redirect_field_name="referrer")
 @ajax_required

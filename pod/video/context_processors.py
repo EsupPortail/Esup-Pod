@@ -5,7 +5,6 @@ from django.conf import settings as django_settings
 from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.models import Video
-from pod.video.models import Category
 
 from pod.video.utils import get_tag_cloud
 

@@ -238,8 +238,8 @@ class VideoViewSet(viewsets.ModelViewSet):
         )
         return Response(serializer.data)
 
-
     def available_filters(request):
+
         from pod.video.views import get_videos_categories_list
 
         """API endpoint to return all available video filters """

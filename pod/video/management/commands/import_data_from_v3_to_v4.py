@@ -402,7 +402,7 @@ class Command(BaseCommand):
             if number_videos_processed % 100 == 0:
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"   * Processing, for tags, of the batch of videos {number_videos_processed-100}-{number_videos_processed} achieved"
+                        f"   * Processing, for tags, of the batch of videos {number_videos_processed - 100}-{number_videos_processed} achieved"
                     )
                 )
             self.add_tags_to_video(row["video_id"], row["tag_name"])
