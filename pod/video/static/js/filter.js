@@ -114,31 +114,31 @@ filterManager.initializeFilters();
  */
 async function initFilters() {
   try {
-    const res = await fetch(urlVideoStatistics, {
+    const res = await fetch(urlAvailableFilters, {
       headers: { "X-Requested-With": "XMLHttpRequest" }
     });
     if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
     const data = await res.json();
-    if (data.TYPES) {
-      typeList = data.TYPES.map(type => ({
+    if (data.types) {
+      typeList = data.types.map(type => ({
         label: gettext(type.title),
         value: type.slug
       }));
     }
-    if (data.DISCIPLINES) {
-      disciplineList = data.DISCIPLINES.map(discipline => ({
+    if (data.disciplines) {
+      disciplineList = data.disciplines.map(discipline => ({
         label: gettext(discipline.title),
         value: discipline.slug
       }));
     }
-    if (data.TAGS) {
-      tagList = data.TAGS.map(tag => ({
+    if (data.tags) {
+      tagList = data.tags.map(tag => ({
         label: gettext(tag.name),
         value: tag.slug
       }));
     }
-    if (data.CATEGORY) {
-      categoryList = Object.keys(data.CATEGORY).map(slug => ({
+    if (data.category) {
+      categoryList = Object.keys(data.category).map(slug => ({
         label: gettext(cleanLabel(slug)),
         value: slug
       }));

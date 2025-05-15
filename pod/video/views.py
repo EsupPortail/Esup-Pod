@@ -62,7 +62,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
-from pod.video.rest_views import ChannelSerializer
+from pod.video.rest_views import ChannelSerializer, VideoViewSet
 
 from .utils import (
     pagination_data,
@@ -70,7 +70,7 @@ from .utils import (
     change_owner,
     get_id_from_request,
 )
-from .context_processors import get_available_videos, context_video_data
+from .context_processors import get_available_videos
 from .utils import sort_videos_list
 
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -3076,7 +3076,9 @@ def get_videos_categories_list(request):
 @login_required(redirect_field_name="referrer")
 def get_json_videos_categories(request):
     """Vue protégée qui renvoie les catégories en JSON"""
-    return JsonResponse(get_categories_for_user(request.user))
+    data = get_categories_for_user(request.user)
+    json_data = json.dumps(data)
+    return json_data
 
 @login_required(redirect_field_name="referrer")
 @ajax_required
@@ -3544,21 +3546,17 @@ def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> Json
     return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
 
 
-def retrieve_cached_video_statistics(request):
+def retrieve_available_filters(request):
     """
-    Retrieves cached video statistics and serializes them into JSON.
-
-    This function calls `context_video_data(request)` to fetch video data (types, disciplines,
-    video count, and total duration) stored in the cache. If some data is missing from the cache,
-    it is calculated and cached for future use.
+    Retrieves cached video filters and serializes them into JSON.
 
     Args:
         request (HttpRequest): The HTTP request object used to obtain video data.
 
     Returns:
-        JsonResponse: A JSON response containing the cached video data.
+        JsonResponse: A JSON response containing the  video data.
     """
-    video_data = context_video_data(request)
+    video_data = VideoViewSet.available_filters(request)
 
     def serialize_data(data):
         """
@@ -3575,7 +3573,6 @@ def retrieve_cached_video_statistics(request):
         return data
 
     serialized_data = {key: serialize_data(value) for key, value in video_data.items()}
-
     return JsonResponse(serialized_data)
 
 

@@ -127,7 +127,6 @@ function refreshVideosSearch() {
   document.getElementById("videos_list").textContent = "";
   showLoader(videosListLoader, true);
   let url = getUrlForRefresh();
-  console.log(url);
   // Async GET request wth parameters by fetch method
   fetch(url, {
     method: "GET",

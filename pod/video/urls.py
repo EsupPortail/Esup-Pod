@@ -36,7 +36,7 @@ from .views import (
     vote_get,
     vote_post,
     video_edit_access_tokens,
-    retrieve_cached_video_statistics,
+    retrieve_available_filters,
 )
 
 
@@ -91,7 +91,7 @@ urlpatterns = [
     ),
     path("dashboard/", dashboard, name="dashboard"),
     path("bulk_update/", bulk_update, name="bulk_update"),
-    path('api/video-statistics/', retrieve_cached_video_statistics, name='video_statistics'),
+    path('filters/', retrieve_available_filters, name='dashboard-filters'),
 ]
 # COMPLETION
 urlpatterns += [
