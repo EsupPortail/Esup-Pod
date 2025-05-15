@@ -15,7 +15,7 @@ from .views import (
     video_count,
     video_marker,
     video_version,
-    get_categories_list,
+    get_render_categories_list,
     add_category,
     edit_category,
     delete_category,
@@ -36,6 +36,7 @@ from .views import (
     vote_get,
     vote_post,
     video_edit_access_tokens,
+    retrieve_available_filters,
 )
 
 
@@ -90,6 +91,7 @@ urlpatterns = [
     ),
     path("dashboard/", dashboard, name="dashboard"),
     path("bulk_update/", bulk_update, name="bulk_update"),
+    path('filters/', retrieve_available_filters, name='dashboard-filters'),
 ]
 # COMPLETION
 urlpatterns += [
@@ -124,7 +126,7 @@ if getattr(settings, "OEMBED", False):
 # VIDEO CATEGORY
 if getattr(settings, "USER_VIDEO_CATEGORY", False):
     urlpatterns += [
-        path("categories/", get_categories_list, name="get_categories_list"),
+        path("categories/", get_render_categories_list, name="get_render_categories_list"),
         path("category/add/", add_category, name="add_category"),
         re_path(
             r"^category/edit/(?P<c_slug>[\-\d\w]+)/$", edit_category, name="edit_category"

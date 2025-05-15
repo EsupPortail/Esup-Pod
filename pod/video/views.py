@@ -62,7 +62,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
-from pod.video.rest_views import ChannelSerializer
+from pod.video.rest_views import ChannelSerializer, VideoViewSet
 
 from .utils import (
     pagination_data,
@@ -578,15 +578,19 @@ def dashboard(request):
 
     if USER_VIDEO_CATEGORY:
         categories = Category.objects.prefetch_related("video").filter(owner=request.user)
-        if len(request.GET.getlist("categories")):
-            categories_checked = request.GET.getlist("categories")
-            categories_videos = categories.filter(
-                slug__in=categories_checked
-            ).values_list("video", flat=True)
-            videos_list = videos_list.filter(pk__in=categories_videos)
+        selected_categories = request.GET.getlist("categories")
 
-        data_context["categories"] = categories
-        data_context["all_categories_videos"] = get_json_videos_categories(request)
+        if selected_categories:
+            category_video_ids = categories.filter(
+                slug__in=selected_categories
+            ).values_list("video", flat=True)
+
+            videos_list = videos_list.filter(pk__in=category_video_ids)
+
+        data_context.update({
+            "categories": categories,
+            "all_categories_videos": get_json_videos_categories(request),
+        })
 
     page = request.GET.get("page", 1)
     full_path = ""
@@ -603,6 +607,16 @@ def dashboard(request):
     sorted_videos_list = sort_videos_list(
         filtered_videos_list, sort_field, sort_direction
     )
+
+    error_message = {}
+    if not filtered_videos_list:
+        error_message["main"] = "No videos matched your filters. Please try adjusting them."
+        error_message["types"] = ""
+
+    if not videos_list:
+        error_message["main"] = "You haven't uploaded any videos yet."
+        error_message["types"] = "Click on “Add a video” to start populating your dashboard."
+
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
 
@@ -634,6 +648,7 @@ def dashboard(request):
                 "count_videos": count_videos,
                 "cursus_codes": CURSUS_CODES,
                 "owner_filter": owner_filter,
+                "error_message": error_message
             },
         )
 
@@ -675,6 +690,7 @@ def dashboard(request):
     data_context["video_list_template"] = template
     data_context["page_title"] = _("Dashboard")
     data_context["listTheme"] = json.dumps(get_list_theme_in_form(form))
+    data_context["error_message"] = error_message
 
     return render(request, "videos/dashboard.html", data_context)
 
@@ -888,6 +904,11 @@ def get_paginated_videos(paginator, page):
 
 def get_filtered_videos_list(request, videos_list):
     """Return filtered videos list by get parameters."""
+    title_query = request.GET.get("title")
+    if title_query:
+        videos_list = videos_list.filter(
+            Q(title_en__icontains=title_query) | Q(title_fr__icontains=title_query)
+        )
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
     if request.GET.getlist("discipline"):
@@ -3020,15 +3041,21 @@ def get_videos_for_category(request, videos_list: dict, category=None):
 
 @login_required(redirect_field_name="referrer")
 @ajax_required
-def get_categories_list(request):
+def get_render_categories_list(request):
     """
-    Get actual categories list for filter_aside elements.
+    Authenticated AJAX view that returns a partial HTML render of the list of video
+    categories owned by the current user.
+
+    This function is typically used to dynamically inject the list of categories
+    into the frontend UI (e.g., sidebar filters).
+
+    Template rendered: 'videos/filter_aside_categories_list.html'
 
     Args:
-        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        request (HttpRequest): The HTTP request object from the client.
 
     Returns:
-        Template of categories list item in filter aside.
+        HttpResponse: Rendered HTML containing the user's categories.
     """
     data_context = {}
     categories = Category.objects.prefetch_related("video").filter(owner=request.user)
@@ -3036,23 +3063,68 @@ def get_categories_list(request):
     return render(request, "videos/filter_aside_categories_list.html", data_context)
 
 
+def get_categories_for_user(user):
+    """
+    Returns a dictionary mapping each category slug to a list of associated video slugs
+    for a given user.
+
+    This function is backend-only and is used to extract user-specific video-category
+    associations in a simple serializable format.
+
+    Args:
+        user (User): The Django user whose categories are queried.
+
+    Returns:
+        dict[str, list[str]]: A dictionary where each key is a category slug,
+                              and the value is a list of video slugs.
+    """
+    categories = Category.objects.prefetch_related("video").filter(owner=user)
+    return {
+        cat.slug: list(cat.video.all().values_list("slug", flat=True))
+        for cat in categories
+    }
+
+
+def get_videos_categories_list(request):
+    """
+    Returns a dictionary of video categories for the currently authenticated user.
+    If the user is not authenticated, an empty dictionary is returned.
+
+    This function is intended for backend logic or as part of an API response.
+
+    Args:
+        request (HttpRequest): The HTTP request containing the user session.
+
+    Returns:
+        dict[str, list[str]]: A dictionary mapping category slugs to lists of
+                              associated video slugs, or an empty dict if not logged in.
+    """
+    if not request.user.is_authenticated:
+        return {}
+    return get_categories_for_user(request.user)
+
+
 @login_required(redirect_field_name="referrer")
 def get_json_videos_categories(request):
     """
-    Get categories with associated videos in json object.
+    Authenticated view that returns the user's video categories as a JSON-formatted string.
+
+    This function retrieves the categories associated with the authenticated user,
+    and serializes the result (a dict of category slugs to video slugs) into JSON.
+
+    Note:
+        This view returns a raw JSON string (not a JsonResponse), which may not be
+        compatible with standard AJAX expectations unless manually handled.
 
     Args:
-        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        request (HttpRequest): The HTTP request containing the authenticated user.
 
     Returns:
-        Json object with category slug as key and array of video(s) as value.
+        str: A JSON string mapping category slugs to lists of video slugs.
     """
-    categories = Category.objects.prefetch_related("video").filter(owner=request.user)
-    all_categories_videos = {}
-    for cat in categories:
-        videos = list(cat.video.all().values_list("slug", flat=True))
-        all_categories_videos[cat.slug] = videos
-    return json.dumps(all_categories_videos)
+    data = get_categories_for_user(request.user)
+    json_data = json.dumps(data)
+    return json_data
 
 
 @login_required(redirect_field_name="referrer")
@@ -3519,6 +3591,36 @@ def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> Json
     """
     channel = Channel.objects.get(slug=slug)
     return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
+
+
+def retrieve_available_filters(request):
+    """
+    Retrieves cached video filters and serializes them into JSON.
+
+    Args:
+        request (HttpRequest): The HTTP request object used to obtain video data.
+
+    Returns:
+        JsonResponse: A JSON response containing the  video data.
+    """
+    video_data = VideoViewSet.available_filters(request)
+
+    def serialize_data(data):
+        """
+        Serializes Django objects (e.g., QuerySets) into simple data types for JSON response.
+
+        Args:
+            data (any): The data to serialize (can be a QuerySet or a simple object).
+
+        Returns:
+            list or any: The serialized data as a list (for QuerySets) or unchanged if it's a simple object.
+        """
+        if isinstance(data, QuerySet):
+            return list(data.values())
+        return data
+
+    serialized_data = {key: serialize_data(value) for key, value in video_data.items()}
+    return JsonResponse(serialized_data)
 
 
 """
