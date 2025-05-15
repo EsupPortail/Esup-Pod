@@ -314,3 +314,7 @@ PWA_SERVICE_WORKER_PATH = os.path.join(
     "serviceworker.js",
 )
 PWA_APP_DEBUG_MODE = locals().get("DEBUG", False)
+
+# Social share
+
+SOCIAL_SHARE = ["X", "FACEBOOK", "LINKEDIN", "BLUESKY"]
