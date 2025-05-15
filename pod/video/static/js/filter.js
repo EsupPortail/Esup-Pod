@@ -148,6 +148,10 @@ async function initFilters() {
   }
 }
 
+/**
+ * Detects a click event on the filters dropdown container.
+ * When any filter dropdown inside is clicked, triggers the `initFilters` function.
+ */
 document.getElementById("filtersBox").addEventListener("click", initFilters);
 
 /**

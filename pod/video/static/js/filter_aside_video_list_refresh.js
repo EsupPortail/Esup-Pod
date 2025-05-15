@@ -106,10 +106,19 @@ if (sortDirectionLabel) {
  * Handles the search form submission.
  * Prevents default behavior, gets the title input,
  */
-document.getElementById("searchForm").addEventListener("submit", function (e) {
+function handleSearch(e) {
   e.preventDefault();
   refreshVideosSearch();
+};
+
+document.getElementById("searchForm").addEventListener("submit",handleSearch);
+
+document.getElementById("titleSearchBtn")?.addEventListener("click",handleSearch);
+
+document.getElementById("titlebox")?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") handleSearch(e);
 });
+
 
 /**
  * Retrieves the current value entered in the video title search input field.
@@ -117,7 +126,10 @@ document.getElementById("searchForm").addEventListener("submit", function (e) {
  * @returns {string} The current value of the search input with ID "titlebox".
  */
 function getSearchValue() {
-  return document.getElementById("titlebox").value;
+  const input = document.getElementById("titlebox");
+  if (!input) return "";
+  const value = input.value.trim();
+  return value;
 }
 /*
  * Async request to refresh view with filtered and sorted video list
