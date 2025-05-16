@@ -260,3 +260,12 @@ Puis lancez la commande suivante pour vérifier que ça fonctionne :
 ```sh
 sudo logrotate -d /etc/logrotate.d/esup-pod
 ```
+
+## Personalisations
+
+Certaines pages ont été automatiquement pré-générées pour vous faciliter la tâche, mais il reste certaines informations à y compléter.
+Il y a notamment les pages suivantes :
+
+* `Accueil`: <https://pod.univ.fr/admin/flatpages/flatpage/1/change/>
+* `/accessibility/`: <https://pod.univ.fr/admin/flatpages/flatpage/3/change/>
+* `/legal_notice/`: <https://pod.univ.fr/admin/flatpages/flatpage/2/change/>
