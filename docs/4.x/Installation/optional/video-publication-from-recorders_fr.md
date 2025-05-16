@@ -38,44 +38,44 @@ Par exemple, voici à quoi ressemble cet écran de paramétrage pour un enregist
 
 ### Paramétrage côté Pod
 
-Côté Pod, il est également nécessaire de réaliser le paramétrage via :
+Côté Pod, il est également nécessaire de réaliser le paramétrage via :
 
 #### Le fichier de configuration custom/settings_local.py
 
-Plusieurs propriétés sont indispensables pour le paramétrage dans le fichier de configuration :
+Plusieurs propriétés sont indispensables pour le paramétrage dans le fichier de configuration :
 
-* ALLOW_MANUAL_RECORDING_CLAIMING : si True, un lien apparaîtra dans le menu du profil de l’utilisateur autorisé permettant de s’attribuer un enregistrement.
+* ALLOW_MANUAL_RECORDING_CLAIMING : si True, un lien apparaîtra dans le menu du profil de l’utilisateur autorisé permettant de s’attribuer un enregistrement.
 
-* ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER : si True, le gestionnaire de l’enregistreur pourra choisir un propriétaire de l’enregistrement.
+* ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER : si True, le gestionnaire de l’enregistreur pourra choisir un propriétaire de l’enregistrement.
 
-* DEFAULT_RECORDER_ID : ajoute un enregistreur par défaut à un enregistrement non identifiable (mauvais chemin dans le dépôt FTP).
+* DEFAULT_RECORDER_ID : ajoute un enregistreur par défaut à un enregistrement non identifiable (mauvais chemin dans le dépôt FTP).
     > ⚠️ Utile si le plugin Recorder était déjà utilisé auparavant.
 
-* DEFAULT_RECORDER_PATH : répertoire - de base - utilisé par les enregistreurs pour publier les vidéos
+* DEFAULT_RECORDER_PATH : répertoire - de base - utilisé par les enregistreurs pour publier les vidéos
     > ⚠️ Chaque enregistreur devra publier les vidéos dans un sous-répertoire de ce répertoire de base (cf. explications ci-dessous).
 
-* DEFAULT_RECORDER_TYPE_ID : identifiant du type de vidéo par défaut (si non spécifié).
-    > ⚠️ Il s’agit du type de la vidéo (_Exemple : _3 pour Colloque/conférence,_ 4 pour Cours..._) et non du type d’enregistrement.
+* DEFAULT_RECORDER_TYPE_ID : identifiant du type de vidéo par défaut (si non spécifié).
+    > ⚠️ Il s’agit du type de la vidéo (_Exemple : _3 pour Colloque/conférence,_ 4 pour Cours..._) et non du type d’enregistrement.
 
-* DEFAULT_RECORDER_USER_ID : identifiant du propriétaire par défaut (si non spécifié) des enregistrements déposés.
+* DEFAULT_RECORDER_USER_ID : identifiant du propriétaire par défaut (si non spécifié) des enregistrements déposés.
 
-* RECORDER_SKIP_FIRST_IMAGE : permet de ne pas prendre en compte la 1° image lors du traitement d’une fichier d’enregistrement de type AudioVideoCast.
+* RECORDER_SKIP_FIRST_IMAGE : permet de ne pas prendre en compte la 1° image lors du traitement d’une fichier d’enregistrement de type AudioVideoCast.
 
-* RECORDER_TYPE : type d’enregistrement de la vidéo publiée par l’enregistreur.
-    A l’heure actuelle, 2 types existent et sont traités :
+* RECORDER_TYPE : type d’enregistrement de la vidéo publiée par l’enregistreur.
+    A l’heure actuelle, 2 types existent et sont traités :
 
     1. video = l’enregistreur envoie un fichier vidéo, au format MP4, sur le serveur FTP,
     2. audiovideocast = l’enregistreur envoie un fichier compressé, au format ZIP (normé et contenant la vidéo, un fichier SMIL, des images...), sur le serveur FTP
 
-* USE_RECORD_PREVIEW : utiliser ou non la prévisualisation des fichiers sources des enregistrements dans l’interface de revendication.
+* USE_RECORD_PREVIEW : utiliser ou non la prévisualisation des fichiers sources des enregistrements dans l’interface de revendication.
 
-* SELF_REQUESTS_PROXIES : Défini les proxy http et https qui seront utilisés pour la requête sur l’application en elle même. Par défaut on force la non utilisation de proxy
+* SELF_REQUESTS_PROXIES : Défini les proxy http et https qui seront utilisés pour la requête sur l’application en elle même. Par défaut on force la non utilisation de proxy
 
-* ALLOW_INSECURE_REQUESTS : Autoriser la requête sur l’application en elle même sans vérifier le certificat SSL
+* ALLOW_INSECURE_REQUESTS : Autoriser la requête sur l’application en elle même sans vérifier le certificat SSL
 
-* BASE_URL : sera nécessaire au job CRON (ci-dessous) afin d’envoyer la notification
+* BASE_URL : sera nécessaire au job CRON (ci-dessous) afin d’envoyer la notification
 
-Exemple de paramétrage :
+Exemple de paramétrage :
 
 ```py
 ##

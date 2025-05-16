@@ -16,11 +16,13 @@ sudo mysql_secure_installation
 ```
 
 > Attention il faut modifier le fichier `/etc/mysql/mariadb.conf.d/50-server.cnf`
-
-```conf
-character-set-server  = utf8
-collation-server      = utf8_general_ci
-```
+>
+> ```conf
+> character-set-server  = utf8
+> collation-server      = utf8_general_ci
+> ```
+>
+{: .alert .alert-warning}
 
 Vous devez ensuite créer une nouvelle base de données.
 
@@ -44,11 +46,11 @@ Le timezone doit être enregistré dans le moteur SQL (Mysql ou mariadb) (à fai
 mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql --database=mysql
 ```
 
-Pour utiliser la base de données MySQL/MariaDB sur le serveur frontal (ou sur un serveur distant), il faut installer le moteur MySql/Python :
+Pour utiliser la base de données MySQL/MariaDB sur le serveur frontal (ou sur un serveur distant), il faut installer le moteur MySql/Python :
 
 ```sh
 $ sudo apt install pkg-config python3-dev default-libmysqlclient-dev
-(django_pod) pod@pod:/usr/local/django_projects/podv3$ pip3 install mysqlclient
+(django_pod) pod@pod:/usr/local/django_projects/pod$ pip3 install mysqlclient
 ```
 
 ### Optimisation de MariaDB
@@ -64,10 +66,10 @@ max_allowed_packet=256M
 
 ## Configuration d’Esup-Pod
 
-Si ce n’est pas encore fait, vous devez spécifier la configuration de votre base de données dans votre fichier de configuration settings_local.py :
+Si ce n’est pas encore fait, vous devez spécifier la configuration de votre base de données dans votre fichier de configuration settings_local.py :
 
 ```sh
-(django_pod) pod@pod:/usr/local/django_projects/podv3$ vim pod/custom/settings_local.py
+(django_pod) pod@pod:/usr/local/django_projects/pod$ vim pod/custom/settings_local.py
 ```
 
 ```py
@@ -87,16 +89,16 @@ DATABASES = {
 }
 ```
 
-Il faut ensuite relancer le script présent à la racine afin de créer les fichiers de migration, puis de les lancer afin de créer la base de données :
+Il faut ensuite relancer le script présent à la racine afin de créer les fichiers de migration, puis de les lancer afin de créer la base de données :
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/podv3$ make createDB
+(django_pod) pod@Pod:~/django_projects/pod$ make createDB
 ```
 
 > Ne pas oublier de créer à nouveau un superutilisateur
 >
 > ```sh
-> (django_pod) pod@Pod:~/django_projects/podv3$ python manage.py createsuperuser
+> (django_pod) pod@Pod:~/django_projects/pod$ python manage.py createsuperuser
 > ```
 >
 {: .alert .alert-warning}
@@ -110,13 +112,13 @@ Pour plus de renseignement, d'explication que la documentation ci-dessous, voir 
 Commencer par installer le serveur NGINX
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/podv3$ sudo apt install nginx
+(django_pod) pod@Pod:~/django_projects/pod$ sudo apt install nginx
 ```
 
 Ensuite, modifier le fichier /etc/nginx/sites-enabled/default
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/podv3$ sudo vim /etc/nginx/sites-enabled/default
+(django_pod) pod@Pod:~/django_projects/pod$ sudo vim /etc/nginx/sites-enabled/default
 ```
 
 Rechercher la ligne ci-dessous à modifier
@@ -131,29 +133,29 @@ server { listen 80 default_server;
 Installer les addons de NGINX
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/podv3$ sudo apt install nginx-extras
+(django_pod) pod@Pod:~/django_projects/pod$ sudo apt install nginx-extras
 ```
 
-Rajouter les lignes ci-dessous dans le fichier de configuration de nginx :
+Rajouter les lignes ci-dessous dans le fichier de configuration de nginx :
 
 `/etc/nginx/nginx.conf`
 
 ```conf
 http {
 [...]
-     # Pod Progress Bar : reserve 1MB under the name 'uploads' to track uploads
+     # Pod Progress Bar : reserve 1MB under the name 'uploads' to track uploads
  upload_progress uploadp 1m;
 [...]
 }
 ```
 
-Il faut ensuite spécifier le host pour le serveur web (changer si besoin les paramètres dans le fichier pod_nginx.conf) :
+Il faut ensuite spécifier le host pour le serveur web (changer si besoin les paramètres dans le fichier pod_nginx.conf) :
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/podv3$ cp pod_nginx.conf pod/custom/.
-(django_pod) pod@Pod:~/django_projects/podv3$ vim pod/custom/pod_nginx.conf
-(django_pod) pod@Pod:~/django_projects/podv3$ sudo ln -s /usr/local/django_projects/podv3/pod/custom/pod_nginx.conf /etc/nginx/sites-enabled/pod_nginx.conf
-(django_pod) pod@Pod:~/django_projects/podv3$ sudo /etc/init.d/nginx restart
+(django_pod) pod@Pod:~/django_projects/pod$ cp pod_nginx.conf pod/custom/.
+(django_pod) pod@Pod:~/django_projects/pod$ vim pod/custom/pod_nginx.conf
+(django_pod) pod@Pod:~/django_projects/pod$ sudo ln -s /usr/local/django_projects/podv3/pod/custom/pod_nginx.conf /etc/nginx/sites-enabled/pod_nginx.conf
+(django_pod) pod@Pod:~/django_projects/pod$ sudo /etc/init.d/nginx restart
 ```
 
 ### UWSGI
@@ -163,29 +165,29 @@ Un fichier de configuration est fourni pour faciliter l’usage d'UWSGI.
 Installer le module uwsgi
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/podv3$ sudo pip3 install uwsgi
+(django_pod) pod@Pod:~/django_projects/pod$ sudo pip3 install uwsgi
 ```
 
-Dupliquez le fichier modèle et éditez-le pour personnaliser les paramètres :
+Dupliquez le fichier modèle et éditez-le pour personnaliser les paramètres :
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/podv3$ cp pod_uwsgi.ini pod/custom/.
-(django_pod) pod@Pod:~/django_projects/podv3$ vim pod/custom/pod_uwsgi.ini
-(django_pod) pod@Pod:~/django_projects/podv3$ sudo uwsgi --ini pod/custom/pod_uwsgi.ini --enable-threads --daemonize /usr/local/django_projects/podv3/pod/log/uwsgi-pod.log --uid pod --gid www-data --pidfile /tmp/pod.pid
+(django_pod) pod@Pod:~/django_projects/pod$ cp pod_uwsgi.ini pod/custom/.
+(django_pod) pod@Pod:~/django_projects/pod$ vim pod/custom/pod_uwsgi.ini
+(django_pod) pod@Pod:~/django_projects/pod$ sudo uwsgi --ini pod/custom/pod_uwsgi.ini --enable-threads --daemonize /usr/local/django_projects/podv3/pod/log/uwsgi-pod.log --uid pod --gid www-data --pidfile /tmp/pod.pid
 ...
 [uWSGI] getting INI configuration from pod/custom/pod_uwsgi.ini
-(django_pod) pod@Pod:~/django_projects/podv3$
+(django_pod) pod@Pod:~/django_projects/pod$
 ```
 
-Pour lancer le service UWSGI au démarrage de la machine :
+Pour lancer le service UWSGI au démarrage de la machine :
 
 Créer un fichier uwsgi-pod.service
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/podv3$ sudo vim /etc/systemd/system/uwsgi-pod.service
+(django_pod) pod@Pod:~/django_projects/pod$ sudo vim /etc/systemd/system/uwsgi-pod.service
 ```
 
-Y ajouter :
+Y ajouter :
 
 ```conf
 [Unit]
@@ -212,27 +214,27 @@ WantedBy=multi-user.target
 Il faut ensuite activer le service
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/podv3$ sudo systemctl enable uwsgi-pod
+(django_pod) pod@Pod:~/django_projects/pod$ sudo systemctl enable uwsgi-pod
 ```
 
-Pour le lancer ou l’arrêter :
+Pour le lancer ou l’arrêter :
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/podv3$ sudo systemctl stop uwsgi-pod
-(django_pod) pod@Pod:~/django_projects/podv3$ sudo systemctl restart uwsgi-pod
+(django_pod) pod@Pod:~/django_projects/pod$ sudo systemctl stop uwsgi-pod
+(django_pod) pod@Pod:~/django_projects/pod$ sudo systemctl restart uwsgi-pod
 ```
 
 > Attention, il faut penser à collecter les fichiers "statics" pour qu'ils soient servis par le frontal web NGINX.
 >
 > ```sh
-> (django_pod) pod@Pod:~/django_projects/podv3$ python manage.py collectstatic
+> (django_pod) pod@Pod:~/django_projects/pod$ python manage.py collectstatic
 > ```
 >
 {: .alert .alert-warning}
 
 ## Log Rotate
 
-Les fichiers de log peuvent vite grossir sur un serveur en production. Aussi, je vous invite à mettre en place un système de log rotate pour les logs d'Esup-Pod :
+Les fichiers de log peuvent vite grossir sur un serveur en production. Aussi, je vous invite à mettre en place un système de log rotate pour les logs d'Esup-Pod :
 
 `/etc/logrotate.d/esup-pod`
 
@@ -253,7 +255,7 @@ Les fichiers de log peuvent vite grossir sur un serveur en production. Aussi, je
 }
 ```
 
-Puis lancez la commande suivante pour vérifier que ça fonctionne :
+Puis lancez la commande suivante pour vérifier que ça fonctionne :
 
 ```sh
 sudo logrotate -d /etc/logrotate.d/esup-pod
