@@ -45,12 +45,12 @@ msgid "Enter video title"
 msgstr "Saisissez le titre de la vidéo"
 
 #: pod/video/templates/videos/filter_aside_dashboard.html
-msgid "Use the search field to find a video by its title in your dashboard."
-msgstr "Utilisez le champ de recherche pour retrouver une vidéo par son titre dans votre tableau de bord."
+msgid "Use the search field to find a video by its title in your dashboard"
+msgstr "Utilisez le champ de recherche pour retrouver une vidéo par son titre dans votre tableau de bord"
 
 #: pod/video/templates/videos/filter_aside_dashboard.html
-msgid "Search for a video by title from your dashboard."
-msgstr "Recherchez une vidéo par titre depuis votre tableau de bord."
+msgid "Search for a video by title from your dashboard"
+msgstr "Recherchez une vidéo par titre depuis votre tableau de bord"
 
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
