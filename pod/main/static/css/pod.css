@@ -1136,6 +1136,10 @@ main {
   color: var(--pod-font-color);
 }
 
+.pod-params-button-test {
+  padding: 0 !important;
+}
+
 .pod-params-button {
   color: var(--pod-font-color);
   font-size: 1.4rem;
