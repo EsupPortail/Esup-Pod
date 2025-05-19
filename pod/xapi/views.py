@@ -25,7 +25,7 @@ actor = AccountActorField(
     },
 )
 To test with celery:
-(django_pod3) pod@pod:/.../podv3$
+(django_pod) pod@pod:/.../podv4$
     celery -A pod.xapi.xapi_tasks -l INFO -Q xapi --concurrency 1 -n xapi
 """
 XAPI_ANONYMIZE_ACTOR = getattr(settings, "XAPI_ANONYMIZE_ACTOR", True)
