@@ -260,7 +260,7 @@
 {% block more_script %}
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
   <script>
-    var listTheme = {{listTheme | safe}};
+    const listTheme = {{listTheme | safe}};
   </script>
   {{ form.media.js }}
   <script defer src="{% static 'js/video_edit.js' %}?ver={{VERSION}}"></script>

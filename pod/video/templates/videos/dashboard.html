@@ -159,13 +159,13 @@
     const urlUpdateVideos = "{% url 'video:bulk_update' %}";
     const videosListLoader = document.getElementById("videosListLoader");
     const videosListContainerId = "videos_list";
-    var displayMode = "{{ display_mode }}";
-    var csrftoken = "{{ csrf_token }}";
-    var page = 1;
-    var nextPage = false;
-    var ownerFilter = {{ owner_filter|yesno:'true,false'}};
-    var formFieldsets = {{ fieldsets_dashboard|safe }};
-    var listTheme = {{listTheme | safe}};
+    let displayMode = "{{ display_mode }}";
+    const csrftoken = "{{ csrf_token }}";
+    let page = 1;
+    let nextPage = false;
+    const ownerFilter = {{ owner_filter|yesno:'true,false'}};
+    const formFieldsets = {{ fieldsets_dashboard|safe }};
+    const listTheme = {{listTheme | safe}};
 
     {% if videos.has_next %}
       page = parseInt("{{videos.next_page_number}}", 10);
@@ -196,7 +196,7 @@
       {% url 'video:video_delete' slug="abcd" as video_delete %}
       const DELETE_URL = `{{ video_delete|slice:"-5" }}`;
       const VIDEO_URL = `${window.location.origin}/video/`;
-      var all_categories_videos = JSON.parse("{{ all_categories_videos|escapejs }}");
+      let all_categories_videos = JSON.parse("{{ all_categories_videos|escapejs }}");
     </script>
     <script src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
   {% else %}
