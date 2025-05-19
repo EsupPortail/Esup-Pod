@@ -186,7 +186,7 @@ function refreshVideosSearch() {
     });
 }
 
-// Fonction pour récupérer l'URL pour rafraîchir la page avec les filtres appliqués
+// Function to get the URL to refresh the page with applied filters
 function getUrlForRefresh() {
   const baseUrl = window.location.pathname;
   const urlParams = new URLSearchParams(window.location.search);
@@ -234,7 +234,7 @@ function getUrlForRefresh() {
   return fullUrl;
 }
 
-// Fonction pour activer ou désactiver les cases à cocher pendant le chargement
+// Function to enable or disable checkboxes during loading
 function disabledInputs(value) {
   document.querySelectorAll("input.form-check-input").forEach(cb => cb.disabled = value);
 }
