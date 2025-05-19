@@ -7,6 +7,8 @@
   {% if use_category %}
     <link rel="stylesheet" href="{% static 'css/video_category.css' %}?ver={{VERSION}}">
   {% endif %}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
+  {{form.media.css}}
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>{% endblock %}
@@ -235,9 +237,11 @@
 {% endblock page_aside %}
 
 {% block more_script %}
+
 <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
-{{form.media}}
+<script src="{% static 'admin/js/vendor/select2/select2.full.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'django_select2/django_select2.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'admin/js/vendor/select2/i18n/' %}{{ LANGUAGE_CODE }}.js?ver={{VERSION}}"></script>
 <script>
   const urlVideos = "{% url 'video:dashboard' %}";
   const urlUpdateVideos = "{% url 'video:bulk_update' %}";

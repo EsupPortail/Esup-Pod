@@ -10291,7 +10291,7 @@ msgid ""
 "Add a token, then copy the direct link or link to insert. You can name your "
 "token to identify it."
 msgstr ""
-"Ajouter un jeton, puis copier le lien direct ou le lien à insérer. Vous "
+"Ajoutez un jeton, puis copiez le lien direct ou le lien à insérer. Vous "
 "pouvez nommer votre jeton pour l’identifier."
 
 #: pod/video/templates/videos/video_access_tokens.html
