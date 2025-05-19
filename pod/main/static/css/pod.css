@@ -746,10 +746,6 @@ div.card a img {
   bottom: 0;
 }
 
-#resetFilters {
-  margin-left: auto !important;
-}
-
 #filterType div.collapse:not(.show),
 #filterDiscipline div.collapse:not(.show),
 #filterCursus div.collapse:not(.show),

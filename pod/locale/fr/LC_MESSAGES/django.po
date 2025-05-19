@@ -44,6 +44,14 @@ msgstr "Rechercher par titre"
 msgid "Enter video title"
 msgstr "Saisissez le titre de la vidéo"
 
+#: pod/video/templates/videos/filter_aside_dashboard.html
+msgid "Use the search field to find a video by its title in your dashboard."
+msgstr "Utilisez le champ de recherche pour retrouver une vidéo par son titre dans votre tableau de bord."
+
+#: pod/video/templates/videos/filter_aside_dashboard.html
+msgid "Search for a video by title from your dashboard."
+msgstr "Recherchez une vidéo par titre depuis votre tableau de bord."
+
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
 msgstr "Amélioration par l’intelligence artificielle"
@@ -9894,11 +9902,12 @@ msgstr "Mode d’affichage par liste"
 
 #: pod/video/templates/videos/filter_aside.html
 msgid ""
-"The videos on the left are automatically sorted according to the filters "
-"selected below. Check options to adjust results."
+"You can create categories and link them to your videos. Then, use the search "
+"field below to easily find a category so you can edit or delete it."
 msgstr ""
-"Les vidéos à gauche sont automatiquement triées en fonction des filtres "
-"sélectionnés ci-dessous. Vérifiez les options pour ajuster les résultats."
+"Vous pouvez créer des catégories et les associer à vos vidéos. "
+"Ensuite, utilisez le champ de recherche ci-dessous pour retrouver "
+"facilement une catégorie afin de la modifier ou la supprimer."
 
 #: pod/video/templates/videos/filter_aside.html
 msgid "Filter by user"

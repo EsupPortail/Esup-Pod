@@ -120,7 +120,7 @@ function toggleSelectedVideo(item, container) {
       );
     }
   }
-  toggleBulkUpdateVisibility();
+  toggleBulkUpdateVisibility(container);
   if (container === videosListContainerId) {
     replaceSelectedCountVideos(container);
   }
@@ -132,14 +132,17 @@ function toggleSelectedVideo(item, container) {
  * Shows the container and related elements if videos are selected and count > 0.
  * Otherwise, hides the container and restores default display.
  */
-function toggleBulkUpdateVisibility() {
+function toggleBulkUpdateVisibility(container) {
   try {
     const c = document.getElementById('bulk-update-container');
     const hr = document.getElementById('bottom-ht-filtre');
     const skipLink = document.getElementById('skipToBulk');
     const countVideos = parseInt(document.getElementById("videos_list")?.dataset.countvideos || "0", 10);
     const hasSelection = hasSelectedVideos();
-    const shouldShow = hasSelection && countVideos > 0;
+
+    let shouldShow = false;
+    if(container) shouldShow = hasSelection && countVideos > 0 && container === 'videos_list';
+    else shouldShow = hasSelection && countVideos > 0;
 
     if (!c || !hr || !skipLink) {
       throw new Error(JSON.stringify({
@@ -251,7 +254,7 @@ function selectAllVideos(container) {
       elt.checked = true;
     });
     setListSelectedVideos(container);
-    toggleBulkUpdateVisibility();
+    toggleBulkUpdateVisibility(container);
     replaceSelectedCountVideos(container);
 
   } catch (error) {

@@ -23,16 +23,22 @@
   <hr role="separator">
 
   <!-- Filtres -->
-<div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-  <div id="filtersBox" class="d-flex  align-items-center flex-wrap gap-2"></div>
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div id="filtersBox" class="d-flex  align-items-center flex-wrap gap-2"></div>
 
-  <div class="input-group flex-shrink-0 w-25">
-    <input type="text" name="title" id="titlebox" class="form-control" placeholder="Saisissez le titre de la vidéo" autocomplete="off">
-    <button type="button" id="titleSearchBtn" class="btn btn-primary">
-      Rechercher
-    </button>
+    <div class="input-group flex-shrink-0 w-25">
+      <input type="text" name="title" id="titlebox" class="form-control" placeholder="{% trans 'Enter video title' %}" autocomplete="off">
+      <button type="button"
+        id="titleSearchBtn"
+        class="btn btn-primary"
+        aria-label="{% trans 'Use the search field to find a video by its title in your dashboard.' %}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+        data-bs-original-title="{% trans 'Search for a video by title from your dashboard.' %}">
+        {% trans 'Search' %}
+      </button>
+    </div>
   </div>
-</div>
 
   <div id="activeFilters" class="d-flex align-items-center flex-wrap gap-2">
     <div id="selectedTags" class="d-flex flex-wrap gap-2"></div>

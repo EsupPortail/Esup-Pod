@@ -119,29 +119,45 @@ async function initFilters() {
     });
     if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
     const data = await res.json();
-    if (data.types) {
-      typeList = data.types.map(type => ({
-        label: gettext(type.title),
-        value: type.slug
-      }));
+    try {
+      if (data.types) {
+        typeList = data.types.map(type => ({
+          label: gettext(type.title),
+          value: type.title
+        }));
+      }
+    } catch (err) {
+      console.warn("Failed to initialize typeList:", err, "DATA:", data);
     }
-    if (data.disciplines) {
-      disciplineList = data.disciplines.map(discipline => ({
-        label: gettext(discipline.title),
-        value: discipline.slug
-      }));
+    try {
+      if (data.disciplines) {
+        disciplineList = data.disciplines.map(discipline => ({
+          label: gettext(discipline.title),
+          value: discipline.title
+        }));
+      }
+    } catch (err) {
+      console.warn("Failed to initialize disciplineList:", err, "DATA:", data);
     }
-    if (data.tags) {
-      tagList = data.tags.map(tag => ({
-        label: gettext(tag.name),
-        value: tag.slug
-      }));
+    try {
+      if (data.tags) {
+        tagList = data.tags.map(tag => ({
+          label: gettext(tag.name),
+          value: tag.slug
+        }));
+      }
+    } catch (err) {
+      console.warn("Failed to initialize tagList:", err, "DATA:", data);
     }
-    if (data.category) {
-      categoryList = Object.keys(data.category).map(slug => ({
-        label: gettext(cleanLabel(slug)),
-        value: slug
-      }));
+    try {
+      if (data.category) {
+        categoryList = Object.keys(data.category).map(slug => ({
+          label: gettext(cleanLabel(slug)),
+          value: slug
+        }));
+      }
+    } catch (err) {
+      console.warn("Failed to initialize categoryList:", err, "DATA:", data);
     }
   } catch (err) {
     console.error(`Error in filter.js (initFilters function) while fetching or processing data: ${err.message || err}\nStack trace: ${err.stack || 'No stack trace available'}`);
@@ -153,6 +169,7 @@ async function initFilters() {
  * When any filter dropdown inside is clicked, triggers the `initFilters` function.
  */
 document.getElementById("filtersBox").addEventListener("click", initFilters);
+document.addEventListener("DOMContentLoaded",initFilters);
 
 /**
  * Cleans a slug by removing the prefix before the first hyphen

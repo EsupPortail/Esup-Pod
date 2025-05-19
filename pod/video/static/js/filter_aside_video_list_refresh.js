@@ -215,17 +215,23 @@ function getUrlForRefresh() {
   if (typeof displayMode !== "undefined") {
     urlParams.set("display_mode", displayMode);
   }
-
-  // urlParams.delete("categories");
-  // document.querySelectorAll(".categories-list-item.active").forEach((cat) => {
-  //   const slug = cat.firstElementChild?.dataset.slug;
-  //   if (slug) {
-  //     urlParams.append("categories", slug);
-  //   }
-  // });
-
   urlParams.delete("page");
-  return `${baseUrl}?${urlParams.toString()}`;
+
+  const fullUrl = `${baseUrl}?${urlParams.toString()}`;
+  if (fullUrl.includes("undefined")) {
+    const debugParams = [];
+    for (const [key, value] of urlParams.entries()) {
+      if (value === "undefined") {
+        debugParams.push(key);
+      }
+    }
+    console.warn(
+      "getUrlForRefresh(): Detected 'undefined' in URL. Affected parameters:",
+      debugParams
+    );
+  }
+
+  return fullUrl;
 }
 
 // Fonction pour activer ou désactiver les cases à cocher pendant le chargement
