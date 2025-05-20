@@ -110,8 +110,9 @@
             data-bs-toggle="tooltip"
             data-bs-placement="bottom"
             data-bs-auto-close="outside"
-            title="{% trans 'Toggle configuration panel' %}">
-            <span>{% trans "Preferences" %}</span>
+            aria-label = "{% trans 'Toggle Display settings panel' %}"
+            title="{% trans 'Toggle Display settings panel' %}">
+            <span>{% trans "Display settings" %}</span>
           </button>
           <ul id="preferences-dropdown" class="dropdown-menu dropdown-menu-end pod-params-dropdown" aria-labelledby="pod-param-dropdown">
             {% if HIDE_LANGUAGE_SELECTOR == False %}
@@ -125,6 +126,7 @@
                       id="pod-lang-select"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
+                      aria-label="{% trans 'Change display language' %}"
                       title="{% trans 'Change display language' %}">
                       {{ LANGUAGE_CODE }}
                     </button>
@@ -149,7 +151,7 @@
               </li>
             {% endif %}
             {% if DARKMODE_ENABLED %}
-              <li class="pod-navbar__theme-switch__item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses darker colors' %}">
+              <li class="pod-navbar__theme-switch__item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses darker colors' %}" aria-label="{% trans 'Uses darker colors' %}">
                 <label for="checkbox-darkmode">
                   <span class="form-label">{% trans 'Dark mode' %}</span>
                   <span class="pod-switch">
@@ -163,7 +165,7 @@
               </li>
             {% endif %}
             {% if DYSLEXIAMODE_ENABLED %}
-              <li class="pod-navbar__theme-switch__item" id="dyslexia-switch-wrapper" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses a font more suitable for people with dyslexia.' %}">
+              <li class="pod-navbar__theme-switch__item" id="dyslexia-switch-wrapper" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses a font more suitable for people with dyslexia.' %}" aria-label="{% trans 'Uses a font more suitable for people with dyslexia.' %}">
                 <label for="checkbox-dyslexia">
                   <span class="form-label">{% trans 'Dyslexia mode' %}</span>
                   <span class="pod-switch">
@@ -176,7 +178,7 @@
                 </label>
               </li>
             {% endif %}
-            <li class="pod-navbar__theme-switch__item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Automatically display subtitles at the start of each video play. If no subtitle corresponds to the current language, the first available will be selected.' %}">
+            <li class="pod-navbar__theme-switch__item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Automatically display subtitles at the start of each video play. If no subtitle corresponds to the current language, the first available will be selected.' %}" aria-label="{% trans 'Automatically display subtitles at the start of each video play. If no subtitle corresponds to the current language, the first available will be selected.' %}">
               <label for="checkbox-subtitle">
                 <span class="form-label">{% trans 'Auto show subtitles' %}</span>
                 <span class="pod-switch">
