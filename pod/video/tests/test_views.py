@@ -1,9 +1,10 @@
-"""Esup-Pod tests for Video views."""
+"""Esup-Pod tests for Video views.
+*  run with 'python manage.py test pod.video.tests.test_views'
+"""
 
 from django.conf import settings
 from django.http import JsonResponse
-from django.test import Client
-from django.test import TestCase, override_settings, TransactionTestCase
+from django.test import Client, TestCase, override_settings, TransactionTestCase
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
@@ -290,7 +291,7 @@ class ChannelEditTestView(TestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
+        self.assertContains(response, _("The changes have been saved."))
         c = Channel.objects.get(title="ChannelTest1")
         self.assertEqual(c.description, "<p>bl</p>")
         print("   --->  test_channel_edit_post_request of ChannelEditTestView: OK!")
@@ -851,11 +852,14 @@ class VideoEditTestView(TestCase):
         print(" --->  test_video_edit_get_request of VideoEditTestView: OK!")
 
     def test_video_edit_post_request(self) -> None:
+
+        # Force user login
         self.client = Client()
-        video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        # modify one
+
+        # Modify some attrs (title, desc...) on Video1
+        video = Video.objects.get(title="Video1")
         url = reverse("video:video_edit", kwargs={"slug": video.slug})
         response = self.client.post(
             url,
@@ -870,10 +874,12 @@ class VideoEditTestView(TestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
-
+        self.assertContains(response, _("The changes have been saved."))
+        # Check that the newly modified video has proper attrs
         v = Video.objects.get(title="VideoTest1")
         self.assertEqual(v.description, "<p>bl</p>")
+
+        # Replace video source file
         video_file = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
         )
@@ -891,11 +897,12 @@ class VideoEditTestView(TestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
+        self.assertContains(response, _("The changes have been saved."))
         v = Video.objects.get(title="VideoTest1")
         p = re.compile(r"^videos/([\d\w]+)/file([_\d\w]*).mp4$")
         self.assertRegex(v.video.name, p)
-        # new one
+
+        # Create a new video
         video_file = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
         )
@@ -913,8 +920,8 @@ class VideoEditTestView(TestCase):
             },
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
-        v = Video.objects.get(title="VideoTest2")
+        self.assertContains(response, _("The changes have been saved."))
+
         # Additional owners
         self.client = Client()
         video = Video.objects.get(title="VideoWithAdditionalOwners")
@@ -936,7 +943,7 @@ class VideoEditTestView(TestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
+        self.assertContains(response, _("The changes have been saved."))
 
         v = Video.objects.get(title="VideoTest3")
         self.assertEqual(v.description, "<p>bl</p>")
@@ -958,7 +965,7 @@ class VideoEditTestView(TestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
+        self.assertContains(response, _("The changes have been saved."))
         print("   --->  test_video_edit_post_request of VideoEditTestView: OK!")
 
 
