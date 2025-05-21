@@ -29,8 +29,8 @@ msgid "No videos matched your filters. Please try adjusting them."
 msgstr "Aucune vidéo ne correspond à vos filtres. Veuillez les modifier."
 
 #: pod/video/views.py
-msgid "You haven't uploaded any videos yet. Click ”Add a new video” to get started."
-msgstr "Vous n'avez pas encore mis en ligne de vidéos. Cliquez sur « Ajouter une nouvelle vidéo » pour commencer."
+msgid "You haven’t uploaded any videos yet."
+msgstr "Vous n’avez pas encore mis en ligne de vidéos."
 
 #: pod/video/templates/videos/filter_aside_dashboard.html
 msgid "Dashboard Filters"
