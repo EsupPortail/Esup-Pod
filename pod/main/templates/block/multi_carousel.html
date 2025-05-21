@@ -89,15 +89,15 @@
     {% endif %}
   </div>
   <script type="text/javascript">
-    const container = document.querySelector("#carousel_{{ container.slug }}_{{ uniq_id }}");
-    let items = container.querySelectorAll('.carousel .carousel-item')
-    items.forEach((el) => {
+    const container_{{ uniq_id }} = document.querySelector("#carousel_{{ container.slug }}_{{ uniq_id }}");
+    const items_{{ uniq_id }} = container_{{ uniq_id }}.querySelectorAll('.carousel .carousel-item')
+    items_{{ uniq_id }}.forEach((el) => {
         const minPerSlide = {{ multi_carousel_nb_card }};
         let next = el.nextElementSibling;
         for (var i=1; i<minPerSlide; i++) {
             if (!next) {
                 // wrap carousel by using first child
-            	next = items[0]
+            	next = items_{{ uniq_id }}[0]
           	}
             let cloneChild = next.cloneNode(true)
             el.appendChild(cloneChild.children[0])
