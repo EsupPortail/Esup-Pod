@@ -812,14 +812,14 @@ var send_form_data = async function (
     typeof callbackSuccess === "function"
       ? callbackSuccess
       : function ($data) {
-        return $data;
-      };
+          return $data;
+        };
   callbackFail =
     typeof callbackFail === "function"
       ? callbackFail
       : function (xhr) {
-        console.log(xhr);
-      };
+          console.log(xhr);
+        };
 
   // console.log("send_form_data. fct=" + fct);
   method = method || "post";
@@ -1472,7 +1472,6 @@ function decodeString(str) {
   );
   return str;
 }
-
 
 /**
  * Save all themes in tab_initial array,
