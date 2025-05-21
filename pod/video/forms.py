@@ -700,13 +700,12 @@ class VideoForm(forms.ModelForm):
 
         # Reorder select2/i18n js to be sure it is after all JS
         # (prevent a bug when the form contains admin select 2 + tagulous select2)
-        new_js = [x for x in default_media._js if "admin/js/vendor/select2/i18n/" not in x]
+        new_js = [
+            x for x in default_media._js if "admin/js/vendor/select2/i18n/" not in x
+        ]
         new_js += [x for x in default_media._js if "admin/js/vendor/select2/i18n/" in x]
 
-        media = Media(
-            css=default_media._css,
-            js=new_js
-        )
+        media = Media(css=default_media._css, js=new_js)
 
         return media
 
