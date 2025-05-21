@@ -8,7 +8,7 @@ from tempfile import NamedTemporaryFile
 import logging
 import os
 import requests
-from ..main.settings import MAIN_MEDIA_ROOT
+from ..main.settings import MEDIA_ROOT
 
 # call local settings directly
 # no need to load pod application to send statement
@@ -24,7 +24,7 @@ DEFAULT_FROM_EMAIL = getattr(settings_local, "DEFAULT_FROM_EMAIL", "")
 ADMINS = getattr(settings_local, "ADMINS", ())
 DEBUG = getattr(settings_local, "DEBUG", True)
 TEST_REMOTE_ENCODE = getattr(settings_local, "TEST_REMOTE_ENCODE", False)
-MEDIA_ROOT = getattr(settings_local, "MEDIA_ROOT", MAIN_MEDIA_ROOT)
+MEDIA_ROOT_LOCAL = getattr(settings_local, "MEDIA_ROOT", MEDIA_ROOT)
 
 admins_email = [ad[1] for ad in ADMINS]
 
@@ -68,7 +68,7 @@ def start_transcripting_task(self, video_id, mp3filepath, duration, lang):
     print(video_id, mp3filepath, duration, lang)
     msg, text_webvtt = start_transcripting(mp3filepath, duration, lang)
     print("End of the transcripting of the video")
-    media_temp_dir = os.path.join(MEDIA_ROOT, "temp")
+    media_temp_dir = os.path.join(MEDIA_ROOT_LOCAL, "temp")
     if not os.path.exists(media_temp_dir):
         os.mkdir(media_temp_dir)
     temp_vtt_file = NamedTemporaryFile(dir=media_temp_dir, delete=False, suffix=".vtt")
