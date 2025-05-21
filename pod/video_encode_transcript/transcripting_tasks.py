@@ -8,6 +8,7 @@ from tempfile import NamedTemporaryFile
 import logging
 import os
 import requests
+from ..main.settings import MAIN_MEDIA_ROOT
 
 # call local settings directly
 # no need to load pod application to send statement
@@ -23,6 +24,7 @@ DEFAULT_FROM_EMAIL = getattr(settings_local, "DEFAULT_FROM_EMAIL", "")
 ADMINS = getattr(settings_local, "ADMINS", ())
 DEBUG = getattr(settings_local, "DEBUG", True)
 TEST_REMOTE_ENCODE = getattr(settings_local, "TEST_REMOTE_ENCODE", False)
+MEDIA_ROOT = getattr(settings_local, "MEDIA_ROOT", MAIN_MEDIA_ROOT)
 
 admins_email = [ad[1] for ad in ADMINS]
 
@@ -61,7 +63,6 @@ transcripting_app.autodiscover_tasks(packages=None, related_name="", force=False
 def start_transcripting_task(self, video_id, mp3filepath, duration, lang):
     """Start the transcripting of the video."""
     from .transcript_model import start_transcripting
-    from ..main.settings import MEDIA_ROOT
 
     print("Start the transcripting of the video %s" % video_id)
     print(video_id, mp3filepath, duration, lang)
