@@ -13,10 +13,10 @@ __CONFIGURATION_POD_URL__ = "https://raw.githubusercontent.com/EsupPortail/Esup-
 class Command(BaseCommand):
     help = "Compare configuration from specified version"
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         parser.add_argument("pod_version", type=str)
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         """Get confiuration from specific version passed in args and compare it to the local configuration."""
         configuration_url = __CONFIGURATION_POD_URL__.replace(
             "__pod_version__", options["pod_version"]
