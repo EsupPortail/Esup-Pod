@@ -132,33 +132,35 @@ async function bulkUpdate() {
       let element = formGroup.querySelector(
         ".form-control, .form-check-input, .form-select, input[name='thumbnail']",
       );
-      if (element.hasAttribute("multiple")) {
-        // Get multiple values for channel or theme
-        var options = element.selectedOptions;
-        for (var i = 0, iLen = options.length; i < iLen; i++) {
-          formData.append(
-            element.getAttribute("name"),
-            options[i].value.toString(),
-          );
+      if (element) {
+        if (element.hasAttribute("multiple")) {
+          // Get multiple values for channel or theme
+          var options = element.selectedOptions;
+          for (var i = 0, iLen = options.length; i < iLen; i++) {
+            formData.append(
+              element.getAttribute("name"),
+              options[i].value.toString(),
+            );
+          }
+        } else {
+          switch (element.type) {
+            case "checkbox":
+              dashboardValue = element.checked;
+              break;
+            case "textarea":
+              dashboardValue = tinyMCE
+                .get("id_" + element.getAttribute("name"))
+                .getContent();
+              break;
+            default:
+              dashboardValue = document.getElementById(
+                "id_" + element.getAttribute("name"),
+              ).value;
+          }
+          formData.append(element.getAttribute("name"), dashboardValue);
         }
-      } else {
-        switch (element.type) {
-          case "checkbox":
-            dashboardValue = element.checked;
-            break;
-          case "textarea":
-            dashboardValue = tinyMCE
-              .get("id_" + element.getAttribute("name"))
-              .getContent();
-            break;
-          default:
-            dashboardValue = document.getElementById(
-              "id_" + element.getAttribute("name"),
-            ).value;
-        }
-        formData.append(element.getAttribute("name"), dashboardValue);
+        updateFields.push(element.name);
       }
-      updateFields.push(element.name);
     });
   }
 

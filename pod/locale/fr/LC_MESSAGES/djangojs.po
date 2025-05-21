@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 14:19+0100\n"
+"POT-Creation-Date: 2025-05-06 12:04+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -942,6 +942,10 @@ msgstr "Avancer de 10 secondes dans la video"
 #: pod/video/static/js/video-show.js
 msgid "Quality"
 msgstr "Qualité"
+
+#: pod/video/static/js/video_category.js
+msgid "At least one video must be associated with this category."
+msgstr "Au moins une vidéo doit être associée à cette catégorie."
 
 #: pod/video/static/js/video_edit.js
 msgid "Select the general type of the video."
