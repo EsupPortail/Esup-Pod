@@ -1136,10 +1136,6 @@ main {
   color: var(--pod-font-color);
 }
 
-.pod-params-button-test {
-  padding: 0 !important;
-}
-
 .pod-params-button {
   color: var(--pod-font-color);
   font-size: 1.4rem;
@@ -1402,6 +1398,7 @@ main {
   min-width: 26rem;
   padding: 0.5rem 0;
 }
+
 .pod-params-dropdown .pod-navbar__theme-switch__item > * {
   display: flex;
   justify-content: space-between;
