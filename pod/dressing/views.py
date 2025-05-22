@@ -82,7 +82,17 @@ def dressing_edit(request: WSGIRequest, dressing_id: int):
     """Edit a dressing object."""
     dressing_edit = get_object_or_404(Dressing, id=dressing_id)
 
-    if dressing_edit and (not (request.user.is_superuser or request.user.is_staff)):
+    # Only one of the owners or admins can edit their dressing
+    if (
+        dressing_edit
+        and (request.user not in dressing_edit.owners.all())
+        and (
+            not (
+                request.user.is_superuser
+                or request.user.has_perm("dressing.change_dressing")
+            )
+        )
+    ):
         messages.add_message(request, messages.ERROR, _("You cannot edit this dressing."))
         raise PermissionDenied
 
@@ -154,10 +164,18 @@ def dressing_delete(request: WSGIRequest, dressing_id: int):
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
-    if dressing and (not (request.user.is_superuser or request.user.is_staff)):
-        messages.add_message(
-            request, messages.ERROR, _("You cannot delete this dressing.")
+    # Only one of the owners or admins can delete their dressing
+    if (
+        dressing
+        and (request.user not in dressing.owners.all())
+        and (
+            not (
+                request.user.is_superuser
+                or request.user.has_perm("dressing.delete_dressing")
+            )
         )
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot delete this dressing."))
         raise PermissionDenied
 
     form = DressingDeleteForm()
