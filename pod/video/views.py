@@ -2589,7 +2589,7 @@ def get_videos_for_owner(request: WSGIRequest):
     return videos_list.distinct()
 
 
-def view_stats_if_authenticated(user):
+def view_stats_if_authenticated(user) -> bool:
     if VIEW_STATS_AUTH and user.__str__() == "AnonymousUser":
         return False
     return True
