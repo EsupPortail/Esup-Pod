@@ -126,11 +126,6 @@
   color: #721c24;
 }
 
-tr,
-.rowl {
-  display: table-row !important;
-}
-
 .table-hover tbody tr {
   transition: background-color 0.5s;
 }
