@@ -459,7 +459,7 @@ msgid ""
 "“%(content_title)s” was processed by the AI. Suggestions for improvement are "
 "available on %(site_title)s."
 msgstr ""
-"« %(content_title)s » a été traité par l’IA. Des suggestions d’amélioration"
+"« %(content_title)s » a été traité par l’IA. Des suggestions d’amélioration "
 "sont disponibles sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py
@@ -478,7 +478,7 @@ msgid ""
 "IA improvement “%(content_title)s” has been completed, and is now available "
 "on %(site_title)s."
 msgstr ""
-"Amélioration de l’IA « %(content_title)s » achevée, elle est maintenant"
+"Amélioration de l’IA « %(content_title)s » achevée, elle est maintenant "
 "disponible sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py pod/meeting/utils.py

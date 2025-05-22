@@ -251,11 +251,11 @@ class FilterManager {
       filterContainer.setAttribute('tabindex', '0');
 
       const data = currentFilter.selectedItems.get(key);
-      const ariaLabel = interpolate(gettext("Filter: %s - %s"), [currentFilter.name, data.label]);
+      const ariaLabel = interpolate(gettext("Filter: %(name)s - %(label)s"), {"name": currentFilter.name, "label": data.label}, true)
       filterContainer.setAttribute('aria-label', ariaLabel);
 
       const label = document.createElement('a');
-      label.innerText = interpolate(gettext("%s : %s"), [currentFilter.name, data.label]);
+      label.innerText = interpolate(gettext("%(name)s : %(label)s"), {"name": currentFilter.name, "label": data.label}, true)
       const closeButton = document.createElement('button');
       closeButton.type = 'button';
       closeButton.className = 'btn-close ms-2';
@@ -264,7 +264,7 @@ class FilterManager {
       closeButton.setAttribute('data-bs-placement', 'top');
       closeButton.setAttribute('data-bs-title', gettext("Remove filter"));
 
-      const closeButtonAriaLabel = interpolate(gettext("Click to remove the filter: %s - %s"), [currentFilter.name, data.label]);
+      const closeButtonAriaLabel = interpolate(gettext("Click to remove the filter: %(name)s - %(label)s"), {"name": currentFilter.name, "label": data.label}, true)
 
       closeButton.setAttribute('aria-label', closeButtonAriaLabel);
       closeButton.addEventListener('click', (e) => {
