@@ -35,7 +35,7 @@ const filtersConfig = [
   {
     name: gettext("Type"),
     param: "type",
-    searchCallback: term => searchInList(typeList, term),
+    searchCallback: term => {searchInList(typeList, term)},
     itemLabel: type => type.label,
     itemKey: type => type.value,
   },
@@ -113,8 +113,9 @@ filterManager.initializeFilters();
  * @returns {Promise<void>}
  */
 async function initFilters() {
+  console.log("initFilters");
   try {
-    const res = await fetch(urlAvailableFilters, {
+    const res = await fetch(AVAILABLE_FILTERS_URL, {
       headers: { "X-Requested-With": "XMLHttpRequest" }
     });
     if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
@@ -169,7 +170,6 @@ async function initFilters() {
  * When any filter dropdown inside is clicked, triggers the `initFilters` function.
  */
 document.getElementById("filtersBox").addEventListener("click", initFilters);
-document.addEventListener("DOMContentLoaded",initFilters);
 
 /**
  * Cleans a slug by removing the prefix before the first hyphen

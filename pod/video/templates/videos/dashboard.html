@@ -249,6 +249,7 @@
   <script>
     const urlVideos = "{% url 'video:dashboard' %}";
     const urlUpdateVideos = "{% url 'video:bulk_update' %}";
+    const AVAILABLE_FILTERS_URL = "{% url 'video:dashboard-filters' %}";
     const videosListLoader = document.getElementById("videosListLoader");
     const videosListContainerId = "videos_list";
     let displayMode = "{{ display_mode }}";
@@ -267,6 +268,8 @@
   <script src="{% static 'js/infinite.js' %}"></script>
   <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/FilterManager.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/filter.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/dashboard.js' %}?ver={{VERSION}}"></script>
   {% if use_category %}
     <script>
@@ -275,7 +278,7 @@
       const CATEGORIES_ADD_URL = "{% url 'video:add_category' %}";
       const CATEGORIES_EDIT_URL = `${window.location.origin}/video/category/edit/`;
       const CATEGORIES_DELETE_URL = `${window.location.origin}/video/category/delete/`;
-      const CATEGORIES_LIST_URL = "{% url 'video:get_categories_list' %}";
+      const CATEGORIES_LIST_URL = "{% url 'video:get_render_categories_list' %}";
       const categoriesListContainer = document.getElementById("categories-list");
       //const BASE_URL = `${window.location.origin}/video/my/categories/`;
       {# create base url link for video management #}

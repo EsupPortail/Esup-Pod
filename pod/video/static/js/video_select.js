@@ -249,14 +249,14 @@ function selectAllVideos(container) {
 
     const selector = "#" + container + " .card-select-input";
     const elements = document.querySelectorAll(selector);
-    if (elements.length === 0) throw new Error(`No elements found matching selector "${selector}"`);
-    elements.forEach((elt) => {
-      elt.checked = true;
-    });
-    setListSelectedVideos(container);
-    toggleBulkUpdateVisibility(container);
-    replaceSelectedCountVideos(container);
-
+    if (elements.length > 1) {
+      elements.forEach((elt) => {
+        elt.checked = true;
+      });
+      setListSelectedVideos(container);
+      toggleBulkUpdateVisibility(container);
+      replaceSelectedCountVideos(container);
+    }
   } catch (error) {
     console.error(`Error in video_select.js (selectAllVideos function). Failed to select all videos because ${error.message}`);
   }
@@ -269,20 +269,19 @@ function selectAllVideos(container) {
 function selectAllManger() {
   try {
     const checkbox = document.getElementById('selectAll');
-    if (!checkbox) {
-      throw new Error('Checkbox with id "selectAll" not found in DOM');
-    }
-    checkbox.addEventListener('change', () => {
-      try {
-        if (checkbox.checked) {
-          selectAllVideos(videosListContainerId);
-        } else {
-          resetDashboardElements();
+    if (checkbox) {
+      checkbox.addEventListener('change', () => {
+        try {
+          if (checkbox.checked) {
+            selectAllVideos(videosListContainerId);
+          } else {
+            resetDashboardElements();
+          }
+        } catch (innerError) {
+          console.error(`Error in video_select.js (selectAllManger > change event). Failed to process checkbox change because ${innerError.message}`);
         }
-      } catch (innerError) {
-        console.error(`Error in video_select.js (selectAllManger > change event). Failed to process checkbox change because ${innerError.message}`);
-      }
-    });
+      });
+    }
   } catch (error) {
     console.error(`Error in video_select.js (selectAllManger function). Failed to initialize "Select All" behavior because ${error.message}`);
   }

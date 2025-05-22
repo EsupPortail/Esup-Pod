@@ -85,7 +85,6 @@ class FilterManager {
     }
   }
 
-
   /**
    * Generates the DOM structure for the filter (button and dropdown list).
    * @param {string} name - Label of the filter.
@@ -177,14 +176,15 @@ class FilterManager {
     if (!filter || typeof filter.searchCallback !== 'function') return;
 
     try {
-      const results = await filter.searchCallback(searchTerm);
-      this.currentResults[param] = results;
-      this.createCheckboxesForFilter(param, results);
+      const results = await filter.searchCallback(searchTerm) || [];
+      console.log(results);
+      this.currentResults[param] = Array.isArray(results) ? results : [];
+      this.createCheckboxesForFilter(param, this.currentResults[param]);
     } catch (err) {
-      console.error(`Error in filter.js (searchFilter function). Failed to fetch search results for filter "${param}" with searchTerm "${searchTerm}": ${err.message || err}`);
+      console.error(`Error in filter.js (searchFilter). Failed to fetch results for filter "${param}" with searchTerm "${searchTerm}": ${err.message || err}`);
+      this.currentResults[param] = [];
     }
   }
-
 
   /**
    * Removes an applied filter.
@@ -206,7 +206,6 @@ class FilterManager {
     }
   }
 
-
   /**
    * Initializes the filters from the session.
    */
@@ -214,16 +213,13 @@ class FilterManager {
     for (const param of Object.keys(this.filters)) {
       const filter = this.filters[param];
       const selectedKeys = JSON.parse(sessionStorage.getItem(`filter-${param}`)) || [];
-      let allItems = [];
-      try {
-        allItems = await filter.searchCallback('');
-      } catch (err) {
-        console.error(`Error in filter.js (initializeFilters function). Failed to load initial items for filter "${param}": ${err.message || err}`);
-        continue;
-      }
-      this.currentResults[param] = allItems;
+
+      // Await searchFilter to ensure results are available
+      await this.searchFilter(param);
+
+      const results = this.currentResults[param] || [];
       selectedKeys.forEach(slugKey => {
-        const match = allItems.find(item => slugify(filter.itemKey(item)) === slugKey);
+        const match = results.find(item => slugify(filter.itemKey(item)) === slugKey);
         if (match) {
           filter.selectedItems.set(slugKey, {
             label: filter.itemLabel(match),
@@ -233,6 +229,7 @@ class FilterManager {
         }
       });
     }
+
     this.update();
   }
 
@@ -286,8 +283,6 @@ class FilterManager {
       console.error(`Error in filter.js (renderActiveFilter function). Failed to render active filter because currentFilter is null`);
     }
   }
-
-
 
   createCheckboxesForFilter(param, results) {
     const container = document.getElementById(`collapseFilter${capitalize(param)}`);
@@ -366,8 +361,6 @@ class FilterManager {
     container.appendChild(fragment);
   }
 
-
-
   /**
    * Updates the sessionStorage and URL with the selected filters.
    */
@@ -411,8 +404,6 @@ class FilterManager {
     this.filtersBox.classList.add('mb-3');
     this.resetFiltersButton.style.display = 'block';
   }
-
-
 
   /**
    * Removes all tags displayed as active filters.
