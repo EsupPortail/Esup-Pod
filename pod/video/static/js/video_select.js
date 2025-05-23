@@ -127,49 +127,48 @@ function toggleSelectedVideo(item, container) {
 }
 
 /**
- * Toggles the bulk update UI visibility based on video selection and total count.
- *
- * Shows the container and related elements if videos are selected and count > 0.
- * Otherwise, hides the container and restores default display.
+ * Toggle bulk update UI visibility based on video selection and total count.
  */
 function toggleBulkUpdateVisibility(container) {
   try {
-    const c = document.getElementById('bulk-update-container');
+    const bulkContainer = document.getElementById('bulk-update-container');
     const hr = document.getElementById('bottom-ht-filtre');
     const skipLink = document.getElementById('skipToBulk');
-    const countVideos = parseInt(document.getElementById("videos_list")?.dataset.countvideos || "0", 10);
-    const hasSelection = hasSelectedVideos(container);
+    const videoList = document.getElementById("videos_list");
+    const restCheckbox = document.getElementById('selectAll');
 
-    let shouldShow = false;
-    if(container) shouldShow = hasSelection && countVideos > 0 && container === 'videos_list';
-    else shouldShow = hasSelection && countVideos > 0;
-
-    if (!c || !hr || !skipLink) {
+    if (!bulkContainer || !hr || !skipLink || !videoList) {
       throw new Error(JSON.stringify({
         reason: 'Missing DOM element(s)',
         elements: {
-          'bulk-update-container': c === null ? 'NOT FOUND' : 'OK',
-          'bottom-ht-filtre': hr === null ? 'NOT FOUND' : 'OK',
-          'skipToBulk': skipLink === null ? 'NOT FOUND' : 'OK'
+          'bulk-update-container': !!bulkContainer,
+          'bottom-ht-filtre': !!hr,
+          'skipToBulk': !!skipLink,
+          'videos_list': !!videoList
         }
       }));
     }
 
-    if (shouldShow) {
-      hr.style.display = 'none';
-      c.classList.add('visible');
-      skipLink.classList.add('is-visible');
-    } else {
-      hr.style.display = 'block';
-      c.classList.remove('visible');
-      skipLink.classList.remove('is-visible');
+    const countVideos = parseInt(videoList.dataset.countvideos || "0", 10);
+    const hasSelection = hasSelectedVideos(container);
+
+    // Update "select all" checkbox state
+    if (restCheckbox) {
+      const videos = document.querySelectorAll(".card-select-input");
+      const checkedCount = Array.from(videos).filter(v => v.checked).length;
+      restCheckbox.checked = (countVideos > 0 && countVideos === checkedCount);
     }
 
+    const shouldShow = hasSelection && countVideos > 0 && (!container || container === 'videos_list');
+
+    bulkContainer.classList.toggle('visible', shouldShow);
+    skipLink.classList.toggle('is-visible', shouldShow);
+    hr.style.display = shouldShow ? 'none' : 'block';
+
   } catch (error) {
-    console.error(`Error in video_select.js (toggleBulkUpdateVisibility function). Failed to toggle bulk update UI because ${error.message}`);
+    console.error(`toggleBulkUpdateVisibility() failed: ${error.message}`);
   }
 }
-
 
 /**
  * Checks whether at least one video has been selected.
@@ -180,7 +179,7 @@ function hasSelectedVideos(container) {
   try {
     if (!container) return false;
     const videos = selectedVideos[container];
-    return Object.values(videos).some(arr => Array.isArray(arr) && arr.length > 0);
+    return videos.length > 0;
   } catch (error) {
     console.error(`Error in video_select.js (hasSelectedVideos): ${error.message}`);
     return false;

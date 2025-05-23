@@ -391,18 +391,17 @@ class FilterManager {
   _syncResetLink() {
     const hasTags = this.activeFiltersBox.children.length > 0;
 
-    if (!hasTags) {
+    if (hasTags) {
+      if (!this.activeFiltersWrap.contains(this.resetFiltersButton)) {
+        this.activeFiltersWrap.appendChild(this.resetFiltersButton);
+      }
+      this.resetFiltersButton.classList.add('ms-auto');
+      this.filtersBox.classList.add('mb-3');
+      this.resetFiltersButton.classList.remove('d-none');
+    } else {
+      this.resetFiltersButton.classList.add('d-none');
       this.filtersBox.classList.remove('mb-3');
-      this.resetFiltersButton.style.display = 'none';
-      return;
     }
-
-    if (!this.activeFiltersWrap.contains(this.resetFiltersButton)) {
-      this.activeFiltersWrap.appendChild(this.resetFiltersButton);
-    }
-    this.resetFiltersButton.classList.add('ms-auto');
-    this.filtersBox.classList.add('mb-3');
-    this.resetFiltersButton.style.display = 'block';
   }
 
   /**
