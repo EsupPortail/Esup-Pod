@@ -4,18 +4,6 @@
  * @property {string} value - The internal value used for filtering (e.g., slug)
  */
 
-/** @type {FilterItem[]} */
-let typeList = [];
-
-/** @type {FilterItem[]} */
-let disciplineList = [];
-
-/** @type {FilterItem[]} */
-let tagList = [];
-
-/** @type {FilterItem[]} */
-let categoryList = [];
-
 /**
  * Array of filter configurations to be used in FilterManager.
  * Each object defines how a specific filter behaves and how items are displayed and matched.
@@ -35,30 +23,30 @@ const filtersConfig = [
   {
     name: gettext("Type"),
     param: "type",
-    searchCallback: term => {searchInList(typeList, term)},
+    searchCallback: (term) => searchInList("type", term),
     itemLabel: type => type.label,
     itemKey: type => type.value,
   },
   {
     name: gettext("Discipline"),
     param: "discipline",
-    searchCallback: term => searchInList(disciplineList, term),
+    searchCallback: (term) => searchInList("discipline", term),
     itemLabel: discipline => discipline.label,
     itemKey: discipline => discipline.value,
   },
   {
     name: gettext("Tag"),
     param: "tag",
-    searchCallback: term => searchInList(tagList, term),
+    searchCallback: (term) => searchInList("tag", term),
     itemLabel: tag => tag.label,
     itemKey: tag => tag.value,
   },
   {
     name: gettext("Catégorie"),
     param: "categories",
-    searchCallback: term => searchInList(categoryList, term),
-    itemLabel: category => category.label,
-    itemKey: category => category.value,
+    searchCallback: (term) => searchInList("categories", term),
+    itemLabel: categories => categories.label,
+    itemKey: categories => categories.value,
   }
 ];
 
@@ -69,28 +57,31 @@ const filtersConfig = [
  * @param {string} searchTerm - The user-provided search input.
  * @returns {Promise<FilterItem[]>} A promise resolving to an ordered list of matched items.
  */
-function searchInList(list, searchTerm) {
-  return new Promise(resolve => {
-    const normalizedTerm = searchTerm.trim().toLowerCase();
-    if (!normalizedTerm) return resolve(list);
+async function searchInList(param, searchTerm) {
+  let list;
 
-    const matching = [];
-    const nonMatching = [];
+  try {
+    list = await fetchSingleFilter(param);
+  } catch (err) {
+    console.error(`Error in filter.js (searchInList) failed to fetch list: ${err.message || err}`);
+    return [];
+  }
 
-    try {
-      for (const item of list) {
-        if (item.label.toLowerCase().includes(normalizedTerm)) {
-          matching.push(item);
-        } else {
-          nonMatching.push(item);
-        }
-      }
-    } catch (err) {
-      console.error(`Error in filter.js (searchInList) while processing list: ${err.message || err}`);
+  const normalizedTerm = searchTerm.trim().toLowerCase();
+  if (!normalizedTerm) return list;
+
+  const matching = [];
+  const nonMatching = [];
+
+  for (const item of list) {
+    if (item.label.toLowerCase().includes(normalizedTerm)) {
+      matching.push(item);
+    } else {
+      nonMatching.push(item);
     }
+  }
 
-    resolve([...matching, ...nonMatching]);
-  });
+  return [...matching, ...nonMatching];
 }
 
 // Initialize the filter manager
@@ -113,63 +104,39 @@ filterManager.initializeFilters();
  * @returns {Promise<void>}
  */
 async function initFilters() {
-  console.log("initFilters");
-  try {
-    const res = await fetch(AVAILABLE_FILTERS_URL, {
-      headers: { "X-Requested-With": "XMLHttpRequest" }
-    });
-    if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
-    const data = await res.json();
-    try {
-      if (data.types) {
-        typeList = data.types.map(type => ({
-          label: gettext(type.title),
-          value: type.title
-        }));
-      }
-    } catch (err) {
-      console.warn("Failed to initialize typeList:", err, "DATA:", data);
-    }
-    try {
-      if (data.disciplines) {
-        disciplineList = data.disciplines.map(discipline => ({
-          label: gettext(discipline.title),
-          value: discipline.title
-        }));
-      }
-    } catch (err) {
-      console.warn("Failed to initialize disciplineList:", err, "DATA:", data);
-    }
-    try {
-      if (data.tags) {
-        tagList = data.tags.map(tag => ({
-          label: gettext(tag.name),
-          value: tag.slug
-        }));
-      }
-    } catch (err) {
-      console.warn("Failed to initialize tagList:", err, "DATA:", data);
-    }
-    try {
-      if (data.category) {
-        categoryList = Object.keys(data.category).map(slug => ({
-          label: gettext(cleanLabel(slug)),
-          value: slug
-        }));
-      }
-    } catch (err) {
-      console.warn("Failed to initialize categoryList:", err, "DATA:", data);
-    }
-  } catch (err) {
-    console.error(`Error in filter.js (initFilters function) while fetching or processing data: ${err.message || err}\nStack trace: ${err.stack || 'No stack trace available'}`);
-  }
+  const res = await fetch(AVAILABLE_FILTERS_URL, {
+    method: "GET",
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+      'Content-Type': 'application/json'
+    },
+    credentials: "include"
+  });
+  if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
+  return data = await res.json();
 }
 
 /**
- * Detects a click event on the filters dropdown container.
- * When any filter dropdown inside is clicked, triggers the `initFilters` function.
+ * Récupère un filtre spécifique par son nom.
+ * @param {string} filterName
+ * @returns {Promise<Object>}
  */
-document.getElementById("filtersBox").addEventListener("click", initFilters);
+async function fetchSingleFilter(filterName) {
+  const url = AVAILABLE_FILTER_URL.replace('FILTER_NAME_PLACEHOLDER', encodeURIComponent(filterName));
+  const res = await fetch(url, { method: "GET", headers: { "X-Requested-With": "XMLHttpRequest", "Content-Type": "application/json" }, credentials: "include" });
+  if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
+  const data = await res.json();
+  const key = filterName.toLowerCase();
+  if (!data[key] || !Array.isArray(data[key])) {
+    throw new Error(`Malformed API response: missing array for key '${key}'`);
+  }
+
+  // Remapper pour correspondre à { label, value }
+  return data[key].map(item => ({
+    label: item.title || item.name || item.label || "unknown",
+    value: item.id || item.value || item.slug || item.value || "unknown"
+  }));
+}
 
 /**
  * Cleans a slug by removing the prefix before the first hyphen

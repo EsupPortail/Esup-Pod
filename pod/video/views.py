@@ -51,6 +51,7 @@ from pod.video.models import Video
 from pod.video.models import Type
 from pod.video.models import Channel
 from pod.video.models import Theme
+from pod.video.models import Discipline
 from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
@@ -62,7 +63,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
-from pod.video.rest_views import ChannelSerializer, VideoViewSet
+from pod.video.rest_views import ChannelSerializer
 
 from .utils import (
     pagination_data,
@@ -87,6 +88,10 @@ from itertools import chain
 from django.db import IntegrityError
 from django.db.models import QuerySet
 from django.db import transaction
+
+from django.utils.timezone import timedelta
+from .context_processors import get_available_videos_filter
+from pod.video.utils import get_tag_cloud
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -3593,34 +3598,78 @@ def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> Json
     return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
 
 
-def retrieve_available_filters(request):
-    """
-    Retrieves cached video filters and serializes them into JSON.
+def available_filters(request):
+    """API endpoint to return all available video filters."""
+    site = get_current_site(request)
+    category = Category.objects.prefetch_related("video").filter(owner=request.user)
+    types = (
+        Type.objects.filter(sites=site, video__is_draft=False, video__sites=site)
+        .distinct()
+        .annotate(video_count=Count("video", distinct=True))
+        .values("id", "title", "video_count")
+    )
+    disciplines = (
+        Discipline.objects.filter(site=site, video__is_draft=False, video__sites=site)
+        .distinct()
+        .annotate(video_count=Count("video", distinct=True))
+        .values("id", "title", "video_count")
+    )
+    tags = get_tag_cloud()
+    v_filter = get_available_videos_filter(request)
+    aggregate_videos = v_filter.aggregate(
+        duration=Sum("duration"), number=Count("id")
+    )
+    videos_count = aggregate_videos["number"]
+    videos_duration = (
+        str(timedelta(seconds=aggregate_videos["duration"]))
+        if aggregate_videos["duration"] else "0"
+    )
+    return JsonResponse({
+        "type": list(types),
+        "discipline": list(disciplines),
+        "categories": category,
+        "tag": list(tags),
+        "videos_count": videos_count,
+        "videos_duration": videos_duration,
+    })
 
-    Args:
-        request (HttpRequest): The HTTP request object used to obtain video data.
 
-    Returns:
-        JsonResponse: A JSON response containing the  video data.
-    """
-    video_data = VideoViewSet.available_filters(request)
-
-    def serialize_data(data):
-        """
-        Serializes Django objects (e.g., QuerySets) into simple data types for JSON response.
-
-        Args:
-            data (any): The data to serialize (can be a QuerySet or a simple object).
-
-        Returns:
-            list or any: The serialized data as a list (for QuerySets) or unchanged if it's a simple object.
-        """
-        if isinstance(data, QuerySet):
-            return list(data.values())
-        return data
-
-    serialized_data = {key: serialize_data(value) for key, value in video_data.items()}
-    return JsonResponse(serialized_data)
+def available_filter_by_type(request, filter_name):
+    """API endpoint to return a available video filter."""
+    site = get_current_site(request)
+    if filter_name.lower() == 'type':
+        types = (
+            Type.objects.filter(sites=site, video__is_draft=False, video__sites=site)
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True))
+            .values("id", "title", "video_count")
+        )
+        return JsonResponse({"type": list(types)})
+    elif filter_name.lower() == 'discipline':
+        disciplines = (
+            Discipline.objects.filter(site=site, video__is_draft=False, video__sites=site)
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True))
+            .values("id", "title", "video_count")
+        )
+        return JsonResponse({"discipline": list(disciplines)})
+    elif filter_name.lower() == 'categories':
+        category = Category.objects.prefetch_related("video").filter(owner=request.user).values("title", "slug")
+        return JsonResponse({"categories": list(category)})
+    elif filter_name.lower() == 'tag':
+        tags = get_tag_cloud()
+        return JsonResponse({"tag": list(tags)})
+    elif filter_name.lower() == 'videos_count':
+        v_filter = get_available_videos_filter(request)
+        count = v_filter.aggregate(number=Count("id"))["number"]
+        return JsonResponse({"videos_count": count})
+    elif filter_name.lower() == 'videos_duration':
+        v_filter = get_available_videos_filter(request)
+        duration_seconds = v_filter.aggregate(duration=Sum("duration"))["duration"]
+        duration_str = str(timedelta(seconds=duration_seconds)) if duration_seconds else "0"
+        return JsonResponse({"videos_duration": duration_str})
+    else:
+        raise Http404(f"Unknown filter type '{filter_name}'")
 
 
 """

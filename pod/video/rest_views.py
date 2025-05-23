@@ -1,20 +1,14 @@
 """Esup-Pod REST views."""
 
-
 from rest_framework import serializers, viewsets, renderers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from django.template.loader import render_to_string
-from django.db.models import Count, Sum
-from django.utils.timezone import timedelta
-from django.contrib.sites.shortcuts import get_current_site
-from pod.video.utils import get_tag_cloud
 
 from .models import Channel, Theme, Type, Discipline, Video, ViewCount
 from .context_processors import get_available_videos
-from .context_processors import get_available_videos_filter
 from pod.main.utils import remove_trailing_spaces
 
 # commented for v3
@@ -237,44 +231,6 @@ class VideoViewSet(viewsets.ModelViewSet):
             user_videos, many=True, context={"request": request}
         )
         return Response(serializer.data)
-
-    def available_filters(request):
-
-        from pod.video.views import get_videos_categories_list
-
-        """API endpoint to return all available video filters """
-        site = get_current_site(request)
-        category = get_videos_categories_list(request)
-        types = (
-            Type.objects.filter(sites=site, video__is_draft=False, video__sites=site)
-            .distinct()
-            .annotate(video_count=Count("video", distinct=True))
-            .values("id", "title", "video_count")
-        )
-        disciplines = (
-            Discipline.objects.filter(site=site, video__is_draft=False, video__sites=site)
-            .distinct()
-            .annotate(video_count=Count("video", distinct=True))
-            .values("id", "title", "video_count")
-        )
-        tags = get_tag_cloud()
-        v_filter = get_available_videos_filter(request)
-        aggregate_videos = v_filter.aggregate(
-            duration=Sum("duration"), number=Count("id")
-        )
-        videos_count = aggregate_videos["number"]
-        videos_duration = (
-            str(timedelta(seconds=aggregate_videos["duration"]))
-            if aggregate_videos["duration"] else "0"
-        )
-        return {
-            "types": list(types),
-            "disciplines": list(disciplines),
-            "category": category,
-            "tags": list(tags),
-            "videos_count": videos_count,
-            "videos_duration": videos_duration,
-        }
 
 
 class ViewCountViewSet(viewsets.ModelViewSet):

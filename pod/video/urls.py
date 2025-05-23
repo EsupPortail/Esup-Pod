@@ -36,9 +36,9 @@ from .views import (
     vote_get,
     vote_post,
     video_edit_access_tokens,
-    retrieve_available_filters,
+    available_filter_by_type,
+    available_filters
 )
-
 
 app_name = "video"
 
@@ -91,7 +91,8 @@ urlpatterns = [
     ),
     path("dashboard/", dashboard, name="dashboard"),
     path("bulk_update/", bulk_update, name="bulk_update"),
-    path('filters/', retrieve_available_filters, name='dashboard-filters'),
+    path('filters/', available_filters, name='dashboard-filters'),
+    path('filters/<str:filter_name>/', available_filter_by_type, name='dashboard-filter-by-name'),
 ]
 # COMPLETION
 urlpatterns += [

@@ -250,6 +250,7 @@
     const urlVideos = "{% url 'video:dashboard' %}";
     const urlUpdateVideos = "{% url 'video:bulk_update' %}";
     const AVAILABLE_FILTERS_URL = "{% url 'video:dashboard-filters' %}";
+    const AVAILABLE_FILTER_URL = "{% url 'video:dashboard-filter-by-name' 'FILTER_NAME_PLACEHOLDER' %}";
     const videosListLoader = document.getElementById("videosListLoader");
     const videosListContainerId = "videos_list";
     let displayMode = "{{ display_mode }}";

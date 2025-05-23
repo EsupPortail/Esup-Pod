@@ -138,7 +138,7 @@ function toggleBulkUpdateVisibility(container) {
     const hr = document.getElementById('bottom-ht-filtre');
     const skipLink = document.getElementById('skipToBulk');
     const countVideos = parseInt(document.getElementById("videos_list")?.dataset.countvideos || "0", 10);
-    const hasSelection = hasSelectedVideos();
+    const hasSelection = hasSelectedVideos(container);
 
     let shouldShow = false;
     if(container) shouldShow = hasSelection && countVideos > 0 && container === 'videos_list';
@@ -176,11 +176,13 @@ function toggleBulkUpdateVisibility(container) {
  *
  * @returns {boolean} `true` if any entry in `selectedVideos` contains one or more videos, otherwise `false`.
  */
-function hasSelectedVideos() {
+function hasSelectedVideos(container) {
   try {
-    return Object.values(selectedVideos).some(arr => Array.isArray(arr) && arr.length > 0);
+    if (!container) return false;
+    const videos = selectedVideos[container];
+    return Object.values(videos).some(arr => Array.isArray(arr) && arr.length > 0);
   } catch (error) {
-    console.error(`Error in video_select.js (hasSelectedVideos function). Failed to check video selection because ${error.message}`);
+    console.error(`Error in video_select.js (hasSelectedVideos): ${error.message}`);
     return false;
   }
 }
@@ -249,14 +251,12 @@ function selectAllVideos(container) {
 
     const selector = "#" + container + " .card-select-input";
     const elements = document.querySelectorAll(selector);
-    if (elements.length > 1) {
-      elements.forEach((elt) => {
-        elt.checked = true;
-      });
-      setListSelectedVideos(container);
-      toggleBulkUpdateVisibility(container);
-      replaceSelectedCountVideos(container);
-    }
+    elements.forEach((elt) => {
+      elt.checked = true;
+    });
+    setListSelectedVideos(container);
+    toggleBulkUpdateVisibility(container);
+    replaceSelectedCountVideos(container);
   } catch (error) {
     console.error(`Error in video_select.js (selectAllVideos function). Failed to select all videos because ${error.message}`);
   }
