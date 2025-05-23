@@ -3,17 +3,12 @@
 from rest_framework import serializers, viewsets, renderers
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
-# from rest_framework import authentication, permissions
 from rest_framework.decorators import action
 
 from django.template.loader import render_to_string
 
-from .models import Channel, Theme
-from .models import Type, Discipline, Video
-from .models import ViewCount
+from .models import Channel, Theme, Type, Discipline, Video, ViewCount
 from .context_processors import get_available_videos
-
 from pod.main.utils import remove_trailing_spaces
 
 # commented for v3
