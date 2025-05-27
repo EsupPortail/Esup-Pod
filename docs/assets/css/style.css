@@ -1,6 +1,8 @@
 
 :root {
   --bs-primary-rgb: 21, 129, 158;
+  --bs-link-color-rgb: 21, 129, 158;
+  --bs-link-color: #15819e;
   --bs-code-color: #BE3E84;
 }
 
@@ -11,6 +13,10 @@
   --bs-btn-hover-border-color: #473321;
   --bs-btn-active-bg: #473321;
   --bs-btn-active-border-color: #9C5514;
+}
+
+.nav-pills {
+  --bs-nav-pills-link-active-bg: #15819e;
 }
 
 [data-bs-theme="dark"] .btn-outline-primary {
