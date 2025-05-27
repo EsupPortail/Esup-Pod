@@ -1,4 +1,7 @@
-<select id="language_selector" onchange="location = this.value;">
-  <option value="/Esup-Pod/index_fr" {% if page.lang == "fr" %}selected{% endif %}>Version Française</option>
-  <option value="/Esup-Pod/index_en" {% if page.lang == "en" %}selected{% endif %}>English version</option>
-</select>
+<div class="col-auto">
+  <select id="language_selector" class="form-select"
+          onchange="location = this.value;">
+    <option value="/Esup-Pod/index_fr" {% if page.lang == "fr" %}selected{% endif %}>Version Française</option>
+    <option value="/Esup-Pod/index_en" {% if page.lang == "en" %}selected{% endif %}>English version</option>
+  </select>
+</div>
