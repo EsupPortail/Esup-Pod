@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ site.lang | default: 'en-US' }}"
       data-bs-spy="scroll"
-      data-bs-target="#toc-page .offcanvas-body">
+      data-bs-target="#toc-page">
 
   <head>
     <meta charset='utf-8'>
@@ -37,8 +37,8 @@
         {% endif %}
         {% include language_selector.html %}
         <div class="position-fixed end-0 me-2" id="collapse-button">
-          <a role="button" href="#toc-page" class="btn btn-outline-primary"
-            data-bs-toggle="collapse" aria-expanded="true" aria-controls="toc-page"
+          <a role="button" href="#toc-wrapper" class="btn btn-outline-primary"
+            data-bs-toggle="collapse" aria-expanded="true" aria-controls="toc-wrapper"
             aria-label="Side menu" data-pod-tooltip="true"
             data-bs-original-title="Toggle side menu">
             <i class="bi bi-list" aria-hidden="true"></i>
@@ -54,13 +54,13 @@
         {{ content }}
       </section>
       <!-- Side bar -->
-      <nav class="offcanvas offcanvas-end show position-sticky" tabindex="-1" id="toc-page"
-          aria-labelledby="toc-page-label" data-bs-scroll="true" data-bs-backdrop="false">
+      <nav class="offcanvas offcanvas-end show position-sticky" tabindex="-1" id="toc-wrapper"
+          aria-labelledby="toc-wrapper-label" data-bs-scroll="true" data-bs-backdrop="false">
         <div class="offcanvas-header">
-          <h2 class="h3 offcanvas-title" id="toc-page-label">Sommaire</h2>
+          <h2 class="h3 offcanvas-title" id="toc-wrapper-label">Sommaire</h2>
         </div>
         <div class="offcanvas-body">
-          {% include toc.html html=content class="nav nav-pills" submenu_class="nav nav-pills ms-%level%" anchor_class="nav-link" %}
+          {% include toc.html html=content id="toc-page" class="nav nav-pills" submenu_class="nav nav-pills ms-%level%" anchor_class="nav-link" %}
         </div>
       </nav>
     </main>
