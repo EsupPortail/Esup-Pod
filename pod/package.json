@@ -18,7 +18,7 @@
     "videojs-seek-buttons": "latest7",
     "videojs-vr": "^2.0.0",
     "videojs-vtt-thumbnails": "^0.0.13",
-    "videojs-wavesurfer": "^3.9.0",
+    "videojs-wavesurfer": "^3.10.0",
     "wavesurfer.js": "^6.6.4",
     "waypoints": "^4.0.1"
   },
