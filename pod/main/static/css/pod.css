@@ -763,6 +763,11 @@ div.card a img {
   content: "▲";
 }
 
+#filters .form-check {
+  /* Prevent some multi-line labels to ovelap with the next one. */
+  min-height: auto;
+}
+
 /** Dashboard **/
 #bulk-update-container {
   background-color: var(--pod-background-neutre2-bloc);
