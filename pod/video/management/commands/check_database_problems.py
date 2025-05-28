@@ -33,6 +33,7 @@ Functions:
 - check_change_owner_problems: Detects if a video's encoding paths do not match the current owner's hashkey.
 - solve_change_owner_problems: Corrects file paths in EncodingVideo, EncodingAudio, and PlaylistVideo models to match the new owner.
 """
+
 import re
 
 from django.core.management.base import BaseCommand
@@ -61,9 +62,7 @@ class Command(BaseCommand):
     def handle(self, *args: Any, **options: Any) -> None:
         """Handle the command call."""
 
-        self.stdout.write(
-            self.style.SUCCESS("***Start check database consistency***")
-        )
+        self.stdout.write(self.style.SUCCESS("***Start check database consistency***"))
 
         if options["dry"]:
             self.stdout.write(
@@ -88,7 +87,9 @@ class Command(BaseCommand):
             self.check_change_owner_problems(video, options)
         if self.nb_errors_found == 0:
             self.stdout.write(
-                self.style.SUCCESS("No problems found in connection with the change of ownership.")
+                self.style.SUCCESS(
+                    "No problems found in connection with the change of ownership."
+                )
             )
 
     def check_change_owner_problems(self, video: Video, options: Dict[str, Any]) -> None:
@@ -105,8 +106,7 @@ class Command(BaseCommand):
                     if self.nb_errors_found == 1:
                         self.stdout.write(
                             self.style.WARNING(
-                                "Problems found:\n"
-                                "VIDEO ID; TYPE; DETAIL"
+                                "Problems found:\n" "VIDEO ID; TYPE; DETAIL"
                             )
                         )
                     self.stdout.write(
@@ -127,9 +127,13 @@ class Command(BaseCommand):
             encodings = model.objects.filter(video=video)
             for encoding in encodings:
                 encoding.source_file = re.sub(
-                    r"\w{64}", video.owner.owner.hashkey, encoding.source_file.name.__str__()
+                    r"\w{64}",
+                    video.owner.owner.hashkey,
+                    encoding.source_file.name.__str__(),
                 )
                 encoding.save()
         self.stdout.write(
-            self.style.SUCCESS(f"Owner change: problem identified and solved for video {video.id}.")
+            self.style.SUCCESS(
+                f"Owner change: problem identified and solved for video {video.id}."
+            )
         )

@@ -47,9 +47,15 @@ class Command(BaseCommand):
                         )
                     )
                     self.stdout.write(
-                        self.style.SUCCESS('The thumbnail is "%s"' % new_vid.thumbnail.file)
+                        self.style.SUCCESS(
+                            'The thumbnail is "%s"' % new_vid.thumbnail.file
+                        )
                     )
                 else:
                     self.stdout.write("Error when adding new thumbnail %s" % ec.log)
             except Exception as e:
-                self.stdout.write(self.style.ERROR('An error occurred with video %d: %s' % (vid_id, str(e))))
+                self.stdout.write(
+                    self.style.ERROR(
+                        "An error occurred with video %d: %s" % (vid_id, str(e))
+                    )
+                )

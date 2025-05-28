@@ -3083,7 +3083,9 @@ def add_category(request):
             )
 
         if not r_videos:
-            response["message"] = _("At least one video must be associated with this category.")
+            response["message"] = _(
+                "At least one video must be associated with this category."
+            )
             return HttpResponseBadRequest(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json",
@@ -3167,14 +3169,16 @@ def edit_category(request, c_slug=None):
             response["message"] = _("Title field is required")
             return HttpResponseBadRequest(
                 json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json"
+                content_type="application/json",
             )
 
         if not r_videos:
-            response["message"] = _("At least one video must be associated with this category.")
+            response["message"] = _(
+                "At least one video must be associated with this category."
+            )
             return HttpResponseBadRequest(
                 json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json"
+                content_type="application/json",
             )
 
         title = json.loads(r_title)
@@ -3212,7 +3216,7 @@ def edit_category(request, c_slug=None):
 
                 return HttpResponseBadRequest(
                     json.dumps(response, cls=DjangoJSONEncoder),
-                    content_type="application/json"
+                    content_type="application/json",
                 )
 
         response["message"] = _("You do not have rights to edit this category")
