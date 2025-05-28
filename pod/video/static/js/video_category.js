@@ -186,7 +186,19 @@ function post_category_modal(url) {
       "videos",
       JSON.stringify(selectedVideos[catVideosListContainerId]),
     );
+  } else {
+    const categoryDeleted = url.includes("/video/category/delete/");
+    if (!categoryDeleted) {
+      showalert(
+        gettext("At least one video must be associated with this category."),
+        "alert-error",
+        "form-alert-div-bottom-right",
+      );
+      // Prevents side effects when no videos selected
+      location.reload();
+    }
   }
+
   if (document.getElementById("cat-title")) {
     formData.append(
       "title",
@@ -208,12 +220,19 @@ function post_category_modal(url) {
       data = JSON.parse(data);
       bootstrap.Modal.getInstance(categoryModal).toggle();
       let message = data["message"];
+      let success = data["success"];
       let videos = data["all_categories_videos"];
-      showalert(message, "alert-success", "form-alert-div-bottom-right");
+      if (success) {
+        showalert(message, "alert-success", "form-alert-div-bottom-right");
+      } else {
+        showalert(message, "alert-error", "form-alert-div-bottom-right");
+      }
       if (videos !== undefined) {
         all_categories_videos = JSON.parse(videos);
       }
       refreshCategoriesLinks();
+      // Reinit videos list
+      selectedVideos[catVideosListContainerId] = [];
     })
     .catch(() => {
       showalert(
@@ -221,6 +240,8 @@ function post_category_modal(url) {
         "alert-danger",
         "form-alert-div-bottom-right",
       );
+      // Reinit videos list
+      selectedVideos[catVideosListContainerId] = [];
     });
 }
 

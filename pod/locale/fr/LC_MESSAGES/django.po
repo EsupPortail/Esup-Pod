@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-25 08:28+0000\n"
+"POT-Creation-Date: 2025-05-06 11:56+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1325,6 +1325,11 @@ msgid ""
 msgstr ""
 "Il y a un chevauchement avec la superposition {0}, veuillez changer son "
 "temps de début et/ou de fin."
+
+#: pod/completion/permissions/video.py
+#, python-brace-format
+msgid "{func.__name__}: Permission denied for user {current_user.pk}."
+msgstr "{func.__name__}: Permission refusée pour l’utilisateur {current_user.pk}."
 
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
@@ -6916,6 +6921,15 @@ msgid "Private"
 msgstr "Privé"
 
 #: pod/playlist/models.py
+#, python-brace-format
+msgid ""
+"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"characters."
+msgstr ""
+"Veuillez entrer un titre contenant entre 1 et "
+"{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
+
+#: pod/playlist/models.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
@@ -7317,10 +7331,6 @@ msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
-msgid "Delete the playlist"
-msgstr "Supprimer la liste de lecture"
-
-#: pod/playlist/views.py
 #, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr "Modifier la liste de lecture « %(pname)s »"
@@ -7720,7 +7730,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py pod/quiz/tests/test_models.py
+#: pod/quiz/models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -10754,8 +10764,16 @@ msgid "Title field is required"
 msgstr "Champ de titre est requis"
 
 #: pod/video/views.py
+msgid "At least one video must be associated with this category."
+msgstr "Au moins une vidéo doit être associée à cette catégorie."
+
+#: pod/video/views.py
 msgid "One or many videos already have a category."
 msgstr "Une ou plusieurs vidéos possèdent déjà une catégorie."
+
+#: pod/video/views.py
+msgid "A category with the same name already exists."
+msgstr "Une catégorie portant ce nom existe déjà."
 
 #: pod/video/views.py
 msgid "Category successfully added."
@@ -10958,6 +10976,9 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#~ msgid "Delete the playlist"
+#~ msgstr "Supprimer la liste de lecture"
+
 #, python-format
 #~ msgid ""
 #~ "you can change the removal date by editing your video:</p>\n"
@@ -10967,14 +10988,6 @@ msgstr "xAPI Esup-Pod"
 #~ "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
 #~ "<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
 #~ "target=\"_blank\">%(scheme)s:%(url)s</a></p>"
-
-#, python-brace-format
-#~ msgid ""
-#~ "Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-#~ "characters."
-#~ msgstr ""
-#~ "Veuillez entrer un titre contenant entre 1 et "
-#~ "{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
 
 #~ msgid "Summary"
 #~ msgstr "Description"
