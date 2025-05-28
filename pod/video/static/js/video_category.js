@@ -192,7 +192,7 @@ function post_category_modal(url) {
       showalert(
         gettext("At least one video must be associated with this category."),
         "alert-error",
-        "form-alert-div-bottom-right"
+        "form-alert-div-bottom-right",
       );
       // Prevents side effects when no videos selected
       location.reload();
