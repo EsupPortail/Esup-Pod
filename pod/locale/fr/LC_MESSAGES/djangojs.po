@@ -16,6 +16,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.5\n"
 
+#: pod/video/static/js/filter.js
+msgid "Categories"
+msgstr "Catégories"
+
 #: pod/video/static/js/FilterManager.js
 msgid "Filter : %s - %s"
 msgstr "Filtre : %s - %s"

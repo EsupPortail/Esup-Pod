@@ -619,7 +619,7 @@ def dashboard(request):
         error_message["types"] = ""
 
     if not videos_list:
-        error_message["main"] = "You haven't uploaded any videos yet."
+        error_message["main"] = "You haven’t uploaded any videos yet."
         error_message["types"] = "Click on “Add a video” to start populating your dashboard."
 
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))

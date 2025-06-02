@@ -9836,7 +9836,7 @@ msgid ""
 msgstr ""
 "Pour éditer plusieurs vidéos en même temps, vous pouvez cocher celles que "
 "vous voulez modifier, puis sélectionner une action à effectuer dans le "
-"formulaire ci-dessous puis appliquer. Vous pouvez également utiliser"
+"formulaire ci-dessous puis appliquer. Vous pouvez également utiliser "
 "les filtres en haut de page pour affiner votre sélection de vidéos."
 
 #: pod/video/templates/videos/dashboard.html
@@ -9877,8 +9877,8 @@ msgstr[0] "%(counter)s vidéo"
 msgstr[1] "%(counter)s vidéos"
 
 #: pod/video/templates/videos/dashboard.html
-msgid "Select all videos"
-msgstr "Sélectionner toutes les vidéos"
+msgid "Select all"
+msgstr "Tout sélectionner"
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Clear selection"
