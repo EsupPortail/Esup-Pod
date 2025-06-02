@@ -1766,6 +1766,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.7.0"
+                        },
+                        "SOCIAL_SHARE": {
+                            "default_value": "['X', 'FACEBOOK', 'LINKEDIN', 'BLUESKY']",
+                            "description": {
+                                "en": [
+                                    "Choice of display of social network sharing links"
+                                ],
+                                "fr": [
+                                    "Choix d'affichage des liens de partage des réseaux sociaux"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.0.0"
                         }
                     },
                     "title": {

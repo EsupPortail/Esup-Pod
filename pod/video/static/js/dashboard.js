@@ -15,12 +15,12 @@
 
 // Read-only globals defined in dashboard.html
 /*
-  global urlUpdateVideos csrftoken formFieldsets displayMode
+  global urlUpdateVideos csrftoken formFieldsets displayMode listTheme videosListContainerId
 */
 
-// Read-only globals defined in video_select.js
+// Read-only globals defined in main.js
 /*
-  global selectedVideos
+  global channel_callback init_theme_selector
 */
 
 /* exported dashboardActionReset */
@@ -132,33 +132,35 @@ async function bulkUpdate() {
       let element = formGroup.querySelector(
         ".form-control, .form-check-input, .form-select, input[name='thumbnail']",
       );
-      if (element.hasAttribute("multiple")) {
-        // Get multiple values for channel or theme
-        var options = element.selectedOptions;
-        for (var i = 0, iLen = options.length; i < iLen; i++) {
-          formData.append(
-            element.getAttribute("name"),
-            options[i].value.toString(),
-          );
+      if (element) {
+        if (element.hasAttribute("multiple")) {
+          // Get multiple values for channel or theme
+          var options = element.selectedOptions;
+          for (var i = 0, iLen = options.length; i < iLen; i++) {
+            formData.append(
+              element.getAttribute("name"),
+              options[i].value.toString(),
+            );
+          }
+        } else {
+          switch (element.type) {
+            case "checkbox":
+              dashboardValue = element.checked;
+              break;
+            case "textarea":
+              dashboardValue = tinyMCE
+                .get("id_" + element.getAttribute("name"))
+                .getContent();
+              break;
+            default:
+              dashboardValue = document.getElementById(
+                "id_" + element.getAttribute("name"),
+              ).value;
+          }
+          formData.append(element.getAttribute("name"), dashboardValue);
         }
-      } else {
-        switch (element.type) {
-          case "checkbox":
-            dashboardValue = element.checked;
-            break;
-          case "textarea":
-            dashboardValue = tinyMCE
-              .get("id_" + element.getAttribute("name"))
-              .getContent();
-            break;
-          default:
-            dashboardValue = document.getElementById(
-              "id_" + element.getAttribute("name"),
-            ).value;
-        }
-        formData.append(element.getAttribute("name"), dashboardValue);
+        updateFields.push(element.name);
       }
-      updateFields.push(element.name);
     });
   }
 
@@ -279,57 +281,13 @@ function showDashboardFormError(element, message, alertClass) {
 // Manage themes initially and when another channel is selected by the user
 let id_channel = document.getElementById("id_channel");
 if (id_channel) {
-  let tab_initial = new Array();
-  let id_theme = document.getElementById("id_theme");
+  const id_theme = document.getElementById("id_theme");
 
-  // Save all themes in tab_initial array, then remove all themes options from selection list
-  const update_theme = function () {
-    tab_initial = [];
-    if (id_theme) {
-      for (let i = 0; i < id_theme.options.length; i++) {
-        if (id_theme.options[i].selected) {
-          tab_initial.push(id_theme.options[i].value);
-        }
-      }
-      // Remove all options
-      for (option in id_theme.options) {
-        id_theme.options.remove(0);
-      }
-    }
-  };
-  update_theme();
   // Callback function to execute when mutations are observed
   const id_channel_callback = (mutationList, observer) => {
     for (const mutation of mutationList) {
       if (mutation.type === "childList") {
-        update_theme();
-        var new_themes = [];
-        var channels = id_channel.parentElement.querySelectorAll(
-          ".select2-selection__choice",
-        );
-        for (let i = 0; i < channels.length; i++) {
-          for (let j = 0; j < id_channel.options.length; j++) {
-            if (channels[i].title === id_channel.options[j].text) {
-              if (listTheme["channel_" + id_channel.options[j].value]) {
-                new_themes.push(
-                  get_list(
-                    listTheme["channel_" + id_channel.options[j].value],
-                    0,
-                    tab_initial,
-                    (tag_type = "option"),
-                    (li_class = ""),
-                    (attrs = ""),
-                    (add_link = false),
-                    (current = ""),
-                    (channel = id_channel.options[j].text + ": "),
-                  ),
-                );
-              }
-            }
-          }
-        }
-        id_theme.innerHTML = new_themes.join("\n");
-        flashing(id_theme, 1000);
+        channel_callback(id_channel, id_theme, listTheme);
       }
     }
   };
@@ -353,28 +311,10 @@ if (id_channel) {
   });
   select_channel_observer.observe(id_channel.parentElement, {
     //document.body is node target to observe
-    childList: true, //This is a must have for the observer with subtree
-    subtree: true, //Set to true if changes must also be observed in descendants.
+    childList: true, // This is a must have for the observer with subtree
+    subtree: true, // Set to true if changes must also be observed in descendants.
   });
 
-  var initial_themes = [];
-  for (let i = 0; i < id_channel.options.length; i++) {
-    if (listTheme["channel_" + id_channel.options[i].value]) {
-      initial_themes.push(
-        get_list(
-          listTheme["channel_" + id_channel.options[i].value],
-          0,
-          tab_initial,
-          (tag_type = "option"),
-          (li_class = ""),
-          (attrs = ""),
-          (add_link = false),
-          (current = ""),
-          (channel = id_channel.options[i].text + ": "),
-        ),
-      );
-    }
-  }
-  id_theme.innerHTML = initial_themes.join("\n");
+  init_theme_selector(id_channel, id_theme, listTheme);
 }
 /** end channel **/

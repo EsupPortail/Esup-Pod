@@ -143,6 +143,7 @@ def context_settings(request):
     )
     new_settings["USE_NOTIFICATIONS"] = USE_NOTIFICATIONS
     new_settings["WEBTV_MODE"] = WEBTV_MODE
+    new_settings["SOCIAL_SHARE"] = django_settings.SOCIAL_SHARE
     return new_settings
 
 
