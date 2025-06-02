@@ -53,31 +53,17 @@ def get_dressings(user, accessgroup_set) -> list:
 
 def user_can_edit_dressing(request: WSGIRequest, dressing: Dressing) -> bool:
     """Find out if the user can edit this dressing."""
-    if (
-        dressing
-        and (request.user not in dressing.owners.all())
-        and (
-            not (
-                request.user.is_superuser
-                or request.user.has_perm("dressing.edit_dressing")
-            )
-        )
-    ):
-        return False
-    return True
+    user = request.user
+    is_owner = dressing and user in dressing.owners.all()
+    has_rights = user.is_superuser or user.has_perm("dressing.change_dressing")
+
+    return is_owner or has_rights
 
 
 def user_can_delete_dressing(request: WSGIRequest, dressing: Dressing) -> bool:
     """Find out if the user can delete this dressing."""
-    if (
-        dressing
-        and (request.user not in dressing.owners.all())
-        and (
-            not (
-                request.user.is_superuser
-                or request.user.has_perm("dressing.delete_dressing")
-            )
-        )
-    ):
-        return False
-    return True
+    user = request.user
+    is_owner = dressing and user in dressing.owners.all()
+    has_rights = user.is_superuser or user.has_perm("dressing.delete_dressing")
+
+    return is_owner or has_rights
