@@ -15,11 +15,7 @@ from pod.video.models import Video
 from pod.video_encode_transcript.encode import start_encode
 from .forms import DressingForm, DressingDeleteForm
 from .models import Dressing
-from .utils import (
-    get_dressings,
-    user_can_edit_dressing,
-    user_can_delete_dressing
-)
+from .utils import get_dressings, user_can_edit_dressing, user_can_delete_dressing
 
 
 @csrf_protect
@@ -161,7 +157,9 @@ def dressing_delete(request: WSGIRequest, dressing_id: int):
 
     # Only one of the owners or admins can delete their dressing
     if not user_can_delete_dressing(request, dressing):
-        messages.add_message(request, messages.ERROR, _("You cannot delete this dressing."))
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete this dressing.")
+        )
         raise PermissionDenied
 
     form = DressingDeleteForm()

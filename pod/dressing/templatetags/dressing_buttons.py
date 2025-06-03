@@ -3,10 +3,7 @@
 from django.template import Library
 
 from ..models import Dressing
-from ..utils import (
-    user_can_edit_dressing,
-    user_can_delete_dressing
-)
+from ..utils import user_can_edit_dressing, user_can_delete_dressing
 
 register = Library()
 
