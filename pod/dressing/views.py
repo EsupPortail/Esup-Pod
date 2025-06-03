@@ -15,7 +15,11 @@ from pod.video.models import Video
 from pod.video_encode_transcript.encode import start_encode
 from .forms import DressingForm, DressingDeleteForm
 from .models import Dressing
-from .utils import get_dressings
+from .utils import (
+    get_dressings,
+    user_can_edit_dressing,
+    user_can_delete_dressing
+)
 
 
 @csrf_protect
@@ -82,7 +86,8 @@ def dressing_edit(request: WSGIRequest, dressing_id: int):
     """Edit a dressing object."""
     dressing_edit = get_object_or_404(Dressing, id=dressing_id)
 
-    if dressing_edit and (not (request.user.is_superuser or request.user.is_staff)):
+    # Only one of the owners or admins can edit their dressing
+    if not user_can_edit_dressing(request, dressing_edit):
         messages.add_message(request, messages.ERROR, _("You cannot edit this dressing."))
         raise PermissionDenied
 
@@ -154,10 +159,9 @@ def dressing_delete(request: WSGIRequest, dressing_id: int):
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
-    if dressing and (not (request.user.is_superuser or request.user.is_staff)):
-        messages.add_message(
-            request, messages.ERROR, _("You cannot delete this dressing.")
-        )
+    # Only one of the owners or admins can delete their dressing
+    if not user_can_delete_dressing(request, dressing):
+        messages.add_message(request, messages.ERROR, _("You cannot delete this dressing."))
         raise PermissionDenied
 
     form = DressingDeleteForm()
