@@ -12,8 +12,10 @@ lang: en
 
 ## First installation
 
-* [Installation stand-alone](install_standalone_en)
-* [Installation Docker](install_docker_en)
+* [Stand-alone Installation](install_standalone_en)
+* [Docker Installation Docker](install_docker_en)
+* [Ansible Installation (by ENSAM)](https://gitlab.ensam.eu/apps/esup-pod)
+* [Production Deployment](production-mode_en)
 
 ### Optional features
 
