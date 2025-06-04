@@ -20,7 +20,7 @@ from pod.main.utils import is_ajax
 from pod.main.views import in_maintenance
 from pod.video.views import CURSUS_CODES, get_owners_has_instances
 from pod.video.models import Video
-from pod.video.utils import sort_videos_list
+from pod.video.utils import sort_videos_queryset
 
 from .models import Playlist, PlaylistContent
 from .forms import PlaylistForm, PlaylistPasswordForm, PlaylistRemoveForm
@@ -241,7 +241,7 @@ def render_playlist(
     request: WSGIRequest, playlist: Playlist, sort_field: str, sort_direction: str
 ):
     """Render playlist page with the videos list of this."""
-    videos_list = sort_videos_list(
+    videos_list = sort_videos_queryset(
         get_video_list_for_playlist(playlist), sort_field, sort_direction
     )
     count_videos = len(videos_list)
