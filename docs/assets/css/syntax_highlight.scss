@@ -11,10 +11,38 @@ pre.highlight{
   padding: 1rem;
 }
 
-.highlight .nv {
-  color: #027F88;
+.highlight .bp {
+  color: #7B7070;
 }
 
-.highlight .nb{
+.highlight .m,
+.highlight .mb,
+.highlight .mi,
+.highlight .mx,
+.highlight .mo {
+  /* #009999 */
+  color: #237F7B;
+}
+
+.highlight .nv,
+.highlight .na,
+.highlight .no {
+  /* #008080 */
+  color: #027F88
+}
+
+.highlight .nb {
+  /* #0086B3 */
   color: #0B7AAC;
+}
+
+/* Commentaires */
+.highlight .c1 {
+  /* #999988 */
+  color: #73736B;
+}
+.highlight .c,
+.highlight .cd {
+  /* #767453 */
+  color: #767453;
 }

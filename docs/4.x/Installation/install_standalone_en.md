@@ -26,13 +26,15 @@ pod@pod:~$ sudo apt-get install git curl vim
 ### Virtual environment creation
 
 ```sh
+# Check python version
 pod@pod:~$ sudo python3 -V
-pod@pod:~$ sudo python -V
+# Pod v4.0 is compatible with Python versions 3.9 to 3.12.
+# Check also [Status of Python versions](https://devguide.python.org/versions/) to ensure you're not using an obsolete one.
 pod@pod:~$ sudo apt-get install -y python3-pip
 pod@pod:~$ sudo pip3 install virtualenvwrapper
 ```
 
-Since python 3.10, it is no longer possible to install pip outside an environment. To install _virtualenvwrapper_, you must add **--break-system-packages** at the end of the line.
+Since python 3.10, it is no longer possible to install pip outside an environment. To install *virtualenvwrapper*, you must add **--break-system-packages** at the end of the line.
 
 At the end of the .bashrc file, add these lines:
 
@@ -59,13 +61,13 @@ pod@pod:~$ mkvirtualenv --system-site-packages --python=/usr/bin/python3 django_
 
 ## Getting the sources
 
-Regarding the location of the project, I recommend putting it in _/usr/local/django_projects_.
+Regarding the location of the project, I recommend putting it in `/usr/local/django_projects`.
 
 ```sh
 (django_pod4)pod@pod:~$ sudo mkdir /usr/local/django_projects
 ```
 
-You can make a symbolic link in your home to get to the _django_projects_ directory faster:
+You can make a symbolic link in your home to get to the `django_projects` directory faster:
 
 ```sh
 (django_pod4)pod@pod:~$ ln -s /usr/local/django_projects django_projects
@@ -85,14 +87,15 @@ Give the pod user rights to read and write the:
 
 Finally, you can retrieve the sources
 
-> Note
+> **Note**
+>
 > If you need to use a proxy, you can specify it with this command:
 >
 > ```sh
 > (django_pod4) pod@pod:~/django_projects$ git config --global http.proxy http://PROXY:PORT
 > ```
 
-To retrieve the V4 sources, use this command: `git clone https://github.com/EsupPortail/Esup-Pod.git podv4`
+To retrieve the V4 sources, use this command:
 
 ```sh
 (django_pod4) pod@pod:~/django_projects$ git clone https://github.com/EsupPortail/Esup-Pod.git podv4
@@ -105,6 +108,127 @@ Delta resolution: 100% (3076/3076), done.
 
 (django_pod4) pod@pod:~/django_projects$ cd podv4/
 ```
+
+### `settings_local.py` configuration file
+
+Create a local configuration file in the `pod/custom` folder.
+
+This file contains only those variables whose default values you wish to change. Below is an example of a file with the main variables to be modified: database connection, a custom CSS file, remove nl language, etc. You can adapt this file and paste it into your own.
+
+```sh
+(django_pod4) pod@Pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
+```
+
+```py
+"""Django local settings for pod_project.Django version: 4.2"""
+
+##
+# The secret key for your particular Django installation.
+#
+# This is used to provide cryptographic signing,
+# and should be set to a unique, unpredictable value.
+#
+# Django will not start if this is not set.
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#secret-key
+#
+# SECURITY WARNING: keep the secret key used in production secret!
+# You can visit https://djecrety.ir/ to get it
+SECRET_KEY = 'A_CHANGER'
+
+##
+# DEBUG mode activation
+#
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#debug
+#
+# SECURITY WARNING: MUST be set to False when deploying into production.
+DEBUG = True
+
+##
+# A list of strings representing the host/domain names
+# that this Django site is allowed to serve.
+#
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = ['localhost']
+
+##
+# A tuple that lists people who get code error notifications
+#   when DEBUG=False and a view raises an exception.
+#
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-ADMINS
+#
+ADMINS = (
+    ('Name', 'adminmail@univ.fr'),
+)
+
+##
+# Internationalization and localization.
+#
+# https://docs.djangoproject.com/fr/4.2/topics/i18n/
+# https://github.com/django/django/blob/master/django/conf/global_settings.py
+LANGUAGES = (
+    ('fr', 'Français'),
+    ('en', 'English')
+)
+
+# Hide Users in navbar
+HIDE_USER_TAB = True
+# Hide Types tab in navbar
+HIDE_TYPES_TAB = True
+# Hide Tags
+HIDE_TAGS = True
+# Hide disciplines in navbar
+HIDE_DISCIPLINES = True
+
+##
+# eMail settings
+#
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#email-host
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#email-port
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#default-from-email
+#
+#   username: EMAIL_HOST_USER
+#   password: EMAIL_HOST_PASSWORD
+#
+EMAIL_HOST = 'smtp.univ.fr'
+EMAIL_PORT = 25
+DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
+
+# https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-SERVER_EMAIL
+SERVER_EMAIL = 'noreply@univ.fr'
+
+##
+# THIRD PARTY APPS OPTIONNAL
+#
+USE_PODFILE = True
+
+##
+# TEMPLATE Settings
+#
+TEMPLATE_VISIBLE_SETTINGS = {
+    "TITLE_SITE": "Esup.Pod",
+    "TITLE_ETB": "Consortium Esup",
+    "LOGO_SITE": "img/logoPod.svg",
+    "LOGO_COMPACT_SITE": "img/logoPod.svg",
+    "LOGO_ETB": "img/logo_etb.svg",
+    "LOGO_PLAYER": "img/logoPod.svg",
+    "FOOTER_TEXT": (
+        "La Maison des Universités 103 Bvd St Michel",
+        "75005  PARIS - France"
+    ),
+    "LINK_PLAYER": "http://www.univ.fr",
+    "CSS_OVERRIDE": "custom/mycss.css",
+    "PRE_HEADER_TEMPLATE": ""
+}
+
+##
+# A string representing the time zone for this installation. (default=UTC)
+#
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+TIME_ZONE = 'Europe/Paris'
+```
+
+All available variables can be found on this page:
+[LINK TODO] Platform configuration
 
 ## Third-party applications
 
@@ -146,9 +270,9 @@ In theory, the service starts automatically. If you've installed Redis on the sa
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo service redis-server status
 ```
 
-If you're using Redis on another machine, don't forget to modify the bind in the _/etc/redis/redis.conf_ configuration file.
+If you're using Redis on another machine, don't forget to modify the bind in the `/etc/redis/redis.conf` configuration file.
 
-If you don't want to change the bind, you can also modify your _settings_local.py_ and customize this extract from the default _settings.py_ with your <my_redis_host>.
+If you don't want to change the bind, you can also modify your `settings_local.py` and customize this extract from the default `settings.py` with your `<my_redis_host>`.
 
 ```py
 CACHES = {
@@ -181,7 +305,7 @@ SESSION_REDIS = {
 
 ### Elasticsearch
 
-Depending on the version of Elasticsearch you're going to use, the dependency versions may change. Versions 6 and 7 are currently no longer maintained. Version 8 is to be configured below. Version 6 is the default in Pod.
+Depending on the version of Elasticsearch you're going to use, the dependency versions may change. Versions 6 and 7 are currently no longer maintained. Version 8 is the default in Pod.
 
 #### Elasticsearch 8
 
@@ -192,10 +316,6 @@ To use Elasticsearch 8, you need java 17 on your machine.
 ```
 
 To install Elasticsearch on Debian using packages, follow the instructions at <https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html>.
-
-You can install Elasticsearch in version 7 (more maintained) or version 8.
-
-Here’s how to install ES8:
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
@@ -220,7 +340,7 @@ discovery.seed_hosts: ["127.0.0.1"]
 cluster.initial_master_nodes: ["pod-1"]
 ```
 
-**Il est recommandé d'utiliser le mode security d'ES8.**
+**ES8 security mode is recomended.**
 Generate pod user for ES:
 
 ```sh
@@ -301,18 +421,6 @@ If you are using a proxy:
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ cd /usr/share/elasticsearch/
-(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo ES_JAVA_OPTS="-Dhttp.proxyHost=proxy.univ.fr -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.univ.fr -Dhttps.proxyPort=3128" /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
- -> Downloading analysis-icu from elastic
-[=================================================] 100%
--> Installed analysis-icu
-(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo /etc/init.d/elasticsearch restart
-[ ok ] Restarting elasticsearch (via systemctl): elasticsearch.service.
-```
-
-Warning, for ES8 behind a proxy:
-
-```sh
-(django_pod4) pod@pod:~/django_projects/podv4$ cd /usr/share/elasticsearch/
 (django_pod4) pod@pod:/usr/share/elasticsearch$ sudo CLI_JAVA_OPTS="-Dhttp.proxyHost=proxy.univ.fr -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.univ.fr -Dhttps.proxyPort=3128" /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
  -> Downloading analysis-icu from elastic
 [=================================================] 100%
@@ -323,11 +431,11 @@ Warning, for ES8 behind a proxy:
 
 #### Pod index creation
 
-> To use elasticsearch 7 or 8, you must:
-> Add ES_VERSION = 7 or ES_VERSION = 8 to your settings file and modify the elasticsearch client version in the _requirements.txt_ file.
+> To use elasticsearch 7, you must:
+> Add `ES_VERSION = 7` to your settings file and modify the elasticsearch client version in the `requirements.txt` file.
 >
 > ```conf
-> elasticsearch==8.9.0
+> elasticsearch==7.17.9
 > ```
 >
 > And don't forget to relaunch
@@ -348,8 +456,8 @@ Successfully create index Video
 {“took”:35,“timed_out”:false,“_shards”:{“total”:2,“successful”:2,“skipped”:0,“failed”:0},“hits”:{“total”:0,“max_score”:null,“hits”:[]}}
 ```
 
-If the python command doesn't work, first create the index by hand with a `curl -XPUT “http://127.0.0.1:9200/pod” (options -k --noproxy -u <user>:<pwd>` to be expected if ES8 in security mode)
-If you're moving elastic search to another machine, add its access URL to the _settings_local.py_ file:
+If the python command doesn't work, first create the index by hand with a `curl -XPUT "http://127.0.0.1:9200/pod"` (options `-k --noproxy -u <user>:<pwd>` to be expected if ES8 in security mode)
+If you're moving elastic search to another machine, add its access URL to the `settings_local.py` file:
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
@@ -411,7 +519,7 @@ Install dependencies.
 (django_pod4) pod@pod:~/django_projects/podv4/pod$ yarn
 ```
 
-Finally, deploy the static files.
+Finally, deploy the static files. (execution takes several minutes)
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py collectstatic --no-input --clear
@@ -426,129 +534,6 @@ Run the root script to create the migration files, then run them to create the e
 ```sh
 (django_pod4) pod@Pod:~/django_projects/podv4$ make createDB
 ```
-
-_settings_local.py_ configuration file
-Create a local configuration file in the _pod/custom_ folder.
-
-This file contains only those variables whose default values you wish to change. Below is an example of a file with the main variables to be modified: database connection, a custom CSS file, pod green theme, remove nl language, etc. You can adapt this file and paste it into your own.
-
-```sh
-(django_pod4) pod@Pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
-```
-
-```py
-"""Django local settings for pod_project.Django version: 3.2"""
-
-##
-# The secret key for your particular Django installation.
-#
-# This is used to provide cryptographic signing,
-# and should be set to a unique, unpredictable value.
-#
-# Django will not start if this is not set.
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key
-#
-# SECURITY WARNING: keep the secret key used in production secret!
-# You can visit https://djecrety.ir/ to get it
-SECRET_KEY = 'A_CHANGER'
-
-##
-# DEBUG mode activation
-#
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#debug
-#
-# SECURITY WARNING: MUST be set to False when deploying into production.
-DEBUG = True
-
-##
-# A list of strings representing the host/domain names
-# that this Django site is allowed to serve.
-#
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['localhost']
-
-##
-# A tuple that lists people who get code error notifications
-#   when DEBUG=False and a view raises an exception.
-#
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-ADMINS
-#
-ADMINS = (
-    ('Name', 'adminmail@univ.fr'),
-)
-
-
-##
-# Internationalization and localization.
-#
-# https://docs.djangoproject.com/fr/3.2/topics/i18n/
-# https://github.com/django/django/blob/master/django/conf/global_settings.py
-LANGUAGES = (
-    ('fr', 'Français'),
-    ('en', 'English')
-)
-
-#Hide Users in navbar
-HIDE_USER_TAB = True
-# Hide Types tab in navbar
-HIDE_TYPES_TAB = True
-# Hide Tags
-HIDE_TAGS = True
-# Hide disciplines in navbar
-HIDE_DISCIPLINES = True
-
-##
-# eMail settings
-#
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#email-port
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#default-from-email
-#
-#   username: EMAIL_HOST_USER
-#   password: EMAIL_HOST_PASSWORD
-#
-EMAIL_HOST = 'smtp.univ.fr'
-EMAIL_PORT = 25
-DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
-
-# https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-SERVER_EMAIL
-SERVER_EMAIL = 'noreply@univ.fr'
-
-##
-# THIRD PARTY APPS OPTIONNAL
-#
-USE_PODFILE = True
-
-##
-# TEMPLATE Settings
-#
-TEMPLATE_VISIBLE_SETTINGS = {
-    'TITLE_SITE': 'Lille.Pod',
-    'TITLE_ETB': 'Université de Lille',
-    'LOGO_SITE': 'img/logoPod.svg',
-    'LOGO_COMPACT_SITE': 'img/logoPod.svg',
-    'LOGO_ETB': 'img/logo_etb.svg',
-    'LOGO_PLAYER': 'img/logoPod.svg',
-    'FOOTER_TEXT': (
-        '42, rue Paul Duez',
-        '59000 Lille - France',
-        ('<a href="https://goo.gl/maps/AZnyBK4hHaM2"'
-            ' target="_blank">Google maps</a>')
-    ),
-    'LINK_PLAYER': 'http://www.univ-lille.fr',
-    'CSS_OVERRIDE': 'custom/mycss.css',
-    'PRE_HEADER_TEMPLATE': ''
-}
-
-##
-# A string representing the time zone for this installation. (default=UTC)
-#
-# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-TIME_ZONE = 'Europe/Paris'
-```
-
-All available variables can be found on this page:
-[LINK TODO] Platform configuration
 
 ### SuperUser
 
@@ -571,7 +556,7 @@ To check that your instance is operational, you can run the unit tests:
 
 This paragraph was written for pod v2.9.x; it may not apply to pod v4.
 
-There are several add-on modules that can be added to pod (enrichment, live broadcast, etc.). To activate these modules, add the following line to _settings_local.py_.
+There are several add-on modules that can be added to pod (enrichment, live broadcast, etc.). To activate these modules, add the following line to `settings_local.py`.
 
 ```py
 ##
@@ -583,7 +568,7 @@ THIRD_PARTY_APPS = ["live", "enrichment"]
 > Enrichment
 >
 > Depending on your system settings, enrichments may return a 403 forbidden error.
-> To avoid this problem, you can add this line to _settings_local.py_.
+> To avoid this problem, you can add this line to `settings_local.py`.
 >
 > ```py
 > FILE_UPLOAD_PERMISSIONS = 0o644 # Octal number

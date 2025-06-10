@@ -6,18 +6,18 @@ lang: fr
 
 # Système de migration des données entre la version 3 et la version 4
 
-Ce document décrit le processus de migration des données de l'application Pod depuis la version 3.8.x vers la version 4.0.x.
+Ce document décrit le processus de migration des données de l’application Pod depuis la version 3.8.x vers la version 4.0.x.
 Le système repose sur deux scripts principaux :
 
-- l'un pour exporter les données de Pod v3 vers un fichier JSON,
-- l'autre pour importer ce fichier JSON dans Pod v4.
+- l’un pour exporter les données de Pod v3 vers un fichier JSON,
+- l’autre pour importer ce fichier JSON dans Pod v4.
 
 ## Prérequis
 
 - Une version de Pod en 3.8.x (de 3.8.1 à 3.8.4 à ce jour)
 - Une version de Pod en 4.0.x (4.0.beta à ce jour)
-- Assurez-vous d'avoir accès à la base de données de Pod, en version 3.8.x (MariaDB/MySQL ou PostgreSQL).
-- Assurez-vous d'avoir accès à la base de données de Pod, en version 4.0.x (MariaDB/MySQL ou PostgreSQL).
+- Assurez-vous d’avoir accès à la base de données de Pod, en version 3.8.x (MariaDB/MySQL ou PostgreSQL).
+- Assurez-vous d’avoir accès à la base de données de Pod, en version 4.0.x (MariaDB/MySQL ou PostgreSQL).
 
 ---
 
@@ -29,7 +29,7 @@ Ce premier script exporte les données de la base de données Pod v3.8.x vers un
 
 *Attention, ce script doit être exécuté depuis un serveur de Pod v3.*
 
-La dernière version de ce script `export_data_from_v3_to_v4.py` est accessible ici : [https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands](https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands)
+La dernière version de ce script `export_data_from_v3_to_v4.py` est accessible ici : [https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands](https://github.com/EsupPortail/Esup-Pod/raw/refs/heads/main/pod/video/management/commands/export_data_from_v3_to_v4.py)
 
 Il est nécessaire de récupérer ce script et de le positionner dans le répertoire `pod/video/management/commands`, avec les bons droits.
 {: .alert .alert-warning}
@@ -38,8 +38,8 @@ Il est nécessaire de récupérer ce script et de le positionner dans le répert
 
 - Exporte les tables spécifiées de la base de données Pod v3 vers un fichier JSON.
 - Prend en charge les bases de données MariaDB/MySQL et PostgreSQL.
-- Crée un répertoire pour stocker les données exportées s'il n'existe pas déjà.
-- Fournit des messages détaillés de succès et d'erreur.
+- Crée un répertoire pour stocker les données exportées s’il n’existe pas déjà.
+- Fournit des messages détaillés de succès et d’erreur.
 
 ### Remarques importantes pour l’export
 
@@ -49,11 +49,25 @@ Il est nécessaire de récupérer ce script et de le positionner dans le répert
 Vérifier votre `custom/settings_local.py` pour trouver le répertoire configuré dans `BASE_DIR`.
 {: .alert .alert-warning}
 
-- Ce script peut être exécuté autant de fois que nécessaire ; le fichier JSON est régénéré à chaque exécution.
+- Ce script peut être exécuté autant de fois que nécessaire ; le fichier JSON est régénéré à chaque exécution.
+
+### Consolidation des données
+
+Il peut être utile avant de tenter un export de s’assurer de la consolidation des données.
+Un script "check_database_problems.py" dédié à cet usage est accessible ici : [https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands](https://github.com/EsupPortail/Esup-Pod/raw/refs/heads/main/pod/video/management/commands/check_database_problems.py)
+
+Il est nécessaire de récupérer ce script et de le positionner dans le répertoire `pod/video/management/commands`, avec les bons droits.
+{: .alert .alert-warning}
+
+```bash
+python manage.py check_database_problems
+```
+
+Le script va détecter et corriger d’éventuelles incohérences.
 
 ### Exportation
 
-Exécutez le script depuis un serveur Pod v3 en utilisant la commande suivante :
+Exécutez le script d’export depuis un serveur Pod v3 en utilisant la commande suivante :
 
 ```bash
 python manage.py export_data_from_v3_to_v4
@@ -71,8 +85,8 @@ Ce script importe les données du fichier JSON généré précédemment dans une
 
 - Importe un fichier JSON généré avec les tables spécifiées de la base de données Pod v3.
 - Prend en charge les bases de données MariaDB/MySQL et PostgreSQL.
-- Crée un répertoire pour stocker les données exportées s'il n'existe pas déjà (généralement inutile).
-- Fournit des messages détaillés de succès et d'erreur.
+- Crée un répertoire pour stocker les données exportées s’il n’existe pas déjà (généralement inutile).
+- Fournit des messages détaillés de succès et d’erreur.
 - Prend en charge la gestion des mots-clés pour les vidéos et les enregistreurs via la bibliothèque Tagulous.
 - Peut exécuter une commande Bash pour créer la base de données et initialiser les données.
 - Prend en charge une gestion sécurisée des erreurs et un mode de simulation.
@@ -92,14 +106,14 @@ Vérifier votre `custom/settings_local.py` pour trouver le répertoire configur�
 - Si vous rencontrez une erreur de type "Too many connections", vous pouvez augmenter la valeur de la variable `time_sleep`.
   Le traitement prendra plus de temps, mais pourra se terminer sans erreur.
 
-- Ce script peut être exécuté autant de fois que nécessaire ; les données sont supprimées avant l'insertion.
+- Ce script peut être exécuté autant de fois que nécessaire ; les données sont supprimées avant l’insertion.
 
-- Selon vos données, ce script peut prendre beaucoup de temps. Typiquement, l'importation de la table `video_viewcount` est longue.
+- Selon vos données, ce script peut prendre beaucoup de temps. Typiquement, l’importation de la table `video_viewcount` est longue.
   De plus, comme la librairie pour la gestion des mots-clés a changé entre la v3 et la v4, le traitement est spécifique et nécessite du temps pour éviter les erreurs de type "Too many connections".
 
-- Après l'importation, n'oubliez pas de rendre le `MEDIA_ROOT` de Pod v3 accessible aux serveurs Pod v4.
+- Après l’importation, n’oubliez pas de rendre le `MEDIA_ROOT` de Pod v3 accessible aux serveurs Pod v4.
 
-- Après l'importation, n'oubliez pas de **réindexer toutes les vidéos** pour Elasticsearch avec :
+- Après l’importation, n’oubliez pas de **réindexer toutes les vidéos** pour Elasticsearch avec :
 
 ```bash
 python manage.py index_videos --all
@@ -117,7 +131,7 @@ python manage.py import_data_from_v3_to_v4
 
 - `--dry` : Simule ce qui sera réalisé (par défaut=False).
 - `--createDB` : Exécute des commandes Bash pour créer des tables dans la base de données et ajouter des données initiales (voir `make createDB`). La base de données doit être vide (par défaut=False).
-- `--onlytags` : Traite uniquement les mots-clés (par défaut=False). Utile si vous rencontrez le problème 'Too many connections' pour la gestion des mots-clés.
+- `--onlytags` : Traite uniquement les mots-clés (par défaut=False). Utile si vous rencontrez le problème `Too many connections` pour la gestion des mots-clés.
 
 #### Exemples
 
@@ -127,13 +141,13 @@ Mode simulation :
 python manage.py import_data_from_v3_to_v4 --dry
 ```
 
-Si la base de données est totalement vide (sans tables), il est possible d'exécuter cette commande qui réalise un `make createDB` avant l'importation des données :
+Si la base de données est totalement vide (sans tables), il est possible d’exécuter cette commande qui réalise un `make createDB` avant l’importation des données :
 
 ```bash
 python manage.py import_data_from_v3_to_v4 --createDB
 ```
 
-Si vous avez rencontré une erreur de type "Too many connections" lors de l'importation des mots-clés, n'hésitez pas à augmenter la valeur de la variable `time_sleep` (genre 0.4 ou 0.5, en secondes) et relancer le traitement, mais seulement pour les mots-clés :
+Si vous avez rencontré une erreur de type `Too many connections` lors de l’importation des mots-clés, n’hésitez pas à augmenter la valeur de la variable `time_sleep` (genre 0.4 ou 0.5, en secondes) et relancer le traitement, mais seulement pour les mots-clés :
 
 ```bash
 python manage.py import_data_from_v3_to_v4 --onlytags

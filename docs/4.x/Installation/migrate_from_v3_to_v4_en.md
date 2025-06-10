@@ -51,6 +51,20 @@ Check your `custom/settings_local.py` to find the configured `BASE_DIR` director
 
 - This script can be run as many times as needed; the JSON file is regenerated with each execution.
 
+### Data Consolidation
+
+Before attempting an export, it may be useful to ensure data consolidation.
+A dedicated script, `check_database_problems.py`, is available here: [https://github.com/EsupPortail/Esup-Pod/tree/main/pod/video/management/commands](https://github.com/EsupPortail/Esup-Pod/raw/refs/heads/main/pod/video/management/commands/check_database_problems.py)
+
+You need to retrieve this script and place it in the `pod/video/management/commands` directory with the correct permissions.
+{: .alert .alert-warning}
+
+```bash
+python manage.py check_database_problems
+```
+
+The script will detect and fix inconsistencies.
+
 ### Export
 
 Run the script from a Pod v3 server using the following command:

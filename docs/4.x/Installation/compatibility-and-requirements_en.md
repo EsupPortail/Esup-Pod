@@ -17,20 +17,11 @@ See [https://www.debian.org/releases/index.en.html](https://www.debian.org/relea
 As of the writing of this documentation, this would be Debian 12 / Bookworm.
 {: .alert .alert-info}
 
-## Which version of Django can I use with Esup-Pod v4?
+## Which version of Python can I use with Esup-Pod v4?
 
-Esup-Pod v4 works with version 4.2 of the Django framework.
-
-💡It is recommended to take the latest stable version of Django 4.2.
-See [https://www.djangoproject.com/download/#supported-versions](https://www.djangoproject.com/download/#supported-versions)
-As of the writing of this documentation, this would be version 4.2.20.
-{: .alert .alert-info}
-
-## Which version of Python can I use with Esup-Pod v4 / Django 4.2?
-
-| Django Version    | Supported Python Versions                           |
-|-------------------|-----------------------------------------------------|
-| 4.2               | 3.8, 3.9, 3.10, 3.11, 3.12 (added in 4.2.8)         |
+| Esup-Pod Version  | Supported Python Versions |
+|-------------------|---------------------------|
+| 4.2               | 3.9, 3.10, 3.11, 3.12     |
 {: .table .table-striped}
 
 💡It is recommended to take the latest stable version of Python that is supported by Django.
