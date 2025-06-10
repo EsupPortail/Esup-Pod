@@ -29,6 +29,10 @@ lang: fr
 * [Installation d’OpenCast Studio](optional/opencast-studio-install_fr)
 * [Mise en place de la publication de vidéos depuis des enregistreurs](optional/video-publication-from-recorders_fr)
 
+#### Autotranscription
+
+* [Installation de l'autotranscription](optional/auto-transcription-install_fr)
+
 ## Mise à jour
 
 * [Mise à jour standard](upgrade_standalone_fr)
