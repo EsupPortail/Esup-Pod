@@ -19,6 +19,10 @@ lang: fr
 
 ### Fonctionnalités optionnelles
 
+#### Autotranscription
+
+* [Installation de l'autotranscription](optional/auto-transcription-install_fr)
+
 #### BigBlueButton
 
 * [Couplage avec BigBlueButton](optional/meeting-install_fr)
@@ -26,14 +30,14 @@ lang: fr
 * [Mise en place du mode webinaire pour les sessions BigBlueButton](optional/set-up-webinar-mode-bbb-install_fr)
 * [Importer une vidéo externe / un enregistrement BigBlueButton au format vidéo](optional/import-external-video-bbb-recording-install_fr)
 
+#### Notifications
+
+* [Mode PWA et notifications](optional/mode_pwa_notification_fr)
+
 #### OpenCast Studio
 
 * [Installation d’OpenCast Studio](optional/opencast-studio-install_fr)
 * [Mise en place de la publication de vidéos depuis des enregistreurs](optional/video-publication-from-recorders_fr)
-
-#### Autotranscription
-
-* [Installation de l'autotranscription](optional/auto-transcription-install_fr)
 
 ## Mise à jour
 
