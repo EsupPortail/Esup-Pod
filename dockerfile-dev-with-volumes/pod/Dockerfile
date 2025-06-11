@@ -29,10 +29,7 @@ RUN apt-get update \
 
 WORKDIR /usr/src/app
 
-COPY ./requirements.txt .
-COPY ./requirements-conteneur.txt .
-COPY ./requirements-encode.txt .
-COPY ./requirements-dev.txt .
+COPY ./requirements.txt ./requirements-conteneur.txt ./requirements-encode.txt ./requirements-dev.txt .
 RUN mkdir /tmp/node_modules/
 
 COPY --from=source-build-js /tmp/pod/node_modules/ /tmp/node_modules/
