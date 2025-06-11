@@ -1,7 +1,4 @@
-# See FR doc at [https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3]()
-
-# A library for doing speech recognition using a Coqui STT model
-stt==1.4.0 # linux only
+# See doc at [https://esupportail.github.io/Esup-Pod/4.x/Installation/]()
 
 # Offline open source speech recognition API based on Kaldi and Vosk
 vosk==0.3.45

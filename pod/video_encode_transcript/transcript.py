@@ -17,7 +17,6 @@ import importlib.util
 
 if (
     importlib.util.find_spec("vosk") is not None
-    or importlib.util.find_spec("stt") is not None
     or importlib.util.find_spec("whisper") is not None
 ):
     from .transcript_model import start_transcripting
@@ -46,7 +45,7 @@ EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
 TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
-    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
+    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "WHISPER")
 TRANSCRIPTION_NORMALIZE = getattr(settings, "TRANSCRIPTION_NORMALIZE", False)
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
@@ -63,18 +62,6 @@ CAPTIONS_STRICT_ACCESSIBILITY = getattr(
 )
 
 log = logging.getLogger(__name__)
-
-"""
-TO TEST IN THE SHELL -->
-from pod.video.transcript import *
-stt_model = get_model("fr")
-msg, webvtt, all_text = main_stt_transcript(
-    "/test/audio_192k_pod.mp3", # file
-    177, # file duration
-    stt_model # model stt loaded
-)
-print(webvtt)
-"""
 
 
 # ##########################################################################
@@ -113,7 +100,7 @@ def main_threaded_transcript(video_to_encode_id) -> None:
     lang = video_to_encode.transcript
     # check if TRANSCRIPTION_MODEL_PARAM [lang] exist
     if not TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE].get(lang):
-        msg += "\n no stt model found for lang: %s." % lang
+        msg += "\n no transcript model found for lang: %s." % lang
         msg += "Please add it in TRANSCRIPTION_MODEL_PARAM."
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
