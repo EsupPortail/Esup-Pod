@@ -303,11 +303,9 @@ class Command(BaseCommand):
         else:
             msg = (
                 _(
-                    (
-                        "For your information, "
-                        "below is the list of archived videos that have been packaged in "
-                        "your ARCHIVE_ROOT folder, and definitely deleted from %s."
-                    )
+                    "For your information, "
+                    "below is the list of archived videos that have been packaged in "
+                    "your ARCHIVE_ROOT folder, and definitely deleted from %s."
                 )
                 % __TITLE_SITE__
             )
