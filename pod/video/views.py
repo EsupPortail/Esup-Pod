@@ -905,7 +905,7 @@ def get_filtered_videos_list(request, videos_list):
             | Q(additional_owners__username__in=request.GET.getlist("owner"))
         )
     if request.GET.getlist("tag"):
-        videos_list = videos_list.filter(tags__name__in=request.GET.getlist("tag"))
+        videos_list = videos_list.filter(tags__slug__in=request.GET.getlist("tag"))
 
     if request.GET.getlist("cursus"):
         videos_list = videos_list.filter(cursus__in=request.GET.getlist("cursus"))
@@ -1415,6 +1415,10 @@ def video_delete(request, slug=None):
             "videos/video_delete.html",
             {"video": video, "form": form, "page_title": page_title},
         )
+    else:
+        # If the video is not deletable, the video_is_deletable function will raise
+        # a PermissionDenied exception or an error message will be displayed.
+        return redirect(reverse("video:dashboard"))
 
 
 def video_is_deletable(request, video) -> bool:
