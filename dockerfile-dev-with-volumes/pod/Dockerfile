@@ -19,7 +19,6 @@ FROM $PYTHON_VERSION
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        netcat-traditional \
         ffmpeg \
         gettext \
         curl \
@@ -48,6 +47,7 @@ RUN chmod 755 /tmp/my-entrypoint.sh
 # Default shell to bash:
 RUN ln -sf /bin/bash /bin/sh
 
-HEALTHCHECK CMD curl --fail http://pod.localhost:8000 || exit 1
+HEALTHCHECK --timeout=3s --start-period=60s --start-interval=1s CMD \
+    curl --fail http://pod.localhost:8000 || exit 1
 
 ENTRYPOINT ["bash", "/tmp/my-entrypoint.sh"]
