@@ -33,6 +33,9 @@ For example, for a French Vosk model:
 
 Now, you can install one of the two models: **Whisper** or **Vosk**. However, it is recommended to use Whisper.
 
+The Coqui-AI STT model is no longer actively maintained, and as it performs less well than the **Whisper** or **Vosk** models, it has been removed from Pod v4.
+{: .alert .alert-warning}
+
 ---
 
 ## Vosk
