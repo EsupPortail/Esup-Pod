@@ -19,7 +19,7 @@ FROM $PYTHON_VERSION
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        netcat \
+        netcat-traditional \
         ffmpeg \
         gettext \
     && apt-get clean\

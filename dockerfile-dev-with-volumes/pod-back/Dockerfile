@@ -16,7 +16,7 @@ RUN yarn
 FROM $PYTHON_VERSION
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends netcat gettext \
+    && apt-get install -y --no-install-recommends netcat-traditional gettext \
     && apt-get clean\
     && rm -rf /var/lib/apt/lists/*
 
