@@ -2,5 +2,6 @@
 echo "Launching commands into pod-dev"
 until nc -z pod.localhost 8000; do echo waiting for pod-back; sleep 10; done;
 # Serveur xAPI
+watchmedo auto-restart --directory=/usr/src/app --pattern=*.py --recursive -- \
 celery -A pod.xapi.xapi_tasks worker -l INFO -Q xapi --concurrency 1 -n xapi
 sleep infinity

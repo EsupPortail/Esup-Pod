@@ -22,8 +22,11 @@ RUN apt-get update \
 WORKDIR /usr/src/app
 
 COPY ./requirements-encode.txt .
+COPY ./requirements-conteneur.txt .
 
-RUN pip3 install --no-cache-dir -r requirements-encode.txt
+RUN pip3 install --no-cache-dir \
+    --requirement requirements-encode.txt \
+    --requirement requirements-conteneur.txt
 
 # ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod-xapi/my-entrypoint-xapi.sh /tmp/my-entrypoint-xapi.sh

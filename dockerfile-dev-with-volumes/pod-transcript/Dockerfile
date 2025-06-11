@@ -26,9 +26,12 @@ WORKDIR /usr/src/app
 
 COPY ./requirements-encode.txt .
 COPY ./requirements-transcripts.txt .
+COPY ./requirements-conteneur.txt .
 
-RUN pip3 install --no-cache-dir -r requirements-transcripts.txt \
-    && pip3 install --no-cache-dir -r requirements-encode.txt
+RUN pip3 install --no-cache-dir \
+    --requirement requirements-encode.txt \
+    --requirement requirements-transcripts.txt \
+    --requirement requirements-conteneur.txt
 
 # ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod-transcript/my-entrypoint-transcript.sh /tmp/my-entrypoint-transcript.sh
