@@ -154,7 +154,7 @@ You then need to specify the host for the web server (change the parameters in t
 ```sh
 (django_pod) pod@Pod:~/django_projects/pod$ cp pod_nginx.conf pod/custom/.
 (django_pod) pod@Pod:~/django_projects/pod$ vim pod/custom/pod_nginx.conf
-(django_pod) pod@Pod:~/django_projects/pod$ sudo ln -s /usr/local/django_projects/podv3/pod/custom/pod_nginx.conf /etc/nginx/sites-enabled/pod_nginx.conf
+(django_pod) pod@Pod:~/django_projects/pod$ sudo ln -s /usr/local/django_projects/podv4/pod/custom/pod_nginx.conf /etc/nginx/sites-enabled/pod_nginx.conf
 (django_pod) pod@Pod:~/django_projects/pod$ sudo /etc/init.d/nginx restart
 ```
 
@@ -173,7 +173,7 @@ Duplicate the template file and edit it to customize the parameters:
 ```sh
 (django_pod) pod@Pod:~/django_projects/pod$ cp pod_uwsgi.ini pod/custom/.
 (django_pod) pod@Pod:~/django_projects/pod$ vim pod/custom/pod_uwsgi.ini
-(django_pod) pod@Pod:~/django_projects/pod$ sudo uwsgi --ini pod/custom/pod_uwsgi.ini --enable-threads --daemonize /usr/local/django_projects/podv3/pod/log/uwsgi-pod.log --uid pod --gid www-data --pidfile /tmp/pod.pid
+(django_pod) pod@Pod:~/django_projects/pod$ sudo uwsgi --ini pod/custom/pod_uwsgi.ini --enable-threads --daemonize /usr/local/django_projects/podv4/pod/log/uwsgi-pod.log --uid pod --gid www-data --pidfile /tmp/pod.pid
 ...
 [uWSGI] getting INI configuration from pod/custom/pod_uwsgi.ini
 (django_pod) pod@Pod:~/django_projects/pod$
@@ -195,7 +195,7 @@ Description=Pod uWSGI app
 After=syslog.target
 
 [Service]
-ExecStart=/usr/local/bin/uwsgi --ini /usr/local/django_projects/podv3/pod/custom/pod_uwsgi.ini \
+ExecStart=/usr/local/bin/uwsgi --ini /usr/local/django_projects/podv4/pod/custom/pod_uwsgi.ini \
         --enable-threads \
         --pidfile /tmp/pod.pid
 ExecStop=/usr/local/bin/uwsgi --stop /tmp/pod.pid
@@ -239,7 +239,7 @@ Log files can quickly grow on a production server. Therefore, it is recommended 
 `/etc/logrotate.d/esup-pod`
 
 ```conf
-/usr/local/django_projects/podv3/pod/log/*.log {
+/usr/local/django_projects/podv4/pod/log/*.log {
     su pod www-data
     daily
     missingok
