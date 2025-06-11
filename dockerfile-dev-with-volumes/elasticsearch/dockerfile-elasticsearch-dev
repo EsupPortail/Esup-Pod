@@ -6,4 +6,7 @@
 # Conteneur elasticsearch
 ARG ELASTICSEARCH_VERSION=elasticsearch:8.17.3
 FROM $ELASTICSEARCH_VERSION
+
+HEALTHCHECK CMD curl --fail --silent http://elasticsearch.localhost:9200/_cluster/health || exit 1
+
 RUN /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu

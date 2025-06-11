@@ -22,6 +22,7 @@ RUN apt-get update \
         netcat-traditional \
         ffmpeg \
         gettext \
+        curl \
     && apt-get clean\
     && rm -rf /var/lib/apt/lists/*
 
@@ -46,5 +47,7 @@ RUN chmod 755 /tmp/my-entrypoint.sh
 
 # Default shell to bash:
 RUN ln -sf /bin/bash /bin/sh
+
+HEALTHCHECK CMD curl --fail http://pod.localhost:8000 || exit 1
 
 ENTRYPOINT ["bash", "/tmp/my-entrypoint.sh"]

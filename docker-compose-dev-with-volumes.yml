@@ -42,6 +42,8 @@ services:
       - ./.env.dev
     ports:
       - 6379:6379
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
 
 #  redis-commander:
 #    container_name: redis-commander
