@@ -21,7 +21,6 @@ FROM $PYTHON_VERSION
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        netcat-traditional \
         ffmpeg \
         gettext \
         curl \
@@ -47,6 +46,7 @@ RUN pip3 install --no-cache-dir \
 COPY ./dockerfile-dev-with-volumes/pod/my-entrypoint.sh /tmp/my-entrypoint.sh
 RUN chmod 755 /tmp/my-entrypoint.sh
 
-HEALTHCHECK CMD curl --fail http://pod.localhost:8000 || exit 1
+HEALTHCHECK --timeout=3s --start-period=60s --start-interval=1s CMD \
+    curl --fail http://pod.localhost:8000 || exit 1
 
 ENTRYPOINT ["bash", "/tmp/my-entrypoint.sh"]

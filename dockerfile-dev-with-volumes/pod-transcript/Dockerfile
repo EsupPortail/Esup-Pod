@@ -18,7 +18,6 @@ COPY ./pod/ .
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        netcat-traditional \
         sox \
         libsox-fmt-mp3 \
     && apt-get clean\
