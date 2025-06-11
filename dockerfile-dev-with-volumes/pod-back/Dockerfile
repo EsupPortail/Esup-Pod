@@ -20,7 +20,10 @@ FROM $PYTHON_VERSION
 #FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends netcat-traditional gettext \
+    && apt-get install --yes --no-install-recommends \
+        netcat-traditional \
+        gettext \
+        curl \
     && apt-get clean\
     && rm -rf /var/lib/apt/lists/*
 
@@ -42,5 +45,7 @@ RUN pip3 install --no-cache-dir \
 # ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod-back/my-entrypoint-back.sh /tmp/my-entrypoint-back.sh
 RUN chmod 755 /tmp/my-entrypoint-back.sh
+
+HEALTHCHECK CMD curl --fail http://pod.localhost:8000 || exit 1
 
 ENTRYPOINT ["bash", "/tmp/my-entrypoint-back.sh"]

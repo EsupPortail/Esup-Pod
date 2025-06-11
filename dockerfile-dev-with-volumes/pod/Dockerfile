@@ -24,6 +24,7 @@ RUN apt-get update \
         netcat-traditional \
         ffmpeg \
         gettext \
+        curl \
     && apt-get clean\
     && rm -rf /var/lib/apt/lists/*
 
@@ -45,5 +46,7 @@ RUN pip3 install --no-cache-dir \
 # ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod/my-entrypoint.sh /tmp/my-entrypoint.sh
 RUN chmod 755 /tmp/my-entrypoint.sh
+
+HEALTHCHECK CMD curl --fail http://pod.localhost:8000 || exit 1
 
 ENTRYPOINT ["bash", "/tmp/my-entrypoint.sh"]
