@@ -23,9 +23,7 @@ RUN apt-get update \
 
 WORKDIR /usr/src/app
 
-COPY ./requirements-encode.txt .
-COPY ./requirements-transcripts.txt .
-COPY ./requirements-conteneur.txt .
+COPY ./requirements-encode.txt ./requirements-transcripts.txt ./requirements-conteneur.txt .
 
 RUN pip3 install --no-cache-dir \
     --requirement requirements-encode.txt \
