@@ -87,9 +87,21 @@
         {{field_hidden}}
       {% endfor %}
 
+      {% comment %} Scheduling fields: custom rendering, prevent double rendering in field loop {% endcomment %}
+      <div class="form-group mt-3">
+        <div class="form-check">
+          {{ form.enable_scheduling }}
+          <label for="id_enable_scheduling" class="form-check-label">Planifier la publication</label>
+        </div>
+      </div>
+      <div class="form-group mt-2" id="scheduled_publish_date_group" {% if not form.enable_scheduling.value %}style="display:none;"{% endif %}>
+        <label for="id_scheduled_publish_date">Date de publication programmée</label>
+        {{ form.scheduled_publish_date }}
+      </div>
+
       <div class="accordion">
       {% for fieldset in form.fieldsets %}
-        {% with options=fieldset|last name=fieldset|first%}
+        {% with options=fieldset|last name=fieldset|first %}
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button class="accordion-button{% if 'show' in options.classes %}" aria-expanded="true{% else %} collapsed{% endif %}"
@@ -106,7 +118,7 @@
           {% endif %}
 
       {% for field in form.visible_fields %}
-        {% if field.name in options.fields %}
+        {% if field.name in options.fields and field.name not in 'enable_scheduling scheduled_publish_date' %}
         <div class="mt-3 field-{{ field.name }} {% if 'description_' in field.name or 'title_'  in field.name %}collapse ms-4{% endif %}{% if 'description_' in field.name %} description{% endif %}{% if 'title_' in field.name %} title{% endif %}{% with 'is_restricted restrict_access_to_groups password' as res %} {% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
           <div class="form-group{% if field.field.required %} form-group-required{% endif %}{% if field.errors %} errors{% endif %}{% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %} pod-largelink{% endif %}">
             {% if "form-check-input" in field.field.widget.attrs.class %}
@@ -303,6 +315,24 @@
       });
       change_transcript();
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+    var checkbox = document.getElementById("id_enable_scheduling");
+    var dateGroup = document.getElementById("scheduled_publish_date_group");
+    if (checkbox) {
+      checkbox.addEventListener("change", function() {
+        if (checkbox.checked) {
+          dateGroup.style.display = "block";
+        } else {
+          dateGroup.style.display = "none";
+          // Optionnel : vider la date si décoché
+          var dateInput = document.getElementById("id_scheduled_publish_date");
+          if (dateInput) dateInput.value = "";
+        }
+      });
+    }
+  });
+
   </script>
   {% if USE_NOTIFICATIONS and form.instance.encoding_in_progress and request.user.owner.accepts_notifications is not False %}
     <script>

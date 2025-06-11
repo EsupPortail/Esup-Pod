@@ -236,3 +236,23 @@ if (notificationMessage) {
     "Get notified when the video encoding is finished.",
   );
 }
+
+// Scheduling logic
+var schedulingCheckbox = document.getElementById("id_enable_scheduling");
+var dateGroup = document.getElementById("scheduled_publish_date_group");
+var dateInput = document.getElementById("id_scheduled_publish_date");
+if (schedulingCheckbox && dateGroup && dateInput) {
+  function toggleScheduledDate() {
+    if (schedulingCheckbox.checked) {
+      dateGroup.style.display = "block";
+      dateInput.style.display = ""; // Remove display:none if present
+    } else {
+      dateGroup.style.display = "none";
+      dateInput.style.display = "none";
+      dateInput.value = "";
+    }
+  }
+  schedulingCheckbox.addEventListener("change", toggleScheduledDate);
+  // Initial state
+  toggleScheduledDate();
+}

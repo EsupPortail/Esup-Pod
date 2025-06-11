@@ -83,12 +83,12 @@ def task_start_bbb_presentation_encode_and_move_to_destination(
 
 
 @app.task(bind=True)
-def publish_scheduled_videos():
+def publish_scheduled_videos(self):
     """Publish videos that are scheduled to be published."""
     videos_to_publish = Video.objects.filter(
         scheduled_publish_date__lte=now(), 
-        is_published=False
+        is_draft=True
     )
     for video in videos_to_publish:
-        video.is_published = True
+        video.is_draft = False
         video.save()

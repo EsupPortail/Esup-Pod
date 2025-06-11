@@ -609,6 +609,12 @@ class VideoForm(forms.ModelForm):
         initial="public",
         help_text=_("Who can see your content (everyone, just you, or those granted)."),
     )
+    
+    enable_scheduling = forms.BooleanField(
+        label=_("Enable scheduling"),
+        required=False,
+        help_text=_("Enable scheduling for this video."),
+    )
 
     required_css_class = "required"
     videoattrs = {
@@ -687,7 +693,7 @@ class VideoForm(forms.ModelForm):
             {
                 "legend": _("Advanced options"),
                 "classes": "",
-                "fields": ["allow_downloading", "is_360", "disable_comment", "order"],
+                "fields": ["allow_downloading", "is_360", "disable_comment", "order","scheduled_publish_date", "enable_scheduling"],
             },
         ),
     )
@@ -934,7 +940,21 @@ class VideoForm(forms.ModelForm):
         # Manage required fields html
         self.fields = add_placeholder_and_asterisk(self.fields)
         self.fields = add_describedby_attr(self.fields)
+        self.fields['scheduled_publish_date'].widget.input_type = 'datetime-local'
+        self.fields['scheduled_publish_date'].widget.attrs['placeholder'] = 'AAAA-MM-JJTHH:MM'
+        self.fields['scheduled_publish_date'].help_text = _('Format attendu : AAAA-MM-JJTHH:MM (ex : 2025-06-11T14:30)')
         self.fields['scheduled_publish_date'].input_formats = ['%Y-%m-%dT%H:%M']
+        
+        # Handle scheduling
+        from django.utils import timezone
+        if self.instance and self.instance.scheduled_publish_date:
+            self.fields["enable_scheduling"].initial = True
+            # Convertir UTC -> heure locale pour affichage dans le widget
+            local_dt = timezone.localtime(self.instance.scheduled_publish_date)
+            self.initial["scheduled_publish_date"] = local_dt.strftime("%Y-%m-%dT%H:%M")
+        # Remove any style hiding the field, let JS handle visibility
+        self.fields["scheduled_publish_date"].widget.attrs.pop("style", None)
+        
         if self.fields.get("video"):
             # Remove label, as it will be included in customclearablefileinput
             self.fields["video"].label = ""
@@ -1077,12 +1097,16 @@ class VideoForm(forms.ModelForm):
             "restrict_access_to_groups": AddAccessGroupWidget,
             "video": CustomClearableFileInput,
             "password": forms.TextInput(),
-            "scheduled_publish_date": forms.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
         }
         initial = {
             "date_added": datetime.date.today(),
             "date_evt": datetime.date.today(),
         }
+        
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            if self.instance and self.instance.scheduled_publish_date:
+                self.fields["enable_scheduling"].initial = True
 
 
 class ChannelForm(forms.ModelForm):

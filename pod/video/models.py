@@ -806,7 +806,6 @@ class Video(models.Model):
         default=False,
         help_text=_("Check this box if you want to use the 360 player for the video"),
     )
-
     is_draft = models.BooleanField(
         verbose_name=_("Draft"),
         help_text=_(
