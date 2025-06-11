@@ -20,7 +20,7 @@ FROM $PYTHON_VERSION
 #FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends netcat gettext \
+    && apt-get install -y --no-install-recommends netcat-traditional gettext \
     && apt-get clean\
     && rm -rf /var/lib/apt/lists/*
 
