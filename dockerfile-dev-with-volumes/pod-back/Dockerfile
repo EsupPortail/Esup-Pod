@@ -34,7 +34,9 @@ RUN mkdir /tmp/node_modules/
 
 COPY --from=source-build-js /tmp/pod/node_modules/ /tmp/node_modules/
 # TODO remove ES version - move it into env var
-RUN pip3 install --no-cache-dir -r requirements-conteneur.txt \
+RUN pip3 install --no-cache-dir \
+    --requirement requirements-dev.txt \
+    --requirement requirements-conteneur.txt \
     && pip3 install elasticsearch==7.17.7
 
 # ENTRYPOINT:
