@@ -16,7 +16,6 @@ COPY ./pod/ .
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        netcat \
         sox \
         libsox-fmt-mp3 \
     && apt-get clean\
@@ -24,11 +23,12 @@ RUN apt-get update \
 
 WORKDIR /usr/src/app
 
-COPY ./requirements-encode.txt .
-COPY ./requirements-transcripts.txt .
+COPY ./requirements-encode.txt ./requirements-transcripts.txt ./requirements-conteneur.txt .
 
-RUN pip3 install --no-cache-dir -r requirements-transcripts.txt \
-    && pip3 install --no-cache-dir -r requirements-encode.txt
+RUN pip3 install --no-cache-dir \
+    --requirement requirements-encode.txt \
+    --requirement requirements-transcripts.txt \
+    --requirement requirements-conteneur.txt
 
 # ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod-transcript/my-entrypoint-transcript.sh /tmp/my-entrypoint-transcript.sh

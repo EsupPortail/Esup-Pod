@@ -14,16 +14,17 @@ COPY ./pod/ .
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        netcat \
         ffmpeg \
     && apt-get clean\
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 
-COPY ./requirements-encode.txt .
+COPY ./requirements-encode.txt ./requirements-conteneur.txt .
 
-RUN pip3 install --no-cache-dir -r requirements-encode.txt
+RUN pip3 install --no-cache-dir \
+    --requirement requirements-encode.txt \
+    --requirement requirements-conteneur.txt
 
 # ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod-encode/my-entrypoint-encode.sh /tmp/my-entrypoint-encode.sh
