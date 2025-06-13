@@ -27,15 +27,19 @@ function confirmDuplication(event, url, confirmationText) {
  * @returns {void}
  */
 function hideEmptyDropdowns() {
-  document.querySelectorAll('.dropdown-menu').forEach(menu => {
+  document.querySelectorAll(".dropdown-menu").forEach((menu) => {
     if (menu.children.length === 0) {
-      const toggleBtn = menu.closest('.card-footer')?.querySelector('[data-bs-toggle="dropdown"]');
+      const toggleBtn = menu
+        .closest(".card-footer")
+        ?.querySelector('[data-bs-toggle="dropdown"]');
       if (toggleBtn) {
         // Hide toggle button and empty menu
         toggleBtn.classList.add("d-none");
         menu.classList.add("d-none");
         // Change style for favorite button
-        const favBtn = menu.closest('.card-footer')?.querySelector('.favorite-btn-link');
+        const favBtn = menu
+          .closest(".card-footer")
+          ?.querySelector(".favorite-btn-link");
         if (favBtn) {
           favBtn.classList.remove("ms-1");
           favBtn.classList.add("mx-1");
