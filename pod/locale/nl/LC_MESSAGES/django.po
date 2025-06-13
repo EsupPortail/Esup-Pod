@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-06 11:56+0200\n"
+"POT-Creation-Date: 2025-06-06 10:37+0200\n"
 "PO-Revision-Date: 2025-04-25 10:36+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -8504,6 +8504,13 @@ msgid ""
 "been packaged in your ARCHIVE_ROOT folder. Run the "
 "<code>create_archive_package</code> command without the <code>--dry</code> "
 "option to delete them from %s."
+msgstr ""
+
+#: pod/video/management/commands/create_archive_package.py
+#, python-format
+msgid ""
+"For your information, below is the list of archived videos that have been "
+"packaged in your ARCHIVE_ROOT folder, and definitely deleted from %s."
 msgstr ""
 
 #: pod/video/management/commands/create_archive_package.py

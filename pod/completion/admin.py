@@ -25,7 +25,7 @@ if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
 
 DEBUG = getattr(settings, "DEBUG", True)
-TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
+TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "WHISPER")
 TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", {})
 MODEL_COMPILE_DIR = getattr(settings, "MODEL_COMPILE_DIR", "")
 
