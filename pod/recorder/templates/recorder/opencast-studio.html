@@ -154,29 +154,36 @@
   let data_send = false;
 
   (function() {
-
-    const observer = new MutationObserver(function (mutationsList, observer) {
-      let inputTitle = document.querySelector("input[name='title'][type='text']");
-      let renderTypeInput = document.getElementById("render_type");
-
-      // If we are at last step and renderTypeInput has not been injected yet.
-      if (inputTitle && !renderTypeInput) {
-        // If we have 2 video sources
-        if (document.querySelectorAll("#root video").length == 2) {
-          let parent_div = inputTitle.parentNode.parentNode;
-          renderTypeDiv.classList.add(parent_div.className);
-          renderTypeLabel.classList.add(parent_div.firstChild.className);
-          parent_div.parentNode.insertBefore(renderTypeDiv, parent_div.nextSibling);
-          renderTypeInput = document.getElementById("render_type");
-          renderTypeInput.addEventListener("change", (event) => {
-            // call ajax to send value
-            send_presenter_value(event.target.value);
-          });
-          send_presenter_value(renderTypeInput.value);
+    body_element = document.querySelector("body");
+    const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList' || mutation.type === 'subtree') {
+              let inputTitle = document.querySelector("input[name='title'][type='text']");
+              let renderTypeInput = document.getElementById("render_type");
+              // If we are at last step and renderTypeInput has not been injected yet.
+              if (inputTitle && !renderTypeInput) {
+                // If we have 2 video sources
+                if (document.querySelectorAll("#root video").length == 2) {
+                  let parent_div = inputTitle.parentNode.parentNode;
+                  renderTypeDiv.classList.add(parent_div.className);
+                  renderTypeLabel.classList.add(parent_div.firstChild.className);
+                  parent_div.parentNode.insertBefore(renderTypeDiv, parent_div.nextSibling);
+                  renderTypeInput = document.getElementById("render_type");
+                  renderTypeInput.addEventListener("change", (event) => {
+                    // call ajax to send value
+                    send_presenter_value(event.target.value);
+                  });
+                  send_presenter_value(renderTypeInput.value);
+                }
+              }
+            }
         }
-      }
     });
-    observer.observe(document.body, { childList: true, subtree: true });
+
+    observer.observe(body_element, {
+        childList: true,
+        subtree: true
+    });
   })();
 
   /**

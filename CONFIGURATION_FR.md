@@ -699,24 +699,29 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   > valeur par défaut : `600`
   >> Découpage de l’audio pour la transcription.<br>
 * `TRANSCRIPTION_MODEL_PARAM`
-  > valeur par défaut : `{}`
+  > valeur par défaut : ``
   >> Paramétrage des modèles pour la transcription<br>
-  >> Voir la documentation à cette adresse : [www.esup-portail.org/wiki](https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3)<br>
-  >> Pour télécharger les Modeles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)<br>
+  >> Voir la documentation à cette adresse :<br>
+  >> [esupportail.github.io](https://esupportail.github.io/Esup-Pod/4.x/Installation/optional/auto-transcription-install_fr)<br>
+  >> Pour télécharger les modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)<br>
   >>
   >> ```python
   >> TRANSCRIPTION_MODEL_PARAM = {
-  >>     # le modèle stt
-  >>     'STT': {
-  >>         'fr': {
-  >>             'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite",
-  >>             'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer",
-  >>         }
-  >>     },
   >>     # le modèle vosk
   >>     'VOSK': {
   >>         'fr': {
   >>             'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
+  >>         }
+  >>     }
+  >>     # le modèle Whisper
+  >>     'WHISPER': {
+  >>         'fr': {
+  >>             'model': "small",
+  >>             'download_root': "/pod-transcription/transcription/whisper/",
+  >>         },
+  >>         'en': {
+  >>             'model': "small",
+  >>             'download_root': "/pod-transcription/transcription/whisper/",
   >>         }
   >>     }
   >> }
@@ -736,8 +741,8 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   > valeur par défaut : `2`
   >> Temps en secondes maximum pour une phrase lors de la transcription avec l’outil STT.<br>
 * `TRANSCRIPTION_TYPE`
-  > valeur par défaut : `STT`
-  >> Choix de l’outil pour la transcription : `STT`, `VOSK`ou `WHISPER`.<br>
+  > valeur par défaut : `WHISPER`
+  >> Choix de l’outil pour la transcription : `VOSK`ou `WHISPER`.<br>
 * `TRANSCRIPT_VIDEO`
   > valeur par défaut : `start_transcript`
   >> Fonction appelée pour lancer la transcription des vidéos.<br>
@@ -1016,45 +1021,6 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `ROLE_CHOICES`
   > valeur par défaut : ``
   >> Liste de rôles possibles pour un contributeur.<br>
-* `TRANSCRIPTION_MODEL_PARAM`
-  > valeur par défaut : ``
-  >> Paramétrage des modèles pour la transcription<br>
-  >> Voir la documentation à cette adresse :<br>
-  >> [esup-portail.org/wiki](https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3)<br>
-  >> Pour télécharger les modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)<br>
-  >>
-  >> ```python
-  >> TRANSCRIPTION_MODEL_PARAM = {
-  >>     # le modèle stt
-  >>     'STT': {
-  >>         'fr': {
-  >>             'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite",
-  >>             'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer",
-  >>         }
-  >>     },
-  >>     # le modèle vosk
-  >>     'VOSK': {
-  >>         'fr': {
-  >>             'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
-  >>         }
-  >>     }
-  >>     # le modèle Whisper
-  >>     'WHISPER': {
-  >>         'fr': {
-  >>             'model': "small",
-  >>             'download_root': "/pod-transcription/transcription/whisper/",
-  >>         },
-  >>         'en': {
-  >>             'model': "small",
-  >>             'download_root': "/pod-transcription/transcription/whisper/",
-  >>         }
-  >>     }
-  >> }
-  >> ```
-  >>
-* `TRANSCRIPTION_TYPE`
-  > valeur par défaut : `STT`
-  >> STT, VOSK ou WHISPER (à partir de Pod 3.5.0)<br>
 * `USE_ENRICH_READY`
   > valeur par défaut : `False`
   >> voir `ACTIVE_MODEL_ENRICH`<br>

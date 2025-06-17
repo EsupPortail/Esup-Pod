@@ -1,7 +1,6 @@
 {% load i18n %}
 {% load ai_enhancement_template_tags %}
 {% load static %}
-<script src="{% static 'js/link_video_dropdown_menu.js' %}"></script>
 
 <ul class="dropdown-menu" aria-label="{% trans 'More options' %}">
   {% if request.path == '/video/dashboard/' %}
@@ -85,32 +84,38 @@
   {% endif %}
   {% if USE_DRESSING and video.encoded and video.encoding_in_progress is False %}
     {% if request.user.is_staff and video.owner == request.user or request.user.is_superuser %}
-      <a href="{% url 'video:dressing:video_dressing' slug=video.slug %}"
-         title="{% trans 'Dress the video'%} — {{ video.title }}"
-         class="dropdown-item"
-         data-bs-toggle="tooltip"
-         aria-label="{% trans 'Dress the video'%} — {{ video.title }}"
-         data-bs-original-title="{% trans 'Dress the video'%} — {{ video.title }}"
-      >
-        <i class="bi bi-palette" aria-hidden="true"></i>
-        {% trans 'Dress the video'%}
-      </a>
+      <li>
+        <a href="{% url 'video:dressing:video_dressing' slug=video.slug %}"
+          title="{% trans 'Dress the video'%} — {{ video.title }}"
+          class="dropdown-item"
+          data-bs-toggle="tooltip"
+          aria-label="{% trans 'Dress the video'%} — {{ video.title }}"
+          data-bs-original-title="{% trans 'Dress the video'%} — {{ video.title }}"
+        >
+          <i class="bi bi-palette" aria-hidden="true"></i>
+          {% trans 'Dress the video'%}
+        </a>
+      </li>
     {% endif %}
   {% endif %}
 
   {% if USE_DUPLICATE %}
-    <a 
-       href="{% url 'duplicate:video_duplicate' slug=video.slug %}"
-       title="{% trans 'Duplicate the video' %} — {{ video.title }}"
-       class="dropdown-item"
-       data-bs-toggle="tooltip"
-       aria-label="{% trans 'Duplicate the video' %} — {{ video.title }}"
-       data-bs-original-title="{% trans 'Duplicate the video' %} — {{ video.title }}"
-       onclick="return confirmDuplication(event, this.href, '{% trans 'Are you sure you want to duplicate this video?' %}');"
-    >   
-      <i class="bi bi-files" aria-hidden="true"></i>
-      {% trans 'Duplicate the video' %}
-    </a> 
+    {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.duplicate.change_duplicate %}
+      <li>
+        <a
+          href="{% url 'duplicate:video_duplicate' slug=video.slug %}"
+          title="{% trans 'Duplicate the video' %} — {{ video.title }}"
+          class="dropdown-item"
+          data-bs-toggle="tooltip"
+          aria-label="{% trans 'Duplicate the video' %} — {{ video.title }}"
+          data-bs-original-title="{% trans 'Duplicate the video' %} — {{ video.title }}"
+          onclick="return confirmDuplication(event, this.href, '{% trans 'Are you sure you want to duplicate this video?' %}');"
+        >
+          <i class="bi bi-files" aria-hidden="true"></i>
+          {% trans 'Duplicate the video' %}
+        </a>
+      </li>
+    {% endif %}
   {% endif %}
 
 
