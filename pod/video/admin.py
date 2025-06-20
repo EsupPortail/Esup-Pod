@@ -165,7 +165,7 @@ class VideoAdmin(admin.ModelAdmin):
         "theme",
     )
     readonly_fields = ("duration", "encoding_in_progress", "get_encoding_step")
-    
+
     exclude = ()
 
     inlines = []

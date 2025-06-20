@@ -87,15 +87,14 @@
         {{field_hidden}}
       {% endfor %}
 
-      {% comment %} Scheduling fields: custom rendering, prevent double rendering in field loop {% endcomment %}
       <div class="form-group mt-3">
         <div class="form-check">
           {{ form.enable_scheduling }}
-          <label for="id_enable_scheduling" class="form-check-label">Planifier la publication</label>
+          <label for="id_enable_scheduling" class="form-check-label">{% trans "Schedule the post" %}</label>
         </div>
       </div>
       <div class="form-group mt-2" id="scheduled_publish_date_group" {% if not form.enable_scheduling.value %}style="display:none;"{% endif %}>
-        <label for="id_scheduled_publish_date">Date de publication programmée</label>
+        <label for="id_scheduled_publish_date">{% trans "Scheduled publish date" %}</label>
         {{ form.scheduled_publish_date }}
       </div>
 
@@ -325,7 +324,6 @@
           dateGroup.style.display = "block";
         } else {
           dateGroup.style.display = "none";
-          // Optionnel : vider la date si décoché
           var dateInput = document.getElementById("id_scheduled_publish_date");
           if (dateInput) dateInput.value = "";
         }

@@ -609,7 +609,7 @@ class VideoForm(forms.ModelForm):
         initial="public",
         help_text=_("Who can see your content (everyone, just you, or those granted)."),
     )
-    
+
     enable_scheduling = forms.BooleanField(
         label=_("Enable scheduling"),
         required=False,
@@ -693,7 +693,7 @@ class VideoForm(forms.ModelForm):
             {
                 "legend": _("Advanced options"),
                 "classes": "",
-                "fields": ["allow_downloading", "is_360", "disable_comment", "order","scheduled_publish_date", "enable_scheduling"],
+                "fields": ["allow_downloading", "is_360", "disable_comment", "order", "scheduled_publish_date", "enable_scheduling"],
             },
         ),
     )
@@ -944,7 +944,7 @@ class VideoForm(forms.ModelForm):
         self.fields['scheduled_publish_date'].widget.attrs['placeholder'] = 'AAAA-MM-JJTHH:MM'
         self.fields['scheduled_publish_date'].help_text = _('Format attendu : AAAA-MM-JJTHH:MM (ex : 2025-06-11T14:30)')
         self.fields['scheduled_publish_date'].input_formats = ['%Y-%m-%dT%H:%M']
-        
+
         # Handle scheduling
         from django.utils import timezone
         if self.instance and self.instance.scheduled_publish_date:
@@ -954,7 +954,7 @@ class VideoForm(forms.ModelForm):
             self.initial["scheduled_publish_date"] = local_dt.strftime("%Y-%m-%dT%H:%M")
         # Remove any style hiding the field, let JS handle visibility
         self.fields["scheduled_publish_date"].widget.attrs.pop("style", None)
-        
+
         if self.fields.get("video"):
             # Remove label, as it will be included in customclearablefileinput
             self.fields["video"].label = ""
@@ -1102,7 +1102,7 @@ class VideoForm(forms.ModelForm):
             "date_added": datetime.date.today(),
             "date_evt": datetime.date.today(),
         }
-        
+
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             if self.instance and self.instance.scheduled_publish_date:
