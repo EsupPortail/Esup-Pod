@@ -905,7 +905,7 @@ def get_filtered_videos_list(request, videos_list):
             | Q(additional_owners__username__in=request.GET.getlist("owner"))
         )
     if request.GET.getlist("tag"):
-        videos_list = videos_list.filter(tags__name__in=request.GET.getlist("tag"))
+        videos_list = videos_list.filter(tags__slug__in=request.GET.getlist("tag"))
 
     if request.GET.getlist("cursus"):
         videos_list = videos_list.filter(cursus__in=request.GET.getlist("cursus"))
@@ -1415,6 +1415,10 @@ def video_delete(request, slug=None):
             "videos/video_delete.html",
             {"video": video, "form": form, "page_title": page_title},
         )
+    else:
+        # If the video is not deletable, the video_is_deletable function will raise
+        # a PermissionDenied exception or an error message will be displayed.
+        return redirect(reverse("video:dashboard"))
 
 
 def video_is_deletable(request, video) -> bool:
@@ -2568,7 +2572,7 @@ def get_videos_for_owner(request: WSGIRequest):
     return videos_list.distinct()
 
 
-def view_stats_if_authenticated(user):
+def view_stats_if_authenticated(user) -> bool:
     if VIEW_STATS_AUTH and user.__str__() == "AnonymousUser":
         return False
     return True
@@ -3072,19 +3076,30 @@ def add_category(request):
         response = {"success": False}
         c_user = request.user
 
-        if not request.POST.get("title") or json.loads(request.POST.get("title")) == "":
+        r_title = request.POST.get("title")
+        r_videos = request.POST.get("videos")
+
+        if not r_title or json.loads(r_title) == "":
             response["message"] = _("Title field is required")
             return HttpResponseBadRequest(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json",
             )
 
-        title = json.loads(request.POST.get("title"))
-        videos_slugs = json.loads(request.POST.get("videos"))
+        if not r_videos:
+            response["message"] = _(
+                "At least one video must be associated with this category."
+            )
+            return HttpResponseBadRequest(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json",
+            )
 
+        title = json.loads(r_title)
+        videos_slugs = json.loads(r_videos)
         videos = Video.objects.filter(slug__in=videos_slugs)
 
-        # constraint, video can be only in one of user's categories
+        # Constraint, video can be only in one of user's categories
         user_cats = Category.objects.filter(owner=c_user)
         v_already_in_user_cat = videos.filter(category__in=user_cats)
 
@@ -3100,8 +3115,13 @@ def add_category(request):
             cat = Category.objects.create(title=title, owner=c_user)
             cat.video.add(*videos)
             cat.save()
-        except IntegrityError:  # cannot duplicate category
-            return HttpResponse(status=409)
+        except IntegrityError:
+            # Cannot duplicate category
+            response["message"] = _("A category with the same name already exists.")
+            return HttpResponseBadRequest(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json",
+            )
 
         response["success"] = True
         response["message"] = _("Category successfully added.")
@@ -3146,19 +3166,30 @@ def edit_category(request, c_slug=None):
         c_user = request.user
         cat = get_object_or_404(Category, slug=c_slug)
 
-        if not request.POST.get("title") or json.loads(request.POST.get("title")) == "":
+        r_title = request.POST.get("title")
+        r_videos = request.POST.get("videos")
+
+        if not r_title or json.loads(r_title) == "":
             response["message"] = _("Title field is required")
             return HttpResponseBadRequest(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json",
             )
 
-        title = json.loads(request.POST.get("title"))
-        videos_slugs = json.loads(request.POST.get("videos"))
+        if not r_videos:
+            response["message"] = _(
+                "At least one video must be associated with this category."
+            )
+            return HttpResponseBadRequest(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json",
+            )
 
+        title = json.loads(r_title)
+        videos_slugs = json.loads(r_videos)
         new_videos = Video.objects.filter(slug__in=videos_slugs)
 
-        # constraint, video can be only in one of user's categories,
+        # Constraint, video can be only in one of user's categories,
         # except current category
         user_cats = Category.objects.filter(owner=c_user).exclude(id=cat.id)
         v_already_in_user_cat = new_videos.filter(category__in=user_cats)
@@ -3171,18 +3202,26 @@ def edit_category(request, c_slug=None):
             )
 
         if c_user == cat.owner or c_user.is_superuser:
-            cat.title = title
-            cat.video.set(list(new_videos))
-            cat.save()
+            try:
+                cat.title = title
+                cat.video.set(list(new_videos))
+                cat.save()
 
-            response["success"] = True
-            response["message"] = _("Category updated successfully.")
-            response["all_categories_videos"] = get_json_videos_categories(request)
+                response["success"] = True
+                response["message"] = _("Category updated successfully.")
+                response["all_categories_videos"] = get_json_videos_categories(request)
 
-            return HttpResponse(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json",
-            )
+                return HttpResponse(
+                    json.dumps(response, cls=DjangoJSONEncoder),
+                    content_type="application/json",
+                )
+            except IntegrityError:
+                response["message"] = _("A category with the same name already exists.")
+
+                return HttpResponseBadRequest(
+                    json.dumps(response, cls=DjangoJSONEncoder),
+                    content_type="application/json",
+                )
 
         response["message"] = _("You do not have rights to edit this category")
         return HttpResponseForbidden(

@@ -8,12 +8,10 @@ import os
 import sys
 import importlib.util
 
-# DEPRECATIONS HACKS
-import django
-from django.utils.translation import gettext
-
-# Needed for django-chunked-upload==2.0.0
-django.utils.translation.ugettext = gettext
+# As a comment until a new version of django-chunked-upload is released on pypi
+# See requirements.txt (django-chunked-upload==2.0.0 replaced by
+# git+https://github.com/juliomalegria/django-chunked-upload.git@master)
+# django.utils.translation.ugettext = gettext
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
@@ -21,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "4.0.0--ALPHA"
+VERSION = "4.0.0--BETA"
 
 ##
 # Installed applications list
@@ -82,6 +80,7 @@ INSTALLED_APPS = [
     "pod.speaker",
     "pod.custom",
     "pod.duplicate",
+    "pod.hyperlinks",
 ]
 
 ##
@@ -144,6 +143,7 @@ TEMPLATES = [
                 "pod.cut.context_processors.context_settings",
                 "pod.speaker.context_processors.context_settings",
                 "pod.duplicate.context_processors.context_settings",
+                "pod.hyperlinks.context_processors.context_settings",
             ],
         },
     },

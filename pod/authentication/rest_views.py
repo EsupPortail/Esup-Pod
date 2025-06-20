@@ -74,7 +74,8 @@ class SiteSerializer(serializers.HyperlinkedModelSerializer):
 class AccessGroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = AccessGroup
-        fields = ("display_name", "code_name", "sites", "users", "sites")
+        fields = ("id", "display_name", "code_name", "sites", "users", "sites")
+        filterset_fields = ["id", "display_name", "code_name"]
 
 
 # ViewSets define the view behavior.
@@ -104,6 +105,7 @@ class SiteViewSet(viewsets.ModelViewSet):
 class AccessGroupViewSet(viewsets.ModelViewSet):
     queryset = AccessGroup.objects.all()
     serializer_class = AccessGroupSerializer
+    filterset_fields = ["id", "display_name", "code_name"]
 
 
 @api_view(["POST"])

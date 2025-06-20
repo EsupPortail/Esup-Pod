@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
-from django.forms.widgets import ClearableFileInput
+from django.forms.widgets import ClearableFileInput, Media
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import filesizeformat
@@ -697,6 +697,23 @@ class VideoForm(forms.ModelForm):
             },
         ),
     )
+
+    @property
+    def media(self) -> Media:
+        """Return all media required to render the widgets on this form."""
+        # Get the default media
+        default_media = super().media
+
+        # Reorder select2/i18n js to be sure it is after all JS
+        # (prevent a bug when the form contains admin select 2 + tagulous select2)
+        new_js = [
+            x for x in default_media._js if "admin/js/vendor/select2/i18n/" not in x
+        ]
+        new_js += [x for x in default_media._js if "admin/js/vendor/select2/i18n/" in x]
+
+        media = Media(css=default_media._css, js=new_js)
+
+        return media
 
     def filter_fields_admin(form) -> None:
         """Hide fields reserved for admins."""

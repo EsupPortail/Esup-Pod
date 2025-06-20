@@ -1,4 +1,4 @@
-"""Tests the forms for playlist module."""
+"""Test the forms for playlist module."""
 
 from django.utils.translation import gettext as _
 from django.test import override_settings, TestCase

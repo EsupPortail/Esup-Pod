@@ -86,15 +86,14 @@
         }
     {% endif %}
     {% if not video.is_video and event is None %}
-      // enable videojs-wavesurfer plugin
+      // Enable videojs-wavesurfer plugin
       ,wavesurfer: {
         backend: 'MediaElement',
-        displayMilliseconds: true,
+        displayMilliseconds: false,
         debug: false,
         waveColor: 'grey',
         progressColor: 'black',
         cursorColor: 'var(--pod-primary)',
-        hideScrollbar: false
       }
     {% endif %}
     }
@@ -126,6 +125,14 @@
 
   // Increase the video counter on first play
   player.on('firstplay', function(){
+
+    {% if not video.is_video and event is None %}
+      // When player muted due to autoplay and JS wavesurfer plugins
+      let currentVolume = player.volume();
+      if (currentVolume == 0) {
+        player.volume(1);
+      }
+    {% endif %}
 
     let formElement = document.getElementById("video_count_form");
     let formData = new FormData(formElement);

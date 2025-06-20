@@ -3,7 +3,8 @@
  */
 
 /* exported getParents slideToggle fadeOut linkTo_UnCryptMailto showLoader videocheck */
-/* exported  send_form_data_vanilla decodeString */
+/* exported send_form_data_vanilla decodeString get_list */
+/* exported update_theme channel_callback init_theme_selector */
 
 // Read-only globals defined in video-script.html
 /* global player */
@@ -1470,4 +1471,91 @@ function decodeString(str) {
     String.fromCharCode(parseInt(p1, 10)),
   );
   return str;
+}
+
+/**
+ * Save all themes in tab_initial array,
+ * then remove all themes options from selection list
+ * @return {[type]} [description]
+ */
+function update_theme(id_theme) {
+  let tab_initial = [];
+  if (id_theme) {
+    for (let i = 0; i < id_theme.options.length; i++) {
+      if (id_theme.options[i].selected) {
+        tab_initial.push(id_theme.options[i].value);
+      }
+    }
+    // Remove all id_theme options
+    for (option in id_theme.options) {
+      id_theme.options.remove(0);
+    }
+  }
+  return tab_initial;
+}
+
+/**
+ * Callback function to execute when channel selector changes
+ * @param {HTMLElement} id_channel select-multiple for Channel
+ * @param {HTMLElement} id_theme   select-multiple for Theme
+ * @param {Object} listTheme List af all channels and their associated themes
+ */
+function channel_callback(id_channel, id_theme, listTheme) {
+  const tab_initial = update_theme(id_theme);
+  const channels = id_channel.parentElement.querySelectorAll(
+    ".select2-selection__choice",
+  );
+  let new_themes = [];
+  for (let i = 0; i < channels.length; i++) {
+    for (let j = 0; j < id_channel.options.length; j++) {
+      if (channels[i].title === id_channel.options[j].text) {
+        if (listTheme["channel_" + id_channel.options[j].value]) {
+          new_themes.push(
+            get_list(
+              listTheme["channel_" + id_channel.options[j].value],
+              0,
+              tab_initial,
+              (tag_type = "option"),
+              (li_class = ""),
+              (attrs = ""),
+              (add_link = false),
+              (current = ""),
+              (channel = id_channel.options[j].text + ": "),
+            ),
+          );
+        }
+      }
+    }
+  }
+  id_theme.innerHTML = new_themes.join("\n");
+  flashing(id_theme, 1000);
+}
+
+/**
+ * Initialize theme selector values
+ * @param {HTMLElement} id_channel select-multiple for Channel
+ * @param {HTMLElement} id_theme   select-multiple for Theme
+ * @param {Object} listTheme List af all channels and their associated themes
+ */
+function init_theme_selector(id_channel, id_theme, listTheme) {
+  const tab_initial = update_theme(id_theme);
+  var initial_themes = [];
+  for (let i = 0; i < id_channel.options.length; i++) {
+    if (listTheme["channel_" + id_channel.options[i].value]) {
+      initial_themes.push(
+        get_list(
+          listTheme["channel_" + id_channel.options[i].value],
+          0,
+          tab_initial,
+          (tag_type = "option"),
+          (li_class = ""),
+          (attrs = ""),
+          (add_link = false),
+          (current = ""),
+          (channel = id_channel.options[i].text + ": "),
+        ),
+      );
+    }
+  }
+  id_theme.innerHTML = initial_themes.join("\n");
 }

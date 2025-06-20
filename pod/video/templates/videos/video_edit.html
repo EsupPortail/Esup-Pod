@@ -64,7 +64,7 @@
           {% endfor %}
         </div>
       {% endif %}
-  
+
       {% if form.instance.id and form.instance.get_encoding_step == "" %}
         <div class="alert alert-warning" role="alert">
           {% trans "The video is currently waiting for encoding." %}
@@ -144,7 +144,7 @@
               {% if field.name == "transcript"  %}
                 {% if form.instance.id and form.instance.get_encoding_step == ""  or form.instance.encoding_in_progress %}
                 {% else %}
-                  {% if form.instance.slug != '' and form.instance.get_encoding_step|slice:":1" == '0' or 'no stt model' in form.instance.get_encoding_step %}
+                  {% if form.instance.slug != '' and form.instance.get_encoding_step|slice:":1" == '0' or 'no transcript model' in form.instance.get_encoding_step %}
                     <a class="btn btn-primary btn-sm ps-2 pe-2 m-1" type="button" href="{% url 'video:video_transcript' form.instance.slug %}" id="restart_transcript">
                       <i class="bi bi-translate" aria-hidden="true"></i>
                       {% trans "Restart transcription" %}
@@ -271,7 +271,7 @@
 {% block more_script %}
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
   <script>
-    var listTheme = {{listTheme | safe}};
+    const listTheme = {{listTheme | safe}};
   </script>
   {{ form.media.js }}
   <script defer src="{% static 'js/video_edit.js' %}?ver={{VERSION}}"></script>

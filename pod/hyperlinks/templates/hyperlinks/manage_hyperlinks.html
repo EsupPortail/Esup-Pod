@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load thumbnail %}
+
+{% block page_extra_head %}
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">
+    {% trans "Manage Hyperlinks" %}
+  </li>
+{% endblock %}
+
+{% block page_content %}
+  <h1 class="page-title">{% trans "Manage Hyperlinks" %}</h1>
+  <div class="table-responsive">
+    <a href="{% url 'hyperlinks:add_hyperlink' %}" class="btn btn-primary mb-3">
+      {% trans "Add Hyperlink" %}
+    </a>
+    <table class="table table-sm table-striped table-bordered text-left" summary="{% trans 'List of hyperlinks I can manage.' %}">
+      <caption class="caption-top">{% trans 'List of hyperlinks' %}</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="ps-2">{% trans 'URL' %}</th>
+          <th scope="col" class="ps-2">{% trans 'Description' %}</th>
+          <th scope="col" class="text-center">{% trans 'Actions' %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for hyperlink in hyperlinks %}
+          <tr>
+            <td class="ps-2">{{ hyperlink.url }}</td>
+            <td class="ps-2">{{ hyperlink.description }}</td>
+            <td class="text-center align-middle">
+              <a href="{% url 'hyperlinks:edit_hyperlink' hyperlink.id %}" class="btn btn-primary btn-sm me-1" title="{% blocktrans with hyperlink_url=hyperlink.url %}Edit the hyperlink “{{ hyperlink_url }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="top">
+                <i class="bi bi-pencil-square" aria-hidden="true"></i>
+              </a>
+              {% trans "Please confirm you want to delete the hyperlink" as confirmDelete %}
+              <form method="post" action="{% url 'hyperlinks:delete_hyperlink' hyperlink.id %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% blocktrans with hyperlink_url=hyperlink.url %}Delete the hyperlink “{{ hyperlink_url }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="bi bi-trash3" aria-hidden="true"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="3">{% trans 'No hyperlinks found.' %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock page_content %}
+
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+{% block page_aside %}{% endblock page_aside %}
+{% block more_script %}
+{% endblock more_script %}

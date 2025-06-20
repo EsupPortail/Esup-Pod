@@ -139,6 +139,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 #
 FORCE_LOWERCASE_TAGS = True
 MAX_TAG_LENGTH = 50
+NUMBER_TAGS_CLOUD = 20
 
 ##
 # AUTH CAS
@@ -314,3 +315,7 @@ PWA_SERVICE_WORKER_PATH = os.path.join(
     "serviceworker.js",
 )
 PWA_APP_DEBUG_MODE = locals().get("DEBUG", False)
+
+# Social share
+
+SOCIAL_SHARE = ["X", "FACEBOOK", "LINKEDIN", "BLUESKY"]

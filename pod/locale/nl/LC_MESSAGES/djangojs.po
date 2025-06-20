@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-13 16:20+0100\n"
-"PO-Revision-Date: 2024-06-04 16:20+0200\n"
+"POT-Creation-Date: 2025-05-06 12:04+0200\n"
+"PO-Revision-Date: 2025-04-25 10:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
 msgid "No discipline"
@@ -174,7 +174,7 @@ msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
 msgid ""
-"For your video's accessibility, we recommend a maximum of 80 characters."
+"For your video’s accessibility, we recommend a maximum of 80 characters."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -239,6 +239,10 @@ msgstr ""
 
 #: pod/completion/static/js/completion.js
 msgid "Are you sure you want to delete this overlay?"
+msgstr ""
+
+#: pod/completion/static/js/completion.js
+msgid "Are you sure you want to delete this hyperlink?"
 msgstr ""
 
 #: pod/completion/static/js/completion.js
@@ -902,6 +906,10 @@ msgstr ""
 
 #: pod/video/static/js/video-show.js
 msgid "Quality"
+msgstr ""
+
+#: pod/video/static/js/video_category.js
+msgid "At least one video must be associated with this category."
 msgstr ""
 
 #: pod/video/static/js/video_edit.js

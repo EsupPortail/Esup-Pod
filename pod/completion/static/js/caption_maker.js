@@ -372,10 +372,11 @@ let updateCaptionsArray = (vtt) => {
     if (text.trim().toLowerCase() !== "webvtt") {
       let data = text.split("\n");
       let times = data[0].split("-->");
+      let captionText = data.slice(1).join("\n");
       let newCaption = {
         start: parseTime(times[0]),
         end: parseTime(times[1]),
-        caption: data[1],
+        caption: captionText,
       };
       captionsArray.push(newCaption);
       createCaptionBlock(newCaption);
@@ -707,7 +708,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
     ).body.firstChild,
 
     numberCharactersAlert: new DOMParser().parseFromString(
-      `<div class='alert alert-danger mt-2'><strong>${gettext("For your video's accessibility, we recommend a maximum of 80 characters.")}</strong></div>`,
+      `<div class='alert alert-danger mt-2'><strong>${gettext("For your video’s accessibility, we recommend a maximum of 80 characters.")}</strong></div>`,
       "text/html",
     ).body.firstChild,
 

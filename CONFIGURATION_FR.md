@@ -33,7 +33,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   > valeur par défaut : `6.3.0`
   >> ATTENTION. django-ckeditor integre la version gratuite de CKEditor 4.22.1,<br>
   >> qui n'est plus prise en charge et qui présente des problèmes de sécurité non résolus,<br>
-  >> voir par exemple https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS.<br>
+  >> voir par exemple <https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS>.<br>
 * `django_select2`
   > valeur par défaut : `latest`
   >> Recherche et completion dans les formulaires<br>
@@ -699,24 +699,29 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   > valeur par défaut : `600`
   >> Découpage de l’audio pour la transcription.<br>
 * `TRANSCRIPTION_MODEL_PARAM`
-  > valeur par défaut : `{}`
+  > valeur par défaut : ``
   >> Paramétrage des modèles pour la transcription<br>
-  >> Voir la documentation à cette adresse : [www.esup-portail.org/wiki](https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3)<br>
-  >> Pour télécharger les Modeles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)<br>
+  >> Voir la documentation à cette adresse :<br>
+  >> [esupportail.github.io](https://esupportail.github.io/Esup-Pod/4.x/Installation/optional/auto-transcription-install_fr)<br>
+  >> Pour télécharger les modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)<br>
   >>
   >> ```python
   >> TRANSCRIPTION_MODEL_PARAM = {
-  >>     # le modèle stt
-  >>     'STT': {
-  >>         'fr': {
-  >>             'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite",
-  >>             'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer",
-  >>         }
-  >>     },
   >>     # le modèle vosk
   >>     'VOSK': {
   >>         'fr': {
   >>             'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
+  >>         }
+  >>     }
+  >>     # le modèle Whisper
+  >>     'WHISPER': {
+  >>         'fr': {
+  >>             'model': "small",
+  >>             'download_root': "/pod-transcription/transcription/whisper/",
+  >>         },
+  >>         'en': {
+  >>             'model': "small",
+  >>             'download_root': "/pod-transcription/transcription/whisper/",
   >>         }
   >>     }
   >> }
@@ -736,8 +741,8 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   > valeur par défaut : `2`
   >> Temps en secondes maximum pour une phrase lors de la transcription avec l’outil STT.<br>
 * `TRANSCRIPTION_TYPE`
-  > valeur par défaut : `STT`
-  >> Choix de l’outil pour la transcription : `STT`, `VOSK`ou `WHISPER`.<br>
+  > valeur par défaut : `WHISPER`
+  >> Choix de l’outil pour la transcription : `VOSK`ou `WHISPER`.<br>
 * `TRANSCRIPT_VIDEO`
   > valeur par défaut : `start_transcript`
   >> Fonction appelée pour lancer la transcription des vidéos.<br>
@@ -755,20 +760,20 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `AI_ENHANCEMENT_API_URL`
   > valeur par défaut : ``
   >> L’URL de l’API pour l’IA d’amélioration des vidéos.<br>
-  >> Exemple : 'https://aristote.univ.fr/api'<br>
-  >> Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+  >> Exemple : '<https://aristote.univ.fr/api>'<br>
+  >> Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
 * `AI_ENHANCEMENT_API_VERSION`
   > valeur par défaut : ``
   >> La version de l’API pour l’IA d’amélioration des vidéos.<br>
 * `AI_ENHANCEMENT_CGU_URL`
   > valeur par défaut : ``
   >> L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.<br>
-  >> Exemple : '<https://aristote.univ.fr/cgu>'<br>
-  >> Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
+  >> Exemple : '<https://aristote.univ.fr/cgu>'<br>
+  >> Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
 * `AI_ENHANCEMENT_CLIENT_ID`
   > valeur par défaut : `mocked_id`
   >> L’ID du client de l’IA d’amélioration des vidéos.<br>
-  >> Exemple : 'v1'<br>
+  >> Exemple : 'v1'<br>
 * `AI_ENHANCEMENT_CLIENT_SECRET`
   > valeur par défaut : `mocked_secret`
   >> Le mot de passe secret du client de l’IA d’amélioration des vidéos.<br>
@@ -781,7 +786,7 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `AI_ENHANCEMENT_PROXY_URL`
   > valeur par défaut : ``
   >> L’URL du serveur proxy pour les requêtes venant d'Aristote.<br>
-  >> Exemple : '<https://proxy_aristote.univ.fr>'<br>
+  >> Exemple : '<https://proxy_aristote.univ.fr>'<br>
 
 ### Configuration de l’application authentification
 
@@ -837,7 +842,7 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
   >> Voir [kstateome/django-cas](https://github.com/kstateome/django-cas)<br>
 * `CAS_SERVER_URL`
   > valeur par défaut : `sso_cas`
-  >> Url du serveur CAS de l’établissement. Format https://url_cas<br>
+  >> Url du serveur CAS de l’établissement. Format `http://url_cas`<br>
 * `CAS_MAP_AFFILIATIONS`
   > valeur par défaut : `False`
   >> Si True, des `groupes` d’utilisateurs sont créés automatiquement<br>
@@ -1016,45 +1021,6 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `ROLE_CHOICES`
   > valeur par défaut : ``
   >> Liste de rôles possibles pour un contributeur.<br>
-* `TRANSCRIPTION_MODEL_PARAM`
-  > valeur par défaut : ``
-  >> Paramétrage des modèles pour la transcription<br>
-  >> Voir la documentation à cette adresse :<br>
-  >> [esup-portail.org/wiki](https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3)<br>
-  >> Pour télécharger les modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)<br>
-  >>
-  >> ```python
-  >> TRANSCRIPTION_MODEL_PARAM = {
-  >>     # le modèle stt
-  >>     'STT': {
-  >>         'fr': {
-  >>             'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite",
-  >>             'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer",
-  >>         }
-  >>     },
-  >>     # le modèle vosk
-  >>     'VOSK': {
-  >>         'fr': {
-  >>             'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
-  >>         }
-  >>     }
-  >>     # le modèle Whisper
-  >>     'WHISPER': {
-  >>         'fr': {
-  >>             'model': "small",
-  >>             'download_root': "/pod-transcription/transcription/whisper/",
-  >>         },
-  >>         'en': {
-  >>             'model': "small",
-  >>             'download_root': "/pod-transcription/transcription/whisper/",
-  >>         }
-  >>     }
-  >> }
-  >> ```
-  >>
-* `TRANSCRIPTION_TYPE`
-  > valeur par défaut : `STT`
-  >> STT, VOSK ou WHISPER (à partir de Pod 3.5.0)<br>
 * `USE_ENRICH_READY`
   > valeur par défaut : `False`
   >> voir `ACTIVE_MODEL_ENRICH`<br>
@@ -1087,6 +1053,15 @@ Mettre `USE_DUPLICATE` à True pour activer cette application.<br>
   > valeur par défaut : `False`
   >> Activation de duplicate.<br>
   >> Permet aux utilisateurs de dupliquer une vidéo<br>
+
+### Configuration de l’application Liens
+
+Application Liens permettant d'ajouter des liens à la vidéo.<br>
+Mettre `USE_HYPERLINKS` à True pour activer cette application.<br>
+
+* `USE_HYPERLINKS`
+  > valeur par défaut : `False`
+  >> Activation de l’application Liens<br>
 
 ### Configuration de l’application enrichment
 
@@ -1269,6 +1244,9 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 * `WEBTV_MODE`
   > valeur par défaut : `False`
   >> Mode webtv permet de basculer POD en une application webtv ensupprimant les boutons de connexions par exemple<br>
+* `SOCIAL_SHARE`
+  > valeur par défaut : `['X', 'FACEBOOK', 'LINKEDIN', 'BLUESKY']`
+  >> Choix d'affichage des liens de partage des réseaux sociaux<br>
 
 ### Configuration de l’application meeting
 
@@ -1674,7 +1652,11 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
   >> Par défaut : 10 (Année courante + 10 ans).<br>
 * `MAX_TAG_LENGTH`
   > valeur par défaut : `50`
-  >> Les mots clés saisis lors de l’ajout de vidéo ne peuvent dépasser cette longueur.<br>
+  >> Les mots-clés saisis lors de l’ajout de vidéo ne peuvent dépasser cette longueur.<br>
+* `NUMBER_TAGS_CLOUD`
+  > valeur par défaut : `20`
+  >> Nombre de mots-clés les plus importants affichés dans le nuage de la page d'accueil.<br>
+  >> Les paramètres TAGULOUS_WEIGHT_MIN et TAGULOUS_WEIGHT_MAX ne sont pas utilisés.<br>
 * `NOTES_STATUS`
   > valeur par défaut : `()`
   >> Valeurs possible pour l’accès à une note.<br>
@@ -2189,7 +2171,7 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l’en
 * `ES_VERSION`
   > valeur par défaut : `8`
   >> Version d’ElasticSearch.<br>
-  >> valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.<br>
+  >> valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.<br>
   >> Attention, le paquet elasticsearch-py doit correspondre à la version du serveur.<br>
   >> pour la 8, `pip3 install elasticsearch==8.17.2`.<br>
   >> Voir [elasticsearch-py.readthedocs.io](https://elasticsearch-py.readthedocs.io/)<br>

@@ -19,13 +19,13 @@
                             "description": {
                                 "en": [
                                     "API URL for the AI video enhancement.",
-                                    "Example: 'https://aristote.univ.fr/api'",
-                                    "Project Link: https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                    "Example: '<https://aristote.univ.fr/api>'",
+                                    "Project Link: <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
                                 ],
                                 "fr": [
                                     "L’URL de l’API pour l’IA d’amélioration des vidéos.",
-                                    "Exemple : 'https://aristote.univ.fr/api'",
-                                    "Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                    "Exemple : '<https://aristote.univ.fr/api>'",
+                                    "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
                                 ]
                             },
                             "pod_version_end": "",
@@ -54,8 +54,8 @@
                                 ],
                                 "fr": [
                                     "L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.",
-                                    "Exemple : '<https://aristote.univ.fr/cgu>'",
-                                    "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
+                                    "Exemple : '<https://aristote.univ.fr/cgu>'",
+                                    "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
                                 ]
                             },
                             "pod_version_end": "",
@@ -70,7 +70,7 @@
                                 ],
                                 "fr": [
                                     "L’ID du client de l’IA d’amélioration des vidéos.",
-                                    "Exemple : 'v1'"
+                                    "Exemple : 'v1'"
                                 ]
                             },
                             "pod_version_end": "",
@@ -121,11 +121,11 @@
                             "description": {
                                 "en": [
                                     "URL of proxy server for request coming from Aristote.",
-                                    "Exemple : '<https://proxy_aristote.univ.fr>'"
+                                    "Example: '<https://proxy_aristote.univ.fr>'"
                                 ],
                                 "fr": [
                                     "L’URL du serveur proxy pour les requêtes venant d'Aristote.",
-                                    "Exemple : '<https://proxy_aristote.univ.fr>'"
+                                    "Exemple : '<https://proxy_aristote.univ.fr>'"
                                 ]
                             },
                             "pod_version_end": "",
@@ -332,7 +332,7 @@
                                     "Url of the institution’s CAS server. In the format https://url_cas"
                                 ],
                                 "fr": [
-                                    "Url du serveur CAS de l’établissement. Format https://url_cas"
+                                    "Url du serveur CAS de l’établissement. Format `http://url_cas`"
                                 ]
                             },
                             "pod_version_end": "",
@@ -969,63 +969,6 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
-                        "TRANSCRIPTION_MODEL_PARAM": {
-                            "default_value": "",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Paramétrage des modèles pour la transcription",
-                                    "Voir la documentation à cette adresse :",
-                                    "[esup-portail.org/wiki](https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3)",
-                                    "Pour télécharger les modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)",
-                                    "```python",
-                                    "TRANSCRIPTION_MODEL_PARAM = {",
-                                    "    # le modèle stt",
-                                    "    'STT': {",
-                                    "        'fr': {",
-                                    "            'model': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite\",",
-                                    "            'scorer': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer\",",
-                                    "        }",
-                                    "    },",
-                                    "    # le modèle vosk",
-                                    "    'VOSK': {",
-                                    "        'fr': {",
-                                    "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
-                                    "        }",
-                                    "    }",
-                                    "    # le modèle Whisper",
-                                    "    'WHISPER': {",
-                                    "        'fr': {",
-                                    "            'model': \"small\",",
-                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
-                                    "        },",
-                                    "        'en': {",
-                                    "            'model': \"small\",",
-                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
-                                    "        }",
-                                    "    }",
-                                    "}",
-                                    "```"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1"
-                        },
-                        "TRANSCRIPTION_TYPE": {
-                            "default_value": "STT",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "STT, VOSK ou WHISPER (à partir de Pod 3.5.0)"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1"
-                        },
                         "USE_ENRICH_READY": {
                             "default_value": "False",
                             "description": {
@@ -1140,6 +1083,37 @@
                         "fr": "Configuration de l’application duplicate"
                     }
                 },
+                "hyperlinks": {
+                    "description": {
+                        "en": [
+                            "Hyperlinks application to add hyperlinks to video.",
+                            "Set `USE_HYPERLINKS` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Liens permettant d'ajouter des liens à la vidéo.",
+                            "Mettre `USE_HYPERLINKS` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_HYPERLINKS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Activation of the Hyperlinks application"
+                                ],
+                                "fr": [
+                                    "Activation de l’application Liens"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": ""
+                        }
+                    },
+                    "title": {
+                        "en": "Hyperlinks application configuration",
+                        "fr": "Configuration de l’application Liens"
+                    }
+                },
                 "enrichment": {
                     "description": {},
                     "settings": {},
@@ -1189,7 +1163,7 @@
 
                     },
                     "title": {
-                        "en": "Seaker application configuration",
+                        "en": "Speaker application configuration",
                         "fr": "Configuration de l’application Intervenant"
                     }
                 },
@@ -1735,6 +1709,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.7.0"
+                        },
+                        "SOCIAL_SHARE": {
+                            "default_value": "['X', 'FACEBOOK', 'LINKEDIN', 'BLUESKY']",
+                            "description": {
+                                "en": [
+                                    "Choice of display of social network sharing links"
+                                ],
+                                "fr": [
+                                    "Choix d'affichage des liens de partage des réseaux sociaux"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.0.0"
                         }
                     },
                     "title": {
@@ -2844,14 +2831,29 @@
                             "default_value": 50,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Tags entered when adding a video cannot exceed this length."
                                 ],
                                 "fr": [
-                                    "Les mots clés saisis lors de l’ajout de vidéo ne peuvent dépasser cette longueur."
+                                    "Les mots-clés saisis lors de l’ajout de vidéo ne peuvent dépasser cette longueur."
                                 ]
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "NUMBER_TAGS_CLOUD": {
+                            "default_value": 20,
+                            "description": {
+                                "en": [
+                                    "Number of most important tags displayed in the cloud on the home page.",
+                                    "TAGULOUS_WEIGHT_MIN and TAGULOUS_WEIGHT_MAX parameters are not used."
+                                ],
+                                "fr": [
+                                    "Nombre de mots-clés les plus importants affichés dans le nuage de la page d'accueil.",
+                                    "Les paramètres TAGULOUS_WEIGHT_MIN et TAGULOUS_WEIGHT_MAX ne sont pas utilisés."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.0.0"
                         },
                         "NOTES_STATUS": {
                             "default_value": "()",
@@ -3761,7 +3763,7 @@
                                 ],
                                 "fr": [
                                     "Version d’ElasticSearch.",
-                                    "valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.",
+                                    "valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.",
                                     "Attention, le paquet elasticsearch-py doit correspondre à la version du serveur. ",
                                     "pour la 8, `pip3 install elasticsearch==8.17.2`.",
                                     "Voir [elasticsearch-py.readthedocs.io](https://elasticsearch-py.readthedocs.io/)",
@@ -5562,7 +5564,7 @@
                             "default_value": 600,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Cutting up the audio for transcription."
                                 ],
                                 "fr": [
                                     "Découpage de l’audio pour la transcription."
@@ -5572,28 +5574,57 @@
                             "pod_version_init": "3.1.0"
                         },
                         "TRANSCRIPTION_MODEL_PARAM": {
-                            "default_value": "{}",
+                            "default_value": "",
                             "description": {
                                 "en": [
-                                    ""
+                                    "Setting up templates for transcription",
+                                    "See the documentation at this address:",
+                                    "[esupportail.github.io](https://esupportail.github.io/Esup-Pod/4.x/Installation/optional/auto-transcription-install_fr)",
+                                    "To download Vosk models: [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)",
+                                    "```python",
+                                    "TRANSCRIPTION_MODEL_PARAM = {",
+                                    "    # Vosk model",
+                                    "    'VOSK': {",
+                                    "        'fr': {",
+                                    "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
+                                    "        }",
+                                    "    }",
+                                    "    # Whisper model",
+                                    "    'WHISPER': {",
+                                    "        'fr': {",
+                                    "            'model': \"small\",",
+                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
+                                    "        },",
+                                    "        'en': {",
+                                    "            'model': \"small\",",
+                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
+                                    "        }",
+                                    "    }",
+                                    "}",
+                                    "```"
                                 ],
                                 "fr": [
                                     "Paramétrage des modèles pour la transcription",
-                                    "Voir la documentation à cette adresse : [www.esup-portail.org/wiki](https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3)",
-                                    "Pour télécharger les Modeles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)",
+                                    "Voir la documentation à cette adresse :",
+                                    "[esupportail.github.io](https://esupportail.github.io/Esup-Pod/4.x/Installation/optional/auto-transcription-install_fr)",
+                                    "Pour télécharger les modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)",
                                     "```python",
                                     "TRANSCRIPTION_MODEL_PARAM = {",
-                                    "    # le modèle stt",
-                                    "    'STT': {",
-                                    "        'fr': {",
-                                    "            'model': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite\",",
-                                    "            'scorer': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer\",",
-                                    "        }",
-                                    "    },",
                                     "    # le modèle vosk",
                                     "    'VOSK': {",
                                     "        'fr': {",
                                     "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
+                                    "        }",
+                                    "    }",
+                                    "    # le modèle Whisper",
+                                    "    'WHISPER': {",
+                                    "        'fr': {",
+                                    "            'model': \"small\",",
+                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
+                                    "        },",
+                                    "        'en': {",
+                                    "            'model': \"small\",",
+                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
                                     "        }",
                                     "    }",
                                     "}",
@@ -5601,13 +5632,13 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
+                            "pod_version_init": "3.1"
                         },
                         "TRANSCRIPTION_NORMALIZE": {
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Activation of audio normalisation before transcription."
                                 ],
                                 "fr": [
                                     "Activation de la normalisation de l’audio avant sa transcription."
@@ -5620,7 +5651,7 @@
                             "default_value": -16.0,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Level of standardisation of the audio before transcription."
                                 ],
                                 "fr": [
                                     "Niveau de normalisation de l’audio avant sa transcription."
@@ -5657,13 +5688,13 @@
                             "pod_version_init": "3.1.0"
                         },
                         "TRANSCRIPTION_TYPE": {
-                            "default_value": "STT",
+                            "default_value": "WHISPER",
                             "description": {
                                 "en": [
-                                    ""
+                                    "Choice of transcription tool: `VOSK` or `WHISPER`."
                                 ],
                                 "fr": [
-                                    "Choix de l’outil pour la transcription : `STT`, `VOSK`ou `WHISPER`."
+                                    "Choix de l’outil pour la transcription : `VOSK`ou `WHISPER`."
                                 ]
                             },
                             "pod_version_end": "",
@@ -5784,13 +5815,13 @@
                         "en": [
                             "WARNING (ckeditor.W001) django-ckeditor bundles CKEditor 4.22.1 free version",
                             "which isn’t supported anmyore and which does have unfixed security issues,",
-                            "see for example https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS .",
+                            "see for example <https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS>.",
                             "You should consider strongly switching to a different editor."
                         ],
                         "fr": [
                             "ATTENTION. django-ckeditor integre la version gratuite de CKEditor 4.22.1,",
                             "qui n'est plus prise en charge et qui présente des problèmes de sécurité non résolus,",
-                            "voir par exemple https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS."
+                            "voir par exemple <https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS>."
                         ]
                     },
                     "pod_version_end": "4.0.0",

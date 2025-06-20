@@ -1,5 +1,5 @@
 -r requirements-encode.txt
-Django==4.2.20
+Django==4.2.22
 Pillow==10.3.0
 django-tinymce==4.1.0
 django-tagulous==2.1.0
@@ -16,8 +16,7 @@ sorl-thumbnail==12.11.0
 django-lti-provider==1.0.0
 django-auth-mixins==1.0.1
 pandas
-django-shibboleth-remoteuser
-django-chunked-upload==2.0.0
+django-shibboleth-remoteuser@git+https://gitlab.gwdg.de/discuss-data/django-shibboleth-remoteuser
 django-select2
 django-redis
 chardet==5.2.0
@@ -36,3 +35,4 @@ djangorestframework-simplejwt==5.3.1
 django-pwa==2.0.1
 django-webpush==0.3.6
 defusedxml==0.7.1
+django-chunked-upload@git+https://github.com/juliomalegria/django-chunked-upload.git@master

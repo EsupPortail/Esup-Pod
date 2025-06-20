@@ -127,9 +127,11 @@ class BlockAdmin(TranslationAdmin):
 
     list_display = (
         "title",
+        "order",
         "page",
         "type",
         "data_type",
+        "visible",
     )
 
     def get_form(self, request, obj=None, **kwargs):
