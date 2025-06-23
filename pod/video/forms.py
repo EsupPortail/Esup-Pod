@@ -966,10 +966,8 @@ class VideoForm(forms.ModelForm):
         from django.utils import timezone
         if self.instance and self.instance.scheduled_publish_date:
             self.fields["enable_scheduling"].initial = True
-            # Convertir UTC -> heure locale pour affichage dans le widget
             local_dt = timezone.localtime(self.instance.scheduled_publish_date)
             self.initial["scheduled_publish_date"] = local_dt.strftime("%Y-%m-%dT%H:%M")
-        # Remove any style hiding the field, let JS handle visibility
         self.fields["scheduled_publish_date"].widget.attrs.pop("style", None)
 
         if self.fields.get("video"):

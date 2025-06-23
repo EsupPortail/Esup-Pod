@@ -183,7 +183,7 @@ if (schedulingCheckbox && dateGroup && dateInput) {
   function toggleScheduledDate() {
     if (schedulingCheckbox.checked) {
       dateGroup.style.display = "block";
-      dateInput.style.display = ""; // Remove display:none if present
+      dateInput.style.display = ""; 
     } else {
       dateGroup.style.display = "none";
       dateInput.style.display = "none";
