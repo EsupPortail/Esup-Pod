@@ -806,7 +806,6 @@ class Video(models.Model):
         default=False,
         help_text=_("Check this box if you want to use the 360 player for the video"),
     )
-
     is_draft = models.BooleanField(
         verbose_name=_("Draft"),
         help_text=_(
@@ -815,6 +814,10 @@ class Video(models.Model):
             "and the additional owners."
         ),
         default=True,
+    )
+    scheduled_publish_date = models.DateTimeField(
+        null=True, blank=True,
+        help_text="Date and hour of the scheduled publication."
     )
     is_restricted = models.BooleanField(
         verbose_name=_("Authentication restricted access"),
