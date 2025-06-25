@@ -1,7 +1,7 @@
 {# HTML for overlay form. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
 <div class="card card-body">
-<form id="form_overlay" action="{% url 'video:completion:video_completion_overlay' slug=video.slug %}" method="POST" class="completion">
+<form id="form-overlay" action="{% url 'video:completion:video_completion_overlay' slug=video.slug %}" method="POST" class="completion">
 	{% csrf_token %}
 	<div id="form_content" class="container">
 		{% if form_overlay.errors or form_overlay.non_field_errors %}

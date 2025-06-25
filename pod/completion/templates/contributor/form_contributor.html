@@ -1,7 +1,7 @@
 {# HTML for contributor form. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
 <div class="card card-body">
-	<form id="form_contributor" action="{% url 'video:completion:video_completion_contributor' slug=video.slug %}" method="POST" class="completion">
+	<form id="form-contributor" action="{% url 'video:completion:video_completion_contributor' slug=video.slug %}" method="POST" class="completion">
 		{% csrf_token %}
 		<div id="form_content" class="container">
 			{% if form_contributor.errors or form_contributor.non_field_errors %}
