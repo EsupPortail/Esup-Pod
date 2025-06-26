@@ -16,7 +16,7 @@
         <tr class="contributor">
           <td class="contributor-name">{{contributor.name}}</td>
           <td class="contributor_mail">{{contributor.email_address|default_if_none:'&nbsp;'}}</td>
-          <td class="contributor_role">{% trans contributor.role %}</td>
+          <td class="contributor_role">{% with role=contributor.role|title %}{% trans role %}{% endwith %}</td>
           <td class="contributor_weblink">{{contributor.weblink|default_if_none:'&nbsp;'}}</td>
           <td>
             <form class="form_modif completion d-inline-block" action="{% url 'video:completion:video_completion_contributor' slug=video.slug %}" method="POST">

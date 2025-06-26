@@ -25,7 +25,7 @@
 			<input type="hidden" id="id_overlay" name="overlay_id" value="{{form_overlay.instance.id}}">
 		{% endif %}
 		<input type="hidden" name="action" value="save">
-		<input type="submit" id="save_overlay" value="{% trans 'Save' %}" class="btn btn-primary">
+		<input type="submit" id="save-overlay" value="{% trans 'Save' %}" class="btn btn-primary">
 		<a class="btn btn-secondary" action="cancel" id="cancel_document" href="{% url 'video:completion:video_completion' slug=video.slug %}">{% trans 'Cancel' %}</a>
 	</div>
 </form>

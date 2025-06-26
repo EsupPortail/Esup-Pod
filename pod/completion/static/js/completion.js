@@ -46,6 +46,9 @@ var ajaxfail = function (data, form) {
 };
 
 // Hide/Show the add hyperlink button (maybe unused...)
+// Check if .add-hyperlink-btn button exist before use to avoid console error
+// It seems to not exist anymore on completion page...
+// So those following 6 lines could maybe be removed
 if (document.getElementById("add-hyperlink-btn")) {
   document.getElementById("add-hyperlink-btn").addEventListener("click", function () {
     document.getElementById("hyperlink-form").style.display = "block";
@@ -215,8 +218,12 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         document.querySelector("form.form_new").style.display = "block";
         document.getElementById(form).textContent = "";
       });
-
-    document.querySelector("a.title").style.display = "none";
+    // Check if a.title exist before use to avoid console error
+    // It seems to not exist anymore on completion page...
+    // So those following 3 lines could maybe be removed
+    if(document.querySelector("a.title")) { 
+      document.querySelector("a.title").style.display = "none";
+    }
     // hide_others_sections(name);
   }
   if (action === "delete") {
