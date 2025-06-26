@@ -234,7 +234,7 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list-contributor")
         self.assertContains(response, "testcontributor2")
-        self.assertContains(response, _("editor"))
+        self.assertContains(response, _("Editor"))
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor2")
 
