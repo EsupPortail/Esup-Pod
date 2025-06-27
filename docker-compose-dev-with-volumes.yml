@@ -12,10 +12,10 @@ services:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod/Dockerfile
     depends_on:
-      - elasticsearch:
-          condition: service_healthy
-      - redis:
-          condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     env_file:
       - ./.env.dev
     ports:
