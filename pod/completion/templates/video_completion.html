@@ -46,7 +46,7 @@
             <input type="hidden" name="action" value="new">
             <input type="submit"
                    value="{% trans 'Add a new contributor' %}"
-                   class="new_contributor btn btn-primary">
+                   class="new-contributor btn btn-primary">
           </form>
         </div>
       </div>
@@ -78,7 +78,7 @@
                 <input type="hidden" name="action" value="new">
                 <input type="submit"
                        value="{% trans 'Add a new speaker' %}"
-                       class="new_speaker btn btn-primary">
+                       class="new-speaker btn btn-primary">
               </form>
             </div>
           </div>
@@ -117,7 +117,7 @@
               <input type="hidden" name="action" value="new">
               <input type="submit"
                      value="{% trans 'Add a new subtitle or caption file' %}"
-                     class="new_track btn btn-primary">
+                     class="new-track btn btn-primary">
               <div class="form-text">{% trans 'The file must be in VTT format.' %}</div>
             </form>
           </div>
@@ -148,7 +148,7 @@
               <input type="hidden" name="action" value="new">
               <input type="submit"
                      value="{% trans 'Add a new additional resource' %}"
-                     class="new_document btn btn-primary">
+                     class="new-document btn btn-primary">
             </form>
           </div>
         </div>
@@ -178,7 +178,7 @@
               <input type="hidden" name="action" value="new">
               <input type="submit"
                      value="{% trans 'Add a new overlay' %}"
-                     class="new_overlay btn btn-primary">
+                     class="new-overlay btn btn-primary">
             </form>
           </div>
         </div>
@@ -203,7 +203,7 @@
               {% csrf_token %}
               <input type="hidden" name="action" value="new">
               {% if not form_hyperlink_is_active %}
-                <input type="submit" value="{% trans 'Add a new hyperlink' %}" class="new_hyperlink btn btn-primary">
+                <input type="submit" value="{% trans 'Add a new hyperlink' %}" class="new-hyperlink btn btn-primary">
               {% endif %}
             </form>
           </div>
