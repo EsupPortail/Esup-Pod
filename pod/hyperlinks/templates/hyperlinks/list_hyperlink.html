@@ -20,7 +20,7 @@
               {% csrf_token %}
               <input type="hidden" name="action" value="delete">
               <input type="hidden" name="id" value="{{hyperlink.id}}">
-              <input type="submit" title="{% blocktrans with hyperlink_description=hyperlink.hyperlink.description %}Delete the hyperlink “{{ hyperlink_description }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right" value="{% trans 'Delete' %}" class="edt_hyperlink btn btn-danger btn-sm">
+              <input type="submit" title="{% blocktrans with hyperlink_description=hyperlink.hyperlink.description %}Delete the hyperlink “{{ hyperlink_description }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right" value="{% trans 'Delete' %}" class="edt-hyperlink btn btn-danger btn-sm">
             </form>
           </td>
         </tr>

@@ -33,20 +33,20 @@
       <div id="compContributors" class="accordion-collapse collapse">
         <div class="accordion-body">
           <div class="table-responsive" id="list-contributor">{% include 'contributor/list_contributor.html' %}</div>
-          <span id="form_contributor">
+          <span id="form-contributor">
             {% if form_contributor %}
               {% include 'contributor/form_contributor.html' with form_contributor=form_contributor %}
             {% endif %}
           </span>
           <form class="form_new completion"
-                id="form_new_contributor"
+                id="form-new-contributor"
                 action="{% url 'video:completion:video_completion_contributor' slug=video.slug %}"
                 method="POST">
             {% csrf_token %}
             <input type="hidden" name="action" value="new">
             <input type="submit"
                    value="{% trans 'Add a new contributor' %}"
-                   class="new_contributor btn btn-primary">
+                   class="new-contributor btn btn-primary">
           </form>
         </div>
       </div>
@@ -65,20 +65,20 @@
           <div id="compSpeakers" class="accordion-collapse collapse">
             <div class="accordion-body">
               <div class="table-responsive" id="list-speaker">{% include 'speaker/list_speaker.html' %}</div>
-              <span id="form_speaker">
+              <span id="form-speaker">
                 {% if form_speaker %}
                   {% include 'speaker/form_speaker.html' with form_speaker=form_speaker %}
                 {% endif %}
               </span>
               <form class="form_new completion"
-                    id="form_new_speaker"
+                    id="form-new-speaker"
                     action="{% url 'video:completion:video_completion_speaker' slug=video.slug %}"
                     method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="new">
                 <input type="submit"
                        value="{% trans 'Add a new speaker' %}"
-                       class="new_speaker btn btn-primary">
+                       class="new-speaker btn btn-primary">
               </form>
             </div>
           </div>
@@ -104,20 +104,20 @@
                  href="{% url 'video:completion:video_caption_maker' slug=video.slug %}">{% trans 'Video caption maker' %}</a>
               <div class="form-text">{% trans 'To create your subtitles and/or caption(s) files' %}</div>
             </div>
-            <span id="form_track">
+            <span id="form-track">
               {% if form_track %}
                 {% include 'track/form_track.html' with form_track=form_track %}
               {% endif %}
             </span>
             <form class="form_new completion m-2"
-                  id="form_new_track"
+                  id="form-new-track"
                   action="{% url 'video:completion:video_completion_track' slug=video.slug %}"
                   method="POST">
               {% csrf_token %}
               <input type="hidden" name="action" value="new">
               <input type="submit"
                      value="{% trans 'Add a new subtitle or caption file' %}"
-                     class="new_track btn btn-primary">
+                     class="new-track btn btn-primary">
               <div class="form-text">{% trans 'The file must be in VTT format.' %}</div>
             </form>
           </div>
@@ -135,20 +135,20 @@
         <div id="compDocument" class="accordion-collapse collapse">
           <div class="accordion-body">
             <div class="table-responsive" id="list-document">{% include 'document/list_document.html' %}</div>
-            <span id="form_document">
+            <span id="form-document">
               {% if form_document %}
                 {% include 'document/form_document.html' with form_document=form_document %}
               {% endif %}
             </span>
             <form class="form_new completion"
-                  id="form_new_document"
+                  id="form-new-document"
                   action="{% url 'video:completion:video_completion_document' slug=video.slug %}"
                   method="POST">
               {% csrf_token %}
               <input type="hidden" name="action" value="new">
               <input type="submit"
                      value="{% trans 'Add a new additional resource' %}"
-                     class="new_document btn btn-primary">
+                     class="new-document btn btn-primary">
             </form>
           </div>
         </div>
@@ -165,20 +165,20 @@
         <div id="compOverlay" class="accordion-collapse collapse">
           <div class="accordion-body">
             <div class="table-responsive">{% include 'overlay/list_overlay.html' %}</div>
-            <span id="form_overlay">
+            <span id="form-overlay">
               {% if form_overlay %}
                 {% include 'overlay/form_overlay.html' with form_overlay=form_overlay %}
               {% endif %}
             </span>
             <form class="form_new completion"
-                  id="form_new_overlay"
+                  id="form-new-overlay"
                   action="{% url 'video:completion:video_completion_overlay' slug=video.slug %}"
                   method="POST">
               {% csrf_token %}
               <input type="hidden" name="action" value="new">
               <input type="submit"
                      value="{% trans 'Add a new overlay' %}"
-                     class="new_overlay btn btn-primary">
+                     class="new-overlay btn btn-primary">
             </form>
           </div>
         </div>

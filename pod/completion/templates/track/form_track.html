@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 <div class="card card-body">
-<form id="form_track" action="{% url 'video:completion:video_completion_track' slug=video.slug %}" method="POST" class="completion">
+<form id="form-track" action="{% url 'video:completion:video_completion_track' slug=video.slug %}" method="POST" class="completion">
   {% csrf_token %}
   <div id="form_content" class="form-container">
     {% if form_track.errors or form_track.non_field_errors %}
@@ -24,7 +24,7 @@
       <input type="hidden" id="id_track" name="track_id" value="{{form_track.instance.id}}">
     {% endif %}
     <input type="hidden" name="action" value="save">
-    <input type="submit" id="save_track" value="{% trans 'Save' %}" class="btn btn-primary">
+    <input type="submit" id="save-track" value="{% trans 'Save' %}" class="btn btn-primary">
     <a class="btn btn-secondary" action="cancel" id="cancel_document" href="{% url 'video:completion:video_completion' slug=video.slug %}">{% trans 'Cancel' %}</a>
   </div>
 </form>

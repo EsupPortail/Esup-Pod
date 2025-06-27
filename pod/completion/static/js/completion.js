@@ -45,27 +45,32 @@ var ajaxfail = function (data, form) {
   );
 };
 
-//  Hide/Show the add hyperlink button
-document
-  .getElementById("add-hyperlink-btn")
-  .addEventListener("click", function () {
+// Hide/Show the add hyperlink button (maybe unused...)
+// Check if .add-hyperlink-btn button exist before use to avoid console error
+// It seems to not exist anymore on completion page...
+// So those following 6 lines could maybe be removed
+if (document.getElementById("add-hyperlink-btn")) {
+  document.getElementById("add-hyperlink-btn").addEventListener("click", function () {
     document.getElementById("hyperlink-form").style.display = "block";
     this.style.display = "none";
   });
+}
 
-//SUBMIT
-
+// SUBMIT
 document.addEventListener("submit", (e) => {
   if (
-    e.target.id !== "form_new_contributor" &&
-    e.target.id !== "form_contributor" &&
-    e.target.id !== "form_new_speaker" &&
-    e.target.id !== "form_speaker" &&
-    e.target.id !== "form_new_document" &&
-    e.target.id !== "form_document" &&
-    e.target.id !== "form_new_track" &&
-    e.target.id !== "form_new_overlay" &&
-    e.target.id !== "form_new_hyperlink" &&
+    e.target.id !== "form-new-contributor" &&
+    e.target.id !== "form-contributor" &&
+    e.target.id !== "form-new-speaker" &&
+    e.target.id !== "form-speaker" &&
+    e.target.id !== "form-new-document" &&
+    e.target.id !== "form-document" &&
+    e.target.id !== "form-new-track" &&
+    e.target.id !== "form-track" &&
+    e.target.id !== "form-new-overlay" &&
+    e.target.id !== "form-overlay" &&
+    e.target.id !== "form-new-hyperlink" &&
+    e.target.id !== "form-hyperlink" &&
     !e.target.matches(".form_change") &&
     !e.target.matches(".form_modif") &&
     !e.target.matches(".form_delete")
@@ -73,8 +78,7 @@ document.addEventListener("submit", (e) => {
     return;
 
   e.preventDefault();
-  // var jqxhr = "";
-  var exp = /_([a-z]*)\s?/g;
+  var exp = /-([a-z]*)\s?/g;
   var id_form = e.target.getAttribute("id");
   var name_form = "";
   var result_regexp = "";
@@ -88,7 +92,7 @@ document.addEventListener("submit", (e) => {
     result_regexp = id_form.split(exp);
     name_form = result_regexp[result_regexp.length - 2];
   }
-  var form = "form_" + name_form;
+  var form = "form-" + name_form;
   var list = "list-" + name_form;
   var action = e.target.querySelector("input[name=action]").value;
   sendAndGetForm(e.target, action, name_form, form, list)
@@ -214,8 +218,12 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         document.querySelector("form.form_new").style.display = "block";
         document.getElementById(form).textContent = "";
       });
-
-    document.querySelector("a.title").style.display = "none";
+    // Check if a.title exist before use to avoid console error
+    // It seems to not exist anymore on completion page...
+    // So those following 3 lines could maybe be removed
+    if(document.querySelector("a.title")) { 
+      document.querySelector("a.title").style.display = "none";
+    }
     // hide_others_sections(name);
   }
   if (action === "delete") {
@@ -392,7 +400,7 @@ function refresh_list(data, form, list) {
 // Check fields
 function verify_fields(form) {
   var error = false;
-  if (form == "form_contributor") {
+  if (form == "form-contributor") {
     if (
       document.getElementById("id_name").value == "" ||
       document.getElementById("id_name").value.length < 2 ||
@@ -452,7 +460,7 @@ function verify_fields(form) {
         error = true;
       }
     });
-  } else if (form == "form_track") {
+  } else if (form == "form-track") {
     var element = document.getElementById("id_kind");
     var value = element.options[element.selectedIndex].value
       .trim()
@@ -523,12 +531,12 @@ function verify_fields(form) {
           kind === elt.textContent.trim().toLowerCase() &&
           lang ===
             elt.parentNode
-              .querySelector("#" + elt.get("id") + ".track-kind.lang")
+              .querySelector("#" + elt.getAttribute("id") + ".track-kind.lang")
               .textContent.trim()
               .toLowerCase() &&
           file_name ===
             elt.parentNode
-              .querySelector("#" + elt.get("id") + ".track-kind.file")
+              .querySelector("#" + elt.getAttribute("id") + ".track-kind.file")
               .textContent.trim()
               .split(" ")[0]
               .toLowerCase()
@@ -550,7 +558,7 @@ function verify_fields(form) {
       form_group.classList.add("has-error");
       error = true;
     }
-  } else if (form == "form_document") {
+  } else if (form == "form-document") {
     if (document.getElementById("id_document").value == "") {
       let id_document = document.getElementById("id_document");
       id_document.insertAdjacentHTML(
@@ -608,7 +616,7 @@ function verify_fields(form) {
         }
       });
     }
-  } else if (form == "form_overlay") {
+  } else if (form == "form-overlay") {
     var tags = /<script.+?>|<iframe.+?>/;
     if (tags.exec(document.getElementById("id_content").value) != null) {
       let id_content = document.getElementById("id_content");
@@ -624,7 +632,7 @@ function verify_fields(form) {
       });
       error = true;
     }
-  } else if (form == "form_speaker") {
+  } else if (form == "form-speaker") {
     id_job = document
       .querySelector(`form#${form}`)
       .querySelector("#id_job").value;
