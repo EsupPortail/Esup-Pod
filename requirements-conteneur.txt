@@ -1,2 +1,2 @@
--r ./requirements-dev.txt
 importlib-metadata==7.2.1
+watchdog

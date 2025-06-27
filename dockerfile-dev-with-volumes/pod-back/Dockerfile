@@ -16,21 +16,22 @@ RUN yarn
 FROM $PYTHON_VERSION
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends netcat gettext \
+    && apt-get install --yes --no-install-recommends \
+        gettext \
+        curl \
     && apt-get clean\
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 
-COPY ./requirements.txt .
-COPY ./requirements-encode.txt .
-COPY ./requirements-conteneur.txt .
-COPY ./requirements-dev.txt .
+COPY ./requirements.txt ./requirements-encode.txt ./requirements-conteneur.txt ./requirements-dev.txt .
 RUN mkdir /tmp/node_modules/
 
 COPY --from=source-build-js /tmp/pod/node_modules/ /tmp/node_modules/
 # TODO remove ES version - move it into env var
-RUN pip3 install --no-cache-dir -r requirements-conteneur.txt \
+RUN pip3 install --no-cache-dir \
+    --requirement requirements-dev.txt \
+    --requirement requirements-conteneur.txt \
     && pip3 install elasticsearch==8.17.2
 
 # ENTRYPOINT:
@@ -39,5 +40,8 @@ RUN chmod 755 /tmp/my-entrypoint-back.sh
 
 # Default shell to bash:
 RUN ln -sf /bin/bash /bin/sh
+
+HEALTHCHECK --timeout=3s --start-period=60s --start-interval=1s CMD \
+    curl --fail http://pod.localhost:8000 || exit 1
 
 ENTRYPOINT ["bash", "/tmp/my-entrypoint-back.sh"]
