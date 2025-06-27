@@ -272,6 +272,14 @@ In theory, the service starts automatically. If you've installed Redis on the sa
 
 If you're using Redis on another machine, don't forget to modify the bind in the `/etc/redis/redis.conf` configuration file.
 
+> In this case, you should also check the value of `protected-mode` in the _/etc/redis/redis.conf_ configuration file.
+>
+> Either set _protected-mode no_ (and understand what that means) or set _protected-mode yes_ and do the necessary password management for Redis.
+>
+> If _protected-mode yes_ is set without a password, you'll get an error like this: `consumer: Cannot connect to redis://:6379/: Error 111 connecting to :6379. Connection refused`
+{: .alert .alert-warning}
+
+
 If you don't want to change the bind, you can also modify your `settings_local.py` and customize this extract from the default `settings.py` with your `<my_redis_host>`.
 
 ```py
