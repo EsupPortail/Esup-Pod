@@ -16,20 +16,20 @@
         <tr class="contributor">
           <td class="contributor-name">{{contributor.name}}</td>
           <td class="contributor_mail">{{contributor.email_address|default_if_none:'&nbsp;'}}</td>
-          <td class="contributor_role">{% trans contributor.role %}</td>
+          <td class="contributor_role">{% with role=contributor.role|title %}{% trans role %}{% endwith %}</td>
           <td class="contributor_weblink">{{contributor.weblink|default_if_none:'&nbsp;'}}</td>
           <td>
             <form class="form_modif completion d-inline-block" action="{% url 'video:completion:video_completion_contributor' slug=video.slug %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="action" value="modify">
               <input type="hidden" name="id" value="{{contributor.id}}">
-              <input type="submit" title="{% blocktrans with contributor_name=contributor.name %}Modify the contributor “{{ contributor_name }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right" value="{% trans 'Modify' %}" class="edt_contributor btn btn-secondary btn-sm">
+              <input type="submit" title="{% blocktrans with contributor_name=contributor.name %}Modify the contributor “{{ contributor_name }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right" value="{% trans 'Modify' %}" class="edt-contributor btn btn-secondary btn-sm">
             </form>
             <form class="form_delete completion d-inline-block" action="{% url 'video:completion:video_completion_contributor' slug=video.slug %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="action" value="delete">
               <input type="hidden" name="id" value="{{contributor.id}}">
-              <input type="submit" title="{% blocktrans with contributor_name=contributor.name %}Delete the contributor “{{ contributor_name }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right" value="{% trans 'Delete' %}" class="edt_contributor btn btn-danger btn-sm">
+              <input type="submit" title="{% blocktrans with contributor_name=contributor.name %}Delete the contributor “{{ contributor_name }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right" value="{% trans 'Delete' %}" class="edt-contributor btn btn-danger btn-sm">
             </form>
           </td>
         </tr>
