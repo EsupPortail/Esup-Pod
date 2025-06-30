@@ -128,6 +128,7 @@ def video_duplicate(request, slug):
             date_delete=original_video.date_delete,
             disable_comment=original_video.disable_comment,
             tags=original_video.tags.get_tag_list(),
+            scheduled_publish_date=original_video.scheduled_publish_date,
         )
         # Duplicate the source file and assign it to the duplicated video
         duplicated_video.video.name = duplicate_source_file(
