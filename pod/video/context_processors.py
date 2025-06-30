@@ -1,6 +1,7 @@
 """Esup-Pod vido context processor."""
 
 from django.conf import settings as django_settings
+from django.utils.translation import gettext_lazy as _
 
 from pod.video.models import Type
 from pod.video.models import Discipline
@@ -131,7 +132,9 @@ def context_video_data(request):
             if aggregate_videos["duration"]
             else 0
         )
-        cache.set("VIDEOS_DURATION", VIDEOS_DURATION, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
+        VIDEOS_DURATION_TR = VIDEOS_DURATION.replace("days", str(_("days")))
+
+        cache.set("VIDEOS_DURATION", VIDEOS_DURATION_TR, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
 
     return {
         "TYPES": types,
