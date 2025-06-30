@@ -50,10 +50,12 @@ var ajaxfail = function (data, form) {
 // It seems to not exist anymore on completion page...
 // So those following 6 lines could maybe be removed
 if (document.getElementById("add-hyperlink-btn")) {
-  document.getElementById("add-hyperlink-btn").addEventListener("click", function () {
-    document.getElementById("hyperlink-form").style.display = "block";
-    this.style.display = "none";
-  });
+  document
+    .getElementById("add-hyperlink-btn")
+    .addEventListener("click", function () {
+      document.getElementById("hyperlink-form").style.display = "block";
+      this.style.display = "none";
+    });
 }
 
 // SUBMIT
@@ -221,7 +223,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     // Check if a.title exist before use to avoid console error
     // It seems to not exist anymore on completion page...
     // So those following 3 lines could maybe be removed
-    if(document.querySelector("a.title")) { 
+    if (document.querySelector("a.title")) {
       document.querySelector("a.title").style.display = "none";
     }
     // hide_others_sections(name);
