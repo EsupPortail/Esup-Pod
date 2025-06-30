@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-25 09:46+0200\n"
+"POT-Creation-Date: 2025-06-30 16:59+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1025,7 +1025,7 @@ msgstr "Auteur"
 msgid "Designer"
 msgstr "Concepteur"
 
-#: pod/completion/models.py
+#: pod/completion/models.py pod/completion/tests/test_views.py
 msgid "Editor"
 msgstr "Éditeur"
 
@@ -1791,10 +1791,6 @@ msgid ""
 msgstr ""
 "Un quiz vous permet de tester la mémorisation et la compréhension de votre "
 "vidéo."
-
-#: pod/completion/tests/test_views.py
-msgid "editor"
-msgstr "éditeur"
 
 #: pod/completion/utils.py pod/completion/views.py
 #, python-format
@@ -3670,12 +3666,8 @@ msgid "Event is finished at:"
 msgstr "L’évènement s’est terminé à :"
 
 #: pod/live/templates/live/event-iframe.html pod/live/templates/live/event.html
-msgid "The event is scheduled from:"
-msgstr "L’événement est programmé du :"
-
-#: pod/live/templates/live/event-iframe.html pod/live/templates/live/event.html
-msgid "to"
-msgstr "à"
+msgid "The event is scheduled from: %(start_date)s to %(end_date)s"
+msgstr "L’événement est programmé du %(start_date)s au %(end_date)s"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -10994,6 +10986,15 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "editor"
+#~ msgstr "éditeur"
+
+#~ msgid "The event is scheduled from:"
+#~ msgstr "L’événement est programmé du :"
+
+#~ msgid "to"
+#~ msgstr "à"
 
 #~ msgid "Delete the playlist"
 #~ msgstr "Supprimer la liste de lecture"

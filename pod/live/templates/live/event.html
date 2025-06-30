@@ -37,8 +37,7 @@
       </div>
     {% elif event.is_coming %}
       <div class="p-3 mb-2 bg-warning text-dark" style="width:fit-content">
-        {% trans 'The event is scheduled from:' %}
-        {% blocktrans with start_date=event.start_date end_date=event.end_date %}{{start_date}} to {{end_date}}{% endblocktrans %}
+        {% blocktrans with start_date=event.start_date end_date=event.end_date %}The event is scheduled from: {{start_date}} to {{end_date}}{% endblocktrans %}
       </div>
 
       {# waiting video #}
