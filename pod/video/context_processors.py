@@ -130,7 +130,7 @@ def context_video_data(request):
         VIDEOS_DURATION = (
             str(timedelta(seconds=aggregate_videos["duration"]))
             if aggregate_videos["duration"]
-            else 0
+            else "0"
         )
         VIDEOS_DURATION_TR = VIDEOS_DURATION.replace("days", str(_("days")))
 
