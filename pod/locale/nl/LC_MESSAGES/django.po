@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-06 10:37+0200\n"
+"POT-Creation-Date: 2025-06-25 09:46+0200\n"
 "PO-Revision-Date: 2025-04-25 10:36+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -4926,8 +4926,8 @@ msgstr ""
 msgid "Esup-Pod Project"
 msgstr ""
 
-#: pod/main/templates/footer.html pod/video/feeds.py
-msgid "video platform of"
+#: pod/main/templates/footer.html
+msgid "Video platform"
 msgstr ""
 
 #: pod/main/templates/footer.html
@@ -8111,6 +8111,14 @@ msgstr ""
 
 #: pod/video/admin.py
 msgid "Change video owner"
+msgstr ""
+
+#: pod/video/context_processors.py
+msgid "days"
+msgstr ""
+
+#: pod/video/feeds.py
+msgid "video platform of"
 msgstr ""
 
 #: pod/video/forms.py
