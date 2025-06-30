@@ -27,6 +27,7 @@ from pod.main.utils import json_to_web_vtt
 from pod.main.views import in_maintenance
 from pod.video.models import Video, Discipline
 from pod.video_encode_transcript.transcript import save_vtt
+
 USE_QUIZ = getattr(settings, "USE_QUIZ", False)
 if USE_QUIZ:
     from pod.quiz.utils import import_quiz
