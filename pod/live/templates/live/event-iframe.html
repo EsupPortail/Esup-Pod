@@ -46,7 +46,7 @@
                 </div>
             {% elif event.is_coming %}
                 <div class="p-3 mb-2 bg-warning text-dark position-absolute" style="z-index: 1; left:0; right: 0">
-                    {% blocktrans with start_date=event.start_date end_date=event.end_date %}The event is scheduled from: {{start_date}} to {{end_date}}{% endblocktrans %}
+                    {% blocktrans with start_date=event.start_date end_date=event.end_date %}The event is scheduled from {{start_date}} to {{end_date}}{% endblocktrans %}
                 </div>
                 {% if event.video_on_hold.is_video %}
                     <div id="divvideoonhold" style="display:block">

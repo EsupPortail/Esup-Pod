@@ -3442,7 +3442,7 @@ msgstr ""
 
 #: pod/live/templates/live/event-iframe.html pod/live/templates/live/event.html
 #, python-format
-msgid "The event is scheduled from: %(start_date)s to %(end_date)s"
+msgid "The event is scheduled from %(start_date)s to %(end_date)s"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
