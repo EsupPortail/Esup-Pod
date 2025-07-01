@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-06 11:56+0200\n"
+"POT-Creation-Date: 2025-06-06 10:37+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1329,7 +1329,8 @@ msgstr ""
 #: pod/completion/permissions/video.py
 #, python-brace-format
 msgid "{func.__name__}: Permission denied for user {current_user.pk}."
-msgstr "{func.__name__}: Permission refusée pour l’utilisateur {current_user.pk}."
+msgstr ""
+"{func.__name__}: Permission refusée pour l’utilisateur {current_user.pk}."
 
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
@@ -9119,6 +9120,16 @@ msgstr ""
 "Pour votre information, voici la liste des vidéos archivées à placer dans "
 "votre dossier ARCHIVE_ROOT. Lancez la commande <code>create_archive_package</"
 "code> sans l’option <code>--dry</code> pour les supprimer de %s."
+
+#: pod/video/management/commands/create_archive_package.py
+#, python-format
+msgid ""
+"For your information, below is the list of archived videos that have been "
+"packaged in your ARCHIVE_ROOT folder, and definitely deleted from %s."
+msgstr ""
+"Pour votre information,  vous trouverez ci-dessous la liste des vidéos "
+"archivées qui ont été placées dans  votre dossier ARCHIVE_ROOT, et "
+"définitivement supprimées de %s."
 
 #: pod/video/management/commands/create_archive_package.py
 msgid ""

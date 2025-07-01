@@ -969,63 +969,6 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
-                        "TRANSCRIPTION_MODEL_PARAM": {
-                            "default_value": "",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Paramétrage des modèles pour la transcription",
-                                    "Voir la documentation à cette adresse :",
-                                    "[esup-portail.org/wiki](https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3)",
-                                    "Pour télécharger les modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)",
-                                    "```python",
-                                    "TRANSCRIPTION_MODEL_PARAM = {",
-                                    "    # le modèle stt",
-                                    "    'STT': {",
-                                    "        'fr': {",
-                                    "            'model': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite\",",
-                                    "            'scorer': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer\",",
-                                    "        }",
-                                    "    },",
-                                    "    # le modèle vosk",
-                                    "    'VOSK': {",
-                                    "        'fr': {",
-                                    "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
-                                    "        }",
-                                    "    }",
-                                    "    # le modèle Whisper",
-                                    "    'WHISPER': {",
-                                    "        'fr': {",
-                                    "            'model': \"small\",",
-                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
-                                    "        },",
-                                    "        'en': {",
-                                    "            'model': \"small\",",
-                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
-                                    "        }",
-                                    "    }",
-                                    "}",
-                                    "```"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1"
-                        },
-                        "TRANSCRIPTION_TYPE": {
-                            "default_value": "STT",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "STT, VOSK ou WHISPER (à partir de Pod 3.5.0)"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1"
-                        },
                         "USE_ENRICH_READY": {
                             "default_value": "False",
                             "description": {
@@ -5621,7 +5564,7 @@
                             "default_value": 600,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Cutting up the audio for transcription."
                                 ],
                                 "fr": [
                                     "Découpage de l’audio pour la transcription."
@@ -5631,28 +5574,57 @@
                             "pod_version_init": "3.1.0"
                         },
                         "TRANSCRIPTION_MODEL_PARAM": {
-                            "default_value": "{}",
+                            "default_value": "",
                             "description": {
                                 "en": [
-                                    ""
+                                    "Setting up templates for transcription",
+                                    "See the documentation at this address:",
+                                    "[esupportail.github.io](https://esupportail.github.io/Esup-Pod/4.x/Installation/optional/auto-transcription-install_fr)",
+                                    "To download Vosk models: [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)",
+                                    "```python",
+                                    "TRANSCRIPTION_MODEL_PARAM = {",
+                                    "    # Vosk model",
+                                    "    'VOSK': {",
+                                    "        'fr': {",
+                                    "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
+                                    "        }",
+                                    "    }",
+                                    "    # Whisper model",
+                                    "    'WHISPER': {",
+                                    "        'fr': {",
+                                    "            'model': \"small\",",
+                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
+                                    "        },",
+                                    "        'en': {",
+                                    "            'model': \"small\",",
+                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
+                                    "        }",
+                                    "    }",
+                                    "}",
+                                    "```"
                                 ],
                                 "fr": [
                                     "Paramétrage des modèles pour la transcription",
-                                    "Voir la documentation à cette adresse : [www.esup-portail.org/wiki](https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3)",
-                                    "Pour télécharger les Modeles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)",
+                                    "Voir la documentation à cette adresse :",
+                                    "[esupportail.github.io](https://esupportail.github.io/Esup-Pod/4.x/Installation/optional/auto-transcription-install_fr)",
+                                    "Pour télécharger les modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)",
                                     "```python",
                                     "TRANSCRIPTION_MODEL_PARAM = {",
-                                    "    # le modèle stt",
-                                    "    'STT': {",
-                                    "        'fr': {",
-                                    "            'model': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite\",",
-                                    "            'scorer': \"/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer\",",
-                                    "        }",
-                                    "    },",
                                     "    # le modèle vosk",
                                     "    'VOSK': {",
                                     "        'fr': {",
                                     "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
+                                    "        }",
+                                    "    }",
+                                    "    # le modèle Whisper",
+                                    "    'WHISPER': {",
+                                    "        'fr': {",
+                                    "            'model': \"small\",",
+                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
+                                    "        },",
+                                    "        'en': {",
+                                    "            'model': \"small\",",
+                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
                                     "        }",
                                     "    }",
                                     "}",
@@ -5660,13 +5632,13 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
+                            "pod_version_init": "3.1"
                         },
                         "TRANSCRIPTION_NORMALIZE": {
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Activation of audio normalisation before transcription."
                                 ],
                                 "fr": [
                                     "Activation de la normalisation de l’audio avant sa transcription."
@@ -5679,7 +5651,7 @@
                             "default_value": -16.0,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Level of standardisation of the audio before transcription."
                                 ],
                                 "fr": [
                                     "Niveau de normalisation de l’audio avant sa transcription."
@@ -5716,13 +5688,13 @@
                             "pod_version_init": "3.1.0"
                         },
                         "TRANSCRIPTION_TYPE": {
-                            "default_value": "STT",
+                            "default_value": "WHISPER",
                             "description": {
                                 "en": [
-                                    ""
+                                    "Choice of transcription tool: `VOSK` or `WHISPER`."
                                 ],
                                 "fr": [
-                                    "Choix de l’outil pour la transcription : `STT`, `VOSK`ou `WHISPER`."
+                                    "Choix de l’outil pour la transcription : `VOSK`ou `WHISPER`."
                                 ]
                             },
                             "pod_version_end": "",

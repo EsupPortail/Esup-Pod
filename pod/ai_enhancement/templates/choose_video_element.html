@@ -39,11 +39,13 @@
       <i class="bi bi-file-text" aria-hidden="true"></i>&nbsp;{% trans "Import subtitle" %}
     </a>
   </span>
+  {% if USE_QUIZ %}
   <span>
     <a href="{% url 'ai_enhancement:enhance_quiz' video_slug=video.slug %}" class="btn btn-primary btn-sm m-2">
       <i class="bi bi-patch-question" aria-hidden="true"></i>&nbsp;{% trans "Import the quiz" %}
     </a>
   </span>
+  {% endif %}
   <span>
     <a href="{% url 'ai_enhancement:delete_enhance_video' video_slug=video.slug %}" class="btn btn-danger btn-sm m-2">
       <i class="bi bi-trash" aria-hidden="true"></i>&nbsp;{% trans "Remove this enhancement" %}

@@ -209,7 +209,7 @@ class EnrichModelQueue(models.Model):
     title = models.TextField(_("Title"), null=True, blank=True)
     text = models.TextField(_("Text"), null=False, blank=False)
     model_type = models.CharField(
-        _("Model Type"), null=False, blank=False, max_length=100, default="STT"
+        _("Model Type"), null=False, blank=False, max_length=100, default="WHISPER"
     )
     lang = models.CharField(
         _("Language"), max_length=2, choices=LANG_CHOICES, default="fr"
