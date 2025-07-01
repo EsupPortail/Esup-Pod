@@ -55,7 +55,20 @@ Dans votre `custom/settings-local.py`, les paramètres suivants concernent l’u
 | **OPENCAST_FILES_DIR**  | Répertoire de travail pour les fichiers générés par Opencast Studio (sera accessible dans le media) | `"opencast-files"` |
 | **ENCODE_STUDIO**       | Fonction appelée pour lancer l’encodage des vidéos intermédiaires du studio | `"start_encode_studio"` |
 | **OPENCAST_DEFAULT_PRESENTER** | Paramètre permettant de savoir le comportement par défaut lors de l’enregistrement de la caméra et de l’écran (modifiable par l’utilisateur). Valeurs possibles : `mid` : Même taille pour l’écran et la caméra, `piph` : Pip - caméra à l’intérieur de la vidéo de l’écran en haut à droite, `pipb` : Pip - caméra à l’intérieur de la vidéo de l’écran en bas à droite | `"mid"` |
+| **FFMPEG_STUDIO_COMMAND** | Commande ffmpeg utilisée pour l’encodage des vidéos du studio | _cf. remarque ci-dessous_ |
 {: .table .table-striped}
+
+Pensez à vérifier la version de ffmpeg utilisée par le serveur d’encodage. S’il s’agit d’une version 5 ou plus, il est nécessaire de surcharger le paramètre `FFMPEG_STUDIO_COMMAND` de votre `custom/settings-local.py` avec :
+```sh
+FFMPEG_STUDIO_COMMAND = (
+    " -hide_banner -threads %(nb_threads)s %(input)s %(subtime)s"
+    + " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p"
+    + " -crf %(crf)s -sc_threshold 0 -force_key_frames"
+    + ' "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
+)
+```
+_Par défaut, l’encodage utilise l’option `-deinterlace` qui a été supprimée depuis la version 5 de ffmpeg._
+{: .alert .alert-warning}
 
 ### Pré-requis
 
