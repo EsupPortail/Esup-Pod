@@ -134,7 +134,9 @@ def context_video_data(request):
         )
         VIDEOS_DURATION_TR = VIDEOS_DURATION.replace("days", str(_("days")))
 
-        cache.set("VIDEOS_DURATION", VIDEOS_DURATION_TR, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
+        cache.set(
+            "VIDEOS_DURATION", VIDEOS_DURATION_TR, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT
+        )
 
     return {
         "TYPES": types,
