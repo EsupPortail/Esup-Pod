@@ -682,7 +682,7 @@ div.card a img {
 .card-footer-pod {
   position: absolute;
   bottom: 3.5rem;
-  right: 0.1rem;
+  right: 1px;
   border: none;
   border-radius: 0.375rem;
   display: flex;
