@@ -1,5 +1,7 @@
 {% load i18n %}
+
 <div class="input-group">
+  <input id="titlebox" type="hidden" name="title" value="{{ request.GET.title|default:'' }}">
   <label for="sort" class="input-group-text" aria-label="{% trans 'Sort' %}">{% trans 'Sort' %}</label>
   {% if sort_direction == 'on' %}
     <button id="sort_direction_label" class="btn btn-primary" title="{% trans 'Ascending sort' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">&#8599;</button>
