@@ -2,6 +2,9 @@
 {% load pwa %}
 {% load webpush_notifications %}
 {% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_language_info_list for LANGUAGES as languages %}
+
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>{% spaceless %}
@@ -76,7 +79,7 @@
 
     <!-- Breadcrumb navigation -->
     {% if not request.GET.is_iframe %}
-      <nav aria-label="{% trans 'Breadcrumb' %}" id="mainbreadcrumb" class="pod-navbar-breadcrumb ">
+      <nav aria-label="{% trans 'Breadcrumb' %}" id="mainbreadcrumb" class="d-flex justify-content-between align-items-center pod-navbar-breadcrumb">
         <ol class="breadcrumb d-flex">
           {% block breadcrumbs %}
             {% if request.path == '/' %}
@@ -92,6 +95,99 @@
             {% endif %}
           {% endblock breadcrumbs %}
         </ol>
+        <!-- Dropdown-based Preferences menu -->
+        <div class="nav-item dropdown pod-params ms-md-2">
+          <button
+            class="btn btn-link dropdown-toggle d-flex align-items-center pod-params-button-test"
+            type="button"
+            id="pod-param-dropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            data-bs-auto-close="outside"
+            aria-label = "{% trans 'Toggle Display settings panel' %}"
+            title="{% trans 'Toggle Display settings panel' %}">
+            <span>{% trans "Display" %}</span>
+          </button>
+          <ul id="preferences-dropdown" class="dropdown-menu dropdown-menu-end pod-params-dropdown" aria-labelledby="pod-param-dropdown">
+            {% if HIDE_LANGUAGE_SELECTOR == False %}
+              <li class="pod-navbar__theme-switch__item">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2" for="pod-lang-select">{% trans 'Language' %}</label>
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-lang btn-lang-active dropdown-toggle"
+                      type="button"
+                      id="pod-lang-select"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      aria-label="{% trans 'Change display language' %}"
+                      title="{% trans 'Change display language' %}">
+                      {{ LANGUAGE_CODE }}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="pod-lang-select">
+                      {% for language in languages %}
+                        {% if language.code != LANGUAGE_CODE %}
+                          <form action="{% url 'set_language' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="language" value="{{ language.code }}">
+                            <button
+                              type="submit"
+                              class="dropdown-item"
+                              lang="{{ language.code }}">
+                              {{ language.name_local }} ({{ language.code }})
+                            </button>
+                          </form>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </li>
+            {% endif %}
+            {% if DARKMODE_ENABLED %}
+              <li class="pod-navbar__theme-switch__item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses darker colors' %}" aria-label="{% trans 'Uses darker colors' %}">
+                <label for="checkbox-darkmode">
+                  <span class="form-label">{% trans 'Dark mode' %}</span>
+                  <span class="pod-switch">
+                    <input type="checkbox" id="checkbox-darkmode">
+                    <span class="slider">
+                      <i class="bi bi-sun" aria-hidden="true"></i>
+                      <i class="bi bi-moon" aria-hidden="true"></i>
+                    </span>
+                  </span>
+                </label>
+              </li>
+            {% endif %}
+            {% if DYSLEXIAMODE_ENABLED %}
+              <li class="pod-navbar__theme-switch__item" id="dyslexia-switch-wrapper" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses a font more suitable for people with dyslexia.' %}" aria-label="{% trans 'Uses a font more suitable for people with dyslexia.' %}">
+                <label for="checkbox-dyslexia">
+                  <span class="form-label">{% trans 'Dyslexia mode' %}</span>
+                  <span class="pod-switch">
+                    <input type="checkbox" id="checkbox-dyslexia">
+                    <span class="slider">
+                      <i class="bi bi-eye-slash" aria-hidden="true"></i>
+                      <i class="bi bi-eye" aria-hidden="true"></i>
+                    </span>
+                  </span>
+                </label>
+              </li>
+            {% endif %}
+            <li class="pod-navbar__theme-switch__item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Automatically display subtitles at the start of each video play. If no subtitle corresponds to the current language, the first available will be selected.' %}" aria-label="{% trans 'Automatically display subtitles at the start of each video play. If no subtitle corresponds to the current language, the first available will be selected.' %}">
+              <label for="checkbox-subtitle">
+                <span class="form-label">{% trans 'Auto show subtitles' %}</span>
+                <span class="pod-switch">
+                  <input type="checkbox" id="checkbox-subtitle">
+                  <span class="slider">
+                    <i class="icon-subtitle" aria-hidden="true"></i>
+                    <i class="icon-subtitle slash" aria-hidden="true"></i>
+                  </span>
+                </span>
+              </label>
+            </li>
+          </ul>
+        </div>
       </nav>
     {% endif %}
   </header>
