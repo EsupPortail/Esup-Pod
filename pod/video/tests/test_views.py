@@ -933,6 +933,7 @@ class VideoEditTestView(TestCase):
         # Modify this video again.
         url = reverse("video:video_edit", kwargs={"slug": v.slug})
         video_data["video"] = video_file
+        video_data["channel"] = [1]
         del video_data["description"]
         response = self.client.post(
             url,
@@ -944,6 +945,7 @@ class VideoEditTestView(TestCase):
 
         # Check changes have been made.
         v = Video.objects.get(title=video_data["title"])
+        self.assertEqual(v.channel.all().count(), 1)
         print("   --->  test_video_edit_post_request of VideoEditTestView: OK!")
 
 
