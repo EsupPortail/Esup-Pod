@@ -1,6 +1,6 @@
 # Installation of ElasticSearch on Debian
 
-https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html
+<https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html>
 
 ## Installation of ICU Analysis
 
@@ -20,7 +20,7 @@ $>root@Pod:/etc/elasticsearch# vim elasticsearch.yml
 ## To create pod index
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/podv3$ python manage.py create_pod_index
+(django_pod) pod@Pod:$ python manage.py create_pod_index
 ```
 
 ## To delete pod index

@@ -31,13 +31,13 @@ the time_sleep variable. Processing will take longer, but will be able to comple
 
 Usage:
 Run the script using Django's management command:
-    python manage.py import_data_from_v3_to_v4
+    `python manage.py import_data_from_v3_to_v4`
 Arguments:
  --dry: Simulates what will be achieved (default=False).
  --createDB: Execute Bash commands to create tables in the database and add initial data (see make createDB). Database must be empty. (default=False).
  --onlytags: Processes only tags (default=False). Useful if you encounter the 'Too many connections' problem for tags management.
 
-Example: python manage.py import_data_from_v3_to_v4 --dry
+Example: `python manage.py import_data_from_v3_to_v4 --dry`
 
 Functions:
 - add_arguments: Adds command-line arguments for the script.

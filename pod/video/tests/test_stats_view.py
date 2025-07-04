@@ -27,7 +27,7 @@ class TestStatsView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.logger = logging.getLogger("django.request")
         # self.previous_level = self.logger.getEffectiveLevel()
         # Remove warning log
