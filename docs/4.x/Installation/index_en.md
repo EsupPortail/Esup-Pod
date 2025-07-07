@@ -15,13 +15,28 @@ lang: en
 * [Stand-alone Installation](install_standalone_en)
 * [Docker Installation Docker](install_docker_en)
 * [Ansible Installation (by ENSAM)](https://gitlab.ensam.eu/apps/esup-pod)
+* [Configuration and use of REDIS](redis_en)
 * [Production Deployment](production-mode_en)
 
-### Optional features
+### Encoding, transcription, xAPI and ActivityPub management
 
-#### Autotranscription
+#### Local mode
 
+* [Local encoding](local-encoding_en)
 * [Autotranscription installation](optional/auto-transcription-install_en)
+
+#### Remote mode on a remote machine
+
+* [Remote encoding on one or more servers](remote-encoding_en)
+* [Autotranscription installation](optional/auto-transcription-install_en)
+
+#### Remote mode on a machine or a microservice docker
+
+* Microservice encoding
+* Transcoding microservice
+* xAPI microservice
+
+### Optional features
 
 #### BigBlueButton
 

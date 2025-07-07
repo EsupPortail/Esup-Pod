@@ -227,8 +227,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
 TIME_ZONE = 'Europe/Paris'
 ```
 
-All available variables can be found on this page:
-[LINK TODO] Platform configuration
+> 🔧 All available variables can be found on this page: [Platform configuration](https://github.com/EsupPortail/Esup-Pod/blob/master/CONFIGURATION_EN.md)
 
 ## Third-party applications
 

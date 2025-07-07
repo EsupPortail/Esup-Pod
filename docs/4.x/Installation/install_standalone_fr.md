@@ -227,6 +227,8 @@ TEMPLATE_VISIBLE_SETTINGS = {
 TIME_ZONE = "Europe/Paris"
 ```
 
+> 🔧 La liste des paramètres possibles est accessible via ce lien : [Configuration de la plateforme](https://github.com/EsupPortail/Esup-Pod/blob/master/CONFIGURATION_FR.md)
+
 ## Applications tierces
 
 ### Installation de toutes les librairies python
