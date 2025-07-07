@@ -204,7 +204,7 @@ class Command(BaseCommand):
                     self.style.ERROR(f"Command failed: {command}. Error: {e}")
                 )
 
-    def process(self, options) -> None:
+    def process(self, options: dict) -> None:
         """Main process to import data."""
 
         # Define directory and JSON file
@@ -236,7 +236,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(" - Create directory data if necessary"))
         os.makedirs(os.path.join(BASE_DIR, output_directory), exist_ok=True)
 
-    def verify_json_file(self, json_file: str, options) -> bool:
+    def verify_json_file(self, json_file: str, options: dict) -> bool:
         """Verify the presence of the JSON file and optionally display a dry-run message."""
         if options["dry"]:
             self.stdout.write(
@@ -252,7 +252,7 @@ class Command(BaseCommand):
         return True
 
     def display_dry_run_tables(
-        self, data, options
+        self, data: dict, options: dict
     ) -> None:
         """Display tables that would be processed in dry mode."""
         if options["onlytags"]:
@@ -268,7 +268,7 @@ class Command(BaseCommand):
                 )
 
     def import_data(
-        self, data, json_file: str, options
+        self, data: dict, json_file: str, options: dict
     ) -> None:
         """Import data into the database."""
         error = False
@@ -312,7 +312,7 @@ class Command(BaseCommand):
                 )
             )
 
-    def import_table_data(self, cursor, table: str, rows) -> None:
+    def import_table_data(self, cursor, table: str, rows: list[dict]) -> None:
         """Delete old data and insert new rows into the specified table."""
 
         backend = connection.vendor
@@ -377,7 +377,7 @@ class Command(BaseCommand):
                 f"ALTER TABLE {self.quote_identifier('recorder_recorder_tags')} AUTO_INCREMENT = 1"
             )
 
-    def reset_auto_increment(self, cursor, table: str, id_column: int = "id") -> None:
+    def reset_auto_increment(self, cursor, table: str, id_column="id") -> None:
         """Reset auto increment for a table (manage for for Postgre or Mysql/MariaDB)."""
         backend = connection.vendor
         quoted_table = self.quote_identifier(table)
@@ -401,7 +401,7 @@ class Command(BaseCommand):
                 self.style.ERROR(f"Tag management has not been completed. Error: {e}")
             )
 
-    def process_video_tags(self, rows) -> None:
+    def process_video_tags(self, rows: list[dict]) -> None:
         """Process tags for videos."""
         number_videos_processed = 0
         self.stdout.write(self.style.SUCCESS(" - Start of tags management for videos"))
@@ -410,7 +410,7 @@ class Command(BaseCommand):
             if number_videos_processed % 100 == 0:
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"   * Processing, for tags, of the batch of videos {number_videos_processed-100}-{number_videos_processed} achieved"
+                        f"   * Processing, for tags, of the batch of videos {number_videos_processed - 100}-{number_videos_processed} achieved"
                     )
                 )
             self.add_tags_to_video(row["video_id"], row["tag_name"])
@@ -419,7 +419,7 @@ class Command(BaseCommand):
             time.sleep(time_sleep)
         self.stdout.write(self.style.SUCCESS(" - End of tags management for videos"))
 
-    def process_recorder_tags(self, rows) -> None:
+    def process_recorder_tags(self, rows: list[dict]) -> None:
         """Process tags for recorders."""
         self.stdout.write(self.style.SUCCESS(" - Start of tags management for recorders"))
         for row in rows:
