@@ -261,7 +261,7 @@ Puis lancez la commande suivante pour vérifier que ça fonctionne :
 sudo logrotate -d /etc/logrotate.d/esup-pod
 ```
 
-## Personalisations
+## Personnalisations
 
 Certaines pages ont été automatiquement pré-générées pour vous faciliter la tâche, mais il reste certaines informations à y compléter.
 Il y a notamment les pages suivantes :
