@@ -372,10 +372,11 @@ let updateCaptionsArray = (vtt) => {
     if (text.trim().toLowerCase() !== "webvtt") {
       let data = text.split("\n");
       let times = data[0].split("-->");
+      let captionText = data.slice(1).join("\n");
       let newCaption = {
         start: parseTime(times[0]),
         end: parseTime(times[1]),
-        caption: data[1],
+        caption: captionText,
       };
       captionsArray.push(newCaption);
       createCaptionBlock(newCaption);

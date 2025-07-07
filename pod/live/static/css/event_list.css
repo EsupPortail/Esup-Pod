@@ -6,3 +6,13 @@
   min-width: 12rem;
   min-height: 11rem;
 }
+
+/* Manage buttons for events */
+#events_list .card-footer-pod {
+  bottom: 5.5rem;
+}
+
+/* For "3 lines" identical height */
+#events_list .pod-card--video .video-title {
+  height: 3.6em;
+}

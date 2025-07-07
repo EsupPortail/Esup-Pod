@@ -12,8 +12,10 @@ services:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod-back/Dockerfile
     depends_on:
-      - elasticsearch
-      - redis
+      elasticsearch:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     env_file:
       - ./.env.dev
     ports:
@@ -27,7 +29,8 @@ services:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod-encode/Dockerfile
     depends_on:
-      - pod-back
+      pod-back:
+        condition: service_healthy
     env_file:
       - ./.env.dev
     volumes: *pod-volumes
@@ -39,7 +42,8 @@ services:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod-transcript/Dockerfile
     depends_on:
-      - pod-back
+      pod-back:
+        condition: service_healthy
     env_file:
       - ./.env.dev
     volumes: *pod-volumes
@@ -51,7 +55,8 @@ services:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod-xapi/Dockerfile
     depends_on:
-      - pod-back
+      pod-back:
+        condition: service_healthy
     env_file:
       - ./.env.dev
     volumes: *pod-volumes
@@ -78,6 +83,8 @@ services:
       - ./.env.dev
     ports:
       - 6379:6379
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
 
 #  redis-commander:
 #    container_name: redis-commander

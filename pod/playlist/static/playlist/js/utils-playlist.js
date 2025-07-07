@@ -76,6 +76,8 @@ function preventRefreshButton(button, jsonFormat) {
               favoriteButton.replaceWith(updatedFavoriteButton);
             }
           }
+          // Hide empty menu and change style for favorite button
+          hideEmptyDropdowns();
         })
         .catch((error) => {
           console.error("Error: ", error);

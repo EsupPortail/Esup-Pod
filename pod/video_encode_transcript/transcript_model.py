@@ -3,7 +3,6 @@ import shlex
 import subprocess
 import json
 
-import sys
 import os
 from timeit import default_timer as timer
 import datetime as dt
@@ -26,11 +25,9 @@ DEBUG = getattr(settings_local, "DEBUG", False)
 TRANSCRIPTION_MODEL_PARAM = getattr(settings_local, "TRANSCRIPTION_MODEL_PARAM", False)
 USE_TRANSCRIPTION = getattr(settings_local, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
-    TRANSCRIPTION_TYPE = getattr(settings_local, "TRANSCRIPTION_TYPE", "VOSK")
+    TRANSCRIPTION_TYPE = getattr(settings_local, "TRANSCRIPTION_TYPE", "WHISPER")
     if TRANSCRIPTION_TYPE == "VOSK":
         from vosk import Model, KaldiRecognizer
-    elif TRANSCRIPTION_TYPE == "STT":
-        from stt import Model
     elif TRANSCRIPTION_TYPE == "WHISPER":
         import whisper
         from whisper.utils import get_writer
@@ -54,33 +51,8 @@ log = logging.getLogger(__name__)
 
 
 def get_model(lang):
-    """Get model for STT or Vosk software to transcript audio."""
+    """Get model for Whisper or Vosk software to transcript audio."""
     transript_model = Model(TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"])
-    if TRANSCRIPTION_TYPE == "STT":
-        if TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("beam_width"):
-            transript_model.setBeamWidth(
-                TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["beam_width"]
-            )
-        if TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("scorer"):
-            print(
-                "Loading scorer from files {}".format(
-                    TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"]
-                ),
-                file=sys.stderr,
-            )
-            scorer_load_start = timer()
-            transript_model.enableExternalScorer(
-                TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["scorer"]
-            )
-            scorer_load_end = timer() - scorer_load_start
-            print("Loaded scorer in {:.3}s.".format(scorer_load_end), file=sys.stderr)
-            if TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get(
-                "lm_alpha"
-            ) and TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang].get("lm_beta"):
-                transript_model.setScorerAlphaBeta(
-                    TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_alpha"],
-                    TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["lm_beta"],
-                )
     return transript_model
 
 
@@ -109,11 +81,7 @@ def start_transcripting(mp3filepath, duration, lang):
 
 def start_main_transcript(mp3filepath, duration, transript_model):
     """Call transcription depending software type."""
-    if TRANSCRIPTION_TYPE == "STT":
-        msg, webvtt, all_text = main_stt_transcript(
-            mp3filepath, duration, transript_model
-        )
-    elif TRANSCRIPTION_TYPE == "VOSK":
+    if TRANSCRIPTION_TYPE == "VOSK":
         msg, webvtt, all_text = main_vosk_transcript(
             mp3filepath, duration, transript_model
         )
@@ -222,6 +190,8 @@ def words_to_vtt(
     webvtt,
 ):
     """Convert word and time to webvtt captions."""
+    # Function retained because it could be used with the Vosk model
+    # (initially used with the old STT model).
     for index, word in enumerate(words):
         start_key = "start_time"
         word_duration = word.get("duration", 0)
@@ -334,70 +304,6 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
                 webvtt,
             )
             """
-    inference_end = timer() - inference_start
-
-    msg += "\nInference took %0.3fs." % inference_end
-    return msg, webvtt, all_text
-
-
-def main_stt_transcript(norm_mp3_file, duration, transript_model):
-    """STT transcription."""
-    msg = ""
-    inference_start = timer()
-    msg += "\nInference start %0.3fs." % inference_start
-    desired_sample_rate = transript_model.sampleRate()
-    webvtt = WebVTT()
-    last_word_added = ""
-    metadata = None
-    all_text = ""
-    for start_trim in range(0, duration, TRANSCRIPTION_AUDIO_SPLIT_TIME):
-        end_trim = (
-            duration
-            if start_trim + TRANSCRIPTION_AUDIO_SPLIT_TIME > duration
-            else (
-                start_trim
-                + TRANSCRIPTION_AUDIO_SPLIT_TIME
-                + TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH
-            )
-        )
-
-        dur = (
-            (TRANSCRIPTION_AUDIO_SPLIT_TIME + TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH)
-            if (
-                (
-                    start_trim
-                    + TRANSCRIPTION_AUDIO_SPLIT_TIME
-                    + TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH
-                )
-                < duration
-            )
-            else (duration - start_trim)
-        )
-
-        msg += "\ntake audio from %s to %s - %s" % (start_trim, end_trim, dur)
-
-        audio = convert_samplerate(norm_mp3_file, desired_sample_rate, start_trim, dur)
-        msg += "\nRunning inference."
-
-        metadata = transript_model.sttWithMetadata(audio)
-
-        for transcript in metadata.transcripts:
-            msg += "\nConfidence: %s" % transcript.confidence
-            words = words_from_candidate_transcript(transcript)
-            start_caption = start_trim + words[0]["start_time"]
-            text_caption = []
-            is_first_caption = True
-            all_text, webvtt = words_to_vtt(
-                words,
-                start_trim,
-                duration,
-                is_first_caption,
-                text_caption,
-                start_caption,
-                last_word_added,
-                all_text,
-                webvtt,
-            )
     inference_end = timer() - inference_start
 
     msg += "\nInference took %0.3fs." % inference_end

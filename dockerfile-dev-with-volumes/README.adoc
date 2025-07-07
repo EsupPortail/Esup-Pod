@@ -52,7 +52,7 @@ DJANGO_SUPERUSER_PASSWORD=
 DJANGO_SUPERUSER_EMAIL=
 ELASTICSEARCH_TAG=elasticsearch:8.17.3
 NODE_TAG=node:23
-PYTHON_TAG=python:3.9-bullseye
+PYTHON_TAG=python:3.9-bookworm
 REDIS_TAG=redis:alpine3.21
 DOCKER_ENV=light
 ----

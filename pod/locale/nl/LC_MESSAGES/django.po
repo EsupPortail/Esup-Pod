@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-06 11:56+0200\n"
+"POT-Creation-Date: 2025-06-30 16:59+0200\n"
 "PO-Revision-Date: 2025-04-25 10:36+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -989,7 +989,7 @@ msgstr ""
 msgid "Designer"
 msgstr ""
 
-#: pod/completion/models.py
+#: pod/completion/models.py pod/completion/tests/test_views.py
 msgid "Editor"
 msgstr ""
 
@@ -1716,10 +1716,6 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 msgid ""
 "A Quiz allow you to test the memorization and comprehension of your video."
-msgstr ""
-
-#: pod/completion/tests/test_views.py
-msgid "editor"
 msgstr ""
 
 #: pod/completion/utils.py pod/completion/views.py
@@ -3445,11 +3441,8 @@ msgid "Event is finished at:"
 msgstr ""
 
 #: pod/live/templates/live/event-iframe.html pod/live/templates/live/event.html
-msgid "The event is scheduled from:"
-msgstr ""
-
-#: pod/live/templates/live/event-iframe.html pod/live/templates/live/event.html
-msgid "to"
+#, python-format
+msgid "The event is scheduled from %(start_date)s to %(end_date)s"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -4926,8 +4919,8 @@ msgstr ""
 msgid "Esup-Pod Project"
 msgstr ""
 
-#: pod/main/templates/footer.html pod/video/feeds.py
-msgid "video platform of"
+#: pod/main/templates/footer.html
+msgid "Video platform"
 msgstr ""
 
 #: pod/main/templates/footer.html
@@ -8113,6 +8106,14 @@ msgstr ""
 msgid "Change video owner"
 msgstr ""
 
+#: pod/video/context_processors.py
+msgid "days"
+msgstr ""
+
+#: pod/video/feeds.py
+msgid "video platform of"
+msgstr ""
+
 #: pod/video/forms.py
 msgid "File field"
 msgstr ""
@@ -8504,6 +8505,13 @@ msgid ""
 "been packaged in your ARCHIVE_ROOT folder. Run the "
 "<code>create_archive_package</code> command without the <code>--dry</code> "
 "option to delete them from %s."
+msgstr ""
+
+#: pod/video/management/commands/create_archive_package.py
+#, python-format
+msgid ""
+"For your information, below is the list of archived videos that have been "
+"packaged in your ARCHIVE_ROOT folder, and definitely deleted from %s."
 msgstr ""
 
 #: pod/video/management/commands/create_archive_package.py

@@ -126,11 +126,6 @@
   color: #721c24;
 }
 
-tr,
-.rowl {
-  display: table-row !important;
-}
-
 .table-hover tbody tr {
   transition: background-color 0.5s;
 }
@@ -643,9 +638,15 @@ a.btn-outline-primary:not(:hover) svg {
 }
 
 .pod-card--video .video-title {
-  line-height: 1.2;
+  line-height: 1.2em;
   display: inline-block;
+  overflow: hidden;
   max-width: 100%;
+}
+
+/* For "2 lines" identical height */
+#videos_list .pod-card--video .video-title {
+  height: 2.4em;
 }
 
 #videos_list .video-title a {
@@ -681,7 +682,7 @@ div.card a img {
 .card-footer-pod {
   position: absolute;
   bottom: 3.5rem;
-  right: 1rem;
+  right: 1px;
   border: none;
   border-radius: 0.375rem;
   display: flex;

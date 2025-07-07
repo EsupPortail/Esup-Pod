@@ -124,6 +124,8 @@ class InfiniteLoader {
       [...tooltipTriggerList].map(
         (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
       );
+      // Hide empty menu
+      hideEmptyDropdowns();
     });
   }
 
