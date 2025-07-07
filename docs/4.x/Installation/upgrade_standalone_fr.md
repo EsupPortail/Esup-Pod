@@ -36,7 +36,7 @@ pod@pod:~/django_projects/podv4$ workon django_pod4
 pod@pod:~$ cd django_projects/podv4/
 pod@pod:~/django_projects/podv4$ workon django_pod4
 (django_pod4) pod@pod:~/django_projects/podv4$ git status
-(django_pod4) pod@pod:~/django_projects/podv4$ git pull origin master
+(django_pod4) pod@pod:~/django_projects/podv4$ git pull origin main
 (django_pod4) pod@pod:~/django_projects/podv4$ pip3 install -r requirements.txt
 (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py makemigrations
 (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py migrate
@@ -87,7 +87,7 @@ Attention à bien faire la mise à jour sur vos serveurs d’encodages !
 pod@pod-encodage:~$ cd django_projects/podv4/
 pod@pod-encodage:~/django_projects/podv4$ workon django_pod4
 (django_pod4) pod@pod-encodage:~/django_projects/podv4$ git status
-(django_pod4) pod@pod-encodage:~/django_projects/podv4$ git pull origin master
+(django_pod4) pod@pod-encodage:~/django_projects/podv4$ git pull origin main
 (django_pod4) pod@pod-encodage:~/django_projects/podv4$ pip3 install -r requirements.txt
 (django_pod4) pod@pod-encodage:~/django_projects/podv4$ sudo /etc/init.d/celeryd restart
 ```
