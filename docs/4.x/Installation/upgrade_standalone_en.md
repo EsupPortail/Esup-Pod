@@ -24,27 +24,27 @@ Switch to maintenance mode (maintenance_mode = 1), this will disable certain fun
 ### Via makefile
 
 ```sh
-pod@pod:~$ cd django_projects/podv3/
-pod@pod:~/django_projects/podv3$ workon django_pod3
-(django_pod3) pod@pod:~/django_projects/podv3$ make upgrade
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo systemctl restart uwsgi-pod
+pod@pod:~$ cd django_projects/podv4/
+pod@pod:~/django_projects/podv4$ workon django_pod4
+(django_pod4) pod@pod:~/django_projects/podv4$ make upgrade
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo systemctl restart uwsgi-pod
 ```
 
 ### Via commands
 
 ```sh
-pod@pod:~$ cd django_projects/podv3/
-pod@pod:~/django_projects/podv3$ workon django_pod3
-(django_pod3) pod@pod:~/django_projects/podv3$ git status
-(django_pod3) pod@pod:~/django_projects/podv3$ git pull origin master
-(django_pod3) pod@pod:~/django_projects/podv3$ pip3 install -r requirements.txt
-(django_pod3) pod@pod:~/django_projects/podv3$ python manage.py makemigrations
-(django_pod3) pod@pod:~/django_projects/podv3$ python manage.py migrate
+pod@pod:~$ cd django_projects/podv4/
+pod@pod:~/django_projects/podv4$ workon django_pod4
+(django_pod4) pod@pod:~/django_projects/podv4$ git status
+(django_pod4) pod@pod:~/django_projects/podv4$ git pull origin master
+(django_pod4) pod@pod:~/django_projects/podv4$ pip3 install -r requirements.txt
+(django_pod4) pod@pod:~/django_projects/podv4$ python manage.py makemigrations
+(django_pod4) pod@pod:~/django_projects/podv4$ python manage.py migrate
 # mise à jour des composants js/css via yarn
-(django_pod3) pod@pod:~/django_projects/podv3$ cd pod; yarn upgrade; cd ..
+(django_pod4) pod@pod:~/django_projects/podv4$ cd pod; yarn upgrade; cd ..
 # Attention : avant de lancer collectstatic --clear, assurez-vous d’avoir sauvegardé le dossier static/custom si vous y avez mis des fichiers personnalisés.
-(django_pod3) pod@pod:~/django_projects/podv3$ python manage.py collectstatic --no-input --clear
-(django_pod3) pod@pod:~/django_projects/podv3$ sudo systemctl restart uwsgi-pod
+(django_pod4) pod@pod:~/django_projects/podv4$ python manage.py collectstatic --no-input --clear
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo systemctl restart uwsgi-pod
 ```
 
 When executing the command `make statics` (equivalent to `python manage.py collectstatic --no-input --clear`), if you get an error like `npm@10.8.1: The engine “node” is incompatible with this module. Expected version “^18.17.0 || >=20.5.0”. Got “18.12.1”`, this is due to the NodeJS version.
@@ -60,23 +60,23 @@ sudo apt install nodejs
 After updating Esup-Pod, the command below shows the new parameters compared with a previous version:
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ python manage.py compareconfiguration *REVIEW_VERSION*
+(django_pod4) pod@pod:~/django_projects/podv4$ python manage.py compareconfiguration *REVIEW_VERSION*
 ```
 
 for example, the command
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ python manage.py compareconfiguration 3.1.1
+(django_pod4) pod@pod:~/django_projects/podv4$ python manage.py compareconfiguration 4.0.0
 ```
 
-will list all new parameters (and those no longer in use) from 3.1.1 to the current version.
+will list all new parameters (and those no longer in use) from 4.0.0 to the current version.
 
 ### Database
 
 If you're upgrading from a version earlier than Pod version 3.3.1 and you're running MySQL or MariaDB, you'll need to install the timezone in the SQL engine (as mysql root!).
 
 ```sh
-podv3$ mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p --database=mysql
+podv4$ mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p --database=mysql
 ```
 
 ### Encoding server
@@ -84,12 +84,12 @@ podv3$ mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p --database=mys
 Be sure to update your encoding servers!
 
 ```sh
-pod@pod-encodage:~$ cd django_projects/podv3/
-pod@pod-encodage:~/django_projects/podv3$ workon django_pod3
-(django_pod3) pod@pod-encodage:~/django_projects/podv3$ git status
-(django_pod3) pod@pod-encodage:~/django_projects/podv3$ git pull origin master
-(django_pod3) pod@pod-encodage:~/django_projects/podv3$ pip3 install -r requirements.txt
-(django_pod3) pod@pod-encodage:~/django_projects/podv3$ sudo /etc/init.d/celeryd restart
+pod@pod-encodage:~$ cd django_projects/podv4/
+pod@pod-encodage:~/django_projects/podv4$ workon django_pod4
+(django_pod4) pod@pod-encodage:~/django_projects/podv4$ git status
+(django_pod4) pod@pod-encodage:~/django_projects/podv4$ git pull origin master
+(django_pod4) pod@pod-encodage:~/django_projects/podv4$ pip3 install -r requirements.txt
+(django_pod4) pod@pod-encodage:~/django_projects/podv4$ sudo /etc/init.d/celeryd restart
 ```
 
 ## Optional - Updating Opencast Studio
