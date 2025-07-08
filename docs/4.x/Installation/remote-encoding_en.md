@@ -147,12 +147,12 @@ CELERYD_OPTS="--time-limit=86400 --concurrency=1 --max-tasks-per-child=1 --prefe
 CELERYD_LOG_FILE="/var/log/celery/%N. log"                            # log file
 CELERYD_PID_FILE="/var/run/celery/%N.pid"                             # pid file
 CELERYD_USER="pod"                                                    # system user using celery
-CELERYD_GROUP="pod"                                                   # system group using celery
+CELERYD_GROUP="www-data"                                              # system group using celery
 CELERY_CREATE_DIRS=1                                                  # if celery has folder creation rights
 CELERYD_LOG_LEVEL="INFO"                                              # level of information which will be written in the logs
 ```
 
-> Please check the configuration of this file. For example, it is also possible to set `CELERYD_GROUP=‘www-data’` depending on your system environment.
+> Please check the configuration of this file. For example, it is also possible to set `CELERYD_GROUP=‘pod’` depending on your system environment.
 {: .alert .alert-warning}
 
 Start Celeryd

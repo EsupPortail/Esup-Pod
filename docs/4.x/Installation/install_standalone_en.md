@@ -11,6 +11,9 @@ lang: en
 ### User creation in Pod
 
 ```sh
+# If sudo has not been installed
+root@pod:~$ apt-get install -y sudo
+# Effective creation
 user@pod:~$  sudo adduser pod
 user@pod:~$  adduser pod sudo
 user@pod:~$  su pod
@@ -20,7 +23,7 @@ user@pod:~$  cd /home/pod
 ### Packages installation
 
 ```sh
-pod@pod:~$ sudo apt-get install git curl vim
+pod@pod:~$ sudo apt-get install -y git curl vim wget gettext
 ```
 
 ### Virtual environment creation
@@ -31,10 +34,13 @@ pod@pod:~$ sudo python3 -V
 # Pod v4.0 is compatible with Python versions 3.9 to 3.12.
 # Check also [Status of Python versions](https://devguide.python.org/versions/) to ensure you're not using an obsolete one.
 pod@pod:~$ sudo apt-get install -y python3-pip
-pod@pod:~$ sudo pip3 install virtualenvwrapper
+# For Python 3.9
+# pod@pod:~$ sudo pip3 install virtualenvwrapper
+# For Python >= 3.10
+pod@pod:~$ sudo pip3 install virtualenvwrapper --break-system-packages
 ```
 
-Since python 3.10, it is no longer possible to install pip outside an environment. To install *virtualenvwrapper*, you must add **--break-system-packages** at the end of the line.
+> ⚠️ Since python 3.10, it is no longer possible to install pip outside an environment. To install *virtualenvwrapper*, you must add **--break-system-packages** at the end of the line.
 
 At the end of the .bashrc file, add these lines:
 
@@ -229,8 +235,6 @@ TIME_ZONE = 'Europe/Paris'
 
 > 🔧 All available variables can be found on this page: [Platform configuration](https://github.com/EsupPortail/Esup-Pod/blob/master/CONFIGURATION_EN.md)
 
-## Third-party applications
-
 ### Install all python libraries
 
 Check that you are in the virtual environment (presence of “(django_pod4)” at the start of the command prompt. If not, run the command **$> workon django_pod4**.
@@ -244,6 +248,8 @@ Similarly, if you need to use a proxy:
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ pip3 install --proxy=“PROXY:PORT” -r requirements.txt
 ```
+
+## Third-party applications
 
 ### FFMPEG
 
@@ -260,7 +266,7 @@ See the official doc <https://redis.io/docs/getting-started/>
 To install the Redis cache
 
 ```sh
-(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install redis-server
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install -y redis-server
 ```
 
 In theory, the service starts automatically. If you've installed Redis on the same machine as Pod, you don't need to do anything else. To check whether the service has started:
@@ -269,7 +275,7 @@ In theory, the service starts automatically. If you've installed Redis on the sa
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo service redis-server status
 ```
 
-If you're using Redis on another machine, don't forget to modify the bind in the `/etc/redis/redis.conf` configuration file.
+If you're using Redis on another machine, don't forget to modify the **bind** in the `/etc/redis/redis.conf` configuration file.
 
 > In this case, you should also check the value of `protected-mode` in the _/etc/redis/redis.conf_ configuration file.
 >
@@ -310,6 +316,17 @@ SESSION_REDIS = {
 }
 ```
 
+Depending on your configuration, `<my_redis_host>` can be replaced by either :
+
+- **127.0.0.1**: for local access to the machine only.
+- **the IP address of the REDIS server**, obtained by `hostname -I`: for remote access (remember also to modify the `bind` parameter in _/etc/redis/redis.conf_).
+
+To start the REDIS service automatically, run the command:
+
+```sh
+pod@pod:$ sudo systemctl enable redis-server
+```
+
 ### Elasticsearch
 
 Depending on the version of Elasticsearch you're going to use, the dependency versions may change. Versions 6 and 7 are currently no longer maintained. Version 8 is the default in Pod.
@@ -319,7 +336,13 @@ Depending on the version of Elasticsearch you're going to use, the dependency ve
 To use Elasticsearch 8, you need java 17 on your machine.
 
 ```sh
-(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get install default-jdk
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get install -y default-jdk
+```
+
+If you haven't already done so :
+
+```sh
+sudo apt-get install -y wget
 ```
 
 To install Elasticsearch on Debian using packages, follow the instructions at <https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html>.
@@ -343,18 +366,28 @@ Then, set these values:
 ```yml
 cluster.name: pod-application
 node.name: pod-1
-discovery.seed_hosts: ["127.0.0.1"]
+network.host: <my_es_host>
+discovery.seed_hosts: ["<my_es_host>"]
 cluster.initial_master_nodes: ["pod-1"]
 ```
+
+Depending on your configuration, `<my_es_host>` can be replaced by either :
+
+- **127.0.0.1**: for local access to the machine only.
+- **the IP address of the Elasticsearch server**, obtained by `hostname -I`: for remote access.
 
 **ES8 security mode is recomended.**
 Generate pod user for ES:
 
+> 🔧 Remember to change the password `<my_es_password>` to the one of your choice.
+
 ```sh
-sudo /usr/share/elasticsearch/bin/elasticsearch-users useradd pod -p podpod -r superuser
+sudo /usr/share/elasticsearch/bin/elasticsearch-users useradd pod -p <my_es_password> -r superuser
 ```
 
 Generate certificats (CA + cert):
+
+> 💡When the system asks you for the file name, leave the default.
 
 ```sh
 sudo /usr/share/elasticsearch/bin/elasticsearch-certutil ca
@@ -364,7 +397,7 @@ sudo /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.http
 sudo /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.http.ssl.truststore.secure_password
 ```
 
-Copier le fichier `.p12` dans `/etc/elasticsearch/`
+Copy the `.p12` file in `/etc/elasticsearch/`:
 
 ```sh
 sudo cp /usr/share/elasticsearch/elastic-stack-ca.p12 /usr/share/elasticsearch/elastic-certificates.p12 /etc/elasticsearch/
@@ -386,10 +419,10 @@ xpack.security.http.ssl.truststore.path: /etc/elasticsearch/elastic-certificates
 Finally, it's time to launch Elasticsearch and check that it's working properly:
 
 ```sh
-(django_pod4) pod@pod:~/django_projects/podv4$ sudo /etc/init.d/elasticsearch start
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo /etc/init.d/elasticsearch start (or sudo systemctl start elasticsearch)
 (django_pod4) pod@pod:~/django_projects/podv4$ curl -XGET "127.0.0.1:9200"
 ou pour ES8
-(django_pod4) pod@pod:~/django_projects/podv4$ curl -k -XGET 'https://127.0.0.1:9200' -u pod:podpod
+(django_pod4) pod@pod:~/django_projects/podv4$ curl -k -XGET 'https://127.0.0.1:9200' -u pod:<my_es_password>
 ```
 
 ```json
@@ -420,7 +453,7 @@ To use the search in Pod, we will also need the ICU plugin:
 -> Downloading analysis-icu from elastic
 [=================================================] 100%
 -> Installed analysis-icu
-(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo /etc/init.d/elasticsearch restart
+(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo /etc/init.d/elasticsearch restart (or sudo systemctl restart elasticsearch)
 [ ok ] Restarting elasticsearch (via systemctl): elasticsearch.service.
 ```
 
@@ -432,7 +465,7 @@ If you are using a proxy:
  -> Downloading analysis-icu from elastic
 [=================================================] 100%
 -> Installed analysis-icu
-(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo /etc/init.d/elasticsearch restart
+(django_pod4) pod@pod:/usr/share/elasticsearch$ sudo /etc/init.d/elasticsearch restart (or sudo systemctl restart elasticsearch)
 [ ok ] Restarting elasticsearch (via systemctl): elasticsearch.service.
 ```
 
@@ -453,6 +486,9 @@ If you are using a proxy:
 
 Finally, we can check that the assembly is working properly (the error displayed when deletion is normal since the index doesn't exist, but we need to delete before creating an index in ES):
 
+> ⚠️ _create_pod_index_ requires access to the database (see below).
+> {: .alert .alert-warning}
+
 ```sh
 (django_pod4) pod@pod:/usr/share/elasticsearch$ cd ~/django_projects/podv4
 (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py create_pod_index
@@ -460,10 +496,11 @@ DELETE http://127.0.0.1:9200/pod [status:404 request:0.140s]
 An error occured during index video deletion: 404-index_not_found_exception: no such index
 Successfully create index Video
 (django_pod4) pod@pod:~/django_projects/podv4$ curl -XGET “127.0.0.1:9200/pod/_search”
+# ES8 security mode: (django_pod4) pod@pod:~/django_projects/podv4$ curl -k -XGET "127.0.0.1:9200/pod/_search"  -u pod:<my_es_password>
 {“took”:35,“timed_out”:false,“_shards”:{“total”:2,“successful”:2,“skipped”:0,“failed”:0},“hits”:{“total”:0,“max_score”:null,“hits”:[]}}
 ```
 
-If the python command doesn't work, first create the index by hand with a `curl -XPUT "http://127.0.0.1:9200/pod"` (options `-k --noproxy -u <user>:<pwd>` to be expected if ES8 in security mode)
+If the python command doesn't work, first create the index by hand with a `curl -XPUT "http://127.0.0.1:9200/pod"` (options `-k --noproxy -u pod:<my_es_password>` to be expected if ES8 in security mode)
 If you're moving elastic search to another machine, add its access URL to the `settings_local.py` file:
 
 ```sh
@@ -473,15 +510,21 @@ If you're moving elastic search to another machine, add its access URL to the `s
 Copy the following line:
 
 ```py
-ES_URL = ['http://elastic.domaine.fr:9200/']
+ES_URL = ['http://<my_es_host>:9200/']
 ```
 
 With security mode and ES8, you will need to set the following in your settings_local.py:
 
 ```py
-ES_URL = ['https://127.0.0.1:9200/'] # or your remote instance
-ES_OPTIONS = { 'verify_certs': False, 'basic_auth': ('es_user', 'password')}
+ES_URL = ['https://<my_es_host>:9200/'] # or your remote instance
+ES_OPTIONS = { 'verify_certs': False, 'basic_auth': ('pod', '<my_es_password>')}
 ES_VERSION = “7” or “8
+```
+
+To start the Elasticsearch service automatically, run the command :
+
+```sh
+pod@pod:$ sudo systemctl enable elasticsearch
 ```
 
 ### Installing dependencies

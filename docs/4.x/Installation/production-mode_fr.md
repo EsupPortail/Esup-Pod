@@ -50,7 +50,7 @@ Pour utiliser la base de données MySQL/MariaDB sur le serveur frontal (ou sur u
 
 ```sh
 $ sudo apt install pkg-config python3-dev default-libmysqlclient-dev
-(django_pod) pod@pod:/usr/local/django_projects/pod$ pip3 install mysqlclient
+(django_pod4) pod@pod:/usr/local/django_projects/pod$ pip3 install mysqlclient
 ```
 
 ### Optimisation de MariaDB
@@ -69,17 +69,17 @@ max_allowed_packet=256M
 Si ce n’est pas encore fait, vous devez spécifier la configuration de votre base de données dans votre fichier de configuration settings_local.py :
 
 ```sh
-(django_pod) pod@pod:/usr/local/django_projects/pod$ vim pod/custom/settings_local.py
+(django_pod4) pod@pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
 ```
 
 ```py
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mydatabase',
-        'USER': 'mydatabaseuser',
-        'PASSWORD': 'mypassword',
-        'HOST': '127.0.0.1',
+        'NAME': '<my_database>',
+        'USER': '<my_database_user>',
+        'PASSWORD': '<my_database_password>',
+        'HOST': '<my_database_host>',
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
@@ -89,36 +89,40 @@ DATABASES = {
 }
 ```
 
+> Remplacer les différentes variables `<my_database_*>` selon votre environnement. Par exemple, en local, `<my_database_host>` pourra être remplacé par _127.0.0.1_.
+
 Il faut ensuite relancer le script présent à la racine afin de créer les fichiers de migration, puis de les lancer afin de créer la base de données :
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/pod$ make createDB
+(django_pod4) pod@pod:~/django_projects/podv4$ make createDB
 ```
 
-> Ne pas oublier de créer à nouveau un superutilisateur
+> Ne pas oublier de créer à nouveau un superutilisateur :
 >
 > ```sh
-> (django_pod) pod@Pod:~/django_projects/pod$ python manage.py createsuperuser
+> (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py createsuperuser
 > ```
 >
 {: .alert .alert-warning}
 
 ## Frontal Web NGINX / UWSGI et fichiers statiques
 
-Pour plus de renseignement, d'explication que la documentation ci-dessous, voir [le tutoriel que j'ai suivi pour mettre en place cette solution](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html#basic-uwsgi-installation-and-configuration)
+Pour plus de renseignements, d'explication que la documentation ci-dessous, voir [le tutoriel que j'ai suivi pour mettre en place cette solution](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html#basic-uwsgi-installation-and-configuration)
 
 ### Installation du serveur Web NGINX et paramétrage
 
 Commencer par installer le serveur NGINX
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/pod$ sudo apt install nginx
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install nginx
 ```
+
+---
 
 Ensuite, modifier le fichier /etc/nginx/sites-enabled/default
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/pod$ sudo vim /etc/nginx/sites-enabled/default
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo vim /etc/nginx/sites-enabled/default
 ```
 
 Rechercher la ligne ci-dessous à modifier
@@ -130,10 +134,20 @@ server { listen 80 default_server;
 [...]
 ```
 
+> ⚠️ Il peut aussi être nécessaire de remplacer cette étape par la suppression du fichier `default` :
+>
+> ```sh
+> (django_pod4) pod@pod:~/django_projects/podv4$ sudo unlink /etc/nginx/sites-enabled/default
+> ```
+>
+{: .alert .alert-warning}
+
+---
+
 Installer les addons de NGINX
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/pod$ sudo apt install nginx-extras
+(django_pod4) pod@pod:(~/django_projects/podv4$) sudo apt install nginx-extras
 ```
 
 Rajouter les lignes ci-dessous dans le fichier de configuration de nginx :
@@ -149,13 +163,20 @@ http {
 }
 ```
 
-Il faut ensuite spécifier le host pour le serveur web (changer si besoin les paramètres dans le fichier pod_nginx.conf) :
+Il faut ensuite spécifier le host pour le serveur web (changer si besoin les paramètres dans le fichier `pod_nginx.conf`).
+Profiter aussi pour mettre les droits au groupe `www-data` en éditant ce fichier pod_nginx.conf, à la 1° ligne : `user pod www-data;`
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/pod$ cp pod_nginx.conf pod/custom/.
-(django_pod) pod@Pod:~/django_projects/pod$ vim pod/custom/pod_nginx.conf
-(django_pod) pod@Pod:~/django_projects/pod$ sudo ln -s /usr/local/django_projects/podv4/pod/custom/pod_nginx.conf /etc/nginx/sites-enabled/pod_nginx.conf
-(django_pod) pod@Pod:~/django_projects/pod$ sudo /etc/init.d/nginx restart
+(django_pod4) pod@pod:(~/django_projects/podv4$) cp pod_nginx.conf pod/custom/.
+(django_pod4) pod@pod:(~/django_projects/podv4$) vim pod/custom/pod_nginx.conf
+(django_pod4) pod@pod:(~/django_projects/podv4$) sudo ln -s /usr/local/django_projects/podv4/pod/custom/pod_nginx.conf /etc/nginx/sites-enabled/pod_nginx.conf
+(django_pod4) pod@pod:(~/django_projects/podv4$) sudo /etc/init.d/nginx restart (ou sudo systemctl restart nginx)
+```
+
+Pour démarrer le service Nginx automatiquement, lancer la commande :
+
+```sh
+pod@pod:$ sudo systemctl enable nginx
 ```
 
 ### UWSGI
@@ -165,18 +186,18 @@ Un fichier de configuration est fourni pour faciliter l’usage d'UWSGI.
 Installer le module uwsgi
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/pod$ sudo pip3 install uwsgi
+(django_pod4) pod@pod:(~/django_projects/podv4$) sudo pip3 install uwsgi --break-system-packages
 ```
 
 Dupliquez le fichier modèle et éditez-le pour personnaliser les paramètres :
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/pod$ cp pod_uwsgi.ini pod/custom/.
-(django_pod) pod@Pod:~/django_projects/pod$ vim pod/custom/pod_uwsgi.ini
-(django_pod) pod@Pod:~/django_projects/pod$ sudo uwsgi --ini pod/custom/pod_uwsgi.ini --enable-threads --daemonize /usr/local/django_projects/podv4/pod/log/uwsgi-pod.log --uid pod --gid www-data --pidfile /tmp/pod.pid
+(django_pod4) pod@pod:(~/django_projects/podv4$) cp pod_uwsgi.ini pod/custom/.
+(django_pod4) pod@pod:(~/django_projects/podv4$) vim pod/custom/pod_uwsgi.ini
+(django_pod4) pod@pod:(~/django_projects/podv4$) sudo uwsgi --ini pod/custom/pod_uwsgi.ini --enable-threads --daemonize /usr/local/django_projects/podv4/pod/log/uwsgi-pod.log --uid pod --gid www-data --pidfile /tmp/pod.pid
 ...
 [uWSGI] getting INI configuration from pod/custom/pod_uwsgi.ini
-(django_pod) pod@Pod:~/django_projects/pod$
+(django_pod4) pod@pod:(~/django_projects/podv4$)
 ```
 
 Pour lancer le service UWSGI au démarrage de la machine :
@@ -184,7 +205,7 @@ Pour lancer le service UWSGI au démarrage de la machine :
 Créer un fichier uwsgi-pod.service
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/pod$ sudo vim /etc/systemd/system/uwsgi-pod.service
+(django_pod4) pod@pod:(~/django_projects/podv4$) sudo vim /etc/systemd/system/uwsgi-pod.service
 ```
 
 Y ajouter :
@@ -214,20 +235,20 @@ WantedBy=multi-user.target
 Il faut ensuite activer le service
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/pod$ sudo systemctl enable uwsgi-pod
+(django_pod4) pod@pod:(~/django_projects/podv4$) sudo systemctl enable uwsgi-pod
 ```
 
 Pour le lancer ou l’arrêter :
 
 ```sh
-(django_pod) pod@Pod:~/django_projects/pod$ sudo systemctl stop uwsgi-pod
-(django_pod) pod@Pod:~/django_projects/pod$ sudo systemctl restart uwsgi-pod
+(django_pod4) pod@pod:(~/django_projects/podv4$) sudo systemctl stop uwsgi-pod
+(django_pod4) pod@pod:(~/django_projects/podv4$) sudo systemctl restart uwsgi-pod
 ```
 
 > Attention, il faut penser à collecter les fichiers "statics" pour qu'ils soient servis par le frontal web NGINX.
 >
 > ```sh
-> (django_pod) pod@Pod:~/django_projects/pod$ python manage.py collectstatic
+> (django_pod4) pod@pod:(~/django_projects/podv4$) python manage.py collectstatic
 > ```
 >
 {: .alert .alert-warning}

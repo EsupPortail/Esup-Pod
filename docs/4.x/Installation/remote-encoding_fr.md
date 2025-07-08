@@ -148,12 +148,12 @@ CELERYD_OPTS="--time-limit=86400 --concurrency=1 --max-tasks-per-child=1  --pref
 CELERYD_LOG_FILE="/var/log/celery/%N.log"                              # fichier log
 CELERYD_PID_FILE="/var/run/celery/%N.pid"                              # fichier pid
 CELERYD_USER="pod"                                                     # utilisateur système utilisant celery
-CELERYD_GROUP="pod"                                                    # groupe système utilisant celery
+CELERYD_GROUP="www-data"                                               # groupe système utilisant celery
 CELERY_CREATE_DIRS=1                                                   # si celery dispose du droit de création de dossiers
 CELERYD_LOG_LEVEL="INFO"                                               # niveau d'information qui seront inscrit dans les logs
 ```
 
-> Veuillez bien vérifier la configuration de ce fichier. Par exemple, il est aussi possible de positionner `CELERYD_GROUP="www-data"` selon votre environnement système.
+> Veuillez bien vérifier la configuration de ce fichier. Par exemple, il est aussi possible de positionner `CELERYD_GROUP="pod"` selon votre environnement système.
 {: .alert .alert-warning}
 
 Démarrer Celeryd

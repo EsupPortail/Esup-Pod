@@ -246,14 +246,20 @@ TRANSCRIPTION_MODEL_PARAM = {
   'WHISPER': {
     'fr': {
       'model': "small",
-      'download_root': "/pod-transcription/transcription/whisper/",
+      'download_root': "/usr/local/django_projects/transcription/whisper/",
     },
     'en': {
       'model': "small",
-      'download_root': "/pod-transcription/transcription/whisper/",
+      'download_root': "/usr/local/django_projects/transcription/whisper/",
     }
   }
 }
+```
+
+To create the appropriate directory:
+
+```sh
+(django_pod4) pod@pod:/usr/local/django_projects/podv4$ mkdir /usr/local/django_projects/transcription/whisper -p
 ```
 
 See the details here for model selection: [https://github.com/openai/whisper#available-models-and-languages](https://github.com/openai/whisper#available-models-and-languages)
