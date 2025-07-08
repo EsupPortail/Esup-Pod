@@ -10,7 +10,7 @@ lang: en
 
 ## Operating principle diagram
 
-![Schematic diagram](remote-encoding_screens/remote-encoding.png){width=500px}
+![Schematic diagram](remote-encoding_screens/remote-encoding.png){.w-400}
 
 > ⚠️ Rabbitmq was used for queue management, it has now been replaced by Redis.
 

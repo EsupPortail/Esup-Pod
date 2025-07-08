@@ -10,7 +10,7 @@ lang: fr
 
 ## Schéma de principe de fonctionnement
 
-![Schéma de fonctionnement](remote-encoding_screens/remote-encoding.png){width=500px}
+![Schéma de fonctionnement](remote-encoding_screens/remote-encoding.png){.w-400}
 
 > ⚠️ Rabbitmq était utilisé comme gestion de file d'attente, il est remplacé maintenant par Redis.
 
