@@ -71,4 +71,4 @@ SESSION_REDIS = {
 SELECT2_CACHE_BACKEND = "select2"
 ```
 
-> ⚠️ Selon votre architecture, pensez à remplacer _127.0.0.1_ par l'**adresse IP du serveur REDIS**, cf. [la documentation d'installation](../install_standalone_fr#redis).
+> ⚠️ Selon votre architecture, pensez à remplacer _127.0.0.1_ par l'**adresse IP du serveur REDIS**, cf. [la documentation d'installation](install_standalone_fr#redis).
