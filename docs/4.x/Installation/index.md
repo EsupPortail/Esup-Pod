@@ -12,10 +12,16 @@ lang: fr
 
 ## Installation
 
+### Choix du type d'installation
+
 * [Installation standard](install_standalone_fr)
 * [Installation via Docker](install_docker_fr)
 * [Installation via Ansible (par l’ENSAM)](https://gitlab.ensam.eu/apps/esup-pod)
+
+### Installation et paramétrage avancé
+
 * [Configuration et usage de REDIS](redis_fr)
+* [Personnalisation visuelle](visual-customisation_fr)
 * [Mise en production](production-mode_fr)
 
 ### Gestion de l'encodage, de la transcription, de l'xAPI et d'ActivityPub

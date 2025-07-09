@@ -14,7 +14,7 @@ lang: fr
 | **Version de Pod**      | Pod v4.0.0            |
 | **Auteur**              | Loïc Bonavent         |
 
-## Présentation de l'infrastructure
+## Présentation de l'infrastructure de production
 
 ![Infrastructure Pod v4 à l'UM](um/architecture.png)
 
@@ -29,6 +29,8 @@ Cette infrastructure repose sur l'utilisation de :
   _Briques installées sur ces serveurs Web : Pod, Celery (1 worker), ffmpeg, Whisper._
 - **1 base de données** : base de données MariaDB mutualisée.
 - **1 serveur de fichiers** : serveur de fichiers partagé NFS d'une taille de 50To, dont 40To est occupé actuellement.
+
+_Tous les serveurs tournent sur Debian 12._
 
 > 💡 Cette infrastructure ne tient pas compte des serveurs RTMP Nginx, pour la gestion des directs (cf. documentation pour la mise en place du direct live), et des serveurs d'encodage GPU qui reposent sur du spécifique UM.
 
@@ -46,6 +48,10 @@ Cette infrastructure repose sur l'utilisation de :
 > Avec cette documentation et les autres, si l'infrastructure est présente et s'il n'y a pas de _problèmes d'environnement_ (firewall, privilèges sur la base de données...), cela ne nécessite que quelques heures.
 >
 > Personnellement, j'utilise **SuperPutty** pour exécuter des commandes sur plusieurs serveurs à la fois (typiquement l'installation de Pod v4 sur tous les serveurs d'encodage).
+>
+> Certaines étapes de la procédure suivante peuvent être réalisées en parallèle ou dan un ordre différent, selon votre convenance.
+
+---
 
 ### Etape 1 : Installation de Pod v4
 
@@ -77,9 +83,11 @@ Concernant le fichier de configuration `settings_local.py`, une version finale e
 | **Documentations de référence** | [Configuration et utilisation d'une base de données MySQL/MariaDB](../mariadb_fr)|
 {: .table .table-striped}
 
-Pour configurer et utiliser une base de données MySQL/MariaDB sur tous les serveurs Pod, j'ai suivi la documentation concernant la **[configuration et utilisation d'une base de données MySQL/MariaDB](../production-mode_fr#base-de-données-mysqlmariadb)**.
+Pour configurer et utiliser une base de données MySQL/MariaDB sur tous les serveurs Pod, j'ai suivi la documentation concernant la **[configuration et utilisation d'une base de données MySQL/MariaDB](../mariadb_fr)**.
 
-Au vue de l'architecture, j'ai remplacé `<my_database_host>` par **l'adresse IP du serveur de base de données**.
+Au vue de l'architecture, j'ai remplacé `<my_database_host>` par **l'adresse IP du serveur de base de données** et les autres variables `<my_database_*>` par les valeurs de mon environnement.
+
+> 💡 Si vous souhaitez installer un serveur MySQL/MariaDB, il faut suivre la documentation concernant **[l'installation, la configuration et utilisation d'une base de données MySQL/MariaDB](../production-mode_fr#base-de-données-mysqlmariadb)**.
 
 🎯 A la fin de cette étape, tous les serveurs Pod peuvent utiliser la base de données de type MySQL/MariaDB.
 {: .alert .alert-primary}
@@ -101,6 +109,9 @@ bind <my_redis_host>
 protected-mode no
 ```
 
+🎯 A la fin de cette étape, REDIS est installé sur le serveur principal de Pod.
+{: .alert .alert-primary}
+
 ### Etape 4 : Configuration et utilisation de REDIS
 
 |                        | Commentaires                                      |
@@ -111,7 +122,7 @@ protected-mode no
 
 Pour configurer et utiliser REDIS sur tous les serveurs Pod, j'ai suivi la documentation concernant la **[configuration et usage de REDIS](../redis_fr)**.
 
-🎯 A la fin de cette étape, REDIS est installé sur le serveur principal de Pod.
+🎯 A la fin de cette étape, REDIS peut être utilisé par l'ensemble des serveurs Pod.
 {: .alert .alert-primary}
 
 ### Etape 5 : Installation d'Elasticsearch
@@ -163,7 +174,7 @@ Pour installer les dépendances sur tous les serveurs Pod, j'ai suivi la **[docu
 > Logiquement, ces dépendances ne concernent que les serveurs Web, mais je préfère les installer sur l'ensemble des serveurs au cas où.
 {: .alert .alert-secondary}
 
-🎯 A la fin de cette étape, les dépendances de Pod sont installés sur tous les serveurs de Pod.
+🎯 A la fin de cette étape, les dépendances de Pod sont installés sur tous les serveurs Pod.
 {: .alert .alert-primary}
 
 ### Etape 7 : Installation du système Web reposant sur NGINX/uWSGI et paramétrage
@@ -191,7 +202,7 @@ Pour installer, configurer et utiliser Nginx/uWSGI sur tous les serveurs Web, j'
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
-| **Serveurs concernés** | Serveurs d'encodage dont le serveur principal |
+| **Serveurs concernés** | Serveurs d'encodage, serveur principal |
 | **Documentations de référence** | [Documentation pour déporter l’encodage sur un ou plusieurs serveurs](../remote-encoding_fr)|
 {: .table .table-striped}
 
@@ -220,3 +231,22 @@ Pour installer ce système d'autotranscription, j'ai suivi la **[documentation c
 
 🎯 A la fin de cette étape, les serveurs d'encodage peuvent réaliser des transcriptions.
 {: .alert .alert-primary}
+
+### Etape 10 : Personnalisation visuelle
+
+|                        | Commentaires                                      |
+|------------------------|---------------------------------------------------|
+| **Serveurs concernés** | Serveurs Web |
+| **Documentations de référence** | [Documentation concernant la personnalisation visuelle](../visual-customisation_fr)|
+{: .table .table-striped}
+
+Pour réaliser la personnalisation visuelle pour mon établissement, j'ai suivi la **[documentation concernant la personnalisation visuelle](../visual-customisation_fr)**.
+
+> A l'université de Montpellier, j'ai repris les élements déjà réalisés pour Pod v3.
+
+🎯 A la fin de cette étape, le site Web Pod v4 sera à la charte graphique de votre établissement.
+{: .alert .alert-primary}
+
+---
+
+Après avoir suivi ces étapes, l'environnement Pod de production est installé.

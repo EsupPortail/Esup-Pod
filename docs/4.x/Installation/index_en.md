@@ -12,10 +12,16 @@ lang: en
 
 ## First installation
 
+### Choice of installation type
+
 * [Stand-alone Installation](install_standalone_en)
 * [Docker Installation Docker](install_docker_en)
 * [Ansible Installation (by ENSAM)](https://gitlab.ensam.eu/apps/esup-pod)
+
+### Advanced installation and configuration
+
 * [Configuration and use of REDIS](redis_en)
+* [Visual customisation](visual-customisation_en)
 * [Production Deployment](production-mode_en)
 
 ### Encoding, transcription, xAPI and ActivityPub management
