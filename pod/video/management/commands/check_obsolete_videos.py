@@ -523,10 +523,18 @@ class Command(BaseCommand):
 
             if not exists:
                 writer.writeheader()
+
+            # vid.owner.owner
+            user_name = "%s %s (%s)" % (
+               vid.owner.first_name,
+               vid.owner.last_name,
+               vid.owner.username,
+            )
+
             writer.writerow(
                 {
                     "Date": date.today(),
-                    "User name": vid.owner.owner,
+                    "User name": user_name,
                     "User email": vid.owner.email,
                     "User Affiliation": vid.owner.owner.affiliation,
                     "User Establishment": vid.owner.owner.establishment,
