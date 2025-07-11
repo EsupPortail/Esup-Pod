@@ -212,10 +212,10 @@ def search_videos(request):
 
     # add cursus and main_lang 'cursus', 'main_lang',
     bodysearch["aggs"]["cursus"] = {
-        "terms": {"field": "cursus", "size": 5, "order": {"_count": "desc"}}
+        "terms": {"field": "cursus.keyword", "size": 5, "order": {"_count": "desc"}}
     }
     bodysearch["aggs"]["main_lang"] = {
-        "terms": {"field": "main_lang", "size": 5, "order": {"_count": "desc"}}
+        "terms": {"field": "main_lang.keyword", "size": 5, "order": {"_count": "desc"}}
     }
 
     # if settings.DEBUG:
