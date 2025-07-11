@@ -177,7 +177,7 @@ function convertToModalListElement(channel) {
     "title-chaine",
   );
   dFlexSpanElement.innerHTML =
-    '<i class="bi bi-play-btn pod-channel__item"></i>';
+    '<i class="bi bi-play-btn pod-channel__item" aria-hidden="true"></i>';
   const linkElement = document.createElement("a");
   linkElement.setAttribute("href", channel.url);
   linkElement.id = `channel-title_${channel.id}`;
@@ -501,7 +501,8 @@ burgerMenu.addEventListener("shown.bs.offcanvas", function () {
             ["data-bs-toggle", "modal"],
             ["data-bs-target", `.chaines-modal-${channelTab.id}`],
           ]);
-          buttonChannelTab.innerHTML = `<i class="bi bi-play-btn pod-nav-link-icon"></i> ${channelTab.name}`;
+          buttonChannelTab.innerHTML = `<i class="bi bi-play-btn pod-nav-link-icon" aria-hidden="true"></i>`;
+          buttonChannelTab.innerHTML += `${channelTab.name}`;
           createModalFor(channelTab);
           navChannelTab.appendChild(buttonChannelTab);
           navChannelTabs.appendChild(navChannelTab);

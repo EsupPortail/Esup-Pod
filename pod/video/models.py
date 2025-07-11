@@ -372,7 +372,10 @@ class Channel(models.Model):
     class Meta:
         """Metadata subclass for Channel object."""
 
-        ordering = ["title"]
+        # Do NOT set ordering on Channel, to avoid a
+        # "django.db.utils.DatabaseError: ORDER BY not allowed in subqueries of compound statements."
+        # When adding a channel to a video on a SQlite DB
+        # ordering = ["title"]
         verbose_name = _("Channel")
         verbose_name_plural = _("Channels")
         constraints = [

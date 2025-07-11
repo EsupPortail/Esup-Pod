@@ -1,9 +1,10 @@
-"""Esup-Pod tests for Video views."""
+"""Esup-Pod tests for Video views.
+*  run with 'python manage.py test pod.video.tests.test_views'
+"""
 
 from django.conf import settings
 from django.http import JsonResponse
-from django.test import Client
-from django.test import TestCase, override_settings, TransactionTestCase
+from django.test import Client, TestCase, override_settings, TransactionTestCase
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
@@ -290,7 +291,7 @@ class ChannelEditTestView(TestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
+        self.assertContains(response, _("The changes have been saved."))
         c = Channel.objects.get(title="ChannelTest1")
         self.assertEqual(c.description, "<p>bl</p>")
         print("   --->  test_channel_edit_post_request of ChannelEditTestView: OK!")
@@ -810,6 +811,14 @@ class VideoEditTestView(TestCase):
         user3.owner.sites.add(Site.objects.get_current())
         user3.owner.save()
 
+        channel1 = Channel.objects.create(
+            title="ChannelTest1",
+            visible=True,
+        )
+        channel1.save()
+        channel1.owners.add(user)
+        channel1.users.add(user, user2)
+
         print(" --->  SetUp of VideoEditTestView: OK!")
 
     def test_video_edit_get_request(self) -> None:
@@ -851,114 +860,92 @@ class VideoEditTestView(TestCase):
         print(" --->  test_video_edit_get_request of VideoEditTestView: OK!")
 
     def test_video_edit_post_request(self) -> None:
+
+        # Force user `pod` login
         self.client = Client()
-        video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        # modify one
+
+        video_data = {
+            "title": "VideoTest1",
+            "description": "<p>bl</p>\r\n",
+            "main_lang": "fr",
+            "cursus": "0",
+            "type": 1,
+            "visibility": "public",
+        }
+
+        # Modify some attrs (title, desc...) on Video1
+        video = Video.objects.get(title="Video1")
         url = reverse("video:video_edit", kwargs={"slug": video.slug})
         response = self.client.post(
             url,
-            {
-                "title": "VideoTest1",
-                "description": "<p>bl</p>\r\n",
-                "main_lang": "fr",
-                "cursus": "0",
-                "type": 1,
-                "visibility": "public",
-            },
+            video_data,
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
-
+        self.assertContains(response, _("The changes have been saved."))
+        # Check that the newly modified video has proper attrs
         v = Video.objects.get(title="VideoTest1")
         self.assertEqual(v.description, "<p>bl</p>")
+
+        # Replace video source file
         video_file = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
         )
         url = reverse("video:video_edit", kwargs={"slug": v.slug})
+        video_data["video"] = video_file
+        del video_data["description"]
         response = self.client.post(
             url,
-            {
-                "video": video_file,
-                "title": "VideoTest1",
-                "main_lang": "fr",
-                "cursus": "0",
-                "type": 1,
-                "visibility": "public",
-            },
+            video_data,
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
+        self.assertContains(response, _("The changes have been saved."))
         v = Video.objects.get(title="VideoTest1")
         p = re.compile(r"^videos/([\d\w]+)/file([_\d\w]*).mp4$")
         self.assertRegex(v.video.name, p)
-        # new one
-        video_file = SimpleUploadedFile(
-            "file.mp4", b"file_content", content_type="video/mp4"
-        )
-        url = reverse("video:video_edit", kwargs={})
-        self.client.post(
-            url,
-            {
-                "video": video_file,
-                "title": "VideoTest2",
-                "description": "<p>coucou</p>\r\n",
-                "main_lang": "fr",
-                "cursus": "0",
-                "type": 1,
-                "visibility": "public",
-            },
-        )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
-        v = Video.objects.get(title="VideoTest2")
-        # Additional owners
+
+        # Force user `pod2` login
         self.client = Client()
-        video = Video.objects.get(title="VideoWithAdditionalOwners")
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
-        # modify one
-        url = reverse("video:video_edit", kwargs={"slug": video.slug})
-        response = self.client.post(
-            url,
-            {
-                "title": "VideoTest3",
-                "description": "<p>bl</p>\r\n",
-                "main_lang": "fr",
-                "cursus": "0",
-                "type": 1,
-                "additional_owners": [self.user.pk],
-                "visibility": "public",
-            },
-            follow=True,
-        )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
 
-        v = Video.objects.get(title="VideoTest3")
-        self.assertEqual(v.description, "<p>bl</p>")
-        video_file = SimpleUploadedFile(
-            "file.mp4", b"file_content", content_type="video/mp4"
-        )
-        url = reverse("video:video_edit", kwargs={"slug": v.slug})
+        # Check video additional owners
+        video_data["title"] = "VideoWithAdditionalOwners"
+        video = Video.objects.get(title=video_data["title"])
+        url = reverse("video:video_edit", kwargs={"slug": video.slug})
+        video_data["description"] = "<p>bl</p>\r\n"
+        video_data["additional_owners"] = [self.user.pk]
+        del video_data["video"]
         response = self.client.post(
             url,
-            {
-                "video": video_file,
-                "title": "VideoTest3",
-                "main_lang": "fr",
-                "cursus": "0",
-                "type": 1,
-                "additional_owners": [self.user.pk],
-                "visibility": "public",
-            },
+            video_data,
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
+        self.assertContains(response, _("The changes have been saved."))
+        # Check video has been modified
+        v = Video.objects.get(title=video_data["title"])
+        self.assertEqual(v.description, "<p>bl</p>")
+
+        # Modify this video again.
+        url = reverse("video:video_edit", kwargs={"slug": v.slug})
+        video_data["video"] = video_file
+        video_data["channel"] = [1]
+        del video_data["description"]
+        response = self.client.post(
+            url,
+            video_data,
+            follow=True,
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertContains(response, _("The changes have been saved."))
+
+        # Check changes have been made.
+        v = Video.objects.get(title=video_data["title"])
+        self.assertEqual(v.channel.all().count(), 1)
         print("   --->  test_video_edit_post_request of VideoEditTestView: OK!")
 
 
@@ -1125,7 +1112,7 @@ class video_notesTestView(TestCase):
             },
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The note has been saved." in response.content)
+        self.assertContains(response, _("The note has been saved."))
         note = AdvancedNotes.objects.get(
             user=User.objects.get(id=self.user.id),
             video=video,
@@ -1285,7 +1272,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         expected = {
             "success": False,
-            "detail": "Method not allowed: Please use post method",
+            "detail": _("Method not allowed: Please use post method"),
         }
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
@@ -1301,7 +1288,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
             ),
             content_type="application/json",
         )
-        expected = {"success": True, "detail": "One or more videos not updated"}
+        expected = {"success": True, "detail": _("One or more videos not updated")}
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
@@ -1312,7 +1299,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
             content_type="application/json",
         )
 
-        expected = {"success": True, "detail": "Update successfully"}
+        expected = {"success": True, "detail": _("Update successfully")}
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
         self.assertEqual(Video.objects.filter(owner=self.simple_user).count(), 2)
@@ -1625,7 +1612,7 @@ class VideoTranscriptTestView(TestCase):
         reload(views)
 
         def inner_get_transcription_choices() -> list:
-            return [("fr", "French"), ("en", "english")]
+            return [("fr", "French"), ("en", "English")]
 
         views.get_transcription_choices = inner_get_transcription_choices
         video = Video.objects.get(title="Video1")
