@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-06 10:37+0200\n"
+"POT-Creation-Date: 2025-07-01 10:12+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1025,7 +1025,7 @@ msgstr "Auteur"
 msgid "Designer"
 msgstr "Concepteur"
 
-#: pod/completion/models.py
+#: pod/completion/models.py pod/completion/tests/test_views.py
 msgid "Editor"
 msgstr "Éditeur"
 
@@ -1791,10 +1791,6 @@ msgid ""
 msgstr ""
 "Un quiz vous permet de tester la mémorisation et la compréhension de votre "
 "vidéo."
-
-#: pod/completion/tests/test_views.py
-msgid "editor"
-msgstr "éditeur"
 
 #: pod/completion/utils.py pod/completion/views.py
 #, python-format
@@ -3670,12 +3666,9 @@ msgid "Event is finished at:"
 msgstr "L’évènement s’est terminé à :"
 
 #: pod/live/templates/live/event-iframe.html pod/live/templates/live/event.html
-msgid "The event is scheduled from:"
-msgstr "L’événement est programmé du :"
-
-#: pod/live/templates/live/event-iframe.html pod/live/templates/live/event.html
-msgid "to"
-msgstr "à"
+#, python-format
+msgid "The event is scheduled from %(start_date)s to %(end_date)s"
+msgstr "L’événement est programmé du %(start_date)s au %(end_date)s"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -5186,9 +5179,9 @@ msgstr "Afficher le projet Esup-Pod"
 msgid "Esup-Pod Project"
 msgstr "Projet Esup-Pod"
 
-#: pod/main/templates/footer.html pod/video/feeds.py
-msgid "video platform of"
-msgstr "plateforme vidéos de"
+#: pod/main/templates/footer.html
+msgid "Video platform"
+msgstr "Plateforme vidéo"
 
 #: pod/main/templates/footer.html
 msgid "View changes of version"
@@ -8648,6 +8641,14 @@ msgstr "Transcrire la sélection"
 msgid "Change video owner"
 msgstr "Changer le propriétaire de vidéos"
 
+#: pod/video/context_processors.py
+msgid "days"
+msgstr "jours"
+
+#: pod/video/feeds.py
+msgid "video platform of"
+msgstr "plateforme vidéo de"
+
 #: pod/video/forms.py
 msgid "File field"
 msgstr "Fichier"
@@ -10986,6 +10987,15 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "editor"
+#~ msgstr "éditeur"
+
+#~ msgid "The event is scheduled from:"
+#~ msgstr "L’événement est programmé du :"
+
+#~ msgid "to"
+#~ msgstr "à"
 
 #~ msgid "Delete the playlist"
 #~ msgstr "Supprimer la liste de lecture"

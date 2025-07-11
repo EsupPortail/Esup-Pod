@@ -18,7 +18,7 @@
       <li class="col-6 col-md-4">
         <span class="pod-meta-title">{% trans 'Broadcasted on:' %}</span>
         <div>
-          {% if event.start_date__date == event.end_date__date %}
+          {% if event.start_date|date:"d/m/Y" == event.end_date|date:"d/m/Y" %}
             {% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_date|time:"H:i" end_time=event.end_date|time:"H:i" %}{{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}
           {% else %}
             {% blocktrans with start_date=event.start_date end_date=event.end_date %}{{start_date}} to {{end_date}}{% endblocktrans %}

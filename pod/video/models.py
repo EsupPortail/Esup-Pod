@@ -1030,7 +1030,7 @@ class Video(models.Model):
             # Handle exception to avoid sending an error email
             try:
                 im = get_thumbnail(self.thumbnail.file, size, crop="center", quality=80)
-                thumbnail_url = im.url
+                thumbnail_url = "".join(["//", get_current_site(request).domain, im.url])
             except Exception as e:
                 logger.error(
                     "An error occured during get_thumbnail_url"
