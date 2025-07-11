@@ -251,9 +251,7 @@ class Command(BaseCommand):
 
         return True
 
-    def display_dry_run_tables(
-        self, data: dict, options: dict
-    ) -> None:
+    def display_dry_run_tables(self, data: dict, options: dict) -> None:
         """Display tables that would be processed in dry mode."""
         if options["onlytags"]:
             self.stdout.write(
@@ -267,9 +265,7 @@ class Command(BaseCommand):
                     self.style.SUCCESS(f" - The table {table} will be processed.")
                 )
 
-    def import_data(
-        self, data: dict, json_file: str, options: dict
-    ) -> None:
+    def import_data(self, data: dict, json_file: str, options: dict) -> None:
         """Import data into the database."""
         error = False
 
