@@ -526,9 +526,9 @@ class Command(BaseCommand):
 
             # vid.owner.owner
             user_name = "%s %s (%s)" % (
-               vid.owner.first_name,
-               vid.owner.last_name,
-               vid.owner.username,
+                vid.owner.first_name,
+                vid.owner.last_name,
+                vid.owner.username,
             )
 
             writer.writerow(
