@@ -233,6 +233,8 @@ TEMPLATE_VISIBLE_SETTINGS = {
 TIME_ZONE = "Europe/Paris"
 ```
 
+> _Remarque concernant TEMPLATE_VISIBLE_SETTINGS : du moment qu'on le surcharge dans les settings, il faut surcharger tous ses éléments par défaut._
+
 > 🔧 La liste des paramètres possibles est accessible via ce lien : [Configuration de la plateforme](https://github.com/EsupPortail/Esup-Pod/blob/master/CONFIGURATION_FR.md)
 
 ### Installation de toutes les librairies python
