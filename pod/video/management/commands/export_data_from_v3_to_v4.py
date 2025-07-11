@@ -110,7 +110,6 @@ class Command(BaseCommand):
             "auth_user_user_permissions",
             "captcha_captchastore",
             "chapter_chapter",
-            "chunked_upload_chunkedupload",
             "completion_contributor",
             "completion_document",
             "completion_enrichmodelqueue",
