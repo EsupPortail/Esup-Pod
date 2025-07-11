@@ -14,6 +14,12 @@ lang: fr
 | **Version de Pod**      | Pod v4.0.0            |
 | **Auteur**              | Loïc Bonavent         |
 
+Ce document présente les travaux réalisés par l'Université de Montpellier pour déployer une **infrastructure dédiée à Pod v4**, remplaçant ainsi une ancienne infrastructure Pod v3, devenue obsolète et potentiellement vulnérable sur le plan de la sécurité.
+
+> 💡L'infrastructure Pod v4 a été montée en **parallèle** de l'infrastructure Pod v3, de production, existante.
+> L'idée n'est pas de réaliser une simple mise à jour de Pod v3 vers Pod v4, mais il s'agit véritablement d'_une bascule d'une architecture Pod v3 vers une nouvelle infrastructure Pod v4_.
+{: .alert .alert-primary}
+
 ## Présentation de l'infrastructure de production
 
 ![Infrastructure Pod v4 à l'UM](um/architecture.png)
@@ -247,6 +253,38 @@ Pour réaliser la personnalisation visuelle pour mon établissement, j'ai suivi 
 🎯 A la fin de cette étape, le site Web Pod v4 sera à la charte graphique de votre établissement.
 {: .alert .alert-primary}
 
----
+### Etape 11 : Migration des données entre la version 3  et la version 4
 
-Après avoir suivi ces étapes, l'environnement Pod de production est installé.
+|                        | Commentaires                                      |
+|------------------------|---------------------------------------------------|
+| **Serveurs concernés** | Serveur principal |
+| **Documentations de référence** | [Documentation concernant le système de migration des données entre la version 3 et la version 4](../migrate_from_v3_to_v4_fr)|
+{: .table .table-striped}
+
+Pour réaliser la migration des données de Pod v3 vers Pod v4, j'ai suivi la **[documentation concernant le système de migration des données entre la version 3 et la version 4](../migrate_from_v3_to_v4_fr)**.
+
+> 💡 Cette migration des données peut-être réalisée autant de fois que nécessaire.
+
+> 💡 Vérifier bien que le serveur de fichiers, contenant le répertoire `MEDIA_ROOT`, soit bien accessible par l'ensemble de serveurs Pod.
+
+_Attention à ne pas réaliser de tests d'encodage sur l'environnement de **production** Pod v4 tant que la bascule d'infrastructure Pod v3 vers Pod v4 n'a pas été réalisée. Les fichiers encodées se retrouveraient sur le serveur de fichiers partagés._
+{: .alert .alert-danger}
+
+🎯 A la fin de cette étape, le site Web Pod v4 est réellement en production, avec l'ensemble des données existantes.
+{: .alert .alert-primary}
+
+### Annexes
+
+Ci-dessous, les différents éléments de configuration pour cette infrastructure Pod v4 pour l'UM (_configuration au jour de la date de réalisation de cette documentation_).
+
+#### Fichier settings_local.py
+
+#### nginx
+
+#### uwsgi
+
+#### celeryd
+
+#### Fichier CSS pour l'UM
+
+Voici le lien direct vers la dernière version du CSS UM : [https://video.umontpellier.fr/static/custom/custom-um.css?ver=4.0.0](https://video.umontpellier.fr/static/custom/custom-um.css?ver=4.0.0)
