@@ -13,6 +13,7 @@ lang: fr
 | **Date de réalisation** | Juillet 2025          |
 | **Version de Pod**      | Pod v4.0.0            |
 | **Auteur**              | Loïc Bonavent         |
+{: .table .table-striped}
 
 Ce document présente les travaux réalisés par l'Université de Montpellier pour déployer une **infrastructure dédiée à Pod v4**, remplaçant ainsi une ancienne infrastructure Pod v3, devenue obsolète et potentiellement vulnérable sur le plan de la sécurité.
 
