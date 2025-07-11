@@ -6,8 +6,9 @@
 # Conteneur elasticsearch
 ARG ELASTICSEARCH_VERSION
 FROM $ELASTICSEARCH_VERSION
-# TODO
-#FROM harbor.urba.univ-lille.fr/store/elasticsearch:7.17.7
+
+HEALTHCHECK --timeout=3s --start-period=60s --start-interval=1s CMD \
+    curl --fail --silent http://elasticsearch.localhost:9200/_cluster/health || exit 1
 
 RUN /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
 
