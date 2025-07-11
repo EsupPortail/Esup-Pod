@@ -73,4 +73,6 @@ lang: en
 
 * [Tips and tricks](tricks_en)
 
-> Work in progress...
+## Installation documentation provided by institutions
+
+* [University of Montpellier](install-by-etabs/university-montpellier_en.md)

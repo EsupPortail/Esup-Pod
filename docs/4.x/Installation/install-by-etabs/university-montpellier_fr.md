@@ -277,14 +277,615 @@ _Attention à ne pas réaliser de tests d'encodage sur l'environnement de **prod
 
 Ci-dessous, les différents éléments de configuration pour cette infrastructure Pod v4 pour l'UM (_configuration au jour de la date de réalisation de cette documentation_).
 
-#### Fichier settings_local.py
+#### Fichier /usr/local/django_projects/podv4/pod/custom/settings_local.py
 
-#### nginx
+```sh
+# -*- coding: utf-8 -*-
+from django.utils.translation import gettext_lazy as _
 
-#### uwsgi
+SECRET_KEY = '<my_secret_key>'
 
-#### celeryd
+# DEBUG mode activation
+DEBUG = False
+
+# Droit des fichiers uploadés
+FILE_UPLOAD_PERMISSIONS = 0o644
+
+# Noms de domaine/d'hôte
+ALLOWED_HOSTS = ['pod.univ.fr']
+
+# Liste des administrateurs
+ADMINS = (
+    ('Name', 'pod@univ.fr'),
+)
+# Liste des managers (destinataires des courriels de fin d’encodage)
+MANAGERS = ADMINS
+
+# Base de données
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': '<my_bd_name>',
+        'USER': '<my_bd_user>',
+        'PASSWORD': '<my_bd_password>',
+        'HOST': '<my_bd_host>',
+        'PORT': '',
+        'OPTIONS': {'init_command': "SET storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1, foreign_key_checks=0;"}
+    }
+}
+
+# Utile pour la réception d'enregistrement
+RECORDER_BASE_URL = "https://pod.univ.fr"
+
+# Seules les personnes staff peuvent déposer des vidéos
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = True
+
+# 4Go maximum pour l'upload
+VIDEO_MAX_UPLOAD_SIZE = 4
+
+# Utile pour la gestion des fichiers
+FILE_ALLOWED_EXTENSIONS = ('doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt', 'webm', 'ts',)
+IMAGE_ALLOWED_EXTENSIONS = ('jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff',)
+FILE_MAX_UPLOAD_SIZE = 20
+
+# Utilisation du gestionnaire de fichiers Pod
+USE_PODFILE = True
+
+# Liste des applications tierces accessibles
+THIRD_PARTY_APPS = ['live', 'enrichment']
+
+# Authentification
+AUTH_TYPE = (('local', _('local')), ('CAS', 'CAS'))
+
+# Authentification CAS
+USE_CAS = True
+CAS_SERVER_URL = 'https://cas.univ.fr/cas/'
+CAS_GATEWAY = False
+POPULATE_USER = 'LDAP'
+AUTH_CAS_USER_SEARCH = 'user'
+CREATE_GROUP_FROM_AFFILIATION = True
+CREATE_GROUP_FROM_GROUPS = True
+AFFILIATION_STAFF = ('faculty', 'employee', 'researcher', 'affiliate')
+
+# Annuaire LDAP
+LDAP_SERVER = {'url': 'ldap://ldap-app.univ.fr', 'port': 389, 'use_ssl': False}
+AUTH_LDAP_BIND_DN = 'cn=admin, ou=system, dc=univ, dc=fr'
+AUTH_LDAP_BIND_PASSWORD = '<my_ldap_password>'
+AUTH_LDAP_BASE_DN = 'ou=people,dc=univ,dc=fr'
+AUTH_LDAP_USER_SEARCH = (AUTH_LDAP_BASE_DN, "(uid=%(uid)s)")
+
+# Liste de correspondance entre les champs d'un compte de Pod
+#  et les champs renvoyés par le LDAP
+USER_LDAP_MAPPING_ATTRIBUTES = {
+    "uid": "uid",
+    "mail": "mail",
+    "last_name": "sn",
+    "first_name": "givenname",
+    "primaryAffiliation": "eduPersonPrimaryAffiliation",
+    "affiliations": "eduPersonAffiliation",
+    "groups": "isMemberOf"
+}
+
+# Internationalisation et localisation.
+LANGUAGE_CODE = 'fr'
+LANGUAGES = (
+    ('fr', 'Français'),
+    ('en', 'English')
+)
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'fr'
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('fr', 'en')
+
+# Time zone
+TIME_ZONE = 'Europe/Paris'
+
+# Préfixe url utilisé pour accéder aux fichiers du répertoire media
+MEDIA_URL = '/media/'
+
+# Chemin absolu du répertoire des médias
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = '<my_nfs_dir>/pod/media'
+
+# Répertoire temporaire
+FILE_UPLOAD_TEMP_DIR = '/var/tmp'
+
+# Répertoire de base, utile pour le recorder
+BASE_DIR = '/usr/local/django_projects/podv4/pod'
+
+# Type par défaut
+DEFAULT_TYPE_ID = 4
+
+# Paramétrage pour l'envoi de mails
+EMAIL_HOST = 'smtp.univ.fr'
+EMAIL_PORT = 25
+DEFAULT_FROM_EMAIL = 'pod@univ.fr'
+SERVER_EMAIL = 'pod@univ.fr'
+
+# Un courriel est envoyé aux managers et à l’auteur à la fin de l’encodage
+EMAIL_ON_ENCODING_COMPLETION = True
+
+# Les utilisateurs non staff ne sont plus affichés dans la barre de menu utilisateur.
+MENUBAR_SHOW_STAFF_OWNERS_ONLY = True
+
+# Afficher les vidéos dont l’accès est protégé par authentification sur la page d’accueil.
+HOMEPAGE_SHOWS_RESTRICTED = True
+
+### Elasticsearch
+# Elasticsearch URLs
+ES_URL = ['https://<my_es_host>:9200/']
+ES_VERSION = 8
+# ES_MAX_RETRIES = 10
+ES_OPTIONS = {'verify_certs' : False, 'basic_auth' : ('pod', '<my_es_password>')}
+
+# Encodage encore via Celery
+CELERY_TO_ENCODE = True
+# Broker REDIS
+CELERY_BROKER_URL = "redis://<my_redis_host>:6379/5"
+# Permet de ne traiter que une tache à la fois
+CELERY_TASK_ACKS_LATE = True
+
+# Paramétrage du template établissement
+TEMPLATE_VISIBLE_SETTINGS = {
+    'TITLE_SITE': 'Pod',
+    'TITLE_ETB': 'Etablissement',
+    'LOGO_SITE': 'custom/img/logo-pod.svg',
+    'LOGO_COMPACT_SITE': 'custom/img/logo-pod.svg',
+    'LOGO_ETB': 'custom/img/logo-etab.svg',
+    'LOGO_PLAYER': 'custom/img/logo-player.png',
+    'FOOTER_TEXT': (
+        'ADRESSE',
+        'CP VILLE',
+        (
+            'maps'
+        )
+    ),
+    'LINK_PLAYER': 'https://www.univ.fr',
+    'CSS_OVERRIDE': 'custom/custom-etab.css',
+    'FAVICON': 'custom/img/favicon.png',
+    # Si besoin de Matomo
+    # 'TRACKING_TEMPLATE' : 'custom/tracking.html'
+    # Si besoin de spécificique
+    # 'PRE_HEADER_TEMPLATE': 'preheader.html'
+}
+
+# Liste des sujets possibles CONTACT_US
+SUBJECT_CHOICES = (
+    ('', '-----'),
+    ('info', _('Request more information')),
+    ('request_password', _('Password request for a video')),
+    ('inappropriate_content', _('Report inappropriate content')),
+    ('bug', _('Correction or bug report')),
+    ('other', _('Other (please specify)'))
+)
+
+# Image par défaut affichée comme poster ou vignette
+DEFAULT_THUMBNAIL = 'custom/img/default.svg'
+
+# Paramétrage Captcha
+# Si besoin : 'captcha.helpers.random_char_challenge'
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+# ('captcha.helpers.noise_null',)
+CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_arcs', 'captcha.helpers.noise_dots',)
+
+# RGPD
+USE_RGPD = True
+
+# Obsolescence
+DEFAULT_YEAR_DATE_DELETE = 48
+MAX_DURATION_DATE_DELETE = 64
+
+# Enregistreur (FTP)
+DEFAULT_RECORDER_PATH = 'NFS/media/uploads/'
+DEFAULT_RECORDER_USER_ID = 2
+DEFAULT_RECORDER_ID = 1
+DEFAULT_RECORDER_TYPE_ID = 4
+ALLOW_MANUAL_RECORDING_CLAIMING = False
+ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = True
+RECORDER_SKIP_FIRST_IMAGE = True
+
+### Transcription
+USE_TRANSCRIPTION = True
+
+# Transcription use
+# * STT
+# * VOSK
+# * WHISPER
+TRANSCRIPTION_TYPE = "WHISPER"
+
+# Paramétrage pour Whisper
+TRANSCRIPTION_MODEL_PARAM = {
+    'WHISPER': {
+        'fr': {
+            'model': "medium",
+            'download_root': "/usr/local/django_projects/transcription/whisper/",
+        },
+        'en': {
+            'model': "medium",
+            'download_root': "/usr/local/django_projects/transcription/whisper/",
+        }
+    }
+}
+
+# Statistiques
+USE_STATS_VIEW = True
+VIEW_STATS_AUTH = True
+
+# Affiche uniquement les thèmes de premier niveau dans l’onglet 'Chaîne'
+SHOW_ONLY_PARENT_THEMES = True
+# Affichage uniquement des vidéos de la chaîne ou du thème actuel(le)
+ORGANIZE_BY_THEME = True
+
+# Thème CSS
+USE_THEME = 'default'
+BOOTSTRAP_CUSTOM = 'custom/bootstrap-default.min.css'
+
+# Activer les commentaires au niveau de la plateforme
+ACTIVE_VIDEO_COMMENT = False
+
+# Permet d'activer le fonctionnement de categorie au niveau de ses vidéos
+USER_VIDEO_CATEGORY = True
+
+# Activation du darkmode
+DARKMODE_ENABLED = True
+
+# Activation du mode dyslexie
+DYSLEXIAMODE_ENABLED = True
+
+# Ce paramètre permet d'afficher un lien "En savoir plus"
+# sur la boite de dialogue d'information sur l'usage des cookies dans Pod.
+# On peut préciser un lien vers les mentions légales ou page dpo
+COOKIE_LEARN_MORE = "/mentions-legales/"
+
+### Enregisteur
+# Permet d'activer la possibilité d'enregistrer son ecran et son micro
+USE_OPENCAST_STUDIO = True
+OPENCAST_DEFAULT_PRESENTER = "piph"
+FFMPEG_STUDIO_COMMAND = (
+    " -hide_banner -threads %(nb_threads)s %(input)s %(subtime)s"
+    + " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p"
+    + " -crf %(crf)s -sc_threshold 0 -force_key_frames"
+    + ' "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
+)
+
+# Fonction appelée pour lancer l'encodage des vidéos
+ENCODE_VIDEO = "start_encode"
+# Fonction appelée pour lancer la transcription des vidéos
+TRANSCRIPT_VIDEO = "start_transcript"
+
+
+### Gestion de l'application des réunions
+# Application Meeting pour la gestion de reunion avec BBB
+USE_MEETING = True
+BBB_API_URL = "https://<my_bbb_host>/bigbluebutton/api"
+BBB_SECRET_KEY = "<my_bbb_password>"
+# Optionnel
+BBB_LOGOUT_URL = ""
+RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = False
+# Permet de désactiver les enregistrements de réunion
+MEETING_DISABLE_RECORD = False
+# Ensemble des champs qui seront cachés si `MEETING_DISABLE_RECORD` est défini à true
+MEETING_RECORD_FIELDS = (
+    "record",
+    "auto_start_recording",
+    "allow_start_stop_recording"
+)
+
+### Caches Redis
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://<my_redis_host>:6379/3",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "pod",
+    },
+    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
+    "select2": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://<my_redis_host>:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+}
+# REDIS
+SESSION_ENGINE = "redis_sessions.session"
+SESSION_REDIS = {
+    "host": "<my_redis_host>",
+    "port": 6379,
+    "db": 4,
+    "prefix": "session",
+    "socket_timeout": 1,
+    "retry_on_timeout": False,
+}
+SELECT2_CACHE_BACKEND = "select2"
+
+### Gestion des directs
+# Groupes ou affiliations des personnes autorisées à créer un évènement
+AFFILIATION_EVENT = ['staff']
+# Pour Matomo
+USE_VIDEO_EVENT_TRACKING = True
+# Affichage des events sur la page d'accueil
+SHOW_EVENTS_ON_HOMEPAGE = False
+# Image dans le répertoire static
+DEFAULT_EVENT_THUMBNAIL = "custom/img/default-event.svg"
+# Type 'cours' par défaut
+DEFAULT_EVENT_TYPE_ID = 4
+# Groupe des admins des events
+EVENT_GROUP_ADMIN = "<my_live_managers_group>"
+# N'envoie pas d'email aux utilisateurs
+EMAIL_ON_EVENT_SCHEDULING = False
+# Envoie un email à l'admin
+EMAIL_ADMIN_ON_EVENT_SCHEDULING = True
+# Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes
+VIDEO_RECENT_VIEWCOUNT = 180
+# Transcription des directs
+USE_LIVE_TRANSCRIPTION = False
+# La liste des utilisateurs regardant le direct sera réservée au staff
+VIEWERS_ONLY_FOR_STAFF = False
+# Temps (en seconde) entre deux envois d'un signal au serveur, pour signaler la présence sur un live
+# Peut être augmenté en cas de perte de performance mais au détriment de la qualité du comptage des valeurs
+HEARTBEAT_DELAY = 90
+# Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n'as pas renvoyé de signal depuis
+VIEW_EXPIRATION_DELAY = 120
+
+
+### Gestion de l'import des vidéos
+# Module d'import des videos
+USE_IMPORT_VIDEO = True
+# Seuls les utilisateurs staff pourront importer des vidéos
+RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY = True
+# Pas de taille maximum pour les imports
+MAX_UPLOAD_SIZE_ON_IMPORT = 0
+# Utilisation du plugin bbb-recorder pour le module import-vidéo;
+# utile pour convertir une présentation BigBlueButton en fichier vidéo.
+USE_IMPORT_VIDEO_BBB_RECORDER = False
+# Répertoire du plugin bbb-recorder (voir la documentation https://github.com/jibon57/bbb-recorder).
+# bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d'encodage.
+# bbb-recorder crée un répertoire Downloads, au même niveau, qui nécessite de l'espace disque.
+IMPORT_VIDEO_BBB_RECORDER_PLUGIN = '/home/pod/bbb-recorder/'
+# Répertoire qui contiendra les fichiers vidéo générés par bbb-recorder.
+IMPORT_VIDEO_BBB_RECORDER_PATH = '<my_nfs_dir>/bbb-recorder/'
+
+# Gestion des favoris et playlists
+USE_FAVORITES = True
+USE_PLAYLIST = True
+
+
+### Gestion PWA et notifications
+# PWA
+PWA_APP_NAME = "Pod"
+PWA_APP_DESCRIPTION = _(
+    "University video platform"
+)
+PWA_APP_THEME_COLOR = "#34495E"
+PWA_APP_BACKGROUND_COLOR = "#ffffff"
+PWA_APP_ICONS = [
+    {
+        "src": f"/static/custom/img/pwa/icon_x{size}.png",
+        "sizes": f"{size}x{size}",
+        "purpose": "any maskable",
+    }
+    for size in (1024, 512, 384, 192, 128, 96, 72, 48)
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        "src": f"/static/custom/img/pwa/icon_x{size}.png",
+        "sizes": f"{size}x{size}",
+    }
+    for size in (1024, 512, 384, 192, 128, 96, 72, 48)
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        "src": "/static/custom/img/pwa/splash-512.png",
+        "media": (
+            "(device-width: 320px) "
+            "and (device-height: 568px) "
+            "and (-webkit-device-pixel-ratio: 2)"
+        ),
+    }
+]
+PWA_APP_SCREENSHOTS = [
+    {"src": "/static/custom/img/pwa/screenshot1.png", "sizes": "675x1334", "type": "image/png"}
+]
+
+### NOTIFICATIONS
+USE_NOTIFICATIONS = True
+# Clés générées via https://web-push-codelab.glitch.me/
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": "<my_public_key>",
+    "VAPID_PRIVATE_KEY": "<my_private_key>",
+    "VAPID_ADMIN_EMAIL": "pod@univ.fr"
+}
+
+# Activation de l'application Cut
+USE_CUT = True
+
+# Activation des habillages. Permet aux utilisateurs de customiser une vidéo avec un filigrane et des crédits.
+USE_DRESSING = True
+
+# Encodage encore traditionnel
+USE_REMOTE_ENCODING_TRANSCODING = False
+
+# Env de dev sans Docker (cf. main/test_settings.py)
+USE_DOCKER = False
+# Pour debug en dev
+USE_DEBUG_TOOLBAR = False
+
+### Aristote
+USE_AI_ENHANCEMENT = True
+AI_ENHANCEMENT_API_URL = "https://api.aristote.education/api"
+AI_ENHANCEMENT_API_VERSION = "v1"
+AI_ENHANCEMENT_CLIENT_ID = "<my_aristote_id>"
+AI_ENHANCEMENT_CLIENT_SECRET = "<my_aristote_secret>"
+AI_ENHANCEMENT_CGU_URL = "https://disi.pages.centralesupelec.fr/innovation/aristote/aristote-website/utilisation_service"
+AI_ENHANCEMENT_TO_STAFF_ONLY = True
+
+# Envoyer l'email à l'expéditeur ?
+NOTIFY_SENDER = False
+
+# Pas d'utilisation du module des quiz
+USE_QUIZ = False
+
+# On cache les uid
+HIDE_USERNAME = True
+
+# Pas d'hyperliens
+USE_HYPERLINKS = False
+```
+
+#### Fichier /usr/local/django_projects/podv4/pod/custom/pod_nginx.conf
+
+```conf
+# mysite_nginx.conf
+# Add this line in /etc/nginx/nginx.conf
+#http {
+#    [...]
+#    # reserve 1MB under the name 'uploads' to track uploads
+#    upload_progress uploadp 1m;
+#    [...]
+#}
+# the upstream component nginx needs to connect to
+upstream django {
+  # server unix:///path/to/your/mysite/mysite.sock; # for a file socket
+  server unix:///usr/local/django_projects/podv4/podv4.sock;
+  # server 127.0.0.1:8001; # for a web port socket (we'll use this first)
+}
+
+# configuration of the server
+server {
+  ## Deny illegal Host headers
+  if ($host !~* ^(pod-prep.univ.fr|pod.univ.fr)$ ) {
+    return 444;
+  }
+
+  # SI BESOIN -Configuration utile pour que le HAProxy identifie bien le serveur comme en ligne
+  error_page 404 =200 /static/custom/healthcheck.html;
+
+  # the port your site will be served on
+  listen      80;
+  # the domain name it will serve for
+  server_name pod.univ.fr; # substitute your machine's IP address or FQDN
+  charset     utf-8;
+
+  # max upload size
+  client_max_body_size 4G;   # adjust to taste
+  # Allow to download large files
+  uwsgi_max_temp_file_size 0;
+
+  location ^~ /progressbarupload/upload_progress {
+    # JSON document rather than JSONP callback, pls
+    upload_progress_json_output;
+    report_uploads uploadp;
+  }
+
+  location "/media/records" {
+    alias <my_nfs_dir>/media/uploads;
+  }
+
+  # Django media
+  location /media  {
+    expires 1y;
+    add_header Cache-Control "public";
+    gzip on;
+    # gzip_types text/vtt;
+    # alias /usr/local/django_projects/podv4/pod/media;  # your Django project's media files - amend as required
+    gzip_types text/vtt text/plain application/javascript text/javascript text/css image/svg+xml image/png image/jpeg;
+    alias /data/www/pod/media;
+  }
+
+  location /static {
+    expires 1y;
+    add_header Cache-Control "public";
+    gzip_static  on;
+    # gzip_types text/plain application/xml text/css text/javascript application/javascript image/svg+xml;
+    gzip_types text/plain application/xml application/javascript text/javascript text/css image/svg+xml image/png image/jpeg;
+    alias /usr/local/django_projects/podv4/pod/static; # your Django project's static files - amend as required
+  }
+
+  # Finally, send all non-media requests to the Django server.
+  location / {
+    # Si besoin, timeout uWsgi à 10min
+    uwsgi_read_timeout 600;
+
+    uwsgi_pass  django;
+    include     /usr/local/django_projects/podv4/uwsgi_params;
+    track_uploads uploadp 30s;
+  }
+
+  # Blocage des robots
+  # Ajouter d'autres robos si besoin | exemple (bingbot|GoogleBot|...)
+  if ($http_user_agent ~ (bingbot) ) {
+      return 403;
+  }
+
+  # Favicon par defaut
+  location = /favicon.ico {
+    alias /usr/local/django_projects/podv4/pod/static/custom/favicon.ico;
+  }
+}
+```
+
+#### Fichier /usr/local/django_projects/podv4/pod/custom/pod_uwsgi.ini
+
+```ini
+# pod_uwsgi.ini file
+[uwsgi]
+
+# Django-related settings
+# the base directory (full path)
+chdir           = /usr/local/django_projects/podv4
+# Django's wsgi file
+module          = pod.wsgi
+# the virtualenv (full path)
+home            = /home/pod/.virtualenvs/django_pod4
+# process-related settings
+# master
+master          = true
+# maximum number of worker processes
+processes       = 10
+# the socket (use the full path to be safe
+socket          = /usr/local/django_projects/podv4/podv4.sock
+# http          = :8000
+# ... with appropriate permissions - may be needed
+chmod-socket    = 666
+# clear environment on exit
+vacuum          = true
+# In case of numerous/long cookies and/or long query string, the HTTP header may exceed default 4k.
+# When it occurs, uwsgi rejects those rejects with error "invalid request block size" and nginx returns HTTP 502.
+# Allowing 8k is a safe value that still allows weird long cookies set on .univ-xxx.fr
+buffer-size     = 8192
+
+
+# To log to files instead of stdout/stderr, use 'logto',
+# or to simultaneously daemonize uWSGI, 'daemonize'.
+# daemonize       = /usr/local/django_projects/podv4/pod/log/uwsgi-pod.log
+# logto           = /usr/local/django_projects/podv4/pod/log/uwsgi-pod.log
+logto           = /usr/local/django_projects/podv4/pod/log/uwsgi-pod.log
+
+# recommended params by https://www.techatbloomberg.com/blog/configuring-uwsgi-production-deployment/
+strict          = true  ; This option tells uWSGI to fail to start if any parameter in the configuration file isn’t explicitly understood.
+die-on-term     = true  ; Shutdown when receiving SIGTERM (default is respawn)
+need-app        = true  ; This parameter prevents uWSGI from starting if it is unable to find or load your application module.
+```
+
+#### Fichier /ect/default/celeryd
+
+```sh
+CELERYD_NODES="worker1"                                        # Nom du/des worker(s). Ajoutez autant de workers que de tache à executer en paralelle.
+DJANGO_SETTINGS_MODULE="pod.settings"                                  # settings de votre Pod
+CELERY_BIN="/home/pod/.virtualenvs/django_pod4/bin/celery"             # répertoire source de celery
+CELERY_APP="pod.main"                                                  # application où se situe celery
+CELERYD_CHDIR="/usr/local/django_projects/podv4"                       # répertoire du projet Pod (où se trouve manage.py)
+CELERYD_OPTS="--time-limit=86400 --concurrency=1 --max-tasks-per-child=1  --prefetch-multiplier=1" # options à appliquer en plus sur le comportement du/des worker(s)
+CELERYD_LOG_FILE="/var/log/celery/%N.log"                              # fichier log
+CELERYD_PID_FILE="/var/run/celery/%N.pid"                              # fichier pid
+CELERYD_USER="pod"                                                     # utilisateur système utilisant celery
+CELERYD_GROUP="www-data"                                                  # groupe système utilisant celery
+CELERY_CREATE_DIRS=1                                                   # si celery dispose du droit de création de dossiers
+CELERYD_LOG_LEVEL="INFO"                                               # niveau d'information qui seront inscrit dans les logs
+```
 
 #### Fichier CSS pour l'UM
 
-Voici le lien direct vers la dernière version du CSS UM : [https://video.umontpellier.fr/static/custom/custom-um.css?ver=4.0.0](https://video.umontpellier.fr/static/custom/custom-um.css?ver=4.0.0)
+Voici le lien direct vers la dernière version du CSS UM : [https://video.univ.fr/static/custom/custom-um.css?ver=4.0.0](https://video.univ.fr/static/custom/custom-um.css?ver=4.0.0)
