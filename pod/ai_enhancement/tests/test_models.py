@@ -19,7 +19,7 @@ class AIEnrichmentModelTest(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up the tests."""
         self.owner = User.objects.create_user(username="testuser")
         self.video = Video.objects.create(
@@ -30,18 +30,18 @@ class AIEnrichmentModelTest(TestCase):
             video=self.video, ai_enhancement_id_in_aristote="test_id"
         )
 
-    def test_create_ai_enhancement(self):
+    def test_create_ai_enhancement(self) -> None:
         """Test the model creation."""
         self.assertEqual(self.ai_enhancement.video, self.video)
         self.assertEqual(self.ai_enhancement.ai_enhancement_id_in_aristote, "test_id")
         print(" --->  test_create_ai_enhancement ok")
 
-    def test_str(self):
+    def test_str(self) -> None:
         """Test the string representation."""
         self.assertEqual(str(self.ai_enhancement), f"{self.video.title} - test_id")
         print(" --->  test_str ok")
 
-    def test_sites(self):
+    def test_sites(self) -> None:
         """Test the sites property."""
         self.assertEqual(self.ai_enhancement.sites, self.video.sites)
         print(" --->  test_sites ok")
