@@ -53,6 +53,16 @@ CELERY_TASK_ACKS_LATE = True
 
 ## Installation on the encoding server(s)
 
+### FFMPEG
+
+To encode videos and create thumbnails, you need to install ffmpeg, ffmpegthumbnailer and imagemagick (do not install on the front-end server if you're offshoring encoding).
+
+```sh
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install -y ffmpeg ffmpegthumbnailer imagemagick
+```
+
+### Pod installation
+
 Pod must be installed **without reinitialising or migrating the database** and **without Nginx /uWsgi /Elasticsearch**.
 You can follow the Installation of the Pod platform doc.
 Add the configuration of all this in the configuration file

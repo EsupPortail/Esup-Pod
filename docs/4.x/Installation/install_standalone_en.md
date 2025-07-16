@@ -258,7 +258,7 @@ Similarly, if you need to use a proxy:
 To encode videos and create thumbnails, you need to install ffmpeg, ffmpegthumbnailer and imagemagick (do not install on the front-end server if you're offshoring encoding).
 
 ```sh
-(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install ffmpeg ffmpegthumbnailer imagemagick
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install -y ffmpeg ffmpegthumbnailer imagemagick
 ```
 
 ### Redis

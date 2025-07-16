@@ -258,7 +258,7 @@ De même, si vous devez utiliser un proxy :
 Pour l’encodage des vidéos et la creation des vignettes, il faut installer ffmpeg, ffmpegthumbnailer et imagemagick (ne pas installer sur le serveur frontal si vous déportez l’encodage)
 
 ```sh
-(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install ffmpeg ffmpegthumbnailer imagemagick
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install -y ffmpeg ffmpegthumbnailer imagemagick
 ```
 
 ### Redis

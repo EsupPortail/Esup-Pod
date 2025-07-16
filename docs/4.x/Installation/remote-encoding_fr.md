@@ -53,6 +53,16 @@ CELERY_TASK_ACKS_LATE = True
 
 ## Installation sur le ou les serveur(s) d’encodage
 
+### FFMPEG
+
+Pour l’encodage des vidéos et la creation des vignettes, il faut installer ffmpeg, ffmpegthumbnailer et imagemagick :
+
+```sh
+(django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install -y ffmpeg ffmpegthumbnailer imagemagick
+```
+
+### Installation de Pod
+
 Il faut installer Pod **sans réinitialiser ou migrer la base** et **sans Nginx /uWsgi /Elasticsearch**.
 Vous pouvez suivre la doc Installation de la plateforme Pod.
 Rajouter la configuration de tout ça dans le fichier de configuration
