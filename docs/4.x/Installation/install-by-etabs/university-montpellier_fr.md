@@ -349,7 +349,7 @@ CREATE_GROUP_FROM_GROUPS = True
 AFFILIATION_STAFF = ('faculty', 'employee', 'researcher', 'affiliate')
 
 # Annuaire LDAP
-LDAP_SERVER = {'url': 'ldap://ldap-app.univ.fr', 'port': 389, 'use_ssl': False}
+LDAP_SERVER = {'url': 'ldap://ldap.univ.fr', 'port': 389, 'use_ssl': False}
 AUTH_LDAP_BIND_DN = 'cn=admin, ou=system, dc=univ, dc=fr'
 AUTH_LDAP_BIND_PASSWORD = '<my_ldap_password>'
 AUTH_LDAP_BASE_DN = 'ou=people,dc=univ,dc=fr'
@@ -737,7 +737,7 @@ USE_HYPERLINKS = False
 
 #### Fichier /usr/local/django_projects/podv4/pod/custom/pod_nginx.conf
 
-```conf
+```sh
 # mysite_nginx.conf
 # Add this line in /etc/nginx/nginx.conf
 #http {
@@ -889,4 +889,4 @@ CELERYD_LOG_LEVEL="INFO"                                               # niveau 
 
 #### Fichier CSS pour l'UM
 
-Voici le lien direct vers la dernière version du CSS UM : [https://video.univ.fr/static/custom/custom-um.css?ver=4.0.0](https://video.univ.fr/static/custom/custom-um.css?ver=4.0.0)
+Voici le lien direct vers la dernière version du CSS UM : [https://video.umontpellier.fr/static/custom/custom-um.css](https://video.umontpellier.fr/static/custom/custom-um.css)
