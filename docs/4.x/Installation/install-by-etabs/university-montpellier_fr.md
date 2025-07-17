@@ -264,7 +264,7 @@ Pour réaliser la personnalisation visuelle pour mon établissement, j'ai suivi 
 
 Pour réaliser la migration des données de Pod v3 vers Pod v4, j'ai suivi la **[documentation concernant le système de migration des données entre la version 3 et la version 4](../migrate_from_v3_to_v4_fr)**.
 
-> 💡 Cette migration des données peut-être réalisée autant de fois que nécessaire.
+> 💡 Cette migration des données peut-être réalisée autant de fois que nécessaire. Personnellement, j'ai réalisé plusieurs tests en amont en **supprimant l'ensemble des tables** de la base de données et en exécutant la commande **`python manage.py import_data_from_v3_to_v4 --createDB`**.
 
 > 💡 Vérifier bien que le serveur de fichiers, contenant le répertoire `MEDIA_ROOT`, soit bien accessible par l'ensemble de serveurs Pod.
 
