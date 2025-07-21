@@ -9,6 +9,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.i18n import JavaScriptCatalog
 from django.utils.translation import ugettext_lazy as _
+from django.conf.urls.i18n import i18n_patterns
 
 import importlib.util
 
@@ -57,12 +58,8 @@ urlpatterns = [
     # Maintenance mode
     url(r"^maintenance/$", maintenance, name="maintenance"),
     # videos
-    url(r"^videos/", include("pod.video.urls-videos")),
     url(r"^rss", include("pod.video.urls-rss")),
-    url(r"^video/", include("pod.video.urls")),
     url(r"^ajax_calls/search_user/", user_autocomplete),
-    # my channels
-    url(r"^channels/", include("pod.video.urls-channels")),
     # recording
     url(r"^record/", include("pod.recorder.urls")),
     # search
@@ -96,6 +93,14 @@ urlpatterns = [
     # pwa
     url("", include("pwa.urls")),
 ]
+
+# i18n urls
+urlpatterns += i18n_patterns(
+    url(r"^videos/", include("pod.video.urls-videos")),
+    url(r"^video/", include("pod.video.urls")),
+    # my channels
+    url(r"^channels/", include("pod.video.urls-channels")),
+)
 
 # WEBPUSH
 if USE_NOTIFICATIONS:
@@ -161,9 +166,9 @@ if USE_CUT:
 
 # PLAYLIST
 if USE_PLAYLIST:
-    urlpatterns += [
+    urlpatterns += i18n_patterns(
         path("playlist/", include("pod.playlist.urls", namespace="playlist")),
-    ]
+    )
 
 # AI ENHANCEMENT
 if USE_AI_ENHANCEMENT:
@@ -213,9 +218,9 @@ if settings.DEBUG:
         ]
 
 # CHANNELS
-urlpatterns += [
+urlpatterns += i18n_patterns(
     url(r"^", include("pod.video.urls-channels-video")),
-]
+)
 
 # Change admin site title
 admin.site.site_header = _("Pod Administration")
