@@ -291,7 +291,7 @@
               {% endfor %}
             </ul>
 
-            {% if video.get_video_mp3 %}
+            {% if video.get_video_mp3 and video.get_video_mp3.source_file|file_exists %}
               <span class="meta-title pod-meta-title pod-download-title"><i class="bi bi-soundwave" aria-hidden="true"></i>{% trans 'Audio file:' %}</span>
               <ul>
                 <li>

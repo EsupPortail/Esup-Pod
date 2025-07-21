@@ -17,7 +17,7 @@ DATABASES = {
             'NAME': '/usr/src/app/pod/db_remote.sqlite3',
         },
         "OPTIONS": {
-            "timeout": 40.0,  # in seconds
+            "timeout": 60.0,  # in seconds
             # see also https://docs.python.org/3.10/library/sqlite3.html#sqlite3.connect
         },
     }

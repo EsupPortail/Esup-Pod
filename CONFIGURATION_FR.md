@@ -676,7 +676,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> # ce template soit affiché en haut de votre page, le code est ajouté
   >> #  juste après la balise body.(Hors iframe)
   >> # Si le fichier créé est
-  >> # '/opt/django_projects/podv3/pod/custom/templates/custom/preheader.html'
+  >> # '/opt/django_projects/podv4/pod/custom/templates/custom/preheader.html'
   >> # alors la variable doit prendre la valeur 'custom/preheader.html'
   >> 'PRE_HEADER_TEMPLATE': '',
   >>  
