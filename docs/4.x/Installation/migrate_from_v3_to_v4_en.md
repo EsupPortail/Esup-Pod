@@ -119,6 +119,8 @@ Check your `custom/settings_local.py` to find the configured `BASE_DIR` director
 python manage.py index_videos --all
 ```
 
+> ⚠️ This script may take more or less time depending on the volume of videos to be indexed (expect to process around 170 videos per minute).
+
 ### Import
 
 Run the script using the management command:
@@ -154,6 +156,8 @@ python manage.py import_data_from_v3_to_v4 --onlytags
 ```
 
 Of course, it is possible to mix the different arguments.
+
+> ⚠️ This script may take more or less time depending on the volume of videos and associated tags (expect to process around 500 videos per minute).
 
 ---
 

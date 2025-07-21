@@ -119,6 +119,8 @@ Vérifier votre `custom/settings_local.py` pour trouver le répertoire configur�
 python manage.py index_videos --all
 ```
 
+> ⚠️ Ce script peut prendre plus ou moins de temps selon le volume de vidéos à indéxer (prévoyez environ 170 vidéos traitées par minute).
+
 ### Importation
 
 Exécutez le script en utilisant la commande de gestion :
@@ -154,6 +156,8 @@ python manage.py import_data_from_v3_to_v4 --onlytags
 ```
 
 Bien entendu, il est possible de mixer les différents arguments.
+
+> ⚠️ Ce script peut prendre plus ou moins de temps selon le volume de vidéos et de mots-clés associés (prévoyez environ 500 vidéos traitées par minute).
 
 ---
 
