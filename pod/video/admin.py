@@ -55,6 +55,8 @@ CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 
+USE_ACTIVITYPUB = getattr(settings, "USE_ACTIVITYPUB", False)
+
 
 def url_to_edit_object(obj):
     url = reverse(
@@ -162,7 +164,11 @@ class VideoAdmin(admin.ModelAdmin):
         "channel",
         "theme",
     )
-    readonly_fields = ("duration", "encoding_in_progress", "get_encoding_step")
+    readonly_fields = (
+        "duration",
+        "encoding_in_progress",
+        "get_encoding_step",
+    )
 
     inlines = []
 
@@ -175,6 +181,16 @@ class VideoAdmin(admin.ModelAdmin):
     ]
 
     inlines += [ChapterInline]
+
+    def get_list_display(self, request):
+        if USE_ACTIVITYPUB:
+            return self.list_display + ("is_activity_pub_broadcasted",)
+        return self.list_display
+
+    def get_readonly_fields(self, request, obj):
+        if USE_ACTIVITYPUB:
+            return self.readonly_fields + ("is_activity_pub_broadcasted",)
+        return self.readonly_fields
 
     def get_owner_establishment(self, obj):
         owner = obj.owner

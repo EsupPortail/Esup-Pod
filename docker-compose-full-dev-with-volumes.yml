@@ -61,6 +61,18 @@ services:
       - ./.env.dev
     volumes: *pod-volumes
 
+  pod-activitypub:
+    container_name: pod-activitypub-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/pod-activitypub/Dockerfile
+    depends_on:
+      - pod-back
+      - redis
+    env_file:
+      - ./.env.dev
+    volumes: *pod-volumes
+
   elasticsearch:
     container_name: elasticsearch-with-volumes
     hostname: elasticsearch.localhost
@@ -85,6 +97,39 @@ services:
       - 6379:6379
     healthcheck:
       test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
+  peertube:
+    container_name: peertube
+    hostname: peertube.localhost
+    image: chocobozzz/peertube:v7.2.0-bookworm
+    ports:
+      - 9000:9000
+      - 3000:3000
+    env_file:
+      - ./dockerfile-dev-with-volumes/peertube/peertube.env
+      - ./.env.dev
+    depends_on:
+      - postgres
+      - redis
+      - postfix
+    volumes:
+      - ./dockerfile-dev-with-volumes/peertube/dev.yaml:/app/config/dev.yaml
+    command: sh -c "yarn install && npm run dev"
+    restart: "always"
+
+  postgres:
+    image: postgres:13-alpine
+    env_file:
+      - ./dockerfile-dev-with-volumes/peertube/peertube.env
+      - ./.env.dev
+    restart: "always"
+
+  postfix:
+    image: mwader/postfix-relay
+    env_file:
+      - ./dockerfile-dev-with-volumes/peertube/peertube.env
+      - ./.env.dev
+    restart: "always"
 
 #  redis-commander:
 #    container_name: redis-commander

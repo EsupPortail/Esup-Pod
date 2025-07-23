@@ -1,0 +1,27 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/activitystreams",
+    "https://w3id.org/security/v1",
+    {
+      "RsaSignature2017": "https://w3id.org/security#RsaSignature2017"
+    }
+  ],
+  "id": "http://peertube.test/accounts/peertube/outbox?page=1",
+  "type": "OrderedCollectionPage",
+  "partOf": "http://peertube.test/accounts/peertube/outbox",
+  "orderedItems": [
+    {
+      "to": [
+        "https://www.w3.org/ns/activitystreams#Public"
+      ],
+      "cc": [
+        "http://peertube.test/accounts/root/followers"
+      ],
+      "type": "Announce",
+      "id": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d/announces/1",
+      "actor": "http://peertube.test/accounts/peertube",
+      "object": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d"
+    }
+  ],
+  "totalItems": 1
+}

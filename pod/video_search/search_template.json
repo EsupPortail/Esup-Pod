@@ -39,7 +39,7 @@
     "pod": {
       "properties": {
         "id": {
-          "type":"long"
+          "type":"keyword"
         },
         "title": {
           "type":"text",
@@ -248,6 +248,9 @@
         },
         "main_lang": {
           "type":"keyword"
+        },
+        "is_external": {
+          "type":"boolean"
         }
       }
     }

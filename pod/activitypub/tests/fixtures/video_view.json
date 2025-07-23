@@ -1,0 +1,33 @@
+{
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        {"RsaSignature2017": "https://w3id.org/security#RsaSignature2017"},
+        {
+            "pt": "https://joinpeertube.org/ns#",
+            "sc": "http://schema.org/",
+            "WatchAction": "sc:WatchAction",
+            "InteractionCounter": "sc:InteractionCounter",
+            "interactionType": "sc:interactionType",
+            "userInteractionCount": "sc:userInteractionCount"
+        }
+    ],
+    "to": [
+        "https://www.w3.org/ns/activitystreams#Public",
+        "http://peertube.test/video-channels/root_channel/followers",
+        "http://peertube.test/accounts/peertube/followers",
+        "http://peertube.test/accounts/root/followers"
+    ],
+    "cc": [],
+    "id": "http://peertube.test/accounts/peertube/views/videos/1/CBmE6B8qR3wmPvfXxlnzYLZj2aGxHbuP-717c9d87-c912-4943-a392-49fadf2f235d",
+    "type": "View",
+    "actor": "http://peertube.test/accounts/peertube",
+    "object": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d",
+    "expires": "2024-05-15T11:17:56.017Z",
+    "signature": {
+        "type": "RsaSignature2017",
+        "creator": "http://peertube.test/accounts/peertube",
+        "created": "2024-05-15T11:15:56.023Z",
+        "signatureValue": "xCmw4sWlGwss1ksoYSWAZ3g2+ZCy9ILiicz2YYgfeyCssstKDV405l6NfP+g7T0i4icQnjhyaOAYjveQlLSEvth1lhrwStBpY6WboAKbpct6aFV37a5FTAHHZD/zlGHRGTf2PJrPem4MMB0zI9Hr4K0gqylHGMDazyPElJl4S4E="
+    }
+}

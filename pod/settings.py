@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "pod.speaker",
     "pod.custom",
     "pod.duplicate",
+    "pod.activitypub",
 ]
 
 ##
