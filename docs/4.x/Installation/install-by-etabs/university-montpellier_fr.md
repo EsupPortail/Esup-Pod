@@ -280,6 +280,8 @@ Ci-dessous, les différents éléments de configuration pour cette infrastructur
 
 #### Fichier /usr/local/django_projects/podv4/pod/custom/settings_local.py
 
+> 💡Penser à garder le même SECRET_KEY que l'environnement Pod v3.
+
 ```sh
 # -*- coding: utf-8 -*-
 from django.utils.translation import gettext_lazy as _
