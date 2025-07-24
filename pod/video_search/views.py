@@ -212,10 +212,10 @@ def search_videos(request):
 
     # add cursus and main_lang 'cursus', 'main_lang',
     bodysearch["aggs"]["cursus"] = {
-        "terms": {"field": "cursus", "size": 5, "order": {"_count": "desc"}}
+        "terms": {"field": "cursus.keyword", "size": 5, "order": {"_count": "desc"}}
     }
     bodysearch["aggs"]["main_lang"] = {
-        "terms": {"field": "main_lang", "size": 5, "order": {"_count": "desc"}}
+        "terms": {"field": "main_lang.keyword", "size": 5, "order": {"_count": "desc"}}
     }
 
     # if settings.DEBUG:
@@ -239,9 +239,8 @@ def search_videos(request):
     videos = Video.objects.filter(id__in=list_videos_id)
     num_result = 0
     # In case of desynchronization with Elasticsearch, this result could be false.
-    # num_result = result["hits"]["total"]["value"]
-    # With this code, the result is always correct
-    num_result = len(videos)
+    # So, don't forget to reindex if necessary
+    num_result = result["hits"]["total"]["value"]
     videos.has_next = ((page + 1) * size) < num_result
     videos.next_page_number = page + 1
 
