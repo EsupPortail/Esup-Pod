@@ -28,9 +28,14 @@ if DEBUG:
 
 def sec_to_timestamp(total_seconds) -> str:
     """Format time for webvtt caption."""
-    hours = int(total_seconds / 3600)
-    minutes = int(total_seconds / 60 - hours * 60)
-    seconds = total_seconds - hours * 3600 - minutes * 60
+    if total_seconds < 0:
+        total_seconds = 0
+    hours = int(total_seconds // 3600)
+    minutes = int((total_seconds % 3600) // 60)
+    seconds = total_seconds % 60
+    # Clamp seconds to just below 60 if needed (ex: 59.999)
+    if seconds >= 60:
+        seconds = 59.999
     return "{:02d}:{:02d}:{:06.3f}".format(hours, minutes, seconds)
 
 
