@@ -1727,7 +1727,7 @@
                             "pod_version_init": "3.7.0"
                         },
                         "SOCIAL_SHARE": {
-                            "default_value": "['X', 'FACEBOOK', 'LINKEDIN', 'BLUESKY']",
+                            "default_value": "['X', 'FACEBOOK', 'LINKEDIN', 'BLUESKY', 'MASTODON']",
                             "description": {
                                 "en": [
                                     "Choice of display of social network sharing links"
