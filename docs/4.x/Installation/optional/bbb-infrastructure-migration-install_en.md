@@ -52,6 +52,9 @@ The idea is based on:
 This solution relies entirely on Pod and does not impact BigBlueButton in any way. No modifications are required on the BigBlueButton side.
 {: .alert .alert-info}
 
+💡 If necessary, the migration script also allows you to make a local backup of the records.
+{: .alert .alert-info}
+
 This migration script is configurable and offers several possibilities:
 
 1. **For those with few recordings to recover**:
@@ -80,6 +83,9 @@ To convert BBB playback presentations, I based it on the GitHub project `bbb-rec
 If needed, this plugin also allows live streaming (RTMP stream) of a BigBlueButton course.
 
 This plugin `bbb-recorder` had already been used for the old system, in Pod v2 (see [ESUP-Portail Documentation](https://www.esup-portail.org/wiki/x/AgCBNg)) and has been used successfully many times.
+
+> ⚠️ As of July 2025, there appears to be an incompatibility between bbb-recorder and the latest versions of google-chrome-stable:
+to convert videos from a BBB 2.2 instance, it was necessary to downgrade `google-chrome-stable` from version 139 to 128 in order to download the recordings.
 
 #### Functioning of `bbb-recorder`
 
