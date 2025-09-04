@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.7\n"
 
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
@@ -521,6 +521,11 @@ msgstr ""
 #: pod/ai_enhancement/views.py
 msgid "Quiz successfully imported."
 msgstr "Quiz importé avec succès."
+
+#: pod/authentication/IPRestrictionMiddleware.py
+#, python-format
+msgid "%(last_name)s (Restricted - IP %(ip)s not allowed)"
+msgstr "%(last_name)s (Restreint - IP %(ip)s non autorisée)"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -5119,6 +5124,8 @@ msgstr ""
 "et analyser le trafic du site (pour certaines instances)."
 
 #: pod/main/templates/base.html
+#: pod/recorder/templates/recorder/claim_record.html
+#: pod/video/templates/videos/video-element.html
 msgid "Learn more"
 msgstr "En savoir plus"
 
@@ -8387,12 +8394,10 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that supports HTML5 video."
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
-"passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
-"support/\" target=\"_blank\"> prend en charge la vidéo HTML5</a>"
+"passer à un navigateur Web qui prend en charge la vidéo HTML5."
 
 #: pod/recorder/templates/recorder/link_record.html
 #, python-format
@@ -10996,9 +11001,6 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "to"
 #~ msgstr "à"
-
-#~ msgid "Delete the playlist"
-#~ msgstr "Supprimer la liste de lecture"
 
 #, python-format
 #~ msgid ""

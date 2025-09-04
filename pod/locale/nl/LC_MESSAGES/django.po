@@ -503,6 +503,11 @@ msgstr ""
 msgid "Quiz successfully imported."
 msgstr ""
 
+#: pod/authentication/IPRestrictionMiddleware.py
+#, python-format
+msgid "%(last_name)s (Restricted - IP %(ip)s not allowed)"
+msgstr ""
+
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
 msgstr "E-mail"
@@ -4861,6 +4866,8 @@ msgid ""
 msgstr ""
 
 #: pod/main/templates/base.html
+#: pod/recorder/templates/recorder/claim_record.html
+#: pod/video/templates/videos/video-element.html
 msgid "Learn more"
 msgstr ""
 
