@@ -1,7 +1,6 @@
 """Esup-Pod authentication models test cases."""
 
 from django.test import TestCase, Client, override_settings
-from django.test.client import RequestFactory
 from pod.authentication.models import Owner, AccessGroup
 from pod.authentication.IPRestrictionMiddleware import ip_in_allowed_range
 from django.contrib.auth.models import User
