@@ -135,21 +135,29 @@ class IPRestrictionTestCase(TestCase):
     )
     def test_connect_with_other_restriction(self) -> None:
         """Check that admin no more has superuser access when restriction defined to other IP."""
-        client = Client()
-
         # Simple User
-        simple_user = User.objects.get(username="pod")
-        client.force_login(simple_user)
-        self.assertTrue(simple_user.is_authenticated)
+        self.client.force_login(self.simple_user)
+        self.assertTrue(self.simple_user.is_authenticated)
         response = self.client.get("/")
         self.assertFalse('href="/admin/"' in response.content.decode())
+        self.client.logout()
 
         # Admin
-        admin = User.objects.get(username="admin")
-        client.force_login(admin)
-        self.assertTrue(admin.is_authenticated)
+        self.client.force_login(self.admin)
+        self.assertTrue(self.admin.is_authenticated)
         response = self.client.get("/")
         self.assertFalse('href="/admin/"' in response.content.decode())
+        self.client.logout()
 
         print("test_connect_with_other_restriction OK")
+
+    @override_settings(
+        ALLOWED_SUPERUSER_IPS=["123.123.123.123", "200.200.200.0/24", "100.100.100.100/32"],
+    )
     def test_ip_in_allowed_range(self) -> None:
+        """Check that ip_in_allowed_range works as expected."""
+        self.assertFalse(ip_in_allowed_range("127.0.0.1"))
+        self.assertTrue(ip_in_allowed_range("123.123.123.123"))
+        self.assertTrue(ip_in_allowed_range("200.200.200.200"))
+        self.assertTrue(ip_in_allowed_range("100.100.100.100"))
+        self.assertFalse(ip_in_allowed_range("100.100.100.101"))
