@@ -130,7 +130,7 @@ class IPRestrictionTestCase(TestCase):
         print("test_connect_with_local_restriction OK")
 
     @override_settings(
-        ALLOWED_SUPERUSER_IPS=["123.456.789.10"],
+        ALLOWED_SUPERUSER_IPS=["123.123.123.123"],
     )
     def test_connect_with_other_restriction(self) -> None:
         """Check that admin no more has superuser access when restriction defined to other IP."""
