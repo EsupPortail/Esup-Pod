@@ -4,11 +4,12 @@ import ipaddress
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-ALLOWED_SUPERUSER_IPS = getattr(settings, "ALLOWED_SUPERUSER_IPS", [])
-
 
 def ip_in_allowed_range(ip) -> bool:
     """Make sure the IP is one of the authorized ones."""
+
+    ALLOWED_SUPERUSER_IPS = getattr(settings, "ALLOWED_SUPERUSER_IPS", [])
+
     try:
         ip_obj = ipaddress.ip_address(ip)
     except ValueError:

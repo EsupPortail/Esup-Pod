@@ -3,6 +3,7 @@
 from django.test import TestCase, Client, override_settings
 from django.test.client import RequestFactory
 from pod.authentication.models import Owner, AccessGroup
+from pod.authentication.IPRestrictionMiddleware import ip_in_allowed_range
 from django.contrib.auth.models import User
 from django.conf import settings
 
@@ -94,8 +95,7 @@ class IPRestrictionTestCase(TestCase):
         self.client.force_login(self.simple_user)
         response = self.client.get("/")
         self.assertFalse('href="/admin/"' in response.content.decode())
-        simple_user = User.objects.get(username="pod")
-        self.assertTrue(simple_user.is_authenticated)
+        self.assertTrue(self.simple_user.is_authenticated)
         self.client.logout()
 
         # Admin
@@ -104,6 +104,7 @@ class IPRestrictionTestCase(TestCase):
         self.assertTrue('href="/admin/"' in response.content.decode())
         admin = User.objects.get(username="admin")
         self.assertTrue(admin.is_authenticated)
+        self.client.logout()
 
         print("test_connect_without_restriction OK")
 
@@ -112,21 +113,20 @@ class IPRestrictionTestCase(TestCase):
     )
     def test_connect_with_local_restriction(self) -> None:
         """Check that admin has superuser access when restriction defined to localhost."""
-        client = Client()
 
         # Simple User
-        simple_user = User.objects.get(username="pod")
-        client.force_login(simple_user)
-        self.assertTrue(simple_user.is_authenticated)
+        self.client.force_login(self.simple_user)
+        self.assertTrue(self.simple_user.is_authenticated)
         response = self.client.get("/")
         self.assertFalse('href="/admin/"' in response.content.decode())
+        self.client.logout()
 
         # Admin
-        admin = User.objects.get(username="admin")
-        client.force_login(admin)
-        self.assertTrue(admin.is_authenticated)
+        self.client.force_login(self.admin)
+        self.assertTrue(self.admin.is_authenticated)
         response = self.client.get("/")
         self.assertTrue('href="/admin/"' in response.content.decode())
+        self.client.logout()
 
         print("test_connect_with_local_restriction OK")
 
@@ -152,3 +152,4 @@ class IPRestrictionTestCase(TestCase):
         self.assertFalse('href="/admin/"' in response.content.decode())
 
         print("test_connect_with_other_restriction OK")
+    def test_ip_in_allowed_range(self) -> None:
