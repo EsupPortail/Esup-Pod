@@ -1,6 +1,7 @@
 """Esup-Pod authentication models test cases."""
 
-from django.test import TestCase
+from django.test import TestCase, Client, override_settings
+from django.test.client import RequestFactory
 from pod.authentication.models import Owner, AccessGroup
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -60,3 +61,94 @@ class AccessGroupTestCase(TestCase):
         accessgroup.delete()
         self.assertEqual(AccessGroup.objects.filter(code_name="group1").count(), 0)
         print("test_suppression_accessgroup AccessGroupTestCase OK")
+
+
+class IPRestrictionTestCase(TestCase):
+
+    def setUp(self) -> None:
+        """Set up IPRestrictionTestCase create user Pod."""
+        # Every test needs access to the client.
+        self.client = Client()
+
+        self.admin = User.objects.create(
+            first_name="pod",
+            last_name="Admin",
+            username="admin",
+            password=PWD,
+            is_superuser=True,
+        )
+        self.simple_user = User.objects.create(
+            first_name="Pod",
+            last_name="User",
+            username="pod",
+            password=PWD
+        )
+
+    @override_settings(
+        ALLOWED_SUPERUSER_IPS=[],
+    )
+    def test_connect_without_restriction(self) -> None:
+        """Check that admin has superuser access when no restriction defined."""
+
+        # Simple User
+        self.client.force_login(self.simple_user)
+        response = self.client.get("/")
+        self.assertFalse('href="/admin/"' in response.content.decode())
+        simple_user = User.objects.get(username="pod")
+        self.assertTrue(simple_user.is_authenticated)
+        self.client.logout()
+
+        # Admin
+        self.client.force_login(self.admin)
+        response = self.client.get("/")
+        self.assertTrue('href="/admin/"' in response.content.decode())
+        admin = User.objects.get(username="admin")
+        self.assertTrue(admin.is_authenticated)
+
+        print("test_connect_without_restriction OK")
+
+    @override_settings(
+        ALLOWED_SUPERUSER_IPS=["127.0.0.1"],
+    )
+    def test_connect_with_local_restriction(self) -> None:
+        """Check that admin has superuser access when restriction defined to localhost."""
+        client = Client()
+
+        # Simple User
+        simple_user = User.objects.get(username="pod")
+        client.force_login(simple_user)
+        self.assertTrue(simple_user.is_authenticated)
+        response = self.client.get("/")
+        self.assertFalse('href="/admin/"' in response.content.decode())
+
+        # Admin
+        admin = User.objects.get(username="admin")
+        client.force_login(admin)
+        self.assertTrue(admin.is_authenticated)
+        response = self.client.get("/")
+        self.assertTrue('href="/admin/"' in response.content.decode())
+
+        print("test_connect_with_local_restriction OK")
+
+    @override_settings(
+        ALLOWED_SUPERUSER_IPS=["123.456.789.10"],
+    )
+    def test_connect_with_other_restriction(self) -> None:
+        """Check that admin no more has superuser access when restriction defined to other IP."""
+        client = Client()
+
+        # Simple User
+        simple_user = User.objects.get(username="pod")
+        client.force_login(simple_user)
+        self.assertTrue(simple_user.is_authenticated)
+        response = self.client.get("/")
+        self.assertFalse('href="/admin/"' in response.content.decode())
+
+        # Admin
+        admin = User.objects.get(username="admin")
+        client.force_login(admin)
+        self.assertTrue(admin.is_authenticated)
+        response = self.client.get("/")
+        self.assertFalse('href="/admin/"' in response.content.decode())
+
+        print("test_connect_with_other_restriction OK")
