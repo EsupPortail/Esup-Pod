@@ -76,3 +76,4 @@ lang: fr
 ## Documentations d'installation par les établissements
 
 * [Université de Montpellier](install-by-etabs/university-montpellier_fr.md)
+* [Université Grenoble Alpes](install-by-etabs/university-uga_fr.md)

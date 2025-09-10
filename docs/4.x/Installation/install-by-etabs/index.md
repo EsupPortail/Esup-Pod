@@ -9,3 +9,4 @@ lang: fr
 ## Documentations d'installation par les établissements
 
 * [Université de Montpellier](university-montpellier_fr.md)
+* [Université Grenoble Alpes](university-uga_fr.md)
