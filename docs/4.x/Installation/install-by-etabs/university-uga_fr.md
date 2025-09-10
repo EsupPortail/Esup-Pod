@@ -13,7 +13,7 @@ lang: fr
 | **Date de réalisation** | Septembre 2025        |
 | **Version de Pod**      | Pod v4.0.0            |
 | **Auteur**              | Alice LANGLOIS        |
-
+{: .table .table-striped}
 
 Ce document présente l'infrastructure et l'installation de la plateforme POD V4 à l'Université Grenoble Alpes.
 Celle ci a été installée "from scratch", et remplacera notre plateforme POD 3.8.
@@ -42,6 +42,7 @@ Tous les serveurs tournent sur Debian 12.
 |------------------------|---------------------------------------------------|
 | **Serveurs concernés** | serveur web/frontal, serveur d'encodage|
 | **Documentations de référence** | [Documentation ESUP Pod](https://www.esup-portail.org/wiki/spaces/ES/pages/1163984902/Installation+de+la+plateforme+Pod+V3#InstallationdelaplateformePodV3-Environnement)|
+{: .table .table-striped}
 
 
 #### Création de l'utilisateur POD
@@ -132,7 +133,8 @@ ls -n pod/media /data/NFS/media
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
 | **Serveurs concernés** | serveur base de données |
-| **Documentations de référence**| [Documentation Esup POD](https://www.esup-portail.org/wiki/spaces/ES/pages/1163984911/Mise+en+production+de+la+plateforme+Pod+V3#MiseenproductiondelaplateformePodV3-BasededonnéesMySQL/MariaDB)
+| **Documentations de référence**| [Documentation Esup POD](https://www.esup-portail.org/wiki/spaces/ES/pages/1163984911/Mise+en+production+de+la+plateforme+Pod+V3#MiseenproductiondelaplateformePodV3-BasededonnéesMySQL/MariaDB)|
+{: .table .table-striped}
 
 
 Après avoir installé MariaDB, éditer le fichier `/etc/mysql/mariadb.conf.d/50-server.cnf` :
@@ -167,10 +169,12 @@ DATABASES = {
 ```
 
 ### Etape 3 : Installation de Redis
+
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
 | **Serveurs concernés** | serveur web/frontal|
 | **Documentations de référence** | [Documentation Redis](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-linux/)|
+{: .table .table-striped}
 
 
 Installer Redis :
@@ -224,10 +228,12 @@ protect-mode : no
 > Il faut remplacer X.X.X.X par l'adresse IP du serveur hebergeant Redis.
 
 ### Etape 4 : Mise en place de l'encodage
+
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
 | **Serveurs concernés** | serveur d'encodage|
 | **Documentations de référence** | [Documentation Esup POD](https://www.esup-portail.org/wiki/spaces/ES/pages/1273004035/Gestion+de+l+encodage+de+la+transcription+de+l+xAPI+et+d+ActivityPub#Gestiondel'encodage,delatranscription,del'xAPIetd'ActivityPub-3.Déportésurunemachineouundockerenmicroservice)|
+{: .table .table-striped}
 
 
 #### FFMPEG
@@ -313,10 +319,12 @@ sudo /etc/init.d/celeryd_encod start
 
 
 ### Etape 5 : Installation d'Elasticsearch
+
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
 | **Serveurs concernés** | serveur d'indexation, serveur web/frontal|
 | **Documentations de référence** | [Documentation ESUP Pod](https://www.esup-portail.org/wiki/spaces/ES/pages/1163984902/Installation+de+la+plateforme+Pod+V3#InstallationdelaplateformePodV3-Elasticsearch7et8), [Documentation Elastic.co](https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-elasticsearch-with-debian-package) |
+{: .table .table-striped}
 
 
 #### Installation d'Elasticsearch (8.17.4) *(sur serveur d'indexation)*
@@ -449,10 +457,12 @@ python manage.py create_pod_index
 > `Video index successfully created on ES.` Félicitations !
 
 ### Etape 6 : Installation de NGINX et UWSGI
+
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
 | **Serveurs concernés** | Serveur web/frontal|
 | **Documentations de référence** | [Documentation ESUP Pod](https://www.esup-portail.org/wiki/spaces/ES/pages/1163984911/Mise+en+production+de+la+plateforme+Pod+V3#MiseenproductiondelaplateformePodV3-FrontalWebNGINX/UWSGIetfichiersstatiques)|
+{: .table .table-striped}
 
 #### Installation de NGINX
 ```
@@ -548,6 +558,7 @@ sudo systemctl start uwsgi-pod
 |------------------------|---------------------------------------------------|
 | **Serveurs concernés** | Serveur web/frontal|
 | **Documentations de référence** | [Documentation ESUP Pod](https://www.esup-portail.org/wiki/spaces/ES/pages/1163984902/Installation+de+la+plateforme+Pod+V3)|
+{: .table .table-striped}
 
 
 Si besoin, installer Curl :
