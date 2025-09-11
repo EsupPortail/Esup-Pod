@@ -40,11 +40,10 @@ upgrade:
 
 # Création des données initiales dans la BDD SQLite intégrée
 createDB:
-	find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
-	find . -path "*/migrations/*.pyc" -delete
+	find . -path "*/migrations/*.py" -not -name "__init__.py" -exec rm --force "{}" +
+	find . -path "*/migrations/*.pyc" -exec rm --force "{}" +
 	make updatedb
 	make migrate
-	python3 manage.py loaddata initial_data
 
 # Mise à jour des fichiers de langue
 lang:
@@ -78,7 +77,7 @@ pystyle:
 statics:
 	cd pod; yarn install; yarn upgrade
 	# --clear Clear the existing files before trying to copy or link the original file.
-	python3 manage.py collectstatic --clear
+	python3 manage.py collectstatic --clear --verbosity 0
 
 # Generate configuration docs in .MD format
 createconfigs:
@@ -171,6 +170,6 @@ endif
 	sudo rm -rf ./pod/static
 	sudo rm -rf ./pod/node_modules
 	sudo rm -rf ./pod/db_migrations
-	sudo rm -rf ./pod/db.sqlite3
-	sudo rm -rf ./pod/db_remote.sqlite3
+	sudo rm -rf ./pod/*.sqlite3
+	sudo rm -rf ./pod/.*initialized
 	sudo rm -rf ./pod/media

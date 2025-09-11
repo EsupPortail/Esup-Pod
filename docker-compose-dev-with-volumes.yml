@@ -31,6 +31,7 @@ services:
     ports:
       - 9200:9200
     environment:
+      - logger.level=WARN
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
