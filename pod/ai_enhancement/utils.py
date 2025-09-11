@@ -5,16 +5,17 @@ import bleach
 import requests
 import logging
 from django.conf import settings
-from requests import Response
+from django.core.mail import EmailMultiAlternatives
+from django.core.mail import mail_managers
+from django.core.mail import send_mail
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from pod.ai_enhancement.models import AIEnhancement
 from pod.main.utils import extract_json_from_str
+from pod.progressive_web_app.utils import notify_user as pwa_notify_user
 from pod.video.models import Discipline, Video
+from requests import Response
 from webpush.models import PushInformation
-from django.core.mail import send_mail
-from django.core.mail import mail_managers
-from django.core.mail import EmailMultiAlternatives
 
 DEBUG = getattr(settings, "DEBUG", True)
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
@@ -279,7 +280,7 @@ def send_notification_enhancement(video):
         "site_title": __TITLE_SITE__,
     }
 
-    notify_user(
+    pwa_notify_user(
         video.owner,
         subject,
         message,
