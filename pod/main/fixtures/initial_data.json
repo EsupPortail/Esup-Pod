@@ -1,13 +1,5 @@
 [
   {
-    "model": "sites.site",
-    "pk": 1,
-    "fields": {
-      "domain": "pod.localhost:8000",
-      "name": "pod.localhost:8000"
-    }
-  },
-  {
     "pk": 1,
     "model": "main.configuration",
     "fields": {

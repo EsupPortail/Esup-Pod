@@ -22,6 +22,7 @@ EMAIL_HOST = getattr(settings_local, "EMAIL_HOST", "")
 DEFAULT_FROM_EMAIL = getattr(settings_local, "DEFAULT_FROM_EMAIL", "")
 ADMINS = getattr(settings_local, "ADMINS", ())
 DEBUG = getattr(settings_local, "DEBUG", True)
+INSTANCE = getattr(settings_local, "INSTANCE", None)
 TEST_REMOTE_ENCODE = getattr(settings_local, "TEST_REMOTE_ENCODE", False)
 
 admins_email = [ad[1] for ad in ADMINS]
@@ -51,6 +52,8 @@ transcripting_app = Celery(
 transcripting_app.conf.task_routes = {
     "pod.video_encode_transcript.transcripting_tasks.*": {"queue": "transcripting"}
 }
+if INSTANCE:
+    transcripting_app.conf.broker_transport_options = {"global_keyprefix": INSTANCE}
 transcripting_app.autodiscover_tasks(packages=None, related_name="", force=False)
 
 
