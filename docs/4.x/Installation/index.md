@@ -60,10 +60,6 @@ lang: fr
 * [Mise en place du mode webinaire pour les sessions BigBlueButton](optional/set-up-webinar-mode-bbb-install_fr)
 * [Importer une vidéo externe / un enregistrement BigBlueButton au format vidéo](optional/import-external-video-bbb-recording-install_fr)
 
-#### Notifications
-
-* [Mode PWA et notifications](optional/mode_pwa_notification_fr)
-
 #### OpenCast Studio
 
 * [Installation d’OpenCast Studio](optional/opencast-studio-install_fr)
@@ -71,6 +67,8 @@ lang: fr
 
 #### Autres
 
+* [Mode PWA et notifications](optional/mode_pwa_notification_fr)
+* [Mise en place d'un direct Live](optional/set-up-live_fr)
 * [Mise en place de l'enrichissement par l'IA Aristote](optional/aristote_fr)
 
 ## Mise à jour

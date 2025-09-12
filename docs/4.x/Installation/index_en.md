@@ -60,10 +60,6 @@ lang: en
 * [Setting up Webinar Mode for BigBlueButton sessions](optional/set-up-webinar-mode-bbb-install_en)
 * [Import an external video / BigBlueButton recording in video format](optional/import-external-video-bbb-recording-install_en)
 
-#### Notifications
-
-* [PWA mode and notifications](optional/mode_pwa_notification_en)
-
 #### OpenCast Studio
 
 * [OpenCast Studio installation](optional/opencast-studio-install_en)
@@ -71,6 +67,8 @@ lang: en
 
 #### Others
 
+* [PWA mode and notifications](optional/mode_pwa_notification_en)
+* [Setting up a live broadcast](optional/set-up-live_en)
 * [Implementing Aristote AI enhancement](optional/aristote_en)
 
 ## Upgrade
