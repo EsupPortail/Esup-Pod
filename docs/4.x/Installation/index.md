@@ -68,6 +68,10 @@ lang: fr
 * [Installation d’OpenCast Studio](optional/opencast-studio-install_fr)
 * [Mise en place de la publication de vidéos depuis des enregistreurs](optional/video-publication-from-recorders_fr)
 
+#### Autres
+
+* [Mise en place de l'enrichissement par l'IA Aristote](optional/aristote_fr)
+
 ## Mise à jour
 
 * [Mise à jour standard](upgrade_standalone_fr)

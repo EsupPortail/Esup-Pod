@@ -43,3 +43,7 @@ lang: en
 
 * [OpenCast Studio installation](opencast-studio-install_en)
 * [Setting up video publishing from recorders](video-publication-from-recorders_en)
+
+#### Others
+
+* [Implementing Aristote AI enhancement](aristote_en)

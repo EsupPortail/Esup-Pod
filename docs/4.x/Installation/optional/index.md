@@ -43,3 +43,7 @@ lang: fr
 
 * [Installation d’OpenCast Studio](opencast-studio-install_fr)
 * [Mise en place de la publication de vidéos depuis des enregistreurs](video-publication-from-recorders_fr)
+
+#### Autres
+
+* [Mise en place de l'enrichissement par l'IA Aristote](aristote_fr)

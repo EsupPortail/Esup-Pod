@@ -68,6 +68,10 @@ lang: en
 * [OpenCast Studio installation](optional/opencast-studio-install_en)
 * [Setting up video publishing from recorders](optional/video-publication-from-recorders_en)
 
+#### Others
+
+* [Implementing Aristote AI enhancement](optional/aristote_en)
+
 ## Upgrade
 
 * [Stand alone upgrade](upgrade_standalone_en)
