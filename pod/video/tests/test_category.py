@@ -296,7 +296,7 @@ class TestCategory(TestCase):
     def test_get_categories_aside(self) -> None:
         """Test get categories for filter aside elements."""
         self.client.force_login(self.owner_user)
-        url = reverse("video:get_categories_list")
+        url = reverse("video:get_render_categories_list")
         response = self.client.get(url, headers={"x-requested-with": "XMLHttpRequest"})
         response_data = response.context
         self.assertEqual(response.status_code, 200)

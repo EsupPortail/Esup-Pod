@@ -1,0 +1,19 @@
+{% load i18n video_tags thumbnail %}
+
+{% spaceless %}
+<div class="card card-body">
+  <h2 class="card-title pod-card__title h4">
+    <i class="bi bi-collection-fill" aria-hidden="true"></i>&nbsp;{% trans "Categories" %}
+  </h2>
+  <p class="filter-info">
+    {% trans "You can create categories and link them to your videos. Then, use the search field below to easily find a category so you can edit or delete it." %}
+  </p>
+  <hr>
+
+  <form action="{% url 'videos:dashboard' %}" method="get" id="searchForm">
+    {% if use_category %}
+      {% include "videos/filter_aside_category.html" %}
+    {% endif %}
+  </form>
+</div>
+{% endspaceless %}
