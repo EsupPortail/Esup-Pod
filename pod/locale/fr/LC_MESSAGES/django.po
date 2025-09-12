@@ -5094,6 +5094,18 @@ msgid "Disciplines"
 msgstr "Disciplines"
 
 #: pod/main/templates/base.html
+msgid "Display settings panel"
+msgstr "Ouvrir le panneau des paramètres d’affichage"
+
+#: pod/main/templates/base.html
+msgid "Toggle Display settings panel"
+msgstr "Afficher/masquer le panneau des paramètres d’affichage"
+
+#: pod/main/templates/base.html
+msgid "Display"
+msgstr "Affichage"
+
+#: pod/main/templates/base.html
 msgid "Main navigation"
 msgstr "Navigation principale"
 
