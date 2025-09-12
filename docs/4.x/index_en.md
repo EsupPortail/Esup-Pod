@@ -8,7 +8,7 @@ lang: en
 
 ## Installation and features
 
-* [Installation of Esup-Pod v4](installation/index_en)
+* [Installation of Esup-Pod v4](Installation/index_en)
 
 ## Appendices
 
