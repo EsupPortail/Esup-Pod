@@ -16,6 +16,4 @@ en permettant la publication de vidéos dans les domaines de la recherche
 (promotion des plateformes, etc.), de la formation (tutoriels, formations à distance, comptes rendus étudiants, etc.),
 de la vie institutionnelle (vidéo d’événements), en proposant plusieurs journées de contenus.
 
-## Documentation technique
-
-* [Installation d’Esup-Pod v4](4.x/Installation)
+* [Documentation technique d’Esup-Pod v4](4.x/index)
