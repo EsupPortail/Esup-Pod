@@ -18,6 +18,14 @@ lang: en
 * [Docker Installation Docker](install_docker_en)
 * [Ansible Installation (by ENSAM)](https://gitlab.ensam.eu/apps/esup-pod)
 
+### Configuration
+
+* [Platform configuration](configuration/configuration_en)
+* [Access group configuration](configuration/access-group_en)
+* [oEmbed integration in Moodle](configuration/oembed_en)
+* [Using the Rest API](configuration/rest-api_en)
+* [Using Maintenance mode](configuration/maintenance-mode_en)
+
 ### Advanced installation and configuration
 
 * [Configuration and use of REDIS](redis_en)
