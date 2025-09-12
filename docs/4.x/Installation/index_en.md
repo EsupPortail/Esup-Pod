@@ -31,6 +31,7 @@ lang: en
 * [Configuration and use of REDIS](redis_en)
 * [Visual customisation](visual-customisation_en)
 * [Production Deployment](production-mode_en)
+* [Web optimisation](web-optimisation_en)
 
 ### Encoding, transcription, xAPI and ActivityPub management
 

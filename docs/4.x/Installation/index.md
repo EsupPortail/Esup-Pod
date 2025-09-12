@@ -31,6 +31,7 @@ lang: fr
 * [Configuration et usage de REDIS](redis_fr)
 * [Personnalisation visuelle](visual-customisation_fr)
 * [Mise en production](production-mode_fr)
+* [Optimisation Web](web-optimisation_fr)
 
 ### Gestion de l'encodage, de la transcription, de l'xAPI et d'ActivityPub
 
