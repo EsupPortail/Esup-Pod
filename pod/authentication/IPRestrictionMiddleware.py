@@ -24,15 +24,22 @@ def ip_in_allowed_range(ip) -> bool:
 
     for allowed in ALLOWED_SUPERUSER_IPS:
         try:
-            if '/' in allowed:
-                net = ipaddress.ip_network(allowed, strict=False)
-                if ip_obj in net:
-                    return True
-            else:
-                if ip_obj == ipaddress.ip_address(allowed):
-                    return True
+            if is_allowed(ip_obj, allowed):
+                return True
         except ValueError:
             continue
+    return False
+
+
+def is_allowed(ip_obj, allowed):
+    """Check if ip object is included in allowed list."""
+    if '/' in allowed:
+        net = ipaddress.ip_network(allowed, strict=False)
+        if ip_obj in net:
+            return True
+    else:
+        if ip_obj == ipaddress.ip_address(allowed):
+            return True
     return False
 
 
