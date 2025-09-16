@@ -1,19 +1,26 @@
-"""Esup-Pod IP Restriction middleware."""
+"""
+Esup-Pod IP Restriction middleware.
+
+Ensure that only allowed IPs can access superuser privileges.
+"""
 
 import ipaddress
-from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 
 def ip_in_allowed_range(ip) -> bool:
     """Make sure the IP is one of the authorized ones."""
-
+    from django.conf import settings
     ALLOWED_SUPERUSER_IPS = getattr(settings, "ALLOWED_SUPERUSER_IPS", [])
 
     try:
         ip_obj = ipaddress.ip_address(ip)
     except ValueError:
         return False
+
+    if not ALLOWED_SUPERUSER_IPS:
+        # Allow every clients
+        return True
 
     for allowed in ALLOWED_SUPERUSER_IPS:
         try:

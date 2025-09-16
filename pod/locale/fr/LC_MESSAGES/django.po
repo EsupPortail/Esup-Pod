@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-01 10:12+0200\n"
+"POT-Creation-Date: 2025-09-16 15:02+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1331,12 +1331,6 @@ msgstr ""
 "Il y a un chevauchement avec la superposition {0}, veuillez changer son "
 "temps de début et/ou de fin."
 
-#: pod/completion/permissions/video.py
-#, python-brace-format
-msgid "{func.__name__}: Permission denied for user {current_user.pk}."
-msgstr ""
-"{func.__name__}: Permission refusée pour l’utilisateur {current_user.pk}."
-
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
@@ -1714,8 +1708,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format « ."
-"vtt »."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format "
+"« .vtt »."
 
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
@@ -2206,7 +2200,7 @@ msgid "Dress the video “%s”"
 msgstr "Habiller la vidéo « %s »"
 
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
-#: pod/meeting/views.py pod/video/views.py
+#: pod/meeting/views.py pod/video/tests/test_views.py pod/video/views.py
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
@@ -6028,8 +6022,9 @@ msgid "URL of the SIPMediaGW server"
 msgstr "Adresse URL du serveur SIPMediaGW"
 
 #: pod/meeting/models.py
-msgid "Example format: https://sipmediagw.univ.fr"
-msgstr "Exemple de format : https://sipmediagw.univ.fr"
+#, python-format
+msgid "Example format: %(url)s"
+msgstr "Exemple de format : %(url)s"
 
 #: pod/meeting/models.py
 msgid "Bearer token for the SIPMediaGW server."
@@ -6922,15 +6917,6 @@ msgid "Private"
 msgstr "Privé"
 
 #: pod/playlist/models.py
-#, python-brace-format
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
-msgstr ""
-"Veuillez entrer un titre contenant entre 1 et "
-"{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
-
-#: pod/playlist/models.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
@@ -7332,6 +7318,10 @@ msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
+msgid "Delete the playlist"
+msgstr "Supprimer la liste de lecture"
+
+#: pod/playlist/views.py
 #, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr "Modifier la liste de lecture « %(pname)s »"
@@ -7731,7 +7721,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -10538,6 +10528,22 @@ msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
 
 #: pod/video/tests/test_views.py pod/video/views.py
+msgid "The note has been saved."
+msgstr "La note a été sauvegardée."
+
+#: pod/video/tests/test_views.py
+msgid "Method not allowed: Please use post method"
+msgstr "Méthode non autorisée : Veuillez utiliser la méthode post"
+
+#: pod/video/tests/test_views.py
+msgid "One or more videos not updated"
+msgstr "Une ou plusieurs vidéos ne sont pas mises à jour"
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "Update successfully"
+msgstr "Mise à jour réussie"
+
+#: pod/video/tests/test_views.py pod/video/views.py
 msgid "A token has been created."
 msgstr "Un jeton a été créé."
 
@@ -10682,10 +10688,6 @@ msgid "Your comment has been saved."
 msgstr "Votre commentaire a été enregistré."
 
 #: pod/video/views.py
-msgid "The note has been saved."
-msgstr "La note a été sauvegardée."
-
-#: pod/video/views.py
 #, python-format
 msgid "Your note at %(timestamp)s has been modified."
 msgstr "Votre note pour le marqueur %(timestamp)s a été modifiée."
@@ -10811,10 +10813,6 @@ msgstr "Categorie supprimée avec succès."
 #: pod/video/views.py
 msgid "You do not have rights to delete this category"
 msgstr "Vous n’avez pas les droits pour supprimer cette catégorie"
-
-#: pod/video/views.py
-msgid "Update successfully"
-msgstr "Mise à jour réussie"
 
 #: pod/video_encode_transcript/apps.py
 msgid "Video encoding and transcription"
