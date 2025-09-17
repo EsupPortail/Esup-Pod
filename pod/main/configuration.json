@@ -185,15 +185,17 @@
                             "default_value": "[]",
                             "description": {
                                 "en": [
-                                    "List of IPs and/or ranges from which 'superuser' status is allowed."
+                                    "List of IPs and/or ranges from which 'superuser' status is allowed.",
+                                    "Leave empty to allow every source."
                                 ],
                                 "fr": [
                                     "Liste d’IP et/ou de plages depuis lesquelles le statut 'superuser' ",
-                                    "est autorisé."
+                                    "est autorisé.",
+                                    "Laissez vide pour autoriser toutes les sources."
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "4.0.1"
+                            "pod_version_init": "4.0.2"
                         },
                         "AUTH_CAS_USER_SEARCH": {
                             "default_value": "user",
