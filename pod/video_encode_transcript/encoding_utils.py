@@ -19,7 +19,6 @@ try:
     DEBUG = getattr(settings, "DEBUG", True)
 except ImportError:  # pragma: no cover
     DEBUG = True
-    pass
 
 logger = logging.getLogger(__name__)
 if DEBUG:
@@ -33,9 +32,6 @@ def sec_to_timestamp(total_seconds) -> str:
     hours = int(total_seconds // 3600)
     minutes = int((total_seconds % 3600) // 60)
     seconds = total_seconds % 60
-    # Clamp seconds to just below 60 if needed (ex: 59.999)
-    if seconds >= 60:
-        seconds = 59.999
     return "{:02d}:{:02d}:{:06.3f}".format(hours, minutes, seconds)
 
 
