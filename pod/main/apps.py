@@ -1,11 +1,32 @@
 """Esup-pod Main applications."""
 
+import os
+
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.management import call_command
 
 import json
+
+SITE_ID = getattr(settings, "SITE_ID", 1)
+INSTANCE = os.getenv("POD_INSTANCE", "pod")
+PORT = os.getenv("POD_PORT", 8000)
+
+
+def load_data(sender, **kwargs):
+    """Load the initial_data fixture, and tweak the initial Site object to match the current instance config."""
+    from django.contrib.sites.models import Site
+
+    call_command("loaddata", "initial_data.json")
+
+    domain = f"{INSTANCE}.localhost:{PORT}"
+    site, _ = Site.objects.update_or_create(id=settings.SITE_ID)
+    site.domain = domain
+    site.name = domain
+    site.save()
 
 
 def create_missing_pages(sender, **kwargs) -> None:
@@ -72,6 +93,7 @@ def create_missing_conf(sender, **kwargs) -> None:
 
     print("---> Creating missing configurations...")
     json_data = []
+
     with open("./pod/main/fixtures/initial_data.json", encoding="utf-8") as data_file:
         json_data = json.loads(data_file.read())
 
@@ -157,3 +179,4 @@ class MainConfig(AppConfig):
         post_migrate.connect(create_missing_conf, sender=self)
         post_migrate.connect(create_missing_pages, sender=self)
         post_migrate.connect(create_first_block, sender=self)
+        post_migrate.connect(load_data, sender=self)

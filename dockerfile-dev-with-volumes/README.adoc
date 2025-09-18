@@ -61,6 +61,8 @@ DOCKER_ENV=light
 Renseignez le fichier pod/custom/settings_local.py comme ceci :
 [source,python]
 ----
+import os
+INSTANCE = os.getenv("POD_INSTANCE", "pod")
 
 USE_PODFILE = True
 EMAIL_ON_ENCODING_COMPLETION = False
@@ -69,6 +71,7 @@ DEBUG = True
 # on précise ici qu'on utilise ES version 8
 ES_VERSION = 8
 ES_URL = ['http://elasticsearch.localhost:9200/']
+ES_INDEX = INSTANCE
 
 
 CACHES = {
@@ -78,7 +81,7 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
-        "KEY_PREFIX": "pod"
+        "KEY_PREFIX": INSTANCE
     },
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -86,6 +89,7 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
+        "KEY_PREFIX": INSTANCE
     },
 }
 SESSION_ENGINE = "redis_sessions.session"
@@ -93,7 +97,7 @@ SESSION_REDIS = {
     "host": "redis.localhost",
     "port": 6379,
     "db": 4,
-    "prefix": "session",
+    "prefix": f"session-{INSTANCE}",
     "socket_timeout": 1,
     "retry_on_timeout": False,
 }
@@ -148,7 +152,8 @@ Vous devriez obtenir ce message une fois esup-pod lancé
 ----
 $ pod-dev-with-volumes        | Superuser created successfully.
 ----
-L'application esup-pod est dès lors disponible via cette URL : localhost:8000
+L'application esup-pod est dès lors disponible via cette URL : pod.localhost:8000
+Différentes instances peuvent être lancées, sur différents ports, en utilisant les variables d'environnement ``POD_INSTANCE`` et ``POD_PORT``.
 
 === Arrêt de la stack
 $ CTRL+C dans la fenetre depuis laquelle l'application esup-pod a été lancée

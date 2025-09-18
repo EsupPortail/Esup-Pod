@@ -10,6 +10,7 @@ from django.db.models.fields.files import ImageFieldFile
 from django.db.utils import IntegrityError
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from django.conf import settings
@@ -218,7 +219,8 @@ class TypeTestCase(TestCase):
     def test_delete_object(self) -> None:
         """Test delete object."""
         Type.objects.get(id=1).delete()
-        self.assertEqual(Type.objects.all().count(), 0)
+        with self.assertRaises(Type.DoesNotExist):
+            Type.objects.get(id=1)
         print("   --->  test_delete_object of TypeTestCase: OK!")
 
 
@@ -582,7 +584,8 @@ class VideoRenditionTestCase(TestCase):
     def test_delete_object(self) -> None:
         self.create_video_rendition(resolution="640x365")
         VideoRendition.objects.get(id=1).delete()
-        self.assertEqual(VideoRendition.objects.all().count(), 0)
+        with self.assertRaises(VideoRendition.DoesNotExist):
+            VideoRendition.objects.get(id=1)
 
         print("   --->  test_delete_object of VideoRenditionTestCase: OK!")
 
@@ -593,6 +596,10 @@ class EncodingVideoTestCase(TestCase):
     # fixtures = ['initial_data.json', ]
 
     def setUp(self) -> None:
+        Site.objects.get_or_create(
+            id=getattr(settings, 'SITE_ID', 1),
+            defaults={'domain': 'localhost:8000', 'name': 'localhost:8000'}
+        )
         user = User.objects.create(username="pod", password=PWD)
         Type.objects.create(title="test")
         Video.objects.create(
