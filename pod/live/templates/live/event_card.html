@@ -57,13 +57,13 @@
         <a href="{{event.get_absolute_url}}
            {% if playlist %}?playlist={{playlist.slug}}{% endif %}"
            title="{% blocktrans with title=event.title %}See the event “{{ title }}”.{% endblocktrans %}">
-            {{event.title|capfirst|truncatechars:70}}
+            {{event.title|capfirst|truncatechars:55}}
         </a>
         </br>
         {% if event.start_date|date:"d/m/Y" == event.end_date|date:"d/m/Y" %}
-          {% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_date|time:"H:i" end_time=event.end_date|time:"H:i" %}The {{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}
+          {% blocktrans with start_date=event.start_date|date:"d/m/y" start_time=event.start_date|time:"H:i" end_time=event.end_date|time:"H:i" %}The {{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}
         {% else %}
-          {% blocktrans with start_date=event.start_date|date:"d/m/Y" end_date=event.end_date|date:"d/m/Y" %}from {{start_date}} to {{end_date}}{% endblocktrans %}
+          {% blocktrans with start_date=event.start_date|date:"d/m/y" end_date=event.end_date|date:"d/m/y" %}from {{start_date}} to {{end_date}}{% endblocktrans %}
         {% endif %}
         {% if display_broadcaster_name %}
           <br>{{event.broadcaster.name|capfirst|truncatechars:20}}
