@@ -40,7 +40,7 @@ This infrastructure relies on the use of:
 _All servers run on Debian 12._
 
 > 💡 This infrastructure does not include the Nginx RTMP servers for live stream management (see documentation for live setup), nor the GPU encoding servers that are specific to UM.
-
+>
 > Each encoding server uses 16 GB RAM and 16 vCPU because I use transcription via **Whisper** and its **Medium** model, which is very efficient but still consumes some resources.
 >
 > For the main server, these resources are necessary to run REDIS, Elasticsearch, and Whisper simultaneously and avoid any issues (like Out Of Memory...).
@@ -140,9 +140,9 @@ To configure and use REDIS on all Pod servers, I followed the documentation conc
 | **Reference Documentation** | [Stand Alone Mode / Elasticsearch Documentation](../install_standalone_fr#elasticsearch) |
 | {: .table .table-striped}   |                                                                                          |
 
-To install Elasticsearch on the main server, I followed the **[Stand Alone Mode / Elasticsearch Documentation](../install_standalone_fr#elasticsearch)** with the ES8 *Security mode* enabled.
+To install Elasticsearch on the main server, I followed the **[Stand Alone Mode / Elasticsearch Documentation](../install_standalone_fr#elasticsearch)** with the ES8 _Security mode_ enabled.
 
-Given the architecture, I replaced `<my_es_host>` with **the IP address of the Elasticsearch server**, obtained via `hostname -I` on the main server, and edited the file */etc/elasticsearch/elasticsearch.yml* with the following information:
+Given the architecture, I replaced `<my_es_host>` with **the IP address of the Elasticsearch server**, obtained via `hostname -I` on the main server, and edited the file `/etc/elasticsearch/elasticsearch.yml` with the following information:
 
 ```yml
 cluster.name: pod-application
@@ -165,7 +165,7 @@ xpack.security.http.ssl.keystore.path: /etc/elasticsearch/elastic-certificates.p
 xpack.security.http.ssl.truststore.path: /etc/elasticsearch/elastic-certificates.p12
 ```
 
-🎯 At the end of this step, Elasticsearch is installed on Pod's main server.
+🎯 At the end of this step, Elasticsearch is installed on Pod’s main server.
 {: .alert .alert-primary}
 
 ### Step 6: Installation of Dependencies
@@ -181,7 +181,7 @@ To install dependencies on all Pod servers, I followed the **[Stand Alone Mode /
 > Logically, these dependencies only concern web servers, but I prefer to install them on all servers just in case.
 > {: .alert .alert-secondary}
 
-🎯 At the end of this step, Pod's dependencies are installed on all Pod servers.
+🎯 At the end of this step, Pod’s dependencies are installed on all Pod servers.
 {: .alert .alert-primary}
 
 ### Step 7: Installation of the Web System based on NGINX/uWSGI and Configuration
@@ -265,7 +265,7 @@ To perform the visual customization for my institution, I followed the **[docume
 To migrate data from Pod v3 to Pod v4, I followed the **[documentation on the data migration system between version 3 and version 4](../migrate_from_v3_to_v4_fr)**.
 
 > 💡 This data migration can be done as many times as needed. Personally, I ran several tests beforehand by **deleting all the tables** in the database and executing the command **`python manage.py import_data_from_v3_to_v4 --createDB`**.
-
+>
 > 💡 Make sure that the file server containing the `MEDIA_ROOT` directory is accessible by all Pod servers.
 
 ⚠️ Do not perform encoding tests on the **production** Pod v4 environment as long as the infrastructure switch from Pod v3 to Pod v4 has not been completed. The encoded files would end up on the shared file server.
@@ -282,7 +282,7 @@ Voici la traduction en anglais, sans autre modification que la traduction elle-m
 
 Below are the various configuration elements for this Pod v4 infrastructure for the UM (_configuration as of the date this documentation was created_).
 
-#### File /usr/local/django_projects/podv4/pod/custom/settings_local.py
+#### File `/usr/local/django_projects/podv4/pod/custom/settings_local.py`
 
 > 💡Remember to keep the same SECRET_KEY as the Pod v3 environment.
 
@@ -740,7 +740,7 @@ USE_HYPERLINKS = False
 upstream django {
   # server unix:///path/to/your/mysite/mysite.sock; # for a file socket
   server unix:///usr/local/django_projects/podv4/podv4.sock;
-  # server 127.0.0.1:8001; # for a web port socket (we'll use this first)
+  # server 127.0.0.1:8001; # for a web port socket (we’ll use this first)
 }
 
 # configuration of the server
@@ -756,7 +756,7 @@ server {
   # the port your site will be served on
   listen      80;
   # the domain name it will serve for
-  server_name pod.univ.fr; # substitute your machine's IP address or FQDN
+  server_name pod.univ.fr; # substitute your machine’s IP address or FQDN
   charset     utf-8;
 
   # max upload size
@@ -780,7 +780,7 @@ server {
     add_header Cache-Control "public";
     gzip on;
     # gzip_types text/vtt;
-    # alias /usr/local/django_projects/podv4/pod/media;  # your Django project's media files - amend as required
+    # alias /usr/local/django_projects/podv4/pod/media;  # your Django project’s media files - amend as required
     gzip_types text/vtt text/plain application/javascript text/javascript text/css image/svg+xml image/png image/jpeg;
     alias /data/www/pod/media;
   }
@@ -791,7 +791,7 @@ server {
     gzip_static  on;
     # gzip_types text/plain application/xml text/css text/javascript application/javascript image/svg+xml;
     gzip_types text/plain application/xml application/javascript text/javascript text/css image/svg+xml image/png image/jpeg;
-    alias /usr/local/django_projects/podv4/pod/static; # your Django project's static files - amend as required
+    alias /usr/local/django_projects/podv4/pod/static; # your Django project’s static files - amend as required
   }
 
   # Finally, send all non-media requests to the Django server.
@@ -826,7 +826,7 @@ server {
 # Django-related settings
 # the base directory (full path)
 chdir           = /usr/local/django_projects/podv4
-# Django's wsgi file
+# Django’s wsgi file
 module          = pod.wsgi
 # the virtualenv (full path)
 home            = /home/pod/.virtualenvs/django_pod4

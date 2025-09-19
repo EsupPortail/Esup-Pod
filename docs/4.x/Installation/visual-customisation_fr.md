@@ -6,7 +6,7 @@ lang: fr
 
 # Personnalisation visuelle
 
-## Modifier le logo de l'établissement
+## Modifier le logo de l’établissement
 
 Vous pouvez faire apparaitre en bas de page le logo de votre établissement.
 
@@ -14,25 +14,25 @@ Pour cela, placez votre logo dans le dossier `pod/main/static/custom/img/`, et i
 
 ```python
 TEMPLATE_VISIBLE_SETTINGS = {
-...
-'LOGO_ETB': 'custom/img/logo_mon_etab.svg',
-...
+  ...
+  'LOGO_ETB': 'custom/img/logo_mon_etab.svg',
+  ...
 }
 ```
 
-### Si vous avez un logo d'établissement coloré
+### Si vous avez un logo d’établissement coloré
 
 Nous vous invitons à prévoir également une 2e version "mode sombre" de votre logo, qui sera suffisamment contrastée sur fonds foncés. Placez le fichier dans le même dossier que le premier, puis dans votre fichier CSS personnalisé (voir "Changer les couleurs principales de Pod" ci-dessous) indiquez ceci :
 
 ```css
 [data-theme="dark"] .pod-footer-logo {
-  background-image: url('/static/custom/img/logo_mon_etab_blanc.svg') !important;
+  background-image: url("/static/custom/img/logo_mon_etab_blanc.svg") !important;
 }
 ```
 
-### Si votre logo d'établissement est monochrome
+### Si votre logo d’établissement est monochrome
 
-Vous pouvez n'utiliser qu'un fichier, et en inverser les couleurs dans votre CSS personnalisé ainsi :
+Vous pouvez n’utiliser qu’un fichier, et en inverser les couleurs dans votre CSS personnalisé ainsi :
 
 ```css
 [data-theme="dark"] .pod-footer-logo {
@@ -48,9 +48,9 @@ Pour personnaliser le look de votre serveur Pod, vous pouvez ajouter votre propr
 
 ```python
 TEMPLATE_VISIBLE_SETTINGS = {
-...
-'CSS_OVERRIDE': 'custom/theme-mon_etab.css',
-...
+  ...
+  'CSS_OVERRIDE': 'custom/theme-mon_etab.css',
+  ...
 }
 ```
 
@@ -134,9 +134,9 @@ Il est possible de modifier le logo par défaut affiché en favori par Pod, en i
 
 ```python
 TEMPLATE_VISIBLE_SETTINGS = {
-...
-'FAVICON': 'img/logoPod.svg',
-...
+  ...
+  'FAVICON': 'img/logoPod.svg',
+  ...
 }
 ```
 
@@ -147,13 +147,13 @@ Nous vous conseillons fortement le format svg pour cette icone, car ce format pe
 @media (prefers-color-scheme: light) { :root { fill: #000 }}
 ```
 
-Ces dernières permettent de gérer 2 jeux de couleurs différents dans le même logo, permettant de conserver un bon contraste quel que soit la couleur de fond. N'hésitez-pas à vous en inspirer si vous créez votre propre `favicon.svg`.
+Ces dernières permettent de gérer 2 jeux de couleurs différents dans le même logo, permettant de conserver un bon contraste quel que soit la couleur de fond. N’hésitez-pas à vous en inspirer si vous créez votre propre `favicon.svg`.
 
 ---
 
 ## Utiliser la même image comme logo et comme favicon
 
-C'est tout à fait possible d'utiliser la même image, mais si votre image comprend 2 jeux de couleurs, je vous invite à ajouter les lignes CSS suivantes (ou à vous en inspirer) dans votre fichier CSS personnalisé pour que celle-ci s'affiche toujours contrastée sur Pod :
+C’est tout à fait possible d’utiliser la même image, mais si votre image comprend 2 jeux de couleurs, je vous invite à ajouter les lignes CSS suivantes (ou à vous en inspirer) dans votre fichier CSS personnalisé pour que celle-ci s’affiche toujours contrastée sur Pod :
 
 ```css
 /* When your logo.svg already switch color on browser color-scheme: dark */
@@ -171,7 +171,7 @@ C'est tout à fait possible d'utiliser la même image, mais si votre image compr
 
 ## Commandes utiles
 
-Selon votre environnement, après avoir réalisé ces modifications, n'oubliez pas de :
+Selon votre environnement, après avoir réalisé ces modifications, n’oubliez pas de :
 
 - déployer les fichiers statiques (CSS, images...) via la commande :
 

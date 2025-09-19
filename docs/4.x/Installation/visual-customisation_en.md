@@ -8,25 +8,25 @@ lang: en
 
 ## Modify the school logo
 
-You can display your school's logo at the bottom of the page.
+You can display your school’s logo at the bottom of the page.
 
 To do this, place your logo in the `pod/main/static/custom/img/` folder, and enter its path in the `settings_local.pyv :
 
 ```python
 TEMPLATE_VISIBLE_SETTINGS = {
-...
-LOGO_ETB': 'custom/img/logo_my_etab.svg',
-...
+  ...
+  'LOGO_ETB': 'custom/img/logo_my_etab.svg',
+  ...
 }
 ```
 
 ### If you have a coloured school logo
 
-We suggest that you also provide a 2nd "dark mode" version of your logo, which will provide sufficient contrast on dark backgrounds. Place the file in the same folder as the first, then in your custom CSS file (see "Changing Pod's main colours" below) enter the following:
+We suggest that you also provide a 2nd "dark mode" version of your logo, which will provide sufficient contrast on dark backgrounds. Place the file in the same folder as the first, then in your custom CSS file (see "Changing Pod’s main colours" below) enter the following:
 
 ```css
 [data-theme="dark"] .pod-footer-logo {
- background-image: url('/static/custom/img/logo_mon_etab_blanc.svg') !important;
+  background-image: url("/static/custom/img/my-white-logo.svg") !important;
 }
 ```
 
@@ -48,9 +48,9 @@ To customise the look of your Pod server, you can add your own style sheet, by s
 
 ```python
 TEMPLATE_VISIBLE_SETTINGS = {
-...
-CSS_OVERRIDE': 'custom/theme-mon_etab.css',
-...
+  ...
+  'CSS_OVERRIDE': 'custom/theme-mon_etab.css',
+  ...
 }
 ```
 
@@ -134,26 +134,26 @@ You can change the default favicon displayed by Pod by specifying the following 
 
 ```python
 TEMPLATE_VISIBLE_SETTINGS = {
-...
-FAVICON': 'img/logoPod.svg',
-...
+  ...
+  'FAVICON': 'img/logoPod.svg',
+  ...
 }
 ```
 
-We strongly recommend that you use the svg format for this icon, as this format makes it easy to manage colour variants for an Internet browser in dark mode. If you look at the `main/static/img/pod_favicon.svg` file for example, you'll see the following instructions:
+We strongly recommend that you use the svg format for this icon, as this format makes it easy to manage colour variants for an Internet browser in dark mode. If you look at the `main/static/img/pod_favicon.svg` file for example, you’ll see the following instructions:
 
 ```css
 @media (prefers-color-scheme: dark) { :root { fill: #FFF }}
 @media (prefers-color-scheme: light) { :root { fill: #000 }}
 ```
 
-These can be used to manage 2 different sets of colours in the same logo, allowing good contrast to be maintained whatever the background colour. Don't hesitate to use them as inspiration when creating your own `favicon.svg`.
+These can be used to manage 2 different sets of colours in the same logo, allowing good contrast to be maintained whatever the background colour. Don’t hesitate to use them as inspiration when creating your own `favicon.svg`.
 
 ---
 
 ## Use the same image as a logo and favicon
 
-It's perfectly possible to use the same image, but if your image has 2 sets of colours, I suggest you add the following CSS lines (or use them as inspiration) in your custom CSS file so that it is always displayed in contrast on Pod :
+It’s perfectly possible to use the same image, but if your image has 2 sets of colours, I suggest you add the following CSS lines (or use them as inspiration) in your custom CSS file so that it is always displayed in contrast on Pod :
 
 ```css
 /* When your logo.svg already switch color on browser color-scheme: dark */
@@ -171,7 +171,7 @@ It's perfectly possible to use the same image, but if your image has 2 sets of c
 
 ## Useful commands
 
-Depending on your environment, once you have made these changes, don't forget to :
+Depending on your environment, once you have made these changes, don’t forget to :
 
 - deploy static files (CSS, images, etc.) using the command :
 

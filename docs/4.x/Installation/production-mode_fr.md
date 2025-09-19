@@ -55,7 +55,7 @@ $ sudo apt install pkg-config python3-dev default-libmysqlclient-dev
 
 ### Optimisation de MariaDB
 
-Votre configuration doit être adaptée à la taille de votre base de donnée. Pour éviter d'éventuels souci lors des mises à jour, je vous invite à vous assurer que vous avez au minimum 256M pour le paramètre "max_allowed_packet" (voir plus si votre base de données est plus importante. Il faut indiquer la taille de votre plus grosse table)
+Votre configuration doit être adaptée à la taille de votre base de donnée. Pour éviter d’éventuels souci lors des mises à jour, je vous invite à vous assurer que vous avez au minimum 256M pour le paramètre "max_allowed_packet" (voir plus si votre base de données est plus importante. Il faut indiquer la taille de votre plus grosse table)
 
 `/etc/my.cnf`
 
@@ -107,7 +107,7 @@ Il faut ensuite relancer le script présent à la racine afin de créer les fich
 
 ## Frontal Web NGINX / UWSGI et fichiers statiques
 
-Pour plus de renseignements, d'explication que la documentation ci-dessous, voir [le tutoriel que j'ai suivi pour mettre en place cette solution](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html#basic-uwsgi-installation-and-configuration)
+Pour plus de renseignements, d’explication que la documentation ci-dessous, voir [le tutoriel que j’ai suivi pour mettre en place cette solution](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html#basic-uwsgi-installation-and-configuration)
 
 ### Installation du serveur Web NGINX et paramétrage
 
@@ -157,7 +157,7 @@ Rajouter les lignes ci-dessous dans le fichier de configuration de nginx :
 ```conf
 http {
 [...]
-     # Pod Progress Bar : reserve 1MB under the name 'uploads' to track uploads
+     # Pod Progress Bar : reserve 1MB under the name "uploads" to track uploads
  upload_progress uploadp 1m;
 [...]
 }
@@ -181,7 +181,7 @@ pod@pod:$ sudo systemctl enable nginx
 
 ### UWSGI
 
-Un fichier de configuration est fourni pour faciliter l’usage d'UWSGI.
+Un fichier de configuration est fourni pour faciliter l’usage d’UWSGI.
 
 Installer le module uwsgi
 
@@ -245,7 +245,7 @@ Pour le lancer ou l’arrêter :
 (django_pod4) pod@pod:(~/django_projects/podv4$) sudo systemctl restart uwsgi-pod
 ```
 
-> Attention, il faut penser à collecter les fichiers "statics" pour qu'ils soient servis par le frontal web NGINX.
+> Attention, il faut penser à collecter les fichiers "statics" pour qu’ils soient servis par le frontal web NGINX.
 >
 > ```sh
 > (django_pod4) pod@pod:(~/django_projects/podv4$) python manage.py collectstatic
@@ -255,7 +255,7 @@ Pour le lancer ou l’arrêter :
 
 ## Log Rotate
 
-Les fichiers de log peuvent vite grossir sur un serveur en production. Aussi, je vous invite à mettre en place un système de log rotate pour les logs d'Esup-Pod :
+Les fichiers de log peuvent vite grossir sur un serveur en production. Aussi, je vous invite à mettre en place un système de log rotate pour les logs d’Esup-Pod :
 
 `/etc/logrotate.d/esup-pod`
 

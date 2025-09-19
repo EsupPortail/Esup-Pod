@@ -32,7 +32,7 @@ pod@pod:~$ sudo apt-get install -y git curl vim wget gettext
 # Check python version
 pod@pod:~$ sudo python3 -V
 # Pod v4.0 is compatible with Python versions 3.9 to 3.12.
-# Check also [Status of Python versions](https://devguide.python.org/versions/) to ensure you're not using an obsolete one.
+# Check also [Status of Python versions](https://devguide.python.org/versions/) to ensure you’re not using an obsolete one.
 pod@pod:~$ sudo apt-get install -y python3-pip
 # For Python 3.9
 # pod@pod:~$ sudo pip3 install virtualenvwrapper
@@ -233,13 +233,13 @@ TEMPLATE_VISIBLE_SETTINGS = {
 TIME_ZONE = 'Europe/Paris'
 ```
 
-> _Note on TEMPLATE_VISIBLE_SETTINGS: as long as you override it in settings, you must override all its elements by default._
-
+> *Note on TEMPLATE_VISIBLE_SETTINGS: as long as you override it in settings, you must override all its elements by default.*
+>
 > 🔧 All available variables can be found on this page: [Platform configuration](https://github.com/EsupPortail/Esup-Pod/blob/master/CONFIGURATION_EN.md)
 
 ### Install all python libraries
 
-Check that you are in the virtual environment (presence of “(django_pod4)” at the start of the command prompt. If not, run the command **$> workon django_pod4**.
+Check that you are in the virtual environment (presence of “(django_pod4)”) at the start of the command prompt. If not, run the command **$> workon django_pod4**.
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ pip3 install -r requirements.txt
@@ -255,7 +255,7 @@ Similarly, if you need to use a proxy:
 
 ### FFMPEG
 
-To encode videos and create thumbnails, you need to install ffmpeg, ffmpegthumbnailer and imagemagick (do not install on the front-end server if you're offshoring encoding).
+To encode videos and create thumbnails, you need to install ffmpeg, ffmpegthumbnailer and imagemagick (do not install on the front-end server if you’re offshoring encoding).
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install -y ffmpeg ffmpegthumbnailer imagemagick
@@ -271,23 +271,22 @@ To install the Redis cache
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install -y redis-server
 ```
 
-In theory, the service starts automatically. If you've installed Redis on the same machine as Pod, you don't need to do anything else. To check whether the service has started:
+In theory, the service starts automatically. If you’ve installed Redis on the same machine as Pod, you don’t need to do anything else. To check whether the service has started:
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo service redis-server status
 ```
 
-If you're using Redis on another machine, don't forget to modify the **bind** in the `/etc/redis/redis.conf` configuration file.
+If you’re using Redis on another machine, don’t forget to modify the **bind** in the `/etc/redis/redis.conf` configuration file.
 
-> In this case, you should also check the value of `protected-mode` in the _/etc/redis/redis.conf_ configuration file.
+> In this case, you should also check the value of `protected-mode` in the `/etc/redis/redis.conf` configuration file.
 >
-> Either set _protected-mode no_ (and understand what that means) or set _protected-mode yes_ and do the necessary password management for Redis.
+> Either set `protected-mode no` (and understand what that means) or set `protected-mode yes` and do the necessary password management for Redis.
 >
-> If _protected-mode yes_ is set without a password, you'll get an error like this: `consumer: Cannot connect to redis://:6379/: Error 111 connecting to :6379. Connection refused`
+> If `protected-mode yes` is set without a password, you’ll get an error like this: `consumer: Cannot connect to redis://:6379/: Error 111 connecting to :6379. Connection refused`
 {: .alert .alert-warning}
 
-
-If you don't want to change the bind, you can also modify your `settings_local.py` and customize this extract from the default `settings.py` with your `<my_redis_host>`.
+If you don’t want to change the bind, you can also modify your `settings_local.py` and customize this extract from the default `settings.py` with your `<my_redis_host>`.
 
 ```py
 CACHES = {
@@ -321,7 +320,7 @@ SESSION_REDIS = {
 Depending on your configuration, `<my_redis_host>` can be replaced by either :
 
 - **127.0.0.1**: for local access to the machine only.
-- **the IP address of the REDIS server**, obtained by `hostname -I`: for remote access (remember also to modify the `bind` parameter in _/etc/redis/redis.conf_).
+- **the IP address of the REDIS server**, obtained by `hostname -I`: for remote access (remember also to modify the `bind` parameter in `/etc/redis/redis.conf`).
 
 To start the REDIS service automatically, run the command:
 
@@ -331,7 +330,7 @@ pod@pod:$ sudo systemctl enable redis-server
 
 ### Elasticsearch
 
-Depending on the version of Elasticsearch you're going to use, the dependency versions may change. Versions 6 and 7 are currently no longer maintained. Version 8 is the default in Pod.
+Depending on the version of Elasticsearch you’re going to use, the dependency versions may change. Versions 6 and 7 are currently no longer maintained. Version 8 is the default in Pod.
 
 #### Elasticsearch 8
 
@@ -341,7 +340,7 @@ To use Elasticsearch 8, you need java 17 on your machine.
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get install -y default-jdk
 ```
 
-If you haven't already done so :
+If you haven’t already done so :
 
 ```sh
 sudo apt-get install -y wget
@@ -418,7 +417,7 @@ xpack.security.http.ssl.truststore.path: /etc/elasticsearch/elastic-certificates
 
 #### Launching and checking Elasticsearch
 
-Finally, it's time to launch Elasticsearch and check that it's working properly:
+Finally, it’s time to launch Elasticsearch and check that it’s working properly:
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo /etc/init.d/elasticsearch start (or sudo systemctl start elasticsearch)
@@ -480,15 +479,15 @@ If you are using a proxy:
 > elasticsearch==7.17.9
 > ```
 >
-> And don't forget to relaunch
+> And don’t forget to relaunch
 >
 > ```sh
 > (django_pod4) pod@podv4:~/django_projects/podv4$ pip3 install -r requirements.txt
 > ```
 
-Finally, we can check that the assembly is working properly (the error displayed when deletion is normal since the index doesn't exist, but we need to delete before creating an index in ES):
+Finally, we can check that the assembly is working properly (the error displayed when deletion is normal since the index doesn’t exist, but we need to delete before creating an index in ES):
 
-> ⚠️ _create_pod_index_ requires access to the database (see below).
+> ⚠️ `create_pod_index` requires access to the database (see below).
 > {: .alert .alert-warning}
 
 ```sh
@@ -502,8 +501,8 @@ Successfully create index Video
 {“took”:35,“timed_out”:false,“_shards”:{“total”:2,“successful”:2,“skipped”:0,“failed”:0},“hits”:{“total”:0,“max_score”:null,“hits”:[]}}
 ```
 
-If the python command doesn't work, first create the index by hand with a `curl -XPUT "http://127.0.0.1:9200/pod"` (options `-k --noproxy -u pod:<my_es_password>` to be expected if ES8 in security mode)
-If you're moving elastic search to another machine, add its access URL to the `settings_local.py` file:
+If the python command doesn’t work, first create the index by hand with a `curl -XPUT "http://127.0.0.1:9200/pod"` (options `-k --noproxy -u pod:<my_es_password>` to be expected if ES8 in security mode)
+If you’re moving elastic search to another machine, add its access URL to the `settings_local.py` file:
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
@@ -630,7 +629,7 @@ THIRD_PARTY_APPS = ["live", "enrichment"]
 
 The development server makes it easy to test your future modifications.
 
-Don't hesitate to launch the development server to check your modifications as you go along.
+Don’t hesitate to launch the development server to check your modifications as you go along.
 
 At this stage, you should have the site in French and English and be able to see the entire home page.
 
@@ -643,7 +642,7 @@ At this stage, you should have the site in French and English and be able to see
 
 ### Warning
 
-**When the site is launched, go to the administration section and then to site to enter the domain name of your Pod instance (by default 'example.com').
+**When the site is launched, go to the administration section and then to site to enter the domain name of your Pod instance (by default `example.com`).
 
 **Before going into production, you need to check that the platform is working properly, including adding, encoding and deleting videos.
 

@@ -10,9 +10,9 @@ To use, import, and export data to and from your Pod instance, you have two opti
 
 ## Browser
 
-Using your browser, simply go to your Pod's Rest page: `http(s)://pod.univ.fr/rest` and enter your instance's root account details.
+Using your browser, simply go to your Pod’s Rest page: `http(s)://pod.univ.fr/rest` and enter your instance’s root account details.
 
-You will then have access to your instance's data in JSON format and will be able to post new data.
+You will then have access to your instance’s data in JSON format and will be able to post new data.
 
 Feel free to explore this interface to discover all its possibilities.
 
@@ -147,7 +147,7 @@ Finally, to obtain the DublinCore representation of your videos, simply make a c
 
 You can filter your videos using GET parameters added to your URL.
 
-For example, to obtain the DublinCore representation of user 1's videos, you can run the following command:
+For example, to obtain the DublinCore representation of user 1’s videos, you can run the following command:
 
 ```bash
 curl -H ‘Content-Type: application/json’ -H “Authorisation: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX” -X GET http(s)://pod.univ.fr/rest/dublincore/?owner=1

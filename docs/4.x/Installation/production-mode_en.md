@@ -97,7 +97,7 @@ Then, run the script at the root to create the migration files, then run them to
 (django_pod4) pod@pod:~/django_projects/podv4$ make createDB
 ```
 
-> Don't forget to create a new superuser:
+> Don’t forget to create a new superuser:
 >
 > ```sh
 > (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py createsuperuser
@@ -241,7 +241,7 @@ To start or stop it:
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo systemctl restart uwsgi-pod
 ```
 
-> Warning: Don't forget to collect the "statics" files so they can be served by the NGINX web frontend.
+> Warning: Don’t forget to collect the "statics" files so they can be served by the NGINX web frontend.
 >
 > ```sh
 > (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py collectstatic

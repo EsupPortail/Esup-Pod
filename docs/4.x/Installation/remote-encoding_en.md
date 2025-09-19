@@ -55,7 +55,7 @@ CELERY_TASK_ACKS_LATE = True
 
 ### FFMPEG
 
-To encode videos and create thumbnails, you need to install ffmpeg, ffmpegthumbnailer and imagemagick (do not install on the front-end server if you're offshoring encoding).
+To encode videos and create thumbnails, you need to install ffmpeg, ffmpegthumbnailer and imagemagick (do not install on the front-end server if you’re offshoring encoding).
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install -y ffmpeg ffmpegthumbnailer imagemagick
@@ -69,10 +69,10 @@ Add the configuration of all this in the configuration file
 
 You now need to tell the encoding server :
 
-* That you want to use CELERY
-* Give the address of the server with REDIS (the CELERY BROKER)
-* Connect the common database
-* Connect the common ElasticSearch
+- That you want to use CELERY
+- Give the address of the server with REDIS (the CELERY BROKER)
+- Connect the common database
+- Connect the common ElasticSearch
 
 ```bash
 (django_pod4) pod@pod-encodage:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
@@ -89,17 +89,17 @@ CELERY_TASK_ACKS_LATE = True
 # DB configuration
 TIME_ZONE = 'Europe/Paris'
 DATABASES = {
- 'default': {
- 'ENGINE': 'django.db.backends. mysql',
- 'NAME': 'database_name',
- 'USER': 'user_anme',
- 'PASSWORD': 'password',
- 'HOST': 'mysql_host_ip',
- 'PORT': '3306',
- 'OPTIONS': {
- 'init_command': "SET storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
- },
- }
+  'default': {
+    'ENGINE': 'django.db.backends. mysql',
+    'NAME': 'database_name',
+    'USER': 'user_anme',
+    'PASSWORD': 'password',
+    'HOST': 'mysql_host_ip',
+    'PORT': '3306',
+    'OPTIONS': {
+      'init_command': "SET storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
+    },
+  }
 }
 ES_URL = ['http://elastic. domaine.fr:9200/']
 EMAIL_HOST = 'smtp.domaine.fr'
@@ -116,9 +116,9 @@ USE_PODFILE = True
 ```
 
 > ⚠️ Check that your database, REDIS and ElasticSearch accept incoming communications with your encoding servers (bind and others).
-
+>
 > ⚠️ Depending on your architecture, remember to replace _127.0.0.1_ with the **IP address of the REDIS server**.
-
+>
 > 💡Personally, my `settings_local.py` file is identical on all my **encoding or front-end servers**. You just need to leave out the local address _127.0.0.1_ and manage the **configuration for the database, REDIS and Elasticsearch**.
 {: .alert .alert-warning}
 ---

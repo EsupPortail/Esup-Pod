@@ -12,8 +12,9 @@ Redis (REmote DIctionary Server) is an extremely fast NoSQL **key-value** databa
 It operates in memory (RAM), which enables it to offer much better performance than traditional databases for certain tasks.
 
 In Pod, REDIS is used as a :
- - cache manager for **Web servers**,
- - encoding/transcription/xAPI task queue manager for **encoding servers**, in addition to **Celery**. Only in the case of remote encoding on other servers (notion of Celery Broker)_.
+
+- cache manager for **Web servers**,
+- encoding/transcription/xAPI task queue manager for **encoding servers**, in addition to **Celery**. Only in the case of remote encoding on other servers (notion of Celery Broker)_.
 
 At present, it is an essential building block for the operation of Pod.
 
@@ -22,7 +23,7 @@ At present, it is an essential building block for the operation of Pod.
 ### List of useful databases
 
 | Base identifier | Comments                        |
-|------------------------|-------------------------------------|
+|-----------------|---------------------------------|
 | 2 | Base for the select2 plugin (useful for selection lists) |
 | 3 | Base for the backend |
 | 4 | Base for sessions |

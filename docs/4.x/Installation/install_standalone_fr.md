@@ -11,7 +11,7 @@ lang: fr
 ### Création de l’utilisateur Pod
 
 ```sh
-# Si sudo n'a pas été installé
+# Si sudo n’a pas été installé
 root@pod:~$ apt-get install -y sudo
 # Création effective
 user@pod:~$  sudo adduser pod
@@ -233,8 +233,8 @@ TEMPLATE_VISIBLE_SETTINGS = {
 TIME_ZONE = "Europe/Paris"
 ```
 
-> _Remarque concernant TEMPLATE_VISIBLE_SETTINGS : du moment qu'on le surcharge dans les settings, il faut surcharger tous ses éléments par défaut._
-
+> _Remarque concernant TEMPLATE_VISIBLE_SETTINGS : du moment qu’on le surcharge dans les settings, il faut surcharger tous ses éléments par défaut._
+>
 > 🔧 La liste des paramètres possibles est accessible via ce lien : [Configuration de la plateforme](https://github.com/EsupPortail/Esup-Pod/blob/master/CONFIGURATION_FR.md)
 
 ### Installation de toutes les librairies python
@@ -281,7 +281,7 @@ Si vous utilisez Redis sur une autre machine, n’oubliez pas de modifier le **b
 
 > Dans ce cas là, pensez également à vérifier la valeur de `protected-mode` dans le fichier de configuration _/etc/redis/redis.conf_
 >
-> Soit mettre _protected-mode no_ (et comprendre ce que cela implique) soit mettre _protected-mode yes_ et réaliser la gestion nécessaire vis-à-vis d'un mot de passe pour Redis.
+> Soit mettre _protected-mode no_ (et comprendre ce que cela implique) soit mettre _protected-mode yes_ et réaliser la gestion nécessaire vis-à-vis d’un mot de passe pour Redis.
 >
 > Si _protected-mode yes_ sans mot de passe, vous obtiendrez une erreur du type : `consumer: Cannot connect to redis://:6379/: Error 111 connecting to :6379. Connection refused`
 {: .alert .alert-warning}
@@ -320,7 +320,7 @@ SESSION_REDIS = {
 Selon votre configuration, `<my_redis_host>` peut être remplacé soit par :
 
 - **127.0.0.1** : pour des accès seulement en local à la machine.
-- **l'adresse IP du serveur REDIS**, obtenu par `hostname -I` : pour des accès distants (pensez à modifier aussi le paramètre `bind` de _/etc/redis/redis.conf_).
+- **l’adresse IP du serveur REDIS**, obtenu par `hostname -I` : pour des accès distants (pensez à modifier aussi le paramètre `bind` de _/etc/redis/redis.conf_).
 
 Pour démarrer le service REDIS automatiquement, lancer la commande :
 
@@ -340,7 +340,7 @@ Pour utiliser Elasticsearch 8, il faut avoir java 17 sur sa machine.
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get install -y default-jdk
 ```
 
-Si ce n'est pas déjà fait :
+Si ce n’est pas déjà fait :
 
 ```sh
 sudo apt-get install -y wget
@@ -375,7 +375,7 @@ cluster.initial_master_nodes: ["pod-1"]
 Selon votre configuration, `<my_es_host>` peut être remplacé soit par :
 
 - **127.0.0.1** : pour des accès seulement en local à la machine.
-- **l'adresse IP du serveur Elasticsearch**, obtenu par `hostname -I` : pour des accès distants.
+- **l’adresse IP du serveur Elasticsearch**, obtenu par `hostname -I` : pour des accès distants.
 
 **Il est recommandé d’utiliser le mode security d’ES8.**
 Générer l’utilisateur pod pour ES :
@@ -487,7 +487,7 @@ Si vous êtes derrière un proxy :
 
 Nous pouvons enfin vérifier le bon fonctionnement de l’ensemble (l’erreur affichée lors de la suppression est normale puisque l’indice n’existe pas, mais nous devons supprimer avant de créer un index dans ES) :
 
-> ⚠️ _create_pod_index_ nécessite l'accès à la base de données (cf. ci-dessous).
+> ⚠️ _create_pod_index_ nécessite l’accès à la base de données (cf. ci-dessous).
 > {: .alert .alert-warning}
 
 ```sh
@@ -570,7 +570,7 @@ Installez les dépendances.
 (django_pod4) pod@pod:~/django_projects/podv4/pod$ yarn
 ```
 
-Enfin, déployez les fichiers statiques (l'exécution prend plusieurs minutes).
+Enfin, déployez les fichiers statiques (l’exécution prend plusieurs minutes).
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py collectstatic --no-input --clear

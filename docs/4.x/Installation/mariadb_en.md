@@ -25,7 +25,7 @@ pod@pod:$ workon django_pod4
 
 ## Configuring Esup-Pod
 
-If you haven't already done so, you need to specify your database configuration in your `settings_local.py` configuration file:
+If you haven’t already done so, you need to specify your database configuration in your `settings_local.py` configuration file:
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ vim pod/custom/settings_local.py
@@ -56,7 +56,7 @@ You then need to run the script in the root directory to create the migration fi
 (django_pod4) pod@pod:~/django_projects/podv4$ make createDB
 ```
 
-> Don't forget to create a new superuser:
+> Don’t forget to create a new superuser:
 >
 > ```sh
 > (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py createsuperuser

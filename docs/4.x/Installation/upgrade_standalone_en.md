@@ -10,7 +10,7 @@ lang: en
 
 ### Announce the upgrade to users
 
-In Pod administration (https://VOTRE_SERVEUR/admin/main/configuration/), you'll find:
+In Pod administration (https://VOTRE_SERVEUR/admin/main/configuration/), you’ll find:
 
 The “maintenance_text_scheduled” field lets you define a customized maintenance message.
 The “maintenance_scheduled” field lets you display/hide (=1 / 0) this message on Pod.
@@ -73,7 +73,7 @@ will list all new parameters (and those no longer in use) from 4.0.0 to the curr
 
 ### Database
 
-If you're upgrading from a version earlier than Pod version 3.3.1 and you're running MySQL or MariaDB, you'll need to install the timezone in the SQL engine (as mysql root!).
+If you’re upgrading from a version earlier than Pod version 3.3.1 and you’re running MySQL or MariaDB, you’ll need to install the timezone in the SQL engine (as mysql root!).
 
 ```sh
 podv4$ mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p --database=mysql
@@ -130,7 +130,7 @@ mkdir -p pod/custom/static/opencast/studio
 cp -r build/* pod/custom/static/opencast/studio
 ```
 
-Finally, don't forget to collect your static files for production via the command:
+Finally, don’t forget to collect your static files for production via the command:
 
 ```sh
 (django_pod) [userpod@video][/data/www/userpod/django_projects/podv2] python manage.py collectstatic

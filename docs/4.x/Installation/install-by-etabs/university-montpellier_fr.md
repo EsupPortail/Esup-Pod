@@ -4,7 +4,7 @@ version: 4.x
 lang: fr
 ---
 
-# Infrastructure Pod v4 à l'Université de Montpellier (UM)
+# Infrastructure Pod v4 à l’Université de Montpellier (UM)
 
 ## Contexte
 
@@ -15,46 +15,46 @@ lang: fr
 | **Auteur**              | Loïc Bonavent         |
 {: .table .table-striped}
 
-Ce document présente les travaux réalisés par l'Université de Montpellier pour déployer une **infrastructure dédiée à Pod v4**, remplaçant ainsi une ancienne infrastructure Pod v3, devenue obsolète et potentiellement vulnérable sur le plan de la sécurité.
+Ce document présente les travaux réalisés par l’Université de Montpellier pour déployer une **infrastructure dédiée à Pod v4**, remplaçant ainsi une ancienne infrastructure Pod v3, devenue obsolète et potentiellement vulnérable sur le plan de la sécurité.
 
-> 💡L'infrastructure Pod v4 a été montée en **parallèle** de l'infrastructure Pod v3, de production, existante.
-> L'idée n'est pas de réaliser une simple mise à jour de Pod v3 vers Pod v4, mais il s'agit véritablement d'_une bascule d'une architecture Pod v3 vers une nouvelle infrastructure Pod v4_.
+> 💡L’infrastructure Pod v4 a été montée en **parallèle** de l’infrastructure Pod v3, de production, existante.
+> L’idée n’est pas de réaliser une simple mise à jour de Pod v3 vers Pod v4, mais il s’agit véritablement d’_une bascule d’une architecture Pod v3 vers une nouvelle infrastructure Pod v4_.
 {: .alert .alert-primary}
 
-## Présentation de l'infrastructure de production
+## Présentation de l’infrastructure de production
 
-![Infrastructure Pod v4 à l'UM](um/architecture.png)
+![Infrastructure Pod v4 à l’UM](um/architecture.png)
 
-Cette infrastructure repose sur l'utilisation de :
+Cette infrastructure repose sur l’utilisation de :
 
-- **1 load balancer HAProxy** : ce load balancer est utilisé à l'université pour quasiment l'ensemble des sites Web.
+- **1 load balancer HAProxy** : ce load balancer est utilisé à l’université pour quasiment l’ensemble des sites Web.
 - **2 serveurs Web** : utiliser deux serveurs web en frontal renforce la sécurité et la disponibilité, en répartissant la charge et en évitant les points de défaillance uniques.<br>
   _Briques installées sur ces serveurs Web : Pod, Nginx, uWSGI._
-- **1 serveur principal** : ce serveur - nommé principal pour le différencier des autres - correspond à un serveur d'encodage déporté pour lequel REDIS et Elasticsearch sont installés.<br>
+- **1 serveur principal** : ce serveur - nommé principal pour le différencier des autres - correspond à un serveur d’encodage déporté pour lequel REDIS et Elasticsearch sont installés.<br>
   _Briques installées sur ces serveurs Web : Pod, REDIS, Elasticsearch, Celery (1 worker), ffmpeg, Whisper._
-- **3 serveurs d'encodage** : serveurs d'encodage déportés purs, principalement utilisés pour la transcription (qui ne peut encore être réalisée sur les serveurs GPU - depuis 2025, ~17% des vidéos sont transcrites) et pour l'encodage des vidéos dont le format n'est pas géré par les serveurs GPU.<br>
+- **3 serveurs d’encodage** : serveurs d’encodage déportés purs, principalement utilisés pour la transcription (qui ne peut encore être réalisée sur les serveurs GPU - depuis 2025, ~17% des vidéos sont transcrites) et pour l’encodage des vidéos dont le format n’est pas géré par les serveurs GPU.<br>
   _Briques installées sur ces serveurs Web : Pod, Celery (1 worker), ffmpeg, Whisper._
 - **1 base de données** : base de données MariaDB mutualisée.
-- **1 serveur de fichiers** : serveur de fichiers partagé NFS d'une taille de 50To, dont 40To est occupé actuellement.
+- **1 serveur de fichiers** : serveur de fichiers partagé NFS d’une taille de 50To, dont 40To est occupé actuellement.
 
 _Tous les serveurs tournent sur Debian 12._
 
-> 💡 Cette infrastructure ne tient pas compte des serveurs RTMP Nginx, pour la gestion des directs (cf. documentation pour la mise en place du direct live), et des serveurs d'encodage GPU qui reposent sur du spécifique UM.
-
-> Chaque serveur d'encodage utilise 16 Go RAM et 16 vCPU car j'utilise la transcription via **Whisper** et son modèle **Medium**, qui est très performant mais qui consomme quand même quelques ressources.
+> 💡 Cette infrastructure ne tient pas compte des serveurs RTMP Nginx, pour la gestion des directs (cf. documentation pour la mise en place du direct live), et des serveurs d’encodage GPU qui reposent sur du spécifique UM.
+>
+> Chaque serveur d’encodage utilise 16 Go RAM et 16 vCPU car j’utilise la transcription via **Whisper** et son modèle **Medium**, qui est très performant mais qui consomme quand même quelques ressources.
 >
 > Pour le serveur principal, ces ressources sont nécessaires pour faire tourner REDIS, Elasticsearch et Whisper en même temps, et éviter tout problème (style Out Of Memory...).
 >
-> Pour les autres serveurs d'encodage, c'est peut-être quelque peu surdimensionné (8/12 Go RAM et 8/12 vCPU devraient être suffisants).
+> Pour les autres serveurs d’encodage, c’est peut-être quelque peu surdimensionné (8/12 Go RAM et 8/12 vCPU devraient être suffisants).
 {: .alert .alert-warning}
 
 ## Installation
 
-> N'ayant toujours pas d'orchestrateurs de conteneurs à l'université, j'ai réalisé l'installation "à l'ancienne", en utilisant principalement la [documentation du mode Stand Alone](../install_standalone_fr)
+> N’ayant toujours pas d’orchestrateurs de conteneurs à l’université, j’ai réalisé l’installation "à l’ancienne", en utilisant principalement la [documentation du mode Stand Alone](../install_standalone_fr)
 >
-> Avec cette documentation et les autres, si l'infrastructure est présente et s'il n'y a pas de _problèmes d'environnement_ (firewall, privilèges sur la base de données...), cela ne nécessite que quelques heures.
+> Avec cette documentation et les autres, si l’infrastructure est présente et s’il n’y a pas de _problèmes d’environnement_ (firewall, privilèges sur la base de données...), cela ne nécessite que quelques heures.
 >
-> Personnellement, j'utilise **SuperPutty** pour exécuter des commandes sur plusieurs serveurs à la fois (typiquement l'installation de Pod v4 sur tous les serveurs d'encodage).
+> Personnellement, j’utilise **SuperPutty** pour exécuter des commandes sur plusieurs serveurs à la fois (typiquement l’installation de Pod v4 sur tous les serveurs d’encodage).
 >
 > Certaines étapes de la procédure suivante peuvent être réalisées en parallèle ou dan un ordre différent, selon votre convenance.
 
@@ -64,14 +64,14 @@ _Tous les serveurs tournent sur Debian 12._
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
-| **Serveurs concernés** | Tous les serveurs Pod (Web, principal, d'encodage)|
+| **Serveurs concernés** | Tous les serveurs Pod (Web, principal, d’encodage)|
 | **Documentations de référence** | [Documentation du mode Stand Alone / Environnement](../install_standalone_fr#environnement)|
 {: .table .table-striped}
 
-J'ai suivi rigoureusement la documentation **[Installation d’Esup-Pod en mode Stand Alone / Environnement](../install_standalone_fr#environnement)**.
+J’ai suivi rigoureusement la documentation **[Installation d’Esup-Pod en mode Stand Alone / Environnement](../install_standalone_fr#environnement)**.
 
 > Spécificité UM :
-> Vis-à-vis de l'ancienne infrastructure, j'ai conservé le même **identifiant Linux** pour le user `pod`, via la commande :
+> Vis-à-vis de l’ancienne infrastructure, j’ai conservé le même **identifiant Linux** pour le user `pod`, via la commande :
 >
 > ```sh
 > user@pod:~$ usermod -u 1313 pod
@@ -82,19 +82,19 @@ Concernant le fichier de configuration `settings_local.py`, une version finale e
 🎯 A la fin de cette étape, Pod v4 est installé sur tous les serveurs Pod, avec toutes ses librairies Python.
 {: .alert .alert-primary}
 
-### Etape 2 : Configuration et utilisation d'une base de données MySQL/MariaDB
+### Etape 2 : Configuration et utilisation d’une base de données MySQL/MariaDB
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
-| **Serveurs concernés** | Tous serveurs Pod (Web, principal, d'encodage) |
-| **Documentations de référence** | [Configuration et utilisation d'une base de données MySQL/MariaDB](../mariadb_fr)|
+| **Serveurs concernés** | Tous serveurs Pod (Web, principal, d’encodage) |
+| **Documentations de référence** | [Configuration et utilisation d’une base de données MySQL/MariaDB](../mariadb_fr)|
 {: .table .table-striped}
 
-Pour configurer et utiliser une base de données MySQL/MariaDB sur tous les serveurs Pod, j'ai suivi la documentation concernant la **[configuration et utilisation d'une base de données MySQL/MariaDB](../mariadb_fr)**.
+Pour configurer et utiliser une base de données MySQL/MariaDB sur tous les serveurs Pod, j’ai suivi la documentation concernant la **[configuration et utilisation d’une base de données MySQL/MariaDB](../mariadb_fr)**.
 
-Au vue de l'architecture, j'ai remplacé `<my_database_host>` par **l'adresse IP du serveur de base de données** et les autres variables `<my_database_*>` par les valeurs de mon environnement.
+Au vue de l’architecture, j’ai remplacé `<my_database_host>` par **l’adresse IP du serveur de base de données** et les autres variables `<my_database_*>` par les valeurs de mon environnement.
 
-> 💡 Si vous souhaitez installer un serveur MySQL/MariaDB, il faut suivre la documentation concernant **[l'installation, la configuration et utilisation d'une base de données MySQL/MariaDB](../production-mode_fr#base-de-données-mysqlmariadb)**.
+> 💡 Si vous souhaitez installer un serveur MySQL/MariaDB, il faut suivre la documentation concernant **[l’installation, la configuration et utilisation d’une base de données MySQL/MariaDB](../production-mode_fr#base-de-données-mysqlmariadb)**.
 
 🎯 A la fin de cette étape, tous les serveurs Pod peuvent utiliser la base de données de type MySQL/MariaDB.
 {: .alert .alert-primary}
@@ -107,9 +107,9 @@ Au vue de l'architecture, j'ai remplacé `<my_database_host>` par **l'adresse IP
 | **Documentations de référence** | [Documentation du mode Stand Alone / Redis](../install_standalone_fr#redis)|
 {: .table .table-striped}
 
-Pour installer REDIS sur le serveur principal, j'ai suivi la **[documentation du mode Stand Alone / Redis](../install_standalone_fr#redis)**.
+Pour installer REDIS sur le serveur principal, j’ai suivi la **[documentation du mode Stand Alone / Redis](../install_standalone_fr#redis)**.
 
-Au vue de l'architecture, j'ai remplacé partout `<my_redis_host>` par **l'adresse IP du serveur REDIS**, obtenu par `hostname -I` sur le serveur principal et j'ai édité le fichier _/etc/redis/redis.conf_ avec ces informations :
+Au vue de l’architecture, j’ai remplacé partout `<my_redis_host>` par **l’adresse IP du serveur REDIS**, obtenu par `hostname -I` sur le serveur principal et j’ai édité le fichier _/etc/redis/redis.conf_ avec ces informations :
 
 ```sh
 bind <my_redis_host>
@@ -123,16 +123,16 @@ protected-mode no
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
-| **Serveurs concernés** | Tous serveurs Pod (Web, principal, d'encodage) |
+| **Serveurs concernés** | Tous serveurs Pod (Web, principal, d’encodage) |
 | **Documentations de référence** | [Configuration et usage de REDIS](../redis_fr)|
 {: .table .table-striped}
 
-Pour configurer et utiliser REDIS sur tous les serveurs Pod, j'ai suivi la documentation concernant la **[configuration et usage de REDIS](../redis_fr)**.
+Pour configurer et utiliser REDIS sur tous les serveurs Pod, j’ai suivi la documentation concernant la **[configuration et usage de REDIS](../redis_fr)**.
 
-🎯 A la fin de cette étape, REDIS peut être utilisé par l'ensemble des serveurs Pod.
+🎯 A la fin de cette étape, REDIS peut être utilisé par l’ensemble des serveurs Pod.
 {: .alert .alert-primary}
 
-### Etape 5 : Installation d'Elasticsearch
+### Etape 5 : Installation d’Elasticsearch
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -140,9 +140,9 @@ Pour configurer et utiliser REDIS sur tous les serveurs Pod, j'ai suivi la docum
 | **Documentations de référence** | [Documentation du mode Stand Alone / Elasticsearch](../install_standalone_fr#elasticsearch)|
 {: .table .table-striped}
 
-Pour installer Elasticsearch sur le serveur principal, j'ai suivi la **[documentation du mode Stand Alone / Elasticsearch](../install_standalone_fr#elasticsearch)** avec le _mode Security d'ES8_ activé.
+Pour installer Elasticsearch sur le serveur principal, j’ai suivi la **[documentation du mode Stand Alone / Elasticsearch](../install_standalone_fr#elasticsearch)** avec le _mode Security d’ES8_ activé.
 
-Au vue de l'architecture, j'ai remplacé partout `<my_es_host>` par **l'adresse IP du serveur Elasticsearch**, obtenu par `hostname -I` sur le serveur principal et j'ai édité le fichier _/etc/elasticsearch/elasticsearch.yml_ avec ces informations :
+Au vue de l’architecture, j’ai remplacé partout `<my_es_host>` par **l’adresse IP du serveur Elasticsearch**, obtenu par `hostname -I` sur le serveur principal et j’ai édité le fichier _/etc/elasticsearch/elasticsearch.yml_ avec ces informations :
 
 ```yml
 cluster.name: pod-application
@@ -172,13 +172,13 @@ xpack.security.http.ssl.truststore.path: /etc/elasticsearch/elastic-certificates
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
-| **Serveurs concernés** | Tous serveurs Pod (Web, principal, d'encodage) |
+| **Serveurs concernés** | Tous serveurs Pod (Web, principal, d’encodage) |
 | **Documentations de référence** | [Documentation du mode Stand Alone / Installation des dépendances](../install_standalone_fr#installation-des-dépendances)|
 {: .table .table-striped}
 
-Pour installer les dépendances sur tous les serveurs Pod, j'ai suivi la **[documentation du mode Stand Alone / Installation des dépendances](../install_standalone_fr#installation-des-dépendances)**.
+Pour installer les dépendances sur tous les serveurs Pod, j’ai suivi la **[documentation du mode Stand Alone / Installation des dépendances](../install_standalone_fr#installation-des-dépendances)**.
 
-> Logiquement, ces dépendances ne concernent que les serveurs Web, mais je préfère les installer sur l'ensemble des serveurs au cas où.
+> Logiquement, ces dépendances ne concernent que les serveurs Web, mais je préfère les installer sur l’ensemble des serveurs au cas où.
 {: .alert .alert-secondary}
 
 🎯 A la fin de cette étape, les dépendances de Pod sont installés sur tous les serveurs Pod.
@@ -192,10 +192,10 @@ Pour installer les dépendances sur tous les serveurs Pod, j'ai suivi la **[docu
 | **Documentations de référence** | [Frontal Web Nginx / uWSGI et fichiers statiques](../production-mode_fr#frontal-web-nginx--uwsgi-et-fichiers-statiques)|
 {: .table .table-striped}
 
-Pour installer, configurer et utiliser Nginx/uWSGI sur tous les serveurs Web, j'ai suivi la documentation concernant la mise en place de **[Frontal Web Nginx / UWSGI et fichiers statiques](../production-mode_fr#frontal-web-nginx--uwsgi-et-fichiers-statiques)**.
+Pour installer, configurer et utiliser Nginx/uWSGI sur tous les serveurs Web, j’ai suivi la documentation concernant la mise en place de **[Frontal Web Nginx / UWSGI et fichiers statiques](../production-mode_fr#frontal-web-nginx--uwsgi-et-fichiers-statiques)**.
 
 > Spécificité UM :
-> Vis-à-vis de l'ancienne infrastructure, j'ai conservé le même **identifiant Linux** pour le groupe `www-data` que celui du groupe `nginx`, et j'ai ajouté le user `pod` à ce groupe via les commandes :
+> Vis-à-vis de l’ancienne infrastructure, j’ai conservé le même **identifiant Linux** pour le groupe `www-data` que celui du groupe `nginx`, et j’ai ajouté le user `pod` à ce groupe via les commandes :
 >
 > ```sh
 > user@pod:~$ sudo groupmod -g 989 www-data
@@ -205,38 +205,38 @@ Pour installer, configurer et utiliser Nginx/uWSGI sur tous les serveurs Web, j'
 🎯 A la fin de cette étape, les serveurs Web reposant sur Nginx / UWSGI sont opérationnels.
 {: .alert .alert-primary}
 
-### Etape 8 : Installation du système d'encodage
+### Etape 8 : Installation du système d’encodage
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
-| **Serveurs concernés** | Serveurs d'encodage, serveur principal |
+| **Serveurs concernés** | Serveurs d’encodage, serveur principal |
 | **Documentations de référence** | [Documentation pour déporter l’encodage sur un ou plusieurs serveurs](../remote-encoding_fr)|
 {: .table .table-striped}
 
-> L'encodage peut se réaliser de différentes manières; pour ma part, à l'heure actuelle, j'utilise le système d'encodage déporté, sans utilisation de microservices.
+> L’encodage peut se réaliser de différentes manières; pour ma part, à l’heure actuelle, j’utilise le système d’encodage déporté, sans utilisation de microservices.
 {: .alert .alert-light}
 
-Pour installer ce système d'encodage, j'ai suivi la **[documentation pour déporter l’encodage sur un ou plusieurs serveurs](../remote-encoding_fr)**.
+Pour installer ce système d’encodage, j’ai suivi la **[documentation pour déporter l’encodage sur un ou plusieurs serveurs](../remote-encoding_fr)**.
 
-Cela implique l'utilisation de REDIS du serveur principal et de Celery sur les serveurs d'encodage.
+Cela implique l’utilisation de REDIS du serveur principal et de Celery sur les serveurs d’encodage.
 
-🎯 A la fin de cette étape, les serveurs d'encodage, reposant sur **REDIS** et du **Celery**, sont fonctionnels.
+🎯 A la fin de cette étape, les serveurs d’encodage, reposant sur **REDIS** et du **Celery**, sont fonctionnels.
 {: .alert .alert-primary}
 
 ### Etape 9 : Installation du système de transcription
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
-| **Serveurs concernés** | Serveurs d'encodage |
-| **Documentations de référence** | [Documentation concernant l'installation de l'autotranscription](../optional/auto-transcription-install_fr)|
+| **Serveurs concernés** | Serveurs d’encodage |
+| **Documentations de référence** | [Documentation concernant l’installation de l’autotranscription](../optional/auto-transcription-install_fr)|
 {: .table .table-striped}
 
-> L'autotranscription peut se réaliser de différentes manières; pour ma part, à l'heure actuelle, j'utilise le système d'autotranscription déporté, sans utilisation de microservices.
+> L’autotranscription peut se réaliser de différentes manières; pour ma part, à l’heure actuelle, j’utilise le système d’autotranscription déporté, sans utilisation de microservices.
 {: .alert .alert-light}
 
-Pour installer ce système d'autotranscription, j'ai suivi la **[documentation concernant l'installation de l'autotranscription](../optional/auto-transcription-install_fr)** et utiliser **Whisper** avec le modèle `medium`.
+Pour installer ce système d’autotranscription, j’ai suivi la **[documentation concernant l’installation de l’autotranscription](../optional/auto-transcription-install_fr)** et utiliser **Whisper** avec le modèle `medium`.
 
-🎯 A la fin de cette étape, les serveurs d'encodage peuvent réaliser des transcriptions.
+🎯 A la fin de cette étape, les serveurs d’encodage peuvent réaliser des transcriptions.
 {: .alert .alert-primary}
 
 ### Etape 10 : Personnalisation visuelle
@@ -247,9 +247,9 @@ Pour installer ce système d'autotranscription, j'ai suivi la **[documentation c
 | **Documentations de référence** | [Documentation concernant la personnalisation visuelle](../visual-customisation_fr)|
 {: .table .table-striped}
 
-Pour réaliser la personnalisation visuelle pour mon établissement, j'ai suivi la **[documentation concernant la personnalisation visuelle](../visual-customisation_fr)**.
+Pour réaliser la personnalisation visuelle pour mon établissement, j’ai suivi la **[documentation concernant la personnalisation visuelle](../visual-customisation_fr)**.
 
-> A l'université de Montpellier, j'ai repris les élements déjà réalisés pour Pod v3.
+> A l’université de Montpellier, j’ai repris les élements déjà réalisés pour Pod v3.
 
 🎯 A la fin de cette étape, le site Web Pod v4 sera à la charte graphique de votre établissement.
 {: .alert .alert-primary}
@@ -262,25 +262,25 @@ Pour réaliser la personnalisation visuelle pour mon établissement, j'ai suivi 
 | **Documentations de référence** | [Documentation concernant le système de migration des données entre la version 3 et la version 4](../migrate_from_v3_to_v4_fr)|
 {: .table .table-striped}
 
-Pour réaliser la migration des données de Pod v3 vers Pod v4, j'ai suivi la **[documentation concernant le système de migration des données entre la version 3 et la version 4](../migrate_from_v3_to_v4_fr)**.
+Pour réaliser la migration des données de Pod v3 vers Pod v4, j’ai suivi la **[documentation concernant le système de migration des données entre la version 3 et la version 4](../migrate_from_v3_to_v4_fr)**.
 
-> 💡 Cette migration des données peut-être réalisée autant de fois que nécessaire. Personnellement, j'ai réalisé plusieurs tests en amont en **supprimant l'ensemble des tables** de la base de données et en exécutant la commande **`python manage.py import_data_from_v3_to_v4 --createDB`**.
+> 💡 Cette migration des données peut-être réalisée autant de fois que nécessaire. Personnellement, j’ai réalisé plusieurs tests en amont en **supprimant l’ensemble des tables** de la base de données et en exécutant la commande **`python manage.py import_data_from_v3_to_v4 --createDB`**.
+>
+> 💡 Vérifier bien que le serveur de fichiers, contenant le répertoire `MEDIA_ROOT`, soit bien accessible par l’ensemble de serveurs Pod.
 
-> 💡 Vérifier bien que le serveur de fichiers, contenant le répertoire `MEDIA_ROOT`, soit bien accessible par l'ensemble de serveurs Pod.
-
-_Attention à ne pas réaliser de tests d'encodage sur l'environnement de **production** Pod v4 tant que la bascule d'infrastructure Pod v3 vers Pod v4 n'a pas été réalisée. Les fichiers encodées se retrouveraient sur le serveur de fichiers partagés._
+_Attention à ne pas réaliser de tests d’encodage sur l’environnement de **production** Pod v4 tant que la bascule d’infrastructure Pod v3 vers Pod v4 n’a pas été réalisée. Les fichiers encodées se retrouveraient sur le serveur de fichiers partagés._
 {: .alert .alert-danger}
 
-🎯 A la fin de cette étape, le site Web Pod v4 est réellement en production, avec l'ensemble des données existantes.
+🎯 A la fin de cette étape, le site Web Pod v4 est réellement en production, avec l’ensemble des données existantes.
 {: .alert .alert-primary}
 
 ### Annexes
 
-Ci-dessous, les différents éléments de configuration pour cette infrastructure Pod v4 pour l'UM (_configuration au jour de la date de réalisation de cette documentation_).
+Ci-dessous, les différents éléments de configuration pour cette infrastructure Pod v4 pour l’UM (_configuration au jour de la date de réalisation de cette documentation_).
 
-#### Fichier /usr/local/django_projects/podv4/pod/custom/settings_local.py
+#### Fichier `/usr/local/django_projects/podv4/pod/custom/settings_local.py`
 
-> 💡Penser à garder le même SECRET_KEY que l'environnement Pod v3.
+> 💡Penser à garder le même SECRET_KEY que l’environnement Pod v3.
 
 ```sh
 # -*- coding: utf-8 -*-
@@ -524,7 +524,7 @@ BOOTSTRAP_CUSTOM = 'custom/bootstrap-default.min.css'
 # Activer les commentaires au niveau de la plateforme
 ACTIVE_VIDEO_COMMENT = False
 
-# Permet d'activer le fonctionnement de categorie au niveau de ses vidéos
+# Permet d’activer le fonctionnement de categorie au niveau de ses vidéos
 USER_VIDEO_CATEGORY = True
 
 # Activation du darkmode
@@ -533,13 +533,13 @@ DARKMODE_ENABLED = True
 # Activation du mode dyslexie
 DYSLEXIAMODE_ENABLED = True
 
-# Ce paramètre permet d'afficher un lien "En savoir plus"
-# sur la boite de dialogue d'information sur l'usage des cookies dans Pod.
+# Ce paramètre permet d’afficher un lien "En savoir plus"
+# sur la boite de dialogue d’information sur l’usage des cookies dans Pod.
 # On peut préciser un lien vers les mentions légales ou page dpo
 COOKIE_LEARN_MORE = "/mentions-legales/"
 
 ### Enregisteur
-# Permet d'activer la possibilité d'enregistrer son ecran et son micro
+# Permet d’activer la possibilité d’enregistrer son ecran et son micro
 USE_OPENCAST_STUDIO = True
 OPENCAST_DEFAULT_PRESENTER = "piph"
 FFMPEG_STUDIO_COMMAND = (
@@ -549,13 +549,13 @@ FFMPEG_STUDIO_COMMAND = (
     + ' "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
 )
 
-# Fonction appelée pour lancer l'encodage des vidéos
+# Fonction appelée pour lancer l’encodage des vidéos
 ENCODE_VIDEO = "start_encode"
 # Fonction appelée pour lancer la transcription des vidéos
 TRANSCRIPT_VIDEO = "start_transcript"
 
 
-### Gestion de l'application des réunions
+### Gestion de l’application des réunions
 # Application Meeting pour la gestion de reunion avec BBB
 USE_MEETING = True
 BBB_API_URL = "https://<my_bbb_host>/bigbluebutton/api"
@@ -608,7 +608,7 @@ SELECT2_CACHE_BACKEND = "select2"
 AFFILIATION_EVENT = ['staff']
 # Pour Matomo
 USE_VIDEO_EVENT_TRACKING = True
-# Affichage des events sur la page d'accueil
+# Affichage des events sur la page d’accueil
 SHOW_EVENTS_ON_HOMEPAGE = False
 # Image dans le répertoire static
 DEFAULT_EVENT_THUMBNAIL = "custom/img/default-event.svg"
@@ -616,9 +616,9 @@ DEFAULT_EVENT_THUMBNAIL = "custom/img/default-event.svg"
 DEFAULT_EVENT_TYPE_ID = 4
 # Groupe des admins des events
 EVENT_GROUP_ADMIN = "<my_live_managers_group>"
-# N'envoie pas d'email aux utilisateurs
+# N’envoie pas d’email aux utilisateurs
 EMAIL_ON_EVENT_SCHEDULING = False
-# Envoie un email à l'admin
+# Envoie un email à l’admin
 EMAIL_ADMIN_ON_EVENT_SCHEDULING = True
 # Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes
 VIDEO_RECENT_VIEWCOUNT = 180
@@ -626,15 +626,15 @@ VIDEO_RECENT_VIEWCOUNT = 180
 USE_LIVE_TRANSCRIPTION = False
 # La liste des utilisateurs regardant le direct sera réservée au staff
 VIEWERS_ONLY_FOR_STAFF = False
-# Temps (en seconde) entre deux envois d'un signal au serveur, pour signaler la présence sur un live
+# Temps (en seconde) entre deux envois d’un signal au serveur, pour signaler la présence sur un live
 # Peut être augmenté en cas de perte de performance mais au détriment de la qualité du comptage des valeurs
 HEARTBEAT_DELAY = 90
-# Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n'as pas renvoyé de signal depuis
+# Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n’a pas renvoyé de signal depuis
 VIEW_EXPIRATION_DELAY = 120
 
 
-### Gestion de l'import des vidéos
-# Module d'import des videos
+### Gestion de l’import des vidéos
+# Module d’import des videos
 USE_IMPORT_VIDEO = True
 # Seuls les utilisateurs staff pourront importer des vidéos
 RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY = True
@@ -644,8 +644,8 @@ MAX_UPLOAD_SIZE_ON_IMPORT = 0
 # utile pour convertir une présentation BigBlueButton en fichier vidéo.
 USE_IMPORT_VIDEO_BBB_RECORDER = False
 # Répertoire du plugin bbb-recorder (voir la documentation https://github.com/jibon57/bbb-recorder).
-# bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d'encodage.
-# bbb-recorder crée un répertoire Downloads, au même niveau, qui nécessite de l'espace disque.
+# bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d’encodage.
+# bbb-recorder crée un répertoire Downloads, au même niveau, qui nécessite de l’espace disque.
 IMPORT_VIDEO_BBB_RECORDER_PLUGIN = '/home/pod/bbb-recorder/'
 # Répertoire qui contiendra les fichiers vidéo générés par bbb-recorder.
 IMPORT_VIDEO_BBB_RECORDER_PATH = '<my_nfs_dir>/bbb-recorder/'
@@ -701,7 +701,7 @@ WEBPUSH_SETTINGS = {
     "VAPID_ADMIN_EMAIL": "pod@univ.fr"
 }
 
-# Activation de l'application Cut
+# Activation de l’application Cut
 USE_CUT = True
 
 # Activation des habillages. Permet aux utilisateurs de customiser une vidéo avec un filigrane et des crédits.
@@ -724,16 +724,16 @@ AI_ENHANCEMENT_CLIENT_SECRET = "<my_aristote_secret>"
 AI_ENHANCEMENT_CGU_URL = "https://disi.pages.centralesupelec.fr/innovation/aristote/aristote-website/utilisation_service"
 AI_ENHANCEMENT_TO_STAFF_ONLY = True
 
-# Envoyer l'email à l'expéditeur ?
+# Envoyer l’email à l’expéditeur ?
 NOTIFY_SENDER = False
 
-# Pas d'utilisation du module des quiz
+# Pas d’utilisation du module des quiz
 USE_QUIZ = False
 
 # On cache les uid
 HIDE_USERNAME = True
 
-# Pas d'hyperliens
+# Pas d’hyperliens
 USE_HYPERLINKS = False
 ```
 
@@ -752,7 +752,7 @@ USE_HYPERLINKS = False
 upstream django {
   # server unix:///path/to/your/mysite/mysite.sock; # for a file socket
   server unix:///usr/local/django_projects/podv4/podv4.sock;
-  # server 127.0.0.1:8001; # for a web port socket (we'll use this first)
+  # server 127.0.0.1:8001; # for a web port socket (we’ll use this first)
 }
 
 # configuration of the server
@@ -768,7 +768,7 @@ server {
   # the port your site will be served on
   listen      80;
   # the domain name it will serve for
-  server_name pod.univ.fr; # substitute your machine's IP address or FQDN
+  server_name pod.univ.fr; # substitute your machine’s IP address or FQDN
   charset     utf-8;
 
   # max upload size
@@ -792,7 +792,7 @@ server {
     add_header Cache-Control "public";
     gzip on;
     # gzip_types text/vtt;
-    # alias /usr/local/django_projects/podv4/pod/media;  # your Django project's media files - amend as required
+    # alias /usr/local/django_projects/podv4/pod/media;  # your Django project’s media files - amend as required
     gzip_types text/vtt text/plain application/javascript text/javascript text/css image/svg+xml image/png image/jpeg;
     alias /data/www/pod/media;
   }
@@ -803,7 +803,7 @@ server {
     gzip_static  on;
     # gzip_types text/plain application/xml text/css text/javascript application/javascript image/svg+xml;
     gzip_types text/plain application/xml application/javascript text/javascript text/css image/svg+xml image/png image/jpeg;
-    alias /usr/local/django_projects/podv4/pod/static; # your Django project's static files - amend as required
+    alias /usr/local/django_projects/podv4/pod/static; # your Django project’s static files - amend as required
   }
 
   # Finally, send all non-media requests to the Django server.
@@ -817,7 +817,7 @@ server {
   }
 
   # Blocage des robots
-  # Ajouter d'autres robos si besoin | exemple (bingbot|GoogleBot|...)
+  # Ajouter d’autres robos si besoin | exemple (bingbot|GoogleBot|...)
   if ($http_user_agent ~ (bingbot) ) {
       return 403;
   }
@@ -838,7 +838,7 @@ server {
 # Django-related settings
 # the base directory (full path)
 chdir           = /usr/local/django_projects/podv4
-# Django's wsgi file
+# Django’s wsgi file
 module          = pod.wsgi
 # the virtualenv (full path)
 home            = /home/pod/.virtualenvs/django_pod4
@@ -886,9 +886,9 @@ CELERYD_PID_FILE="/var/run/celery/%N.pid"                              # fichier
 CELERYD_USER="pod"                                                     # utilisateur système utilisant celery
 CELERYD_GROUP="www-data"                                                  # groupe système utilisant celery
 CELERY_CREATE_DIRS=1                                                   # si celery dispose du droit de création de dossiers
-CELERYD_LOG_LEVEL="INFO"                                               # niveau d'information qui seront inscrit dans les logs
+CELERYD_LOG_LEVEL="INFO"                                               # niveau d’information qui seront inscrit dans les logs
 ```
 
-#### Fichier CSS pour l'UM
+#### Fichier CSS pour l’UM
 
 Voici le lien direct vers la dernière version du CSS UM : [https://video.umontpellier.fr/static/custom/custom-um.css](https://video.umontpellier.fr/static/custom/custom-um.css)

@@ -133,7 +133,7 @@ python manage.py import_data_from_v3_to_v4
 
 - `--dry`: Simulates what will be done (default=False).
 - `--createDB`: Runs Bash commands to create tables in the database and add initial data (see `make createDB`). The database must be empty (default=False).
-- `--onlytags`: Processes only the tags (default=False). Useful if you encounter the 'Too many connections' error when processing tags.
+- `--onlytags`: Processes only the tags (default=False). Useful if you encounter the `Too many connections` error when processing tags.
 
 #### Examples
 

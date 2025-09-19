@@ -12,7 +12,7 @@ lang: fr
 
 ## Installation
 
-### Choix du type d'installation
+### Choix du type d’installation
 
 * [Installation standard](install_standalone_fr)
 * [Installation via Docker](install_docker_fr)
@@ -21,9 +21,9 @@ lang: fr
 ### Configuration
 
 * [Configuration de la plateforme](configuration/configuration_fr)
-* [Configuration des groupes d'accès](configuration/access-group_fr)
+* [Configuration des groupes d’accès](configuration/access-group_fr)
 * [Intégration oEmbed dans Moodle](configuration/oembed_fr)
-* [Utilisation de l'API Rest](configuration/rest-api_fr)
+* [Utilisation de l’API Rest](configuration/rest-api_fr)
 * [Utilisation du mode Maintenance](configuration/maintenance-mode_fr)
 
 ### Installation et paramétrage avancé
@@ -33,17 +33,17 @@ lang: fr
 * [Mise en production](production-mode_fr)
 * [Optimisation Web](web-optimisation_fr)
 
-### Gestion de l'encodage, de la transcription, de l'xAPI et d'ActivityPub
+### Gestion de l’encodage, de la transcription, de l’xAPI et d’ActivityPub
 
 #### Mode local
 
 * [Encodage local](local-encoding_fr)
-* [Installation de l'autotranscription](optional/auto-transcription-install_fr)
+* [Installation de l’autotranscription](optional/auto-transcription-install_fr)
 
 #### Mode déporté sur une machine distante
 
-* [Déporter l'encodage sur un ou plusieurs serveurs](remote-encoding_fr)
-* [Installation de l'autotranscription](optional/auto-transcription-install_fr)
+* [Déporter l’encodage sur un ou plusieurs serveurs](remote-encoding_fr)
+* [Installation de l’autotranscription](optional/auto-transcription-install_fr)
 
 #### Mode déporté sur une machine ou un docker en microservice
 
@@ -56,7 +56,7 @@ lang: fr
 #### BigBlueButton
 
 * [Couplage avec BigBlueButton](optional/meeting-install_fr)
-* [Migration d'infrastructure BigBlueButton](optional/bbb-infrastructure-migration-install_fr)
+* [Migration d’infrastructure BigBlueButton](optional/bbb-infrastructure-migration-install_fr)
 * [Mise en place du mode webinaire pour les sessions BigBlueButton](optional/set-up-webinar-mode-bbb-install_fr)
 * [Importer une vidéo externe / un enregistrement BigBlueButton au format vidéo](optional/import-external-video-bbb-recording-install_fr)
 
@@ -68,8 +68,8 @@ lang: fr
 #### Autres
 
 * [Mode PWA et notifications](optional/mode_pwa_notification_fr)
-* [Mise en place d'un direct Live](optional/set-up-live_fr)
-* [Mise en place de l'enrichissement par l'IA Aristote](optional/aristote_fr)
+* [Mise en place d’un direct Live](optional/set-up-live_fr)
+* [Mise en place de l’enrichissement par l’IA Aristote](optional/aristote_fr)
 
 ## Mise à jour
 
@@ -84,7 +84,7 @@ lang: fr
 
 * [Conseils et astuces](tricks_fr)
 
-## Documentations d'installation par les établissements
+## Documentations d’installation par les établissements
 
 * [Université de Montpellier](install-by-etabs/university-montpellier_fr.md)
 * [Université Grenoble Alpes](install-by-etabs/university-uga_fr.md)
