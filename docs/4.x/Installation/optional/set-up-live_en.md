@@ -24,7 +24,7 @@ Switch to root user (sudo -s)
 $> vim /etc/apt/sources.list
 ```
 
-Add the line: _deb http://ftp.debian.org/debian stretch-backports main_
+Add the line: `deb http://ftp.debian.org/debian stretch-backports main`
 
 Then update:
 
@@ -82,11 +82,11 @@ Then, create the **RTMP** snippet:
 $> vim /etc/nginx/snippets/rtmp.conf
 ```
 
-### Original rtmp.conf File
+### Original `rtmp.conf` File
 
 Below is the original configuration file which uses **3 encodings** and is not specifically optimized for latency (expect **between 15 and 30 seconds of latency** with this configuration):
 
-**File /etc/nginx/snippets/rtmp.conf**
+#### File `/etc/nginx/snippets/rtmp.conf`
 
 ```bash
 rtmp {
@@ -153,7 +153,7 @@ The modified configuration elements are as follows:
 
 Which gives:
 
-**File /etc/nginx/snippets/rtmp.conf**
+#### File `/etc/nginx/snippets/rtmp.conf` (Reduced latency)
 
 ```bash
 rtmp {
@@ -205,7 +205,7 @@ rtmp {
 ```
 
 > 💡 This configuration is more recent, consumes fewer resources (2 encodings), with reduced final latency.
-
+>
 > ⚠️ After deployment in production, it was found that, during RTMP publishing from SMP 351, this configuration could cause an error of the type "**force fragment split**".
 >
 > Finally, by commenting out the following parameters, this problem no longer reappeared:
@@ -226,7 +226,7 @@ Finally, declare the `hls` route to read the videos:
 $> vim /etc/nginx/sites-enabled/default
 ```
 
-**File /etc/nginx/sites-enabled/default**
+### File `/etc/nginx/sites-enabled/default`
 
 ```bash
 server {
@@ -288,7 +288,7 @@ Here is an example configuration for the two supported hardware types.
 
 This allows controlling the start and stop of recording.
 
-**Example**
+### Example
 
 ```bash
 # example for WOWZA:
@@ -324,7 +324,7 @@ if you use SMPs you can retrieve the video file from an event (live) in 2 ways:
 
 Pod connects to the SMP server to retrieve the video file and encode it as a video linked to the event).
 
-In the broadcaster's json configuration:
+In the broadcaster’s json configuration:
 
 - verify that the port is declared and open between the two servers
 - `use_opencast` must be false
@@ -332,9 +332,9 @@ In the broadcaster's json configuration:
 
 ### #Retrieval via the **openCast (studio)** module (From 3.7.0)
 
-The SMP, if it has the push functionality (Extron 351 model for example), sends the file directly to Pod's studio which will encode it and link it to the event.
+The SMP, if it has the push functionality (Extron 351 model for example), sends the file directly to Pod’s studio which will encode it and link it to the event.
 
-In the broadcaster's json configuration:
+In the broadcaster’s json configuration:
 
 - `use_opencast` must be "true"
 - `sftp_port` can be empty
@@ -342,15 +342,15 @@ In the broadcaster's json configuration:
 
 To find the `rtmp_streamer_id`, you can call the following URL of your SMP and see which streamer is configured in rtmp (in the `pub_url`):
 
-http://xxx.xxx.xx.x/api/swis/resources?uri=/streamer/rtmp/1&uri=/streamer/rtmp/2&uri=/streamer/rtmp/3&uri=/streamer/rtmp/4&uri=/streamer/rtmp/5&uri=/streamer/rtmp/6
+<http://xxx.xxx.xx.x/api/swis/resources?uri=/streamer/rtmp/1&uri=/streamer/rtmp/2&uri=/streamer/rtmp/3&uri=/streamer/rtmp/4&uri=/streamer/rtmp/5&uri=/streamer/rtmp/6>
 
 You must also add a Recorder in the Pod admin with the IP of the SMP (define a Salt, Login, Password)
 
 On the SMP side you must:
 
 - Enable (or install) the Opencast plugin from the hardware management interface (Configuration -> Advanced Features)
-- Configure publication towards Pod's Opencast (Scheduled Events -> Publish Settings -> Active Profiles )
-  - Opencast Server Address = Pod's address
+- Configure publication towards Pod’s Opencast (Scheduled Events -> Publish Settings -> Active Profiles )
+  - Opencast Server Address = Pod’s address
   - Username and Password = those defined in the Recorder
 - Test the connection to validate the settings
 
@@ -379,32 +379,26 @@ bash -c 'export WORKON_HOME=/home/pod/.virtualenvs; export VIRTUALENVWRAPPER_PYT
 
 With **OBS**, in the settings, Stream tab, I specify this data:
 
-**URL: rtmp://server.univ.fr/live**
+- **URL**: rtmp://server.univ.fr/live
+- **Stream key**: nico
 
-**Stream key: nico**
-
-In **Pod**, in my broadcaster's settings, in the URL field, I will specify this: **http://server.univ.fr/hls/nico.m3u8**
+In **Pod**, in my broadcaster’s settings, in the URL field, I will specify this: <http://server.univ.fr/hls/nico.m3u8>
 
 The short title must be the same as the stream/key (here **nico**) so that the live status can be modified by the REST call ( `exec_publish curl ...)`)
 
 We have just created a live stream accessible in HTML5, multi-bitrate and adaptive, here is the content of the nico.m3u8 file:
 
-**File nico.m3u8**
+### File `nico.m3u8`
 
 ```bash
       #EXTM3U
-
       #EXT-X-VERSION:3
-
       #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=320000
-
       nico_low/index.m3u8
 
       #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=640000
-
       nico_high/index.m3u8
 
       #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=1200000
-
       nico_src/index.m3u8
 ```

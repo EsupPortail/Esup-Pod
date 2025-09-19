@@ -44,7 +44,7 @@ On the Pod side, configuration is also required via:
 
 Several properties are essential for configuration in the settings file:
 
-* **ALLOW_MANUAL_RECORDING_CLAIMING**: If True, a link will appear in the authorized user's profile menu, allowing them to claim a recording.
+* **ALLOW_MANUAL_RECORDING_CLAIMING**: If True, a link will appear in the authorized user ’s profile menu, allowing them to claim a recording.
 * **ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER**: If True, the recorder manager can choose the owner of the recording.
 * **DEFAULT_RECORDER_ID**: Adds a default recorder to an unidentifiable recording (incorrect path in the FTP deposit).
   > ⚠️ Useful if the Recorder plugin was used previously.
@@ -174,7 +174,7 @@ The URL used corresponds to:
 * **WEB_HOSTNAME** = Pod server address (BASE_URL).
 * **IP_ADDRESS_UNDERSCORED** = Recorder IP address with dots replaced by underscores.
 * **FILENAME.MP4** = Name of the file in MP4 or ZIP format corresponding to the processed video; name generated randomly—with a timestamp notion—by the recorder.
-* **HASHKEY** = MD5 key generated from the recorder's IP address (with dots) and the configured "Hash" property.
+* **HASHKEY** = MD5 key generated from the recorder ’s IP address (with dots) and the configured "Hash" property.
 
 At this point, the video file has been deposited on the Pod server, and an HTTPS request has been sent.
 
@@ -190,7 +190,7 @@ Hello,
 A new recording has arrived on the "Pod" platform from the recorder "MultiCAM de Polytech".
 To add it, please click on the following link.
 [https://pod.universite.fr/sso-cas/login/?next=https%3A%2F%2Fpod.universite.fr%2Fmediacourses_add%2F%3Fmediapath%3De60e464d-d096-4388-91c2-7ac67a60176e.zip%26course_title%3DEnregistrement+2+juil.+2019%26recorder%3D1](https://pod.universite.fr/sso-cas/login/?next=https%3A%2F%2Fpod.universite.fr%2Fmediacourses_add%2F%3Fmediapath%3De60e464d-d096-4388-91c2-7ac67a60176e.zip%26course_title%3DEnregistrement+2+juil.+2019%26recorder%3D1)
-_If the link is not active, it must be copied and pasted into the browser's address bar._
+_If the link is not active, it must be copied and pasted into the browser ’s address bar._
 
 Best regards
 ```
@@ -265,7 +265,7 @@ Saving this form allows the processing and encoding of the file provided by the 
 
 Once the videos are published by the recorder and processed by Pod, these recordings can be tracked via the Recordings module, accessible from the administration interface.
 
-The superuser can also manually add a new recording, corresponding to video files located in the directory defined by **DEFAULT_RECORDER_PATH** and the recorder's directory.
+The superuser can also manually add a new recording, corresponding to video files located in the directory defined by **DEFAULT_RECORDER_PATH** and the recorder ’s directory.
 
 This can be useful if claiming is not activated and a user has not clicked on the link in the notification email (_which means the MP4 file (or ZIP) containing the video (and slides) is on the Pod server, but the video has not been processed or encoded_).
 

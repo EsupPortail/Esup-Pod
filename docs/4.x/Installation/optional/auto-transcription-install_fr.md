@@ -4,13 +4,13 @@ version: 4.x
 lang: fr
 ---
 
-# Installation de l'autotranscription
+# Installation de l’autotranscription
 
-> ⚠️ Si vous souhaitez déporter la transcription sur le serveur d'encodage, les commandes suivantes sont à effectuer sur le serveur d'encodage
+> ⚠️ Si vous souhaitez déporter la transcription sur le serveur d’encodage, les commandes suivantes sont à effectuer sur le serveur d’encodage
 
 ---
 
-## Utilisation de l'auto‑transcription dans Pod
+## Utilisation de l’auto‑transcription dans Pod
 
 Pour découper le fichier audio de Pod et faire sa transcription, nous avons besoin de Sox, il faut donc installer les deux librairies suivantes :
 
@@ -31,16 +31,16 @@ Il convient de faire un sous‑dossier par langue (ex. `fr`, `en`) et par type d
 Par exemple, pour un modèle Vosk français :
 `/path/to/project/django_projects/transcription/fr/vosk/vosk-model-fr-0.6-linto-2.2.0/`
 
-À présent, vous pouvez installer un des deux modèles : **Whisper** ou **Vosk**. Il est toutefois conseillé d'utiliser Whisper.
+À présent, vous pouvez installer un des deux modèles : **Whisper** ou **Vosk**. Il est toutefois conseillé d’utiliser Whisper.
 
-Le modèle STT de Coqui-AI n'étant plus activement maintenu, et étant moins performant que les modèles **Whisper** ou **Vosk**, il a été retiré de Pod v4.
+Le modèle STT de Coqui-AI n’étant plus activement maintenu, et étant moins performant que les modèles **Whisper** ou **Vosk**, il a été retiré de Pod v4.
 {: .alert .alert-warning}
 
 ---
 
 ## Vosk
 
-Installez l'application dans l'environnement virtuel (`vosk==0.3.45`) :
+Installez l’application dans l’environnement virtuel (`vosk==0.3.45`) :
 
 ```bash
 (django_pod4)pod@podv4:/usr/local/django_projects/podv4$ pip3 install vosk
@@ -80,7 +80,7 @@ TRANSCRIPTION_MODEL_PARAM = {
 }
 ```
 
-Pour l'anglais, ajoutez :
+Pour l’anglais, ajoutez :
 
 ```python
 'VOSK': {
@@ -95,7 +95,7 @@ Lors de l’upload d’une vidéo avec l’auto-transcription activée, le modè
 
 ### [OPTIONNEL] Enrichissement du modèle Vosk
 
-En installant les modèles de compilation vous pourrez contribuer à l'enrichissement des modèles.
+En installant les modèles de compilation vous pourrez contribuer à l’enrichissement des modèles.
 
 Les modèles utilisés pour l’enrichissement du modèle peuvent être stockés dans `/path/to/project/django_projects/compile-model`
 
@@ -264,6 +264,6 @@ Pour créer le répertoire adéquat :
 
 Voir les détails ici pour le choix du modèle : [https://github.com/openai/whisper#available-models-and-languages](https://github.com/openai/whisper#available-models-and-languages)
 
-Le modèle `small` n'est pas plus gourmand que Vosk et offre déjà de bonnes performances.
+Le modèle `small` n’est pas plus gourmand que Vosk et offre déjà de bonnes performances.
 
 > ⚠️ Personnellement, je recommande le modèle `medium` qui est certes un peu plus gourmand mais qui offre de très bons résultats, bien mieux que Vosk.

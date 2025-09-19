@@ -23,7 +23,7 @@ Ce document présente les travaux réalisés par l’Université de Montpellier 
 
 ## Présentation de l’infrastructure de production
 
-![Infrastructure Pod v4 à l’UM](um/architecture.png)
+![Infrastructure Pod v4 à l’UM](um/architecture.webp)
 
 Cette infrastructure repose sur l’utilisation de :
 
@@ -60,7 +60,7 @@ _Tous les serveurs tournent sur Debian 12._
 
 ---
 
-### Etape 1 : Installation de Pod v4
+### Étape 1 : Installation de Pod v4
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -82,7 +82,7 @@ Concernant le fichier de configuration `settings_local.py`, une version finale e
 🎯 A la fin de cette étape, Pod v4 est installé sur tous les serveurs Pod, avec toutes ses librairies Python.
 {: .alert .alert-primary}
 
-### Etape 2 : Configuration et utilisation d’une base de données MySQL/MariaDB
+### Étape 2 : Configuration et utilisation d’une base de données MySQL/MariaDB
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -99,7 +99,7 @@ Au vue de l’architecture, j’ai remplacé `<my_database_host>` par **l’adre
 🎯 A la fin de cette étape, tous les serveurs Pod peuvent utiliser la base de données de type MySQL/MariaDB.
 {: .alert .alert-primary}
 
-### Etape 3 : Installation de REDIS
+### Étape 3 : Installation de REDIS
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -119,7 +119,7 @@ protected-mode no
 🎯 A la fin de cette étape, REDIS est installé sur le serveur principal de Pod.
 {: .alert .alert-primary}
 
-### Etape 4 : Configuration et utilisation de REDIS
+### Étape 4 : Configuration et utilisation de REDIS
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -132,7 +132,7 @@ Pour configurer et utiliser REDIS sur tous les serveurs Pod, j’ai suivi la doc
 🎯 A la fin de cette étape, REDIS peut être utilisé par l’ensemble des serveurs Pod.
 {: .alert .alert-primary}
 
-### Etape 5 : Installation d’Elasticsearch
+### Étape 5 : Installation d’Elasticsearch
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -168,7 +168,7 @@ xpack.security.http.ssl.truststore.path: /etc/elasticsearch/elastic-certificates
 🎯 A la fin de cette étape, Elasticsearch est installé sur le serveur principal de Pod.
 {: .alert .alert-primary}
 
-### Etape 6 : Installation des dépendances
+### Étape 6 : Installation des dépendances
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -184,7 +184,7 @@ Pour installer les dépendances sur tous les serveurs Pod, j’ai suivi la **[do
 🎯 A la fin de cette étape, les dépendances de Pod sont installés sur tous les serveurs Pod.
 {: .alert .alert-primary}
 
-### Etape 7 : Installation du système Web reposant sur NGINX/uWSGI et paramétrage
+### Étape 7 : Installation du système Web reposant sur NGINX/uWSGI et paramétrage
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -205,7 +205,7 @@ Pour installer, configurer et utiliser Nginx/uWSGI sur tous les serveurs Web, j�
 🎯 A la fin de cette étape, les serveurs Web reposant sur Nginx / UWSGI sont opérationnels.
 {: .alert .alert-primary}
 
-### Etape 8 : Installation du système d’encodage
+### Étape 8 : Installation du système d’encodage
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -223,7 +223,7 @@ Cela implique l’utilisation de REDIS du serveur principal et de Celery sur les
 🎯 A la fin de cette étape, les serveurs d’encodage, reposant sur **REDIS** et du **Celery**, sont fonctionnels.
 {: .alert .alert-primary}
 
-### Etape 9 : Installation du système de transcription
+### Étape 9 : Installation du système de transcription
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -239,7 +239,7 @@ Pour installer ce système d’autotranscription, j’ai suivi la **[documentati
 🎯 A la fin de cette étape, les serveurs d’encodage peuvent réaliser des transcriptions.
 {: .alert .alert-primary}
 
-### Etape 10 : Personnalisation visuelle
+### Étape 10 : Personnalisation visuelle
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -254,7 +254,7 @@ Pour réaliser la personnalisation visuelle pour mon établissement, j’ai suiv
 🎯 A la fin de cette étape, le site Web Pod v4 sera à la charte graphique de votre établissement.
 {: .alert .alert-primary}
 
-### Etape 11 : Migration des données entre la version 3  et la version 4
+### Étape 11 : Migration des données entre la version 3  et la version 4
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|

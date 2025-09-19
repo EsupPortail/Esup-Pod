@@ -43,11 +43,11 @@ Il est ensuite nécessaire d’activer Pod comme fournisseur dans le fitlre oEmb
 
 Pour cela, il faut se rendre dans `Administration / Plugins / Filtres / Filtre oEmbed / Manager providers` et cliquer sur l’icône Afficher (oeil barré) à droite de l’instance Pod concernée sous la liste `Downloaded providers` :
 
-![Configuration du filtre oEmbed](configuration_screens/oembed2.png)
+![Configuration du filtre oEmbed](configuration_screens/oembed2.webp)
 
 Si le fournisseur n’a pas été déclaré précédemment, il est possible de le faire ici en se basant sur le fournisseur Lille.Pod. Il faut cliquer sur l’icône `Modifier` (engrenage), adapter les paramètres en accord avec la plateforme Pod correspondante, cocher `Enabled` et cliquer sur `Save as new local` :
 
-![Configuration du filtre oEmbed](configuration_screens/oembed3.png)
+![Configuration du filtre oEmbed](configuration_screens/oembed3.webp)
 
 > **Attention**, il faut faire bien attention à ce que la syntaxe soit respectée pour l’option End points car cela peut résulter en une erreur de lecture en base de données et, par conséquent, empêcher l’édition des founrisseurs oEmbed (en cas de blocage, il faut désinstaller puis réinstaller le fitlre oEmbed).
 
@@ -63,9 +63,9 @@ Cela peut être forcé pour tous les cours du site Moodle (_Activé_) ou peut se
 
 Quand la configuration est terminée et le filtre activé pour l’instance Moodle souhaitée (site, cours ou activité), toute hyperlien dans une portion de texte HTML renvoyant vers une page Pod est convertie en intégration vidéo (largeur de 100% du conteneur parent) :
 
-![Exemple d’intégration](configuration_screens/oembed5.png)
+![Exemple d’intégration](configuration_screens/oembed5.webp)
 
 Cela fonctionne aussi bien pour les liens publics que privés (vidéo en mode brouillon).
 
 > ⚠️ Attention : depuis la version 3 de POD, le lien oembed a changé :
-> ![Lien oEmbed depuis Pod v3](configuration_screens/oembed6.png)
+> ![Lien oEmbed depuis Pod v3](configuration_screens/oembed6.webp)

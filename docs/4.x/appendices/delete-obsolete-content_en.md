@@ -39,4 +39,4 @@ python manage.py clean_video_files --type=all --dry
 ```
 
 The `--dry` parameter allows you to run a simulation, just to see the list of what would be deleted without actually deleting anything.
-Check the list of items to be deleted, then run the command again without the ‘–dry’ parameter to permanently delete them.
+Check the list of items to be deleted, then run the command again without the `-–dry` parameter to permanently delete them.

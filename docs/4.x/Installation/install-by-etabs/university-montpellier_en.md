@@ -23,7 +23,7 @@ This document presents the work carried out by the University of Montpellier to 
 
 ## Presentation of the production infrastructure
 
-![Pod v4 Infrastructure at UM](um/architecture.png)
+![Pod v4 Infrastructure at UM](um/architecture.webp)
 
 This infrastructure relies on the use of:
 

@@ -35,6 +35,6 @@ lang: en
     python manage.py loaddata import_user.json
     ```
 
-    The users' pk is regenerated based on the users already present in your pod.
+    The users’ pk is regenerated based on the users already present in your pod.
 
 > ⚠️ These commands may need to be adapted to your environment.

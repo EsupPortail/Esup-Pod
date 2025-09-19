@@ -95,7 +95,7 @@ Ce plugin `bbb-recorder` avait déjà été utilisé pour l’ancien système,
  et a été utilisé à de nombreuses reprises avec succès.
 
 > ⚠️ A compter de Juillet 2025, il semble y avoir une incompatibilité entre bbb-recorder et les dernières versions de google-chrome-stable :
-pour convertir des vidéos issues d'une instance BBB 2.2, il a fallu downgrader `google-chrome-stable` de la version 139 à 128, pour arriver à télécharger les enregistrements.
+pour convertir des vidéos issues d’une instance BBB 2.2, il a fallu downgrader `google-chrome-stable` de la version 139 à 128, pour arriver à télécharger les enregistrements.
 
 #### Fonctionnement de `bbb-recorder`
 
@@ -412,4 +412,4 @@ Si vous souhaitez supprimer les enregistrements externes qui concernaient votre 
 DELETE FROM import_video_externalrecording WHERE source_url like 'SCRIPT_BBB_SERVER_URL%'
 ```
 
-> 💡 Je préfère ne pas mettre cette requête dans le script; à vous de voir quand vous souhaitez réaliser cette suppression. Bien entendu, pensez à réaliser une sauvegarde avant.
+> 💡 Je préfère ne pas mettre cette requête dans le script ; à vous de voir quand vous souhaitez réaliser cette suppression. Bien entendu, pensez à réaliser une sauvegarde avant.
