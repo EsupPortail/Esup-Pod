@@ -92,6 +92,10 @@ createconfigs:
 	python3 -Wd manage.py createconfiguration fr
 	python3 -Wd manage.py createconfiguration en
 
+# Create a superuser
+createsuperuser:
+	python3 manage.py createsuperuser
+
 # -- Docker
 # Use for docker run and docker exec commands
 -include .env.dev
