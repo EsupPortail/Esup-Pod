@@ -364,7 +364,7 @@ function createModalFor(channelTab) {
             </div>
         </div>
     `;
-  headerElement.insertAdjacentElement('afterend', modalElement);
+  headerElement.insertAdjacentElement("afterend", modalElement);
   let allChannelsLoaded = false;
   modalElement.addEventListener("shown.bs.modal", function () {
     const modalContentElement = this.querySelector(".modal-content");
