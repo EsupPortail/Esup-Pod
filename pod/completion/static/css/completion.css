@@ -54,7 +54,6 @@ table#list-contributor thead th.contributor-name {
 .grid-list-track .thead-title {
   margin: 0;
   padding-right: 20px;
-  color: var(--pod-primary);
   word-wrap: break-word;
   font-weight: 600;
 }
