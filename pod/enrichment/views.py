@@ -89,10 +89,18 @@ def edit_enrichment(request, slug):
 
     list_enrichment = video.enrichment_set.all()
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __AVAILABLE_ACTIONS__:
-            return eval(
-                "edit_enrichment_{0}(request, video)".format(request.POST["action"])
-            )
+        action = request.POST["action"]
+        if action in __AVAILABLE_ACTIONS__:
+            ACTION_HANDLERS = {
+                "new": edit_enrichment_new,
+                "save": edit_enrichment_save,
+                "modify": edit_enrichment_modify,
+                "delete": edit_enrichment_delete,
+                "cancel": edit_enrichment_cancel,
+            }
+            handler = ACTION_HANDLERS.get(action)
+            if handler:
+                return handler(request, video)
     else:
         return render(
             request,
