@@ -39,14 +39,20 @@ def video_chapter(request, slug):
 
     list_chapter = video.chapter_set.all()
 
-    if request.method == "POST":
-        if (
-            request.POST.get("action")
-            and request.POST.get("action") in __AVAILABLE_ACTIONS__
-        ):
-            return eval(
-                "video_chapter_{0}(request, video)".format(request.POST.get("action"))
-            )
+    if request.method == "POST" and request.POST.get("action"):
+        action = request.POST["action"]
+        if action in __AVAILABLE_ACTIONS__:
+            ACTION_HANDLERS = {
+                "new": video_chapter_new,
+                "save": video_chapter_save,
+                "modify": video_chapter_modify,
+                "delete": video_chapter_delete,
+                "cancel": video_chapter_cancel,
+                "import": video_chapter_import,
+            }
+            handler = ACTION_HANDLERS.get(action)
+            if handler:
+                return handler(request, video)
     else:
         return render(
             request,

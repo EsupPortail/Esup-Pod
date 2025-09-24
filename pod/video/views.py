@@ -1733,7 +1733,16 @@ def video_notes(request, slug):
     elif request.method == "GET" and request.GET.get("action"):
         action = request.GET.get("action").split("_")[0]
     if action in __NOTE_ACTION__:
-        return eval("video_note_{0}(request, slug)".format(action))
+        ACTION_HANDLERS = {
+            "new": video_note_get,
+            "save": video_note_save,
+            "modify": video_note_remove,
+            "delete": video_note_form,
+            "cancel": video_note_download,
+        }
+        handler = ACTION_HANDLERS.get(action)
+        if handler:
+            return handler(request, slug)
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     listNotes = get_adv_note_list(request, video)
     return render(
