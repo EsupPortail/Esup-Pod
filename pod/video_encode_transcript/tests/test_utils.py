@@ -1,7 +1,7 @@
 """
-    Unit tests for Esup-Pod video encoding utilities.
+Unit tests for Esup-Pod video encoding utilities.
 
-    Run with `python manage.py test pod.video_encode_transcript.tests.EncodingUtilitiesTests`
+Run with `python manage.py test pod.video_encode_transcript.tests.EncodingUtilitiesTests`
 """
 
 import unittest

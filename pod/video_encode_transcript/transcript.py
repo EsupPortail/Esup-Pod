@@ -21,6 +21,7 @@ if (
 ):
     from .transcript_model import start_transcripting
 else:
+
     def start_transcripting(*args, **kwargs):
         raise NotImplementedError("No transcription engine available.")
 
