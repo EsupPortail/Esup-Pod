@@ -41,7 +41,6 @@ from pod.video.queryset.utils import prefetch_video_completion_hyperlink
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTIVE_MODEL_ENRICH = getattr(settings, "ACTIVE_MODEL_ENRICH", False)
 __AVAILABLE_ACTIONS__ = ["new", "save", "modify", "delete"]
-__CAPTION_MAKER_ACTION__ = ["save"]
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
@@ -82,10 +81,10 @@ def video_caption_maker(request, slug):
     video_folder = video.get_or_create_video_folder()
     if request.method == "POST" and request.POST.get("action"):
         action = request.POST.get("action")
-        if action in __CAPTION_MAKER_ACTION__:
-            ACTION_HANDLERS = {
-                "save": video_caption_maker_save,
-            }
+        ACTION_HANDLERS = {
+            "save": video_caption_maker_save,
+        }
+        if action in ACTION_HANDLERS:
             handler = ACTION_HANDLERS.get(action)
             if handler:
                 return handler(request, video)
@@ -956,7 +955,7 @@ def video_completion_track(request, slug):
 
     if request.POST and request.POST.get("action"):
         action = request.POST["action"]
-        if request.POST["action"] in __AVAILABLE_ACTIONS__:
+        if action in __AVAILABLE_ACTIONS__:
             ACTION_HANDLERS = {
                 "new": video_completion_track_new,
                 "save": video_completion_track_save,
