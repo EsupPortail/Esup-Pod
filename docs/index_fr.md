@@ -18,6 +18,6 @@ de la vie institutionnelle (vidéo d’événements), en proposant plusieurs jou
 
 * [Documentation technique d’Esup-Pod v4](4.x/index)
 
-Cette documentation ne concerne que la version 4 du projet Esup-Pod.
+Cette documentation ne concerne que la version 4 du projet Esup-Pod.<br>
 _Pour les anciennes versions d'Esup-Pod, merci de consulter le lien suivant : [Documentations des versions 1, 2 et 3 d'Esup-Pod](https://www.esup-portail.org/wiki/x/LYA3Y)_
 {: .alert .alert-warning}
