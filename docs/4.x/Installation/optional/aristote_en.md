@@ -12,15 +12,15 @@ lang: en
 
 This module enables enriching videos with the Aristote AI developed by Centrale Supelec ([disi.pages.centralesupelec.fr](https://disi.pages.centralesupelec.fr/innovation/aristote/aristote-website)). The enrichments allow, in particular, the automatic generation of metadata (title, description and keywords), a transcription as well as a quiz from the audio track of the video.
 
-Technically, enrichment requests are made at the initiative of the video owners from their editing page. A request is then sent to the Aristote server with, as parameters, the URL of an audio file (corresponding to the video's audio track) and a notification URL that will be contacted by Aristote once the processing has been completed.
+Technically, enrichment requests are made at the initiative of the video owners from their editing page. A request is then sent to the Aristote server with, as parameters, the URL of an audio file (corresponding to the video’s audio track) and a notification URL that will be contacted by Aristote once the processing has been completed.
 
 ## Prerequisites
 
-The URLs sent to Aristote for retrieving the audio file and for treatment notification must be accessible from anywhere in the world because it is currently not possible to filter requests made by Aristote in response to enrichment requests. This is due to Aristote's infrastructure (based on Kubernetes), which automatically creates or removes backend servers depending on load.
+The URLs sent to Aristote for retrieving the audio file and for treatment notification must be accessible from anywhere in the world because it is currently not possible to filter requests made by Aristote in response to enrichment requests. This is due to Aristote’s infrastructure (based on Kubernetes), which automatically creates or removes backend servers depending on load.
 
 These backend servers do not have a predictable IP and send requests directly without going through a proxy that would allow having a fixed and reliable originating address (which could be filtered).
 
-Up to POD version 3.8.1, these URLs begin with the domain name of the POD server querying Aristote. This server must therefore be accessible from the entire world (which can be problematic for test servers whose access is often limited to the host institution's internal network).
+Up to POD version 3.8.1, these URLs begin with the domain name of the POD server querying Aristote. This server must therefore be accessible from the entire world (which can be problematic for test servers whose access is often limited to the host institution’s internal network).
 
 ## Configuration
 

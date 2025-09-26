@@ -28,7 +28,7 @@ For reference, the [pod.univ-lille.fr](http://pod.univ-lille.fr) server had the 
 Before any optimisation, we had the following results:
 
 - For a link to a video: mobile 22% / desktop 57%
-- Home page: we didn't look![(wink)](http://www.esup-portail.org/wiki/s/9j7max/9111/1h7j1tb/_/images/icons/emoticons/wink.svg)
+- Home page: we didn’t look![(wink)](http://www.esup-portail.org/wiki/s/9j7max/9111/1h7j1tb/_/images/icons/emoticons/wink.svg)
 
 At the Nginx level, here is what we did:
 
@@ -36,7 +36,7 @@ At the Nginx level, here is what we did:
 
 With this, when nginx finds a `file.css.gz` file in the static folder, it sends it instead of the standard version (the browser will decompress it)
 
-**pod_nginx.conf**
+#### pod_nginx.conf
 
 ```bash
 location /static {
@@ -48,7 +48,7 @@ location /static {
 
 For this to work properly, you must of course have ‘.gz’ files, so we manually run a shell script:
 
-**compress_static.sh**
+#### compress_static.sh
 
 ```bash
 #!/bin/bash
@@ -69,33 +69,33 @@ done
 
 To optimise bandwidth, we can also improve performance by asking nginx to compress text content on the fly. Here is what we added to pod\_nginx.conf:
 
-**pod_nginx.conf**
+#### compression in pod_nginx.conf
 
 ```bash
     # Django media
     location /media {
         gzip on;
         gzip_types text/vtt;
-    [...]
+        [...]
     }
     [...]
     # Finally, send all non-media requests to the Django server.
     location / {
         gzip on;
         uwsgi_pass  django;
-    [...]
+        [...]
     }
 ```
 
 Note: to ensure that vtt files are recognised as text, we added them as ‘text/vtt’ in `/etc/ningx/mime.types`.
 
-**3. Caching**
+### 3. Caching
 
 We defined the following caching policy (1 year on /media, 60 days on /static):
 
-For more information on the importance of setting ‘expires’, please refer to this document: [Avoiding unpredictable caching of static files](http://www.esup-portail.org/wiki/spaces/DOC/pages/967737345/% C3%89viter+les+mises+en+cache+de+dur%C3%A9e+impr%C3%A9visible+des+fichiers+statiques)
+For more information on the importance of setting ‘expires’, please refer to this document: [Avoiding unpredictable caching of static files](http://www.esup-portail.org/wiki/spaces/DOC/pages/967737345/%C3%89viter+les+mises+en+cache+de+dur%C3%A9e+impr%C3%A9visible+des+fichiers+statiques)
 
-**pod_nginx.conf**
+#### Caching in `pod_nginx.conf`
 
 ```bash
 location /media {

@@ -10,7 +10,7 @@ lang: fr
 
 ### Announce the upgrade to users
 
-In Pod administration (https://VOTRE_SERVEUR/admin/main/configuration/), you'll find:
+In Pod administration (https://VOTRE_SERVEUR/admin/main/configuration/), you’ll find:
 
 The “maintenance_text_scheduled” field lets you define a customized maintenance message.
 The “maintenance_scheduled” field lets you display/hide (=1 / 0) this message on Pod.
@@ -58,7 +58,7 @@ pip3 install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
 cd pod; yarn upgrade; cd ..
-# Caution: before running collectstatic --clear, make sure you've backed up the static/custom folder if you've put custom files in it.
+# Caution: before running collectstatic --clear, make sure you’ve backed up the static/custom folder if you’ve put custom files in it.
 python manage.py collectstatic --no-input --clear
 ```
 
@@ -130,7 +130,7 @@ mkdir -p pod/custom/static/opencast/studio
 cp -r build/* pod/custom/static/opencast/studio
 ```
 
-Finally, don't forget to collect your static files for production via the command:
+Finally, don’t forget to collect your static files for production via the command:
 
 ```sh
 python manage.py collectstatic

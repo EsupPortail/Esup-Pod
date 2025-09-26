@@ -43,7 +43,7 @@ Ceci entrainera la suppression des répertoires suivants :
 
 ## Mise à jour
 
-Ouvrir un terminal sur le conteneur _pod-back-with-volumes_ ou _pod-dev-with-volumes_ en fonction du type d'installation choisi.
+Ouvrir un terminal sur le conteneur _pod-back-with-volumes_ ou _pod-dev-with-volumes_ en fonction du type d’installation choisi.
 
 Depuis ce terminal lancer les commandes suivantes
 
@@ -78,7 +78,7 @@ python manage.py collectstatic --no-input --clear
 
 Après avoir fait une mise à jour d’Esup-Pod, la commande ci-dessous permet de connaitre les nouveaux paramètres par rapport à une version précédente :
 
-Toujours depuis le conteneur _pod-back-with-volumes_ ou _pod-dev-with-volumes_ en fonction du type d'installation choisi.
+Toujours depuis le conteneur _pod-back-with-volumes_ ou _pod-dev-with-volumes_ en fonction du type d’installation choisi.
 
 ```sh
 python manage.py compareconfiguration *VERSION_PRECEDENTE*

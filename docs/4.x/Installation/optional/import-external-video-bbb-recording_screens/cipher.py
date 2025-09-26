@@ -1,7 +1,7 @@
 """
 This module contains all logic necessary to decipher the signature.
 
-YouTube's strategy to restrict downloading videos is to send a ciphered version
+YouTube ’s strategy to restrict downloading videos is to send a ciphered version
 of the signature to the client, along with the decryption algorithm obfuscated
 in JavaScript. For the clients to play the videos, JavaScript must take the
 ciphered version, cycle it through a series of "transform functions," and then

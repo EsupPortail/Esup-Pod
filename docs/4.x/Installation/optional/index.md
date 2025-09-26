@@ -8,17 +8,17 @@ lang: fr
 
 ## Installation
 
-### Gestion de l'encodage, de la transcription, de l'xAPI et d'ActivityPub
+### Gestion de l’encodage, de la transcription, de l’xAPI et d’ActivityPub
 
 #### Mode local
 
 * [Encodage local](../local-encoding_fr)
-* [Installation de l'autotranscription](auto-transcription-install_fr)
+* [Installation de l’autotranscription](auto-transcription-install_fr)
 
 #### Mode déporté sur une machine distante
 
-* [Déporter l'encodage sur un ou plusieurs serveurs](../remote-encoding_fr)
-* [Installation de l'autotranscription](auto-transcription-install_fr)
+* [Déporter l’encodage sur un ou plusieurs serveurs](../remote-encoding_fr)
+* [Installation de l’autotranscription](auto-transcription-install_fr)
 
 #### Mode déporté sur une machine ou un docker en microservice
 
@@ -31,7 +31,7 @@ lang: fr
 #### BigBlueButton
 
 * [Couplage avec BigBlueButton](meeting-install_fr)
-* [Migration d'infrastructure BigBlueButton](bbb-infrastructure-migration-install_fr)
+* [Migration d’infrastructure BigBlueButton](bbb-infrastructure-migration-install_fr)
 * [Mise en place du mode webinaire pour les sessions BigBlueButton](set-up-webinar-mode-bbb-install_fr)
 * [Importer une vidéo externe / un enregistrement BigBlueButton au format vidéo](import-external-video-bbb-recording-install_fr)
 
@@ -43,5 +43,5 @@ lang: fr
 #### Autres
 
 * [Mode PWA et notifications](mode_pwa_notification_fr)
-* [Mise en place d'un direct Live](set-up-live_fr)
-* [Mise en place de l'enrichissement par l'IA Aristote](aristote_fr)
+* [Mise en place d’un direct Live](set-up-live_fr)
+* [Mise en place de l’enrichissement par l’IA Aristote](aristote_fr)

@@ -59,6 +59,7 @@ Dans votre `custom/settings-local.py`, les paramètres suivants concernent l’u
 {: .table .table-striped}
 
 Pensez à vérifier la version de ffmpeg utilisée par le serveur d’encodage. S’il s’agit d’une version 5 ou plus, il est nécessaire de surcharger le paramètre `FFMPEG_STUDIO_COMMAND` de votre `custom/settings-local.py` avec :
+
 ```sh
 FFMPEG_STUDIO_COMMAND = (
     " -hide_banner -threads %(nb_threads)s %(input)s %(subtime)s"
@@ -67,6 +68,7 @@ FFMPEG_STUDIO_COMMAND = (
     + ' "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
 )
 ```
+
 _Par défaut, l’encodage utilise l’option `-deinterlace` qui a été supprimée depuis la version 5 de ffmpeg._
 {: .alert .alert-warning}
 

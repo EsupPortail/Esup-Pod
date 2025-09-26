@@ -43,11 +43,11 @@ You must then enable Pod as a provider in the oEmbed filter.
 
 To do this, go to `Administration / Plugins / Filters / oEmbed filter / Manage providers` and click on the Show icon (crossed-out eye) to the right of the relevant Pod instance under the `Downloaded providers` list:
 
-![Configuring the oEmbed filter](configuration_screens/oembed2.png)
+![Configuring the oEmbed filter](configuration_screens/oembed2.webp)
 
 If the provider has not been previously declared, it can be done here based on the Lille.Pod provider. Click on the `Edit` icon (gear), adjust the settings according to the corresponding Pod platform, tick `Enabled` and click on `Save as new local`:
 
-![oEmbed filter configuration](configuration_screens/oembed3.png)
+![oEmbed filter configuration](configuration_screens/oembed3.webp)
 
 > **Please note** that you must ensure that the syntax is correct for the End points option, as this can result in a database reading error and, consequently, prevent the editing of oEmbed providers (if this happens, you must uninstall and then reinstall the oEmbed filter).
 
@@ -63,9 +63,9 @@ This can be forced for all courses on the Moodle site (_Enabled_) or can be done
 
 When the configuration is complete and the filter is activated for the desired Moodle instance (site, course or activity), any hyperlink in a portion of HTML text that links to a Pod page is converted into a video embed (100% width of the parent container):
 
-![Embed example](configuration_screens/oembed5.png)
+![Embed example](configuration_screens/oembed5.webp)
 
 This works for both public and private links (video in draft mode).
 
 > ⚠️ Please note: since version 3 of POD, the oembed link has changed:
-> ![OEmbed link from Pod v3](configuration_screens/oembed6.png)
+> ![OEmbed link from Pod v3](configuration_screens/oembed6.webp)

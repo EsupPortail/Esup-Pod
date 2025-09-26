@@ -8,14 +8,15 @@ lang: fr
 
 ## Présentation de REDIS
 
-Redis (REmote DIctionary Server) est une base de données NoSQL **clé-valeur** extrêmement rapide, principalement utilisée comme **cache**, **file d'attente** et **moteur de messages**.
+Redis (REmote DIctionary Server) est une base de données NoSQL **clé-valeur** extrêmement rapide, principalement utilisée comme **cache**, **file d’attente** et **moteur de messages**.
 Elle fonctionne en mémoire (RAM), ce qui lui permet d’offrir des performances bien supérieures aux bases de données traditionnelles pour certaines tâches.
 
 Dans le cadre de Pod, REDIS est utilisé comme :
- - gestionnaire de caches pour les **serveurs Web**,
- - gestionnaire de files des tâches d'encodage/transcription/xAPI pour les **serveurs d'encodages**, en complément de **Celery**. _Seulement dans le cas d'encodage déporté sur d'autres serveurs (notion de Celery Broker)_.
 
-A l'heure actuelle, c'est une brique indispensable au fonctionnement de Pod.
+- gestionnaire de caches pour les **serveurs Web**,
+- gestionnaire de files des tâches d’encodage/transcription/xAPI pour les **serveurs d’encodages**, en complément de **Celery**. _Seulement dans le cas d’encodage déporté sur d’autres serveurs (notion de Celery Broker)_.
+
+À l’heure actuelle, c’est une brique indispensable au fonctionnement de Pod.
 
 ## Configuration de REDIS pour Pod
 
@@ -35,11 +36,11 @@ A l'heure actuelle, c'est une brique indispensable au fonctionnement de Pod.
 La configuration se réalise dans votre ```custom/settings_local.py``` :
 
 ```sh
-# Pour utiliser l'encodage traditionnel déporté
+# Pour utiliser l’encodage traditionnel déporté
 CELERY_TO_ENCODE = True
 # URL du broker REDIS
 CELERY_BROKER_URL = "redis://127.0.0.1:6379/5"
-# Permet de ne traiter qu'une tâche à la fois
+# Permet de ne traiter qu’une tâche à la fois
 CELERY_TASK_ACKS_LATE = True
 # Gestion des caches
 CACHES = {
@@ -71,4 +72,4 @@ SESSION_REDIS = {
 SELECT2_CACHE_BACKEND = "select2"
 ```
 
-> ⚠️ Selon votre architecture, pensez à remplacer _127.0.0.1_ par l'**adresse IP du serveur REDIS**, cf. [la documentation d'installation](install_standalone_fr#redis).
+> ⚠️ Selon votre architecture, pensez à remplacer _127.0.0.1_ par l’**adresse IP du serveur REDIS**, cf. [la documentation d’installation](install_standalone_fr#redis).

@@ -4,16 +4,16 @@ version: 4.x
 lang: fr
 ---
 
-# Configuration et utilisation d'une base de données MySQL/MariaDB
+# Configuration et utilisation d’une base de données MySQL/MariaDB
 
-> Si vous souhaitez installer un serveur MySQL/MariaDB pour Pod, veuillez consulter la [documentation concernant la mise en production d'Esup-Pod](production-mode_fr).
+> Si vous souhaitez installer un serveur MySQL/MariaDB pour Pod, veuillez consulter la [documentation concernant la mise en production d’Esup-Pod](production-mode_fr).
 {: .alert .alert-warning}
 
-Cette documentation ne concerne que la configuration et l'utilisation d'une base de données MySQL/MariaDB existante (typiquement dans le cadre d'un environnement mutualisé).
+Cette documentation ne concerne que la configuration et l’utilisation d’une base de données MySQL/MariaDB existante (typiquement dans le cadre d’un environnement mutualisé).
 
 ## Installation des librairies
 
-Sur les serveurs devant utiliser la base de données MySQL/MariaDB, il est nécessaire d'installer le moteur MySQL/MariaDB / Python via les commandes suivantes :
+Sur les serveurs devant utiliser la base de données MySQL/MariaDB, il est nécessaire d’installer le moteur MySQL/MariaDB / Python via les commandes suivantes :
 
 ```sh
 pod@pod:$ sudo apt install -y mariadb-client

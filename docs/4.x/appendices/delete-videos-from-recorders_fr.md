@@ -10,15 +10,15 @@ lang: fr
 
 Sur notre Pod les vidéos issues des enregistreurs sont revendiquées manuellement. On a crée ce script pour supprimer automatiquement les vidéos non revendiquées.
 
-Le script récupère toutes vidéos de la table recorder_recordingfiletreatment. Si le délai de rétention est dépassé l'enregistrement est supprimé en base mais également le fichier de la vidéo.
+Le script récupère toutes vidéos de la table recorder_recordingfiletreatment. Si le délai de rétention est dépassé l’enregistrement est supprimé en base mais également le fichier de la vidéo.
 
-**Ajouter le délai de rétention dans le fichier de configuration `custom/settings_local.py`**
+## Ajouter le délai de rétention dans le fichier de configuration `custom/settings_local.py`
 
 ```bash
 RECORD_RETENTION = 30
 ```
 
-**Créer le fichier /pod/custom/management/commands/enregistrement.py**
+## **Créer le fichier `/pod/custom/management/commands/enregistrement.py`
 
 ```python
 import os
@@ -50,7 +50,7 @@ def checkRecordingRetention():
 
 def supprimer_enregistrement(enregistrement):
     if os.path.isfile(enregistrement.file):
-        log.info("SUPPRESSION DE L'ENREGISTREMENT %s" % enregistrement.file)
+        log.info("SUPPRESSION DE L’ENREGISTREMENT %s" % enregistrement.file)
         os.remove(enregistrement.file)
         enregistrement.delete()
 

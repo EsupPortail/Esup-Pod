@@ -4,7 +4,7 @@ version: 4.x
 lang: fr
 ---
 
-# Importer en masse des utilisateurs d'un Pod vers un autre Pod
+# Importer en masse des utilisateurs d’un Pod vers un autre Pod
 
 1. Exporter les utilisateurs de Pod n°1 :
 

@@ -8,15 +8,15 @@ lang: fr
 
 ## Astuce #1 : problème en lien avec les flatpages
 
-Lors de tests ou d'une migration, il est possible d'avoir une erreur de ce type :
+Lors de tests ou d’une migration, il est possible d’avoir une erreur de ce type :
 
 ```log
 django.db.migrations.exceptions.NodeNotFoundError: Migration main.0001_initial dependencies reference nonexistent parent node ('flatpages', '0001_initial')
 ```
 
 Il faut savoir que la gestion des pages statiques se réalise via une application Django flatpages.
-Cette application n'étant pas spécifique à Esup-Pod, son répertoire d'installation est situé directement dans l'environnement virtuel.
-Typiquement, _selon votre version de Python et votre environnement virtuel_, il s'agit de :
+Cette application n’étant pas spécifique à Esup-Pod, son répertoire d’installation est situé directement dans l’environnement virtuel.
+Typiquement, _selon votre version de Python et votre environnement virtuel_, il s’agit de :
 
 ```sh
 /home/pod/.virtualenvs/django_pod4/lib/python3.11/site-packages/django/contrib/flatpages
@@ -36,7 +36,7 @@ Cela ne devrait plus arriver car, depuis Esup-Pod v4, _make createDB_ exécute m
 (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py delete_flatpages_migrations.py
 ```
 
-> ⚠️ Attention à ne lancer cette commande qu'en connaissance de cause.
+> ⚠️ Attention à ne lancer cette commande qu’en connaissance de cause.
 
 ### Cas 2 : problème lors de lancement de tests unitaires
 
@@ -56,7 +56,7 @@ USE_DOCKER = false
 
 ## Astuce #2 : problème avec django-chunked-upload
 
-Si vous rencontrez un problème avec l'application _django-chunked-upload_, il ne faut pas hésiter à lancer les commandes suivantes
+Si vous rencontrez un problème avec l’application _django-chunked-upload_, il ne faut pas hésiter à lancer les commandes suivantes
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ pip uninstall django-chunked-upload
@@ -65,7 +65,7 @@ Si vous rencontrez un problème avec l'application _django-chunked-upload_, il n
 
 ## Astuce #3 : problème avec django-shibboleth-remoteuser
 
-Si vous rencontrez un problème avec l'application _django-shibboleth-remoteuser_, il ne faut pas hésiter à lancer les commandes suivantes
+Si vous rencontrez un problème avec l’application _django-shibboleth-remoteuser_, il ne faut pas hésiter à lancer les commandes suivantes
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ pip uninstall django-shibboleth-remoteuser

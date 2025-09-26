@@ -59,6 +59,7 @@ In your `custom/settings-local.py`, the following parameters concern the use of 
 {: .table .table-striped}
 
 Remember to check the version of ffmpeg used by the encoding server. If it is version 5 or higher, you need to override the `FFMPEG_STUDIO_COMMAND` parameter in your `custom/settings-local.py` with:
+
 ```sh
 FFMPEG_STUDIO_COMMAND = (
     " -hide_banner -threads %(nb_threads)s %(input)s %(subtime)s"
@@ -67,6 +68,7 @@ FFMPEG_STUDIO_COMMAND = (
     + ' "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
 )
 ```
+
 _By default, encoding uses the `-deinterlace` option, which has been removed since version 5 of ffmpeg._
 {: .alert .alert-warning}
 

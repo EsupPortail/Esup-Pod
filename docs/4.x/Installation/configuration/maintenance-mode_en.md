@@ -16,5 +16,5 @@ To activate and customise maintenance mode, go to the ‘Configuration’ sectio
 
 - The `maintenance_mode` parameter activates maintenance mode; you must set it to ‘1’ to activate it.
 - The `maintenance_text_short` parameter is the text that will be displayed in the navigation bar.
-- The `maintenance_text_welcome` parameter is the text displayed on the application's home page in a banner.
+- The `maintenance_text_welcome` parameter is the text displayed on the application’s home page in a banner.
 - The `maintenance_text_disabled` parameter is the text displayed on the page to which a user is redirected when attempting to access a feature that is under maintenance.
