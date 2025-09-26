@@ -11,7 +11,7 @@ _Pour les anciennes versions d'Esup-Pod, merci de consulter le lien suivant : [
 {: .alert .alert-warning}
 
 This documentation only concerns version 4 of the Esup-Pod project.
-_For older versions of Esup-Pod, please refer to the following link: [Documentation for versions 1, 2, and 3 of Esup-Pod](https://www.esup-portail.org/wiki/x/LYA3Y)_
+_For older versions of Esup-Pod, please refer to the following link: [Documentation for versions 1, 2, and 3 of Esup-Pod (FR only)](https://www.esup-portail.org/wiki/x/LYA3Y)_
 {: .alert .alert-warning}
 
 Choose your language / Choisissez votre langue :

@@ -19,5 +19,5 @@ institutional life (video of events), offering several days of content.
 * [Technical documentationof Esup-Pod v4](4.x/index_en)
 
 This documentation only applies to version 4 of the Esup-Pod project.
-_For older versions of Esup-Pod, please refer to the following link: [Documentation for versions 1, 2 and 3 of Esup-Pod](https://www.esup-portail.org/wiki/x/LYA3Y)_
+_For older versions of Esup-Pod, please refer to the following link: [Documentation for versions 1, 2 and 3 of Esup-Pod (FR only)](https://www.esup-portail.org/wiki/x/LYA3Y)_
 {: .alert .alert-warning}
