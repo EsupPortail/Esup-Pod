@@ -7,11 +7,11 @@ layout: default
 <https://esupportail.github.io/Esup-Pod>
 
 Cette documentation ne concerne que la version 4 du projet Esup-Pod.
-_Pour la version 3, merci de consulter le lien suivant : [Documentation Esup-Pod v3](https://www.esup-portail.org/wiki/spaces/ES/pages/1113260038/Installation+de+Pod+V3)_
+_Pour les anciennes versions d'Esup-Pod, merci de consulter le lien suivant : [Documentations des versions 1, 2 et 3 d'Esup-Pod](https://www.esup-portail.org/wiki/x/LYA3Y)_
 {: .alert .alert-warning}
 
 This documentation only concerns version 4 of the Esup-Pod project.
-_For version 3, please consult the following link: [Esup-Pod v3 documentation (FR only)](https://www.esup-portail.org/wiki/spaces/ES/pages/1113260038/Installation+de+Pod+V3)_
+_For older versions of Esup-Pod, please refer to the following link: [Documentation for versions 1, 2, and 3 of Esup-Pod](https://www.esup-portail.org/wiki/x/LYA3Y)_
 {: .alert .alert-warning}
 
 Choose your language / Choisissez votre langue :
