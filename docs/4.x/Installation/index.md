@@ -70,6 +70,10 @@ lang: fr
 * [Mode PWA et notifications](optional/mode_pwa_notification_fr)
 * [Mise en place d’un direct Live](optional/set-up-live_fr)
 * [Mise en place de l’enrichissement par l’IA Aristote](optional/aristote_fr)
+* [Mise en place de l'authentification avec Shibboleth](optional/shibboleth_fr)
+* [Mise en place de l’obsolescence des vidéos](optional/obsolescence_fr)
+* [Mise en place de plusieurs tenants](optional/tenant_fr)
+* [Mise en place des blocs d'affichage sur une page statique](optional/display-blocks_fr)
 
 ## Mise à jour
 

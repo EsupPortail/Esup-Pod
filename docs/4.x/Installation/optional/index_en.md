@@ -45,3 +45,7 @@ lang: en
 * [PWA mode and notifications](mode_pwa_notification_en)
 * [Setting up a live broadcast](set-up-live_en)
 * [Implementing Aristote AI enhancement](aristote_en)
+* [Setting up authentication with Shibboleth](shibboleth_en)
+* [Setting up video obsolescence](obsolescence_en)
+* [Setting up multiple tenants](tenant_en)
+* [Setting up display blocks on a static page](display-blocks_en)

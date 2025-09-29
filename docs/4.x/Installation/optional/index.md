@@ -45,3 +45,7 @@ lang: fr
 * [Mode PWA et notifications](mode_pwa_notification_fr)
 * [Mise en place d’un direct Live](set-up-live_fr)
 * [Mise en place de l’enrichissement par l’IA Aristote](aristote_fr)
+* [Mise en place de l'authentification avec Shibboleth](shibboleth_fr)
+* [Mise en place de l’obsolescence des vidéos](obsolescence_fr)
+* [Mise en place de plusieurs tenants](tenant_fr)
+* [Mise en place des blocs d'affichage sur une page statique](display-blocks_fr)

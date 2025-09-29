@@ -70,6 +70,10 @@ lang: en
 * [PWA mode and notifications](optional/mode_pwa_notification_en)
 * [Setting up a live broadcast](optional/set-up-live_en)
 * [Implementing Aristote AI enhancement](optional/aristote_en)
+* [Setting up authentication with Shibboleth](optional/shibboleth_en)
+* [Setting up video obsolescence](optional/obsolescence_en)
+* [Setting up multiple tenants](optional/tenant_en)
+* [Setting up display blocks on a static page](optional/display-blocks_en)
 
 ## Upgrade
 
