@@ -329,7 +329,7 @@ There is also the live management module, particularly for events:
 
 Depending on your configuration (see **pod_uwsgi.ini** file), you can find the logs for this webinar mode in the Pod application log file.
 
-For example, it could be **/home/pod/django_projects/podv3/uwsgi/uwsgi-pod.log** or **/var/log/syslog**
+For example, it could be **/home/pod/django_projects/podv4/uwsgi/uwsgi-pod.log** or **/var/log/syslog**
 
 Just search for the lines containing the keyword **webinar**.
 

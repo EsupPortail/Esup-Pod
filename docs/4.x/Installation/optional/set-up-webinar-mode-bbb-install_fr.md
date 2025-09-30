@@ -329,7 +329,7 @@ Il y a aussi le module de gestion des directs, en particulier pour les évèneme
 
 Selon votre configuration (cf. fichier **pod_uwsgi.ini**), il vous est possible de retrouver les logs de ce mode webinaire dans le fichier de logs applicatif de Pod.
 
-Par exemple, il peut s’agir de **/home/pod/django_projects/podv3/uwsgi/uwsgi-pod.log** ou **/var/log/syslog**
+Par exemple, il peut s’agir de **/home/pod/django_projects/podv4/uwsgi/uwsgi-pod.log** ou **/var/log/syslog**
 
 Il suffit de rechercher les lignes contenant le mot-clé **webinar**.
 

@@ -50,7 +50,7 @@ To use the MySQL/MariaDB database on the frontend server (or a remote server), y
 
 ```sh
 $ sudo apt install pkg-config python3-dev default-libmysqlclient-dev
-(django_pod4) pod@pod:/usr/local/django_projects/pod$ pip3 install mysqlclient
+(django_pod4) pod@pod:/usr/local/django_projects/podv4$ pip3 install mysqlclient
 ```
 
 ### MariaDB Optimization
@@ -69,7 +69,7 @@ max_allowed_packet=256M
 If not already done, you must specify your database configuration in your settings_local.py configuration file:
 
 ```sh
-(django_pod4) pod@pod:/usr/local/django_projects/pod$ vim pod/custom/settings_local.py
+(django_pod4) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 ```
 
 ```py

@@ -50,7 +50,7 @@ Pour utiliser la base de données MySQL/MariaDB sur le serveur frontal (ou sur u
 
 ```sh
 $ sudo apt install pkg-config python3-dev default-libmysqlclient-dev
-(django_pod4) pod@pod:/usr/local/django_projects/pod$ pip3 install mysqlclient
+(django_pod4) pod@pod:/usr/local/django_projects/podv4$ pip3 install mysqlclient
 ```
 
 ### Optimisation de MariaDB

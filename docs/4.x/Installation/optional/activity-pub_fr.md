@@ -33,7 +33,7 @@ with open("pod/activitypub/ap.pub", "w") as fd:
 Ajouter la configuration Celery/Redis dans le fichier `settings_local.py` :
 
 ```bash
-pod@pod:/usr/local/django_projects/podv3$ nano pod/custom/settings_local.py
+pod@pod:/usr/local/django_projects/podv4$ nano pod/custom/settings_local.py
 # Configuration ActivityPub
 USE_ACTIVITYPUB = True
 ACTIVITYPUB_CELERY_BROKER_URL = "redis://127.0.0.1:6379/7"  # on utilise la db 7 comme espace file d’attente sur redis
@@ -63,7 +63,7 @@ pod@pod:~$ sudo nano /etc/default/celeryd-activitypub
 CELERYD_NODES="worker-activitypub"                                     # Nom du/des worker(s). Ajoutez autant de workers que de tâches à exécuter en parallèle.
 CELERY_BIN="/home/pod/.virtualenvs/django_pod/bin/celery"               # répertoire source de celery
 CELERY_APP="pod.activitypub.tasks"                                     # application où se situe celery
-CELERYD_CHDIR="/usr/local/django_projects/podv3"                         # répertoire du projet Pod (où se trouve manage.py)
+CELERYD_CHDIR="/usr/local/django_projects/4"                         # répertoire du projet Pod (où se trouve manage.py)
 CELERYD_OPTS="--time-limit=86400 --concurrency=1 --max-tasks-per-child=1  --prefetch-multiplier=1" # options supplémentaires pour le(s) worker(s)
 CELERYD_LOG_FILE="/var/log/celery/%N.log"                              # fichier de log
 CELERYD_PID_FILE="/var/run/celery/%N.pid"                              # fichier pid
@@ -76,7 +76,7 @@ CELERYD_LOG_LEVEL="INFO"                                               # niveau 
 ### Vérifier que tout est OK
 
 ```bash
-(django_pod) pod@pod:/usr/local/django_projects/podv3$ celery --app pod.activitypub.tasks worker --loglevel INFO --queues activitypub --concurrency 1 --hostname activitypub
+(django_pod4) pod@pod:/usr/local/django_projects/podv4$ celery --app pod.activitypub.tasks worker --loglevel INFO --queues activitypub --concurrency 1 --hostname activitypub
 ```
 
 ## Démarrer Celeryd
@@ -94,5 +94,5 @@ pod@pod:~$ sudo systemd-sysv-install enable celeryd-activitypub
 Pour vérifier si Celery fonctionne correctement :
 
 ```bash
-(django_pod) pod@pod:/usr/local/django_projects/podv3$ celery --broker=redis://127.0.0.1:6379/7 inspect active
+(django_pod4) pod@pod:/usr/local/django_projects/podv4$ celery --broker=redis://127.0.0.1:6379/7 inspect active
 ```

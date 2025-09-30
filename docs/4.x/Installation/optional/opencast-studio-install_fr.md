@@ -35,7 +35,7 @@ cp -r build/* pod/custom/static/opencast/studio
 - Finalement, n’oubliez pas de collecter vos fichiers statiques pour la mise en production via la commande :
 
 ```sh
-(django_pod) [userpod@video][/data/www/userpod/django_projects/podv2] python manage.py collectstatic
+(django_pod4) [userpod@video][/data/www/userpod/django_projects/podv4] python manage.py collectstatic
 ```
 
 La génération d’Opencast Studio peut très bien se réaliser sur un autre serveur. Pod n’a besoin que du répertoire `build`, renommé en `studio`, et positionné dans le sous-répertoire `pod/custom/static/opencast`.
@@ -83,7 +83,7 @@ Il est indispensable que cet enregistreur ait comme type d’enregistrement **St
 Vous pouvez faire cette création en ligne de commande si vous le souhaitez :
 
 ```sh
-(django_pod) [userpod@video][/data/www/userpod/django_projects/podv2] echo "from pod.recorder.models import Recorder; from pod.video.models import Type; type=Type.objects.get(pk=1); rec=Recorder.objects.create(name=’Studio’, address_ip=’127.0.0.1’, recording_type=’studio’, type=type)" | python manage.py shell
+(django_pod4) [userpod@video][/data/www/userpod/django_projects/podv4] echo "from pod.recorder.models import Recorder; from pod.video.models import Type; type=Type.objects.get(pk=1); rec=Recorder.objects.create(name=’Studio’, address_ip=’127.0.0.1’, recording_type=’studio’, type=type)" | python manage.py shell
 ```
 
 ## Exploitation

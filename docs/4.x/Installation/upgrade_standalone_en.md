@@ -133,5 +133,5 @@ cp -r build/* pod/custom/static/opencast/studio
 Finally, don’t forget to collect your static files for production via the command:
 
 ```sh
-(django_pod) [userpod@video][/data/www/userpod/django_projects/podv2] python manage.py collectstatic
+(django_pod4) [userpod@video][/data/www/userpod/django_projects/podv4] python manage.py collectstatic
 ```

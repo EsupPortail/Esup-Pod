@@ -84,5 +84,5 @@ To run the command via cron:
 ```bash
 crontab -e
 
-*/15 * * * * /usr/bin/bash -c 'export WORKON_HOME=/data/www/%userpod%/.virtualenvs; export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.6; cd /data/www/%userpod%/django_projects/podv2; source /usr/bin/virtualenvwrapper.sh; workon django_pod; python manage.py recording checkRecordingRetention'
+*/15 * * * * /usr/bin/bash -c 'export WORKON_HOME=/data/www/%userpod%/.virtualenvs; export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.11; cd /data/www/%userpod%/django_projects/podv4; source /usr/bin/virtualenvwrapper.sh; workon django_pod; python manage.py recording checkRecordingRetention'
 ```

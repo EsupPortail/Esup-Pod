@@ -15,14 +15,14 @@ lang: fr
 Pour découper le fichier audio de Pod et faire sa transcription, nous avons besoin de Sox, il faut donc installer les deux librairies suivantes :
 
 ```bash
-(django_pod) pod@:/$ sudo apt-get install sox
-(django_pod) pod@:/$ sudo apt-get install libsox-fmt-mp3
+(django_pod4) pod@:/$ sudo apt-get install sox
+(django_pod4) pod@:/$ sudo apt-get install libsox-fmt-mp3
 ```
 
 Il faut également installer le module Python `ffmpeg-normalize` :
 
 ```bash
-(django_pod) pod@:/path/to/project/django_projects/pod$ pip install ffmpeg-normalize
+(django_pod4) pod@:/path/to/project/django_projects/podv4$ pip install ffmpeg-normalize
 ```
 
 Tous les modèles peuvent être stockés dans `/path/to/project/django_projects/transcription`.

@@ -19,7 +19,7 @@ lang: fr
 Ajouter la configuration Celery/Redis dans le fichier `settings_local.py` :
 
 ```bash
-(django_pod) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
+(django_pod4) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 
 # Configuration Celery sur le frontal
 USE_XAPI = True

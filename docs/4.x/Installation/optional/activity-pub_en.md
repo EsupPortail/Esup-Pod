@@ -33,7 +33,7 @@ with open("pod/activitypub/ap.pub", "w") as fd:
 Add the Celery/Redis configuration in the `settings_local.py` file:
 
 ```bash
-pod@pod:/usr/local/django_projects/podv3$ nano pod/custom/settings_local.py
+pod@pod:/usr/local/django_projects/podv4$ nano pod/custom/settings_local.py
 # ActivityPub configuration
 USE_ACTIVITYPUB = True
 ACTIVITYPUB_CELERY_BROKER_URL = "redis://127.0.0.1:6379/7"  # using db 7 as the queue space in redis
@@ -63,7 +63,7 @@ pod@pod:~$ sudo nano /etc/default/celeryd-activitypub
 CELERYD_NODES="worker-activitypub"                                     # Name of the worker(s). Add as many workers as tasks to run in parallel.
 CELERY_BIN="/home/pod/.virtualenvs/django_pod/bin/celery"              # celery source directory
 CELERY_APP="pod.activitypub.tasks"                                     # application where celery is located
-CELERYD_CHDIR="/usr/local/django_projects/podv3"                       # Pod project directory (where manage.py is located)
+CELERYD_CHDIR="/usr/local/django_projects/podv4"                       # Pod project directory (where manage.py is located)
 CELERYD_OPTS="--time-limit=86400 --concurrency=1 --max-tasks-per-child=1 --prefetch-multiplier=1" # extra options for the worker(s)
 CELERYD_LOG_FILE="/var/log/celery/%N.log"                              # log file
 CELERYD_PID_FILE="/var/run/celery/%N.pid"                              # pid file
@@ -76,7 +76,7 @@ CELERYD_LOG_LEVEL="INFO"                                               # log lev
 ### Check that everything is OK
 
 ```bash
-(django_pod) pod@pod:/usr/local/django_projects/podv3$ celery --app pod.activitypub.tasks worker --loglevel INFO --queues activitypub --concurrency 1 --hostname activitypub
+(django_pod4) pod@pod:/usr/local/django_projects/podv4$ celery --app pod.activitypub.tasks worker --loglevel INFO --queues activitypub --concurrency 1 --hostname activitypub
 ```
 
 ## Start Celeryd
@@ -94,5 +94,5 @@ pod@pod:~$ sudo systemd-sysv-install enable celeryd-activitypub
 To check if Celery is working correctly:
 
 ```bash
-(django_pod) pod@pod:/usr/local/django_projects/podv3$ celery --broker=redis://127.0.0.1:6379/7 inspect active
+(django_pod4) pod@pod:/usr/local/django_projects/podv4$ celery --broker=redis://127.0.0.1:6379/7 inspect active
 ```

@@ -25,7 +25,7 @@ Afin de pouvoir utiliser la Fédération Education - Recherche, il est nécessai
 
 ## Configuration du Serveur Web
 
-Shibboleth étant prévu pour fonctionner avec Apache2, il s’agit de la méthode recommandée pour le faire fonctionner. Néanmoins, étant donné que Podv2 utilise Nginx avec uWSGI pour fonctionner, il est nécessaire d’apporter quelques changements dans la configuration.
+Shibboleth étant prévu pour fonctionner avec Apache2, il s’agit de la méthode recommandée pour le faire fonctionner. Néanmoins, étant donné que Pod utilise Nginx avec uWSGI pour fonctionner, il est nécessaire d’apporter quelques changements dans la configuration.
 
 Le but final est d’avoir un serveur Apache2 en frontal qui (grâce au `mod_shib`) communiquera avec Shibboleth et fournira des routes de connexion/déconnexion au service d’authentification. Ce dernier permettra également d’accéder à l’application par l’utilisation d’un ReverseProxy.
 
