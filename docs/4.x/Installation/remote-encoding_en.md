@@ -178,3 +178,21 @@ To check if Celery is working properly:
 ```bash
 celery -A pod.main worker -l info
 ```
+
+## Monitoring
+
+To monitor the list of ongoing or pending encodings, you can use the `celery` command-line tool.
+
+Enter the Django virtual environment and run the following commands, replacing <ID> with the desired Redis thread (5 for encodings, 6 for xAPI, for example).
+
+For active tasks:
+
+```bash
+(django_pod4) pod@pod-transcoding:/$ celery --broker=redis://redis:6379/<ID> inspect active
+```
+
+For pending tasks:
+
+```bash
+(django_pod4) pod@pod-transcoding:/$ celery --broker=redis://redis:6379/<ID> inspect reserved
+```

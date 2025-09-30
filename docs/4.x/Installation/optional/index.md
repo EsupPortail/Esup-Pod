@@ -8,7 +8,7 @@ lang: fr
 
 ## Installation
 
-### Gestion de l’encodage, de la transcription, de l’xAPI et d’ActivityPub
+### Gestion de l’encodage, de la transcription et de l’xAPI
 
 #### Mode local
 
@@ -19,12 +19,11 @@ lang: fr
 
 * [Déporter l’encodage sur un ou plusieurs serveurs](../remote-encoding_fr)
 * [Installation de l’autotranscription](auto-transcription-install_fr)
+* [Mise en place de l'xAPI sur le serveur d'encodage](remote-xapi_fr)
 
 #### Mode déporté sur une machine ou un docker en microservice
 
-* Microservice encodage
-* Microservice transcodage
-* Microservice xAPI
+* [Mise en place des microservices d’encodage, de transcodage et de xAPI](microservices_fr)
 
 ### Fonctionnalités optionnelles
 
@@ -46,6 +45,8 @@ lang: fr
 * [Mise en place d’un direct Live](set-up-live_fr)
 * [Mise en place de l’enrichissement par l’IA Aristote](aristote_fr)
 * [Mise en place de l'authentification avec Shibboleth](shibboleth_fr)
+* [Mise en place de l’authentification avec Keycloak et OpenID](keycloak_fr)
 * [Mise en place de l’obsolescence des vidéos](obsolescence_fr)
 * [Mise en place de plusieurs tenants](tenant_fr)
 * [Mise en place des blocs d'affichage sur une page statique](display-blocks_fr)
+* [Mise en place du protocole ActivityPub](activity-pub_fr)

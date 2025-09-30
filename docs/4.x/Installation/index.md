@@ -33,7 +33,7 @@ lang: fr
 * [Mise en production](production-mode_fr)
 * [Optimisation Web](web-optimisation_fr)
 
-### Gestion de l’encodage, de la transcription, de l’xAPI et d’ActivityPub
+### Gestion de l’encodage, de la transcription et de l’xAPI
 
 #### Mode local
 
@@ -44,12 +44,11 @@ lang: fr
 
 * [Déporter l’encodage sur un ou plusieurs serveurs](remote-encoding_fr)
 * [Installation de l’autotranscription](optional/auto-transcription-install_fr)
+* [Mise en place de l’xAPI sur le serveur d’encodage](optional/remote-xapi_fr)
 
 #### Mode déporté sur une machine ou un docker en microservice
 
-* Microservice encodage
-* Microservice transcodage
-* Microservice xAPI
+* [Mise en place des microservices d’encodage, de transcodage et de xAPI](optional/microservices_fr)
 
 ### Fonctionnalités optionnelles
 
@@ -70,10 +69,12 @@ lang: fr
 * [Mode PWA et notifications](optional/mode_pwa_notification_fr)
 * [Mise en place d’un direct Live](optional/set-up-live_fr)
 * [Mise en place de l’enrichissement par l’IA Aristote](optional/aristote_fr)
-* [Mise en place de l'authentification avec Shibboleth](optional/shibboleth_fr)
+* [Mise en place de l’authentification avec Shibboleth](optional/shibboleth_fr)
+* [Mise en place de l’authentification avec Keycloak et OpenID](optional/keycloak_fr)
 * [Mise en place de l’obsolescence des vidéos](optional/obsolescence_fr)
 * [Mise en place de plusieurs tenants](optional/tenant_fr)
-* [Mise en place des blocs d'affichage sur une page statique](optional/display-blocks_fr)
+* [Mise en place des blocs d’affichage sur une page statique](optional/display-blocks_fr)
+* [Mise en place du protocole ActivityPub](optional/activity-pub_fr)
 
 ## Mise à jour
 

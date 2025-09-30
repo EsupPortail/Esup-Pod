@@ -33,7 +33,7 @@ lang: en
 * [Production Deployment](production-mode_en)
 * [Web optimisation](web-optimisation_en)
 
-### Encoding, transcription, xAPI and ActivityPub management
+### Encoding, transcription and xAPI management
 
 #### Local mode
 
@@ -44,12 +44,11 @@ lang: en
 
 * [Remote encoding on one or more servers](remote-encoding_en)
 * [Autotranscription installation](optional/auto-transcription-install_en)
+* [Setting up xAPI on the encoding server](optional/remote-xapi_en)
 
 #### Remote mode on a machine or a microservice docker
 
-* Microservice encoding
-* Transcoding microservice
-* xAPI microservice
+* [Setting up encoding, transcoding and xAPI Microservices](optional/microservices_en)
 
 ### Optional features
 
@@ -71,9 +70,11 @@ lang: en
 * [Setting up a live broadcast](optional/set-up-live_en)
 * [Implementing Aristote AI enhancement](optional/aristote_en)
 * [Setting up authentication with Shibboleth](optional/shibboleth_en)
+* [Setting up authentication with Keycloak and OpenID](optional/keycloak_en)
 * [Setting up video obsolescence](optional/obsolescence_en)
 * [Setting up multiple tenants](optional/tenant_en)
 * [Setting up display blocks on a static page](optional/display-blocks_en)
+* [Setting up the ActivityPub protocol](optional/activity-pub_en)
 
 ## Upgrade
 
@@ -90,4 +91,4 @@ lang: en
 
 ## Installation documentation provided by institutions
 
-* [University of Montpellier](install-by-etabs/university-montpellier_en.md)
+* [University of Montpellier](install-by-etabs/university-montpellier_en)

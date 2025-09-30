@@ -8,7 +8,7 @@ lang: en
 
 ## First installation
 
-### Encoding, transcription, xAPI and ActivityPub management
+### Encoding, transcription and xAPI management
 
 #### Local mode
 
@@ -19,12 +19,11 @@ lang: en
 
 * [Remote encoding on one or more servers](../remote-encoding_en)
 * [Autotranscription installation](auto-transcription-install_en)
+* [Setting up xAPI on the encoding server](remote-xapi_en)
 
 #### Remote mode on a machine or a microservice docker
 
-* Microservice encoding
-* Transcoding microservice
-* xAPI microservice
+* [Setting up encoding, transcoding and xAPI Microservices](microservices_en)
 
 ### Optional features
 
@@ -46,6 +45,8 @@ lang: en
 * [Setting up a live broadcast](set-up-live_en)
 * [Implementing Aristote AI enhancement](aristote_en)
 * [Setting up authentication with Shibboleth](shibboleth_en)
+* [Setting up authentication with Keycloak and OpenID](keycloak_en)
 * [Setting up video obsolescence](obsolescence_en)
 * [Setting up multiple tenants](tenant_en)
 * [Setting up display blocks on a static page](display-blocks_en)
+* [Setting up the ActivityPub protocol](activity-pub_en)
