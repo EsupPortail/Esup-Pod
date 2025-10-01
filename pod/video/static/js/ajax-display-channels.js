@@ -450,7 +450,7 @@ function loadNextBatchOfChannels(
     });
 }
 
-const channelModal = document.querySelector(".chaines-modal");
+const channelModal = document.getElementById("chaines-modal");
 let allChannelsLoaded = false;
 channelModal.addEventListener("shown.bs.modal", function () {
   const modalContentElement = this.querySelector(".modal-content");

@@ -4,7 +4,7 @@
 {% load static %}
 {% spaceless %}
 
-<div class="modal fade chaines-modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="chaines-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
@@ -29,7 +29,7 @@
 </div>
 
 
-<div class="modal fade types-modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="types-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
@@ -55,7 +55,9 @@
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title"><i class="bi bi-people"></i>&nbsp;{% trans "Users"%}</h2>
+        <h2 class="modal-title">
+          <i class="bi bi-people" aria-hidden="true"></i>&nbsp;{% trans "Users"%}
+        </h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
       <div class="modal-body">
