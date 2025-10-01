@@ -90,3 +90,6 @@ v8-compile-cache-0
 pod/db_migrations
 tmp/
 pod/.yarn
+
+# Ignore vscode AI rules
+.github/instructions/codacy.instructions.md
