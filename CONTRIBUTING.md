@@ -29,7 +29,7 @@ This project and everyone participating in it is governed by the [Pod Code of Co
 By participating, you are expected to uphold this code.
 Please report unacceptable behavior to us.
 
-## I don't want to read this whole thing I just have a question
+## I don’t want to read this whole thing I just have a question
 
 If chat is more your speed, you can [join the Pod team on Rocket chat](https://rocket.esup-portail.org/channel/esup_-_pod).
 
@@ -45,7 +45,7 @@ and find related reports :mag_right:.
 When you are creating a bug report, please [include as many details as possible](#how-do-i-submit-a-good-bug-report).
 
 > **Note:** If you find a **Closed** issue that seems like it is the same thing
-that you're experiencing, open a new issue and include a link
+that you’re experiencing, open a new issue and include a link
 to the original issue in the body of your new one.
 
 #### How Do I Submit A (Good) Bug Report?
@@ -67,7 +67,7 @@ You can use [this tool](https://www.cockos.com/licecap/)
 to record GIFs on macOS and Windows,
 and [this tool](https://github.com/colinkeenan/silentcast)
 or [this tool](https://github.com/GNOME/byzanz) on Linux.
-* **If the problem wasn't triggered by a specific action**, describe what you were doing
+* **If the problem wasn’t triggered by a specific action**, describe what you were doing
 before the problem happened and share more information using the guidelines below.
 * **Can you reliably reproduce the issue?** If not, provide details about
 how often the problem happens and under which conditions it normally happens.
@@ -75,7 +75,7 @@ how often the problem happens and under which conditions it normally happens.
 Include details about your configuration and environment:
 
 * **Which version of Pod are you using?**
-* **What's the name and version of the browser you're using**?
+* **What’s the name and version of the browser you’re using**?
 
 ### Suggesting Enhancements
 
@@ -101,8 +101,8 @@ You can use [this tool](https://www.cockos.com/licecap/)
 to record GIFs on macOS and Windows,
 and [this tool](https://github.com/colinkeenan/silentcast)
 or [this tool](https://github.com/GNOME/byzanz) on Linux.
-* **Specify which version of Pod you're using.**
-* **Specify the name and version of the browser you're using.**
+* **Specify which version of Pod you’re using.**
+* **Specify the name and version of the browser you’re using.**
 
 ### Pull Requests
 
@@ -116,10 +116,8 @@ The process described here has several goals:
 Please follow these steps to have your contribution considered by the maintainers:
 
 0. Follow the [styleguides](#styleguides) below.
-1. Make sure that your pull request targets the `develop` branch.
-2. Prefix the title of your pull request with one of the following:
-   * `[WIP]` if your pull request is still a work in progress.
-   * `[DONE]` if you are done with your patch.
+1. Make sure that your pull request targets the `dev_v4` branch.
+2. Your PR status is in `draft` while it’s still a work in progress.
 3. After you submit your pull request, verify that
 all [status checks](https://help.github.com/articles/about-status-checks/) are passing
 
@@ -167,7 +165,7 @@ We add a .gitattributes file at the root of repository
 
 ## Coding conventions
 
-Start reading our code and you'll get the hang of it. We optimize for readability:
+Start reading our code and you’ll get the hang of it. We optimize for readability:
 
 * Configuration variables are uppercase and can be called
 in all modules keeping the same name.
@@ -178,7 +176,7 @@ to the module and therefore must be prefixed and suffixed with a double undersco
 and all other files (.css, .html, .js) with **2 spaces** (soft tabs)
 * This is open source software.
 Consider the people who will read your code, and make it look nice for them.
-It's sort of like driving a car: Perhaps you love doing donuts when you're alone,
+It’s sort of like driving a car: Perhaps you love doing donuts when you’re alone,
 but with passengers the goal is to make the ride as smooth as possible.
 
 ### JavaScript Styleguide
