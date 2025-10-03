@@ -3738,8 +3738,8 @@ def get_owners_for_videos_on_dashboard(request):
     Output structure: [{ "id": ..., "username": ..., "first_name": ..., "last_name": ..., "video_count": ... }, ...]
     """
     if not is_ajax(request):
-        return HttpResponseBadRequest() 
-   
+        return HttpResponseBadRequest()
+
     videos_qs = get_videos_for_owner(request)
     filtered_videos_qs = get_filtered_videos_list(request, videos_qs)
     primary_owner_ids_qs = filtered_videos_qs.values_list("owner_id", flat=True)
