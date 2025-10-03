@@ -9433,7 +9433,7 @@ msgid "Speaker(s):"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
-msgid "Updated on:"
+msgid "Added on:"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
