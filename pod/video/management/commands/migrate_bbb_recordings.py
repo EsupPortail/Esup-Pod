@@ -561,7 +561,11 @@ def download_bbb_video_file(source_url: str, dest_file: str) -> None:
         source_video_url = manage_download(session, source_url, video_file_add, dest_file)
         print("  > Video %s downloaded." % source_video_url)
     except Exception as e:
-        err = ("Unable to download %s: %s. %s " % (source_url, str(e), traceback.format_exc()))
+        err = "Unable to download %s: %s. %s " % (
+            source_url,
+            str(e),
+            traceback.format_exc(),
+        )
         print(err)
 
 

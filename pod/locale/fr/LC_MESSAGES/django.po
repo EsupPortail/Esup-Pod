@@ -10095,8 +10095,8 @@ msgid "Speaker(s):"
 msgstr "Intervenant(s) :"
 
 #: pod/video/templates/videos/video-info.html
-msgid "Updated on:"
-msgstr "Mis à jour le :"
+msgid "Added on:"
+msgstr "Ajouté le :"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Channel:"

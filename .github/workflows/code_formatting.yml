@@ -3,7 +3,7 @@ name: Code Formatting
 
 on:
   push:
-    branches: [master, develop, main, pod_V4]
+    branches: [master, develop, main, dev_v4]
   workflow_dispatch:
 
 jobs:

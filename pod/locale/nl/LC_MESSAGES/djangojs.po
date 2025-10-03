@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-06 12:04+0200\n"
+"POT-Creation-Date: 2025-10-02 16:11+0200\n"
 "PO-Revision-Date: 2025-04-25 10:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -728,8 +728,8 @@ msgid "Add a speaker"
 msgstr ""
 
 #: pod/video/static/js/ajax-display-channels.js
-msgid "%(count)s channel"
-msgid_plural "%(count)s channels"
+msgid "%(title)s (%(count)s channel)"
+msgid_plural "%(title)s (%(count)s channels)"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -743,6 +743,10 @@ msgid "%(count)s video"
 msgid_plural "%(count)s videos"
 msgstr[0] ""
 msgstr[1] ""
+
+#: pod/video/static/js/ajax-display-channels.js
+msgid "Channel list"
+msgstr ""
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"

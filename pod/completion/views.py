@@ -41,7 +41,6 @@ from pod.video.queryset.utils import prefetch_video_completion_hyperlink
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTIVE_MODEL_ENRICH = getattr(settings, "ACTIVE_MODEL_ENRICH", False)
 __AVAILABLE_ACTIONS__ = ["new", "save", "modify", "delete"]
-__CAPTION_MAKER_ACTION__ = ["save"]
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
@@ -82,35 +81,40 @@ def video_caption_maker(request, slug):
     video_folder = video.get_or_create_video_folder()
     if request.method == "POST" and request.POST.get("action"):
         action = request.POST.get("action")
-    if action in __CAPTION_MAKER_ACTION__:
-        return eval("video_caption_maker_{0}".format(action))(request, video)
-    else:
-        track_language = LANGUAGE_CODE
-        track_kind = "captions"
-        caption_file_id = request.GET.get("src")
-        if caption_file_id:
-            caption_file = CustomFileModel.objects.filter(id=caption_file_id).first()
-            if caption_file:
-                track = Track.objects.filter(video=video, src=caption_file).first()
-                if track:
-                    track_language = track.lang
-                    track_kind = track.kind
+        ACTION_HANDLERS = {
+            "save": video_caption_maker_save,
+        }
+        if action in ACTION_HANDLERS:
+            handler = ACTION_HANDLERS.get(action)
+            if handler:
+                return handler(request, video)
 
-        form_caption = TrackForm(initial={"video": video})
-        return render(
-            request,
-            "video_caption_maker.html",
-            {
-                "current_folder": video_folder,
-                "form_make_caption": form_caption,
-                "video": video,
-                "languages": LANG_CHOICES,
-                "track_language": track_language,
-                "track_kind": track_kind,
-                "active_model_enrich": ACTIVE_MODEL_ENRICH,
-                "page_title": _("Video caption maker"),
-            },
-        )
+    track_language = LANGUAGE_CODE
+    track_kind = "captions"
+    caption_file_id = request.GET.get("src")
+    if caption_file_id:
+        caption_file = CustomFileModel.objects.filter(id=caption_file_id).first()
+        if caption_file:
+            track = Track.objects.filter(video=video, src=caption_file).first()
+            if track:
+                track_language = track.lang
+                track_kind = track.kind
+
+    form_caption = TrackForm(initial={"video": video})
+    return render(
+        request,
+        "video_caption_maker.html",
+        {
+            "current_folder": video_folder,
+            "form_make_caption": form_caption,
+            "video": video,
+            "languages": LANG_CHOICES,
+            "track_language": track_language,
+            "track_kind": track_kind,
+            "active_model_enrich": ACTIVE_MODEL_ENRICH,
+            "page_title": _("Video caption maker"),
+        },
+    )
 
 
 @csrf_protect
@@ -263,12 +267,17 @@ def video_completion_contributor(request: WSGIRequest, slug: str):
     else:
         list_contributor = video.contributor_set.all()
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __AVAILABLE_ACTIONS__:
-            return eval(
-                "video_completion_contributor_{0}(request, video)".format(
-                    request.POST["action"]
-                )
-            )
+        action = request.POST["action"]
+        if action in __AVAILABLE_ACTIONS__:
+            ACTION_HANDLERS = {
+                "new": video_completion_contributor_new,
+                "save": video_completion_contributor_save,
+                "modify": video_completion_contributor_modify,
+                "delete": video_completion_contributor_delete,
+            }
+            handler = ACTION_HANDLERS.get(action)
+            if handler:
+                return handler(request, video)
 
     elif request.user.is_staff:
         return render(
@@ -461,12 +470,16 @@ def video_completion_speaker(request: WSGIRequest, slug: str):
     else:
         list_contributor = video.contributor_set.all()
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __AVAILABLE_ACTIONS__:
-            return eval(
-                "video_completion_speaker_{0}(request, video)".format(
-                    request.POST["action"]
-                )
-            )
+        action = request.POST["action"]
+        if action in __AVAILABLE_ACTIONS__:
+            ACTION_HANDLERS = {
+                "new": video_completion_speaker_new,
+                "save": video_completion_speaker_save,
+                "delete": video_completion_speaker_delete,
+            }
+            handler = ACTION_HANDLERS.get(action)
+            if handler:
+                return handler(request, video)
 
     elif request.user.is_staff:
         return render(
@@ -791,12 +804,17 @@ def video_completion_document(request, slug):
         raise PermissionDenied
 
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __AVAILABLE_ACTIONS__:
-            return eval(
-                "video_completion_document_{0}(request, video)".format(
-                    request.POST["action"]
-                )
-            )
+        action = request.POST["action"]
+        if action in __AVAILABLE_ACTIONS__:
+            ACTION_HANDLERS = {
+                "new": video_completion_document_new,
+                "save": video_completion_document_save,
+                "modify": video_completion_document_modify,
+                "delete": video_completion_document_delete,
+            }
+            handler = ACTION_HANDLERS.get(action)
+            if handler:
+                return handler(request, video)
     else:
         context = get_video_completion_context(video)
         return render(
@@ -936,12 +954,17 @@ def video_completion_track(request, slug):
         raise PermissionDenied
 
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __AVAILABLE_ACTIONS__:
-            return eval(
-                "video_completion_track_{0}(request, video)".format(
-                    request.POST["action"]
-                )
-            )
+        action = request.POST["action"]
+        if action in __AVAILABLE_ACTIONS__:
+            ACTION_HANDLERS = {
+                "new": video_completion_track_new,
+                "save": video_completion_track_save,
+                "modify": video_completion_track_modify,
+                "delete": video_completion_track_delete,
+            }
+            handler = ACTION_HANDLERS.get(action)
+            if handler:
+                return handler(request, video)
     else:
         context = get_video_completion_context(video)
         return render(
@@ -1120,12 +1143,17 @@ def video_completion_overlay(request, slug):
         raise PermissionDenied
 
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __AVAILABLE_ACTIONS__:
-            return eval(
-                "video_completion_overlay_{0}(request, video)".format(
-                    request.POST["action"]
-                )
-            )
+        action = request.POST["action"]
+        if action in __AVAILABLE_ACTIONS__:
+            ACTION_HANDLERS = {
+                "new": video_completion_overlay_new,
+                "save": video_completion_overlay_save,
+                "modify": video_completion_overlay_modify,
+                "delete": video_completion_overlay_delete,
+            }
+            handler = ACTION_HANDLERS.get(action)
+            if handler:
+                return handler(request, video)
     else:
         context = get_video_completion_context(video)
         return render(
