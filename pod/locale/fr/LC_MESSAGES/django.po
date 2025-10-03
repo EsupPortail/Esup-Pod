@@ -5091,7 +5091,7 @@ msgstr "Partager"
 
 #: pod/main/templates/mastodon.html
 msgid "Please enter your Mastodon instance URL:"
-msgstr "Veuillez indiquer l’adresse de votre instance Mastodon :"
+msgstr "Veuillez indiquer l’adresse de votre instance Mastodon :"
 
 #: pod/main/templates/mastodon.html
 msgid "Remember this instance"
