@@ -87,6 +87,14 @@ def context_video_settings(request):
 
 def context_video_data(request):
     """Get video data in cache, if not, create and add it in cache."""
+
+    from pod.video.views import get_videos_categories_list
+
+    category = cache.get("CATEGORY")
+    if category is None:
+        category = get_videos_categories_list(request)
+        cache.set("CATEGORY", category, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
+
     types = cache.get("TYPES")
     if types is None:
         types = (
@@ -141,6 +149,7 @@ def context_video_data(request):
     return {
         "TYPES": types,
         "DISCIPLINES": disciplines,
+        "CATEGORY" : category,
         "VIDEOS_COUNT": VIDEOS_COUNT,
         "VIDEOS_DURATION": VIDEOS_DURATION,
         "CHANNELS_PER_BATCH": CHANNELS_PER_BATCH,

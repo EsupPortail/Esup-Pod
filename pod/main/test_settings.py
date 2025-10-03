@@ -117,7 +117,7 @@ USE_MEETING_WEBINAR = True
 MEETING_WEBINAR_AFFILIATION = ["faculty", "employee", "staff"]
 
 # Uniquement lors d'environnement conteneurisé
-if USE_DOCKER:
+if USE_DOCKER is not TEST_SETTINGS:
     MIGRATION_MODULES = {"flatpages": "pod.db_migrations"}
     MIGRATION_DIRECTORY = os.path.join(settings_base_dir, "db_migrations")
     if not os.path.exists(MIGRATION_DIRECTORY):
