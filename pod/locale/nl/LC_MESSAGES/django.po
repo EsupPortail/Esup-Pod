@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-30 16:59+0200\n"
+"POT-Creation-Date: 2025-09-16 15:02+0200\n"
 "PO-Revision-Date: 2025-04-25 10:36+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -501,6 +501,11 @@ msgstr ""
 
 #: pod/ai_enhancement/views.py
 msgid "Quiz successfully imported."
+msgstr ""
+
+#: pod/authentication/IPRestrictionMiddleware.py
+#, python-format
+msgid "%(last_name)s (Restricted - IP %(ip)s not allowed)"
 msgstr ""
 
 #: pod/authentication/admin.py pod/main/forms.py
@@ -1282,11 +1287,6 @@ msgstr ""
 msgid ""
 "There is an overlap with the overlay {0}, please change time start and/or "
 "time end values."
-msgstr ""
-
-#: pod/completion/permissions/video.py
-#, python-brace-format
-msgid "{func.__name__}: Permission denied for user {current_user.pk}."
 msgstr ""
 
 #: pod/completion/templates/contributor/form_contributor.html
@@ -2104,7 +2104,7 @@ msgid "Dress the video “%s”"
 msgstr ""
 
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
-#: pod/meeting/views.py pod/video/views.py
+#: pod/meeting/views.py pod/video/tests/test_views.py pod/video/views.py
 msgid "The changes have been saved."
 msgstr ""
 
@@ -4861,6 +4861,8 @@ msgid ""
 msgstr ""
 
 #: pod/main/templates/base.html
+#: pod/recorder/templates/recorder/claim_record.html
+#: pod/video/templates/videos/video-element.html
 msgid "Learn more"
 msgstr ""
 
@@ -5719,7 +5721,8 @@ msgid "URL of the SIPMediaGW server"
 msgstr ""
 
 #: pod/meeting/models.py
-msgid "Example format: https://sipmediagw.univ.fr"
+#, python-format
+msgid "Example format: %(url)s"
 msgstr ""
 
 #: pod/meeting/models.py
@@ -6479,13 +6482,6 @@ msgid "Private"
 msgstr ""
 
 #: pod/playlist/models.py
-#, python-brace-format
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
-msgstr ""
-
-#: pod/playlist/models.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
@@ -6863,6 +6859,10 @@ msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
+msgstr ""
+
+#: pod/playlist/views.py
+msgid "Delete the playlist"
 msgstr ""
 
 #: pod/playlist/views.py
@@ -7253,7 +7253,7 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr ""
 
@@ -7866,8 +7866,7 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that supports HTML5 video."
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -9842,6 +9841,22 @@ msgid "-- sorry, no translation provided --"
 msgstr ""
 
 #: pod/video/tests/test_views.py pod/video/views.py
+msgid "The note has been saved."
+msgstr ""
+
+#: pod/video/tests/test_views.py
+msgid "Method not allowed: Please use post method"
+msgstr ""
+
+#: pod/video/tests/test_views.py
+msgid "One or more videos not updated"
+msgstr ""
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "Update successfully"
+msgstr ""
+
+#: pod/video/tests/test_views.py pod/video/views.py
 msgid "A token has been created."
 msgstr ""
 
@@ -9983,10 +9998,6 @@ msgid "Your comment has been saved."
 msgstr ""
 
 #: pod/video/views.py
-msgid "The note has been saved."
-msgstr ""
-
-#: pod/video/views.py
 #, python-format
 msgid "Your note at %(timestamp)s has been modified."
 msgstr ""
@@ -10107,10 +10118,6 @@ msgstr ""
 
 #: pod/video/views.py
 msgid "You do not have rights to delete this category"
-msgstr ""
-
-#: pod/video/views.py
-msgid "Update successfully"
 msgstr ""
 
 #: pod/video_encode_transcript/apps.py
