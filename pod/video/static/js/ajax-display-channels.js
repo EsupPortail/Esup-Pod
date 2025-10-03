@@ -118,7 +118,11 @@ function setModalTitle(modalTitle, modalContentElement, channelsCount) {
     "%(title)s (%(count)s channels)",
     channelsCount,
   );
-  channelString = interpolate(channelString, { count: channelsCount, title: modalTitle}, true);
+  channelString = interpolate(
+    channelString,
+    { count: channelsCount, title: modalTitle },
+    true,
+  );
   modalTitleElement.innerHTML = `${channelIcon}&nbsp;${channelString}`;
 }
 
@@ -375,7 +379,11 @@ function createModalFor(channelTab) {
       getChannelsForSpecificChannelTabs(currentPage, channelTab.id)
         .then(function (channels) {
           let channelsArray = Object.values(channels["channels"]);
-          setModalTitle(channelTab.name, modalContentElement, channels["count"]);
+          setModalTitle(
+            channelTab.name,
+            modalContentElement,
+            channels["count"],
+          );
           modalContentElement
             .querySelector(".modal-body")
             .appendChild(convertToModalList(channelsArray));
@@ -462,7 +470,11 @@ channelModal.addEventListener("shown.bs.modal", function () {
     getChannelsForSpecificChannelTabs(currentPage)
       .then(function (channels) {
         let channelsArray = Object.values(channels["channels"]);
-        setModalTitle(gettext("Channel list"), modalContentElement, channels["count"]);
+        setModalTitle(
+          gettext("Channel list"),
+          modalContentElement,
+          channels["count"],
+        );
         modalContentElement
           .querySelector(".modal-body")
           .appendChild(convertToModalList(channelsArray));
