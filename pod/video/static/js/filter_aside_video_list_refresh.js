@@ -187,9 +187,24 @@ function refreshVideosSearch() {
 }
 
 // Function to get the URL to refresh the page with applied filters
+function normalizeMultiValues(urlParams, multiKeys) {
+  multiKeys.forEach((key) => {
+    if (urlParams.has(key)) {
+      const values = urlParams.get(key).split(",").filter(v => v); 
+      urlParams.delete(key); 
+      values.forEach(val => urlParams.append(key, val));
+    }
+  });
+  return urlParams;
+}
+
 function getUrlForRefresh() {
   const baseUrl = window.location.pathname;
-  const urlParams = new URLSearchParams(window.location.search);
+  let urlParams = new URLSearchParams(window.location.search);
+
+  // Normalize multi-value parameters
+  const multiFilters = [...new Set(filtersConfig.map(filter => filter.param))];
+  urlParams = normalizeMultiValues(urlParams, multiFilters);
 
   const sort = document.getElementById("sort")?.value;
   if (sort) {
@@ -215,22 +230,22 @@ function getUrlForRefresh() {
   if (typeof displayMode !== "undefined") {
     urlParams.set("display_mode", displayMode);
   }
+
   urlParams.delete("page");
 
   const fullUrl = `${baseUrl}?${urlParams.toString()}`;
+
   if (fullUrl.includes("undefined")) {
     const debugParams = [];
     for (const [key, value] of urlParams.entries()) {
-      if (value === "undefined") {
-        debugParams.push(key);
-      }
+      if (value === "undefined") debugParams.push(key);
     }
     console.warn(
       "getUrlForRefresh(): Detected 'undefined' in URL. Affected parameters:",
       debugParams
     );
   }
-
+  
   return fullUrl;
 }
 

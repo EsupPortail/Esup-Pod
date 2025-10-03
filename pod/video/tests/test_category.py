@@ -1,5 +1,5 @@
 from django.core.serializers.json import DjangoJSONEncoder
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template.defaultfilters import slugify
@@ -358,7 +358,7 @@ class TestCategory(TestCase):
         print(" --->  test_post_delete_category of TestCategory: OK!")
 
     def test_get_categories_for_user_mapping(self):
-        """get_categories_for_user doit retourner un dict slug -> [video_slug]."""
+        """get_categories_for_user should return a dict slug -> [video_slug]."""
         from pod.video import views
 
         mapping = views.get_categories_for_user(self.owner_user)
@@ -368,7 +368,7 @@ class TestCategory(TestCase):
         print(" --->  test_get_categories_for_user_mapping: OK!")
 
     def test_get_videos_categories_list_unauthenticated_returns_empty(self):
-        """get_videos_categories_list doit renvoyer {} pour utilisateur non authentifié."""
+        """get_videos_categories_list should return {} for unauthenticated user."""
         from django.test.client import RequestFactory
         from django.contrib.auth.models import AnonymousUser
         from pod.video import views
@@ -382,38 +382,14 @@ class TestCategory(TestCase):
         print(" --->  test_get_videos_categories_list_unauthenticated_returns_empty: OK!")
 
     def test_get_json_videos_categories_returns_html_response(self):
-        """get_render_categories_list doit renvoyer un rendu HTML des catégories."""
+        """get_render_categories_list should return an HTML rendering of the categories."""
         self.client.force_login(self.owner_user)
         url = reverse("video:get_render_categories_list")
         response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.status_code, 200)
         self.assertIn("text/html", response["Content-Type"])
-        # Vérifie que le contenu HTML contient bien la catégorie
         self.assertIn(self.cat_1.title, response.content.decode("utf-8"))
         print(" --->  test_get_render_categories_list: OK!")
-
-
-    def test_dashboard_filter_by_name_returns_type_and_unknown_raises_404(self):
-        """dashboard-filter-by-name doit renvoyer des objets pour 'type' et 404 pour inconnu via endpoint."""
-        from django.urls import reverse
-
-        self.client.force_login(self.owner_user)
-
-        response = self.client.get(reverse("video:dashboard-filter-by-name", args=["type"]))
-        self.assertEqual(response.status_code, 200)
-        payload = json.loads(response.content.decode("utf-8"))
-        self.assertIn("type", payload)
-        self.assertIsInstance(payload["type"], list)
-
-        response = self.client.get(reverse("video:dashboard-filter-by-name", args=["discipline"]))
-        self.assertEqual(response.status_code, 200)
-        payload = json.loads(response.content.decode("utf-8"))
-        self.assertIn("discipline", payload)
-        self.assertIsInstance(payload["discipline"], list)
-
-        response = self.client.get(reverse("video:dashboard-filter-by-name", args=["i_dont_exist"]))
-        self.assertEqual(response.status_code, 404)
-        print(" --->  test_dashboard-filter-by-name_returns_type_and_unknown_raises_404: OK!")
 
     def tearDown(self) -> None:
         del self.video

@@ -36,7 +36,7 @@ from dateutil.parser import parse
 from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
 from pod.main.context_processors import WEBTV_MODE
 from pod.main.models import AdditionalChannelTab
-from pod.main.views import in_maintenance
+from pod.main.views import MENUBAR_HIDE_INACTIVE_OWNERS, MENUBAR_SHOW_STAFF_OWNERS_ONLY, in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
 from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
@@ -3691,6 +3691,7 @@ def available_filters(request):
         "videos_duration": videos_duration,
     })
 
+
 def available_filter_by_type(request, filter_name):
     """API endpoint to return an available video filter."""
     site = get_current_site(request)
@@ -3727,10 +3728,48 @@ def available_filter_by_type(request, filter_name):
         duration_seconds = v_filter.aggregate(duration=Sum("duration"))["duration"]
         duration_str = str(timedelta(seconds=duration_seconds)) if duration_seconds else "0"
         return JsonResponse({"videos_duration": duration_str})
-    
-    # Cas invalide
     raise ValueError(f"Unknown filter type '{filter_name}'")
 
+
+def get_owners_for_videos_on_dashboard(request):
+    """
+    Returns a JSON of users who are owners or additional_owners of the videos present
+    on the dashboard (after applying the dashboard filters).
+    Output structure: [{ "id": ..., "username": ..., "first_name": ..., "last_name": ..., "video_count": ... }, ...]
+    """
+    if not is_ajax(request):
+        return HttpResponseBadRequest() 
+   
+    videos_qs = get_videos_for_owner(request)
+    filtered_videos_qs = get_filtered_videos_list(request, videos_qs)
+    primary_owner_ids_qs = filtered_videos_qs.values_list("owner_id", flat=True)
+    additional_owner_ids_qs = filtered_videos_qs.values_list("additional_owners__id", flat=True)
+    primary_ids = set(primary_owner_ids_qs)
+    additional_ids = set(additional_owner_ids_qs)
+    user_ids = {i for i in (primary_ids | additional_ids) if i is not None}
+    if not user_ids:
+        return HttpResponse(json.dumps([]), content_type="application/json")
+
+    users_qs = User.objects.filter(id__in=list(user_ids))
+    if MENUBAR_HIDE_INACTIVE_OWNERS:
+        users_qs = users_qs.filter(is_active=True)
+    if MENUBAR_SHOW_STAFF_OWNERS_ONLY:
+        users_qs = users_qs.filter(is_staff=True)
+
+    try:
+        users_qs = users_qs.annotate(
+            video_count=Count(
+                "video",
+                distinct=True,
+                filter=Q(video__in=filtered_videos_qs)
+            )
+        )
+    except TypeError:
+        users_qs = users_qs.annotate(video_count=Count("video", distinct=True))
+    VALUES = ["id", "username", "first_name", "last_name", "video_count"]
+    users_list = list(users_qs.values(*VALUES).order_by("last_name"))
+
+    return HttpResponse(json.dumps(users_list), content_type="application/json")
 
 
 """

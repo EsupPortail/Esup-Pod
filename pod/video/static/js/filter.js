@@ -13,7 +13,7 @@ const filtersConfig = [
   {
     name: gettext("User"),
     param: "owner",
-    searchCallback: getSearchListUsers,
+    searchCallback: getOwnersForVideosOnDashboard,
     itemLabel: user =>
       user.first_name && user.last_name
         ? `${user.first_name} ${user.last_name} (${user.username})`
@@ -49,6 +49,27 @@ const filtersConfig = [
     itemKey: categories => categories.value,
   }
 ];
+
+
+async function getOwnersForVideosOnDashboard(searchTerm) {
+  try {
+    let data = new FormData();
+    data.append("term", searchTerm);
+    data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
+    const response = await fetch("/videos/dashboard/get_owners_for_videos_on_dashboard/", {
+      method: "POST",
+      body: data,
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+    });
+    const users = await response.json();
+    return users;
+  } catch (error) {
+    showalert(gettext("User not found"), "alert-danger");
+  }
+}
 
 /**
  * Searches within a list of filter items by a search term, prioritizing matches first.

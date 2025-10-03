@@ -1438,7 +1438,7 @@ class VideoTestFiltersViews(TestCase):
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
     def test_available_filters_endpoint(self):
-        """API available_filters doit renvoyer la structure attendue."""
+        """API available_filters should return the expected structure."""
         Site.objects.get_or_create(domain="example.com", name="example.com")
         url = reverse("video:dashboard-filters")
 
@@ -1458,7 +1458,7 @@ class VideoTestFiltersViews(TestCase):
         print(" --->  test_available_filters_endpoint: OK!")
 
     def test_available_filter_by_type_various_keys(self):
-        """available_filter_by_type doit gérer correctement plusieurs filter_name et erreurs."""
+        """available_filter_by_type should handle multiple filter_name and errors correctly."""
         Site.objects.get_or_create(domain="example.com", name="example.com")
         url_base = "video:dashboard-filter-by-name"
 
