@@ -55,7 +55,7 @@ class BuildingAdminForm(forms.ModelForm):
     is_superuser = False
     admin_form = True
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(BuildingAdminForm, self).__init__(*args, **kwargs)
         if __FILEPICKER__:
             self.fields["headband"].widget = CustomFileWidget(type="image")
@@ -71,7 +71,7 @@ class BuildingAdminForm(forms.ModelForm):
 class BroadcasterAdminForm(forms.ModelForm):
     required_css_class = "required"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(BroadcasterAdminForm, self).__init__(*args, **kwargs)
         if __FILEPICKER__:
             self.fields["poster"].widget = CustomFileWidget(type="image")
@@ -87,7 +87,7 @@ class BroadcasterAdminForm(forms.ModelForm):
             help_text=_("Select the piloting implementation for to this broadcaster."),
         )
 
-    def clean(self):
+    def clean(self) -> None:
         super(BroadcasterAdminForm, self).clean()
 
     class Meta(object):
@@ -109,14 +109,14 @@ class EventAdminForm(forms.ModelForm):
         widget=MyAdminSplitDateTime,
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.request = kwargs.pop("request", None)
         super(EventAdminForm, self).__init__(*args, **kwargs)
         self.fields["owner"].initial = self.request.user
         if __FILEPICKER__ and self.fields.get("thumbnail"):
             self.fields["thumbnail"].widget = CustomFileWidget(type="image")
 
-    def clean(self):
+    def clean(self) -> None:
         super(EventAdminForm, self).clean()
         check_event_date_and_hour(self)
 
@@ -147,7 +147,7 @@ class CustomBroadcasterChoiceField(forms.ModelChoiceField):
         return obj.name
 
 
-def check_event_date_and_hour(form):
+def check_event_date_and_hour(form) -> None:
     if (
         "end_date" not in form.cleaned_data.keys()
         and "end_time" not in form.cleaned_data.keys()
@@ -175,7 +175,7 @@ def check_event_date_and_hour(form):
     validate_consistency(brd, d_deb, d_fin, d_fin_field, form)
 
 
-def validate_consistency(brd, d_deb, d_fin, d_fin_field, form):
+def validate_consistency(brd, d_deb, d_fin, d_fin_field, form) -> None:
     if timezone.now() >= d_fin:
         form.add_error(d_fin_field, _("End should not be in the past"))
         raise forms.ValidationError(_("An event cannot be planned in the past"))
@@ -204,7 +204,7 @@ def validate_consistency(brd, d_deb, d_fin, d_fin_field, form):
 class EventPasswordForm(forms.Form):
     password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(EventPasswordForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
@@ -303,7 +303,7 @@ class EventForm(forms.ModelForm):
             # à la création
             self.creating(broadcaster_id, building_id)
 
-    def creating(self, broadcaster_id, building_id):
+    def creating(self, broadcaster_id, building_id) -> None:
         if broadcaster_id is not None and building_id is not None:
             query_buildings = get_building_having_available_broadcaster(
                 self.user, building_id
@@ -332,7 +332,7 @@ class EventForm(forms.ModelForm):
         )
         self.fields["video_on_hold"].queryset = query_videos.all()
 
-    def editing(self):
+    def editing(self) -> None:
         broadcaster = self.instance.broadcaster
         self.fields["broadcaster"].queryset = get_available_broadcasters_of_building(
             self.user, broadcaster.building.id, broadcaster.id
@@ -346,7 +346,7 @@ class EventForm(forms.ModelForm):
         )
         self.fields["video_on_hold"].queryset = query_videos.all()
 
-    def saving(self):
+    def saving(self) -> None:
         try:
             build = Building.objects.filter(name=self.data.get("building")).first()
             self.fields["broadcaster"].queryset = get_available_broadcasters_of_building(
@@ -360,7 +360,7 @@ class EventForm(forms.ModelForm):
             pass  # invalid input from the client;
             # ignore and fallback to empty Broadcaster queryset
 
-    def initFields(self, is_current_event):
+    def initFields(self, is_current_event) -> None:
         if not self.user.is_superuser:
             self.remove_field("owner")
             self.instance.owner = self.user
@@ -401,7 +401,7 @@ class EventForm(forms.ModelForm):
         if self.fields.get(field):
             del self.fields[field]
 
-    def clean(self):
+    def clean(self) -> None:
         check_event_date_and_hour(self)
         cleaned_data = super(EventForm, self).clean()
 
@@ -457,7 +457,7 @@ class EventDeleteForm(forms.Form):
         widget=forms.CheckboxInput(),
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(EventDeleteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
@@ -466,7 +466,7 @@ class EventImmediateForm(forms.ModelForm):
     end_date = forms.SplitDateTimeField()
     end_time = forms.TimeField(label=_("End time"), widget=widgets.AdminDateWidget)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.user = kwargs.pop("user", None)
         super(EventImmediateForm, self).__init__(*args, **kwargs)
         self.auto_id = "event_%s"
@@ -481,10 +481,10 @@ class EventImmediateForm(forms.ModelForm):
         # Manage fields to display
         self.initFields()
 
-    def clean(self):
+    def clean(self) -> None:
         check_event_date_and_hour(self)
 
-    def initFields(self):
+    def initFields(self) -> None:
         del self.fields["end_date"]
         self.fields["end_time"].widget.attrs["class"] += " vTimeField"
         self.fields["end_time"].initial = (

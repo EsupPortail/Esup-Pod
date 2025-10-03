@@ -40,11 +40,11 @@
                   <h3 class="video_title">
                     {{ element.title|capfirst|truncatechars:43 }}
                   </h3>
-                  <p class="video_desc text-muted">
+                  <p class="video-desc text-muted">
                     {{ element.description|metaformat|safe|striptags|truncatechars:250 }}
                   </p>
                   {% if type == 'video' %}
-                    <small class="video_time text-muted time d-none d-md-block">
+                    <small class="video-time text-muted time d-none d-md-block">
                       {{ element.duration_in_time }}
                     </small>
                   {% endif %}

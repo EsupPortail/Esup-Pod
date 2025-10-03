@@ -2469,6 +2469,12 @@ msgid "Editing group for the enrichment of the video"
 msgstr "Spécifier les groupes qui peuvent enrichir la vidéo"
 
 #: pod/enrichment/templates/enrichment/group_enrichment.html
+#, python-format
+msgid "Editing group for the enrichment of the video “%(video_title)s”"
+msgstr ""
+"Spécifier les groupes qui peuvent enrichir la vidéo « %(video_title)s »"
+
+#: pod/enrichment/templates/enrichment/group_enrichment.html
 msgid "back to editing enrichment"
 msgstr "retour à l’édition de l’enrichissement"
 
@@ -4234,11 +4240,11 @@ msgstr "Veuillez spécifier un sujet"
 
 #: pod/main/forms_utils.py
 msgid "Date:"
-msgstr "Date:"
+msgstr "Date :"
 
 #: pod/main/forms_utils.py
 msgid "Time:"
-msgstr "Heure:"
+msgstr "Heure :"
 
 #: pod/main/lang_settings.py
 msgid "Abkhazian"
@@ -6021,8 +6027,8 @@ msgid "URL of the SIPMediaGW server"
 msgstr "Adresse URL du serveur SIPMediaGW"
 
 #: pod/meeting/models.py
-msgid "Example format: https://sipmediagw.univ.fr"
-msgstr "Exemple de format : https://sipmediagw.univ.fr"
+msgid "Example format:"
+msgstr "Exemple de format :"
 
 #: pod/meeting/models.py
 msgid "Bearer token for the SIPMediaGW server."

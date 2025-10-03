@@ -27,6 +27,7 @@
 :root[data-theme="dark"] {
   --primary: #264b5d;
   --primary-fg: #eee;
+  --accent: #f5dd5d;
   --body-fg: #eee;
   --body-bg: #121212;
   --body-quiet-color: #e0e0e0;
@@ -47,6 +48,16 @@
   --selected-row: #00363a;
   --close-button-bg: #333;
   --close-button-hover-bg: #666;
+}
+
+:root[data-theme="light"] {
+  --primary: var(--pod-primary);
+  --body-bg: #fff;
+  --button-fg: #fff;
+}
+
+.calendar table {
+  background-color: var(--body-bg);
 }
 
 #user-tools a:focus,

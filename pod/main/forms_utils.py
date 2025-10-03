@@ -15,7 +15,7 @@ class MyAdminSplitDateTime(forms.MultiWidget):
     date_attrs = None
     time_attrs = None
 
-    def __init__(self, attrs=None):
+    def __init__(self, attrs=None) -> None:
         adw = widgets.AdminDateWidget()
         atw = widgets.AdminTimeWidget()
         widg = [adw, atw]
