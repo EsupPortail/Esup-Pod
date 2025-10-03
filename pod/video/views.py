@@ -3658,13 +3658,13 @@ def available_filters(request):
     site = get_current_site(request)
     category = Category.objects.prefetch_related("video").filter(owner=request.user)
     types = (
-        Type.objects.filter(sites=site, video__is_draft=False, video__sites=site)
+        Type.objects.filter(video__sites__in=[site], video__is_draft=False)
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
         .values("id", "title", "video_count")
     )
     disciplines = (
-        Discipline.objects.filter(site=site, video__is_draft=False, video__sites=site)
+        Discipline.objects.filter(video__sites__in=[site], video__is_draft=False)
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
         .values("id", "title", "video_count")
@@ -3679,20 +3679,24 @@ def available_filters(request):
         str(timedelta(seconds=aggregate_videos["duration"]))
         if aggregate_videos["duration"] else "0"
     )
+
+    categories = list(category.values("id", "title"))
+
     return JsonResponse({
         "type": list(types),
         "discipline": list(disciplines),
-        "categories": category,
+        "categories": categories,
         "tag": list(tags),
         "videos_count": videos_count,
         "videos_duration": videos_duration,
     })
 
-
 def available_filter_by_type(request, filter_name):
-    """API endpoint to return a available video filter."""
+    """API endpoint to return an available video filter."""
     site = get_current_site(request)
-    if filter_name.lower() == 'type':
+    filter_name_lower = filter_name.lower()
+
+    if filter_name_lower == 'type':
         types = (
             Type.objects.filter(sites=site, video__is_draft=False, video__sites=site)
             .distinct()
@@ -3700,7 +3704,7 @@ def available_filter_by_type(request, filter_name):
             .values("id", "title", "video_count")
         )
         return JsonResponse({"type": list(types)})
-    elif filter_name.lower() == 'discipline':
+    elif filter_name_lower == 'discipline':
         disciplines = (
             Discipline.objects.filter(site=site, video__is_draft=False, video__sites=site)
             .distinct()
@@ -3708,23 +3712,25 @@ def available_filter_by_type(request, filter_name):
             .values("id", "title", "video_count")
         )
         return JsonResponse({"discipline": list(disciplines)})
-    elif filter_name.lower() == 'categories':
+    elif filter_name_lower == 'categories':
         category = Category.objects.prefetch_related("video").filter(owner=request.user).values("title", "slug")
         return JsonResponse({"categories": list(category)})
-    elif filter_name.lower() == 'tag':
+    elif filter_name_lower == 'tag':
         tags = get_tag_cloud()
         return JsonResponse({"tag": list(tags)})
-    elif filter_name.lower() == 'videos_count':
+    elif filter_name_lower == 'videos_count':
         v_filter = get_available_videos_filter(request)
         count = v_filter.aggregate(number=Count("id"))["number"]
         return JsonResponse({"videos_count": count})
-    elif filter_name.lower() == 'videos_duration':
+    elif filter_name_lower == 'videos_duration':
         v_filter = get_available_videos_filter(request)
         duration_seconds = v_filter.aggregate(duration=Sum("duration"))["duration"]
         duration_str = str(timedelta(seconds=duration_seconds)) if duration_seconds else "0"
         return JsonResponse({"videos_duration": duration_str})
-    else:
-        raise Http404(f"Unknown filter type '{filter_name}'")
+    
+    # Cas invalide
+    raise ValueError(f"Unknown filter type '{filter_name}'")
+
 
 
 """

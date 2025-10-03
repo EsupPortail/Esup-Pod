@@ -352,6 +352,7 @@ def user_autocomplete(request):
         )
 
         data = json.dumps(list(users))
+        print("DEBUG JSON:", data)
     else:
         return HttpResponseBadRequest()
     mimetype = "application/json"

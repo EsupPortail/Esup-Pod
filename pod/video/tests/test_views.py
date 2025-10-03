@@ -1437,6 +1437,73 @@ class VideoTestFiltersViews(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
+    def test_available_filters_endpoint(self):
+        """API available_filters doit renvoyer la structure attendue."""
+        Site.objects.get_or_create(domain="example.com", name="example.com")
+        url = reverse("video:dashboard-filters")
+
+        # Authenticate the test client using self.admin
+        self.client.force_login(self.admin)
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        payload = json.loads(response.content.decode("utf-8"))
+        expected_keys = {"type", "discipline", "categories", "tag", "videos_count", "videos_duration"}
+        self.assertTrue(expected_keys.issubset(set(payload.keys())))
+        self.assertIsInstance(payload.get("type"), list)
+        self.assertIsInstance(payload.get("discipline"), list)
+        self.assertIsInstance(payload.get("tag"), list)
+        self.assertIsInstance(payload.get("videos_count"), int)
+        self.assertIsInstance(payload.get("videos_duration"), str)
+        print(" --->  test_available_filters_endpoint: OK!")
+
+    def test_available_filter_by_type_various_keys(self):
+        """available_filter_by_type doit gérer correctement plusieurs filter_name et erreurs."""
+        Site.objects.get_or_create(domain="example.com", name="example.com")
+        url_base = "video:dashboard-filter-by-name"
+
+        self.client.force_login(self.admin)
+
+        response = self.client.get(reverse(url_base, args=["type"]))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        payload = json.loads(response.content.decode("utf-8"))
+        self.assertIn("type", payload)
+        self.assertIsInstance(payload["type"], list)
+
+        response = self.client.get(reverse(url_base, args=["discipline"]))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        payload = json.loads(response.content.decode("utf-8"))
+        self.assertIn("discipline", payload)
+        self.assertIsInstance(payload["discipline"], list)
+
+        response = self.client.get(reverse(url_base, args=["categories"]))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        payload = json.loads(response.content.decode("utf-8"))
+        self.assertIn("categories", payload)
+        self.assertIsInstance(payload["categories"], list)
+
+        response = self.client.get(reverse(url_base, args=["tag"]))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        payload = json.loads(response.content.decode("utf-8"))
+        self.assertIn("tag", payload)
+        self.assertIsInstance(payload["tag"], list)
+
+        response = self.client.get(reverse(url_base, args=["videos_count"]))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        payload = json.loads(response.content.decode("utf-8"))
+        self.assertIn("videos_count", payload)
+        self.assertIsInstance(payload["videos_count"], int)
+
+        response = self.client.get(reverse(url_base, args=["videos_duration"]))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        payload = json.loads(response.content.decode("utf-8"))
+        self.assertIn("videos_duration", payload)
+        self.assertIsInstance(payload["videos_duration"], str)
+
+        with self.assertRaises(Exception):
+            self.client.get(reverse(url_base, args=["i_dont_exist"]))
+        print(" --->  test_available_filter_by_type_various_keys: OK!")
+
     def tearDown(self) -> None:
         super(VideoTestFiltersViews, self).tearDown()
 
