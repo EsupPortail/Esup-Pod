@@ -25,8 +25,6 @@ from .forms import EnrichmentForm, EnrichmentGroupForm
 
 import json
 
-__AVAILABLE_ACTIONS__ = ["new", "save", "modify", "delete", "cancel"]
-
 
 @csrf_protect
 @ensure_csrf_cookie
@@ -89,20 +87,27 @@ def edit_enrichment(request, slug):
 
     list_enrichment = video.enrichment_set.all()
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __AVAILABLE_ACTIONS__:
-            return eval(
-                "edit_enrichment_{0}(request, video)".format(request.POST["action"])
-            )
-    else:
-        return render(
-            request,
-            "enrichment/edit_enrichment.html",
-            {
-                "video": video,
-                "list_enrichment": list_enrichment,
-                "page_title": _("Enrichment of the video “%s”") % video.title,
-            },
-        )
+        action = request.POST["action"]
+        ACTION_HANDLERS = {
+            "new": edit_enrichment_new,
+            "save": edit_enrichment_save,
+            "modify": edit_enrichment_modify,
+            "delete": edit_enrichment_delete,
+            "cancel": edit_enrichment_cancel,
+        }
+        if action in ACTION_HANDLERS:
+            handler = ACTION_HANDLERS.get(action)
+            if handler:
+                return handler(request, video)
+    return render(
+        request,
+        "enrichment/edit_enrichment.html",
+        {
+            "video": video,
+            "list_enrichment": list_enrichment,
+            "page_title": _("Enrichment of the video “%s”") % video.title,
+        },
+    )
 
 
 def edit_enrichment_new(request, video):

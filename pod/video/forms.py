@@ -11,14 +11,10 @@ from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from .models import Video, VideoVersion, get_storage_path_video
-from .models import Channel
-from .models import Theme
-from .models import Type
-from .models import Discipline
+from .models import Channel, Theme, Type, Discipline
 from .models import Notes, AdvancedNotes, NoteComments
-from pod.video_encode_transcript.models import PlaylistVideo
 from pod.video_encode_transcript import encode
-from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
+from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio, PlaylistVideo
 from django.contrib.sites.models import Site
 from django.db.models.query import QuerySet
 

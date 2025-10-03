@@ -48,8 +48,14 @@ function detect_visibility() {
 }
 */
 
+/**
+ * Checks if a specific footer element is at least 5% visible in the viewport.
+ *
+ * @function
+ * @returns {boolean} Returns true if the footer is visible in the viewport, otherwise false.
+ */
 const isElementXPercentInViewport = function () {
-  const percentVisible = 95;
+  const percentVisible = 5;
   var footer = document.querySelector(
     "footer.container-fluid.pod-footer-container",
   );
@@ -64,6 +70,30 @@ const isElementXPercentInViewport = function () {
   );
 };
 
+/**
+ * InfiniteLoader handles infinite scrolling and dynamic loading of paginated content.
+ *
+ * @class
+ * @param {string} url - The base URL to fetch paginated data from.
+ * @param {Function} callBackBeforeLoad - Callback function executed before loading new content.
+ * @param {Function} callBackAfterLoad - Callback function executed after new content is loaded.
+ * @param {boolean} [nextPage=true] - Indicates if there is a next page to load.
+ * @param {number} [page=2] - The initial page number to start loading from.
+ *
+ * @property {HTMLElement} infinite_loading - The loader element shown during loading.
+ * @property {HTMLElement} videos_list - The container element for the loaded content.
+ * @property {number} next_page_number - The next page number to load.
+ * @property {number} current_page_number - The current page number loaded.
+ * @property {boolean|string} nextPage - Indicates if there is a next page to load.
+ * @property {Function} callBackBeforeLoad - Callback before loading new content.
+ * @property {Function} callBackAfterLoad - Callback after loading new content.
+ * @property {string} url - The base URL for fetching data.
+ * @property {Function} scroller_init - The scroll event handler for triggering loading.
+ *
+ * @method initMore - Loads the next page of content and updates the DOM.
+ * @method removeLoader - Removes the scroll event listener to stop infinite loading.
+ * @method getData - Fetches data for a given page from the server.
+ */
 class InfiniteLoader {
   constructor(
     url,
@@ -96,6 +126,10 @@ class InfiniteLoader {
     };
     window.addEventListener("scroll", this.scroller_init);
   }
+
+  /**
+   * Loads the next page of content and updates the DOM.
+   */
   async initMore() {
     this.callBackBeforeLoad();
     let url = this.url;
@@ -129,10 +163,21 @@ class InfiniteLoader {
     });
   }
 
+  /**
+   * Removes the scroll event listener to stop infinite loading.
+   */
   removeLoader() {
     window.removeEventListener("scroll", this.scroller_init);
   }
 
+  /**
+   * Asynchronously fetches data from a given URL with pagination and CSRF protection.
+   *
+   * @param {string} url - The base URL to fetch data from.
+   * @param {string|number} page - The page identifier or number to append to the URL.
+   * @param {string} nextPage - Indicates if there is a next page; if "false", the request is aborted.
+   * @returns {Promise<string|undefined>} The response text from the fetch request, or undefined if the request is not made.
+   */
   async getData(url, page, nextPage) {
     if (!url) return;
     if (nextPage == "false") return;

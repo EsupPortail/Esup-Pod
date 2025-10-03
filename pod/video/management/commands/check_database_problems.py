@@ -40,7 +40,6 @@ from django.core.management.base import BaseCommand
 from pod.video.models import Video
 from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
 from pod.video_encode_transcript.models import PlaylistVideo
-from typing import Any, Dict
 
 
 class Command(BaseCommand):
@@ -59,7 +58,7 @@ class Command(BaseCommand):
             default=False,
         )
 
-    def handle(self, *args: Any, **options: Any) -> None:
+    def handle(self, *args, **options) -> None:
         """Handle the command call."""
 
         self.stdout.write(self.style.SUCCESS("***Start check database consistency***"))
@@ -76,7 +75,7 @@ class Command(BaseCommand):
         # Main function
         self.process(options)
 
-    def process(self, options: Dict[str, Any]) -> None:
+    def process(self, options) -> None:
         """Main process to check database data."""
 
         # Check all videos
@@ -92,7 +91,7 @@ class Command(BaseCommand):
                 )
             )
 
-    def check_change_owner_problems(self, video: Video, options: Dict[str, Any]) -> None:
+    def check_change_owner_problems(self, video: Video, options) -> None:
         """Checks for problems in the database relating to changes of ownership."""
 
         # Try to identify the problem for this video

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-06 12:04+0200\n"
+"POT-Creation-Date: 2025-10-02 16:11+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.7\n"
 
 #: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
 msgid "No discipline"
@@ -763,14 +763,14 @@ msgid "Add a speaker"
 msgstr "Ajouter un intervenant"
 
 #: pod/video/static/js/ajax-display-channels.js
-msgid "%(count)s channel"
-msgid_plural "%(count)s channels"
-msgstr[0] "%(count)s chaîne"
-msgstr[1] "%(count)s chaînes"
+msgid "%(title)s (%(count)s channel)"
+msgid_plural "%(title)s (%(count)s channels)"
+msgstr[0] "%(title)s (%(count)s chaîne)"
+msgstr[1] "%(title)s (%(count)s chaînes)"
 
 #: pod/video/static/js/ajax-display-channels.js
 msgid "No channels found"
-msgstr "Aucun chaîne trouvée"
+msgstr "Aucune chaîne trouvée"
 
 #: pod/video/static/js/ajax-display-channels.js
 #: pod/video/static/js/video_select.js
@@ -778,6 +778,10 @@ msgid "%(count)s video"
 msgid_plural "%(count)s videos"
 msgstr[0] "%(count)s vidéo"
 msgstr[1] "%(count)s vidéos"
+
+#: pod/video/static/js/ajax-display-channels.js
+msgid "Channel list"
+msgstr "Liste des chaînes"
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
