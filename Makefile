@@ -79,6 +79,7 @@ tests:
 
 # Ensure coherence of all code style
 pystyle:
+	black . -l 90
 	flake8
 
 # Collects all static files inside all apps and put a copy inside the static directory declared in settings.py

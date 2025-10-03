@@ -3760,7 +3760,7 @@ msgstr "Utiliser ce lien pour partager l’évènement :"
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
 msgid "QR code for this link:"
-msgstr "QR code pour le lien :"
+msgstr "QR code pour ce lien :"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
