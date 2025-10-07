@@ -3,9 +3,7 @@
 *  run with 'python manage.py test pod.main.tests.test_views'
 """
 
-from django.test import RequestFactory, override_settings
-from django.test import TestCase
-from django.test import Client
+from django.test import override_settings, TestCase, Client
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.flatpages.models import FlatPage
@@ -215,7 +213,6 @@ class TestShowVideoButtons(TestCase):
 
     def setUp(self) -> None:
         """Set up function for the tests."""
-        self.factory = RequestFactory()
         User.objects.create(
             username="admin", password="admin", is_staff=True, is_superuser=True
         )
@@ -326,7 +323,6 @@ class TestShowMeetingButton(TestCase):
 
     def setUp(self) -> None:
         """Set up function for the tests."""
-        self.factory = RequestFactory()
         User.objects.create(
             username="admin", password="admin", is_staff=True, is_superuser=True
         )
