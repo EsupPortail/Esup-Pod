@@ -27,6 +27,11 @@
         <i class="bi bi-bluesky" aria-hidden="true"></i>
       </a>
       {% endif %}
+      {% if 'MASTODON' in SOCIAL_SHARE %}
+      <a href="#" class="btn btn-outline-primary m-1" data-bs-toggle="modal" data-bs-target="#mastodonModal" title="{% trans 'Share on' %} Mastodon" data-bs-toggle="tooltip" data-bs-placement="bottom">
+        <i class="bi bi-mastodon" aria-hidden="true"></i>
+      </a>
+      {% endif %}
     </p>
   </div>
 {% endif %}
