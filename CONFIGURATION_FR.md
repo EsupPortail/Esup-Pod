@@ -801,6 +801,11 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
   >> Les personnes ayant pour affiliation les valeurs<br>
   >> renseignées dans cette variable ont automatiquement<br>
   >> la valeur staff de leur compte à True.<br>
+* `ALLOWED_SUPERUSER_IPS`
+  > valeur par défaut : `[]`
+  >> Liste d’IP et/ou de plages depuis lesquelles le statut 'superuser'<br>
+  >> est autorisé.<br>
+  >> Laissez vide pour autoriser toutes les sources.<br>
 * `AUTH_CAS_USER_SEARCH`
   > valeur par défaut : `user`
   >> Variable utilisée pour trouver les informations de l’individu<br>
