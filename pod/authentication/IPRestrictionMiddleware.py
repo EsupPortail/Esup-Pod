@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 def ip_in_allowed_range(ip) -> bool:
     """Make sure the IP is one of the authorized ones."""
     from django.conf import settings
+
     ALLOWED_SUPERUSER_IPS = getattr(settings, "ALLOWED_SUPERUSER_IPS", [])
 
     try:
@@ -33,7 +34,7 @@ def ip_in_allowed_range(ip) -> bool:
 
 def is_allowed(ip_obj, allowed):
     """Check if ip object is included in allowed list."""
-    if '/' in allowed:
+    if "/" in allowed:
         net = ipaddress.ip_network(allowed, strict=False)
         if ip_obj in net:
             return True
@@ -48,7 +49,7 @@ class IPRestrictionMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        ip = request.META.get('REMOTE_ADDR')
+        ip = request.META.get("REMOTE_ADDR")
         user = request.user
 
         if user.is_authenticated and user.is_superuser:
