@@ -44,11 +44,11 @@
       } else {
         localStorage.removeItem('mastodonInstance');
       }
-      
+
       const shareUrl = `https://${instanceUrl}/share?text={{request.build_absolute_uri|urlencode}}`;
       window.open(shareUrl, '_blank');
     } else {
-      alert("{% trans 'Please enter a Mastodon instance URL.' %}");
+      alert("{% trans 'Please provide your instance URL.' %}");
     }
     var modal = bootstrap.Modal.getInstance(document.getElementById('mastodonModal'));
     modal.hide();

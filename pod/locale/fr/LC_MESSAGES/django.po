@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-16 15:02+0200\n"
+"POT-Creation-Date: 2025-10-09 14:25+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -701,8 +701,8 @@ msgstr "Changer votre image de profil"
 #: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-iframe.html
 #: pod/live/templates/live/event-info.html pod/main/templates/base.html
-#: pod/main/templates/mastodon.html
-#: pod/main/templates/navbar.html pod/main/templates/navbar_collapse.html
+#: pod/main/templates/mastodon.html pod/main/templates/navbar.html
+#: pod/main/templates/navbar_collapse.html
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/meeting/templates/meeting/my_meetings.html
 #: pod/playlist/templates/playlist/playlist-list-modal.html
@@ -3750,8 +3750,7 @@ msgid "Social Networks"
 msgstr "Réseaux sociaux"
 
 #: pod/live/templates/live/event-info.html pod/main/templates/aside.html
-#: pod/main/templates/mastodon.html
-#: pod/video/templates/videos/video-info.html
+#: pod/main/templates/mastodon.html pod/video/templates/videos/video-info.html
 msgid "Share on"
 msgstr "Partager sur"
 
@@ -5090,26 +5089,9 @@ msgstr "Administration de Pod"
 msgid "Django administration"
 msgstr "Administration de Pod"
 
-#: pod/main/templates/aside.html
-#: pod/main/templates/mastodon.html
+#: pod/main/templates/aside.html pod/main/templates/mastodon.html
 msgid "Share"
 msgstr "Partager"
-
-#: pod/main/templates/mastodon.html
-msgid "Please enter your Mastodon instance URL:"
-msgstr "Veuillez indiquer l’adresse de votre instance Mastodon :"
-
-#: pod/main/templates/mastodon.html
-msgid "Remember this instance"
-msgstr "Se souvenir de l’instance"
-
-#: pod/main/templates/mastodon.html
-msgid "Please enter a Mastodon instance URL."
-msgstr "Veuillez indiquer l’adresse de votre instance."
-
-#: pod/main/templates/mastodon.html
-msgid "your.instance"
-msgstr "votre.instance"
 
 #: pod/main/templates/aside.html pod/recorder/models.py pod/video/forms.py
 #: pod/video/models.py pod/video/templates/videos/dashboard.html
@@ -5290,6 +5272,22 @@ msgstr "Revenir à la page d’accueil"
 #: pod/main/templates/maintenance.html pod/main/views.py
 msgid "Contact us"
 msgstr "Contactez nous"
+
+#: pod/main/templates/mastodon.html
+msgid "Please enter your Mastodon instance URL:"
+msgstr "Veuillez indiquer l’adresse de votre instance Mastodon :"
+
+#: pod/main/templates/mastodon.html
+msgid "your.instance"
+msgstr "votre.instance"
+
+#: pod/main/templates/mastodon.html
+msgid "Remember this instance"
+msgstr "Se souvenir de l’instance"
+
+#: pod/main/templates/mastodon.html
+msgid "Please provide your instance URL."
+msgstr "Veuillez indiquer l’adresse de votre instance."
 
 #: pod/main/templates/navbar.html
 msgid "Toggle main menu"
