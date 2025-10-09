@@ -388,7 +388,7 @@ document.addEventListener("change", (e) => {
   img.src = "/static/img/logoPod_animated.svg";
   setTimeout(function () {
     img.src =
-    "//quickchart.io/chart?cht=qr&chs=200x200&chl=" + txtpartage.value;
+      "//quickchart.io/chart?cht=qr&chs=200x200&chl=" + txtpartage.value;
   }, 2000);
 });
 
