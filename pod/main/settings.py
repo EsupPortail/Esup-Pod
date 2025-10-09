@@ -318,4 +318,4 @@ PWA_APP_DEBUG_MODE = locals().get("DEBUG", False)
 
 # Social share
 
-SOCIAL_SHARE = ["X", "FACEBOOK", "LINKEDIN", "BLUESKY"]
+SOCIAL_SHARE = ["X", "FACEBOOK", "LINKEDIN", "BLUESKY", "MASTODON"]

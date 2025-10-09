@@ -678,6 +678,7 @@ msgstr ""
 #: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-iframe.html
 #: pod/live/templates/live/event-info.html pod/main/templates/base.html
+#: pod/main/templates/mastodon.html
 #: pod/main/templates/navbar.html pod/main/templates/navbar_collapse.html
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/meeting/templates/meeting/my_meetings.html
@@ -3515,6 +3516,7 @@ msgid "Social Networks"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html pod/main/templates/aside.html
+#: pod/main/templates/mastodon.html
 #: pod/video/templates/videos/video-info.html
 msgid "Share on"
 msgstr ""
@@ -4829,7 +4831,24 @@ msgid "Django administration"
 msgstr ""
 
 #: pod/main/templates/aside.html
+#: pod/main/templates/mastodon.html
 msgid "Share"
+msgstr ""
+
+#: pod/main/templates/mastodon.html
+msgid "Please enter your Mastodon instance URL:"
+msgstr ""
+
+#: pod/main/templates/mastodon.html
+msgid "Remember this instance"
+msgstr ""
+
+#: pod/main/templates/mastodon.html
+msgid "Please enter a Mastodon instance URL."
+msgstr ""
+
+#: pod/main/templates/mastodon.html
+msgid "your.instance"
 msgstr ""
 
 #: pod/main/templates/aside.html pod/recorder/models.py pod/video/forms.py
