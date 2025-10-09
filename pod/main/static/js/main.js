@@ -236,7 +236,6 @@ Number.prototype.toHHMMSS = function () {
 
 /**
  * Edit the iframe and share link code
- * @return {[type]} [description]
  */
 function writeInFrame() {
   // Iframe
@@ -297,9 +296,10 @@ function writeInFrame() {
   document.getElementById("txtpartage").value = link;
 
   var img = document.getElementById("qrcode");
-  var imgsrc = "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl=" + link;
-  if (img.getAttribute("src") === "") img.setAttribute("data-src", imgsrc);
-  else img.src = imgsrc;
+  img.src = "/static/img/logoPod_animated.svg";
+  setTimeout(function () {
+    img.src = "//quickchart.io/chart?cht=qr&chs=200x200&chl=" + link;
+  }, 2000);
 }
 
 if (localStorage.getItem("autoshowsubtitles")) {
@@ -313,15 +313,6 @@ document.addEventListener("change", (e) => {
       ? localStorage.setItem("autoshowsubtitles", "on")
       : localStorage.removeItem("autoshowsubtitles");
   }
-});
-
-document.addEventListener("shown.bs.collapse", (e) => {
-  if (e.target.id === "qrcode")
-    e.target.setAttribute("src", e.target.getAttribute("data-src"));
-});
-
-document.addEventListener("hidden.bs.collapse", (e) => {
-  if (e.target.id === "qrcode") e.target.setAttribute("src", "");
 });
 
 if (document.getElementById("btn-download-qr-code") !== null) {
@@ -394,8 +385,11 @@ document.addEventListener("change", (e) => {
   txtpartage.value = link;
 
   var img = document.getElementById("qrcode");
-  img.src =
-    "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl=" + txtpartage.value;
+  img.src = "/static/img/logoPod_animated.svg";
+  setTimeout(function () {
+    img.src =
+      "//quickchart.io/chart?cht=qr&chs=200x200&chl=" + txtpartage.value;
+  }, 2000);
 });
 
 /**

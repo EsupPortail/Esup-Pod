@@ -1275,7 +1275,7 @@ class LiveGateway(models.Model):
     sipmediagw_server_url = models.CharField(
         _("URL of the SIPMediaGW server"),
         max_length=200,
-        help_text="%s %s" % (_("Example format:"), "https://sipmediagw.univ.fr"),
+        help_text=_("Example format: %(url)s") % {"url": "https://sipmediagw.univ.fr"},
         default="https://sipmediagw.univ.fr",
     )
 

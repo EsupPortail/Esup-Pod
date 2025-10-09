@@ -14,7 +14,7 @@ SITE_ID = getattr(settings, "SITE_ID", 1)
 class FlatpageTestCase(TestCase):
     """Test the flatpages creation for welcome page."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up initial of FlatpageTestCase."""
         fp1, created = FlatPage.objects.get_or_create(title="Home", url="/")
         if created:
@@ -32,7 +32,7 @@ class FlatpageTestCase(TestCase):
         fp2.save()
         print(" --->  SetUp of FlatpageTestCase: OK!")
 
-    def test_Flatpage_null_attribut(self):
+    def test_Flatpage_null_attribut(self) -> None:
         """
         Test all attributes.
 
@@ -50,7 +50,7 @@ class FlatpageTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         print("   --->  test_Flatpage_null_attribut of FlatpageTestCase: OK!")
 
-    def test_Flatpage_with_attributs(self):
+    def test_Flatpage_with_attributs(self) -> None:
         """Test attributs when a Flatpage have many attributs."""
         flatPage = FlatPage.objects.get(url="/home/")
         self.assertQuerySetEqual(
@@ -68,7 +68,7 @@ class FlatpageTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         print("   --->  test_Flatpage_with_attributs of FlatpageTestCase: OK!")
 
-    def test_delete_object(self):
+    def test_delete_object(self) -> None:
         """Test delete Flatpage object."""
         count = FlatPage.objects.all().count()
         FlatPage.objects.get(id=1).delete()
@@ -84,19 +84,19 @@ class ConfigurationTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         print(" --->  SetUp of ConfigurationTestCase: OK!")
 
     """
         test attributs
     """
 
-    def test_exist(self):
+    def test_exist(self) -> None:
         maintenance_conf = Configuration.objects.filter(key="maintenance_mode")
         self.assertTrue(maintenance_conf.exists())
         print("   --->  test_exist of ConfigurationTestCase: OK!")
 
-    def test_attributs(self):
+    def test_attributs(self) -> None:
         conf = Configuration.objects.get(key="maintenance_mode")
         self.assertEqual(conf.key, "maintenance_mode")
         self.assertEqual(conf.value, "0")
@@ -108,14 +108,14 @@ class ConfigurationTestCase(TestCase):
         test delete object
     """
 
-    def test_delete_object(self):
+    def test_delete_object(self) -> None:
         Configuration.objects.filter(key="maintenance_mode").delete()
         self.assertEqual(Configuration.objects.filter(key="maintenance_mode").count(), 0)
         print("--->  test_delete_object of ConfigurationTestCase: OK!")
 
 
 class AdditionalChannelTabTestCase(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         AdditionalChannelTab.objects.create(name="Tab0")
         print(" --->  SetUp of AdditionalChannelTabTestCase: OK!")
 
@@ -123,12 +123,12 @@ class AdditionalChannelTabTestCase(TestCase):
         test attributs
     """
 
-    def test_exist(self):
+    def test_exist(self) -> None:
         tab = AdditionalChannelTab.objects.filter(name="Tab0")
         self.assertTrue(tab.exists())
         print("   --->  test_exist of AdditionalChannelTabTestCase: OK!")
 
-    def test_attributs(self):
+    def test_attributs(self) -> None:
         tab = AdditionalChannelTab.objects.get(name="Tab0")
         self.assertEqual(tab.name, "Tab0")
 
@@ -138,7 +138,7 @@ class AdditionalChannelTabTestCase(TestCase):
         test delete object
     """
 
-    def test_delete_object(self):
+    def test_delete_object(self) -> None:
         AdditionalChannelTab.objects.filter(name="Tab0").delete()
         self.assertEqual(AdditionalChannelTab.objects.filter(name="Tab0").count(), 0)
 
@@ -146,10 +146,10 @@ class AdditionalChannelTabTestCase(TestCase):
 
 
 class BlockTestCase(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         print(" --->  SetUp of BlockTestCase: OK!")
 
-    def test_default_site_assigned_on_creation(self):
+    def test_default_site_assigned_on_creation(self) -> None:
         """Test if add block assign default site."""
         block = Block.objects.create(title="Test Block")
         default_site = Site.objects.get(id=SITE_ID)

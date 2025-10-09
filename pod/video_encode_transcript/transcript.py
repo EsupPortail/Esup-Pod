@@ -20,6 +20,10 @@ if (
     or importlib.util.find_spec("whisper") is not None
 ):
     from .transcript_model import start_transcripting
+else:
+
+    def start_transcripting(*args, **kwargs):
+        raise NotImplementedError("No transcription engine available.")
 
 
 from .encoding_utils import sec_to_timestamp
