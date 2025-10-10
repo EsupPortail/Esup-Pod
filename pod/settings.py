@@ -453,6 +453,12 @@ def update_settings(local_settings):
         local_settings["MIDDLEWARE"].append(
             "pod.authentication.shibmiddleware.ShibbMiddleware"
         )
+
+    if local_settings.get("ALLOWED_SUPERUSER_IPS", False):
+        local_settings["MIDDLEWARE"].append(
+            "pod.authentication.IPRestrictionMiddleware.IPRestrictionMiddleware"
+        )
+
     if local_settings.get("USE_OIDC", False):
         local_settings["AUTHENTICATION_BACKENDS"] += (
             "pod.authentication.backends.OIDCBackend",
