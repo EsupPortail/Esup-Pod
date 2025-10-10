@@ -54,6 +54,7 @@
   --primary: var(--pod-primary);
   --body-bg: #fff;
   --button-fg: #fff;
+  --body-quiet-color: #666;
 }
 
 .calendar table {
