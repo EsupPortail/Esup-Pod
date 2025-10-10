@@ -524,7 +524,8 @@ class Command(BaseCommand):
             if not exists:
                 writer.writeheader()
 
-            # vid.owner.owner
+            # Force the username attribute even if HIDE_USERNAME is true whereas the __str__ method
+            # of Owner Class used by vid.owner.owner doesn't do so
             user_name = "%s %s (%s)" % (
                 vid.owner.first_name,
                 vid.owner.last_name,
