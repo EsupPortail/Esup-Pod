@@ -7,11 +7,14 @@
 <li class="breadcrumb-item active" aria-current="page">{% trans "Editing group for the enrichment of the video" %}</li>
 {% endblock %}
 
-{% block page_title %}{% trans "Editing group for the enrichment of the video" %} "{{video.title}}"{% endblock %}
+{% block page_title %}
+  {% blocktrans with video_title=video.title %}Editing group for the enrichment of the video “{{ video_title }}”{% endblocktrans %}
+{% endblock %}
 
 {% block page_content %}
 {% spaceless %}
-<h3>{% trans "Editing group for the enrichment of the video" %} "{{video.title}}"
+<h3>
+  {% blocktrans with video_title=video.title %}Editing group for the enrichment of the video “{{ video_title }}”{% endblocktrans %}
 </h3>
 
 <form id="enrichment_group_form" method="post"
@@ -52,8 +55,8 @@
     </fieldset>
   </div>
   <div class="text-center">
-    <button type="submit" class="btn btn-primary btn-sm" name="_continue" value="">{% trans 'Save' %}</button>
-    <a href="{% url 'enrichment:edit_enrichment' slug=video.slug %}" class="btn btn-secondary btn-sm">{% trans 'back to editing enrichment' %}</a>
+    <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save' %}</button>
+    <a href="{% url 'enrichment:edit_enrichment' slug=video.slug %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to editing enrichment' %}</a>
   </div>
 </form>
 
