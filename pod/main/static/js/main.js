@@ -298,7 +298,9 @@ function writeInFrame() {
   var img = document.getElementById("qrcode");
   img.src = "/static/img/logoPod_animated.svg";
   setTimeout(function () {
-    img.src = "//quickchart.io/chart?cht=qr&chs=200x200&chl=" + encodeURIComponent(link);
+    img.src =
+      "//quickchart.io/chart?cht=qr&chs=200x200&chl=" +
+      encodeURIComponent(link);
   }, 2000);
 }
 
