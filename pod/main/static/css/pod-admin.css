@@ -1,4 +1,3 @@
-
 /** Set the Django-admin auto dark mode
  *  when dark theme is active in Pod.
  **/
@@ -36,13 +35,20 @@
   --body-quiet-color: #666;
 }
 
-:root[data-theme="dark"] .select2-container--default .select2-selection--multiple,
+:root[data-theme="dark"]
+  .select2-container--default
+  .select2-selection--multiple,
 :root[data-theme="dark"] .select2-dropdown,
-:root[data-theme="dark"] .select2-container--default .select2-selection--multiple .select2-selection__choice {
+:root[data-theme="dark"]
+  .select2-container--default
+  .select2-selection--multiple
+  .select2-selection__choice {
   background-color: #121212 !important;
 }
 
-:root[data-theme="dark"] .select2-container--default.select2-container--focus .select2-selection--multiple {
+:root[data-theme="dark"]
+  .select2-container--default.select2-container--focus
+  .select2-selection--multiple {
   border: solid white 1px !important;
 }
 
