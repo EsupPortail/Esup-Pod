@@ -1,4 +1,8 @@
-"""Esup-Pod authentication models test cases."""
+"""
+Esup-Pod authentication models test cases.
+
+Test with `python manage.py test pod.authentication.tests.test_models`
+"""
 
 from django.test import TestCase
 from pod.authentication.models import Owner, AccessGroup

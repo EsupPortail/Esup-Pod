@@ -11,7 +11,8 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
 {% if request.GET.loop and request.GET.loop == 'true' %} loop {% endif %} {% endspaceless %}
 >
   <p class="vjs-no-js">
-    {%blocktrans%}To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>{%endblocktrans%}
+    {%blocktrans%}To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video.{%endblocktrans%}
+    <a href="https://videojs.com/html5-video-support/" target="_blank">{% trans "Learn more" %}</a>
   </p>
   {% block extratrack %} {% endblock extratrack %}
   {% for track in video.track_set.all%}

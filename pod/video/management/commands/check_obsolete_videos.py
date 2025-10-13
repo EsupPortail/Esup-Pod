@@ -523,10 +523,19 @@ class Command(BaseCommand):
 
             if not exists:
                 writer.writeheader()
+
+            # Force the username attribute even if HIDE_USERNAME is true whereas the __str__ method
+            # of Owner Class used by vid.owner.owner doesn't do so
+            user_name = "%s %s (%s)" % (
+                vid.owner.first_name,
+                vid.owner.last_name,
+                vid.owner.username,
+            )
+
             writer.writerow(
                 {
                     "Date": date.today(),
-                    "User name": vid.owner.owner,
+                    "User name": user_name,
                     "User email": vid.owner.email,
                     "User Affiliation": vid.owner.owner.affiliation,
                     "User Establishment": vid.owner.owner.establishment,
