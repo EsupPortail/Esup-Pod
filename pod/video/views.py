@@ -3735,7 +3735,6 @@ def get_owners_for_videos_on_dashboard(request):
     """
     Returns a JSON of users who are owners or additional_owners of the videos present
     on the dashboard (after applying the dashboard filters).
-    Output structure: [{ "id": ..., "username": ..., "first_name": ..., "last_name": ..., "video_count": ... }, ...]
     """
     if not is_ajax(request):
         return HttpResponseBadRequest()
