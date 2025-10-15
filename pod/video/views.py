@@ -2645,8 +2645,8 @@ def stats_view(request, slug=None, slug_t=None):
     """
     target = request.GET.get("from", "videos")
     videos, title = get_videos(slug, target, slug_t)
-    error_message = (
-        "The following %(target)s does not exist or contain any videos: %(slug)s"
+    error_message = _(
+        "The following “%(target)s” type target does not exist or contains no videos: %(slug)s."
     )
     if request.method == "GET" and target == "video" and videos:
         return manage_access_rights_stats_video(request, videos[0], title)
@@ -2659,7 +2659,7 @@ def stats_view(request, slug=None, slug_t=None):
     ):
         slug = slug if not slug_t else slug_t
         target = "Pod" if target == "videos" else target
-        return HttpResponseNotFound(_(error_message) % {"target": target, "slug": slug})
+        return HttpResponseNotFound(error_message % {"target": target, "slug": slug})
 
     if (
         request.method == "POST"
