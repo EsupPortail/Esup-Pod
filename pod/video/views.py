@@ -17,6 +17,7 @@ from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.http import QueryDict, Http404
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
+from django.utils.html import escape
 from django.utils.translation import ngettext
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
@@ -2659,7 +2660,7 @@ def stats_view(request, slug=None, slug_t=None):
     ):
         slug = slug if not slug_t else slug_t
         target = "Pod" if target == "videos" else target
-        return HttpResponseNotFound(error_message % {"target": target, "slug": slug})
+        return HttpResponseNotFound(error_message % {"target": escape(target), "slug": escape(slug)})
 
     if (
         request.method == "POST"
