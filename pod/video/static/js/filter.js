@@ -1,10 +1,14 @@
 /**
+ * @file Esup-Pod script for instance of FilterManager in video dashboard.
+ *
+ * @since 4.1.0
+ */
+
+
+/**
  * @typedef {Object} FilterItem
  * @property {string} label - The display name shown in the UI
  * @property {string} value - The internal value used for filtering (e.g., slug)
- */
-
-/**
  * Array of filter configurations to be used in FilterManager.
  * Each object defines how a specific filter behaves and how items are displayed and matched.
  * @type {Array<Object>}
@@ -51,6 +55,13 @@ const filtersConfig = [
 ];
 
 
+/**
+ * Retrieves the list of video owners based on a search term.
+ * @async
+ * @function
+ * @param {string} searchTerm - The term used to search for owners.
+ * @returns {Promise<Object[]>} - A promise that resolves to a list of matching users.
+ */
 async function getOwnersForVideosOnDashboard(searchTerm) {
   try {
     let data = new FormData();
@@ -138,7 +149,7 @@ async function initFilters() {
 }
 
 /**
- * Récupère un filtre spécifique par son nom.
+ * Retrieves a specific filter by its name.
  * @param {string} filterName
  * @returns {Promise<Object>}
  */
@@ -152,7 +163,7 @@ async function fetchSingleFilter(filterName) {
     throw new Error(`Malformed API response: missing array for key '${key}'`);
   }
 
-  // Remapper pour correspondre à { label, value }
+  // Remap to match the { label, value } format
   return data[key].map(item => ({
     label: item.title || item.name || item.label || "unknown",
     value: item.id || item.value || item.slug || item.value || "unknown"

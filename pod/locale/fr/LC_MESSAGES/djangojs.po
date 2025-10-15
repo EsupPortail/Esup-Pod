@@ -21,7 +21,7 @@ msgid "Categories"
 msgstr "Catégories"
 
 #: pod/video/static/js/FilterManager.js
-msgid "Filter : %s - %s"
+msgid "Filter: %s - %s"
 msgstr "Filtre : %s - %s"
 
 #: pod/video/static/js/FilterManager.js

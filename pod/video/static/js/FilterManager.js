@@ -1,21 +1,21 @@
-/**
- * FilterManager
+/** 
+ * @fileoverview
+ * This file is part of the Esup-Pod project. It contains the `FilterManager` class 
+ * responsible for dynamically creating and managing interactive filters in the video dashboard.
  *
- * Class for dynamically creating and managing interactive filters
- * in the form of dropdowns with asynchronous search, checkboxes,
- * and active filter display as badges.
+ * @project Esup-Pod
+ * @since 4.1.0
  *
  * Main features:
  * - Automatic generation of filter interfaces (dropdown + search field).
- * - Asynchronous search for each filter using callbacks returning Promises.
+ * - Asynchronous search for each filter using callbacks that return Promises.
  * - Selection management: selected items are highlighted.
  * - Synchronization with the URL (query params) and sessionStorage.
  * - Automatic refresh of the results list via `refreshVideosSearch()`.
  *
- * @example
- * // 1. Import and initialize
- * import FilterManager from "./FilterManager.js";
- *
+ * Example Usage:
+ * 
+ * // 1. Initialize
  * const manager = new FilterManager({
  *   filtersBoxId: 'filtersBox',
  *   activeFiltersId: 'selectedTags',

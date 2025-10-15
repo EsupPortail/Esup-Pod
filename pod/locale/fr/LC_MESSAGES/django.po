@@ -17,7 +17,7 @@ msgstr ""
 "X-Generator: Poedit 3.5\n"
 
 #: pod/video/templates/videos/dashboard.html
-msgid "Go to ”Multiple actions”"
+msgid "Go to “Multiple actions”"
 msgstr "Aller vers « Actions multiples »"
 
 #: pod/video/templates/videos/dashboard.html
@@ -9913,6 +9913,10 @@ msgid ""
 msgstr ""
 "Vous n’avez pas encore mis en ligne de vidéos, veuillez utiliser le bouton "
 "« Ajouter une nouvelle vidéo » pour en ajouter une"
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Display mode"
+msgstr "Mode d’affichage"
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Grid display mode"

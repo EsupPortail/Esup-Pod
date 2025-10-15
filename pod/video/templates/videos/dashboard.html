@@ -164,8 +164,8 @@
                  class="form-check-input me-2"
                  data-bs-toggle="tooltip"
                  data-bs-placement="bottom"
-                 aria-label="Select/Deselect all videos"
-                 data-bs-original-title="Select/Deselect all videos">
+                 aria-label="{% trans 'Select/Deselect all videos' %}"
+                 data-bs-original-title="{% trans 'Select/Deselect all videos' %}">
           <label for="selectAll" class="form-check-label">
             {% trans 'Select all' %}
           </label>
@@ -182,7 +182,7 @@
         </div>
       </div>
       <div class="col-12 col-md d-flex flex-wrap justify-content-md-end align-items-center gap-2">
-        <div class="btn-group" role="group" aria-label="Display mode">
+        <div class="btn-group" role="group" aria-label="{% trans 'Display mode' %}">
           <button type="button"
                   {% if display_mode == 'grid' %}
                     aria-pressed="true"

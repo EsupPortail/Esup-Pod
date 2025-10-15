@@ -622,12 +622,12 @@ def dashboard(request):
 
     error_message = {}
     if not filtered_videos_list:
-        error_message["main"] = "No videos matched your filters. Please try adjusting them."
+        error_message["main"] = _("No videos matched your filters. Please try adjusting them.")
         error_message["types"] = ""
 
     if not videos_list:
-        error_message["main"] = "You haven’t uploaded any videos yet."
-        error_message["types"] = "Click on “Add a video” to start populating your dashboard."
+        error_message["main"] = _("You haven’t uploaded any videos yet.")
+        error_message["types"] = _("Click on “Add a video” to start populating your dashboard.")
 
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
@@ -3769,27 +3769,3 @@ def get_owners_for_videos_on_dashboard(request):
     users_list = list(users_qs.values(*VALUES).order_by("last_name"))
 
     return HttpResponse(json.dumps(users_list), content_type="application/json")
-
-
-"""
-# check access to video
-# change template to fix height and breadcrumbs
-@csrf_protect
-@login_required(redirect_field_name='referrer')
-def video_collaborate(request, slug):
-    action = None
-    if (request.method == 'POST' and request.POST.get('action')):
-        action = request.POST.get('action').split('_')[0]
-    elif (request.method == 'GET' and request.GET.get('action')):
-        action = request.GET.get('action').split('_')[0]
-    if action in __NOTE_ACTION__:
-        return eval('video_note_{0}(request, slug)'.format(action))
-    video = get_object_or_404(
-        Video, slug=slug, sites=get_current_site(request))
-    listNotes = get_adv_note_list(request, video)
-    return render(
-            request,
-            'videos/video_collaborate.html', {
-                'video': video,
-                'listNotes': listNotes})
-"""

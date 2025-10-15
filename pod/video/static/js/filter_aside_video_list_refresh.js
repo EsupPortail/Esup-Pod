@@ -198,6 +198,10 @@ function normalizeMultiValues(urlParams, multiKeys) {
   return urlParams;
 }
 
+/**
+ * Get built url with filter and sort and page parameters
+ * @returns {string}
+ */
 function getUrlForRefresh() {
   const baseUrl = window.location.pathname;
   let urlParams = new URLSearchParams(window.location.search);
@@ -249,7 +253,10 @@ function getUrlForRefresh() {
   return fullUrl;
 }
 
-// Function to enable or disable checkboxes during loading
+/** 
+ * Disables or enables checkboxes during loading.
+ * @param {boolean} value - `true` to disable, `false` to enable.
+ */
 function disabledInputs(value) {
   document.querySelectorAll("input.form-check-input").forEach(cb => cb.disabled = value);
 }
