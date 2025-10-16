@@ -3654,39 +3654,35 @@ def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> Json
 
 
 def available_filters(request):
-    """API endpoint to return all available video filters."""
+    """API endpoint to return all available video filters (limited to 20 items each)."""
     site = get_current_site(request)
-    category = Category.objects.prefetch_related("video").filter(owner=request.user)
-    types = (
+    categories_qs = Category.objects.prefetch_related("video").filter(owner=request.user)
+    categories = list(categories_qs.values("id", "title")[:20])
+    types_qs = (
         Type.objects.filter(video__sites__in=[site], video__is_draft=False)
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
-        .values("id", "title", "video_count")
+        .values("id", "title", "video_count")[:20]
     )
-    disciplines = (
+    types = list(types_qs)
+    disciplines_qs = (
         Discipline.objects.filter(video__sites__in=[site], video__is_draft=False)
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
-        .values("id", "title", "video_count")
+        .values("id", "title", "video_count")[:20]
     )
-    tags = get_tag_cloud()
+    disciplines = list(disciplines_qs)
+    tags = list(get_tag_cloud()[:20])
     v_filter = get_available_videos_filter(request)
-    aggregate_videos = v_filter.aggregate(
-        duration=Sum("duration"), number=Count("id")
-    )
-    videos_count = aggregate_videos["number"]
-    videos_duration = (
-        str(timedelta(seconds=aggregate_videos["duration"]))
-        if aggregate_videos["duration"] else "0"
-    )
-
-    categories = list(category.values("id", "title"))
+    aggregate = v_filter.aggregate(duration=Sum("duration"), number=Count("id"))
+    videos_count = aggregate.get("number", 0)
+    videos_duration = str(timedelta(seconds=aggregate.get("duration", 0))) if aggregate.get("duration") else "0"
 
     return JsonResponse({
-        "type": list(types),
-        "discipline": list(disciplines),
         "categories": categories,
-        "tag": list(tags),
+        "type": types,
+        "discipline": disciplines,
+        "tag": tags,
         "videos_count": videos_count,
         "videos_duration": videos_duration,
     })
@@ -3766,6 +3762,6 @@ def get_owners_for_videos_on_dashboard(request):
     except TypeError:
         users_qs = users_qs.annotate(video_count=Count("video", distinct=True))
     VALUES = ["id", "username", "first_name", "last_name", "video_count"]
-    users_list = list(users_qs.values(*VALUES).order_by("last_name"))
+    users_list = list(users_qs.values(*VALUES).order_by("last_name")[:20])
 
     return HttpResponse(json.dumps(users_list), content_type="application/json")

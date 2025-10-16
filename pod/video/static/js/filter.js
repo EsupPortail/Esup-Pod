@@ -67,7 +67,7 @@ async function getOwnersForVideosOnDashboard(searchTerm) {
     let data = new FormData();
     data.append("term", searchTerm);
     data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
-    const response = await fetch("/videos/dashboard/get_owners_for_videos_on_dashboard/", {
+    const response = await fetch(DASHBOARD_OWNERS_URL, {
       method: "POST",
       body: data,
       headers: {

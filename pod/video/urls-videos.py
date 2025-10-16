@@ -6,5 +6,5 @@ app_name = "videos"
 urlpatterns = [
     path("", videos, name="videos"),
     path('dashboard/', dashboard, name='dashboard'),
-    path("dashboard/get_owners_for_videos_on_dashboard/", get_owners_for_videos_on_dashboard),
+    path("dashboard/get_owners_for_videos_on_dashboard/", get_owners_for_videos_on_dashboard, name='dashboard-owners'),
 ]

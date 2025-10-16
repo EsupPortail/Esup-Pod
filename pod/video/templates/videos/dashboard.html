@@ -25,31 +25,37 @@
   <!-- Filtres -->
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
     <div id="filtersBox" class="d-flex align-items-center flex-wrap gap-2"></div>
-
-    <div class="input-group flex-shrink-0 w-25">
-      <input type="text" name="title" id="titlebox" class="form-control" placeholder="{% trans 'Enter video title' %}" autocomplete="off">
-      <button type="button"
-        id="titleSearchBtn"
-        class="btn btn-primary"
-        aria-label="{% trans 'Use the search field to find a video by its title in your dashboard' %}"
-        data-bs-toggle="tooltip"
-        data-bs-placement="bottom"
-        data-bs-original-title="{% trans 'Search for a video by title from your dashboard' %}">
-        {% trans 'Search' %}
-      </button>
-    </div>
+      <div class="input-group flex-shrink-0 w-25">
+        <input
+          type="text"
+          name="title"
+          id="titlebox"
+          class="form-control"
+          placeholder="{% trans 'Enter video title' %}"
+          aria-label="{% trans 'Use the search field to find a video by its title in your dashboard' %}"
+          autocomplete="off">
+        <button
+          type="button"
+          id="titleSearchBtn"
+          class="btn btn-primary"
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          data-bs-original-title="{% trans 'Search for a video by title from your dashboard' %}">
+          {% trans 'Search' %}
+        </button>
+      </div>
   </div>
 
   <div id="activeFilters" class="d-flex align-items-center flex-wrap gap-2">
     <div id="selectedTags" class="d-flex flex-wrap gap-2"></div>
-    <button type="button"
+    <button
+      type="button"
       id="filterTags"
       class="btn btn-link text-primary p-0 d-none"
-      aria-label="{% trans 'Clear all filters' %}"
       data-bs-toggle="tooltip"
       data-bs-placement="bottom"
       data-bs-original-title="{% trans 'Clear all filters' %}">
-    {% trans 'Clear filters' %}
+      {% trans 'Clear filters' %}
     </button>
   </div>
 
@@ -250,6 +256,7 @@
     const urlVideos = "{% url 'video:dashboard' %}";
     const urlUpdateVideos = "{% url 'video:bulk_update' %}";
     const AVAILABLE_FILTERS_URL = "{% url 'video:dashboard-filters' %}";
+    const DASHBOARD_OWNERS_URL = "{% url 'videos:dashboard-owners' %}";
     const AVAILABLE_FILTER_URL = "{% url 'video:dashboard-filter-by-name' 'FILTER_NAME_PLACEHOLDER' %}";
     const videosListLoader = document.getElementById("videosListLoader");
     const videosListContainerId = "videos_list";
