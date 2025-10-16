@@ -672,8 +672,11 @@ def dashboard(request):
         initial={"owner": default_owner},
     )
     # Remove fields we don't want to be bulk-modified
-    for unwanted in ["title", "video"]:
-        del form.fields[unwanted]
+    unwanted_fields = ["title", "video", "title_fr", "title_en"] 
+    
+    for field_name in unwanted_fields:
+        if field_name in form.fields:
+            del form.fields[field_name]
 
     data_context["form"] = form
     data_context["fieldsets_dashboard"] = [
@@ -3654,26 +3657,30 @@ def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> Json
 
 
 def available_filters(request):
-    """API endpoint to return all available video filters (limited to 20 items each)."""
-    site = get_current_site(request)
+    """API endpoint to return all available video filters based on user's videos."""
+    user_videos = get_videos_for_owner(request)
     categories_qs = Category.objects.prefetch_related("video").filter(owner=request.user)
     categories = list(categories_qs.values("id", "title")[:20])
     types_qs = (
-        Type.objects.filter(video__sites__in=[site], video__is_draft=False)
+        Type.objects.filter(video__in=user_videos)  
         .distinct()
-        .annotate(video_count=Count("video", distinct=True))
+        .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
         .values("id", "title", "video_count")[:20]
     )
     types = list(types_qs)
     disciplines_qs = (
-        Discipline.objects.filter(video__sites__in=[site], video__is_draft=False)
+        Discipline.objects.filter(video__in=user_videos)  
         .distinct()
-        .annotate(video_count=Count("video", distinct=True))
+        .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
         .values("id", "title", "video_count")[:20]
     )
     disciplines = list(disciplines_qs)
-    tags = list(get_tag_cloud()[:20])
-    v_filter = get_available_videos_filter(request)
+    tags = list(
+        Video.tags.tag_model.objects.filter(video__in=user_videos)
+        .distinct()
+        .values("name", "slug")[:20]
+    )
+    v_filter = get_filtered_videos_list(request, user_videos)
     aggregate = v_filter.aggregate(duration=Sum("duration"), number=Count("id"))
     videos_count = aggregate.get("number", 0)
     videos_duration = str(timedelta(seconds=aggregate.get("duration", 0))) if aggregate.get("duration") else "0"
@@ -3689,32 +3696,40 @@ def available_filters(request):
 
 
 def available_filter_by_type(request, filter_name):
-    """API endpoint to return an available video filter."""
+    """API endpoint to return all available options for a specific filter."""
     site = get_current_site(request)
     filter_name_lower = filter_name.lower()
+    user_videos = get_videos_for_owner(request)
 
     if filter_name_lower == 'type':
         types = (
-            Type.objects.filter(sites=site, video__is_draft=False, video__sites=site)
+            Type.objects.filter(video__in=user_videos) 
             .distinct()
-            .annotate(video_count=Count("video", distinct=True))
+            .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
             .values("id", "title", "video_count")
         )
         return JsonResponse({"type": list(types)})
+        
     elif filter_name_lower == 'discipline':
         disciplines = (
-            Discipline.objects.filter(site=site, video__is_draft=False, video__sites=site)
+            Discipline.objects.filter(video__in=user_videos) 
             .distinct()
-            .annotate(video_count=Count("video", distinct=True))
+            .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
             .values("id", "title", "video_count")
         )
         return JsonResponse({"discipline": list(disciplines)})
+        
     elif filter_name_lower == 'categories':
         category = Category.objects.prefetch_related("video").filter(owner=request.user).values("title", "slug")
         return JsonResponse({"categories": list(category)})
+        
     elif filter_name_lower == 'tag':
-        tags = get_tag_cloud()
-        return JsonResponse({"tag": list(tags)})
+        tags = list(
+            Video.tags.tag_model.objects.filter(video__in=user_videos)
+            .distinct()
+            .values("name", "slug")
+        )
+        return JsonResponse({"tag": tags})
     elif filter_name_lower == 'videos_count':
         v_filter = get_available_videos_filter(request)
         count = v_filter.aggregate(number=Count("id"))["number"]
