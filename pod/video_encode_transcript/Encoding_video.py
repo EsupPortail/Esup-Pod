@@ -201,7 +201,20 @@ class Encoding_video:
     ) -> None:
         """Initialize a new Encoding_video object."""
         self.id = id
-        self.video_file = video_file
+        # Secure handling of user-provided paths
+        base_path = getattr(settings, "MEDIA_ROOT", None)
+        if base_path:
+            norm_path = os.path.normpath(os.path.abspath(video_file))
+            base_path_abs = os.path.abspath(base_path)
+            if not norm_path.startswith(base_path_abs + os.sep):
+                raise ValueError(
+                    f"Refusing video_file path outside MEDIA_ROOT. Got: {video_file}"
+                )
+            self.video_file = norm_path
+        else:
+            # Fall back to the previous assignments (should not happen in production)
+            self.video_file = video_file
+
         self.duration = 0
         self.list_video_track = {}
         self.list_audio_track = {}
