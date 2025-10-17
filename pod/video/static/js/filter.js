@@ -46,7 +46,7 @@ const filtersConfig = [
     itemKey: tag => tag.value,
   },
   {
-    name: gettext("Categories"),
+    name: gettext("Category"),
     param: "categories",
     searchCallback: (term) => searchInList("categories", term),
     itemLabel: categories => categories.label,

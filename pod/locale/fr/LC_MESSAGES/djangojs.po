@@ -20,6 +20,10 @@ msgstr ""
 msgid "Category"
 msgstr "Catégorie"
 
+#: pod/video/static/js/filter.js
+msgid "Tag"
+msgstr "Mot clé"
+
 #: pod/video/static/js/FilterManager.js
 msgid "Filter: %s - %s"
 msgstr "Filtre : %s - %s"

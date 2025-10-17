@@ -91,7 +91,6 @@ from django.db import transaction
 
 from django.utils.timezone import timedelta
 from .context_processors import get_available_videos_filter
-from pod.video.utils import get_tag_cloud
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -672,8 +671,7 @@ def dashboard(request):
         initial={"owner": default_owner},
     )
     # Remove fields we don't want to be bulk-modified
-    unwanted_fields = ["title", "video", "title_fr", "title_en"] 
-    
+    unwanted_fields = ["title", "video", "title_fr", "title_en"]
     for field_name in unwanted_fields:
         if field_name in form.fields:
             del form.fields[field_name]
@@ -916,12 +914,6 @@ def get_paginated_videos(paginator, page):
     except EmptyPage:
         return paginator.page(paginator.num_pages)
 
-
-# pod/video/views.py
-
-from django.db.models import Q # Assurez-vous que Q est importé
-
-# ... (autre code)
 
 def get_filtered_videos_list(request, videos_list):
     """Return filtered videos list by GET parameters using AND logic."""
@@ -3671,14 +3663,14 @@ def available_filters(request):
     categories_qs = Category.objects.prefetch_related("video").filter(owner=request.user)
     categories = list(categories_qs.values("id", "title")[:20])
     types_qs = (
-        Type.objects.filter(video__in=user_videos)  
+        Type.objects.filter(video__in=user_videos)
         .distinct()
         .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
         .values("id", "title", "video_count")[:20]
     )
     types = list(types_qs)
     disciplines_qs = (
-        Discipline.objects.filter(video__in=user_videos)  
+        Discipline.objects.filter(video__in=user_videos)
         .distinct()
         .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
         .values("id", "title", "video_count")[:20]
@@ -3706,32 +3698,27 @@ def available_filters(request):
 
 def available_filter_by_type(request, filter_name):
     """API endpoint to return all available options for a specific filter."""
-    site = get_current_site(request)
     filter_name_lower = filter_name.lower()
     user_videos = get_videos_for_owner(request)
-
     if filter_name_lower == 'type':
         types = (
-            Type.objects.filter(video__in=user_videos) 
+            Type.objects.filter(video__in=user_videos)
             .distinct()
             .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
             .values("id", "title", "video_count")
         )
         return JsonResponse({"type": list(types)})
-        
     elif filter_name_lower == 'discipline':
         disciplines = (
-            Discipline.objects.filter(video__in=user_videos) 
+            Discipline.objects.filter(video__in=user_videos)
             .distinct()
             .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
             .values("id", "title", "video_count")
         )
         return JsonResponse({"discipline": list(disciplines)})
-        
     elif filter_name_lower == 'categories':
         category = Category.objects.prefetch_related("video").filter(owner=request.user).values("title", "slug")
         return JsonResponse({"categories": list(category)})
-        
     elif filter_name_lower == 'tag':
         tags = list(
             Video.tags.tag_model.objects.filter(video__in=user_videos)
