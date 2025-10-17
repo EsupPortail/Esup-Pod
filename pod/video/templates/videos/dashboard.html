@@ -29,7 +29,7 @@
         <input
           type="text"
           name="title"
-          id="titlebox"
+          id="titlesearchbox"
           class="form-control"
           placeholder="{% trans 'Enter video title' %}"
           aria-label="{% trans 'Use the search field to find a video by its title in your dashboard' %}"
@@ -273,6 +273,7 @@
       nextPage = true;
     {% endif %}
   </script>
+  <script src="{% static 'js/link_video_dropdown_menu.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/infinite.js' %}"></script>
   <script src="{% static 'js/FilterManager.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/filter.js' %}?ver={{VERSION}}"></script> 
