@@ -153,9 +153,6 @@ function toggleBulkUpdateVisibility(container) {
     if (restCheckbox) {
       const videos = document.querySelectorAll(".card-select-input");
       const checkedCount = Array.from(videos).filter(v => v.checked).length;
-      console.log(
-        `[DEBUG] Vérification des vidéos : nbVideos = ${nbVideos}, checkedCount = ${checkedCount}, toutes cochées = ${nbVideos > 0 && nbVideos === checkedCount}`
-      );
       restCheckbox.checked = (nbVideos > 0 && nbVideos === checkedCount);
     }
 

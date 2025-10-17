@@ -9903,6 +9903,10 @@ msgid "Select all"
 msgstr "Tout sélectionner"
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Select videos to enable bulk actions."
+msgstr "Sélectionnez des vidéos pour activer les actions multiples."
+
+#: pod/video/templates/videos/dashboard.html
 msgid "Clear selection"
 msgstr "Effacer la sélection"
 

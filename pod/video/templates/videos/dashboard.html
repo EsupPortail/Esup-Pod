@@ -25,7 +25,7 @@
   <!-- Filtres -->
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
     <div id="filtersBox" class="d-flex align-items-center flex-wrap gap-2"></div>
-      <div class="input-group flex-shrink-0 w-25">
+      <div class="input-group w-50 w-lg-auto flex-grow-1 flex-lg-grow-0 min-w-250"> 
         <input
           type="text"
           name="title"
@@ -161,65 +161,63 @@
 
   {% include "videos/dashboard_modal.html" %}
 
-  <div role="toolbar" aria-label="Video controls">
+  <div role="toolbar" aria-label="{% trans 'Video controls' %}">
     <div class="row align-items-center gy-2">
-      <div class="col-12 col-md-auto">
-        <div class="form-check d-flex align-items-center">
+
+      <div class="col-12 col-lg-auto">
+        <div class="d-flex align-items-center"> {# Align checkbox, text block, and skip link vertically center #}
           <input type="checkbox"
-                 id="selectAll"
-                 class="form-check-input me-2"
-                 data-bs-toggle="tooltip"
-                 data-bs-placement="bottom"
-                 aria-label="{% trans 'Select/Deselect all videos' %}"
-                 data-bs-original-title="{% trans 'Select/Deselect all videos' %}">
-          <label for="selectAll" class="form-check-label">
-            {% trans 'Select all' %}
-          </label>
+                id="selectAll"
+                class="form-check-input mt-0 me-2" {# Style checkbox, override margin-top, add margin-end #}
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                aria-label="{% trans 'Select/Deselect all videos' %}"
+                title="{% trans 'Select/Deselect all videos' %}">
+          <div class="d-flex flex-column lh-sm"> {# Stack label and help text vertically, reduce line height slightly #}
+            <label for="selectAll" class="form-check-label text-nowrap mb-0"> {# Standard label, no wrap, no bottom margin #}
+              {% trans 'Select all' %}
+            </label>
+            <small class="filter-info text-muted"> {# Help text always visible below #}
+              {% trans 'Select videos to enable bulk actions.' %}
+            </small>
+          </div>
           <a href="#bulk-update-action-select"
-             id="skipToBulk"
-             class="pod-skip-link visually-hidden-focusable align-items-center gap-1"
-             tabindex="0"
-             aria-label="{% trans 'Go to ”Multiple actions”' %}"
-             data-bs-toggle="tooltip"
-             data-bs-placement="bottom"
-             data-bs-original-title="{% trans 'Go to ”Multiple actions”' %}">
-             <i class="bi bi-arrow-up" aria-hidden="true"></i>
+            id="skipToBulk"
+            class="pod-skip-link visually-hidden-focusable align-items-center gap-1 ms-2" {# Add margin start #}
+            tabindex="0"
+            aria-label="{% trans 'Go to ”Multiple actions”' %}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="{% trans 'Go to ”Multiple actions”' %}">
+            <i class="bi bi-arrow-up" aria-hidden="true"></i>
           </a>
         </div>
       </div>
-      <div class="col-12 col-md d-flex flex-wrap justify-content-md-end align-items-center gap-2">
+
+      <div class="col-12 col-lg d-flex flex-wrap justify-content-start justify-content-lg-end align-items-center gap-2">
+
         <div class="btn-group" role="group" aria-label="{% trans 'Display mode' %}">
           <button type="button"
-                  {% if display_mode == 'grid' %}
-                    aria-pressed="true"
-                  {% else %}
-                    aria-pressed="false"
-                  {% endif %}
+                  {% if display_mode == 'grid' %} aria-pressed="true" {% else %} aria-pressed="false" {% endif %}
                   aria-label="{% trans 'Grid display mode' %}"
                   class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == 'grid' %}active{% endif %}"
                   onclick="changeDisplayMode('grid')"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="bottom"
-                  data-bs-original-title="{% trans 'Grid display mode' %}">
+                  data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Grid display mode' %}">
           </button>
           <button type="button"
-                  {% if display_mode == 'list' %}
-                    aria-pressed="true"
-                  {% else %}
-                    aria-pressed="false"
-                  {% endif %}
+                  {% if display_mode == 'list' %} aria-pressed="true" {% else %} aria-pressed="false" {% endif %}
                   aria-label="{% trans 'List display mode' %}"
                   class="btn btn-outline-primary bi bi-list-check btn-dashboard-display-mode {% if display_mode == 'list' %}active{% endif %}"
                   onclick="changeDisplayMode('list')"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="bottom"
-                  data-bs-original-title="{% trans 'List display mode' %}">
+                  data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'List display mode' %}">
           </button>
         </div>
-        <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms mb-0 flex-grow-1 flex-md-grow-0">
+
+        <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms mb-0" style="min-width: 180px;">
           <label for="sortSelect" class="visually-hidden">{% trans 'Sort videos' %}</label>
           {% include "videos/video_sort_select.html" %}
         </form>
+
       </div>
     </div>
   </div>
