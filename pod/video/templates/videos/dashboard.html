@@ -25,25 +25,33 @@
   <!-- Filtres -->
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
     <div id="filtersBox" class="d-flex align-items-center flex-wrap gap-2"></div>
-      <div class="input-group w-50 w-lg-auto flex-grow-1 flex-lg-grow-0 min-w-250"> 
-        <input
-          type="text"
-          name="title"
-          id="titlesearchbox"
-          class="form-control"
-          placeholder="{% trans 'Enter video title' %}"
-          aria-label="{% trans 'Use the search field to find a video by its title in your dashboard' %}"
-          autocomplete="off">
-        <button
-          type="button"
-          id="titleSearchBtn"
-          class="btn btn-primary"
-          data-bs-toggle="tooltip"
-          data-bs-placement="bottom"
-          data-bs-original-title="{% trans 'Search for a video by title from your dashboard' %}">
-          {% trans 'Search' %}
-        </button>
-      </div>
+      <form 
+        id="titleSearchForm" 
+        class="d-flex w-50 w-lg-auto flex-grow-1 flex-lg-grow-0 min-w-250"
+        onsubmit="event.preventDefault(); refreshVideosSearch();"
+      >
+        <div class="input-group">
+          <input
+            type="text"
+            name="title"
+            id="titleSearchBox"
+            class="form-control"
+            placeholder="{% trans 'Enter video title' %}"
+            aria-label="{% trans 'Use the search field to find a video by its title in your dashboard' %}"
+            autocomplete="off"
+          >
+          <button
+            type="submit"
+            id="titleSearchBtn"
+            class="btn btn-primary"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            data-bs-original-title="{% trans 'Search for a video by title from your dashboard' %}"
+          >
+            {% trans 'Search' %}
+          </button>
+        </div>
+      </form>
   </div>
 
   <div id="activeFilters" class="d-flex align-items-center flex-wrap gap-2">

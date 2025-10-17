@@ -126,7 +126,7 @@ document.getElementById("titlebox")?.addEventListener("keydown", (e) => {
  * @returns {string} The current value of the search input with ID "titlebox".
  */
 function getSearchValue() {
-  const input = document.getElementById("titlebox");
+  const input = document.getElementById("titleSearchBox");
   if (!input) return "";
   const value = input.value.trim();
   return value;
