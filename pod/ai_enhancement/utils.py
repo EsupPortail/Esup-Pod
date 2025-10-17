@@ -253,19 +253,19 @@ def enhancement_is_ready(video: Video) -> bool:
     return AIEnhancement.objects.filter(video=video, is_ready=True).exists()
 
 
-def notify_user(video: Video):
+def notify_user(video: Video, success: bool = True):
     """Notify user at the end of enhancement."""
     if (
         USE_NOTIFICATIONS
         and video.owner.owner.accepts_notifications
         and PushInformation.objects.filter(user=video.owner).exists()
     ):
-        send_notification_enhancement(video)
+        send_notification_enhancement(video, success)
     if EMAIL_ON_ENHANCEMENT_COMPLETION:
-        send_email_enhancement(video)
+        send_email_enhancement(video, success)
 
 
-def send_notification_enhancement(video):
+def send_notification_enhancement(video, success: bool = True):
     """Send push notification on video encoding or transcripting completion."""
     subject = "[%s] %s" % (
         __TITLE_SITE__,
@@ -279,6 +279,14 @@ def send_notification_enhancement(video):
         "content_title": video.title,
         "site_title": __TITLE_SITE__,
     }
+    if not success:
+        message = _(
+            "Something went wrong with IA improvement on “%(content_title)s”."
+            + " Suggestions for improvement can't be available on %(site_title)s."
+        ) % {
+                      "content_title": video.title,
+                      "site_title": __TITLE_SITE__,
+                  }
 
     pwa_notify_user(
         video.owner,
@@ -288,7 +296,7 @@ def send_notification_enhancement(video):
     )
 
 
-def send_email_enhancement(video) -> None:
+def send_email_enhancement(video,success: bool = True) -> None:
     """Send email notification on video improvement completion."""
     if DEBUG:
         logger.info("SEND EMAIL ON IA IMPROVEMENT COMPLETION")
@@ -298,20 +306,28 @@ def send_email_enhancement(video) -> None:
         __TITLE_SITE__,
         _("IA improvement #%(content_id)s completed") % {"content_id": video.id},
     )
+    main_text = _(
+                "IA improvement “%(content_title)s” has been completed"
+                + ", and is now available on %(site_title)s."
+            ) % {
+                "content_title": "<strong>%s</strong>" % video.title,
+                "site_title": __TITLE_SITE__,
+            }
+    if not success:
+        main_text = _(
+                "Something went wrong with IA improvement on “%(content_title)s” "
+                + " on %(site_title)s."
+            ) % {
+                "content_title": "<strong>%s</strong>" % video.title,
+                "site_title": __TITLE_SITE__,
+            }
 
     html_message = (
         '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
                 </p><p>%s</p>'
         % (
             _("Hello,"),
-            _(
-                "IA improvement “%(content_title)s” has been completed"
-                + ", and is now available on %(site_title)s."
-            )
-            % {
-                "content_title": "<strong>%s</strong>" % video.title,
-                "site_title": __TITLE_SITE__,
-            },
+           main_text,
             _("You will find it here:"),
             content_url,
             content_url,
