@@ -938,8 +938,7 @@ def get_filtered_videos_list(request, videos_list):
         and owners_selected
     ):
         videos_list = videos_list.filter(
-            Q(owner__username__in=owners_selected)
-            | Q(additional_owners__username__in=owners_selected)
+            Q(owner__username__in=owners_selected) | Q(additional_owners__username__in=owners_selected)
         )
     if tags_selected:
         for tag_slug in tags_selected:

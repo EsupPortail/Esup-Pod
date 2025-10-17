@@ -134,32 +134,33 @@ function toggleBulkUpdateVisibility(container) {
     const bulkContainer = document.getElementById('bulk-update-container');
     const hr = document.getElementById('bottom-ht-filtre');
     const skipLink = document.getElementById('skipToBulk');
-    const videoList = document.getElementById("videos_list");
     const restCheckbox = document.getElementById('selectAll');
 
-    if (!bulkContainer || !hr || !skipLink || !videoList) {
+    const nbVideos = document.querySelectorAll("#videos_list .infinite-item").length;
+
+    if (!bulkContainer || !hr || !skipLink) {
       throw new Error(JSON.stringify({
         reason: 'Missing DOM element(s)',
         elements: {
           'bulk-update-container': !!bulkContainer,
           'bottom-ht-filtre': !!hr,
           'skipToBulk': !!skipLink,
-          'videos_list': !!videoList
         }
       }));
     }
-
-    const countVideos = parseInt(videoList.dataset.countvideos || "0", 10);
-    const hasSelection = hasSelectedVideos(container);
 
     // Update "select all" checkbox state
     if (restCheckbox) {
       const videos = document.querySelectorAll(".card-select-input");
       const checkedCount = Array.from(videos).filter(v => v.checked).length;
-      restCheckbox.checked = (countVideos > 0 && countVideos === checkedCount);
+      console.log(
+        `[DEBUG] Vérification des vidéos : nbVideos = ${nbVideos}, checkedCount = ${checkedCount}, toutes cochées = ${nbVideos > 0 && nbVideos === checkedCount}`
+      );
+      restCheckbox.checked = (nbVideos > 0 && nbVideos === checkedCount);
     }
 
-    const shouldShow = hasSelection && countVideos > 0 && (!container || container === 'videos_list');
+    const hasSelection = hasSelectedVideos(container);
+    const shouldShow = hasSelection && nbVideos > 0 && (!container || container === 'videos_list');
     bulkContainer.classList.toggle('visible', shouldShow);
     skipLink.classList.toggle('is-visible', shouldShow);
     hr.style.display = shouldShow ? 'none' : 'block';
