@@ -237,7 +237,12 @@ function getUrlForRefresh() {
 
   urlParams.delete("page");
 
-  const fullUrl = `${baseUrl}?${urlParams.toString()}`;
+  let fullUrl = `${baseUrl}?${urlParams.toString()}`;
+  if (urlParams.toString()) {
+      fullUrl += "&page=";
+  } else {
+      fullUrl += "?page=";
+  }
 
   if (fullUrl.includes("undefined")) {
     const debugParams = [];
