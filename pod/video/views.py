@@ -917,34 +917,43 @@ def get_paginated_videos(paginator, page):
         return paginator.page(paginator.num_pages)
 
 
+# pod/video/views.py
+
+from django.db.models import Q # Assurez-vous que Q est importé
+
+# ... (autre code)
+
 def get_filtered_videos_list(request, videos_list):
-    """Return filtered videos list by get parameters."""
+    """Return filtered videos list by GET parameters using AND logic."""
     title_query = request.GET.get("title")
+    types_selected = request.GET.getlist("type")
+    disciplines_selected = request.GET.getlist("discipline")
+    owners_selected = request.GET.getlist("owner")
+    tags_selected = request.GET.getlist("tag")
+    cursus_selected = request.GET.getlist("cursus")
+
     if title_query:
         videos_list = videos_list.filter(
             Q(title_en__icontains=title_query) | Q(title_fr__icontains=title_query)
         )
-    if request.GET.getlist("type"):
-        videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
-    if request.GET.getlist("discipline"):
-        videos_list = videos_list.filter(
-            discipline__slug__in=request.GET.getlist("discipline")
-        )
+    if types_selected:
+        videos_list = videos_list.filter(type__slug__in=types_selected)
+    if disciplines_selected:
+        videos_list = videos_list.filter(discipline__slug__in=disciplines_selected)
     if (
         request.user
         and owner_is_searchable(request.user)
-        and request.GET.getlist("owner")
+        and owners_selected
     ):
-        # Add filter on additional owners
         videos_list = videos_list.filter(
-            Q(owner__username__in=request.GET.getlist("owner"))
-            | Q(additional_owners__username__in=request.GET.getlist("owner"))
+            Q(owner__username__in=owners_selected)
+            | Q(additional_owners__username__in=owners_selected)
         )
-    if request.GET.getlist("tag"):
-        videos_list = videos_list.filter(tags__slug__in=request.GET.getlist("tag"))
-
-    if request.GET.getlist("cursus"):
-        videos_list = videos_list.filter(cursus__in=request.GET.getlist("cursus"))
+    if tags_selected:
+        for tag_slug in tags_selected:
+            videos_list = videos_list.filter(tags__slug=tag_slug)
+    if cursus_selected:
+        videos_list = videos_list.filter(cursus__in=cursus_selected)
     return videos_list.distinct()
 
 
