@@ -3705,7 +3705,7 @@ def available_filter_by_type(request, filter_name):
             Type.objects.filter(video__in=user_videos)
             .distinct()
             .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
-            .values("id", "title", "video_count")
+            .values("title", "slug")
         )
         return JsonResponse({"type": list(types)})
     elif filter_name_lower == 'discipline':
@@ -3713,7 +3713,7 @@ def available_filter_by_type(request, filter_name):
             Discipline.objects.filter(video__in=user_videos)
             .distinct()
             .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
-            .values("id", "title", "video_count")
+            .values("title", "slug")
         )
         return JsonResponse({"discipline": list(disciplines)})
     elif filter_name_lower == 'categories':
