@@ -3699,12 +3699,13 @@ def available_filter_by_type(request, filter_name):
     """API endpoint to return all available options for a specific filter."""
     filter_name_lower = filter_name.lower()
     user_videos = get_videos_for_owner(request)
+    limit = 20
     if filter_name_lower == 'type':
         types = (
             Type.objects.filter(video__in=user_videos)
             .distinct()
             .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
-            .values("title", "slug")
+            .values("title", "slug")[:limit]
         )
         return JsonResponse({"type": list(types)})
     elif filter_name_lower == 'discipline':
@@ -3712,17 +3713,21 @@ def available_filter_by_type(request, filter_name):
             Discipline.objects.filter(video__in=user_videos)
             .distinct()
             .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
-            .values("title", "slug")
+            .values("title", "slug")[:limit]
         )
         return JsonResponse({"discipline": list(disciplines)})
     elif filter_name_lower == 'categories':
-        category = Category.objects.prefetch_related("video").filter(owner=request.user).values("title", "slug")
+        category = (
+            Category.objects.prefetch_related("video")
+            .filter(owner=request.user)
+            .values("title", "slug")[:limit]
+        )
         return JsonResponse({"categories": list(category)})
     elif filter_name_lower == 'tag':
         tags = list(
             Video.tags.tag_model.objects.filter(video__in=user_videos)
             .distinct()
-            .values("name", "slug")
+            .values("name", "slug")[:limit]
         )
         return JsonResponse({"tag": tags})
     elif filter_name_lower == 'videos_count':

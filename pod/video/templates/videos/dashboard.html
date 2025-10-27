@@ -173,19 +173,19 @@
     <div class="row align-items-center gy-2">
 
       <div class="col-12 col-lg-auto">
-        <div class="d-flex align-items-center"> {# Align checkbox, text block, and skip link vertically center #}
+        <div class="d-flex align-items-center"> 
           <input type="checkbox"
                 id="selectAll"
-                class="form-check-input mt-0 me-2" {# Style checkbox, override margin-top, add margin-end #}
+                class="form-check-input mt-0 me-2" 
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
                 aria-label="{% trans 'Select/Deselect all videos' %}"
                 title="{% trans 'Select/Deselect all videos' %}">
-          <div class="d-flex flex-column lh-sm"> {# Stack label and help text vertically, reduce line height slightly #}
-            <label for="selectAll" class="form-check-label text-nowrap mb-0"> {# Standard label, no wrap, no bottom margin #}
+          <div class="d-flex flex-column lh-sm"> 
+            <label for="selectAll" class="form-check-label text-nowrap mb-0"> 
               {% trans 'Select all' %}
             </label>
-            <small class="filter-info text-muted"> {# Help text always visible below #}
+            <small class="filter-info text-muted"> 
               {% trans 'Select videos to enable bulk actions.' %}
             </small>
           </div>
