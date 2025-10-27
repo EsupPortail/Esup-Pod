@@ -3696,50 +3696,95 @@ def available_filters(request):
 
 
 def available_filter_by_type(request, filter_name):
-    """API endpoint to return all available options for a specific filter."""
-    filter_name_lower = filter_name.lower()
+    """
+    API endpoint to return a specific filter list based on user's videos,
+    optionally filtered by a search term.
+    """
     user_videos = get_videos_for_owner(request)
-    limit = 20
-    if filter_name_lower == 'type':
-        types = (
-            Type.objects.filter(video__in=user_videos)
-            .distinct()
-            .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
-            .values("title", "slug")[:limit]
-        )
-        return JsonResponse({"type": list(types)})
-    elif filter_name_lower == 'discipline':
-        disciplines = (
-            Discipline.objects.filter(video__in=user_videos)
-            .distinct()
-            .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
-            .values("title", "slug")[:limit]
-        )
-        return JsonResponse({"discipline": list(disciplines)})
-    elif filter_name_lower == 'categories':
-        category = (
-            Category.objects.prefetch_related("video")
-            .filter(owner=request.user)
-            .values("title", "slug")[:limit]
-        )
-        return JsonResponse({"categories": list(category)})
-    elif filter_name_lower == 'tag':
-        tags = list(
-            Video.tags.tag_model.objects.filter(video__in=user_videos)
-            .distinct()
-            .values("name", "slug")[:limit]
-        )
-        return JsonResponse({"tag": tags})
-    elif filter_name_lower == 'videos_count':
-        v_filter = get_available_videos_filter(request)
-        count = v_filter.aggregate(number=Count("id"))["number"]
-        return JsonResponse({"videos_count": count})
-    elif filter_name_lower == 'videos_duration':
-        v_filter = get_available_videos_filter(request)
-        duration_seconds = v_filter.aggregate(duration=Sum("duration"))["duration"]
-        duration_str = str(timedelta(seconds=duration_seconds)) if duration_seconds else "0"
-        return JsonResponse({"videos_duration": duration_str})
-    raise ValueError(f"Unknown filter type '{filter_name}'")
+    data = {}
+    filter_name_lower = filter_name.lower()
+    limit = 20 # Nombre maximum de résultats à retourner
+
+    # Récupérer le terme de recherche depuis les paramètres GET
+    search_term = request.GET.get('term', None)
+
+    qs = None # Initialiser le QuerySet
+
+    try:
+        if filter_name_lower == "categories":
+            qs = Category.objects.filter(owner=request.user).prefetch_related("video")
+            # Appliquer le filtre de recherche si un terme est fourni
+            if search_term:
+                qs = qs.filter(title__icontains=search_term)
+            # Appliquer la limite et sélectionner les champs
+            data["categories"] = list(qs.order_by('title').values("id", "title")[:limit])
+
+        elif filter_name_lower == "type":
+            qs = (
+                Type.objects.filter(video__in=user_videos)
+                .distinct()
+                .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
+            )
+            if search_term:
+                qs = qs.filter(title__icontains=search_term)
+            data["type"] = list(qs.order_by('title').values("id", "title", "video_count")[:limit])
+
+        elif filter_name_lower == "discipline":
+            qs = (
+                Discipline.objects.filter(video__in=user_videos)
+                .distinct()
+                .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
+            )
+            if search_term:
+                qs = qs.filter(title__icontains=search_term)
+            data["discipline"] = list(qs.order_by('title').values("id", "title", "video_count")[:limit])
+
+        elif filter_name_lower == "tag":
+            # Accès au modèle Tag via la relation ManyToMany de Video
+            TagModel = Video.tags.tag_model
+            qs = TagModel.objects.filter(video__in=user_videos).distinct()
+            if search_term:
+                # Filtrer sur le champ 'name' du modèle Tag
+                qs = qs.filter(name__icontains=search_term)
+            # Sélectionner les champs 'name' et 'slug', appliquer l'ordre et la limite
+            data["tag"] = list(qs.order_by('name').values("name", "slug")[:limit])
+
+        # Ajouter un filtre pour 'owner' si nécessaire (basé sur getOwnersForVideosOnDashboard)
+        elif filter_name_lower == "owner":
+            # Logique similaire à get_owners_for_videos_on_dashboard, mais filtrée par terme
+            primary_owner_ids = set(user_videos.values_list("owner_id", flat=True))
+            additional_owner_ids = set(user_videos.values_list("additional_owners__id", flat=True))
+            user_ids = {i for i in (primary_owner_ids | additional_owner_ids) if i is not None}
+
+            if user_ids:
+                users_qs = User.objects.filter(id__in=list(user_ids))
+                # Appliquer les filtres de settings si besoin (MENUBAR_HIDE_INACTIVE_OWNERS, etc.)
+                # ...
+                if search_term:
+                    # Recherche sur username, first_name, last_name
+                    users_qs = users_qs.filter(
+                        Q(username__icontains=search_term) |
+                        Q(first_name__icontains=search_term) |
+                        Q(last_name__icontains=search_term)
+                    )
+                # Retourner les données nécessaires (id, username, first_name, last_name)
+                data["owner"] = list(users_qs.order_by('username').values('id', 'username', 'first_name', 'last_name')[:limit])
+            else:
+                data["owner"] = []
+
+        else:
+            return JsonResponse({"error": _("Unknown filter type")}, status=400)
+
+    except Exception as e:
+        # Log l'erreur côté serveur pour le débogage
+        print(f"Error processing filter '{filter_name}' with term '{search_term}': {e}")
+        return JsonResponse({"error": _("Server error while processing filter.")}, status=500)
+
+    # Vérifier si la clé attendue existe dans les données avant de retourner
+    if filter_name_lower not in data:
+         data[filter_name_lower] = [] # Assurer que la clé existe même si vide
+
+    return JsonResponse(data)
 
 
 def get_owners_for_videos_on_dashboard(request):
