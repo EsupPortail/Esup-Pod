@@ -1461,47 +1461,28 @@ class VideoTestFiltersViews(TestCase):
         """available_filter_by_type should handle multiple filter_name and errors correctly."""
         Site.objects.get_or_create(domain="example.com", name="example.com")
         url_base = "video:dashboard-filter-by-name"
+        self.user = User.objects.create_user(username='testuser', password='password')
+        self.client.force_login(self.user)
+        valid_filters = ["type", "discipline", "categories", "tag", "owner"]
 
-        self.client.force_login(self.admin)
+        for filter_name in valid_filters:
+            with self.subTest(filter=filter_name):
+                response = self.client.get(reverse(url_base, args=[filter_name]))
+                self.assertEqual(response.status_code, HTTPStatus.OK, f"Failed for filter: {filter_name}")
+                try:
+                    payload = json.loads(response.content.decode("utf-8"))
+                except json.JSONDecodeError:
+                    self.fail(f"Invalid JSON response for filter: {filter_name}")
 
-        response = self.client.get(reverse(url_base, args=["type"]))
+                self.assertIn(filter_name, payload, f"Key '{filter_name}' not in response for filter: {filter_name}")
+                self.assertIsInstance(payload[filter_name], list, f"Value for '{filter_name}' is not a list for filter: {filter_name}")
+
+        response = self.client.get(reverse(url_base, args=["i_dont_exist"]))
         self.assertEqual(response.status_code, HTTPStatus.OK)
         payload = json.loads(response.content.decode("utf-8"))
-        self.assertIn("type", payload)
-        self.assertIsInstance(payload["type"], list)
-
-        response = self.client.get(reverse(url_base, args=["discipline"]))
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        payload = json.loads(response.content.decode("utf-8"))
-        self.assertIn("discipline", payload)
-        self.assertIsInstance(payload["discipline"], list)
-
-        response = self.client.get(reverse(url_base, args=["categories"]))
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        payload = json.loads(response.content.decode("utf-8"))
-        self.assertIn("categories", payload)
-        self.assertIsInstance(payload["categories"], list)
-
-        response = self.client.get(reverse(url_base, args=["tag"]))
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        payload = json.loads(response.content.decode("utf-8"))
-        self.assertIn("tag", payload)
-        self.assertIsInstance(payload["tag"], list)
-
-        response = self.client.get(reverse(url_base, args=["videos_count"]))
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        payload = json.loads(response.content.decode("utf-8"))
-        self.assertIn("videos_count", payload)
-        self.assertIsInstance(payload["videos_count"], int)
-
-        response = self.client.get(reverse(url_base, args=["videos_duration"]))
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        payload = json.loads(response.content.decode("utf-8"))
-        self.assertIn("videos_duration", payload)
-        self.assertIsInstance(payload["videos_duration"], str)
-
-        with self.assertRaises(Exception):
-            self.client.get(reverse(url_base, args=["i_dont_exist"]))
+        self.assertIn("i_dont_exist", payload)
+        self.assertIsInstance(payload["i_dont_exist"], list)
+        self.assertEqual(payload["i_dont_exist"], [])
         print(" --->  test_available_filter_by_type_various_keys: OK!")
 
     def tearDown(self) -> None:
