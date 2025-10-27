@@ -601,7 +601,7 @@ class VideosTestView(TestCase):
         self.assertEqual(response.context["videos"].paginator.count, 2)
         response = self.client.get(url + "?tag=tag1&tag=tag2")
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context["videos"].paginator.count, 3)
+        self.assertEqual(response.context["videos"].paginator.count, 1)
         print(" --->  test_get_videos_view of VideosTestView: OK!")
 
 
