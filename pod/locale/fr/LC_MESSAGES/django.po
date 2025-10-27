@@ -5,7 +5,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-20 10:59+0200\n"
 "POT-Creation-Date: 2025-06-06 10:37+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
@@ -15,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.7\n"
 
 #: pod/ai_enhancement/apps.py:12
 msgid "Artificial Intelligence Enhancement"
@@ -562,6 +561,11 @@ msgstr ""
 msgid "Quiz successfully imported."
 msgstr "Quiz importé avec succès."
 
+#: pod/authentication/IPRestrictionMiddleware.py
+#, python-format
+msgid "%(last_name)s (Restricted - IP %(ip)s not allowed)"
+msgstr "%(last_name)s (Restreint - IP %(ip)s non autorisée)"
+
 #: pod/authentication/admin.py:87 pod/main/forms.py:60
 msgid "Email"
 msgstr "Courriel"
@@ -732,45 +736,27 @@ msgstr "Mot de passe ou identifiant perdu ?"
 msgid "Change your picture"
 msgstr "Changer votre image de profil"
 
-#: pod/authentication/templates/userpicture/userpicture.html:8
-#: pod/authentication/templates/userpicture/userpicture.html:16
-#: pod/authentication/templates/userpicture/userpicture.html:51
-#: pod/completion/templates/delete_modal.html:8
-#: pod/completion/templates/video_caption_maker.html:76
-#: pod/completion/templates/video_caption_maker.html:193
-#: pod/import_video/templates/import_video/add_or_edit.html:131
-#: pod/live/templates/live/direct.html:56
-#: pod/live/templates/live/event-iframe.html:60
-#: pod/live/templates/live/event-iframe.html:126
-#: pod/live/templates/live/event-info.html:60 pod/main/templates/base.html:154
-#: pod/main/templates/navbar.html:27 pod/main/templates/navbar.html:152
-#: pod/main/templates/navbar.html:242
-#: pod/main/templates/navbar_collapse.html:16
-#: pod/main/templates/navbar_collapse.html:25
-#: pod/main/templates/navbar_collapse.html:37
-#: pod/main/templates/navbar_collapse.html:48
-#: pod/main/templates/navbar_collapse.html:59
-#: pod/main/templates/navbar_collapse.html:80
-#: pod/meeting/templates/meeting/add_or_edit.html:140
-#: pod/meeting/templates/meeting/my_meetings.html:54
-#: pod/playlist/templates/playlist/playlist-list-modal.html:18
-#: pod/podfile/templates/podfile/customfilewidget.html:80
-#: pod/podfile/templates/podfile/customfilewidget.html:84
-#: pod/podfile/templates/podfile/home_content.html:33
-#: pod/podfile/templates/podfile/home_content.html:73
-#: pod/podfile/templates/podfile/home_content.html:87
-#: pod/podfile/templates/podfile/home_content.html:106
-#: pod/podfile/templates/podfile/userfolder.html:26
-#: pod/podfile/templates/podfile/userfolder.html:39
-#: pod/progressive_web_app/templates/notification_toast.html:9
-#: pod/recorder/templates/recorder/claim_record.html:30
-#: pod/recorder/templates/recorder/claim_record.html:42
-#: pod/video/templates/videos/category_modal.html:8
-#: pod/video/templates/videos/video-iframe.html:50
-#: pod/video/templates/videos/video-info.html:258
-#: pod/video/templates/videos/video-info.html:336
-#: pod/video/templates/videos/video_collaborate.html:37
-#: pod/video/templates/videos/video_notes.html:8
+#: pod/authentication/templates/userpicture/userpicture.html
+#: pod/completion/templates/delete_modal.html
+#: pod/completion/templates/video_caption_maker.html
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-iframe.html
+#: pod/live/templates/live/event-info.html pod/main/templates/base.html
+#: pod/main/templates/navbar.html pod/main/templates/navbar_collapse.html
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/my_meetings.html
+#: pod/playlist/templates/playlist/playlist-list-modal.html
+#: pod/podfile/templates/podfile/customfilewidget.html
+#: pod/podfile/templates/podfile/home_content.html
+#: pod/podfile/templates/podfile/userfolder.html
+#: pod/progressive_web_app/templates/notification_toast.html
+#: pod/recorder/templates/recorder/claim_record.html
+#: pod/video/templates/videos/category_modal.html
+#: pod/video/templates/videos/video-iframe.html
+#: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_collaborate.html
+#: pod/video/templates/videos/video_notes.html
 msgid "Close"
 msgstr "Fermer"
 
@@ -1100,7 +1086,7 @@ msgstr "Auteur"
 msgid "Designer"
 msgstr "Concepteur"
 
-#: pod/completion/models.py:37
+#: pod/completion/models.py
 msgid "Editor"
 msgstr "Éditeur"
 
@@ -1405,12 +1391,6 @@ msgid ""
 msgstr ""
 "Il y a un chevauchement avec la superposition {0}, veuillez changer son "
 "temps de début et/ou de fin."
-
-#: pod/completion/permissions/video.py
-#, python-brace-format
-msgid "{func.__name__}: Permission denied for user {current_user.pk}."
-msgstr ""
-"{func.__name__}: Permission refusée pour l’utilisateur {current_user.pk}."
 
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
@@ -1808,8 +1788,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html:275
 msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format « ."
-"vtt »."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format "
+"« .vtt »."
 
 #: pod/completion/templates/video_completion.html:277
 msgid "You can use"
@@ -1892,7 +1872,7 @@ msgstr ""
 "Un quiz vous permet de tester la mémorisation et la compréhension de votre "
 "vidéo."
 
-#: pod/completion/tests/test_views.py:237
+#: pod/completion/tests/test_views.py
 msgid "editor"
 msgstr "éditeur"
 
@@ -2330,9 +2310,8 @@ msgstr "Vous ne pouvez pas créer d’habillage de vidéo."
 msgid "Dress the video “%s”"
 msgstr "Habiller la vidéo « %s »"
 
-#: pod/dressing/views.py:104 pod/import_video/views.py:290
-#: pod/live/views.py:558 pod/meeting/views.py:311 pod/meeting/views.py:328
-#: pod/video/views.py:448 pod/video/views.py:1323
+#: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
+#: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
@@ -2601,6 +2580,12 @@ msgstr "Créer / Éditer un enrichissement"
 #: pod/enrichment/templates/enrichment/group_enrichment.html:14
 msgid "Editing group for the enrichment of the video"
 msgstr "Spécifier les groupes qui peuvent enrichir la vidéo"
+
+#: pod/enrichment/templates/enrichment/group_enrichment.html
+#, python-format
+msgid "Editing group for the enrichment of the video “%(video_title)s”"
+msgstr ""
+"Spécifier les groupes qui peuvent enrichir la vidéo « %(video_title)s »"
 
 #: pod/enrichment/templates/enrichment/group_enrichment.html:56
 msgid "back to editing enrichment"
@@ -3846,13 +3831,11 @@ msgstr "Envoyer"
 msgid "Event is finished at:"
 msgstr "L’évènement s’est terminé à :"
 
-#: pod/live/templates/live/event-iframe.html:49
-#: pod/live/templates/live/event.html:40
+#: pod/live/templates/live/event-iframe.html pod/live/templates/live/event.html
 msgid "The event is scheduled from:"
 msgstr "L’événement est programmé du :"
 
-#: pod/live/templates/live/event-iframe.html:49
-#: pod/live/templates/live/event.html:40
+#: pod/live/templates/live/event-iframe.html pod/live/templates/live/event.html
 msgid "to"
 msgstr "à"
 
@@ -3930,13 +3913,8 @@ msgstr ""
 msgid "Social Networks"
 msgstr "Réseaux sociaux"
 
-#: pod/live/templates/live/event-info.html:85
-#: pod/live/templates/live/event-info.html:90
-#: pod/live/templates/live/event-info.html:95 pod/main/templates/aside.html:10
-#: pod/main/templates/aside.html:13 pod/main/templates/aside.html:16
-#: pod/video/templates/videos/video-info.html:347
-#: pod/video/templates/videos/video-info.html:352
-#: pod/video/templates/videos/video-info.html:357
+#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
+#: pod/video/templates/videos/video-info.html
 msgid "Share on"
 msgstr "Partager sur"
 
@@ -3952,7 +3930,7 @@ msgstr "Utiliser ce lien pour partager l’évènement :"
 #: pod/live/templates/live/event-info.html:113
 #: pod/video/templates/videos/video-info.html:454
 msgid "QR code for this link:"
-msgstr "QR code pour le lien :"
+msgstr "QR code pour ce lien :"
 
 #: pod/live/templates/live/event-info.html:118
 #: pod/video/templates/videos/video-info.html:458
@@ -4450,11 +4428,11 @@ msgstr "Veuillez spécifier un sujet"
 
 #: pod/main/forms_utils.py:45
 msgid "Date:"
-msgstr "Date:"
+msgstr "Date :"
 
 #: pod/main/forms_utils.py:46
 msgid "Time:"
-msgstr "Heure:"
+msgstr "Heure :"
 
 #: pod/main/lang_settings.py:7
 msgid "Abkhazian"
@@ -5303,7 +5281,7 @@ msgstr "Administration de Pod"
 msgid "Django administration"
 msgstr "Administration de Pod"
 
-#: pod/main/templates/aside.html:7
+#: pod/main/templates/aside.html
 msgid "Share"
 msgstr "Partager"
 
@@ -5339,7 +5317,7 @@ msgstr ""
 "droite, mode sombre ou dyslexie etc.), gérer la session (authentification) "
 "et analyser le trafic du site (pour certaines instances)."
 
-#: pod/main/templates/base.html:169
+#: pod/main/templates/base.html
 msgid "Learn more"
 msgstr "En savoir plus"
 
@@ -5401,7 +5379,7 @@ msgstr "Afficher le projet Esup-Pod"
 msgid "Esup-Pod Project"
 msgstr "Projet Esup-Pod"
 
-#: pod/main/templates/footer.html:39 pod/video/feeds.py:117
+#: pod/main/templates/footer.html pod/video/feeds.py
 msgid "video platform of"
 msgstr "plateforme vidéos de"
 
@@ -5492,6 +5470,22 @@ msgstr "Revenir à la page d’accueil"
 #: pod/main/templates/maintenance.html:12 pod/main/views.py:320
 msgid "Contact us"
 msgstr "Contactez nous"
+
+#: pod/main/templates/mastodon.html
+msgid "Please enter your Mastodon instance URL:"
+msgstr "Veuillez indiquer l’adresse de votre instance Mastodon :"
+
+#: pod/main/templates/mastodon.html
+msgid "your.instance"
+msgstr "votre.instance"
+
+#: pod/main/templates/mastodon.html
+msgid "Remember this instance"
+msgstr "Se souvenir de l’instance"
+
+#: pod/main/templates/mastodon.html
+msgid "Please provide your instance URL."
+msgstr "Veuillez indiquer l’adresse de votre instance."
 
 #: pod/main/templates/navbar.html:12
 msgid "Toggle main menu"
@@ -6253,7 +6247,7 @@ msgstr "Diffuseur chargé de réaliser des directs."
 msgid "URL of the SIPMediaGW server"
 msgstr "Adresse URL du serveur SIPMediaGW"
 
-#: pod/meeting/models.py:1278
+#: pod/meeting/models.py
 msgid "Example format: https://sipmediagw.univ.fr"
 msgstr "Exemple de format : https://sipmediagw.univ.fr"
 
@@ -7178,7 +7172,7 @@ msgstr "Protégé par un mot de passe"
 msgid "Private"
 msgstr "Privé"
 
-#: pod/playlist/models.py:36
+#: pod/playlist/models.py
 #, python-brace-format
 msgid ""
 "Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
@@ -7604,6 +7598,10 @@ msgstr "Vous ne pouvez pas accéder à cette liste de lecture."
 msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
 
+#: pod/playlist/views.py
+msgid "Delete the playlist"
+msgstr "Supprimer la liste de lecture"
+
 #: pod/playlist/views.py:432
 #, python-format
 msgid "Edit the playlist “%(pname)s”"
@@ -8025,7 +8023,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py:65
+#: pod/quiz/models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -8704,12 +8702,10 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html:14
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that supports HTML5 video."
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
-"passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
-"support/\" target=\"_blank\"> prend en charge la vidéo HTML5</a>"
+"passer à un navigateur Web qui prend en charge la vidéo HTML5."
 
 #: pod/recorder/templates/recorder/link_record.html:7
 #, python-format
@@ -8967,6 +8963,14 @@ msgstr "Transcrire la sélection"
 #: pod/video/admin.py:295
 msgid "Change video owner"
 msgstr "Changer le propriétaire de vidéos"
+
+#: pod/video/context_processors.py
+msgid "days"
+msgstr "jours"
+
+#: pod/video/feeds.py
+msgid "video platform of"
+msgstr "plateforme vidéo de"
 
 #: pod/video/forms.py:93
 msgid "File field"
@@ -10494,7 +10498,7 @@ msgstr "Lien du contributeur"
 msgid "Speaker(s):"
 msgstr "Intervenant(s) :"
 
-#: pod/video/templates/videos/video-info.html:188
+#: pod/video/templates/videos/video-info.html
 msgid "Updated on:"
 msgstr "Mis à jour le :"
 
@@ -10941,6 +10945,22 @@ msgstr "Ce contenu n’est pas chapitré."
 msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
 
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "The note has been saved."
+msgstr "La note a été sauvegardée."
+
+#: pod/video/tests/test_views.py
+msgid "Method not allowed: Please use post method"
+msgstr "Méthode non autorisée : Veuillez utiliser la méthode post"
+
+#: pod/video/tests/test_views.py
+msgid "One or more videos not updated"
+msgstr "Une ou plusieurs vidéos ne sont pas mises à jour"
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "Update successfully"
+msgstr "Mise à jour réussie"
+
 #: pod/video/tests/test_views.py:1788 pod/video/views.py:1472
 msgid "A token has been created."
 msgstr "Un jeton a été créé."
@@ -11087,7 +11107,7 @@ msgstr "Votre note a été modifiée."
 msgid "Your comment has been saved."
 msgstr "Votre commentaire a été enregistré."
 
-#: pod/video/views.py:2071
+#: pod/video/views.py
 msgid "The note has been saved."
 msgstr "La note a été sauvegardée."
 
@@ -11218,7 +11238,7 @@ msgstr "Categorie supprimée avec succès."
 msgid "You do not have rights to delete this category"
 msgstr "Vous n’avez pas les droits pour supprimer cette catégorie"
 
-#: pod/video/views.py:3351
+#: pod/video/views.py
 msgid "Update successfully"
 msgstr "Mise à jour réussie"
 
@@ -11418,8 +11438,14 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
-#~ msgid "Delete the playlist"
-#~ msgstr "Supprimer la liste de lecture"
+#~ msgid "editor"
+#~ msgstr "éditeur"
+
+#~ msgid "The event is scheduled from:"
+#~ msgstr "L’événement est programmé du :"
+
+#~ msgid "to"
+#~ msgstr "à"
 
 #, python-format
 #~ msgid ""

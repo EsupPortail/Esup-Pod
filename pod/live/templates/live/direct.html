@@ -36,7 +36,7 @@
       <div class="col">
         <video id="podvideoplayer"
            class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered"
-           controls height="360" poster="{{ broadcaster.get_poster_url }}" muted autoplay>
+           controls height="360" poster="{{ broadcaster.get_poster_url }}" title="{{ broadcaster.slug }}" muted autoplay>
           <source src="{{ broadcaster.url }}" type="application/x-mpegURL">
         </video>
 

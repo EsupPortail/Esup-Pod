@@ -20,6 +20,10 @@ if (
     or importlib.util.find_spec("whisper") is not None
 ):
     from .transcript_model import start_transcripting
+else:
+
+    def start_transcripting(*args, **kwargs):
+        raise NotImplementedError("No transcription engine available.")
 
 
 from .encoding_utils import sec_to_timestamp
@@ -44,8 +48,9 @@ EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
 )
 TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
-if USE_TRANSCRIPTION:
-    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "WHISPER")
+TRANSCRIPTION_TYPE = (
+    getattr(settings, "TRANSCRIPTION_TYPE", "WHISPER") if USE_TRANSCRIPTION else None
+)
 TRANSCRIPTION_NORMALIZE = getattr(settings, "TRANSCRIPTION_NORMALIZE", False)
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 

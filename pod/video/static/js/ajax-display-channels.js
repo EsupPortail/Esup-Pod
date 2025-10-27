@@ -106,18 +106,23 @@ function getThemesForSpecificChannel(channelSlug) {
 /**
  * Set the modal title when the user ask to view this modal.
  *
+ * @param {string} modalTitle - Base modal title
  * @param {HTMLElement} modalContentElement - The HTML element of the modal.
  * @param {Array} channelsArray - The channel list.
  */
-function setModalTitle(modalContentElement, channelsCount) {
+function setModalTitle(modalTitle, modalContentElement, channelsCount) {
   const modalTitleElement = modalContentElement.querySelector(".modal-title");
   const channelIcon = '<i class="bi bi-play-btn" aria-hidden="true"></i>';
   var channelString = ngettext(
-    "%(count)s channel",
-    "%(count)s channels",
+    "%(title)s (%(count)s channel)",
+    "%(title)s (%(count)s channels)",
     channelsCount,
   );
-  channelString = interpolate(channelString, { count: channelsCount }, true);
+  channelString = interpolate(
+    channelString,
+    { count: channelsCount, title: modalTitle },
+    true,
+  );
   modalTitleElement.innerHTML = `${channelIcon}&nbsp;${channelString}`;
 }
 
@@ -177,7 +182,7 @@ function convertToModalListElement(channel) {
     "title-chaine",
   );
   dFlexSpanElement.innerHTML =
-    '<i class="bi bi-play-btn pod-channel__item"></i>';
+    '<i class="bi bi-play-btn pod-channel__item" aria-hidden="true"></i>';
   const linkElement = document.createElement("a");
   linkElement.setAttribute("href", channel.url);
   linkElement.id = `channel-title_${channel.id}`;
@@ -333,7 +338,8 @@ function setChannelThemeButtonForModal(spanElement, channel) {
 function createModalFor(channelTab) {
   const headerElement = document.getElementsByTagName("header")[0];
   const modalElement = document.createElement("div");
-  modalElement.classList.add("modal", "fade", `chaines-modal-${channelTab.id}`);
+  modalElement.classList.add("modal", "fade");
+  modalElement.id = `chaines-modal-${channelTab.id}`;
   setAttributesWithTab(modalElement, [
     ["tabindex", "-1"],
     ["role", "dialog"],
@@ -364,7 +370,7 @@ function createModalFor(channelTab) {
             </div>
         </div>
     `;
-  headerElement.appendChild(modalElement);
+  headerElement.insertAdjacentElement("afterend", modalElement);
   let allChannelsLoaded = false;
   modalElement.addEventListener("shown.bs.modal", function () {
     const modalContentElement = this.querySelector(".modal-content");
@@ -373,7 +379,11 @@ function createModalFor(channelTab) {
       getChannelsForSpecificChannelTabs(currentPage, channelTab.id)
         .then(function (channels) {
           let channelsArray = Object.values(channels["channels"]);
-          setModalTitle(modalContentElement, channels["count"]);
+          setModalTitle(
+            channelTab.name,
+            modalContentElement,
+            channels["count"],
+          );
           modalContentElement
             .querySelector(".modal-body")
             .appendChild(convertToModalList(channelsArray));
@@ -450,7 +460,7 @@ function loadNextBatchOfChannels(
     });
 }
 
-const channelModal = document.querySelector(".chaines-modal");
+const channelModal = document.getElementById("chaines-modal");
 let allChannelsLoaded = false;
 channelModal.addEventListener("shown.bs.modal", function () {
   const modalContentElement = this.querySelector(".modal-content");
@@ -460,7 +470,11 @@ channelModal.addEventListener("shown.bs.modal", function () {
     getChannelsForSpecificChannelTabs(currentPage)
       .then(function (channels) {
         let channelsArray = Object.values(channels["channels"]);
-        setModalTitle(modalContentElement, channels["count"]);
+        setModalTitle(
+          gettext("Channel list"),
+          modalContentElement,
+          channels["count"],
+        );
         modalContentElement
           .querySelector(".modal-body")
           .appendChild(convertToModalList(channelsArray));
@@ -499,9 +513,10 @@ burgerMenu.addEventListener("shown.bs.offcanvas", function () {
           buttonChannelTab.classList.add("nav-link");
           setAttributesWithTab(buttonChannelTab, [
             ["data-bs-toggle", "modal"],
-            ["data-bs-target", `.chaines-modal-${channelTab.id}`],
+            ["data-bs-target", `#chaines-modal-${channelTab.id}`],
           ]);
-          buttonChannelTab.innerHTML = `<i class="bi bi-play-btn pod-nav-link-icon"></i> ${channelTab.name}`;
+          buttonChannelTab.innerHTML = `<i class="bi bi-play-btn pod-nav-link-icon" aria-hidden="true"></i>`;
+          buttonChannelTab.innerHTML += `&nbsp;${channelTab.name}`;
           createModalFor(channelTab);
           navChannelTab.appendChild(buttonChannelTab);
           navChannelTabs.appendChild(navChannelTab);

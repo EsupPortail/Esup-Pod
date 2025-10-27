@@ -91,8 +91,6 @@ from django.db import transaction
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
 )
-__THEME_ACTION__ = ["new", "modify", "delete", "save"]
-__NOTE_ACTION__ = ["get", "save", "remove", "form", "download"]
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
@@ -358,7 +356,7 @@ def paginator(videos_list, page):
 def channel(request, slug_c, slug_t=None):
     channel = get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
     videos_list = get_available_videos().filter(channel=channel)
-    videos_list = sort_videos_list(videos_list, "date_added", "on")
+    videos_list = sort_videos_list(videos_list, "date_added")
     channel.video_count = videos_list.count()
 
     theme = None
@@ -479,8 +477,17 @@ def theme_edit(request, slug):
         raise PermissionDenied
 
     if is_ajax(request):
-        if request.POST["action"] in __THEME_ACTION__:
-            return eval("theme_edit_{0}(request, channel)".format(request.POST["action"]))
+        ACTION_HANDLERS = {
+            "new": theme_edit_new,
+            "modify": theme_edit_modify,
+            "delete": theme_edit_delete,
+            "save": theme_edit_save,
+        }
+        action = request.POST["action"]
+        if action in ACTION_HANDLERS:
+            handler = ACTION_HANDLERS.get(action)
+            if handler:
+                return handler(request, channel)
 
     form_theme = FrontThemeForm(initial={"channel": channel})
     return render(
@@ -1732,8 +1739,17 @@ def video_notes(request, slug):
         action = request.POST.get("action").split("_")[0]
     elif request.method == "GET" and request.GET.get("action"):
         action = request.GET.get("action").split("_")[0]
-    if action in __NOTE_ACTION__:
-        return eval("video_note_{0}(request, slug)".format(action))
+    ACTION_HANDLERS = {
+        "get": video_note_get,
+        "save": video_note_save,
+        "remove": video_note_remove,
+        "form": video_note_form,
+        "download": video_note_download,
+    }
+    if action in ACTION_HANDLERS:
+        handler = ACTION_HANDLERS.get(action)
+        if handler:
+            return handler(request, slug)
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     listNotes = get_adv_note_list(request, video)
     return render(
@@ -3558,27 +3574,3 @@ def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> Json
     """
     channel = Channel.objects.get(slug=slug)
     return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
-
-
-"""
-# check access to video
-# change template to fix height and breadcrumbs
-@csrf_protect
-@login_required(redirect_field_name='referrer')
-def video_collaborate(request, slug):
-    action = None
-    if (request.method == 'POST' and request.POST.get('action')):
-        action = request.POST.get('action').split('_')[0]
-    elif (request.method == 'GET' and request.GET.get('action')):
-        action = request.GET.get('action').split('_')[0]
-    if action in __NOTE_ACTION__:
-        return eval('video_note_{0}(request, slug)'.format(action))
-    video = get_object_or_404(
-        Video, slug=slug, sites=get_current_site(request))
-    listNotes = get_adv_note_list(request, video)
-    return render(
-            request,
-            'videos/video_collaborate.html', {
-                'video': video,
-                'listNotes': listNotes})
-"""

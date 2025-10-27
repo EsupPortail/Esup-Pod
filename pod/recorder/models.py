@@ -387,6 +387,7 @@ class RecordingFileTreatment(models.Model):
         recursive=True,
         unique=True,
         help_text=_("Source file of the published video."),
+        max_length=200,
     )
     file_size = models.BigIntegerField(_("File size"), default=0)
     recorder = models.ForeignKey(

@@ -74,9 +74,6 @@
       {% include 'navbar.html' %}
     </nav>
 
-    <!-- Collapsed navigation -->
-    {% include 'navbar_collapse.html' %}
-
     <!-- Breadcrumb navigation -->
     {% if not request.GET.is_iframe %}
       <nav aria-label="{% trans 'Breadcrumb' %}" id="mainbreadcrumb" class="pod-navbar-breadcrumb ">
@@ -98,6 +95,9 @@
       </nav>
     {% endif %}
   </header>
+
+  <!-- Collapsed navigation -->
+  {% include 'navbar_collapse.html' %}
 
   {% block content %}
   {% if request.path in "/,/authentication_login/,/accounts/login/" and MAINTENANCE_MODE %}
@@ -127,6 +127,7 @@
               {% include "aside.html" %}
             {% endblock page_aside %}
           </aside>
+          {% include "mastodon.html" %}
         {% endif %}
         <div class="pod-mainContent mt-2" id="pod-mainContent">
           <div class="container">

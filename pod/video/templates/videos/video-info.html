@@ -185,7 +185,7 @@
       {% endif %}
 
       <li class="col-6 col-md-4">
-        <span class="pod-meta-title">{% trans 'Updated on:' %}</span>
+        <span class="pod-meta-title">{% trans 'Added on:' %}</span>
         {{ video.date_added }}
       </li>
 
@@ -291,7 +291,7 @@
               {% endfor %}
             </ul>
 
-            {% if video.get_video_mp3 %}
+            {% if video.get_video_mp3 and video.get_video_mp3.source_file|file_exists %}
               <span class="meta-title pod-meta-title pod-download-title"><i class="bi bi-soundwave" aria-hidden="true"></i>{% trans 'Audio file:' %}</span>
               <ul>
                 <li>
@@ -467,7 +467,9 @@
                     <span class="d-block">
                       {{ qrcode }}
                     </span>
-                    <button id="btn-download-qr-code" type="submit" data-slug="{{ video.slug }}" class="btn btn-primary my-2" title="{% trans 'Download this QR code' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                    <button id="btn-download-qr-code" type="submit" data-slug="{{ video.slug }}"
+                      class="btn btn-primary my-2" title="{% trans 'Download this QR code' %}"
+                      data-bs-toggle="tooltip" data-bs-placement="bottom">
                       {% trans 'Download' %}
                     </button>
                   </div>

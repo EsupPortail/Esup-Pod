@@ -31,13 +31,13 @@ the time_sleep variable. Processing will take longer, but will be able to comple
 
 Usage:
 Run the script using Django's management command:
-    python manage.py import_data_from_v3_to_v4
+    `python manage.py import_data_from_v3_to_v4`
 Arguments:
  --dry: Simulates what will be achieved (default=False).
  --createDB: Execute Bash commands to create tables in the database and add initial data (see make createDB). Database must be empty. (default=False).
  --onlytags: Processes only tags (default=False). Useful if you encounter the 'Too many connections' problem for tags management.
 
-Example: python manage.py import_data_from_v3_to_v4 --dry
+Example: `python manage.py import_data_from_v3_to_v4 --dry`
 
 Functions:
 - add_arguments: Adds command-line arguments for the script.
@@ -66,7 +66,6 @@ import os
 import subprocess
 import time
 import urllib3
-from typing import Any, Dict, List
 
 from contextlib import contextmanager
 from django.core.management.base import BaseCommand
@@ -128,7 +127,7 @@ class Command(BaseCommand):
             default=False,
         )
 
-    def handle(self, *args: Any, **options: Any) -> None:
+    def handle(self, *args, **options) -> None:
         """Handle the command call."""
 
         self.stdout.write(
@@ -205,7 +204,7 @@ class Command(BaseCommand):
                     self.style.ERROR(f"Command failed: {command}. Error: {e}")
                 )
 
-    def process(self, options: Dict[str, Any]) -> None:
+    def process(self, options: dict) -> None:
         """Main process to import data."""
 
         # Define directory and JSON file
@@ -237,7 +236,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(" - Create directory data if necessary"))
         os.makedirs(os.path.join(BASE_DIR, output_directory), exist_ok=True)
 
-    def verify_json_file(self, json_file: str, options: Dict[str, Any]) -> bool:
+    def verify_json_file(self, json_file: str, options: dict) -> bool:
         """Verify the presence of the JSON file and optionally display a dry-run message."""
         if options["dry"]:
             self.stdout.write(
@@ -252,9 +251,7 @@ class Command(BaseCommand):
 
         return True
 
-    def display_dry_run_tables(
-        self, data: Dict[str, Any], options: Dict[str, Any]
-    ) -> None:
+    def display_dry_run_tables(self, data: dict, options: dict) -> None:
         """Display tables that would be processed in dry mode."""
         if options["onlytags"]:
             self.stdout.write(
@@ -268,9 +265,7 @@ class Command(BaseCommand):
                     self.style.SUCCESS(f" - The table {table} will be processed.")
                 )
 
-    def import_data(
-        self, data: Dict[str, Any], json_file: str, options: Dict[str, Any]
-    ) -> None:
+    def import_data(self, data: dict, json_file: str, options: dict) -> None:
         """Import data into the database."""
         error = False
 
@@ -313,8 +308,13 @@ class Command(BaseCommand):
                 )
             )
 
-    def import_table_data(self, cursor, table: str, rows: List[Dict[str, Any]]) -> None:
+    def import_table_data(self, cursor, table: str, rows: list[dict]) -> None:
         """Delete old data and insert new rows into the specified table."""
+
+        backend = connection.vendor
+        if backend == "mysql":
+            # TEMPORARILY DISABLE FOREIGN KEY CHECKS
+            cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
 
         # Delete existing data
         cursor.execute(f"DELETE FROM {self.quote_identifier(table)}")
@@ -344,6 +344,10 @@ class Command(BaseCommand):
                         )
             cursor.execute(insert_query, values)
 
+        if backend == "mysql":
+            # RE-ENABLE FOREIGN KEY CHECKS
+            cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
+
     def delete_old_tag_data(self, cursor, table: str) -> None:
         """Delete old tag data for the given table."""
         if table == "video_tagging_tag_2_tagulous":
@@ -369,7 +373,7 @@ class Command(BaseCommand):
                 f"ALTER TABLE {self.quote_identifier('recorder_recorder_tags')} AUTO_INCREMENT = 1"
             )
 
-    def reset_auto_increment(self, cursor, table: str, id_column: int = "id") -> None:
+    def reset_auto_increment(self, cursor, table: str, id_column="id") -> None:
         """Reset auto increment for a table (manage for for Postgre or Mysql/MariaDB)."""
         backend = connection.vendor
         quoted_table = self.quote_identifier(table)
@@ -393,7 +397,7 @@ class Command(BaseCommand):
                 self.style.ERROR(f"Tag management has not been completed. Error: {e}")
             )
 
-    def process_video_tags(self, rows: List[Dict[str, Any]]) -> None:
+    def process_video_tags(self, rows: list[dict]) -> None:
         """Process tags for videos."""
         number_videos_processed = 0
         self.stdout.write(self.style.SUCCESS(" - Start of tags management for videos"))
@@ -402,7 +406,7 @@ class Command(BaseCommand):
             if number_videos_processed % 100 == 0:
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"   * Processing, for tags, of the batch of videos {number_videos_processed-100}-{number_videos_processed} achieved"
+                        f"   * Processing, for tags, of the batch of videos {number_videos_processed - 100}-{number_videos_processed} achieved"
                     )
                 )
             self.add_tags_to_video(row["video_id"], row["tag_name"])
@@ -411,7 +415,7 @@ class Command(BaseCommand):
             time.sleep(time_sleep)
         self.stdout.write(self.style.SUCCESS(" - End of tags management for videos"))
 
-    def process_recorder_tags(self, rows: List[Dict[str, Any]]) -> None:
+    def process_recorder_tags(self, rows: list[dict]) -> None:
         """Process tags for recorders."""
         self.stdout.write(self.style.SUCCESS(" - Start of tags management for recorders"))
         for row in rows:

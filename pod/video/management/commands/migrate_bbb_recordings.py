@@ -4,7 +4,10 @@ Useful script for migrating BBB records when changing BBB infrastructure.
 Typically, when moving from a local architecture to the
 French Ministry of Higher Education and Research (ESR) BBB architecture.
 
-More information on this module at: https://www.esup-portail.org/wiki/x/C4CFUQ
+This script can also be used to backup BBB recordings. For example, in the case of a
+backup of the BBB records of the ESR infrastructure, as they are only kept for one year.
+
+More information on this module at: https://esupportail.github.io/Esup-Pod/4.x/Installation/optional/bbb-infrastructure-migration-install_fr
 
 Reminder of constraints:
  - no use of Pod's old BBB module (this module will be phased out in the near future)
@@ -99,7 +102,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
 from pod.import_video.utils import manage_download, parse_remote_file
-from pod.import_video.utils import manage_recording_url, check_url_exists
 from pod.import_video.models import ExternalRecording
 from pod.import_video.views import start_bbb_encode_presentation_and_move_to_destination
 from pod.meeting.models import Meeting
@@ -109,8 +111,6 @@ from defusedxml import minidom
 # # Script config (TO EDIT) # #
 # Moodle database engine (postgresql, mysql or None)
 MOODLE_DB_TYPE = None
-
-MOODLE_DB_TYPE = "postgresql"
 
 if MOODLE_DB_TYPE == "postgresql":
     # For PostgreSQL database #
@@ -487,7 +487,7 @@ def get_recording(recording) -> Generic_recording:
         # Not other format like "screenshare" or "podcast"
 
         # Check playback data
-        presentation_url, video_url = get_recording_urls()
+        presentation_url, video_url = get_recording_urls(recording, internal_meeting_id)
 
         # Define the result with the Generic_recording class
         generic_recording = Generic_recording(
@@ -556,13 +556,17 @@ def download_bbb_video_file(source_url: str, dest_file: str) -> None:
     session = requests.Session()
     # Download and parse the remote HTML file (BBB specific)
     video_file_add = parse_remote_file(session, source_url)
-    # Verify that video exists
-    source_video_url = manage_recording_url(source_url, video_file_add)
-    if check_url_exists(source_video_url):
+    try:
         # Download the video file
         source_video_url = manage_download(session, source_url, video_file_add, dest_file)
-    else:
-        print("Unable to download %s: video file doesn't exist." % source_url)
+        print("  > Video %s downloaded." % source_video_url)
+    except Exception as e:
+        err = "Unable to download %s: %s. %s " % (
+            source_url,
+            str(e),
+            traceback.format_exc(),
+        )
+        print(err)
 
 
 def process_recording_to_claim(options, generic_recording) -> None:

@@ -676,7 +676,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> # ce template soit affiché en haut de votre page, le code est ajouté
   >> #  juste après la balise body.(Hors iframe)
   >> # Si le fichier créé est
-  >> # '/opt/django_projects/podv3/pod/custom/templates/custom/preheader.html'
+  >> # '/opt/django_projects/podv4/pod/custom/templates/custom/preheader.html'
   >> # alors la variable doit prendre la valeur 'custom/preheader.html'
   >> 'PRE_HEADER_TEMPLATE': '',
   >>  
@@ -801,6 +801,11 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
   >> Les personnes ayant pour affiliation les valeurs<br>
   >> renseignées dans cette variable ont automatiquement<br>
   >> la valeur staff de leur compte à True.<br>
+* `ALLOWED_SUPERUSER_IPS`
+  > valeur par défaut : `[]`
+  >> Liste d’IP et/ou de plages depuis lesquelles le statut 'superuser'<br>
+  >> est autorisé.<br>
+  >> Laissez vide pour autoriser toutes les sources.<br>
 * `AUTH_CAS_USER_SEARCH`
   > valeur par défaut : `user`
   >> Variable utilisée pour trouver les informations de l’individu<br>
@@ -1245,7 +1250,7 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
   > valeur par défaut : `False`
   >> Mode webtv permet de basculer POD en une application webtv ensupprimant les boutons de connexions par exemple<br>
 * `SOCIAL_SHARE`
-  > valeur par défaut : `['X', 'FACEBOOK', 'LINKEDIN', 'BLUESKY']`
+  > valeur par défaut : `['X', 'FACEBOOK', 'LINKEDIN', 'BLUESKY', 'MASTODON']`
   >> Choix d'affichage des liens de partage des réseaux sociaux<br>
 
 ### Configuration de l’application meeting

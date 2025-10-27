@@ -1,32 +1,11 @@
-@media (prefers-color-scheme: dark) {
-  .select2-container--default .select2-selection--multiple,
-  .select2-dropdown,
-  .select2-container--default
-    .select2-selection--multiple
-    .select2-selection__choice {
-    background-color: #121212 !important;
-  }
-
-  .select2-container--default.select2-container--focus
-    .select2-selection--multiple {
-    border: solid white 1px !important;
-  }
-
-  .select2-search__field {
-    color: white !important;
-  }
-
-  :root {
-    --pod-font-color: white;
-  }
-}
-
 /** Set the Django-admin auto dark mode
  *  when dark theme is active in Pod.
  **/
 :root[data-theme="dark"] {
+  --pod-font-color: white;
   --primary: #264b5d;
   --primary-fg: #eee;
+  --accent: #f5dd5d;
   --body-fg: #eee;
   --body-bg: #121212;
   --body-quiet-color: #e0e0e0;
@@ -47,6 +26,38 @@
   --selected-row: #00363a;
   --close-button-bg: #333;
   --close-button-hover-bg: #666;
+}
+
+:root[data-theme="light"] {
+  --primary: var(--pod-primary);
+  --body-bg: #fff;
+  --button-fg: #fff;
+  --body-quiet-color: #666;
+}
+
+:root[data-theme="dark"]
+  .select2-container--default
+  .select2-selection--multiple,
+:root[data-theme="dark"] .select2-dropdown,
+:root[data-theme="dark"]
+  .select2-container--default
+  .select2-selection--multiple
+  .select2-selection__choice {
+  background-color: #121212 !important;
+}
+
+:root[data-theme="dark"]
+  .select2-container--default.select2-container--focus
+  .select2-selection--multiple {
+  border: solid white 1px !important;
+}
+
+:root[data-theme="dark"] .select2-search__field {
+  color: white !important;
+}
+
+.calendar table {
+  background-color: var(--body-bg);
 }
 
 #user-tools a:focus,

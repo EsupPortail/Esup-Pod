@@ -372,7 +372,10 @@ class Channel(models.Model):
     class Meta:
         """Metadata subclass for Channel object."""
 
-        ordering = ["title"]
+        # Do NOT set ordering on Channel, to avoid a
+        # "django.db.utils.DatabaseError: ORDER BY not allowed in subqueries of compound statements."
+        # When adding a channel to a video on a SQlite DB
+        # ordering = ["title"]
         verbose_name = _("Channel")
         verbose_name_plural = _("Channels")
         constraints = [
@@ -1030,7 +1033,7 @@ class Video(models.Model):
             # Handle exception to avoid sending an error email
             try:
                 im = get_thumbnail(self.thumbnail.file, size, crop="center", quality=80)
-                thumbnail_url = im.url
+                thumbnail_url = "".join(["//", get_current_site(request).domain, im.url])
             except Exception as e:
                 logger.error(
                     "An error occured during get_thumbnail_url"

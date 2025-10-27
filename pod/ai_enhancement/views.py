@@ -25,10 +25,12 @@ from pod.completion.models import Track
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.utils import json_to_web_vtt
 from pod.main.views import in_maintenance
-from pod.quiz.utils import import_quiz
 from pod.video.models import Video, Discipline
 from pod.video_encode_transcript.transcript import save_vtt
 
+USE_QUIZ = getattr(settings, "USE_QUIZ", False)
+if USE_QUIZ:
+    from pod.quiz.utils import import_quiz
 AI_ENHANCEMENT_CLIENT_ID = getattr(settings, "AI_ENHANCEMENT_CLIENT_ID", "mocked_id")
 AI_ENHANCEMENT_CLIENT_SECRET = getattr(
     settings, "AI_ENHANCEMENT_CLIENT_SECRET", "mocked_secret"
@@ -449,6 +451,7 @@ def enhance_form(request: WSGIRequest, video: Video) -> HttpResponse:
                     "video": video,
                     "form": form,
                     "page_title": _("Enhance the video with Aristote AI"),
+                    "USE_QUIZ": USE_QUIZ,
                 },
             )
     else:

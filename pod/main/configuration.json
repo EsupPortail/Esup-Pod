@@ -181,6 +181,22 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "ALLOWED_SUPERUSER_IPS": {
+                            "default_value": "[]",
+                            "description": {
+                                "en": [
+                                    "List of IPs and/or ranges from which 'superuser' status is allowed.",
+                                    "Leave empty to allow every source."
+                                ],
+                                "fr": [
+                                    "Liste d’IP et/ou de plages depuis lesquelles le statut 'superuser' ",
+                                    "est autorisé.",
+                                    "Laissez vide pour autoriser toutes les sources."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.0.2"
+                        },
                         "AUTH_CAS_USER_SEARCH": {
                             "default_value": "user",
                             "description": {
@@ -1711,7 +1727,7 @@
                             "pod_version_init": "3.7.0"
                         },
                         "SOCIAL_SHARE": {
-                            "default_value": "['X', 'FACEBOOK', 'LINKEDIN', 'BLUESKY']",
+                            "default_value": "['X', 'FACEBOOK', 'LINKEDIN', 'BLUESKY', 'MASTODON']",
                             "description": {
                                 "en": [
                                     "Choice of display of social network sharing links"
@@ -5531,7 +5547,7 @@
                                     "# ce template soit affiché en haut de votre page, le code est ajouté",
                                     "#  juste après la balise body.(Hors iframe)",
                                     "# Si le fichier créé est",
-                                    "# '/opt/django_projects/podv3/pod/custom/templates/custom/preheader.html'",
+                                    "# '/opt/django_projects/podv4/pod/custom/templates/custom/preheader.html'",
                                     "# alors la variable doit prendre la valeur 'custom/preheader.html'",
                                     "'PRE_HEADER_TEMPLATE': '',",
                                     " ",

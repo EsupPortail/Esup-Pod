@@ -79,6 +79,7 @@ tests:
 
 # Ensure coherence of all code style
 pystyle:
+	black . -l 90
 	flake8
 
 # Collects all static files inside all apps and put a copy inside the static directory declared in settings.py
@@ -91,6 +92,10 @@ statics:
 createconfigs:
 	python3 -Wd manage.py createconfiguration fr
 	python3 -Wd manage.py createconfiguration en
+
+# Create a superuser
+createsuperuser:
+	python3 manage.py createsuperuser
 
 # -- Docker
 # Use for docker run and docker exec commands
