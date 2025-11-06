@@ -49,6 +49,7 @@ if not views.MEETING_DISABLE_RECORD:
 
 if views.USE_MEETING_WEBINAR:
     urlpatterns += [
+        path("toggle_chat/<slug:meeting_id>/", views.toggle_chat, name="toggle_chat"),
         path("restart_live/<slug:meeting_id>/", views.restart_live, name="restart_live"),
         path("end_live/<slug:meeting_id>/", views.end_live, name="end_live"),
         path(
