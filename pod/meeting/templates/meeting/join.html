@@ -56,11 +56,13 @@
     <p>{% trans "The meeting has not started yet." %}</p>
     <p>
     {% localize on %}
-    {% if meeting.recurrence %}
-    {% blocktranslate with start_date=meeting.next_occurrence_from_today start_time=meeting.start_at|time %}It is scheduled for <b>{{start_date}}</b> at <u>{{start_time}}</u>.{% endblocktranslate %}
-    {% else %}
-    {% blocktranslate with start_date=meeting.start_at|date start_time=meeting.start_at|time %}It is scheduled for <b>{{start_date}}</b> at <u>{{start_time}}</u>.{% endblocktranslate %}
-    {% endif %}
+      {% if not meeting.is_personal %}
+        {% if meeting.recurrence %}
+          {% blocktranslate with start_date=meeting.next_occurrence_from_today start_time=meeting.start_at|time %}It is scheduled for <b>{{start_date}}</b> at <u>{{start_time}}</u>.{% endblocktranslate %}
+        {% else %}
+          {% blocktranslate with start_date=meeting.start_at|date start_time=meeting.start_at|time %}It is scheduled for <b>{{start_date}}</b> at <u>{{start_time}}</u>.{% endblocktranslate %}
+        {% endif %}
+      {% endif %}
     {% endlocalize %}
     </p>
     <p>{% trans "You will be redirected right after the meeting starts." %}</p>
