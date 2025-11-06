@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-09 14:25+0200\n"
+"POT-Creation-Date: 2025-11-06 15:10+0100\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -391,7 +391,8 @@ msgstr ""
 #: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
 #: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
 #: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/utils.py
+#: pod/video/views.py pod/video_encode_transcript/runner_manager.py
+#: pod/video_encode_transcript/utils.py
 msgid "Home"
 msgstr ""
 
@@ -1288,6 +1289,11 @@ msgstr ""
 msgid ""
 "There is an overlap with the overlay {0}, please change time start and/or "
 "time end values."
+msgstr ""
+
+#: pod/completion/permissions/video.py
+#, python-brace-format
+msgid "{func.__name__}: Permission denied for user {current_user.pk}."
 msgstr ""
 
 #: pod/completion/templates/contributor/form_contributor.html
@@ -2495,7 +2501,7 @@ msgid "User who create this recording"
 msgstr ""
 
 #: pod/import_video/models.py pod/meeting/models.py pod/playlist/models.py
-#: pod/video/models.py
+#: pod/video/models.py pod/video_encode_transcript/models.py
 msgid "Site"
 msgstr ""
 
@@ -5751,7 +5757,7 @@ msgstr ""
 msgid "Bearer token for the SIPMediaGW server."
 msgstr ""
 
-#: pod/meeting/models.py
+#: pod/meeting/models.py pod/video_encode_transcript/models.py
 msgid "Example format: 1234"
 msgstr ""
 
@@ -6352,6 +6358,10 @@ msgid "You can’t end this webinar live."
 msgstr ""
 
 #: pod/meeting/views.py
+msgid "You can’t toggle chat for this webinar live."
+msgstr ""
+
+#: pod/meeting/views.py
 msgid "You can’t restart this webinar live."
 msgstr ""
 
@@ -6373,6 +6383,18 @@ msgstr ""
 #: pod/meeting/webinar.py
 #, python-format
 msgid "Error to stop webinar mode for “%(name)s” meeting: %(exc)s"
+msgstr ""
+
+#: pod/meeting/webinar.py
+#, python-format
+msgid ""
+"The option to show/hide the chat has been taken into account for “%(name)s” "
+"meeting."
+msgstr ""
+
+#: pod/meeting/webinar.py
+#, python-format
+msgid "Error to toggle chat for “%(name)s” meeting: %(exc)s"
 msgstr ""
 
 #: pod/meeting/webinar.py
@@ -6501,6 +6523,13 @@ msgstr ""
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
+msgstr ""
+
+#: pod/playlist/models.py
+#, python-brace-format
+msgid ""
+"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"characters."
 msgstr ""
 
 #: pod/playlist/models.py
@@ -6881,10 +6910,6 @@ msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
-msgstr ""
-
-#: pod/playlist/views.py
-msgid "Delete the playlist"
 msgstr ""
 
 #: pod/playlist/views.py
@@ -7275,7 +7300,7 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: pod/quiz/models.py pod/quiz/tests/test_models.py
+#: pod/quiz/models.py
 msgid "Quiz of video"
 msgstr ""
 
@@ -7818,6 +7843,7 @@ msgstr ""
 #: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/video_row_select.html
 #: pod/video/templates/videos/video_sort_select.html
+#: pod/video_encode_transcript/models.py
 msgid "Date added"
 msgstr ""
 
@@ -10251,6 +10277,120 @@ msgstr ""
 
 #: pod/video_encode_transcript/models.py
 msgid "Video Playlists"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager name"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority of the runner manager. Lower values indicate higher priority."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "URL of the Runner Manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Example format: https://manager.univ.fr:port/"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Pod notify URL"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Example format: https://pod.univ.fr:port/notify/runner_manager/"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Bearer token for the Runner Manager."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner managers"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+#, fuzzy
+#| msgid "Encoding"
+msgid "Encoding task"
+msgstr "Videocodering"
+
+#: pod/video_encode_transcript/models.py
+msgid "Transcription task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task type"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task pending"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task in progress"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task completed"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task failed"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task timeouted"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task status"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task identifier from runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Identifier of the task provided by the runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Video associated to the task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager that manages this task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager that achieves this task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Script output"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Output from the runner manager script"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Tasks"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py
