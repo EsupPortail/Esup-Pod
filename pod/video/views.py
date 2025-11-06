@@ -2660,7 +2660,9 @@ def stats_view(request, slug=None, slug_t=None):
     ):
         slug = slug if not slug_t else slug_t
         target = "Pod" if target == "videos" else target
-        return HttpResponseNotFound(error_message % {"target": escape(target), "slug": escape(slug)})
+        return HttpResponseNotFound(
+            error_message % {"target": escape(target), "slug": escape(slug)}
+        )
 
     if (
         request.method == "POST"

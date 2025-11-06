@@ -268,13 +268,9 @@ def deletefile(request):
     if request.POST.get("id") and request.POST.get("classname"):
         classname = request.POST.get("classname")
         if classname == "CustomImageModel":
-            file = get_object_or_404(
-                CustomImageModel, id=request.POST.get("id")
-            )
+            file = get_object_or_404(CustomImageModel, id=request.POST.get("id"))
         else:
-            file = get_object_or_404(
-                CustomFileModel, id=request.POST.get("id")
-            )
+            file = get_object_or_404(CustomFileModel, id=request.POST.get("id"))
         folder = file.folder
         if request.user != file.created_by and not (
             request.user.is_superuser
@@ -406,13 +402,9 @@ def changefile(request):
 
         file_type = request.POST.get("file_type")
         if file_type == "CustomImageModel":
-            file = get_object_or_404(
-                CustomImageModel, id=request.POST.get("file_id")
-            )
+            file = get_object_or_404(CustomImageModel, id=request.POST.get("file_id"))
         else:
-            file = get_object_or_404(
-                CustomFileModel, id=request.POST.get("file_id")
-            )
+            file = get_object_or_404(CustomFileModel, id=request.POST.get("file_id"))
 
         if request.user != file.created_by and not (
             request.user.is_superuser
@@ -424,13 +416,9 @@ def changefile(request):
             raise PermissionDenied
 
         if file_type == "CustomImageModel":
-            form_file = CustomImageModelForm(
-                request.POST, request.FILES, instance=file
-            )
+            form_file = CustomImageModelForm(request.POST, request.FILES, instance=file)
         else:
-            form_file = CustomFileModelForm(
-                request.POST, request.FILES, instance=file
-            )
+            form_file = CustomFileModelForm(request.POST, request.FILES, instance=file)
 
         if form_file.is_valid():
             if form_file.cleaned_data["folder"] != folder:
