@@ -67,7 +67,7 @@
       <div id="divvideoplayer" style="display:block">
         <div class="row">
           <div class="col">
-            <video id="podvideoplayer"
+            <video id="podvideoplayer" title="{{ event.slug }}"
                  class="video-js vjs-default-skin vjs-big-play-centered"
                  controls height="360" muted autoplay>
               <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
