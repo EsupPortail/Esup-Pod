@@ -10086,6 +10086,13 @@ msgstr ""
 
 #: pod/video/views.py
 #, python-format
+msgid ""
+"The following “%(target)s” type target does not exist or contains no videos: "
+"%(slug)s."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
 msgid "The following video does not exist: %s"
 msgstr ""
 

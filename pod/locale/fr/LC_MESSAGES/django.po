@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-09 14:25+0200\n"
+"POT-Creation-Date: 2025-10-15 17:14+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -10774,6 +10774,15 @@ msgstr "Statistiques de visualisation des vidéos du thème %s"
 #, python-format
 msgid "You do not have access rights to this video: %s "
 msgstr "Vous n’avez pas les droits d’accès à cette vidéo : %s "
+
+#: pod/video/views.py
+#, python-format
+msgid ""
+"The following “%(target)s” type target does not exist or contains no videos: "
+"%(slug)s."
+msgstr ""
+"La cible de type « %(target)s » suivant(e) n’existe pas ou ne contient "
+"aucune vidéo : %(slug)s."
 
 #: pod/video/views.py
 #, python-format
