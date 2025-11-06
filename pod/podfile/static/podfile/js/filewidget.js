@@ -35,6 +35,7 @@ if (typeof loaded == "undefined") {
   var loaded = true;
 
   document.addEventListener("click", (e) => {
+    // Happens when a file is selected (example: select a thumbnail)
     if (!e.target.parentNode) return;
     if (
       !e.target.parentNode.matches(".file-name") &&
@@ -97,6 +98,73 @@ if (typeof loaded == "undefined") {
   });
 
 
+  document.addEventListener("click", (e) => {
+    // Click on add or edit a folder
+    if (
+      !e.target.classList.contains("bi-pencil-square") &&
+      !e.target.classList.contains("add-folder-btn")
+    )
+      return;
+
+      // Check whether the second modal has already been initialised
+      var secondModalElement = document.getElementById('folderModalCenter');
+      var secondModal = bootstrap.Modal.getInstance(secondModalElement);
+      if (!secondModal) {
+          // Initialises the second modal with backdrop: false and keyboard: true
+          secondModal = new bootstrap.Modal(secondModalElement, {
+              backdrop: false,
+              keyboard: true
+          });
+      }
+
+      // Blur the first modal
+      var modals = document.querySelectorAll('[id^="fileModal_id_"]');
+      modals.forEach(function(modalElement) {
+        const modalContentElementFirstModal = modalElement.querySelector(".modal-content");
+        modalContentElementFirstModal.classList.add('blur-background');
+      });
+
+      // Adjusts the z-index of the second modal so that it appears above the first one.
+      // Bootstrap uses z-indexes of 1050 for modals and 1040 for backdrops.
+      // We need to set the second modal to a z-index higher than 1050 (e.g. 1055).
+      secondModalElement.style.zIndex = 1055;
+
+      // Display the second modal
+      secondModal.show();
+    });
+
+   document.addEventListener("click", (e) => {
+    if (
+      !e.target.classList.contains("bi-share")
+    )
+      return;
+
+      // Check whether the second modal has already been initialised
+      var secondModalElement = document.getElementById('shareModalCenter');
+      var secondModal = bootstrap.Modal.getInstance(secondModalElement);
+      if (!secondModal) {
+          // Initialises the second modal with backdrop: false and keyboard: true
+          secondModal = new bootstrap.Modal(secondModalElement, {
+              backdrop: false,
+              keyboard: true
+          });
+      }
+
+      // Blur the first modal
+      var modals = document.querySelectorAll('[id^="fileModal_id_"]');
+      modals.forEach(function(modalElement) {
+        const modalContentElementFirstModal = modalElement.querySelector(".modal-content");
+        modalContentElementFirstModal.classList.add('blur-background');
+      });
+
+
+      // Adjusts the z-index of the second modal so that it appears above the first one.
+      secondModalElement.style.zIndex = 1055;
+
+      // Display the second modal
+      secondModal.show();
+  });
+
   /*********** OPEN/CLOSE FOLDER MENU ************/
   document.addEventListener("click", (e) => {
     if (
@@ -104,7 +172,6 @@ if (typeof loaded == "undefined") {
       e.target.id != "close-folder-icon"
     )
       return;
-    //document.getElementById("dirs").classList.remove("open");
     var bsdirs = new bootstrap.Collapse(document.getElementById("dirs"));
     bsdirs.hide();
   });
@@ -116,66 +183,122 @@ if (typeof loaded == "undefined") {
 
   /****** CHANGE FILE ********/
   document.addEventListener("submit", (e) => {
+    // Managed event: form submission to upload ou change a file/image.
     if (
       e.target.id != "formchangeimage" &&
       e.target.id != "formchangefile" &&
       e.target.id != "formuploadfile"
     )
       return;
+    // Prevents normal submission
+    e.preventDefault();
     submitFormFile(e.target);
   });
 
   /****** CHANGE FILE ********/
   document.addEventListener("hide.bs.modal", (event) => {
-    if (event.target.id != "folderModalCenter") return;
+    // Managed event: close a modal window.
+    if (
+      event.target.id != "fileModal_id_thumbnail"
+      && event.target.id != "fileModal_id_docment"
+      && event.target.id != "shareModalCenter"
+      && event.target.id != "folderModalCenter"
+    ) return;
     event.stopPropagation();
+
+    // When the second modal is closed, remove the blur from the first one.
+    var modals = document.querySelectorAll('[id^="fileModal_id_"]');
+    modals.forEach(function(modalElement) {
+      const modalContentElementFirstModal = modalElement.querySelector(".modal-content");
+      modalContentElementFirstModal.classList.remove('blur-background');
+    });
   });
 
   document.addEventListener("show.bs.modal", (event) => {
-    //event.preventDefault();
-
+    // Managed event: open the main modal window (#folderModalCenter).
     if (event.target.id != "folderModalCenter") return;
-
     event.stopPropagation();
 
-    let button = event.relatedTarget; // Button that triggered the modal
+    // Button that triggered the modal
+    // Note: when multiple modal windows, the button is not targeted!
+    let button = event.relatedTarget;
+
     let modal = event.target;
     modal.querySelectorAll("form").forEach((e) => {
       e.style.display = "none";
     });
 
-    let folder_id = button.dataset.folderid;
-    let filetype = button.dataset.filetype;
+    // Worjing variables
+    let folder_id = null;
+    let fileid = null;
+    let filename = null;
+    let filetype = null;
+
+    if (button) {
+      // Default source code: useful when only one modal is used
+      folder_id = button.dataset.folderid;
+      fileid = button.dataset.fileid;
+      filename = button.dataset.filename;
+      filetype = button.dataset.filetype;
+    } else {
+      // Modified source code: useful when multiple modal windows are used
+      // Retrieve the stored trigger element (see setModalAction() function)
+      const triggerAction = document.getElementById("folderModalCenter").getAttribute('data-trigger-action');
+      const triggerFolder = document.getElementById("folderModalCenter").getAttribute('data-trigger-folder');
+      const triggerId = document.getElementById("folderModalCenter").getAttribute('data-trigger-id');
+      const triggerName = document.getElementById("folderModalCenter").getAttribute('data-trigger-name');
+      const triggerType = document.getElementById("folderModalCenter").getAttribute('data-trigger-type');
+
+      // triggerAction can be: addfolder, currentfolderrename, currentfilerename
+      if (triggerAction) {
+        // Retrieve the targeted button
+        button = document.getElementById(triggerAction);
+        // Get data from the stored rigger
+        folder_id = triggerFolder;
+        fileid = triggerId;
+        filename = triggerName;
+        filetype = triggerType;
+      }
+      // Clear trigger data
+      document.getElementById("folderModalCenter").removeAttribute('data-trigger-action');
+      document.getElementById("folderModalCenter").removeAttribute('data-trigger-folder');
+      document.getElementById("folderModalCenter").removeAttribute('data-trigger-id');
+      document.getElementById("folderModalCenter").removeAttribute('data-trigger-name');
+      document.getElementById("folderModalCenter").removeAttribute('data-trigger-type');
+    }
 
     switch (filetype) {
       case "CustomImageModel":
         var modalTitle = gettext("Change image “%s”");
         document.getElementById("folderModalCenterTitle").innerHTML = interpolate(
-          modalTitle, [button.dataset.filename]
+          modalTitle, [filename]
         );
         modal.querySelectorAll(".modal-body input#id_folder").forEach((e) => {
           e.value = folder_id;
         });
         modal.querySelectorAll(".modal-body input#id_image").forEach((e) => {
-          e.value = button.dataset.fileid;
+          e.value = fileid;
+        });
+        modal.querySelectorAll(".modal-body input#file_id").forEach((e) => {
+          e.value = fileid;
         });
         modal.querySelectorAll(".modal-body input#file_type").forEach((e) => {
-          e.value = button.dataset.filetype;
+          e.value = filetype;
         });
         document.getElementById("formchangeimage").style.display = "block";
         break;
       case "CustomFileModel":
         var modalTitle = gettext("Change file “%s”");
         document.getElementById("folderModalCenterTitle").innerHTML =
-          interpolate(modalTitle, [button.dataset.filename]);
+          interpolate(modalTitle, [filename]);
         modal.querySelectorAll(".modal-body input#id_folder").forEach((e) => {
           e.value = folder_id;
         });
         modal.querySelectorAll(".modal-body input#file_id").forEach((e) => {
-          e.value = button.dataset.fileid;
+          e.value = fileid;
         });
         modal.querySelectorAll(".modal-body input#file_type").forEach((e) => {
-          e.value = button.dataset.filetype;
+          e.value = filetype;
         });
 
         document.getElementById("formchangefile").style.display = "block";
@@ -185,7 +308,6 @@ if (typeof loaded == "undefined") {
         document.getElementById("folderModalCenterTitle").textContent = gettext(
           "Enter new name of folder"
         );
-        4;
         var oldname = button.dataset.oldname;
         // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
         // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -318,21 +440,30 @@ if (typeof loaded == "undefined") {
     event.stopPropagation();
   });
   document.addEventListener("show.bs.modal", (event) => {
+    // Managed event: click on Share
     if (event.target.id != "shareModalCenter") return;
     event.stopPropagation();
     document.getElementById("user-search").classList.add("d-none");
     document.getElementById("shared-people").textContent = "";
     let button = event.relatedTarget;
-    var folder_id = button.dataset.folderid;
-
-    let modal = document.querySelector(button.dataset.bsTarget);
+    var folder_id = "";
+    var modal = "";
+    if (button) {
+      // If target is the <button>
+      folder_id = button.dataset.folderid;
+      modal = document.querySelector(button.dataset.bsTarget);
+    } else {
+      // If target is the <i> and not the <button>
+      let button_share = document.getElementById("currentfoldershare");
+      folder_id = button_share.dataset.folderid;
+      modal = document.querySelector("#shareModalCenter");
+    }
     modal.querySelector("#formuserid").value = folder_id;
     reloadRemoveBtn();
   });
 
 
   document.addEventListener("click", (e) => {
-
     if (!e.target.classList.contains("btn-remove")) return;
     let url =
       "/podfile/ajax_calls/remove_shared_user?foldid=" +
@@ -417,6 +548,7 @@ if (typeof loaded == "undefined") {
   });
 
   document.addEventListener("click", (e) => {
+    // Managed event: click to delete a folder
     var contain_target = false;
     if (document.getElementById("currentfolderdelete")) {
       contain_target = document.getElementById("currentfolderdelete").contains(e.target);
@@ -426,10 +558,21 @@ if (typeof loaded == "undefined") {
         gettext("Are you sure you want to delete this folder?")
       );
       if (deleteConfirm) {
-        let id = e.target.dataset.folderid;
-        let csrfmiddlewaretoken = e.target.querySelector(
-          'input[name="csrfmiddlewaretoken"]'
-        ).value;
+        var id = e.target.dataset.folderid;
+        var csrfmiddlewaretoken = "";
+        if (id) {
+          // If target is the <button>
+          csrfmiddlewaretoken = e.target.querySelector(
+            'input[name="csrfmiddlewaretoken"]'
+          ).value;
+        } else {
+          // If target is the <i> and not the <button>
+          let button_delete = document.getElementById("currentfolderdelete");
+          id = button_delete.dataset.folderid;
+          csrfmiddlewaretoken = button_delete.querySelector(
+            'input[name="csrfmiddlewaretoken"]'
+          ).value;
+        }
         send_form_data(
           deletefolder_url,
           { id: id, csrfmiddlewaretoken: csrfmiddlewaretoken },
@@ -449,12 +592,15 @@ if (typeof loaded == "undefined") {
         const buttonElement = e.target.closest("button.btn-delete-file");
         let id = buttonElement.dataset.fileid;
         let classname = buttonElement.dataset.filetype;
+        // Manage type to avoid a bug when select a file/image after a deletion
+        let type = buttonElement.dataset.type;
         let csrfmiddlewaretoken = buttonElement.querySelector("input").value;
         send_form_data(
           deletefile_url,
           {
             id: id,
             classname: classname,
+            type: type,
             csrfmiddlewaretoken: csrfmiddlewaretoken,
           },
           "show_folder_files"
@@ -464,6 +610,7 @@ if (typeof loaded == "undefined") {
   });
 
   document.addEventListener("submit", (e) => {
+    // Managed event: click to add or edit a folder
     if (e.target.id != "folderFormName") return;
     e.preventDefault();
     let form = e.target;
@@ -506,7 +653,7 @@ if (typeof loaded == "undefined") {
     if (data.list_element) {
       var folder_id = data.folder_id;
 
-      if (data.new_folder === true) {
+      if (data.new_folder === true && document.getElementById("list_folders_sub")) {
         let type = document.getElementById("list_folders_sub").dataset.type;
 
         let string_html =
@@ -532,30 +679,39 @@ if (typeof loaded == "undefined") {
           );
       }
 
-      if (data.folder_name) {
+      if (data.folder_name && document.getElementById("folder-name-" + folder_id)) {
         document.getElementById("folder-name-" + folder_id).textContent = data.folder_name;
       }
 
-      if (data.deleted) {
+      if (data.deleted && document.getElementById("folder_" + data.deleted_id)) {
         document.getElementById("folder_" + data.deleted_id).remove();
       }
       send_form_data(
         "/podfile/get_folder_files/" + folder_id,
-        {},
+        {
+          type: type
+        },
         "show_folder_files",
         "get"
       );
-      //dismiss modal
+      // Dismiss modal
       let center_mod = document.getElementById("folderModalCenter");
       let center_modal = bootstrap.Modal.getOrCreateInstance(center_mod);
       center_modal.hide();
       center_mod.querySelector("#folderInputName").value = "";
       center_mod.querySelector("#formfolderid").value = "";
     } else {
-      showalert(
-        gettext("You are no longer authenticated. Please log in again."),
-        "alert-danger"
-      );
+      if (data.includes(gettext("Two folders cannot have the same name."))) {
+        showalert(
+          gettext("Two folders cannot have the same name."),
+          "alert-danger"
+        );
+      } else {
+        showalert(
+          gettext("You are no longer authenticated. Please log in again."),
+          "alert-danger"
+        );
+      }
     }
   }
 
@@ -587,10 +743,9 @@ if (typeof loaded == "undefined") {
       let folder = document.getElementById("folder_" + data.folder_id + " img");
       if (folder) folder.src = static_url + "podfile/images/opened_folder.png";
 
-      //dismiss modal
+      // Dismiss modal
       let center_modal = document.getElementById("folderModalCenter");
-      let center_modal_instance =
-        bootstrap.Modal.getOrCreateInstance(center_modal);
+      let center_modal_instance = bootstrap.Modal.getOrCreateInstance(center_modal);
       center_modal_instance.hide();
       center_modal.querySelector("#folderInputName").value = "";
       center_modal.querySelector("#formfolderid").value = "";
@@ -702,7 +857,6 @@ if (typeof loaded == "undefined") {
         .querySelectorAll("a.folder")
         .forEach(el => {
           el.addEventListener("click", (event) => {
-            //alert("show files");
             event.preventDefault();
             showfiles(event);
           });
@@ -929,8 +1083,10 @@ function submitFormFile(target) {
 
   var data_form = new FormData(target);
 
-  var url = target.getAttribute("action");
-
+  // Use of specific attribute for AJAX requests, to avoid to submit twice
+  var url = target.getAttribute("action-for-ajax");
+  // Default behaviour for NON AJAX requests
+  if (!url) { url = target.getAttribute("action"); }
   fetch(url, {
     method: "POST",
     body: data_form,
@@ -967,4 +1123,28 @@ function submitFormFile(target) {
         "alert-danger"
       );
     });
+}
+
+/**
+ * Sets up modal action by storing trigger element data as attributes in the target modal.
+ * Used to pass context (file/folder information) between modals in a multi-step interface.
+ *
+ * @param {string} action - The action to be performed ('currentfolderrename', 'currentfilerename', 'addfolder').
+ * @param {string} folder - The target folder path (default: empty string).
+ * @param {string} id - The unique identifier of the file/image (default: empty string).
+ * @param {string} name - The display name of the file/image (default: empty string).
+ * @param {string} type - The type of item ('file' or 'image') (default: empty string).
+ */
+function setModalAction(action, folder = "", id = "", name = "", type = "") {
+  // Get reference to the secondary modal element
+  const secondModal = document.getElementById('folderModalCenter');
+
+  // Store trigger element's data as custom attributes on the modal
+  if (secondModal) {
+    secondModal.setAttribute('data-trigger-action', action);
+    secondModal.setAttribute('data-trigger-folder', folder);
+    secondModal.setAttribute('data-trigger-id', id);
+    secondModal.setAttribute('data-trigger-name', name);
+    secondModal.setAttribute('data-trigger-type', type);
+  }
 }
