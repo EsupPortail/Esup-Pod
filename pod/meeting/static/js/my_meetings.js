@@ -60,7 +60,11 @@ meetingModal.addEventListener("show.bs.modal", function (event) {
             '" class="btn btn-danger"><i class="bi bi-stop-circle-fill" aria-hidden="true"></i> ' +
             gettext("End the webinar (meeting and live)") +
             "</a></p>";
-          allLinks = modalToggleChatLink + modalRestartLiveLink + modalEndLiveLink + modalEndLink;
+          allLinks =
+            modalToggleChatLink +
+            modalRestartLiveLink +
+            modalEndLiveLink +
+            modalEndLink;
         } else {
           // Buttons for standard meeting
           const modalEndLink =
