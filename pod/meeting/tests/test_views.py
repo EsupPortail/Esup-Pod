@@ -581,7 +581,7 @@ class MeetingJoinTestView(TestCase):
         self.assertRedirects(
             response,
             join_url,
-            status_code=200,
+            status_code=302,
             target_status_code=200,
             msg_prefix="",
             fetch_redirect_response=False,
