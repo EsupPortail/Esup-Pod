@@ -29,6 +29,25 @@ jobs:
   Pod-Dev:
     runs-on: ubuntu-latest
 
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MYSQL_ROOT_PASSWORD: passwd
+          MYSQL_DATABASE: pod
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd='mysqladmin ping --silent' --health-interval=5s --health-timeout=2s --health-retries=20
+
+    env:
+      DATABASE_HOST: mariadb
+      DATABASE_PORT: '3306'
+      DATABASE_NAME: pod_test
+      DATABASE_USER: root
+      DATABASE_PASSWORD: passwd
+
+
     steps:
       - uses: actions/checkout@v4
 
