@@ -67,8 +67,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          # packages for mysqlclient (MariaDB/MySQL Python driver)
-          sudo apt-get install -y --no-install-recommends ffmpeg ffmpegthumbnailer build-essential default-libmysqlclient-dev libmariadb-dev-compat
+          sudo apt-get install -y --no-install-recommends ffmpeg ffmpegthumbnailer
           sudo apt-get clean
           sudo rm -rf /var/lib/apt/lists/*
           python -m pip install --upgrade pip
