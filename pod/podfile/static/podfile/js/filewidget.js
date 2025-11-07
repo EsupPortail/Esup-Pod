@@ -228,7 +228,7 @@ if (typeof loaded == "undefined") {
       e.style.display = "none";
     });
 
-    // Worjing variables
+    // Working variables
     let folder_id = null;
     let fileid = null;
     let filename = null;
@@ -456,7 +456,7 @@ if (typeof loaded == "undefined") {
       // If target is the <i> and not the <button>
       let button_share = document.getElementById("currentfoldershare");
       folder_id = button_share.dataset.folderid;
-      modal = document.querySelector("#shareModalCenter");
+      modal = document.getElementById("shareModalCenter");
     }
     modal.querySelector("#formuserid").value = folder_id;
     reloadRemoveBtn();
@@ -1084,7 +1084,7 @@ function submitFormFile(target) {
   var data_form = new FormData(target);
 
   // Use of specific attribute for AJAX requests, to avoid to submit twice
-  var url = target.getAttribute("action-for-ajax");
+  var url = target.getAttribute("data-pod-action");
   // Default behaviour for NON AJAX requests
   if (!url) { url = target.getAttribute("action"); }
   fetch(url, {
