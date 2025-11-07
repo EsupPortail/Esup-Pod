@@ -2,6 +2,7 @@
 
 *  run with 'python manage.py test pod.video.tests.test_stats_view'
 """
+
 from unittest import skipUnless
 from django.http import JsonResponse
 from datetime import date
@@ -192,11 +193,13 @@ class TestStatsView(TestCase):
         slug = "0001_channeldoesnotexist"
         # Check that the response is 404 Not Found and contains the error message
         stat_channel_url = (
-            reverse("video:video_stats_view", kwargs={"slug": slug})
-            + "?from=channel"
+            reverse("video:video_stats_view", kwargs={"slug": slug}) + "?from=channel"
         )
         response = self.client.get(stat_channel_url)
-        msg = "The following “channel” type target does not exist or contains no videos: %s" % slug
+        msg = (
+            "The following “channel” type target does not exist or contains no videos: %s"
+            % slug
+        )
         self.assertContains(response, msg, status_code=404)
 
     @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
@@ -229,7 +232,10 @@ class TestStatsView(TestCase):
             + "?from=theme"
         )
         response = self.client.get(stat_theme_url)
-        msg = "The following “theme” type target does not exist or contains no videos: %s" % slug_t
+        msg = (
+            "The following “theme” type target does not exist or contains no videos: %s"
+            % slug_t
+        )
         self.assertContains(response, msg, status_code=404)
 
     @skipUnless(USE_STATS_VIEW, "Require activate URL video_stats_view")
