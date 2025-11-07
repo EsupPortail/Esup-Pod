@@ -29,24 +29,12 @@ jobs:
   Pod-Dev:
     runs-on: ubuntu-latest
 
-    services:
-      mariadb:
-        image: mariadb:10.11
-        env:
-          MYSQL_ROOT_PASSWORD: passwd
-          MYSQL_DATABASE: pod
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd='mysqladmin ping --silent' --health-interval=5s --health-timeout=2s --health-retries=20
-
     env:
-      DATABASE_HOST: mariadb
+      DATABASE_HOST: localhost
       DATABASE_PORT: '3306'
-      DATABASE_NAME: pod_test
+      DATABASE_NAME: pod
       DATABASE_USER: root
-      DATABASE_PASSWORD: passwd
-
+      DATABASE_PASSWORD: root
 
     steps:
       - uses: actions/checkout@v4
@@ -54,6 +42,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{env.NODE_VERSION}}
+
+      - name: Start MySQL Server
+        run: sudo systemctl start mysql.service
 
       - name: Configure sysctl limits (for ES)
         run: |
@@ -76,11 +67,14 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ffmpeg ffmpegthumbnailer
+          # packages for mysqlclient (MariaDB/MySQL Python driver)
+          sudo apt-get install -y --no-install-recommends ffmpeg ffmpegthumbnailer build-essential default-libmysqlclient-dev libmariadb-dev-compat
           sudo apt-get clean
           sudo rm -rf /var/lib/apt/lists/*
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
+          # ensure mysqlclient is available
+          pip install mysqlclient
           sudo npm install -g yarn
 
       # FLAKE 8 (see setup.cfg for configurations)
