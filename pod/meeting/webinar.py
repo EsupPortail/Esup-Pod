@@ -93,7 +93,9 @@ def toggle_chat_webinar(request: WSGIRequest, meet_id: int) -> None:
         display_message_with_icon(
             request,
             messages.INFO,
-            _("The option to show/hide the chat has been taken into account for “%(name)s” meeting.")
+            _(
+                "The option to show/hide the chat has been taken into account for “%(name)s” meeting."
+            )
             % {"name": meeting.name},
         )
     except Exception as exc:

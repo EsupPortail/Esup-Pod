@@ -296,7 +296,7 @@ def deletefile(request):
             "podfile/list_folder_files.html",
             {
                 "folder": folder,
-                "type" : type,
+                "type": type,
             },
             request,
         )
