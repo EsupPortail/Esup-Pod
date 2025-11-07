@@ -46,7 +46,6 @@ jobs:
       - name: Start MySQL Server
         run: |
           sudo systemctl start mysql.service
-          sudo mysql -e "CREATE DATABASE pod;"
 
       - name: Configure sysctl limits (for ES)
         run: |
