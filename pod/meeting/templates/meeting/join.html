@@ -58,9 +58,9 @@
     {% localize on %}
       {% if not meeting.is_personal %}
         {% if meeting.recurrence %}
-          {% blocktranslate with start_date=meeting.next_occurrence_from_today start_time=meeting.start_at|time %}It is scheduled for <b>{{start_date}}</b> at <u>{{start_time}}</u>.{% endblocktranslate %}
+          {% blocktranslate with start_date=meeting.next_occurrence_from_today start_time=meeting.start_at|time %}It is scheduled for <strong>{{start_date}}</strong> at <i>{{start_time}}</i>.{% endblocktranslate %}
         {% else %}
-          {% blocktranslate with start_date=meeting.start_at|date start_time=meeting.start_at|time %}It is scheduled for <b>{{start_date}}</b> at <u>{{start_time}}</u>.{% endblocktranslate %}
+          {% blocktranslate with start_date=meeting.start_at|date start_time=meeting.start_at|time %}It is scheduled for <strong>{{start_date}}</strong> at <i>{{start_time}}</i>.{% endblocktranslate %}
         {% endif %}
       {% endif %}
     {% endlocalize %}
