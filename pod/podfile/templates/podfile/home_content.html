@@ -44,7 +44,7 @@
         </form>
 
         <form method="post" enctype="multipart/form-data" id="formchangefile"
-              action="#" action-for-ajax="{% url 'podfile:changefile'%}" class="needs-validation"
+              action="#" data-pod-action="{% url 'podfile:changefile'%}" class="needs-validation"
               novalidate>
             {% csrf_token %}
             {{ form_file }}
@@ -54,7 +54,7 @@
         </form>
 
         <form method="post" enctype="multipart/form-data" id="formchangeimage"
-              action="#" action-for-ajax="{% url 'podfile:changefile'%}" class="needs-validation"
+              action="#" data-pod-action="{% url 'podfile:changefile'%}" class="needs-validation"
               novalidate>
             {% csrf_token %}
             {{ form_image }}
