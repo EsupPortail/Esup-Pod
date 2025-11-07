@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-02 16:11+0200\n"
+"POT-Creation-Date: 2025-11-06 14:57+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -531,6 +531,10 @@ msgid "Unable to find information about the meeting"
 msgstr "Impossible de trouver des informations sur la réunion"
 
 #: pod/meeting/static/js/my_meetings.js
+msgid "Display/hide the chat"
+msgstr "Afficher/cacher le chat"
+
+#: pod/meeting/static/js/my_meetings.js
 msgid "Restart only the live"
 msgstr "Redémarrer seulement le direct"
 
@@ -634,6 +638,10 @@ msgstr "Erreur du serveur"
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Are you sure you want to delete this folder?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce dossier ?"
+
+#: pod/podfile/static/podfile/js/filewidget.js
+msgid "Two folders cannot have the same name."
+msgstr "Deux dossiers ne peuvent pas avoir le même nom."
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "See more"

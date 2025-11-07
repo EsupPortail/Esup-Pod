@@ -158,6 +158,10 @@ def get_rendered(request):
 
     current_session_folder = get_current_session_folder(request)
 
+    # 'home' is always the default folder
+    if current_session_folder is None:
+        current_session_folder = user_home_folder
+
     rendered = render_to_string(
         "podfile/userfolder.html",
         {
@@ -265,6 +269,9 @@ def deletefolder(request):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def deletefile(request):
+    # Add file type (file or image)
+    type = request.POST.get("type", None)
+
     if request.POST.get("id") and request.POST.get("classname"):
         classname = request.POST.get("classname")
         if classname == "CustomImageModel":
@@ -289,6 +296,7 @@ def deletefile(request):
             "podfile/list_folder_files.html",
             {
                 "folder": folder,
+                "type": type,
             },
             request,
         )
@@ -387,6 +395,8 @@ def manage_form_file(request, upload_errors, fname, form_file):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def changefile(request):
+    # Add file type (file or image)
+    type = request.POST.get("type", None)
     if request.POST and is_ajax(request):
         folder = get_object_or_404(UserFolder, id=request.POST.get("folder"))
         if request.user != folder.owner and not (
@@ -434,6 +444,7 @@ def changefile(request):
                 "podfile/list_folder_files.html",
                 {
                     "folder": folder,
+                    "type": type,
                 },
                 request,
             )
