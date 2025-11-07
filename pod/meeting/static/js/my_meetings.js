@@ -39,25 +39,25 @@ meetingModal.addEventListener("show.bs.modal", function (event) {
           const modalToggleChatLink =
             '<p><a onClick="javascript:displayLoader();" href="' +
             toggleChatUrl +
-            '" class="btn btn-light"><i class="bi bi-chat-text"></i> ' +
+            '" class="btn btn-light"><i class="bi bi-chat-text" aria-hidden="true"></i> ' +
             gettext("Display/hide the chat") +
             "</a></p>";
           const modalRestartLiveLink =
             '<p><a onClick="javascript:displayLoader();" href="' +
             restartLiveUrl +
-            '" class="btn btn-primary"><i class="bi bi-broadcast"></i> ' +
+            '" class="btn btn-primary"><i class="bi bi-broadcast" aria-hidden="true"></i> ' +
             gettext("Restart only the live") +
             "</a></p>";
           const modalEndLiveLink =
             '<p><a onClick="javascript:displayLoader();" href="' +
             endLiveUrl +
-            '" class="btn btn-secondary"><i class="bi bi-stop-circle"></i> ' +
+            '" class="btn btn-secondary"><i class="bi bi-stop-circle" aria-hidden="true"></i> ' +
             gettext("End only the live") +
             "</a></p>";
           const modalEndLink =
             '<p><a onClick="javascript:displayLoader();" href="' +
             endUrl +
-            '" class="btn btn-danger"><i class="bi bi-stop-circle-fill"></i> ' +
+            '" class="btn btn-danger"><i class="bi bi-stop-circle-fill" aria-hidden="true"></i> ' +
             gettext("End the webinar (meeting and live)") +
             "</a></p>";
           allLinks = modalToggleChatLink + modalRestartLiveLink + modalEndLiveLink + modalEndLink;
