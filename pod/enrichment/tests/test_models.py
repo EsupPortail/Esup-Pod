@@ -32,7 +32,7 @@ class EnrichmentGroupModelTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         owner = User.objects.create(username="test")
         videotype = Type.objects.create(title="others")
         Video.objects.create(
@@ -45,7 +45,7 @@ class EnrichmentGroupModelTestCase(TestCase):
         Group.objects.create(name="group1")
         Group.objects.create(name="group2")
 
-    def test_create_enrichmentGroup(self):
+    def test_create_enrichmentGroup(self) -> None:
         video = Video.objects.get(id=1)
         self.assertTrue(not hasattr(video, "enrichmentgroup"))
         EnrichmentGroup.objects.create(video=video)
@@ -54,7 +54,7 @@ class EnrichmentGroupModelTestCase(TestCase):
             EnrichmentGroup.objects.create(video=video)
         print(" ---> test_create_enrichmentGroup: OK! --- EnrichmentGroupModel")
 
-    def test_modify_enrichmentGroup(self):
+    def test_modify_enrichmentGroup(self) -> None:
         video = Video.objects.get(id=1)
         eng = EnrichmentGroup.objects.create(video=video)
         self.assertEqual(video.enrichmentgroup.groups.all().count(), 0)
@@ -70,7 +70,7 @@ class EnrichmentGroupModelTestCase(TestCase):
         self.assertEqual(video.enrichmentgroup.groups.all().count(), 1)
         print(" ---> test_modify_enrichmentGroup: OK! --- EnrichmentGroupModel")
 
-    def test_delete_enrichmentGroup(self):
+    def test_delete_enrichmentGroup(self) -> None:
         video = Video.objects.get(id=1)
         eng = EnrichmentGroup.objects.create(video=video)
         eng.groups.add(Group.objects.get(id=1))
@@ -92,7 +92,7 @@ class EnrichmentModelTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up for Enrichment model tests."""
         owner = User.objects.create(username="test")
         video_type = Type.objects.create(title="others")
@@ -139,7 +139,7 @@ class EnrichmentModelTestCase(TestCase):
             weblink="http://test.com",
         )
 
-    def test_attributs_full(self):
+    def test_attributs_full(self) -> None:
         """Test the attributs of the Enrichment model."""
         enrichment = Enrichment.objects.get(id=1)
         video = Video.objects.get(id=1)
@@ -152,7 +152,7 @@ class EnrichmentModelTestCase(TestCase):
         self.assertTrue("testimage" in enrichment.image.name)
         print(" ---> test_attributs_full: OK! --- EnrichmentModel")
 
-    def test_attributs(self):
+    def test_attributs(self) -> None:
         """Test the attributs of the Enrichment model."""
         enrichment = Enrichment.objects.get(id=2)
         video = Video.objects.get(id=1)
@@ -167,7 +167,7 @@ class EnrichmentModelTestCase(TestCase):
         print(" [ BEGIN ENRICHMENT_TEST MODEL ] ")
         print(" ---> test_attributs: OK! --- EnrichmentModel")
 
-    def test_type(self):
+    def test_type(self) -> None:
         """Test the type of the Enrichment model."""
         video = Video.objects.get(id=1)
         enrichment = Enrichment()
@@ -179,7 +179,7 @@ class EnrichmentModelTestCase(TestCase):
         print(" ---> test_type: OK! --- EnrichmentModel")
         print(" [ END ENRICHMENT_TEST MODEL ] ")
 
-    def test_bad_attributs(self):
+    def test_bad_attributs(self) -> None:
         """Test the bad attributs of the Enrichment model."""
         video = Video.objects.get(id=1)
         enrichment = Enrichment()
@@ -199,7 +199,7 @@ class EnrichmentModelTestCase(TestCase):
 
         print(" ---> test_bad_attributs: OK! --- EnrichmentModel")
 
-    def test_overlap(self):
+    def test_overlap(self) -> None:
         """Test overlap."""
         video = Video.objects.get(id=1)
         enrichment = Enrichment()
@@ -211,7 +211,7 @@ class EnrichmentModelTestCase(TestCase):
         self.assertRaises(ValidationError, enrichment.clean)
         print(" ---> test_overlap: OK! --- EnrichmentModel")
 
-    def test_delete(self):
+    def test_delete(self) -> None:
         """Test the delete method of the Enrichment model."""
         video = Video.objects.get(id=1)
         list_enrichment = video.enrichment_set.all()
@@ -223,7 +223,7 @@ class EnrichmentModelTestCase(TestCase):
         self.assertEqual(EnrichmentVtt.objects.filter(video=video).count(), 0)
         print(" ---> test_delete: OK! --- EnrichmentModel")
 
-    def test_sites_property__not_empty(self):
+    def test_sites_property__not_empty(self) -> None:
         """Test the sites property of the Enrichment model when the video has site."""
         video = Video.objects.get(id=1)
         video.sites.add(Site.objects.get(pk=1))
@@ -232,7 +232,7 @@ class EnrichmentModelTestCase(TestCase):
         self.assertEqual(enrichment.sites, video.sites)
         print(" ---> test_sites_property__not_empty: OK! --- EnrichmentModel")
 
-    def test_sites_property__empty(self):
+    def test_sites_property__empty(self) -> None:
         """Test the sites property of the Enrichment model when the video has no site."""
         video = Video.objects.get(id=1)
         video.sites.clear()
@@ -242,7 +242,7 @@ class EnrichmentModelTestCase(TestCase):
         self.assertEqual(video.sites.count(), 0)
         print(" ---> test_sites_property__empty: OK! --- EnrichmentModel")
 
-    def test_str(self):
+    def test_str(self) -> None:
         """Test the str method of the Enrichment model."""
         enrichment = Enrichment.objects.get(id=1)
         self.assertEqual(

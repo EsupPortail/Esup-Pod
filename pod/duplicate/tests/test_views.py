@@ -1,7 +1,14 @@
-"""Unit tests for Duplicate views."""
+"""
+Unit tests for Duplicate views.
 
+*  run with 'python manage.py test pod.duplicate.tests.test_views --settings=pod.main.test_settings'
+"""
+
+import unittest
+from datetime import datetime
 from django.test import TestCase
 from django.urls import reverse
+from django.conf import settings
 from django.contrib.auth.models import User
 from pod.video.models import Video, Type
 
@@ -10,7 +17,12 @@ from pod.video.models import Video, Type
 PWD = "azerty1234"  # nosec
 # ggignore-end
 
+USE_DUPLICATE = getattr(settings, "USE_DUPLICATE", False)
 
+
+@unittest.skipUnless(
+    USE_DUPLICATE, "Set USE_DUPLICATE to True before testing Video Duplication."
+)
 class VideoDuplicateViewTest(TestCase):
     """Test case for duplicating videos."""
 
@@ -33,7 +45,7 @@ class VideoDuplicateViewTest(TestCase):
             description="Original description",
             description_fr="Description originale",
             description_en="Original description",
-            date_evt="2023-01-01",
+            date_evt=datetime(2023, 1, 1),
             main_lang="en",
             licence="CC BY-SA",
             is_draft=False,
@@ -62,10 +74,10 @@ class VideoDuplicateViewTest(TestCase):
         self.assertEqual(duplicated_video.main_lang, "en")
         self.assertEqual(duplicated_video.licence, "CC BY-SA")
         self.assertTrue(duplicated_video.is_draft)
-        self.assertEqual(duplicated_video.is_restricted, False)
-        self.assertEqual(duplicated_video.allow_downloading, True)
-        self.assertEqual(duplicated_video.is_360, False)
-        self.assertEqual(duplicated_video.disable_comment, False)
+        self.assertFalse(duplicated_video.is_restricted)
+        self.assertTrue(duplicated_video.allow_downloading)
+        self.assertFalse(duplicated_video.is_360)
+        self.assertFalse(duplicated_video.disable_comment)
 
         # Check the response status code
         self.assertEqual(
