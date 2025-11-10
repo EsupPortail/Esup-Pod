@@ -43,7 +43,8 @@ from pod.import_video.utils import manage_download, parse_remote_file
 from pod.import_video.utils import save_video, secure_request_for_upload
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
 from pod.main.utils import secure_post_request, display_message_with_icon, is_ajax
-from pod.meeting.webinar import chat_rtmp_gateway, start_webinar, stop_webinar
+from pod.meeting.webinar import chat_rtmp_gateway, toggle_chat_webinar
+from pod.meeting.webinar import start_webinar, stop_webinar
 from pod.meeting.webinar_utils import search_for_available_livegateway, manage_webinar
 from pod.live.models import Event
 from pod.live.views import can_manage_event
@@ -1589,6 +1590,37 @@ def end_live(request: WSGIRequest, meeting_id: str) -> HttpResponse:
         raise PermissionDenied
     # Stop also webinar, if necessary
     stop_webinar_mode(request, meeting)
+    return redirect(reverse("meeting:my_meetings"))
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def toggle_chat(request: WSGIRequest, meeting_id: str) -> HttpResponse:
+    """Toggle (hide/display) chat for a webinar."""
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+
+    if request.user != meeting.owner and not (
+        request.user.is_superuser or request.user.has_perm("meeting.end_meeting")
+    ):
+        display_message_with_icon(
+            request, messages.ERROR, _("You can’t toggle chat for this webinar live.")
+        )
+        raise PermissionDenied
+    msg = ""
+    try:
+        if meeting.is_webinar:
+            # Send a toggle chat request to SIPMediaGW
+            toggle_chat_webinar(request, meeting.id)
+    except ValueError as ve:
+        args = ve.args[0]
+        for key in args:
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
+        msg = mark_safe(msg)
+    if msg != "":
+        display_message_with_icon(request, messages.ERROR, msg)
     return redirect(reverse("meeting:my_meetings"))
 
 

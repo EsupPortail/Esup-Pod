@@ -81,6 +81,36 @@ def stop_webinar(request: WSGIRequest, meet_id: int) -> None:
         )
 
 
+def toggle_chat_webinar(request: WSGIRequest, meet_id: int) -> None:
+    """Toggle (hide/display) chat for a webinar."""
+    try:
+        # Get the current meeting
+        meeting = Meeting.objects.get(id=meet_id)
+
+        # No thread for toggle chat
+        toggle_rtmp_gateway(meet_id)
+
+        display_message_with_icon(
+            request,
+            messages.INFO,
+            _(
+                "The option to show/hide the chat has been taken into account for “%(name)s” meeting."
+            )
+            % {"name": meeting.name},
+        )
+    except Exception as exc:
+        log.error(
+            "Error to toggle chat for “%(id)s” meeting: %(exc)s"
+            % {"id": meet_id, "exc": str(exc)}
+        )
+        display_message_with_icon(
+            request,
+            messages.ERROR,
+            _("Error to toggle chat for “%(name)s” meeting: %(exc)s")
+            % {"name": meeting.name, "exc": str(exc)},
+        )
+
+
 def start_webinar_livestream(pod_host: str, meet_id: int) -> None:
     """Run the steps to start the webinar livestream."""
     try:

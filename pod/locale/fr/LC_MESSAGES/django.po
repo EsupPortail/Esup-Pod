@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-09 14:25+0200\n"
+"POT-Creation-Date: 2025-11-06 15:10+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -404,7 +404,8 @@ msgstr ""
 #: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
 #: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
 #: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/utils.py
+#: pod/video/views.py pod/video_encode_transcript/runner_manager.py
+#: pod/video_encode_transcript/utils.py
 msgid "Home"
 msgstr "Accueil"
 
@@ -1332,6 +1333,11 @@ msgstr ""
 "Il y a un chevauchement avec la superposition {0}, veuillez changer son "
 "temps de début et/ou de fin."
 
+#: pod/completion/permissions/video.py
+#, python-brace-format
+msgid "{func.__name__}: Permission denied for user {current_user.pk}."
+msgstr ""
+
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
@@ -1709,8 +1715,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format "
-"« .vtt »."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format « ."
+"vtt »."
 
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
@@ -2607,7 +2613,7 @@ msgid "User who create this recording"
 msgstr "Utilisateur qui a créé cet enregistrement"
 
 #: pod/import_video/models.py pod/meeting/models.py pod/playlist/models.py
-#: pod/video/models.py
+#: pod/video/models.py pod/video_encode_transcript/models.py
 msgid "Site"
 msgstr "Site"
 
@@ -6053,7 +6059,7 @@ msgstr "Exemple de format : %(url)s"
 msgid "Bearer token for the SIPMediaGW server."
 msgstr "Jeton Bearer pour le serveur SIPMediaGW."
 
-#: pod/meeting/models.py
+#: pod/meeting/models.py pod/video_encode_transcript/models.py
 msgid "Example format: 1234"
 msgstr "Exemple de format : 1234"
 
@@ -6192,10 +6198,11 @@ msgid ""
 "without a whiteboard, public and private chat tools, screen sharing, voice "
 "over IP, online polling and the use of office documents."
 msgstr ""
-"Cette solution permet le partage d’images vocales et vidéo, des "
-"présentations avec ou sans tableau blanc, des outils de chat public et "
-"privé, le partage d’écran, la voix sur IP, les sondages en ligne et "
-"l’utilisation de documents bureautiques."
+"Cette solution offre la possibilité de partager des images, "
+"des contenus audio et vidéo, de diffuser des présentations avec "
+"ou sans tableau blanc, d’utiliser des outils de messagerie publique "
+"ou privée, de partager son écran, de communiquer par voix sur IP, "
+"de réaliser des sondages en ligne et de collaborer sur des documents bureautiques."
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid "Informations about webinars"
@@ -6758,6 +6765,10 @@ msgid "You can’t end this webinar live."
 msgstr "Vous ne pouvez pas terminer ce webinaire en direct."
 
 #: pod/meeting/views.py
+msgid "You can’t toggle chat for this webinar live."
+msgstr "Vous ne pouvez afficher/cacher le chat pour ce webinaire."
+
+#: pod/meeting/views.py
 msgid "You can’t restart this webinar live."
 msgstr "Vous ne pouvez pas redémarrer ce webinaire en direct."
 
@@ -6782,6 +6793,19 @@ msgstr "Le mode webinaire a bien été arrêté pour la réunion « %(name)s �
 msgid "Error to stop webinar mode for “%(name)s” meeting: %(exc)s"
 msgstr ""
 "Erreur de démarrage du mode webinaire pour la réunion « %(name)s » : %(exc)s"
+
+#: pod/meeting/webinar.py
+msgid ""
+"The option to show/hide the chat has been taken into account for “%(name)s” "
+"meeting."
+msgstr ""
+"L’option permettant d’afficher/masquer le chat a été prise en compte pour "
+"la réunion « %(name)s »."
+
+#: pod/meeting/webinar.py
+msgid "Error to toggle chat for “%(name)s” meeting: %(exc)s"
+msgstr ""
+"Erreur en affichant/cachant le chat pour la réunion « %(name)s » : %(exc)s"
 
 #: pod/meeting/webinar.py
 msgid ""
@@ -6938,6 +6962,14 @@ msgstr "Protégé par un mot de passe"
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
 msgstr "Privé"
+
+#: pod/playlist/models.py
+msgid ""
+"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"characters."
+msgstr ""
+"Veuillez entrer un titre contenant entre 1 et {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"caractères."
 
 #: pod/playlist/models.py
 msgid ""
@@ -7341,10 +7373,6 @@ msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
-msgid "Delete the playlist"
-msgstr "Supprimer la liste de lecture"
-
-#: pod/playlist/views.py
 #, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr "Modifier la liste de lecture « %(pname)s »"
@@ -7744,7 +7772,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py pod/quiz/tests/test_models.py
+#: pod/quiz/models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -8334,6 +8362,7 @@ msgstr "Taille du fichier"
 #: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/video_row_select.html
 #: pod/video/templates/videos/video_sort_select.html
+#: pod/video_encode_transcript/models.py
 msgid "Date added"
 msgstr "Date d’ajout"
 
@@ -10774,6 +10803,15 @@ msgstr "Statistiques de visualisation des vidéos du thème %s"
 #, python-format
 msgid "You do not have access rights to this video: %s "
 msgstr "Vous n’avez pas les droits d’accès à cette vidéo : %s "
+
+#: pod/video/views.py
+#, python-format
+msgid ""
+"The following “%(target)s” type target does not exist or contains no videos: "
+"%(slug)s."
+msgstr ""
+"La cible de type « %(target)s » suivant(e) n’existe pas ou ne contient "
+"aucune vidéo : %(slug)s."
 
 #: pod/video/views.py
 #, python-format

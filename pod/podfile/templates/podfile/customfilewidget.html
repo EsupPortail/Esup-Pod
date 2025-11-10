@@ -96,7 +96,9 @@ var deletefolder_url = "{% url 'podfile:deletefolder' %}";
 var deletefile_url = "{% url 'podfile:deletefile' %}";
 document.addEventListener('click',   (event) => {
   if (!event.target.matches('.btn-fileinput_{{id}}')) return;
+  // Backdrop to false to avoid problems with multiple modals
   var myModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('fileModal_{{id}}'), {
+    backdrop: false,
     keyboard: true
   })
   myModal.show();
