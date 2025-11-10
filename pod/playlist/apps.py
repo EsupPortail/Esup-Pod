@@ -48,9 +48,9 @@ class PlaylistConfig(AppConfig):
             with connection.cursor() as c:
                 c.execute(
                     """
-                    SELECT owner_id, date_added, rank, video_id
-                    FROM favorite_favorite
-                    ORDER BY owner_id
+                    SELECT `owner_id`, `date_added`, `rank`, `video_id`
+                    FROM `favorite_favorite`
+                    ORDER BY `owner_id`
                     """
                 )
                 results = c.fetchall()
