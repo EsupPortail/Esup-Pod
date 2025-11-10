@@ -44,21 +44,23 @@
         </form>
 
         <form method="post" enctype="multipart/form-data" id="formchangefile"
-              action="{% url 'podfile:changefile'%}" class="needs-validation"
+              action="#" data-pod-action="{% url 'podfile:changefile'%}" class="needs-validation"
               novalidate>
             {% csrf_token %}
             {{ form_file }}
             <input type="hidden" name="file_id" id="file_id" value="">
             <input type="hidden" name="file_type" id="file_type" value="">
+            <input type="hidden" name="type" id="type" value="file">
         </form>
 
         <form method="post" enctype="multipart/form-data" id="formchangeimage"
-              action="{% url 'podfile:changefile'%}" class="needs-validation"
+              action="#" data-pod-action="{% url 'podfile:changefile'%}" class="needs-validation"
               novalidate>
             {% csrf_token %}
             {{ form_image }}
             <input type="hidden" name="file_id" id="file_id" value="">
             <input type="hidden" name="file_type" id="file_type" value="">
+            <input type="hidden" name="type" id="type" value="image">
         </form>
 
         <div class="row loadingformfiles" style="display: none">
@@ -70,7 +72,7 @@
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#folderModalCenter">{% trans "Close" %}</button>
+         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
         <button type="button" class="btn btn-primary" id="modalSave">{% trans "Save changes" %}</button>
       </div>
     </div>
@@ -103,7 +105,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#shareModalCenter">{% trans "Close"%}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close"%}</button>
       </div>
     </div>
   </div>
