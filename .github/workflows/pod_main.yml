@@ -15,6 +15,14 @@ on:
 jobs:
     Pod-Main:
         runs-on: ubuntu-latest
+
+        env:
+          DATABASE_HOST: localhost
+          DATABASE_PORT: '3306'
+          DATABASE_NAME: pod
+          DATABASE_USER: root
+          DATABASE_PASSWORD: root
+
         strategy:
             max-parallel: 2
             matrix:
@@ -51,7 +59,14 @@ jobs:
                 sudo rm -rf /var/lib/apt/lists/*
                 python -m pip install --upgrade pip
                 pip install -r requirements-dev.txt
+                # ensure mysqlclient is available
+                pip install mysqlclient
                 sudo npm install -g yarn
+
+            - name: Start MySQL Server
+              run: |
+                sudo systemctl start mysql.service
+                mysql -u root -proot -e "CREATE DATABASE pod CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
             ## Start unit tests ##
             - name: Run Elasticsearch
