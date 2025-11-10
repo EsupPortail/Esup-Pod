@@ -21,7 +21,7 @@ class MeetingTestCase(TestCase):
         TestCase (class): test case
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
         user2 = User.objects.create(username="pod2")
@@ -88,7 +88,7 @@ class MeetingTestCase(TestCase):
         self.assertEqual(meeting1.is_restricted, False)
         self.assertEqual(meeting1.is_running, False)
 
-    def test_with_attributs(self):
+    def test_with_attributs(self) -> None:
         """Check all attributs values passed when creating a meeting."""
         meeting2 = Meeting.objects.get(id=2)
         self.assertEqual(meeting2.name, "test2")
@@ -101,7 +101,7 @@ class MeetingTestCase(TestCase):
         self.assertEqual(meeting2.moderator_password, "1234")
         self.assertEqual(meeting2.is_restricted, True)
 
-    def test_change_attributs(self):
+    def test_change_attributs(self) -> None:
         """Change attributs values in a meeting and save it."""
         meeting1 = Meeting.objects.get(id=1)
         self.assertEqual(meeting1.name, "test")
@@ -119,7 +119,7 @@ class MeetingTestCase(TestCase):
         self.assertEqual(created_at, newmeeting1.created_at)
         self.assertNotEqual(updated_at, newmeeting1.updated_at)
 
-    def test_meetings_additional_owners(self):
+    def test_meetings_additional_owners(self) -> None:
         """Add additional_owners to a meeting."""
         meeting = Meeting.objects.get(id=1)
         user = User.objects.get(username="pod")
@@ -127,7 +127,7 @@ class MeetingTestCase(TestCase):
         meeting.refresh_from_db()
         self.assertEqual(list(meeting.additional_owners.all()), [user])
 
-    def test_meetings_accessgroup(self):
+    def test_meetings_accessgroup(self) -> None:
         """Add AccessGroup to a meeting."""
         meeting = Meeting.objects.get(id=1)
         accessgroup = AccessGroup.objects.create(code_name="ag1")
@@ -135,7 +135,7 @@ class MeetingTestCase(TestCase):
         meeting.refresh_from_db()
         self.assertEqual(list(meeting.restrict_access_to_groups.all()), [accessgroup])
 
-    def test_delete_object(self):
+    def test_delete_object(self) -> None:
         """Delete a meeting."""
         Meeting.objects.filter(name="test").delete()
         self.assertEqual(Meeting.objects.all().count(), 1)
@@ -148,7 +148,7 @@ class OccurencesMeetingTestCase(TestCase):
         TestCase (class): test case
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
         user2 = User.objects.create(username="pod2")
@@ -164,7 +164,7 @@ class OccurencesMeetingTestCase(TestCase):
         meeting2.additional_owners.add(user1)
         meeting2.additional_owners.add(user2)
 
-    def test_models_meetings_get_occurrences_no_recurrence(self):
+    def test_models_meetings_get_occurrences_no_recurrence(self) -> None:
         """A meeting without recurrence should return 1 occurence."""
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = timezone.make_aware(datetime(2022, 7, 7, 14, 0, 0))
@@ -179,9 +179,8 @@ class OccurencesMeetingTestCase(TestCase):
             [],
         )
 
-    def test_models_meetings_get_occurrences_daily_nb_occurrences_filled(self):
-        """Daily occurences with date of end of reccurrence filled in but not \
-        number of occurrences."""
+    def test_models_meetings_get_occurrences_daily_nb_occurrences_filled(self) -> None:
+        """Daily occurences with date of end of reccurrence filled in but not # of occurrences."""
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = timezone.make_aware(datetime(2022, 7, 7, 14, 0, 0))
         meeting.recurrence = "daily"
@@ -219,9 +218,8 @@ class OccurencesMeetingTestCase(TestCase):
             ],
         )
 
-    def test_models_meetings_get_occurrences_daily_reset_recurring_until(self):
-        """Daily occurences with date of end of reccurrence not leaving any \
-        possibliity of repeated occurence."""
+    def test_models_meetings_get_occurrences_daily_reset_recurring_until(self) -> None:
+        """Daily occurences with date of end of reccurrence not leaving any possibliity of repeated occurence."""
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = timezone.make_aware(datetime(2022, 7, 7, 14, 0, 0))
         meeting.recurrence = "daily"
@@ -240,10 +238,12 @@ class OccurencesMeetingTestCase(TestCase):
             [date(2022, 7, 7)],
         )
 
-    def test_models_meetings_get_occurrences_daily_recurring_until_filled(self):
-        """Daily occurences with number of occurences filled in but not date of \
-        end of occurence. The date of end of reccurrence shoud be calculated if \
-        the number of occurrences is repeated."""
+    def test_models_meetings_get_occurrences_daily_recurring_until_filled(self) -> None:
+        """
+        Daily occurences with # of occurences filled in but not date of end of occurence.
+
+        The date of end of reccurrence shoud be calculated if the # of occurrences is repeated.
+        """
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = timezone.make_aware(datetime(2022, 7, 7, 14, 0, 0))
         meeting.recurrence = "daily"
@@ -288,7 +288,7 @@ class OccurencesMeetingTestCase(TestCase):
             ],
         )
         """
-        Daily occurences with number of occurrences less or equal to 1, should lead to
+        Daily occurences with # of occurrences less or equal to 1, should lead to
         resettings reccurrence.
         """
         meeting.frequency = 3
@@ -308,16 +308,14 @@ class OccurencesMeetingTestCase(TestCase):
 
     # Weekly
 
-    def test_models_meetings_get_occurrences_weekly_null_weekdays_is_reset(self):
-        """Weekly recurrence should set weekdays or it is not really a recurrence \
-        and should be reset."""
+    def test_models_meetings_get_occurrences_weekly_null_weekdays_is_reset(self) -> None:
+        """Weekly recurrence should set weekdays or it is not really a recurrence and should be reset."""
         user = User.objects.get(username="pod")
         meeting = Meeting.objects.create(name="test", owner=user, recurrence="weekly")
         self.assertIsNone(meeting.recurrence)
 
-    def test_models_meetings_get_occurrences_weekly_weekdays_include_start(self):
-        """For weekly recurrence, the weekday of the start date should be included \
-        in weekdays."""
+    def test_models_meetings_get_occurrences_weekly_weekdays_include_start(self) -> None:
+        """For weekly recurrence, the weekday of the start date should be included in weekdays."""
         meeting = Meeting.objects.get(id=1)
         with self.assertRaises(ValidationError) as context:
             # 2022-7-7 is a Thursday, and weekday 2 is not Tuesday
@@ -327,9 +325,8 @@ class OccurencesMeetingTestCase(TestCase):
             meeting.save()
         self.assertTrue("weekdays" in context.exception.message_dict)
 
-    def test_models_meetings_get_occurrences_weekly_recurring_until_filled(self):
-        """Weekly occurences with date of end of reccurrence filled in but not \
-        number of occurrences."""
+    def test_models_meetings_get_occurrences_weekly_recurring_until_filled(self) -> None:
+        """Weekly occurences with date of end of reccurrence filled in but not # of occurrences."""
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = timezone.make_aware(datetime(2022, 7, 7, 14, 0, 0))
         meeting.recurrence = "weekly"
@@ -382,9 +379,8 @@ class OccurencesMeetingTestCase(TestCase):
             ],
         )
 
-    def test_models_meetings_get_occurrences_weekly_nb_occurrences_filled(self):
-        """Weekly occurences with number of occurrences filled in but not date \
-        of end of reccurrence."""
+    def test_models_meetings_get_occurrences_weekly_nb_occurrences_filled(self) -> None:
+        """Weekly occurences with # of occurrences filled in but not date of end of reccurrence."""
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = timezone.make_aware(datetime(2022, 7, 6, 14, 0, 0))
         meeting.recurrence = "weekly"
@@ -431,7 +427,7 @@ class OccurencesMeetingTestCase(TestCase):
             [date(2022, 7, 10)],
         )
 
-    def test_models_meetings_get_occurrences_weekly_reset_weekdays(self):
+    def test_models_meetings_get_occurrences_weekly_reset_weekdays(self) -> None:
         """Reset weekdays if recurrence not equal to weekly."""
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = timezone.make_aware(datetime(2022, 7, 6, 14, 0, 0))
@@ -455,7 +451,7 @@ class OccurencesMeetingTestCase(TestCase):
         meeting.refresh_from_db()
         self.assertEqual(meeting.weekdays, "126")
 
-    def test_models_meetings_get_occurrences_weekly_on_monday(self):
+    def test_models_meetings_get_occurrences_weekly_on_monday(self) -> None:
         """Check a recurring meeting each monday."""
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = timezone.make_aware(datetime(2023, 9, 18, 10, 0, 0))
@@ -474,11 +470,14 @@ class OccurencesMeetingTestCase(TestCase):
 
     # Monthly
 
-    def test_models_meetings_get_occurrences_monthly_nb_occurrences_filled_date(self):
+    def test_models_meetings_get_occurrences_monthly_nb_occurrences_filled_date(
+        self,
+    ) -> None:
         """Check Monthly amount of occurences.
 
-        Monthly occurences with date of end of recurrence filled in but not number of \
-        occurences. The monthly reccurence is on the precise date each month.
+        Monthly occurences with date of end of recurrence filled in but not # of
+        occurences.
+        The monthly reccurence is on the precise date each month.
         """
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
@@ -512,9 +511,14 @@ class OccurencesMeetingTestCase(TestCase):
             [date(2022, 10, 7), date(2023, 1, 7)],
         )
 
-    def test_models_meetings_get_occurrences_monthly_recurring_until_filled_date(self):
-        """Monthly occurences with number of occurrences filled in but not date of end \
-        of reccurrence. The monthly reccurence is on the nth weekday of the month."""
+    def test_models_meetings_get_occurrences_monthly_recurring_until_filled_date(
+        self,
+    ) -> None:
+        """
+        Monthly occurences with # of occurrences filled in but not date of end of reccurrence.
+
+        The monthly reccurence is on the nth weekday of the month.
+        """
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
         meeting.recurrence = "monthly"
@@ -558,9 +562,14 @@ class OccurencesMeetingTestCase(TestCase):
             ],
         )
 
-    def test_models_meetings_get_occurrences_monthly_nb_occurrences_filled_nth(self):
-        """Monthly occurences with date of end of recurrence filled in but not number \
-        of occurences. The monthly reccurence is on the nth weekday of the month."""
+    def test_models_meetings_get_occurrences_monthly_nb_occurrences_filled_nth(
+        self,
+    ) -> None:
+        """
+        Monthly occurences with date of end of recurrence filled in but not # of occurences.
+
+        The monthly reccurence is on the nth weekday of the month.
+        """
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = datetime(2022, 10, 21, 14, 0, 0)
         meeting.recurrence = "monthly"
@@ -600,9 +609,14 @@ class OccurencesMeetingTestCase(TestCase):
             ],
         )
 
-    def test_models_meetings_get_occurrences_monthly_recurring_until_filled_nth(self):
-        """Monthly occurences with date of end of recurrence filled in but not number \
-        of occurrences. The monthly reccurence is on the nth weekday of the month."""
+    def test_models_meetings_get_occurrences_monthly_recurring_until_filled_nth(
+        self,
+    ) -> None:
+        """
+        Monthly occurences with date of end of recurrence filled in but not # of occurrences.
+
+        The monthly reccurence is on the nth weekday of the month.
+        """
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = datetime(2022, 10, 21, 14, 0, 0)
         meeting.recurrence = "monthly"
@@ -656,9 +670,8 @@ class OccurencesMeetingTestCase(TestCase):
 
     # Yearly
 
-    def test_models_meetings_get_occurrences_yearly_nb_occurrences_filled(self):
-        """Yearly occurences with date of end of recurrence filled in but not \
-        number of occurrences."""
+    def test_models_meetings_get_occurrences_yearly_nb_occurrences_filled(self) -> None:
+        """Yearly occurences with date of end of recurrence filled in but not # of occurrences."""
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
         meeting.recurrence = "yearly"
@@ -696,9 +709,8 @@ class OccurencesMeetingTestCase(TestCase):
             ],
         )
 
-    def test_models_meetings_get_occurrences_yearly_recurring_until_filled(self):
-        """Yearly occurences with number of occurrences filled in but not date of \
-        end of reccurrence."""
+    def test_models_meetings_get_occurrences_yearly_recurring_until_filled(self) -> None:
+        """Yearly occurences with # of occurrences filled in but not date of end of reccurrence."""
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
         meeting.recurrence = "yearly"
@@ -750,7 +762,7 @@ class InternalRecordingTestCase(TestCase):
         TestCase (class): test case
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up the recordings."""
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
@@ -785,14 +797,14 @@ class InternalRecordingTestCase(TestCase):
             site=Site.objects.get(id=1),
         )
 
-    def test_default_attributs(self):
+    def test_default_attributs(self) -> None:
         """Check all default attributs values when creating a recording."""
         recordings = InternalRecording.objects.all()
         self.assertGreaterEqual(
             recordings[0].start_at.date(), recordings[1].start_at.date()
         )
 
-    def test_with_attributs(self):
+    def test_with_attributs(self) -> None:
         """Check all attributs values passed when creating a recording."""
         meeting2 = Meeting.objects.get(id=2)
         recording2 = InternalRecording.objects.get(id=2)
@@ -801,7 +813,7 @@ class InternalRecordingTestCase(TestCase):
         self.assertEqual(recording2.uploaded_to_pod_by, user2)
         self.assertEqual(recording2.meeting, meeting2)
 
-    def test_change_attributs(self):
+    def test_change_attributs(self) -> None:
         """Change attributs values in a recording and save it."""
         recording1 = InternalRecording.objects.get(id=1)
         self.assertEqual(recording1.name, "test recording1")
@@ -813,7 +825,7 @@ class InternalRecordingTestCase(TestCase):
         self.assertEqual(newrecording1.name, "New test recording1!")
         self.assertEqual(newrecording1.recording_id, "d058c39d3dc59d9e9516d95f76eb")
 
-    def test_delete_object(self):
+    def test_delete_object(self) -> None:
         """Delete a recording."""
         InternalRecording.objects.filter(name="test recording2").delete()
         self.assertEqual(InternalRecording.objects.all().count(), 1)
@@ -826,11 +838,11 @@ class MeetingSessionLogTestCase(TestCase):
         TestCase (class): test case
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.user = User.objects.create(username="pod")
         self.meeting = Meeting.objects.create(id=1, name="test", owner=self.user)
 
-    def test_default_attributs(self):
+    def test_default_attributs(self) -> None:
         """Check all attributs default values when creating a MeetingSessionLog."""
         now = datetime.now()
         msl = MeetingSessionLog.objects.create(meeting=self.meeting, creator=self.user)

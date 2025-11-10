@@ -1,4 +1,8 @@
-"""Unit tests for recorder views."""
+"""
+    Unit tests for recorder views.
+
+    *  run with 'python manage.py test pod.recorder.tests.test_views --settings=pod.main.test_settings'
+"""
 
 import hashlib
 import os
@@ -180,7 +184,7 @@ class StudioPodTestView(TestCase):
         "initial_data.json",
     ]
 
-    def create_index_file(self):
+    def create_index_file(self) -> None:
         """Create and write a xml file."""
         text = """
         <html>
@@ -202,12 +206,12 @@ class StudioPodTestView(TestCase):
             file.write(text)
             file.close()
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Create models to be tested."""
         User.objects.create(username="pod")
         print(" --->  SetUp of StudioPodTestView: OK!")
 
-    def test_StudioPodTestView_get_request(self):
+    def test_StudioPodTestView_get_request(self) -> None:
         """Test view studio_pod."""
         self.create_index_file()
         self.client = Client()
@@ -225,7 +229,7 @@ class StudioPodTestView(TestCase):
 
         print(" --->  test_StudioPodTestView_get_request of openCastTestView: OK!")
 
-    def test_StudioPodTestView_get_request_restrict(self):
+    def test_StudioPodTestView_get_request_restrict(self) -> None:
         """Test view studio_pod."""
 
         views.__REVATSO__ = True  # override setting value to test
@@ -252,8 +256,8 @@ class StudioPodTestView(TestCase):
             "of StudioPodTestView: OK!",
         )
 
-    def test_studio_presenter_post(self):
-        """Test view presenter_post."""
+    def test_studio_presenter_post(self) -> None:
+        """Test Studio presenter_post."""
 
         self.client = Client()
         url = reverse("recorder:presenter_post", kwargs={})
@@ -280,7 +284,7 @@ class StudioPodTestView(TestCase):
 
         print(" -->  test_studio_presenter_post of StudioPodTestView: OK!")
 
-    def test_studio_info_me_json(self):
+    def test_studio_info_me_json(self) -> None:
         """Test view info_me_json."""
 
         self.client = Client()
@@ -340,8 +344,8 @@ class StudioPodTestView(TestCase):
 
         print(" -->  test_studio_ingest_createMediaPackage of StudioPodTestView: OK!")
 
-    def test_studio_ingest_createMediaPackage_with_presenter(self):
-        """Test view presenter_post."""
+    def test_studio_ingest_createMediaPackage_with_presenter(self) -> None:
+        """Test createMediaPackage with presenter_post."""
 
         self.client = Client()
         self.user = User.objects.get(username="pod")
@@ -676,7 +680,7 @@ class StudioPodTestView(TestCase):
 
         print(" -->  test_studio_ingest_addCatalog of StudioPodTestView: OK!")
 
-    def test_studio_ingest_ingest(self):
+    def test_studio_ingest_ingest(self) -> None:
         """Test view ingest_ingest."""
 
         self.client = Client()
