@@ -25,9 +25,9 @@ def authentication_login(request):
     referrer = request.GET["referrer"] if request.GET.get("referrer") else "/"
 
     if referrer.startswith("https:/") and not referrer.startswith("https://"):
-        referrer = "https://" + referrer[len("https:/"):]
+        referrer = "https://" + referrer[len("https:/") :]
     elif referrer.startswith("http:/") and not referrer.startswith("http://"):
-        referrer = "http://" + referrer[len("http:/"):]
+        referrer = "http://" + referrer[len("http:/") :]
 
     host = (
         "https://%s" % request.get_host()
