@@ -375,7 +375,9 @@ def get_base_queryset_for_taxonomies(model, user_videos):
     )
 
 
-def apply_search_order_limit_for_taxonomies(qs, search_term, field_name="title", order_by_field="title", limit=20):
+def apply_search_order_limit_for_taxonomies(
+    qs, search_term, field_name="title", order_by_field="title", limit=20
+):
     """
     Apply the search filter (on field_name), order, and limit
     for taxonomies returning id, field_name, and video_count.
@@ -383,65 +385,81 @@ def apply_search_order_limit_for_taxonomies(qs, search_term, field_name="title",
     if search_term:
         search_filter = {f"{field_name}__icontains": search_term}
         qs = qs.filter(**search_filter)
-    return list(qs.order_by(order_by_field).values("id", field_name, "video_count")[:limit])
+    return list(
+        qs.order_by(order_by_field).values("id", field_name, "video_count")[:limit]
+    )
 
 
 def get_filtered_categories_for_user(user, search_term=None, limit=20):
     """Retrieves and filters categories for a user."""
-    if not getattr(settings, 'USE_CATEGORY', True):
+    if not getattr(settings, "USE_CATEGORY", True):
         return []
     qs = Category.objects.filter(owner=user).prefetch_related("video")
     if search_term:
         qs = qs.filter(title__icontains=search_term)
-    return list(qs.order_by('title').values("id", "title")[:limit])
+    return list(qs.order_by("title").values("id", "title")[:limit])
 
 
 def get_filtered_types_for_videos(user_videos, search_term=None, limit=20):
     """Retrieves and filters types associated with a list of videos."""
-    if not getattr(settings, 'USE_TYPES', True):
+    if not getattr(settings, "USE_TYPES", True):
         return []
     qs = get_base_queryset_for_taxonomies(Type, user_videos)
-    return apply_search_order_limit_for_taxonomies(qs, search_term, "title", "title", limit)
+    return apply_search_order_limit_for_taxonomies(
+        qs, search_term, "title", "title", limit
+    )
 
 
 def get_filtered_disciplines_for_videos(user_videos, search_term=None, limit=20):
     """Retrieves and filters the disciplines associated with a list of videos."""
-    if not getattr(settings, 'USE_DISCIPLINES', True):
+    if not getattr(settings, "USE_DISCIPLINES", True):
         return []
     qs = get_base_queryset_for_taxonomies(Discipline, user_videos)
-    return apply_search_order_limit_for_taxonomies(qs, search_term, "title", "title", limit)
+    return apply_search_order_limit_for_taxonomies(
+        qs, search_term, "title", "title", limit
+    )
 
 
 def get_filtered_tags_for_videos(user_videos, search_term=None, limit=20):
     """Retrieves and filters tags associated with a list of videos."""
-    if not getattr(settings, 'USE_TAGS', True):
+    if not getattr(settings, "USE_TAGS", True):
         return []
     TagModel = Video.tags.tag_model
     qs = TagModel.objects.filter(video__in=user_videos).distinct()
     if search_term:
         qs = qs.filter(name__icontains=search_term)
-    return list(qs.order_by('name').values("name", "slug")[:limit])
+    return list(qs.order_by("name").values("name", "slug")[:limit])
 
 
 def get_filtered_owners_for_videos(user_videos, search_term=None, limit=20):
     """Retrieves and filters owners (owner + additional) associated with a list of videos."""
     primary_owner_ids = set(user_videos.values_list("owner_id", flat=True))
-    additional_owner_ids = set(user_videos.values_list("additional_owners__id", flat=True))
-    user_ids = {uid for uid in primary_owner_ids.union(additional_owner_ids) if uid is not None}
+    additional_owner_ids = set(
+        user_videos.values_list("additional_owners__id", flat=True)
+    )
+    user_ids = {
+        uid for uid in primary_owner_ids.union(additional_owner_ids) if uid is not None
+    }
 
     if not user_ids:
         return []
 
     users_qs = User.objects.filter(id__in=list(user_ids))
 
-    if getattr(settings, 'MENUBAR_HIDE_INACTIVE_OWNERS', False):
+    if getattr(settings, "MENUBAR_HIDE_INACTIVE_OWNERS", False):
         users_qs = users_qs.filter(is_active=True)
-    if getattr(settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False):
+    if getattr(settings, "MENUBAR_SHOW_STAFF_OWNERS_ONLY", False):
         users_qs = users_qs.filter(is_staff=True)
 
     if search_term:
         users_qs = users_qs.filter(
-            Q(username__icontains=search_term) | Q(first_name__icontains=search_term) | Q(last_name__icontains=search_term)
+            Q(username__icontains=search_term)
+            | Q(first_name__icontains=search_term)
+            | Q(last_name__icontains=search_term)
         )
 
-    return list(users_qs.order_by('username').values('id', 'username', 'first_name', 'last_name')[:limit])
+    return list(
+        users_qs.order_by("username").values("id", "username", "first_name", "last_name")[
+            :limit
+        ]
+    )

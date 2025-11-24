@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import get_owners_for_videos_on_dashboard, videos , dashboard
+from .views import get_owners_for_videos_on_dashboard, videos, dashboard
 
 app_name = "videos"
 
 urlpatterns = [
     path("", videos, name="videos"),
-    path('dashboard/', dashboard, name='dashboard'),
-    path("dashboard/users/", get_owners_for_videos_on_dashboard, name='dashboard-owners'),
+    path("dashboard/", dashboard, name="dashboard"),
+    path("dashboard/users/", get_owners_for_videos_on_dashboard, name="dashboard-owners"),
 ]

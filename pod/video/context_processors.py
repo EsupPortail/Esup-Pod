@@ -149,7 +149,7 @@ def context_video_data(request):
     return {
         "TYPES": types,
         "DISCIPLINES": disciplines,
-        "CATEGORY" : category,
+        "CATEGORY": category,
         "VIDEOS_COUNT": VIDEOS_COUNT,
         "VIDEOS_DURATION": VIDEOS_DURATION,
         "CHANNELS_PER_BATCH": CHANNELS_PER_BATCH,

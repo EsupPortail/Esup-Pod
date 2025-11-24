@@ -1448,7 +1448,14 @@ class VideoTestFiltersViews(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         payload = json.loads(response.content.decode("utf-8"))
-        expected_keys = {"type", "discipline", "categories", "tag", "videos_count", "videos_duration"}
+        expected_keys = {
+            "type",
+            "discipline",
+            "categories",
+            "tag",
+            "videos_count",
+            "videos_duration",
+        }
         self.assertTrue(expected_keys.issubset(set(payload.keys())))
         self.assertIsInstance(payload.get("type"), list)
         self.assertIsInstance(payload.get("discipline"), list)
@@ -1461,21 +1468,33 @@ class VideoTestFiltersViews(TestCase):
         """available_filter_by_type should handle multiple filter_name and errors correctly."""
         Site.objects.get_or_create(domain="example.com", name="example.com")
         url_base = "video:dashboard-filter-by-name"
-        self.user = User.objects.create_user(username='testuser', password='password')
+        self.user = User.objects.create_user(username="testuser", password="password")
         self.client.force_login(self.user)
         valid_filters = ["type", "discipline", "categories", "tag", "owner"]
 
         for filter_name in valid_filters:
             with self.subTest(filter=filter_name):
                 response = self.client.get(reverse(url_base, args=[filter_name]))
-                self.assertEqual(response.status_code, HTTPStatus.OK, f"Failed for filter: {filter_name}")
+                self.assertEqual(
+                    response.status_code,
+                    HTTPStatus.OK,
+                    f"Failed for filter: {filter_name}",
+                )
                 try:
                     payload = json.loads(response.content.decode("utf-8"))
                 except json.JSONDecodeError:
                     self.fail(f"Invalid JSON response for filter: {filter_name}")
 
-                self.assertIn(filter_name, payload, f"Key '{filter_name}' not in response for filter: {filter_name}")
-                self.assertIsInstance(payload[filter_name], list, f"Value for '{filter_name}' is not a list for filter: {filter_name}")
+                self.assertIn(
+                    filter_name,
+                    payload,
+                    f"Key '{filter_name}' not in response for filter: {filter_name}",
+                )
+                self.assertIsInstance(
+                    payload[filter_name],
+                    list,
+                    f"Value for '{filter_name}' is not a list for filter: {filter_name}",
+                )
 
         response = self.client.get(reverse(url_base, args=["i_dont_exist"]))
         self.assertEqual(response.status_code, HTTPStatus.OK)

@@ -38,7 +38,11 @@ from dateutil.parser import parse
 from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
 from pod.main.context_processors import WEBTV_MODE
 from pod.main.models import AdditionalChannelTab
-from pod.main.views import MENUBAR_HIDE_INACTIVE_OWNERS, MENUBAR_SHOW_STAFF_OWNERS_ONLY, in_maintenance
+from pod.main.views import (
+    MENUBAR_HIDE_INACTIVE_OWNERS,
+    MENUBAR_SHOW_STAFF_OWNERS_ONLY,
+    in_maintenance,
+)
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
 from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
@@ -76,7 +80,7 @@ from .utils import (
     get_filtered_types_for_videos,
     get_filtered_disciplines_for_videos,
     get_filtered_tags_for_videos,
-    get_filtered_owners_for_videos
+    get_filtered_owners_for_videos,
 )
 from .context_processors import get_available_videos
 from .utils import sort_videos_list
@@ -605,10 +609,12 @@ def dashboard(request):
 
             videos_list = videos_list.filter(pk__in=category_video_ids)
 
-        data_context.update({
-            "categories": categories,
-            "all_categories_videos": get_json_videos_categories(request),
-        })
+        data_context.update(
+            {
+                "categories": categories,
+                "all_categories_videos": get_json_videos_categories(request),
+            }
+        )
 
     page = request.GET.get("page", 1)
     full_path = ""
@@ -628,12 +634,16 @@ def dashboard(request):
 
     error_message = {}
     if not filtered_videos_list:
-        error_message["main"] = _("No videos matched your filters. Please try adjusting them.")
+        error_message["main"] = _(
+            "No videos matched your filters. Please try adjusting them."
+        )
         error_message["types"] = ""
 
     if not videos_list:
         error_message["main"] = _("You haven’t uploaded any videos yet.")
-        error_message["types"] = _("Click on “Add a video” to start populating your dashboard.")
+        error_message["types"] = _(
+            "Click on “Add a video” to start populating your dashboard."
+        )
 
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
@@ -666,7 +676,7 @@ def dashboard(request):
                 "count_videos": count_videos,
                 "cursus_codes": CURSUS_CODES,
                 "owner_filter": owner_filter,
-                "error_message": error_message
+                "error_message": error_message,
             },
         )
 
@@ -939,13 +949,10 @@ def get_filtered_videos_list(request, videos_list):
         videos_list = videos_list.filter(type__slug__in=types_selected)
     if disciplines_selected:
         videos_list = videos_list.filter(discipline__slug__in=disciplines_selected)
-    if (
-        request.user
-        and owner_is_searchable(request.user)
-        and owners_selected
-    ):
+    if request.user and owner_is_searchable(request.user) and owners_selected:
         videos_list = videos_list.filter(
-            Q(owner__username__in=owners_selected) | Q(additional_owners__username__in=owners_selected)
+            Q(owner__username__in=owners_selected)
+            | Q(additional_owners__username__in=owners_selected)
         )
     if tags_selected:
         for tag_slug in tags_selected:
@@ -3692,16 +3699,22 @@ def available_filters(request):
     v_filter = get_filtered_videos_list(request, user_videos)
     aggregate = v_filter.aggregate(duration=Sum("duration"), number=Count("id"))
     videos_count = aggregate.get("number", 0)
-    videos_duration = str(timedelta(seconds=aggregate.get("duration", 0))) if aggregate.get("duration") else "0"
+    videos_duration = (
+        str(timedelta(seconds=aggregate.get("duration", 0)))
+        if aggregate.get("duration")
+        else "0"
+    )
 
-    return JsonResponse({
-        "categories": categories,
-        "type": types,
-        "discipline": disciplines,
-        "tag": tags,
-        "videos_count": videos_count,
-        "videos_duration": videos_duration,
-    })
+    return JsonResponse(
+        {
+            "categories": categories,
+            "type": types,
+            "discipline": disciplines,
+            "tag": tags,
+            "videos_count": videos_count,
+            "videos_duration": videos_duration,
+        }
+    )
 
 
 def available_filter_by_type(request, filter_name):
@@ -3714,16 +3727,22 @@ def available_filter_by_type(request, filter_name):
         user_videos = get_videos_for_owner(request)
     except Exception as e:
         logger.error(f"Error fetching videos for owner: {e}", exc_info=True)
-        return JsonResponse({"error": _("Server error while fetching user videos.")}, status=500)
+        return JsonResponse(
+            {"error": _("Server error while fetching user videos.")}, status=500
+        )
 
     filter_name_lower = filter_name.lower()
     limit = 20
-    search_term = request.GET.get('term', None)
+    search_term = request.GET.get("term", None)
     data = {}
     filter_handlers = {
-        "categories": lambda req, uv, term, lim: get_filtered_categories_for_user(req.user, term, lim),
+        "categories": lambda req, uv, term, lim: get_filtered_categories_for_user(
+            req.user, term, lim
+        ),
         "type": lambda req, uv, term, lim: get_filtered_types_for_videos(uv, term, lim),
-        "discipline": lambda req, uv, term, lim: get_filtered_disciplines_for_videos(uv, term, lim),
+        "discipline": lambda req, uv, term, lim: get_filtered_disciplines_for_videos(
+            uv, term, lim
+        ),
         "tag": lambda req, uv, term, lim: get_filtered_tags_for_videos(uv, term, lim),
         "owner": lambda req, uv, term, lim: get_filtered_owners_for_videos(uv, term, lim),
     }
@@ -3741,9 +3760,11 @@ def available_filter_by_type(request, filter_name):
     except Exception as e:
         logger.error(
             f"Error processing filter '{filter_name}' with term '{search_term}': {e}",
-            exc_info=True
+            exc_info=True,
         )
-        return JsonResponse({"error": _("Server error while processing filter.")}, status=500)
+        return JsonResponse(
+            {"error": _("Server error while processing filter.")}, status=500
+        )
 
     if filter_name_lower not in data:
         data[filter_name_lower] = []
@@ -3762,7 +3783,9 @@ def get_owners_for_videos_on_dashboard(request):
     videos_qs = get_videos_for_owner(request)
     filtered_videos_qs = get_filtered_videos_list(request, videos_qs)
     primary_owner_ids_qs = filtered_videos_qs.values_list("owner_id", flat=True)
-    additional_owner_ids_qs = filtered_videos_qs.values_list("additional_owners__id", flat=True)
+    additional_owner_ids_qs = filtered_videos_qs.values_list(
+        "additional_owners__id", flat=True
+    )
     primary_ids = set(primary_owner_ids_qs)
     additional_ids = set(additional_owner_ids_qs)
     user_ids = {i for i in (primary_ids | additional_ids) if i is not None}
@@ -3778,9 +3801,7 @@ def get_owners_for_videos_on_dashboard(request):
     try:
         users_qs = users_qs.annotate(
             video_count=Count(
-                "video",
-                distinct=True,
-                filter=Q(video__in=filtered_videos_qs)
+                "video", distinct=True, filter=Q(video__in=filtered_videos_qs)
             )
         )
     except TypeError:
