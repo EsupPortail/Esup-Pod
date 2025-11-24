@@ -1,6 +1,6 @@
-/** 
+/**
  * @fileoverview
- * This file is part of the Esup-Pod project. It contains the `FilterManager` class 
+ * This file is part of the Esup-Pod project. It contains the `FilterManager` class
  * responsible for dynamically creating and managing interactive filters in the video dashboard.
  *
  * @project Esup-Pod
@@ -14,7 +14,7 @@
  * - Automatic refresh of the results list via `refreshVideosSearch()`.
  *
  * Example Usage:
- * 
+ *
  * // 1. Initialize
  * const manager = new FilterManager({
  *   filtersBoxId: 'filtersBox',
@@ -36,7 +36,6 @@
  * manager.initializeFilters();
  */
 class FilterManager {
-
   /**
    * Adds a filter to the manager.
    * @param {Object} options
@@ -48,15 +47,15 @@ class FilterManager {
    */
   constructor({
     filters = {},
-    filtersBoxId    = 'filtersBox',
-    activeFiltersId = 'selectedTags',
-    activeFiltersWrapId = 'activeFilters',
-    resetFiltersId  = 'filterTags'
+    filtersBoxId = "filtersBox",
+    activeFiltersId = "selectedTags",
+    activeFiltersWrapId = "activeFilters",
+    resetFiltersId = "filterTags",
   }) {
-    this.filters            = filters;
-    this.filtersBox         = document.getElementById(filtersBoxId);
-    this.activeFiltersBox   = document.getElementById(activeFiltersId);
-    this.activeFiltersWrap  = document.getElementById(activeFiltersWrapId);
+    this.filters = filters;
+    this.filtersBox = document.getElementById(filtersBoxId);
+    this.activeFiltersBox = document.getElementById(activeFiltersId);
+    this.activeFiltersWrap = document.getElementById(activeFiltersWrapId);
     this.resetFiltersButton = document.getElementById(resetFiltersId);
     this.initializeResetButton();
     this.currentResults = {};
@@ -81,7 +80,9 @@ class FilterManager {
       };
       this.createFilterComponent(name, param);
     } catch (err) {
-      console.error(`Error in filter.js  (addFilter function). Failed to load filter "${name}" (param="${param}"): ${err.message || err}`);
+      console.error(
+        `Error in filter.js  (addFilter function). Failed to load filter "${name}" (param="${param}"): ${err.message || err}`,
+      );
     }
   }
 
@@ -91,48 +92,51 @@ class FilterManager {
    * @param {string} param - Parameter key.
    */
   createFilterComponent(name, param) {
-    const dropdown = document.createElement('div');
-    dropdown.className = 'dropdown';
+    const dropdown = document.createElement("div");
+    dropdown.className = "dropdown";
 
     // Dropdown menu button
-    const button = document.createElement('button');
+    const button = document.createElement("button");
     const buttonId = `${param}-filter-btn`;
     button.id = buttonId;
-    button.className = 'btn btn-outline-primary dropdown-toggle';
-    button.type = 'button';
-    button.setAttribute('data-bs-toggle', 'dropdown');
-    button.setAttribute('aria-expanded', 'false');
+    button.className = "btn btn-outline-primary dropdown-toggle";
+    button.type = "button";
+    button.setAttribute("data-bs-toggle", "dropdown");
+    button.setAttribute("aria-expanded", "false");
     const searchAria = gettext("Show or hide filter options for %s");
-    button.setAttribute('aria-label', interpolate(searchAria, [name]));
+    button.setAttribute("aria-label", interpolate(searchAria, [name]));
     button.innerText = name;
 
     // Dropdown menu
-    const menu = document.createElement('div');
-    menu.className = 'dropdown-menu p-2';
-    menu.style.minWidth = '17em';
+    const menu = document.createElement("div");
+    menu.className = "dropdown-menu p-2";
+    menu.style.minWidth = "17em";
 
     // Search group (input)
-    const inputGroup = document.createElement('div');
-    inputGroup.className = 'input-group mb-3';
+    const inputGroup = document.createElement("div");
+    inputGroup.className = "input-group mb-3";
 
-    const input = document.createElement('input');
+    const input = document.createElement("input");
     const inputId = `${param}-box`;
     const searchMessage = gettext("Search for a %s");
-    input.placeholder= interpolate(searchMessage, [name]);
-    input.setAttribute('aria-label', interpolate(searchMessage, [name]));
+    input.placeholder = interpolate(searchMessage, [name]);
+    input.setAttribute("aria-label", interpolate(searchMessage, [name]));
     input.id = inputId;
-    input.type = 'text';
-    input.className = 'form-control';
+    input.type = "text";
+    input.className = "form-control";
     inputGroup.appendChild(input);
 
-    const listContainer = document.createElement('div');
+    const listContainer = document.createElement("div");
     const listContainerId = `collapseFilter${capitalize(param)}`;
     listContainer.className = `form-group navList`;
     listContainer.id = listContainerId;
-    listContainer.classList.add('overflow-auto');
-    listContainer.style.maxHeight = '200px';
-    const filterOptionAria = gettext(`Filter option for %s`)
-    listContainer.setAttribute('aria-label', interpolate(filterOptionAria, [name]));
+    listContainer.classList.add("overflow-auto");
+    listContainer.style.maxHeight = "200px";
+    const filterOptionAria = gettext(`Filter option for %s`);
+    listContainer.setAttribute(
+      "aria-label",
+      interpolate(filterOptionAria, [name]),
+    );
 
     menu.appendChild(inputGroup);
     menu.appendChild(listContainer);
@@ -148,21 +152,26 @@ class FilterManager {
    * @param {string} param - Parameter key.
    */
   addSearchInputListener(param) {
-    const inputEl  = document.getElementById(`${param}-box`);
+    const inputEl = document.getElementById(`${param}-box`);
     const buttonEl = document.getElementById(`${param}-filter-btn`);
     if (!inputEl || !buttonEl) {
-      console.error(`Error in filter.js (addSearchInputListener function). Failed to initialize search input for filter "${param}". Missing elements: ${!inputEl ? 'input element' : ''} ${!buttonEl ? 'button element' : ''}`);
+      console.error(
+        `Error in filter.js (addSearchInputListener function). Failed to initialize search input for filter "${param}". Missing elements: ${!inputEl ? "input element" : ""} ${!buttonEl ? "button element" : ""}`,
+      );
       return;
     }
 
-    inputEl.addEventListener('input', debounce(e => {
-      e.preventDefault();
-      this.searchFilter(param, e.target.value.trim());
-    }, 100));
+    inputEl.addEventListener(
+      "input",
+      debounce((e) => {
+        e.preventDefault();
+        this.searchFilter(param, e.target.value.trim());
+      }, 100),
+    );
 
-    buttonEl.addEventListener('click', e => {
+    buttonEl.addEventListener("click", (e) => {
       e.preventDefault();
-      this.searchFilter(param, '');
+      this.searchFilter(param, "");
     });
   }
 
@@ -171,16 +180,18 @@ class FilterManager {
    * @param {string} param - Parameter key.
    * @param {string} [searchTerm=''] - Search term.
    */
-  async searchFilter(param, searchTerm = '') {
+  async searchFilter(param, searchTerm = "") {
     const filter = this.filters[param];
-    if (!filter || typeof filter.searchCallback !== 'function') return;
+    if (!filter || typeof filter.searchCallback !== "function") return;
 
     try {
       const results = await filter.searchCallback(searchTerm);
       this.currentResults[param] = results;
       this.createCheckboxesForFilter(param, results);
     } catch (err) {
-      console.error(`Error in filter.js (searchFilter function). Failed to fetch search results for filter "${param}" with searchTerm "${searchTerm}": ${err.message || err}`);
+      console.error(
+        `Error in filter.js (searchFilter function). Failed to fetch search results for filter "${param}" with searchTerm "${searchTerm}": ${err.message || err}`,
+      );
     }
   }
 
@@ -191,7 +202,9 @@ class FilterManager {
   removeFilter(currentFilter, key) {
     if (currentFilter) {
       const filterElement = document.getElementById(`${slugify(key)}-tag`);
-      const closeButton = document.getElementById(`remove-filter-${slugify(key)}`);
+      const closeButton = document.getElementById(
+        `remove-filter-${slugify(key)}`,
+      );
       if (closeButton) {
         const tooltip = bootstrap.Tooltip.getInstance(closeButton);
         if (tooltip) tooltip.dispose();
@@ -199,7 +212,10 @@ class FilterManager {
       const data = currentFilter.selectedItems.get(key);
       if (filterElement) filterElement.remove();
       currentFilter.selectedItems.delete(key);
-      sessionStorage.setItem(`filter-${currentFilter.param}`, JSON.stringify(Array.from(currentFilter.selectedItems.keys())));
+      sessionStorage.setItem(
+        `filter-${currentFilter.param}`,
+        JSON.stringify(Array.from(currentFilter.selectedItems.keys())),
+      );
       this.update();
     }
   }
@@ -210,21 +226,26 @@ class FilterManager {
   async initializeFilters() {
     for (const param of Object.keys(this.filters)) {
       const filter = this.filters[param];
-      const selectedKeys = JSON.parse(sessionStorage.getItem(`filter-${param}`)) || [];
+      const selectedKeys =
+        JSON.parse(sessionStorage.getItem(`filter-${param}`)) || [];
       let allItems = [];
       try {
-        allItems = await filter.searchCallback('');
+        allItems = await filter.searchCallback("");
       } catch (err) {
-        console.error(`Error in filter.js (initializeFilters function). Failed to load initial items for filter "${param}": ${err.message || err}`);
+        console.error(
+          `Error in filter.js (initializeFilters function). Failed to load initial items for filter "${param}": ${err.message || err}`,
+        );
         continue;
       }
       this.currentResults[param] = allItems;
-      selectedKeys.forEach(slugKey => {
-        const match = allItems.find(item => slugify(filter.itemKey(item)) === slugKey);
+      selectedKeys.forEach((slugKey) => {
+        const match = allItems.find(
+          (item) => slugify(filter.itemKey(item)) === slugKey,
+        );
         if (match) {
           filter.selectedItems.set(slugKey, {
             label: filter.itemLabel(match),
-            value: filter.itemKey(match)
+            value: filter.itemKey(match),
           });
           this.renderActiveFilter(filter, slugKey);
         }
@@ -241,36 +262,48 @@ class FilterManager {
   renderActiveFilter(currentFilter, key) {
     if (currentFilter) {
       const container = this.activeFiltersBox;
-      const filterContainer = document.createElement('div');
-      filterContainer.className = 'btn btn-secondary align-items-center d-flex';
+      const filterContainer = document.createElement("div");
+      filterContainer.className = "btn btn-secondary align-items-center d-flex";
       filterContainer.id = `${slugify(key)}-tag`;
-      filterContainer.setAttribute('role', 'button');
-      filterContainer.setAttribute('tabindex', '0');
+      filterContainer.setAttribute("role", "button");
+      filterContainer.setAttribute("tabindex", "0");
 
       const data = currentFilter.selectedItems.get(key);
-      const ariaLabel = interpolate(gettext("Filter: %(name)s - %(label)s"), {"name": currentFilter.name, "label": data.label}, true)
-      filterContainer.setAttribute('aria-label', ariaLabel);
+      const ariaLabel = interpolate(
+        gettext("Filter: %(name)s - %(label)s"),
+        { name: currentFilter.name, label: data.label },
+        true,
+      );
+      filterContainer.setAttribute("aria-label", ariaLabel);
 
-      const label = document.createElement('a');
-      label.innerText = interpolate(gettext("%(name)s : %(label)s"), {"name": currentFilter.name, "label": data.label}, true)
-      const closeButton = document.createElement('button');
-      closeButton.type = 'button';
-      closeButton.className = 'btn-close ms-2';
+      const label = document.createElement("a");
+      label.innerText = interpolate(
+        gettext("%(name)s : %(label)s"),
+        { name: currentFilter.name, label: data.label },
+        true,
+      );
+      const closeButton = document.createElement("button");
+      closeButton.type = "button";
+      closeButton.className = "btn-close ms-2";
       closeButton.id = `remove-filter-${slugify(key)}`;
-      closeButton.setAttribute('data-bs-toggle', 'tooltip');
-      closeButton.setAttribute('data-bs-placement', 'top');
-      closeButton.setAttribute('data-bs-title', gettext("Remove filter"));
+      closeButton.setAttribute("data-bs-toggle", "tooltip");
+      closeButton.setAttribute("data-bs-placement", "top");
+      closeButton.setAttribute("data-bs-title", gettext("Remove filter"));
 
-      const closeButtonAriaLabel = interpolate(gettext("Click to remove the filter: %(name)s - %(label)s"), {"name": currentFilter.name, "label": data.label}, true)
+      const closeButtonAriaLabel = interpolate(
+        gettext("Click to remove the filter: %(name)s - %(label)s"),
+        { name: currentFilter.name, label: data.label },
+        true,
+      );
 
-      closeButton.setAttribute('aria-label', closeButtonAriaLabel);
-      closeButton.addEventListener('click', (e) => {
+      closeButton.setAttribute("aria-label", closeButtonAriaLabel);
+      closeButton.addEventListener("click", (e) => {
         e.preventDefault();
         this.removeFilter(currentFilter, key);
       });
-      closeButton.addEventListener('keydown', (e) => {
+      closeButton.addEventListener("keydown", (e) => {
         e.preventDefault();
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Enter" || e.key === " ") {
           this.removeFilter(currentFilter, key);
         }
       });
@@ -279,28 +312,32 @@ class FilterManager {
       filterContainer.appendChild(closeButton);
       container.appendChild(filterContainer);
       new bootstrap.Tooltip(closeButton);
-    }else {
-      console.error(`Error in filter.js (renderActiveFilter function). Failed to render active filter because currentFilter is null`);
+    } else {
+      console.error(
+        `Error in filter.js (renderActiveFilter function). Failed to render active filter because currentFilter is null`,
+      );
     }
   }
 
   createCheckboxesForFilter(param, results) {
-    const container = document.getElementById(`collapseFilter${capitalize(param)}`);
-    container.innerHTML = '';
+    const container = document.getElementById(
+      `collapseFilter${capitalize(param)}`,
+    );
+    container.innerHTML = "";
     const filter = this.filters[param];
     const fragment = document.createDocumentFragment();
 
     filter.selectedItems.forEach((obj, key) => {
-      const formCheck = document.createElement('div');
-      formCheck.className = 'form-check mb-2';
+      const formCheck = document.createElement("div");
+      formCheck.className = "form-check mb-2";
 
-      const checkbox = document.createElement('input');
-      checkbox.className = 'form-check-input';
-      checkbox.type = 'checkbox';
+      const checkbox = document.createElement("input");
+      checkbox.className = "form-check-input";
+      checkbox.type = "checkbox";
       checkbox.id = key;
       checkbox.checked = true;
 
-      checkbox.addEventListener('change', (e) => {
+      checkbox.addEventListener("change", (e) => {
         if (checkbox.checked) {
           filter.selectedItems.set(key, obj);
           this.renderActiveFilter(filter, key);
@@ -312,31 +349,31 @@ class FilterManager {
         this.createCheckboxesForFilter(param, this.currentResults[param] || []);
       });
 
-      const label = document.createElement('label');
-      label.className = 'form-check-label';
-      label.setAttribute('for', key);
+      const label = document.createElement("label");
+      label.className = "form-check-label";
+      label.setAttribute("for", key);
       label.innerText = obj.label;
 
       formCheck.append(checkbox, label);
       fragment.appendChild(formCheck);
     });
 
-    results.forEach(res => {
+    results.forEach((res) => {
       const value = filter.itemKey(res);
       const key = slugify(value);
       if (filter.selectedItems.has(key)) return;
 
       const labelStr = filter.itemLabel(res);
-      const formCheck = document.createElement('div');
-      formCheck.className = 'form-check mb-2';
+      const formCheck = document.createElement("div");
+      formCheck.className = "form-check mb-2";
 
-      const checkbox = document.createElement('input');
-      checkbox.className = 'form-check-input';
-      checkbox.type = 'checkbox';
+      const checkbox = document.createElement("input");
+      checkbox.className = "form-check-input";
+      checkbox.type = "checkbox";
       checkbox.id = key;
       checkbox.checked = false;
 
-      checkbox.addEventListener('change', (e) => {
+      checkbox.addEventListener("change", (e) => {
         e.preventDefault();
         if (checkbox.checked) {
           filter.selectedItems.set(key, { label: labelStr, value });
@@ -349,9 +386,9 @@ class FilterManager {
         this.createCheckboxesForFilter(param, this.currentResults[param] || []);
       });
 
-      const label = document.createElement('label');
-      label.className = 'form-check-label';
-      label.setAttribute('for', key);
+      const label = document.createElement("label");
+      label.className = "form-check-label";
+      label.setAttribute("for", key);
       label.innerText = labelStr;
 
       formCheck.append(checkbox, label);
@@ -367,11 +404,11 @@ class FilterManager {
   update() {
     const query = new URLSearchParams();
 
-    Object.keys(this.filters).forEach(param => {
+    Object.keys(this.filters).forEach((param) => {
       const filter = this.filters[param];
       const selectedKeys = Array.from(filter.selectedItems.keys());
       if (selectedKeys.length > 0) {
-        query.set(param, selectedKeys.join(','));
+        query.set(param, selectedKeys.join(","));
         sessionStorage.setItem(`filter-${param}`, JSON.stringify(selectedKeys));
       } else {
         query.delete(param);
@@ -379,15 +416,15 @@ class FilterManager {
       }
     });
     const newUrl = `${window.location.pathname}?${query.toString()}`;
-    window.history.replaceState(null, '', newUrl);
+    window.history.replaceState(null, "", newUrl);
     this._syncResetLink();
     refreshVideosSearch();
   }
 
   /**
-  * Positions the "Clear filters" link:
-  * - in activeFiltersWrap (on the right) otherwise
-  */
+   * Positions the "Clear filters" link:
+   * - in activeFiltersWrap (on the right) otherwise
+   */
   _syncResetLink() {
     const hasTags = this.activeFiltersBox.children.length > 0;
 
@@ -395,12 +432,12 @@ class FilterManager {
       if (!this.activeFiltersWrap.contains(this.resetFiltersButton)) {
         this.activeFiltersWrap.appendChild(this.resetFiltersButton);
       }
-      this.resetFiltersButton.classList.add('ms-auto');
-      this.filtersBox.classList.add('mb-3');
-      this.resetFiltersButton.classList.remove('d-none');
+      this.resetFiltersButton.classList.add("ms-auto");
+      this.filtersBox.classList.add("mb-3");
+      this.resetFiltersButton.classList.remove("d-none");
     } else {
-      this.resetFiltersButton.classList.add('d-none');
-      this.filtersBox.classList.remove('mb-3');
+      this.resetFiltersButton.classList.add("d-none");
+      this.filtersBox.classList.remove("mb-3");
     }
   }
 
@@ -408,7 +445,9 @@ class FilterManager {
    * Removes all tags displayed as active filters.
    */
   removeAllActiveFiltersUI() {
-    this.activeFiltersBox.querySelectorAll('span.badge').forEach(badge => badge.remove());
+    this.activeFiltersBox
+      .querySelectorAll("span.badge")
+      .forEach((badge) => badge.remove());
   }
 
   /**
@@ -417,8 +456,8 @@ class FilterManager {
    * @param {string} key - Key of the item to remove.
    */
   resetFilters() {
-    Object.values(this.filters).forEach(filter => {
-      Array.from(filter.selectedItems.keys()).forEach(key => {
+    Object.values(this.filters).forEach((filter) => {
+      Array.from(filter.selectedItems.keys()).forEach((key) => {
         this.removeFilter(filter, key);
       });
     });
@@ -430,7 +469,7 @@ class FilterManager {
    */
   initializeResetButton() {
     if (this.resetFiltersButton) {
-      this.resetFiltersButton.addEventListener('click', (e) => {
+      this.resetFiltersButton.addEventListener("click", (e) => {
         e.preventDefault();
         this.resetFilters();
       });
@@ -445,13 +484,13 @@ class FilterManager {
  */
 function slugify(nom) {
   return String(nom)
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '')
-    .replace(/-+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 /**

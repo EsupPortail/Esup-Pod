@@ -490,8 +490,6 @@ a.btn-outline-primary:not(:hover) svg {
   z-index: 900;
 }
 
-
-
 /***
  * tab
  ***/
@@ -794,7 +792,11 @@ div.card a img {
   max-height: 0;
   margin-bottom: 0;
   visibility: hidden;
-  transition: opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease, margin-bottom 0.4s ease;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease,
+    max-height 0.4s ease,
+    margin-bottom 0.4s ease;
   background-color: var(--pod-background-neutre2-bloc);
   border: 2px solid var(--bs-gray-400);
   color: var(--bs-body-color);
@@ -804,7 +806,9 @@ div.card a img {
   opacity: 0;
   max-height: 0;
   overflow: hidden;
-  transition: opacity 0.3s ease, max-height 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    max-height 0.3s ease;
 }
 
 #bulk-update-container.visible > * {

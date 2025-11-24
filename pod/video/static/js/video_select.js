@@ -131,37 +131,43 @@ function toggleSelectedVideo(item, container) {
  */
 function toggleBulkUpdateVisibility(container) {
   try {
-    const bulkContainer = document.getElementById('bulk-update-container');
-    const hr = document.getElementById('bottom-ht-filtre');
-    const skipLink = document.getElementById('skipToBulk');
-    const restCheckbox = document.getElementById('selectAll');
+    const bulkContainer = document.getElementById("bulk-update-container");
+    const hr = document.getElementById("bottom-ht-filtre");
+    const skipLink = document.getElementById("skipToBulk");
+    const restCheckbox = document.getElementById("selectAll");
 
-    const nbVideos = document.querySelectorAll("#videos_list .infinite-item").length;
+    const nbVideos = document.querySelectorAll(
+      "#videos_list .infinite-item",
+    ).length;
 
     if (!bulkContainer || !hr || !skipLink) {
-      throw new Error(JSON.stringify({
-        reason: 'Missing DOM element(s)',
-        elements: {
-          'bulk-update-container': !!bulkContainer,
-          'bottom-ht-filtre': !!hr,
-          'skipToBulk': !!skipLink,
-        }
-      }));
+      throw new Error(
+        JSON.stringify({
+          reason: "Missing DOM element(s)",
+          elements: {
+            "bulk-update-container": !!bulkContainer,
+            "bottom-ht-filtre": !!hr,
+            skipToBulk: !!skipLink,
+          },
+        }),
+      );
     }
 
     // Update "select all" checkbox state
     if (restCheckbox) {
       const videos = document.querySelectorAll(".card-select-input");
-      const checkedCount = Array.from(videos).filter(v => v.checked).length;
-      restCheckbox.checked = (nbVideos > 0 && nbVideos === checkedCount);
+      const checkedCount = Array.from(videos).filter((v) => v.checked).length;
+      restCheckbox.checked = nbVideos > 0 && nbVideos === checkedCount;
     }
 
     const hasSelection = hasSelectedVideos(container);
-    const shouldShow = hasSelection && nbVideos > 0 && (!container || container === 'videos_list');
-    bulkContainer.classList.toggle('visible', shouldShow);
-    skipLink.classList.toggle('is-visible', shouldShow);
-    hr.style.display = shouldShow ? 'none' : 'block';
-
+    const shouldShow =
+      hasSelection &&
+      nbVideos > 0 &&
+      (!container || container === "videos_list");
+    bulkContainer.classList.toggle("visible", shouldShow);
+    skipLink.classList.toggle("is-visible", shouldShow);
+    hr.style.display = shouldShow ? "none" : "block";
   } catch (error) {
     console.error(`toggleBulkUpdateVisibility() failed: ${error.message}`);
   }
@@ -178,7 +184,9 @@ function hasSelectedVideos(container) {
     const videos = selectedVideos[container];
     return videos.length > 0;
   } catch (error) {
-    console.error(`Error in video_select.js (hasSelectedVideos): ${error.message}`);
+    console.error(
+      `Error in video_select.js (hasSelectedVideos): ${error.message}`,
+    );
     return false;
   }
 }
@@ -203,7 +211,7 @@ function clearSelectedVideo(container) {
  **/
 function resetDashboardElements() {
   try {
-    const checkbox = document.getElementById('selectAll');
+    const checkbox = document.getElementById("selectAll");
 
     if (!checkbox) {
       throw new Error('Checkbox with id "selectAll" not found in DOM');
@@ -214,7 +222,9 @@ function resetDashboardElements() {
     dashboardActionReset();
     window.scrollTo(0, 0);
   } catch (error) {
-    console.error(`Error in video_select.js (resetDashboardElements function). Failed to reset dashboard elements because ${error.message}`);
+    console.error(
+      `Error in video_select.js (resetDashboardElements function). Failed to reset dashboard elements because ${error.message}`,
+    );
   }
 }
 
@@ -242,7 +252,8 @@ function getHTMLBadgesSelectedTitles(container) {
  */
 function selectAllVideos(container) {
   try {
-    if (typeof container !== 'string' || container.trim() === '') throw new Error('Invalid container identifier provided');
+    if (typeof container !== "string" || container.trim() === "")
+      throw new Error("Invalid container identifier provided");
 
     const selector = "#" + container + " .card-select-input";
     const elements = document.querySelectorAll(selector);
@@ -253,19 +264,20 @@ function selectAllVideos(container) {
     toggleBulkUpdateVisibility(container);
     replaceSelectedCountVideos(container);
   } catch (error) {
-    console.error(`Error in video_select.js (selectAllVideos function). Failed to select all videos because ${error.message}`);
+    console.error(
+      `Error in video_select.js (selectAllVideos function). Failed to select all videos because ${error.message}`,
+    );
   }
 }
-
 
 /**
  * Sets up the "Select All" checkbox behavior for managing video selection.
  */
 function selectAllManager() {
   try {
-    const checkbox = document.getElementById('selectAll');
+    const checkbox = document.getElementById("selectAll");
     if (checkbox) {
-      checkbox.addEventListener('change', () => {
+      checkbox.addEventListener("change", () => {
         try {
           if (checkbox.checked) {
             selectAllVideos(videosListContainerId);
@@ -273,12 +285,15 @@ function selectAllManager() {
             resetDashboardElements();
           }
         } catch (innerError) {
-          console.error(`Error in video_select.js (selectAllManager > change event). Failed to process checkbox change because ${innerError.message}`);
+          console.error(
+            `Error in video_select.js (selectAllManager > change event). Failed to process checkbox change because ${innerError.message}`,
+          );
         }
       });
     }
   } catch (error) {
-    console.error(`Error in video_select.js (selectAllManager function). Failed to initialize "Select All" behavior because ${error.message}`);
+    console.error(
+      `Error in video_select.js (selectAllManager function). Failed to initialize "Select All" behavior because ${error.message}`,
+    );
   }
 }
-

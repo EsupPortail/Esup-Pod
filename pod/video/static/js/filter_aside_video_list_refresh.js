@@ -15,7 +15,6 @@
 // Read-only globals defined in video_select.js
 /* global setSelectedVideos */
 
-
 var infinite;
 
 let infiniteLoading = document.querySelector(".infinite-loading");
@@ -109,16 +108,17 @@ if (sortDirectionLabel) {
 function handleSearch(e) {
   e.preventDefault();
   refreshVideosSearch();
-};
+}
 
-document.getElementById("searchForm").addEventListener("submit",handleSearch);
+document.getElementById("searchForm").addEventListener("submit", handleSearch);
 
-document.getElementById("titleSearchBtn")?.addEventListener("click",handleSearch);
+document
+  .getElementById("titleSearchBtn")
+  ?.addEventListener("click", handleSearch);
 
 document.getElementById("titlebox")?.addEventListener("keydown", (e) => {
   if (e.key === "Enter") handleSearch(e);
 });
-
 
 /**
  * Retrieves the current value entered in the video title search input field.
@@ -190,9 +190,12 @@ function refreshVideosSearch() {
 function normalizeMultiValues(urlParams, multiKeys) {
   multiKeys.forEach((key) => {
     if (urlParams.has(key)) {
-      const values = urlParams.get(key).split(",").filter(v => v); 
-      urlParams.delete(key); 
-      values.forEach(val => urlParams.append(key, val));
+      const values = urlParams
+        .get(key)
+        .split(",")
+        .filter((v) => v);
+      urlParams.delete(key);
+      values.forEach((val) => urlParams.append(key, val));
     }
   });
   return urlParams;
@@ -207,7 +210,9 @@ function getUrlForRefresh() {
   let urlParams = new URLSearchParams(window.location.search);
 
   // Normalize multi-value parameters
-  const multiFilters = [...new Set(filtersConfig.map(filter => filter.param))];
+  const multiFilters = [
+    ...new Set(filtersConfig.map((filter) => filter.param)),
+  ];
   urlParams = normalizeMultiValues(urlParams, multiFilters);
 
   const sort = document.getElementById("sort")?.value;
@@ -239,9 +244,9 @@ function getUrlForRefresh() {
 
   let fullUrl = `${baseUrl}?${urlParams.toString()}`;
   if (urlParams.toString()) {
-      fullUrl += "&page=";
+    fullUrl += "&page=";
   } else {
-      fullUrl += "?page=";
+    fullUrl += "?page=";
   }
 
   if (fullUrl.includes("undefined")) {
@@ -251,19 +256,21 @@ function getUrlForRefresh() {
     }
     console.warn(
       "getUrlForRefresh(): Detected 'undefined' in URL. Affected parameters:",
-      debugParams
+      debugParams,
     );
   }
-  
+
   return fullUrl;
 }
 
-/** 
+/**
  * Disables or enables checkboxes during loading.
  * @param {boolean} value - `true` to disable, `false` to enable.
  */
 function disabledInputs(value) {
-  document.querySelectorAll("input.form-check-input").forEach(cb => cb.disabled = value);
+  document
+    .querySelectorAll("input.form-check-input")
+    .forEach((cb) => (cb.disabled = value));
 }
 
 // First launch of the infinite scroll
@@ -289,4 +296,3 @@ if (urlParams.has("owner") && !ownerFilter) {
       urlParams.toString(),
   );
 }
-
