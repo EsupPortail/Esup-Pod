@@ -47,7 +47,10 @@ module.exports = {
   overrides: [
     {
       // Allow use of import & export functions
-      files: [ "pod/main/static/js/utils.js", "pod/video/static/js/regroup_videos_by_theme.js" ],
+      files: [
+        "pod/main/static/js/utils.js",
+        "pod/video/static/js/regroup_videos_by_theme.js"
+      ],
       parserOptions: { sourceType: "module" },
     }
   ]
