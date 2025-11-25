@@ -5,17 +5,21 @@ import os
 import json
 import re
 import shutil
+import logging
 from math import ceil
 
 from django.urls import reverse
 from django.conf import settings
 from django.http import JsonResponse
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.utils.translation import gettext_lazy as _
 from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
 from pod.video_encode_transcript.models import PlaylistVideo
+from django.contrib.auth import get_user_model
+from .models import Video, Category, Type, Discipline
 
-from .models import Video
+logger = logging.getLogger(__name__)
+User = get_user_model()
 
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
@@ -357,3 +361,105 @@ def has_audio(video) -> bool:
 
     # Default to True if an error occurs
     return True
+
+
+def get_base_queryset_for_taxonomies(model, user_videos):
+    """
+    Crée le QuerySet de base pour les filtres de taxonomies (Type, Discipline)
+    liés aux vidéos d'un utilisateur.
+    """
+    return (
+        model.objects.filter(video__in=user_videos)
+        .distinct()
+        .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
+    )
+
+
+def apply_search_order_limit_for_taxonomies(
+    qs, search_term, field_name="title", order_by_field="title", limit=20
+):
+    """
+    Apply the search filter (on field_name), order, and limit
+    for taxonomies returning id, field_name, and video_count.
+    """
+    if search_term:
+        search_filter = {f"{field_name}__icontains": search_term}
+        qs = qs.filter(**search_filter)
+    return list(
+        qs.order_by(order_by_field).values("id", field_name, "video_count")[:limit]
+    )
+
+
+def get_filtered_categories_for_user(user, search_term=None, limit=20):
+    """Retrieves and filters categories for a user."""
+    if not getattr(settings, "USE_CATEGORY", True):
+        return []
+    qs = Category.objects.filter(owner=user).prefetch_related("video")
+    if search_term:
+        qs = qs.filter(title__icontains=search_term)
+    return list(qs.order_by("title").values("id", "title")[:limit])
+
+
+def get_filtered_types_for_videos(user_videos, search_term=None, limit=20):
+    """Retrieves and filters types associated with a list of videos."""
+    if not getattr(settings, "USE_TYPES", True):
+        return []
+    qs = get_base_queryset_for_taxonomies(Type, user_videos)
+    return apply_search_order_limit_for_taxonomies(
+        qs, search_term, "title", "title", limit
+    )
+
+
+def get_filtered_disciplines_for_videos(user_videos, search_term=None, limit=20):
+    """Retrieves and filters the disciplines associated with a list of videos."""
+    if not getattr(settings, "USE_DISCIPLINES", True):
+        return []
+    qs = get_base_queryset_for_taxonomies(Discipline, user_videos)
+    return apply_search_order_limit_for_taxonomies(
+        qs, search_term, "title", "title", limit
+    )
+
+
+def get_filtered_tags_for_videos(user_videos, search_term=None, limit=20):
+    """Retrieves and filters tags associated with a list of videos."""
+    if not getattr(settings, "USE_TAGS", True):
+        return []
+    TagModel = Video.tags.tag_model
+    qs = TagModel.objects.filter(video__in=user_videos).distinct()
+    if search_term:
+        qs = qs.filter(name__icontains=search_term)
+    return list(qs.order_by("name").values("name", "slug")[:limit])
+
+
+def get_filtered_owners_for_videos(user_videos, search_term=None, limit=20):
+    """Retrieves and filters owners (owner + additional) associated with a list of videos."""
+    primary_owner_ids = set(user_videos.values_list("owner_id", flat=True))
+    additional_owner_ids = set(
+        user_videos.values_list("additional_owners__id", flat=True)
+    )
+    user_ids = {
+        uid for uid in primary_owner_ids.union(additional_owner_ids) if uid is not None
+    }
+
+    if not user_ids:
+        return []
+
+    users_qs = User.objects.filter(id__in=list(user_ids))
+
+    if getattr(settings, "MENUBAR_HIDE_INACTIVE_OWNERS", False):
+        users_qs = users_qs.filter(is_active=True)
+    if getattr(settings, "MENUBAR_SHOW_STAFF_OWNERS_ONLY", False):
+        users_qs = users_qs.filter(is_staff=True)
+
+    if search_term:
+        users_qs = users_qs.filter(
+            Q(username__icontains=search_term)
+            | Q(first_name__icontains=search_term)
+            | Q(last_name__icontains=search_term)
+        )
+
+    return list(
+        users_qs.order_by("username").values("id", "username", "first_name", "last_name")[
+            :limit
+        ]
+    )

@@ -16,6 +16,42 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.7\n"
 
+#: pod/video/static/js/filter.js
+msgid "Category"
+msgstr "Catégorie"
+
+#: pod/video/static/js/filter.js
+msgid "Tag"
+msgstr "Mot clé"
+
+#: pod/video/static/js/FilterManager.js
+msgid "Filter: %s - %s"
+msgstr "Filtre : %s - %s"
+
+#: pod/video/static/js/FilterManager.js
+msgid "Remove filter"
+msgstr "Effacer le filtre"
+
+#: pod/video/static/js/FilterManager.js
+msgid "Filter option for %s"
+msgstr "Options de filtre pour %s"
+
+#: pod/video/static/js/FilterManager.js
+msgid "Click to remove the filter: %s - %s"
+msgstr "Cliquez pour supprimer le filtre : %s - %s"
+
+#: pod/video/static/js/FilterManager.js
+msgid "Show or hide filter options for %s"
+msgstr "Afficher ou masquer les options du filtre %s"
+
+#: pod/video/static/js/FilterManager.js
+msgid "User"
+msgstr "Utilisateur"
+
+#: pod/video/static/js/FilterManager.js
+msgid "Search for a %s"
+msgstr "Rechercher un/e %s"
+
 #: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
 msgid "No discipline"
 msgstr "Aucune discipline"

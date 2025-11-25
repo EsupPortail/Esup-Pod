@@ -601,7 +601,7 @@ class VideosTestView(TestCase):
         self.assertEqual(response.context["videos"].paginator.count, 2)
         response = self.client.get(url + "?tag=tag1&tag=tag2")
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context["videos"].paginator.count, 3)
+        self.assertEqual(response.context["videos"].paginator.count, 1)
         print(" --->  test_get_videos_view of VideosTestView: OK!")
 
 
@@ -1436,6 +1436,73 @@ class VideoTestFiltersViews(TestCase):
         }
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+    def test_available_filters_endpoint(self):
+        """API available_filters should return the expected structure."""
+        Site.objects.get_or_create(domain="example.com", name="example.com")
+        url = reverse("video:dashboard-filters")
+
+        # Authenticate the test client using self.admin
+        self.client.force_login(self.admin)
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        payload = json.loads(response.content.decode("utf-8"))
+        expected_keys = {
+            "type",
+            "discipline",
+            "categories",
+            "tag",
+            "videos_count",
+            "videos_duration",
+        }
+        self.assertTrue(expected_keys.issubset(set(payload.keys())))
+        self.assertIsInstance(payload.get("type"), list)
+        self.assertIsInstance(payload.get("discipline"), list)
+        self.assertIsInstance(payload.get("tag"), list)
+        self.assertIsInstance(payload.get("videos_count"), int)
+        self.assertIsInstance(payload.get("videos_duration"), str)
+        print(" --->  test_available_filters_endpoint: OK!")
+
+    def test_available_filter_by_type_various_keys(self):
+        """available_filter_by_type should handle multiple filter_name and errors correctly."""
+        Site.objects.get_or_create(domain="example.com", name="example.com")
+        url_base = "video:dashboard-filter-by-name"
+        self.user = User.objects.create_user(username="testuser", password="password")
+        self.client.force_login(self.user)
+        valid_filters = ["type", "discipline", "categories", "tag", "owner"]
+
+        for filter_name in valid_filters:
+            with self.subTest(filter=filter_name):
+                response = self.client.get(reverse(url_base, args=[filter_name]))
+                self.assertEqual(
+                    response.status_code,
+                    HTTPStatus.OK,
+                    f"Failed for filter: {filter_name}",
+                )
+                try:
+                    payload = json.loads(response.content.decode("utf-8"))
+                except json.JSONDecodeError:
+                    self.fail(f"Invalid JSON response for filter: {filter_name}")
+
+                self.assertIn(
+                    filter_name,
+                    payload,
+                    f"Key '{filter_name}' not in response for filter: {filter_name}",
+                )
+                self.assertIsInstance(
+                    payload[filter_name],
+                    list,
+                    f"Value for '{filter_name}' is not a list for filter: {filter_name}",
+                )
+
+        response = self.client.get(reverse(url_base, args=["i_dont_exist"]))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        payload = json.loads(response.content.decode("utf-8"))
+        self.assertIn("i_dont_exist", payload)
+        self.assertIsInstance(payload["i_dont_exist"], list)
+        self.assertEqual(payload["i_dont_exist"], [])
+        print(" --->  test_available_filter_by_type_various_keys: OK!")
 
     def tearDown(self) -> None:
         super(VideoTestFiltersViews, self).tearDown()

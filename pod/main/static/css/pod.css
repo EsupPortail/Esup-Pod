@@ -168,6 +168,23 @@
   margin-right: 0.5em;
 }
 
+.pod-skip-link {
+  display: none;
+  position: static;
+  left: auto;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  margin-left: 0.5rem;
+  text-decoration: none;
+  border-radius: 0.25rem;
+}
+
+.pod-skip-link.is-visible,
+.pod-skip-link:focus {
+  display: inline-flex;
+}
+
 /** TAGs Cloud */
 .tag-cloud {
   display: flex;
@@ -728,10 +745,6 @@ div.card a img {
   bottom: 0;
 }
 
-#resetFilters {
-  margin-left: auto !important;
-}
-
 #filterType div.collapse:not(.show),
 #filterDiscipline div.collapse:not(.show),
 #filterCursus div.collapse:not(.show),
@@ -765,10 +778,51 @@ div.card a img {
 }
 
 /** Dashboard **/
+
+#selectedTags .btn-secondary {
+  --bs-btn-color: var(--bs-body-color);
+  --bs-btn-bg: var(--pod-background-neutre2-bloc);
+  --bs-btn-border-color: var(--bs-gray-400);
+}
+
 #bulk-update-container {
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-20px);
+  max-height: 0;
+  margin-bottom: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease,
+    max-height 0.4s ease,
+    margin-bottom 0.4s ease;
   background-color: var(--pod-background-neutre2-bloc);
+  border: 2px solid var(--bs-gray-400);
+  color: var(--bs-body-color);
+}
+
+#bulk-update-container > * {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.3s ease,
+    max-height 0.3s ease;
+}
+
+#bulk-update-container.visible > * {
+  opacity: 1;
+  max-height: 1000px;
+}
+
+#bulk-update-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 500px;
+  margin-bottom: 1em;
+  visibility: visible;
   padding: 1em;
-  border-radius: var(--bs-border-radius);
 }
 
 #bulk-update-container .select2 {
@@ -785,6 +839,7 @@ div.card a img {
 }
 
 /* Dashboard infinite container */
+
 .dashboard-container {
   margin: 1rem 0;
 }
