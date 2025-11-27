@@ -91,3 +91,7 @@ tmp/
 pod/.yarn
 /_site/
 /.jekyll-metadata
+
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md
