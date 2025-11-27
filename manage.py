@@ -5,12 +5,13 @@ import sys
 from pathlib import Path
 
 def main():
-    # --- AJOUT ---
-    # Ajoute le dossier 'src' au chemin de recherche Python
-    # Cela permet de faire 'from config.settings import ...' sans erreur
     base_path = Path(__file__).resolve().parent
     sys.path.append(str(base_path / "src"))
-    # -------------
+
+    if len(sys.argv) > 1 and sys.argv[1] == "runserver":
+        server_arg_supplied = any(not arg.startswith("-") for arg in sys.argv[2:])
+        if not server_arg_supplied:
+            sys.argv.append("0.0.0.0:8000")
 
     try:
         from dotenv import load_dotenv

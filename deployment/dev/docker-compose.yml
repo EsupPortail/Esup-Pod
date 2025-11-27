@@ -1,0 +1,51 @@
+services:
+  db:
+    image: mariadb:10.11
+    container_name: pod_mariadb_dev
+
+    env_file:
+      - ../../.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT:-3307}:3306"
+    volumes:
+      - pod_db_data_dev:/var/lib/mysql
+
+  api:
+    build:
+      context: ../../
+      dockerfile: deployment/dev/Dockerfile
+    container_name: pod_dev
+
+    tty: true
+    
+    volumes:
+      - ../../:/app
+
+    ports:
+      - "${EXPOSITION_PORT:-8000}:8000"
+
+    depends_on:
+      - db
+
+    env_file:
+      - ../../.env
+
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+      SECRET_KEY: ${SECRET_KEY}
+
+      DJANGO_SETTINGS_MODULE: config.settings.dev
+      ALLOWED_HOSTS: "*,localhost,127.0.0.1,0.0.0.0"
+
+volumes:
+  pod_db_data_dev:
