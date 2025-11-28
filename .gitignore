@@ -25,4 +25,4 @@ env/
 Thumbs.db
 
 # --- Docker ---
-mysql_data/
+mysql_data/src/config/settings/settings_local.py
