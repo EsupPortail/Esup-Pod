@@ -1,5 +1,5 @@
 from .base import *
-import os  # Bonne pratique : expliciter l'import si on l'utilise ici, même si base l'importe déjà
+import os
 
 DEBUG = True
 
@@ -27,13 +27,11 @@ LOGGING = {
         },
     },
     "loggers": {
-        # Logger par défaut pour Django
         "django": {
             "handlers": ["console"],
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
             "propagate": False,
         },
-        # Votre logger spécifique au projet "pod"
         "pod": {
             "handlers": ["console"],
             "level": "DEBUG",
@@ -41,4 +39,4 @@ LOGGING = {
         },
     },
 }
-CORS_ALLOW_ALL_ORIGINS = True # En dev seulement, restreindre en prod
+CORS_ALLOW_ALL_ORIGINS = True
