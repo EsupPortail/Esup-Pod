@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 POD_VERSION = os.getenv("VERSION", "0.0.0")
@@ -19,10 +20,26 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.sites",
     "django.contrib.staticfiles",
     "rest_framework",
+    'rest_framework_simplejwt',
     "corsheaders",
     "drf_spectacular",
+    'src.apps.authentication',
+    'src.apps.info',
+    'src.apps.utils',
+]
+
+MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 TEMPLATES = [
@@ -39,16 +56,6 @@ TEMPLATES = [
             ],
         },
     },
-]
-
-MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -72,11 +79,29 @@ DATABASES = {
 }
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
-    ],
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+}
+
+
+# --- CORS ---
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -86,8 +111,41 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Pod REST API',
-    'DESCRIPTION': 'Documentation de l\'API pour le projet Pod V5',
+    'DESCRIPTION': 'API de gestion vidéo (Authentification Locale)',
     'VERSION': POD_VERSION,
     'SERVE_INCLUDE_SCHEMA': False,
-    'COMPONENT_SPLIT_REQUEST': True
+    'COMPONENT_SPLIT_REQUEST': True,
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+LANGUAGE_CODE = 'en-en'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+##
+# Applications settings (and settings locale if any)
+#
+# Add settings
+for application in INSTALLED_APPS:
+    if application.startswith("src"):
+        path = application.replace(".", os.path.sep) + "/base.py"
+        if os.path.exists(path):
+            _temp = __import__(application, globals(), locals(), ["settings"])
+            for variable in dir(_temp.settings):
+                if variable == variable.upper():
+                    locals()[variable] = getattr(_temp.settings, variable)
+# add local settings
+for application in INSTALLED_APPS:
+    if application.startswith("src"):
+        path = application.replace(".", os.path.sep) + "/settings_local.py"
+        if os.path.exists(path):
+            _temp = __import__(application, globals(), locals(), ["settings_local"])
+            for variable in dir(_temp.settings_local):
+                if variable == variable.upper():
+                    locals()[variable] = getattr(_temp.settings_local, variable)

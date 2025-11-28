@@ -1,10 +1,8 @@
 from .base import *
 import os  # Bonne pratique : expliciter l'import si on l'utilise ici, même si base l'importe déjà
 
-# Surcharge spécifique pour le développement
 DEBUG = True
 
-# Tu pourras ajouter ici des outils de debug (Django Debug Toolbar, etc.)
 # INSTALLED_APPS += ["debug_toolbar"]
 # MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 
@@ -43,3 +41,4 @@ LOGGING = {
         },
     },
 }
+CORS_ALLOW_ALL_ORIGINS = True # En dev seulement, restreindre en prod
