@@ -6,14 +6,13 @@ from drf_spectacular.utils import extend_schema
 
 @extend_schema(
     summary="System Information",
-    description="Returns the project name, current version, and online status",
+    description="Returns the project name and current version",
     responses={
         200: {
             "type": "object",
             "properties": {
                 "project": {"type": "string", "example": "POD V5"},
                 "version": {"type": "string", "example": "5.0.0"},
-                "status": {"type": "string", "example": "online"},
             },
         }
     },
@@ -29,5 +28,4 @@ class SystemInfoView(APIView):
         return Response({
             "project": "POD V5",
             "version": settings.POD_VERSION,
-            "status": "online"
         })

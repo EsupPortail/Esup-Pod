@@ -33,4 +33,4 @@ clean:
 	find . -name '__pycache__' -type d -exec rm -rf {} +
 
 # Setup complet (installation + migrations)
-setup: init migrate
+setup: clean migrate makemigrations superuser
