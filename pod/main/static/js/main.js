@@ -298,7 +298,9 @@ function writeInFrame() {
   var img = document.getElementById("qrcode");
   img.src = "/static/img/logoPod_animated.svg";
   setTimeout(function () {
-    img.src = "//quickchart.io/chart?cht=qr&chs=200x200&chl=" + link;
+    img.src =
+      "//quickchart.io/chart?cht=qr&chs=200x200&chl=" +
+      encodeURIComponent(link);
   }, 2000);
 }
 
@@ -388,7 +390,8 @@ document.addEventListener("change", (e) => {
   img.src = "/static/img/logoPod_animated.svg";
   setTimeout(function () {
     img.src =
-      "//quickchart.io/chart?cht=qr&chs=200x200&chl=" + txtpartage.value;
+      "//quickchart.io/chart?cht=qr&chs=200x200&chl=" +
+      encodeURIComponent(txtpartage.value);
   }, 2000);
 });
 
@@ -571,6 +574,7 @@ function manageDisableBtn(element, condition) {
     ? element.removeAttribute("disabled")
     : element.setAttribute("disabled", "");
 }
+
 /** MENU ASIDE **/
 document.addEventListener("DOMContentLoaded", function () {
   //.collapseAside is on the toggle button

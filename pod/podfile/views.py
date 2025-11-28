@@ -158,6 +158,10 @@ def get_rendered(request):
 
     current_session_folder = get_current_session_folder(request)
 
+    # 'home' is always the default folder
+    if current_session_folder is None:
+        current_session_folder = user_home_folder
+
     rendered = render_to_string(
         "podfile/userfolder.html",
         {
@@ -265,10 +269,15 @@ def deletefolder(request):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def deletefile(request):
+    # Add file type (file or image)
+    type = request.POST.get("type", None)
+
     if request.POST.get("id") and request.POST.get("classname"):
-        file = get_object_or_404(
-            eval(request.POST.get("classname")), id=request.POST.get("id")
-        )
+        classname = request.POST.get("classname")
+        if classname == "CustomImageModel":
+            file = get_object_or_404(CustomImageModel, id=request.POST.get("id"))
+        else:
+            file = get_object_or_404(CustomFileModel, id=request.POST.get("id"))
         folder = file.folder
         if request.user != file.created_by and not (
             request.user.is_superuser
@@ -287,6 +296,7 @@ def deletefile(request):
             "podfile/list_folder_files.html",
             {
                 "folder": folder,
+                "type": type,
             },
             request,
         )
@@ -385,6 +395,8 @@ def manage_form_file(request, upload_errors, fname, form_file):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def changefile(request):
+    # Add file type (file or image)
+    type = request.POST.get("type", None)
     if request.POST and is_ajax(request):
         folder = get_object_or_404(UserFolder, id=request.POST.get("folder"))
         if request.user != folder.owner and not (
@@ -398,9 +410,12 @@ def changefile(request):
             )
             raise PermissionDenied
 
-        file = get_object_or_404(
-            eval(request.POST.get("file_type")), id=request.POST.get("file_id")
-        )
+        file_type = request.POST.get("file_type")
+        if file_type == "CustomImageModel":
+            file = get_object_or_404(CustomImageModel, id=request.POST.get("file_id"))
+        else:
+            file = get_object_or_404(CustomFileModel, id=request.POST.get("file_id"))
+
         if request.user != file.created_by and not (
             request.user.is_superuser
             or request.user.has_perm("podfile.change_customfilemodel")
@@ -410,9 +425,10 @@ def changefile(request):
             messages.add_message(request, messages.ERROR, _("You cannot edit this file."))
             raise PermissionDenied
 
-        form_file = eval("%sForm" % request.POST.get("file_type"))(
-            request.POST, request.FILES, instance=file
-        )
+        if file_type == "CustomImageModel":
+            form_file = CustomImageModelForm(request.POST, request.FILES, instance=file)
+        else:
+            form_file = CustomFileModelForm(request.POST, request.FILES, instance=file)
 
         if form_file.is_valid():
             if form_file.cleaned_data["folder"] != folder:
@@ -428,6 +444,7 @@ def changefile(request):
                 "podfile/list_folder_files.html",
                 {
                     "folder": folder,
+                    "type": type,
                 },
                 request,
             )

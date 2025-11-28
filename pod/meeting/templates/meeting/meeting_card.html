@@ -65,8 +65,11 @@
         {% if meeting.is_webinar %}
           <a class="btn btn-primary btn-sm" href="{% url 'meeting:join' meeting.meeting_id %}" data-bs-toggle="modal" data-bs-target="#meetingModal"
           data-bs-meeting-id="{{meeting.meeting_id}}" data-bs-meeting-title="{{meeting.name}}"
-          data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}" data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}"
-          data-bs-meeting-webinar="{{meeting.is_webinar}}" data-bs-meeting-restart-live-url="{% url 'meeting:restart_live' meeting.meeting_id %}"
+          data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}"
+          data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}"
+          data-bs-meeting-webinar="{{meeting.is_webinar}}"
+          data-bs-meeting-toggle-chat-url="{% url 'meeting:toggle_chat' meeting.meeting_id %}"
+          data-bs-meeting-restart-live-url="{% url 'meeting:restart_live' meeting.meeting_id %}"
           data-bs-meeting-end-live-url="{% url 'meeting:end_live' meeting.meeting_id %}"
           aria-label="{% trans 'Show webinar informations' %}">
             <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Show webinar informations' %}"><i class="bi bi-person-video2 pod-add" aria-hidden="true"></i></span>

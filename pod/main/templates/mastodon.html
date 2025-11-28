@@ -8,8 +8,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
       <div class="modal-body">
-        <p>{% trans 'Please enter your Mastodon instance URL:' %}</p>
-        <input type="text" id="mastodonInstance" class="form-control" placeholder="https://{% trans 'your.instance' %}" />
+        <label for="mastodonInstance" class="form-label">
+          {% trans 'Please enter your Mastodon instance URL:' %}
+        </label>
+        <input type="url" id="mastodonInstance" class="form-control"
+               placeholder="https://{% trans 'your.instance' %}" />
        <div class="form-check mt-2">
           <input type="checkbox" class="form-check-input" id="rememberInstance">
           <label class="form-check-label" for="rememberInstance">{% trans 'Remember this instance' %}</label>
@@ -44,11 +47,11 @@
       } else {
         localStorage.removeItem('mastodonInstance');
       }
-      
+
       const shareUrl = `https://${instanceUrl}/share?text={{request.build_absolute_uri|urlencode}}`;
       window.open(shareUrl, '_blank');
     } else {
-      alert("{% trans 'Please enter a Mastodon instance URL.' %}");
+      alert("{% trans 'Please provide your instance URL.' %}");
     }
     var modal = bootstrap.Modal.getInstance(document.getElementById('mastodonModal'));
     modal.hide();

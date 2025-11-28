@@ -238,9 +238,9 @@ class VideoAdmin(admin.ModelAdmin):
 
     @admin.action(description=_("Transcript selected"))
     def transcript_video(self, request, queryset) -> None:
+        transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
         for item in queryset:
             if item.get_video_mp3() and not item.encoding_in_progress:
-                transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
                 transcript_video(item.id)
 
     def get_queryset(self, request):
