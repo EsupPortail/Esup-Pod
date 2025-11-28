@@ -19,7 +19,7 @@ services:
     build:
       context: ../../
       dockerfile: deployment/dev/Dockerfile
-    container_name: pod_dev
+    container_name: "pod_api_dev${VERSION}"
 
     tty: true
     

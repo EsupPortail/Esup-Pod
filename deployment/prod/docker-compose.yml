@@ -16,7 +16,7 @@ services:
       # Contexte à la racine du projet
       context: ../../
       dockerfile: deployment/prod/Dockerfile
-    container_name: pod_prod
+    container_name: "pod_prod${VERSION}"
     restart: always
     depends_on:
       - db

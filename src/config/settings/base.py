@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-
+POD_VERSION = os.getenv("VERSION", "0.0.0")
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1").split(",")
 
@@ -85,9 +85,9 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Pod V5 API',
+    'TITLE': 'Pod REST API',
     'DESCRIPTION': 'Documentation de l\'API pour le projet Pod V5',
-    'VERSION': '1.0.0',
+    'VERSION': POD_VERSION,
     'SERVE_INCLUDE_SCHEMA': False,
     'COMPONENT_SPLIT_REQUEST': True
 }

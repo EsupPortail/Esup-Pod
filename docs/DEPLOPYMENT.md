@@ -21,14 +21,14 @@ La configuration d’infrastructure est entièrement gérée via les **variables
 Placez-vous dans le dossier de déploiement de développement :
 
 ```bash
-cd deployment/dev/
+(pod_v5) benjaminsere@ul63122:/usr/local/django_projects/Pod_V5_Back$ cd deployment/dev/
 ```
 
 **Première installation uniquement :**
 Créez un lien symbolique pour que Docker puisse lire le fichier `.env` situé à la racine :
 
 ```bash
-ln -s ../../.env .env
+(pod_v5) benjaminsere@ul63122:/usr/local/django_projects/Pod_V5_Back/deployment/dev$ ln -s ../../.env .env
 ```
 
 ### Lancer les conteneurs
@@ -36,7 +36,7 @@ ln -s ../../.env .env
 Construire et démarrer les conteneurs en arrière-plan :
 
 ```bash
-sudo docker-compose up -d --build
+(pod_v5) benjaminsere@ul63122:/usr/local/django_projects/Pod_V5_Back/deployment/dev$ sudo docker-compose up -d --build
 ```
 
 ### Workflow de développement
@@ -46,36 +46,71 @@ Une fois les conteneurs lancés, voici les étapes pour travailler sur l'API :
 1.  **Entrer dans le conteneur API :**
 
     ```bash
-    sudo docker-compose exec api bash
+    (pod_v5) benjaminsere@ul63122:/usr/local/django_projects/Pod_V5_Back/deployment/dev$ sudo docker-compose exec api bash
     ```
 
 2.  **Appliquer les migrations (si nécessaire) :**
 
     ```bash
-    python manage.py migrate
+    root@74dfe514ff53:/app#  python manage.py migrate
     ```
 
 3.  **Créer un superuser (si nécessaire) :**
 
     ```bash
-    python manage.py createsuperuser
+    root@74dfe514ff53:/app#  python manage.py createsuperuser
     ```
 
 4.  **Collecter les fichiers statiques (si nécessaire) :**
 
     ```bash
-    python manage.py collectstatic
+    root@74dfe514ff53:/app#  python manage.py collectstatic
     ```
 
 5.  **Lancer le serveur de développement :**
 
     ```bash
-    python manage.py runserver
+    root@74dfe514ff53:/app#  python manage.py runserver
     ```
 
     *L'API est accessible sur `http://localhost:8000`.*
 
------
+Voici une version **claire et professionnelle en anglais** de la section qui explique comment se connecter à la base de données :
+
+---
+
+### Connecting to the Database
+
+Once your development environment is up and running, you can access the MariaDB database directly from the container.
+
+1. **Enter the database container:**
+
+```bash
+(pod_v5) benjaminsere@ul63122:/usr/local/django_projects/Pod_V5_Back/deployment/dev$ sudo docker-compose exec db bash
+```
+
+2. **Connect to the database using the credentials defined in your `.env` file:**
+
+```bash
+root@62d310619d28:/# mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE"
+```
+
+* `$MYSQL_USER` → your database username
+* `$MYSQL_PASSWORD` → your database password
+* `$MYSQL_DATABASE` → the database name
+
+> **Note:** These environment variables are automatically loaded from your `.env` file and passed to the container. If you prefer, you can replace them with the actual values for direct login:
+
+```bash
+mysql -uroot -proot_password pod_v5
+```
+
+3. **Once connected, you can run standard SQL commands**, for example:
+
+```sql
+SHOW TABLES;
+SELECT * FROM your_table LIMIT 10;
+```
 
 ## 3\. Gestion et Arrêt (Dev)
 
@@ -138,11 +173,3 @@ sudo docker container prune -f
 ```bash
 sudo docker system prune -af
 ```
-
------
-
-## 📌 Résumé technique
-
-  * **En Dev :** Le code source local est "monté" dans le conteneur (`volumes`). Toute modification de fichier sur votre machine est immédiatement visible dans le conteneur (Hot Reload).
-  * **En Prod :** Le code est "copié" dans l'image. L'image est immuable, autonome et optimisée pour la performance.
-  * **Sécurité :** Toute configuration sensible (Mots de passe, Clés API) doit impérativement passer par le fichier `.env`.
