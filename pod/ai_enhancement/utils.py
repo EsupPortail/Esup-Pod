@@ -284,9 +284,9 @@ def send_notification_enhancement(video, success: bool = True):
             "Something went wrong with IA improvement on “%(content_title)s”."
             + " Suggestions for improvement can't be available on %(site_title)s."
         ) % {
-                      "content_title": video.title,
-                      "site_title": __TITLE_SITE__,
-                  }
+            "content_title": video.title,
+            "site_title": __TITLE_SITE__,
+        }
 
     pwa_notify_user(
         video.owner,
@@ -296,10 +296,10 @@ def send_notification_enhancement(video, success: bool = True):
     )
 
 
-def send_email_enhancement(video,success: bool = True) -> None:
+def send_email_enhancement(video, success: bool = True) -> None:
     """Send email notification on video improvement completion."""
     if DEBUG:
-        logger.info("SEND EMAIL ON IA IMPROVEMENT COMPLETION")
+        logger.info("SEND EMAIL ON IA IMPROVEMENT COMPLETION %s", success)
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
     content_url = "%s:%s" % (url_scheme, video.get_full_url())
     subject = "[%s] %s" % (
@@ -307,27 +307,27 @@ def send_email_enhancement(video,success: bool = True) -> None:
         _("IA improvement #%(content_id)s completed") % {"content_id": video.id},
     )
     main_text = _(
-                "IA improvement “%(content_title)s” has been completed"
-                + ", and is now available on %(site_title)s."
-            ) % {
-                "content_title": "<strong>%s</strong>" % video.title,
-                "site_title": __TITLE_SITE__,
-            }
+        "IA improvement “%(content_title)s” has been completed"
+        + ", and is now available on %(site_title)s."
+    ) % {
+        "content_title": "<strong>%s</strong>" % video.title,
+        "site_title": __TITLE_SITE__,
+    }
     if not success:
         main_text = _(
-                "Something went wrong with IA improvement on “%(content_title)s” "
-                + " on %(site_title)s."
-            ) % {
-                "content_title": "<strong>%s</strong>" % video.title,
-                "site_title": __TITLE_SITE__,
-            }
+            "Something went wrong with IA improvement on “%(content_title)s” "
+            + " on %(site_title)s."
+        ) % {
+            "content_title": "<strong>%s</strong>" % video.title,
+            "site_title": __TITLE_SITE__,
+        }
 
     html_message = (
         '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
                 </p><p>%s</p>'
         % (
             _("Hello,"),
-           main_text,
+            main_text,
             _("You will find it here:"),
             content_url,
             content_url,
