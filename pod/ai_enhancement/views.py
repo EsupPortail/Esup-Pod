@@ -74,7 +74,7 @@ def toggle_webhook(request: WSGIRequest):
                 else:
                     notify_user(enhancement.video, success=False)
                     return JsonResponse(
-                        {"status": "Enhancement has not yet been successfully achieved.", "data": data},
+                        {"status": "Enhancement has not yet been successfully achieved."},
                         status=500,
                     )
             else:
