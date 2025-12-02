@@ -282,7 +282,7 @@ def send_notification_enhancement(video, success: bool = True):
     if not success:
         message = _(
             "Something went wrong with IA improvement on “%(content_title)s”."
-            + " Suggestions for improvement can't be available on %(site_title)s."
+            + " Suggestions for improvement can’t be available on %(site_title)s."
         ) % {
             "content_title": video.title,
             "site_title": __TITLE_SITE__,
