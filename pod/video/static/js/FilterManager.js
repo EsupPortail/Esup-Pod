@@ -278,7 +278,7 @@ class FilterManager {
 
       const label = document.createElement("a");
       label.innerText = interpolate(
-        gettext("%(name)s : %(label)s"),
+        gettext("%(name)s: %(label)s"),
         { name: currentFilter.name, label: data.label },
         true,
       );
