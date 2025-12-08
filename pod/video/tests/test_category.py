@@ -186,22 +186,21 @@ class TestCategory(TestCase):
             "title": json.dumps("New Category title"),
             "videos": json.dumps([self.video_2.slug]),
         }
-        # not Authenticated, should return HttpResponseRedirect:302
+
+        # Not authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
             reverse("video:edit_category", kwargs={"c_slug": self.cat_1.slug}),
             data,
         )
-
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual(response.status_code, 302)
 
-        # not Ajax request, should return HttpResponseForbidden:403
+        # Not Ajax request, should return HttpResponseForbidden:403
         self.client.force_login(self.owner_user)
         response = self.client.post(
             reverse("video:edit_category", kwargs={"c_slug": self.cat_1.slug}),
             data,
         )
-
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
 
@@ -210,13 +209,12 @@ class TestCategory(TestCase):
         response = self.client.post(
             reverse("video:edit_category", kwargs={"c_slug": self.cat_1.slug}),
             data,
-            headers={"x-requested-with": "XMLHttpRequest"},
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
-
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(
-            json.loads(response.content)["message"],
+            response.json()["message"],
             "You do not have rights to edit this category",
         )
 
@@ -225,19 +223,20 @@ class TestCategory(TestCase):
         response = self.client.post(
             reverse("video:edit_category", kwargs={"c_slug": self.cat_1.slug}),
             data,
-            headers={"x-requested-with": "XMLHttpRequest"},
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
-        response_data = json.loads(response.content)
+        response_data = response.json()
+        expected_slug = f"{self.owner_user.id}-{slugify(json.loads(data['title']))}"
         expected_data = {
             "success": True,
-            "title": "New Category title",
-            "slug": "%s-%s" % (self.owner_user.id, slugify("New Category title")),
+            "title": json.loads(data["title"]),
+            "slug": expected_slug,
             "videos": [self.video_2],
         }
-        actual_data = Category.objects.filter(
+
+        actual_cat = Category.objects.filter(
             owner=self.owner_user, slug=expected_data["slug"]
-        )
-        actual_cat = actual_data.first()
+        ).first()
 
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
@@ -246,18 +245,16 @@ class TestCategory(TestCase):
         self.assertEqual(actual_cat.title, expected_data["title"])
         self.assertEqual(actual_cat.slug, expected_data["slug"])
         self.assertEqual(actual_cat.video.count(), 1)
-        self.assertEqual(actual_cat.video.all().first(), self.video_2)
+        self.assertEqual(actual_cat.video.first(), self.video_2)
         self.assertCountEqual(list(actual_cat.video.all()), expected_data["videos"])
 
-        # Add video in another category
-        # should return HttpResponseBadRequest:400
+        # Add video in another category should return HttpResponseBadRequest:400
         response = self.client.post(
             reverse("video:edit_category", kwargs={"c_slug": self.cat_2.slug}),
             data,
-            headers={"x-requested-with": "XMLHttpRequest"},
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
-        response_data = json.loads(response.content)
-
+        response_data = response.json()
         self.assertIsInstance(response, HttpResponseBadRequest)
         self.assertEqual(response.status_code, 400)
         self.assertFalse(response_data["success"])
@@ -266,13 +263,12 @@ class TestCategory(TestCase):
             "One or many videos already have a category.",
         )
 
-        # Ajax POST request whitout required field(s),
-        # should return HttpResponseBadRequest:400
-        del data["title"]
+        # Ajax POST request without required field(s), should return HttpResponseBadRequest:400
+        incomplete_data = {"videos": json.dumps([self.video_2.slug])}  # missing title
         response = self.client.post(
-            reverse("video:edit_category", kwargs={"c_slug": expected_data["slug"]}),
-            data,
-            headers={"x-requested-with": "XMLHttpRequest"},
+            reverse("video:edit_category", kwargs={"c_slug": expected_slug}),
+            incomplete_data,
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertIsInstance(response, HttpResponseBadRequest)
         self.assertEqual(response.status_code, 400)
@@ -296,7 +292,7 @@ class TestCategory(TestCase):
     def test_get_categories_aside(self) -> None:
         """Test get categories for filter aside elements."""
         self.client.force_login(self.owner_user)
-        url = reverse("video:get_categories_list")
+        url = reverse("video:get_render_categories_list")
         response = self.client.get(url, headers={"x-requested-with": "XMLHttpRequest"})
         response_data = response.context
         self.assertEqual(response.status_code, 200)
@@ -360,6 +356,40 @@ class TestCategory(TestCase):
         )
         self.assertEqual(Category.objects.filter(slug=self.cat_1.slug).count(), 0)
         print(" --->  test_post_delete_category of TestCategory: OK!")
+
+    def test_get_categories_for_user_mapping(self):
+        """get_categories_for_user should return a dict slug -> [video_slug]."""
+        from pod.video import views
+
+        mapping = views.get_categories_for_user(self.owner_user)
+        self.assertIsInstance(mapping, dict)
+        self.assertIn(self.cat_1.slug, mapping)
+        self.assertIn(self.video.slug, mapping[self.cat_1.slug])
+        print(" --->  test_get_categories_for_user_mapping: OK!")
+
+    def test_get_videos_categories_list_unauthenticated_returns_empty(self):
+        """get_videos_categories_list should return {} for unauthenticated user."""
+        from django.test.client import RequestFactory
+        from django.contrib.auth.models import AnonymousUser
+        from pod.video import views
+
+        factory = RequestFactory()
+        request = factory.get("/fake")
+        request.user = AnonymousUser()
+        result = views.get_videos_categories_list(request)
+        self.assertIsInstance(result, dict)
+        self.assertEqual(result, {})
+        print(" --->  test_get_videos_categories_list_unauthenticated_returns_empty: OK!")
+
+    def test_get_json_videos_categories_returns_html_response(self):
+        """get_render_categories_list should return an HTML rendering of the categories."""
+        self.client.force_login(self.owner_user)
+        url = reverse("video:get_render_categories_list")
+        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("text/html", response["Content-Type"])
+        self.assertIn(self.cat_1.title, response.content.decode("utf-8"))
+        print(" --->  test_get_render_categories_list: OK!")
 
     def tearDown(self) -> None:
         del self.video

@@ -23,6 +23,12 @@ OIDC_NAME = getattr(settings, "OIDC_NAME", "OpenID Connect")
 def authentication_login(request):
     """Handle authentication login attempt."""
     referrer = request.GET["referrer"] if request.GET.get("referrer") else "/"
+
+    if referrer.startswith("https:/") and not referrer.startswith("https://"):
+        referrer = "https://" + referrer[len("https:/") :]
+    elif referrer.startswith("http:/") and not referrer.startswith("http://"):
+        referrer = "http://" + referrer[len("http:/") :]
+
     host = (
         "https://%s" % request.get_host()
         if (request.is_secure())

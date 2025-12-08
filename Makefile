@@ -41,9 +41,9 @@ upgrade:
 
 # Création des données initiales dans la BDD SQLite intégrée
 createDB:
-	find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
-	find . -path "*/migrations/*.pyc" -delete
 	python3 manage.py delete_flatpages_migrations
+	find . -path "*/migrations/*.py" -not -name "__init__.py" -not -path "./.venv/*" -delete
+	find . -path "*/migrations/*.pyc" -delete
 	make updatedb
 	make migrate
 	python3 -Wd manage.py loaddata initial_data

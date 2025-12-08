@@ -16,6 +16,42 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.7\n"
 
+#: pod/video/templates/videos/dashboard.html
+msgid "Go to “Multiple actions”"
+msgstr "Aller vers « Actions multiples »"
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Clear all filters"
+msgstr "Effacer tous les filtres"
+
+#: pod/video/views.py
+msgid "No videos matched your filters. Please try adjusting them."
+msgstr "Aucune vidéo ne correspond à vos filtres. Veuillez les modifier."
+
+#: pod/video/views.py
+msgid "You haven’t uploaded any videos yet."
+msgstr "Vous n’avez pas encore mis en ligne de vidéos."
+
+#: pod/video/templates/videos/filter_aside_dashboard.html
+msgid "Dashboard Filters"
+msgstr "Filtres du tableau de bord"
+
+#: pod/video/templates/videos/filter_aside_dashboard.html
+msgid "Search by title"
+msgstr "Rechercher par titre"
+
+#: pod/video/templates/videos/filter_aside_dashboard.html
+msgid "Enter video title"
+msgstr "Saisissez le titre de la vidéo"
+
+#: pod/video/templates/videos/filter_aside_dashboard.html
+msgid "Use the search field to find a video by its title in your dashboard"
+msgstr "Utilisez le champ de recherche pour retrouver une vidéo par son titre dans votre tableau de bord"
+
+#: pod/video/templates/videos/filter_aside_dashboard.html
+msgid "Search for a video by title from your dashboard"
+msgstr "Recherchez une vidéo par titre depuis votre tableau de bord"
+
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
 msgstr "Amélioration par l’intelligence artificielle"
@@ -443,7 +479,7 @@ msgid ""
 "IA improvement “%(content_title)s” has been completed, and is now available "
 "on %(site_title)s."
 msgstr ""
-"Amélioration de l’AI « %(content_title)s » a été achevée, et est maintenant "
+"Amélioration de l’IA « %(content_title)s » achevée, elle est maintenant "
 "disponible sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py pod/meeting/utils.py
@@ -5006,9 +5042,7 @@ msgstr "Doit être authentifié"
 
 #: pod/main/models.py
 msgid "Check this box if users must be authenticated to view content."
-msgstr ""
-"Cochez cette case si les utilisateurs doivent être authentifiés pour voir le "
-"contenu."
+msgstr "Cochez cette case si les utilisateurs doivent être authentifiés pour voir le contenu."
 
 #: pod/main/models.py
 msgid "Auto slide"
@@ -7182,6 +7216,11 @@ msgstr "Gérer la liste de lecture"
 #: pod/video/views.py
 msgid "Sorry, no video found."
 msgstr "Désolé, aucune vidéo trouvée."
+
+#: pod/video/templates/videos/video_list_table_selectable.html
+#: pod/video/templates/videos/video_list_grid_selectable.html
+msgid "Click on “Add a video” to start populating your dashboard."
+msgstr "Cliquez sur « Ajouter une vidéo » pour commencer à remplir votre tableau de bord. La vidéo apparaîtra une fois ajoutée."
 
 #: pod/playlist/templates/playlist/playlist-videos-list.html
 #: pod/recorder/templates/recorder/record_list.html
@@ -9840,9 +9879,13 @@ msgstr "Filtrer par titre"
 msgid "Select video(s) to edit"
 msgstr "Sélectionnez la/les vidéo(s) à éditer"
 
-#: pod/video/templates/videos/change_video_owner.html
+#: pod/video/templates/videos/dashboard.html
 msgid "Select/Deselect all videos"
 msgstr "Sélectionner/Désélectionner toutes les vidéos"
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Clear filters"
+msgstr "Effacer les filtres"
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Submit changes"
@@ -9857,13 +9900,13 @@ msgstr "Actions multiples"
 msgid ""
 "To edit several videos at the same time, you can check the ones you want "
 "then select an action to perform using the drop-down menu below, finally "
-"apply the modification. You can also refine your video search using the "
-"filters in the right menu."
+"apply the modification. You can also use the filters at the top of the "
+"page to refine your video selection."
 msgstr ""
 "Pour éditer plusieurs vidéos en même temps, vous pouvez cocher celles que "
 "vous voulez modifier, puis sélectionner une action à effectuer dans le "
-"formulaire ci-dessous puis appliquer. Vous pouvez également affiner votre "
-"recherche de vidéos en utilisant les filtres du menu de droite."
+"formulaire ci-dessous puis appliquer. Vous pouvez également utiliser "
+"les filtres en haut de page pour affiner votre sélection de vidéos."
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Choose an action"
@@ -9907,6 +9950,10 @@ msgid "Select all"
 msgstr "Tout sélectionner"
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Select videos to enable bulk actions."
+msgstr "Sélectionnez des vidéos pour activer les actions multiples."
+
+#: pod/video/templates/videos/dashboard.html
 msgid "Clear selection"
 msgstr "Effacer la sélection"
 
@@ -9919,6 +9966,10 @@ msgstr ""
 "« Ajouter une nouvelle vidéo » pour en ajouter une"
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Display mode"
+msgstr "Mode d’affichage"
+
+#: pod/video/templates/videos/dashboard.html
 msgid "Grid display mode"
 msgstr "Mode d’affichage par grille"
 
@@ -9928,11 +9979,12 @@ msgstr "Mode d’affichage par liste"
 
 #: pod/video/templates/videos/filter_aside.html
 msgid ""
-"The videos on the left are automatically sorted according to the filters "
-"selected below. Check options to adjust results."
+"You can create categories and link them to your videos. Then, use the search "
+"field below to easily find a category so you can edit or delete it."
 msgstr ""
-"Les vidéos à gauche sont automatiquement triées en fonction des filtres "
-"sélectionnés ci-dessous. Vérifiez les options pour ajuster les résultats."
+"Vous pouvez créer des catégories et les associer à vos vidéos. "
+"Ensuite, utilisez le champ de recherche ci-dessous pour retrouver "
+"facilement une catégorie afin de la modifier ou la supprimer."
 
 #: pod/video/templates/videos/filter_aside.html
 msgid "Filter by user"
