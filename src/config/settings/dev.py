@@ -3,6 +3,7 @@ import os
 
 DEBUG = True
 
+CORS_ALLOW_ALL_ORIGINS = True
 # INSTALLED_APPS += ["debug_toolbar"]
 # MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 
@@ -39,4 +40,3 @@ LOGGING = {
         },
     },
 }
-CORS_ALLOW_ALL_ORIGINS = True

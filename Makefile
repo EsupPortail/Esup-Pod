@@ -3,7 +3,8 @@ PYTHON=python3
 DJANGO_MANAGE=$(PYTHON) manage.py
 
 DOCKER_COMPOSE_FILE=deployment/dev/docker-compose.yml
-DOCKER_COMPOSE_CMD=docker-compose -f $(DOCKER_COMPOSE_FILE)
+# Utilisation de la syntaxe moderne v2 'docker compose' au lieu de 'docker-compose'
+DOCKER_COMPOSE_CMD=docker compose -f $(DOCKER_COMPOSE_FILE)
 
 .PHONY: dev-run dev-shell dev-build dev-clean dev-stop
 
@@ -22,7 +23,7 @@ dev-stop:
 	$(DOCKER_COMPOSE_CMD) stop
 
 dev-clean:
-	$(DOCKER_COMPOSE_CMD) down --remove-orphans
+	$(DOCKER_COMPOSE_CMD) down --remove-orphans --volumes
 
 init:
 	python3 -m venv venv
