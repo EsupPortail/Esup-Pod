@@ -26,3 +26,5 @@ Thumbs.db
 
 # --- Docker ---
 mysql_data/src/config/settings/settings_local.py
+
+.setup_done
