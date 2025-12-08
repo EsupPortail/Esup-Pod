@@ -1,0 +1,36 @@
+name: Cross-Platform Test
+
+on:
+  push:
+    branches: [ main, improve-deployment ]
+  pull_request:
+
+jobs:
+  test-deploy-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Étape cruciale : Git sur le runner Windows doit respecter vos réglages .gitattributes
+      - name: Configure Git Line Endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
+      - name: Build and Run with Docker Compose
+        run: |
+          docker compose -f deployment/dev/docker-compose.yml up -d --build
+          
+      - name: Wait for container to be ready
+        run: Start-Sleep -Seconds 30
+
+      - name: Check if container is running
+        run: |
+          docker ps
+          # Test simple pour voir si le port répond (curl sur Windows)
+          curl -v http://localhost:8000/
+          
+      - name: Show logs (if failure)
+        if: failure()
+        run: docker compose -f deployment/dev/docker-compose.yml logs
