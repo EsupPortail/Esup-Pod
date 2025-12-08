@@ -1,36 +1,74 @@
-name: Cross-Platform Test
+name: Cross-Platform CI
 
 on:
   push:
-    branches: [ main, improve-deployment ]
+    branches: [ main, develop, improve-deployment ]
   pull_request:
 
 jobs:
-  test-deploy-windows:
-    runs-on: windows-latest
+  # JOB 1 : Le test ultime Docker (Sur Linux uniquement)
+  docker-deployment-test:
+    name: Docker Deployment (Linux)
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Étape cruciale : Git sur le runner Windows doit respecter vos réglages .gitattributes
-      - name: Configure Git Line Endings
+      # ÉTAPE CRUCIALE : Création du .env à partir de l'exemple
+      - name: Create .env file
+        run: cp .env.example .env
+
+      - name: Build and Run Docker Compose
+        run: docker compose -f deployment/dev/docker-compose.yml up -d --build
+
+      - name: Wait for service availability
+        run: sleep 15
+
+      - name: Test API Endpoint
+        run: |
+          curl --fail http://localhost:8000/ || (docker compose -f deployment/dev/docker-compose.yml logs && exit 1)
+          echo "Docker deployment successful!"
+
+  # JOB 2 : Vérification de compatibilité Code (Windows & Mac)
+  native-os-test:
+    name: Native Test on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+        python-version: ['3.12']
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Configuration spéciale Git pour Windows (Evite les soucis CRLF)
+      - name: Configure Git Line Endings (Windows)
+        if: runner.os == 'Windows'
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
 
-      - name: Build and Run with Docker Compose
-        run: |
-          docker compose -f deployment/dev/docker-compose.yml up -d --build
-          
-      - name: Wait for container to be ready
-        run: Start-Sleep -Seconds 30
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
 
-      - name: Check if container is running
+      # On teste si on arrive à installer les dépendances sur Windows/Mac
+      - name: Install Dependencies
         run: |
-          docker ps
-          # Test simple pour voir si le port répond (curl sur Windows)
-          curl -v http://localhost:8000/
-          
-      - name: Show logs (if failure)
-        if: failure()
-        run: docker compose -f deployment/dev/docker-compose.yml logs
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r deployment/dev/requirements.txt
+
+      # On créé un faux .env pour que Django ne plante pas
+      - name: Create .env file
+        shell: bash
+        run: cp .env.example .env
+
+      # On lance les tests Django (sans Docker) pour vérifier la compatibilité du code
+      - name: Run Django Tests
+        run: |
+          python manage.py test --settings=config.settings.base
