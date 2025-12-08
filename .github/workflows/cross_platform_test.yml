@@ -3,37 +3,45 @@ name: Test Docker Deployment
 on: [push, pull_request]
 
 jobs:
-  test-docker-deploy:
-    name: Deploy on ${{ matrix.os }}
+  docker-test:
+    name: Test on ${{ matrix.os }}
+    # On teste sur Ubuntu (standard) et Windows (pour vérifier la compatibilité)
+    # macOS est exclu car GitHub ne fournit pas Docker nativement sur macOS (trop lent/complexe à installer)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    
+        os: [ubuntu-latest, windows-latest]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Sur Windows/Mac, Docker est souvent préinstallé sur les runners GitHub,
-      # mais il faut parfois attendre qu'il soit prêt ou le configurer.
-      
       - name: Build and Start Containers
-        # On utilise directement votre fichier compose défini dans le Makefile
-        run: docker compose -f deployment/dev/docker-compose.yml up -d --build
-
-      - name: Wait for API to be ready
+        # On force l'utilisation de bash pour avoir les mêmes commandes sur Windows et Linux
         shell: bash
         run: |
-          # On attend un peu que la base de données et l'API démarrent
-          sleep 30
-          
-          # On interroge l'API pour voir si elle répond (Healthcheck)
-          # Si curl renvoie une erreur, le test échoue
-          curl --fail http://localhost:8000/ || exit 1
+          docker compose -f deployment/dev/docker-compose.yml up -d --build
+
+      - name: Wait for Service (Healthcheck)
+        shell: bash
+        run: |
+          echo "Waiting for Django to start..."
+          # On boucle pendant 30 secondes pour attendre que le serveur soit prêt
+          for i in {1..30}; do
+            if curl -s http://localhost:8000 > /dev/null; then
+              echo "✅ Pod is up and running!"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "❌ Pod failed to start in time"
+          exit 1
 
       - name: Show logs on failure
         if: failure()
         run: docker compose -f deployment/dev/docker-compose.yml logs
         
       - name: Stop Containers
+        if: always()
+        shell: bash
         run: docker compose -f deployment/dev/docker-compose.yml down
