@@ -73,7 +73,7 @@ class Owner(models.Model):
     accessgroups = models.ManyToManyField(
         "authentication.AccessGroup", 
         blank=True,
-        related_name='owners',
+        related_name='users',
         verbose_name=_("Access Groups")
     )
     sites = models.ManyToManyField(

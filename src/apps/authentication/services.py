@@ -3,17 +3,45 @@ from typing import Optional, Dict, Any, List
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.core.exceptions import ObjectDoesNotExist
 from django_cas_ng.utils import get_cas_client
-from ldap3 import Server, Connection, ALL
-from .models import Owner, AccessGroup, AFFILIATION_STAFF
+from ldap3 import Server, Connection, ALL, SUBTREE
+from ldap3.core.exceptions import LDAPBindError, LDAPSocketOpenError
+
+from .models import Owner, AccessGroup
+from .models.utils import AFFILIATION, AFFILIATION_STAFF, DEFAULT_AFFILIATION, AUTH_TYPE
 
 UserModel = get_user_model()
 logger = logging.getLogger(__name__)
 
+USER_LDAP_MAPPING_ATTRIBUTES = getattr(
+    settings,
+    "USER_LDAP_MAPPING_ATTRIBUTES",
+    {
+        "uid": "uid",
+        "mail": "mail",
+        "last_name": "sn",
+        "first_name": "givenname",
+        "primaryAffiliation": "eduPersonPrimaryAffiliation",
+        "affiliations": "eduPersonAffiliation",
+        "groups": "memberOf",
+        "establishment": "establishment",
+    },
+)
+
+AUTH_LDAP_USER_SEARCH = getattr(
+    settings,
+    "AUTH_LDAP_USER_SEARCH",
+    ("ou=people,dc=univ,dc=fr", "(uid=%(uid)s)"),
+)
+
+GROUP_STAFF = AFFILIATION_STAFF
+
 def verify_cas_ticket(ticket: str, service_url: str) -> Optional[User]:
     """
-    Verifies the CAS service ticket and retrieves or creates the corresponding Django user.
-    Also synchronizes user profile data via CAS attributes.
+    Verifies the CAS service ticket using django-cas-ng utils.
+    Then triggers the exact same population logic as the old backend.
     """
     client = get_cas_client(service_url=service_url)
     username, attributes, _ = client.verify_ticket(ticket)
@@ -21,9 +49,6 @@ def verify_cas_ticket(ticket: str, service_url: str) -> Optional[User]:
     if not username:
         logger.warning("CAS ticket validation failed")
         return None
-
-    if attributes:
-        logger.debug(f"CAS Attributes: {attributes}")
 
     if getattr(settings, 'CAS_FORCE_CHANGE_USERNAME_CASE', 'lower') == 'lower':
         username = username.lower()
@@ -33,98 +58,204 @@ def verify_cas_ticket(ticket: str, service_url: str) -> Optional[User]:
     if created:
         user.set_unusable_password()
         user.save()
-        
-    if hasattr(user, 'owner'):
-        user.owner.auth_type = "CAS"
-        user.owner.save()
 
-    sync_user_data(user, attributes)
+    if not hasattr(user, 'owner'):
+        Owner.objects.create(user=user)
+
+    populate_user(user, attributes)
 
     return user
 
-def sync_user_data(user: User, cas_attributes: Optional[Dict[str, Any]]) -> None:
+def populate_user(user: User, cas_attributes: Optional[Dict[str, Any]]) -> None:
     """
-    Synchronizes user attributes from CAS and LDAP sources and updates staff status.
+    Strict implementation of populatedCASbackend.populateUser
     """
-    owner, _ = Owner.objects.get_or_create(user=user)
+    owner = user.owner
     owner.auth_type = "CAS"
+    
+    delete_synchronized_access_group(owner)
 
-    if cas_attributes:
-        if 'mail' in cas_attributes:
-            user.email = cas_attributes['mail']
-        if 'givenName' in cas_attributes:
-            user.first_name = cas_attributes['givenName']
-        if 'sn' in cas_attributes:
-            user.last_name = cas_attributes['sn']
-        
-        affil = cas_attributes.get('primaryAffiliation') or cas_attributes.get('eduPersonPrimaryAffiliation')
-        if affil:
-            owner.affiliation = affil
+    populate_strategy = getattr(settings, "POPULATE_USER", None)
 
-    ldap_config = getattr(settings, "LDAP_SERVER", None)
-    if ldap_config and ldap_config.get("url"):
-        try:
-            sync_from_ldap(user, owner)
-        except Exception as e:
-            logger.error(f"LDAP sync error: {e}")
+    if populate_strategy == "CAS" and cas_attributes:
+        populate_user_from_cas(user, owner, cas_attributes)
+    
+    if populate_strategy == "LDAP": 
+        ldap_config = getattr(settings, "LDAP_SERVER", {})
+        if ldap_config.get("url"):
+            populate_user_from_ldap(user, owner)
 
-    if owner.affiliation in AFFILIATION_STAFF:
-        user.is_staff = True
-    else:
-        if not user.is_superuser:
-            user.is_staff = False 
-
+    owner.save()
     user.save()
+
+def populate_user_from_cas(user: User, owner: Owner, attributes: Dict[str, Any]) -> None:
+    """
+    Strict implementation of populatedCASbackend.populateUserFromCAS
+    """
+    owner.affiliation = attributes.get('primaryAffiliation', DEFAULT_AFFILIATION)
+
+    if 'affiliation' in attributes:
+        affiliations = attributes['affiliation']
+        if isinstance(affiliations, str):
+            affiliations = [affiliations]
+            
+        create_group_from_aff = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
+        
+        for affiliation in affiliations:
+            if affiliation in AFFILIATION_STAFF:
+                user.is_staff = True
+            
+            if create_group_from_aff:
+                accessgroup, group_created = AccessGroup.objects.get_or_create(code_name=affiliation)
+                if group_created:
+                    accessgroup.display_name = affiliation
+                    accessgroup.auto_sync = True
+                accessgroup.sites.add(Site.objects.get_current())
+                accessgroup.save()
+                owner.accessgroups.add(accessgroup)
+
+    if 'groups' in attributes:
+        groups = attributes['groups']
+        if isinstance(groups, str):
+            groups = [groups]
+        assign_accessgroups(groups, user)
+
+def populate_user_from_ldap(user: User, owner: Owner) -> None:
+    """
+    Strict implementation of populatedCASbackend.populateUserFromLDAP
+    """
+    list_value = []
+    for val in USER_LDAP_MAPPING_ATTRIBUTES.values():
+        list_value.append(str(val))
+
+    conn = get_ldap_conn()
+    if conn:
+        entry = get_ldap_entry(conn, user.username, list_value)
+        if entry:
+            _apply_ldap_entry_to_user(user, owner, entry)
+
+def _apply_ldap_entry_to_user(user, owner, entry):
+    """
+    Internal helper to map LDAP entry to User/Owner object
+    (formerly populate_user_from_entry in populatedCASbackend.py)
+    """
+    user.email = get_entry_value(entry, "mail", "")
+    user.first_name = get_entry_value(entry, "first_name", "")
+    user.last_name = get_entry_value(entry, "last_name", "")
+    user.save()
+
+    owner.affiliation = get_entry_value(entry, "primaryAffiliation", DEFAULT_AFFILIATION)
+    owner.establishment = get_entry_value(entry, "establishment", "")
     owner.save()
 
-def sync_from_ldap(user: User, owner: Owner) -> None:
-    """
-    Connects to the configured LDAP server to fetch and map additional user details.
-    """
-    ldap_settings = settings.LDAP_SERVER
-    server = Server(ldap_settings['url'], get_info=ALL)
-    
-    conn = Connection(
-        server, 
-        getattr(settings, "AUTH_LDAP_BIND_DN", ""), 
-        getattr(settings, "AUTH_LDAP_BIND_PASSWORD", ""), 
-        auto_bind=True
-    )
+    affiliations = get_entry_value(entry, attribute="affiliations", default=[])
+    if isinstance(affiliations, str): affiliations = [affiliations]
 
-    search_base = getattr(settings, "AUTH_LDAP_USER_SEARCH_BASE", "ou=people,dc=univ,dc=fr")
-    search_filter = f"(uid={user.username})"
-    attributes = ['mail', 'sn', 'givenName', 'eduPersonPrimaryAffiliation', 'eduPersonAffiliation']
+    create_group_from_aff = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
 
-    conn.search(search_base, search_filter, attributes=attributes)
-    
-    if len(conn.entries) > 0:
-        entry = conn.entries[0]
+    for affiliation in affiliations:
+        if affiliation in AFFILIATION_STAFF:
+            user.is_staff = True
         
-        if entry.mail: user.email = str(entry.mail)
-        if entry.givenName: user.first_name = str(entry.givenName)
-        if entry.sn: user.last_name = str(entry.sn)
-        
-        if entry.eduPersonPrimaryAffiliation:
-            owner.affiliation = str(entry.eduPersonPrimaryAffiliation)
-        
-        if entry.eduPersonAffiliation:
-            affiliations = [str(a) for a in entry.eduPersonAffiliation] if isinstance(entry.eduPersonAffiliation, list) else [str(entry.eduPersonAffiliation)]
-            update_access_groups(owner, affiliations)
+        if create_group_from_aff:
+            accessgroup, group_created = AccessGroup.objects.get_or_create(code_name=affiliation)
+            if group_created:
+                accessgroup.display_name = affiliation
+                accessgroup.auto_sync = True
+            accessgroup.sites.add(Site.objects.get_current())
+            accessgroup.save()
+            owner.accessgroups.add(accessgroup)
 
-def update_access_groups(owner: Owner, affiliations_list: List[str]) -> None:
-    """
-    Updates the owner's access groups based on the provided affiliation list.
-    Only modifies groups marked for auto-synchronization.
-    """
-    current_auto_groups = owner.accessgroups.filter(auto_sync=True)
-    owner.accessgroups.remove(*current_auto_groups)
+    groups_element = []
+    ldap_group_attr = USER_LDAP_MAPPING_ATTRIBUTES.get("groups")
     
-    for aff in affiliations_list:
-        group, created = AccessGroup.objects.get_or_create(code_name=str(aff))
-        if created:
-            group.name = str(aff)
-            group.display_name = str(aff)
-            group.auto_sync = True
-            group.save()
-        
-        owner.accessgroups.add(group)
+    if ldap_group_attr and entry[ldap_group_attr]:
+         groups_element = entry[ldap_group_attr].values
+    
+    assign_accessgroups(groups_element, user)
+
+
+def assign_accessgroups(groups_element, user) -> None:
+    """
+    Strict implementation of assign_accessgroups
+    """
+    create_group_from_groups = getattr(settings, "CREATE_GROUP_FROM_GROUPS", False)
+    
+    for group in groups_element:
+        if group in GROUP_STAFF:
+            user.is_staff = True
+            
+        if create_group_from_groups:
+            accessgroup, group_created = AccessGroup.objects.get_or_create(code_name=group)
+            if group_created:
+                accessgroup.display_name = group
+                accessgroup.auto_sync = True
+            accessgroup.sites.add(Site.objects.get_current())
+            accessgroup.save()
+            user.owner.accessgroups.add(accessgroup)
+        else:
+            try:
+                accessgroup = AccessGroup.objects.get(code_name=group)
+                user.owner.accessgroups.add(accessgroup)
+            except ObjectDoesNotExist:
+                pass
+
+def delete_synchronized_access_group(owner) -> None:
+    """Delete synchronized access groups."""
+    groups_to_sync = AccessGroup.objects.filter(auto_sync=True)
+    for group_to_sync in groups_to_sync:
+        owner.accessgroups.remove(group_to_sync)
+
+def get_entry_value(entry, attribute, default):
+    """Retrieve the value of the given attribute from the LDAP entry."""
+    mapping = USER_LDAP_MAPPING_ATTRIBUTES.get(attribute)
+    if mapping and entry[mapping]:
+        if attribute == "last_name" and isinstance(entry[mapping].value, list):
+             return entry[mapping].value[0]
+        elif attribute == "affiliations":
+            return entry[mapping].values
+        else:
+            return entry[mapping].value
+    return default
+
+def get_ldap_conn():
+    """Open and get LDAP connexion."""
+    ldap_server_conf = getattr(settings, "LDAP_SERVER", {})
+    auth_bind_dn = getattr(settings, "AUTH_LDAP_BIND_DN", "")
+    auth_bind_pwd = getattr(settings, "AUTH_LDAP_BIND_PASSWORD", "")
+    
+    if not ldap_server_conf.get("url"):
+        return None
+
+    try:
+        url = ldap_server_conf["url"]
+        server = None
+        if isinstance(url, str):
+            server = Server(url, port=ldap_server_conf.get("port", 389), use_ssl=ldap_server_conf.get("use_ssl", False), get_info=ALL)
+        elif isinstance(url, tuple) or isinstance(url, list):
+             server = Server(url[0], port=ldap_server_conf.get("port", 389), use_ssl=ldap_server_conf.get("use_ssl", False), get_info=ALL)
+
+        if server:
+            conn = Connection(server, auth_bind_dn, auth_bind_pwd, auto_bind=True)
+            return conn
+            
+    except (LDAPBindError, LDAPSocketOpenError) as err:
+        logger.error(f"LDAP Connection Error: {err}")
+        return None
+    return None
+
+def get_ldap_entry(conn, username, list_value):
+    """Get LDAP entries."""
+    try:
+        search_filter = AUTH_LDAP_USER_SEARCH[1] % {"uid": username}
+        conn.search(
+            AUTH_LDAP_USER_SEARCH[0],
+            search_filter,
+            search_scope=SUBTREE,
+            attributes=list_value,
+            size_limit=1,
+        )
+        return conn.entries[0] if len(conn.entries) > 0 else None
+    except Exception as err:
+        logger.error(f"LDAP Search Error: {err}")
+        return None
