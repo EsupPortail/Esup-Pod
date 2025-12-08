@@ -26,9 +26,10 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     "corsheaders",
     "drf_spectacular",
+    'django_cas_ng',
+    'src.apps.utils',
     'src.apps.authentication',
     'src.apps.info',
-    'src.apps.utils',
 ]
 
 MIDDLEWARE = [
@@ -40,6 +41,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django_cas_ng.middleware.CASMiddleware',
+    'src.apps.authentication.IPRestrictionMiddleware.IPRestrictionMiddleware',
 ]
 
 TEMPLATES = [
@@ -119,14 +122,16 @@ SPECTACULAR_SETTINGS = {
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+    'django_cas_ng.backends.CASBackend',
 ]
 
 LANGUAGE_CODE = 'en-en'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
+SITE_ID = 1
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 ##
 # Applications settings (and settings locale if any)
@@ -149,3 +154,47 @@ for application in INSTALLED_APPS:
             for variable in dir(_temp.settings_local):
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings_local, variable)
+
+# ===================================================
+# CONFIGURATION CAS & AUTHENTICATION (POD)
+# ===================================================
+
+CAS_SERVER_URL = "https://cas.univ-lille.fr"
+CAS_VERSION = '3'
+CAS_FORCE_CHANGE_USERNAME_CASE = 'lower'
+CAS_APPLY_ATTRIBUTES_TO_USER = True
+
+LDAP_SERVER = {
+    "url": "ldap://ldap.univ.fr", 
+    "port": 389, 
+    "use_ssl": False
+}
+
+AUTH_LDAP_BIND_DN = "cn=pod,ou=app,dc=univ,dc=fr" 
+AUTH_LDAP_BIND_PASSWORD =  os.getenv("AUTH_LDAP_BIND_PASSWORD", "")
+
+AUTH_LDAP_USER_SEARCH = ("ou=people,dc=univ,dc=fr", "(uid=%(uid)s)")
+
+USER_LDAP_MAPPING_ATTRIBUTES = {
+    "uid": "uid",
+    "mail": "mail",
+    "last_name": "sn",
+    "first_name": "givenname",
+    "primaryAffiliation": "eduPersonPrimaryAffiliation",
+    "affiliations": "eduPersonAffiliation",
+    "groups": "memberOf",
+    "establishment": "establishment",
+}
+
+AFFILIATION_STAFF = ("faculty", "employee", "staff")
+CREATE_GROUP_FROM_AFFILIATION = True
+CREATE_GROUP_FROM_GROUPS = True
+POPULATE_USER = "CAS"
+
+ALLOWED_SUPERUSER_IPS = ["127.0.0.1", "10.0.0.0/8"]
+
+USE_CAS = True  
+
+USE_LDAP = False 
+
+USE_LOCAL_AUTH = True
