@@ -10,7 +10,6 @@ The application is built on a robust stack designed to ensure separation of conc
 
 * **Backend Framework:** Django (5.2.8) Python (3.12+) with Django Rest Framework (DRF 3.15.2).
 * **Database:** MySql (Containerized).
-* **Web Server (Prod):** Nginx (Reverse Proxy) + uWSGI (Application Server).
 * **Containerization:** Docker & Docker Compose.
 
 ## Directory Structure
@@ -48,6 +47,8 @@ To ensure stability, the project maintains strict isolation between environments
 
 ## Getting Started
 
-* For local setup instructions, see **[Development Guide](deployment/dev.md)**.
+* For local setup instructions, see **[Development Guide](deployment/dev/dev.md)**.
 * For deployment instructions, see **[Production Guide](deployment/prod.md)**.
 * For maintenance and troubleshooting, see **[Help](deployment/help.md)**.
+
+

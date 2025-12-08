@@ -1,57 +1,78 @@
 #!/bin/bash
 set -e
 
-MYSQL_HOST=${MYSQL_HOST:-127.0.0.1}
-MYSQL_PORT=${MYSQL_PORT:-3306}
-MARKER_FILE=${MARKER_FILE:-/app/.setup_done}
-EXPOSITION_PORT=${EXPOSITION_PORT:-8000}
+# --- Configuration par défaut ---
+# IMPORTANT : On utilise 'export' pour que Python puisse lire ces variables via os.environ
+export EXPOSITION_PORT=${EXPOSITION_PORT:-8000}
+export DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-admin}
+export DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-admin@example.com}
+export DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD:-admin}
+export DJANGO_ENV=${DJANGO_ENV:-development}
 
-# Variables pour le superuser par défaut (modifiables via docker-compose)
-DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-admin}
-DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-admin@example.com}
-DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD:-admin}
+# --- Fonctions Utilitaires ---
 
 wait_for_db() {
-    echo "[Docker] Waiting for the database ($MYSQL_HOST:$MYSQL_PORT)..."
-    while ! nc -z "$MYSQL_HOST" "$MYSQL_PORT"; do
-        sleep 1
-    done
-    echo "[Docker] Database connected."
+    echo "[Docker] Vérification de la disponibilité de la base de données..."
+    
+    python3 << END
+import sys
+import time
+import os
+from django.db import connections
+from django.db.utils import OperationalError
+
+connected = False
+while not connected:
+    try:
+        connections['default'].cursor()
+        connected = True
+    except OperationalError:
+        print("[Docker] La DB n'est pas encore prête, nouvelle tentative dans 1s...")
+        time.sleep(1)
+
+sys.exit(0)
+END
+    echo "[Docker] Base de données connectée avec succès."
 }
 
-check_and_run_setup() {
-    # On exécute les migrations à chaque démarrage pour être sûr que la DB est à jour
-    echo "[Docker] Applying migrations..."
+manage_setup() {
+    echo "[Docker] Début de la configuration automatique..."
+
+    echo "[Docker] Application des migrations..."
     python manage.py migrate --noinput
 
-    # Création intelligente du superuser sans blocage interactif
-    echo "[Docker] Checking/Creating superuser..."
-    python manage.py shell -c "
-from django.contrib.auth import get_user_model;
-User = get_user_model();
-if not User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').exists():
-    User.objects.create_superuser('$DJANGO_SUPERUSER_USERNAME', '$DJANGO_SUPERUSER_EMAIL', '$DJANGO_SUPERUSER_PASSWORD');
-    print('Superuser created.');
-else:
-    print('Superuser already exists.');
-"
+    echo "[Docker] Collecte des fichiers statiques..."
+    python manage.py collectstatic --noinput --clear
 
-    # Marqueur optionnel si vous voulez exécuter des choses une seule fois
-    if [ ! -f "$MARKER_FILE" ]; then
-        touch "$MARKER_FILE"
-        echo "[Docker] First launch setup completed."
-    fi
+    echo "[Docker] Vérification du super utilisateur..."
+    python manage.py shell << END
+import os
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+username = os.environ.get('DJANGO_SUPERUSER_USERNAME')
+email = os.environ.get('DJANGO_SUPERUSER_EMAIL')
+password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
+
+if not username or not password:
+    print(f"[Django] ERREUR: Variables d'environnement manquantes pour le superuser.")
+elif not User.objects.filter(username=username).exists():
+    print(f"[Django] Création du superuser : {username}")
+    User.objects.create_superuser(username=username, email=email, password=password)
+else:
+    print(f"[Django] Le superuser '{username}' existe déjà. Aucune action.")
+END
 }
 
 wait_for_db
 
 if [ "$1" = "run-server" ]; then
-    check_and_run_setup
-    echo "[Docker] Starting Django server on port $EXPOSITION_PORT..."
+    manage_setup
+    echo "[Docker] Démarrage du serveur Django sur le port $EXPOSITION_PORT..."
     exec python manage.py runserver 0.0.0.0:"$EXPOSITION_PORT"
 
 elif [ "$1" = "shell-mode" ]; then
-    echo "[Docker] Interactive Shell mode."
+    echo "[Docker] Mode Shell interactif."
     exec /bin/bash
 
 else

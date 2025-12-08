@@ -6,7 +6,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /app
 
-# Ajout de dos2unix pour la compatibilité Windows
 RUN apt-get update && apt-get install -y \
     pkg-config \
     python3-dev \
