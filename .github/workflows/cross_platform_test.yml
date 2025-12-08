@@ -1,78 +1,39 @@
-name: Cross-Platform CI
+name: Test Docker Deployment
 
-on:
-  push:
-    branches: [ main, develop, improve-deployment ]
-  pull_request:
+on: [push, pull_request]
 
 jobs:
-
-  # --- JOB 1 : Déploiement Docker réel (Linux) ---
-  docker-deployment-test:
-    name: Docker Deployment (Linux)
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Create .env file
-        run: cp .env.example .env
-
-      - name: Build and Run Docker Compose
-        run: |
-          docker compose -f deployment/dev/docker-compose.yml up -d --build
-
-      # Boucle de vérification robuste (Healthcheck)
-      - name: Wait for service availability
-        run: |
-          echo "Waiting for Django to respond..."
-          for i in {1..20}; do
-            if curl -s http://localhost:8000/ > /dev/null; then
-              echo "Service is ready!"
-              exit 0
-            fi
-            echo "Attempt $i/20: Service not ready yet..."
-            sleep 3
-          done
-          echo "Service failed to start within timeout."
-          docker compose -f deployment/dev/docker-compose.yml logs
-          exit 1
-
-      - name: Test API Endpoint
-        run: |
-          curl --fail http://localhost:8000/
-          echo "Docker deployment successful!"
-
-
-  # --- JOB 2 : Tests natifs Windows + macOS ---
-  native-os-test:
-    name: Native Test on ${{ matrix.os }}
+  test-docker-deploy:
+    name: Deploy on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-
     strategy:
-      fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest]
-        python-version: ['3.12']
-
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
+      # Sur Windows/Mac, Docker est souvent préinstallé sur les runners GitHub,
+      # mais il faut parfois attendre qu'il soit prêt ou le configurer.
+      
+      - name: Build and Start Containers
+        # On utilise directement votre fichier compose défini dans le Makefile
+        run: docker compose -f deployment/dev/docker-compose.yml up -d --build
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r deployment/dev/requirements.txt
-
-      - name: Create .env file
+      - name: Wait for API to be ready
         shell: bash
-        run: cp .env.example .env
+        run: |
+          # On attend un peu que la base de données et l'API démarrent
+          sleep 30
+          
+          # On interroge l'API pour voir si elle répond (Healthcheck)
+          # Si curl renvoie une erreur, le test échoue
+          curl --fail http://localhost:8000/ || exit 1
 
-      - name: Run Django Tests (without Docker)
-        run: python manage.py test --settings=config.settings.base
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose -f deployment/dev/docker-compose.yml logs
+        
+      - name: Stop Containers
+        run: docker compose -f deployment/dev/docker-compose.yml down
