@@ -1,15 +1,12 @@
 #!/bin/bash
 set -e
 
-# --- Configuration par défaut ---
-# IMPORTANT : On utilise 'export' pour que Python puisse lire ces variables via os.environ
 export EXPOSITION_PORT=${EXPOSITION_PORT:-8000}
 export DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-admin}
 export DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-admin@example.com}
 export DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD:-admin}
 export DJANGO_ENV=${DJANGO_ENV:-development}
 
-# --- Fonctions Utilitaires ---
 
 wait_for_db() {
     echo "[Docker] Vérification de la disponibilité de la base de données..."

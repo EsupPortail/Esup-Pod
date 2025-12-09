@@ -1,6 +1,6 @@
 # Production Deployment Configuration
 
-⚠️ **Work in Progress**
+**Work in Progress**
 
 This directory contains production deployment configurations for Pod_V5_Back. These files are currently under development.
 

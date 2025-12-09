@@ -47,10 +47,9 @@ dev-clean: ## Stop and remove everything (containers, orphaned networks, volumes
 # ==========================================
 
 init: ## Create local venv and install dependencies
-	python3 -m venv venv
 	@echo "Activate venv with 'source venv/bin/activate' then run 'make setup'"
-	./venv/bin/pip install --upgrade pip
-	./venv/bin/pip install -r requirements.txt
+	pip install --upgrade pip
+	pip install -r requirements.txt
 
 migrate: ## Apply migrations locally
 	$(DJANGO_MANAGE) migrate
@@ -58,8 +57,8 @@ migrate: ## Apply migrations locally
 makemigrations: ## Generate migration files locally
 	$(DJANGO_MANAGE) makemigrations
 
-run: ## Run local Django server (without Docker)
-	$(DJANGO_MANAGE) runserver 0.0.0.0:8000
+run: ## Run local Django server
+	$(DJANGO_MANAGE) runserver
 
 superuser: ## Create a local superuser
 	$(DJANGO_MANAGE) createsuperuser

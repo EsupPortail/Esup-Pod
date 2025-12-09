@@ -5,7 +5,6 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parents[2]
 POD_VERSION = os.getenv("VERSION", "0.0.0")
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1").split(",")
 
 CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", "False") == "True"
 cors_origins_env = os.getenv("CORS_ALLOWED_ORIGINS", "")
@@ -63,7 +62,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
 
-# CONFIG DEFAULT: MARIADB
+# DEFAULT CONFIG (Docker environment): MariaDB
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",

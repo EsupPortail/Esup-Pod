@@ -11,12 +11,20 @@ If you're familiar with Docker and just want to get started:
 ```bash
 git clone <your-forked-repo-url>
 cd Pod_V5_Back
-cp .env.example .env
-make dev-run
-make dev-logs  # Follow the startup logs
+
+make dev-run # Start the full project (auto-setup via entrypoint)
+make dev-enter ## Enter an already running container (for debugging)
+make dev-stop # Stop the containers
 ```
 
----
+Make tools:
+```bash
+make dev-logs  # Show real-time logs (see automatic migrations)
+make dev-shell # Launch a temporary container in shell mode (isolated)
+make dev-build # Force rebuild of Docker images
+make dev-clean: # Stop and remove everything (containers, orphaned networks, volumes)
+```
+
 
 ## Scenario 1: Linux/Mac WITH Docker (Recommended)
 
@@ -41,7 +49,31 @@ cd Pod_V5_Back
 Copy the example environment configuration and customize it:
 
 ```bash
-cp .env.example .env
+cp .env.docker .env
+```
+
+.env.docker file content:
+```bash
+# --- Security ---
+SECRET_KEY=change-me-in-prod-secret-key
+ALLOWED_HOSTS=127.0.0.1,localhost,0.0.0.0
+EXPOSITION_PORT=8000
+
+# --- Database ---
+MYSQL_DATABASE=pod_db
+MYSQL_USER=pod_user
+MYSQL_PASSWORD=pod_password
+MYSQL_ROOT_PASSWORD=root_password
+MYSQL_HOST=db
+MYSQL_PORT=3307
+
+# --- Superuser (Development Only) ---
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=admin@example.com
+DJANGO_SUPERUSER_PASSWORD=admin
+
+# --- Versioning ---
+VERSION=5.0.0-DEV
 ```
 
 ⚠️ **Important:** Edit `.env` to set secure passwords, especially:
@@ -98,52 +130,50 @@ mysql -h 127.0.0.1 -P 3307 -u pod_user -p pod_db
 
 ---
 
-## Scenario 2: Linux/Mac WITHOUT Docker (Local)
+## Scenario 2: Linux/Mac Local
 
 Traditional method. The Makefile helps manage the virtual environment.
 
 ### 1. Prerequisites
 
-* Python 3.12+ installed
-* MySQL development client installed:
-  - **Debian/Ubuntu:** `sudo apt install default-libmysqlclient-dev`
-  - **macOS (Intel):** See [macOS Intel Setup](#macos-intel-setup) below
-  - **macOS (Apple Silicon M1/M2/M3):** See [macOS Apple Silicon Setup](#macos-apple-silicon-setup) below
-* Local MySQL/MariaDB server running on `localhost:3306`
+* Python 3.12+ installe
+* venv module (usually included with Python)
+
+Note: You do not need to install a MySQL/MariaDB server locally. The application will automatically switch to SQLite if MySQL configuration is missing.
 
 ### 2. Configuration (.env)
 
-Create a `.env` file in the project root:
+Copy the example environment configuration and customize it:
+```bash
+cp .env.local .env
+```
 
 ```bash
-cp .env.example .env
-```
+# --- Security ---
+SECRET_KEY=change-me-in-prod-secret-key
+ALLOWED_HOSTS=127.0.0.1,localhost
+EXPOSITION_PORT=8000
 
-Then edit `.env` to point to your local database. Set `MYSQL_HOST` to `localhost`:
-
-```dotenv
-MYSQL_DATABASE=pod_db
-MYSQL_USER=pod_user
-MYSQL_PASSWORD=pod_password
-MYSQL_HOST=localhost
-MYSQL_PORT=3306
-SECRET_KEY=your-secure-random-key
+# --- Superuser (Development Only) ---
 DJANGO_SUPERUSER_USERNAME=admin
-DJANGO_SUPERUSER_PASSWORD=your-admin-password
+DJANGO_SUPERUSER_EMAIL=admin@example.com
+DJANGO_SUPERUSER_PASSWORD=admin
+
+# --- Versioning ---
+VERSION=5.0.0-DEV
 ```
 
-### 3. Installation & Starting
-
+3. Installation & Starting
 The Makefile provides commands for local (non-Docker) usage.
 
 **First-time setup:**
-
 ```bash
-# Create virtual environment and install dependencies
-make init
+# Create a virtual environment using workon (mkvirtualenv)
+mkvirtualenv pod_v5_back
+workon pod_v5_back
 
-# Activate the virtual environment (required for the following commands)
-source venv/bin/activate
+# Install dependencies
+make init
 
 # Generate migrations and apply them
 make makemigrations
@@ -151,12 +181,8 @@ make migrate
 
 # Create a superuser interactively
 make superuser
-```
 
-**Daily usage:**
-
-```bash
-source venv/bin/activate
+# Run the serveur
 make run
 ```
 
@@ -171,110 +197,6 @@ This runs `python manage.py runserver` on port 8000. Access at `http://127.0.0.1
 | Database   | `make migrate`        | Apply pending migrations       |
 | Clean      | `make clean`          | Remove `.pyc` files and caches |
 
----
-
-## macOS Setup Specific Instructions
-
-### macOS Intel Setup
-
-If you're setting up on **macOS with Intel processor**, follow these steps to install `mysqlclient`:
-
-**1. Install MySQL client via Homebrew:**
-
-```bash
-brew install mysql
-```
-
-**2. Set environment variables before installing Python packages:**
-
-```bash
-export LDFLAGS="-L$(brew --prefix mysql)/lib"
-export CPPFLAGS="-I$(brew --prefix mysql)/include"
-```
-
-**3. Install dependencies:**
-
-```bash
-make init
-```
-
-**4. If you encounter SSL errors, try reinstalling with force flags:**
-
-```bash
-source venv/bin/activate
-pip install mysqlclient --compile --force-reinstall
-```
-
-### macOS Apple Silicon Setup
-
-If you're on **macOS with Apple Silicon (M1, M2, M3, etc.)**, follow these steps:
-
-**1. Install MySQL client via Homebrew:**
-
-```bash
-brew install mysql-client
-```
-
-⚠️ Note: Use `mysql-client` (not `mysql`) on Apple Silicon for better compatibility.
-
-**2. Add Homebrew MySQL client to your PATH and set environment flags:**
-
-```bash
-export PATH="$(brew --prefix mysql-client)/bin:$PATH"
-export LDFLAGS="-L$(brew --prefix mysql-client)/lib"
-export CPPFLAGS="-I$(brew --prefix mysql-client)/include"
-```
-
-**3. Create virtual environment and install:**
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-**4. Verify `mysqlclient` installed correctly:**
-
-```bash
-python -c "import MySQLdb; print('MySQLdb installed successfully')"
-```
-
-**Troubleshooting Apple Silicon:** If installation still fails, consider using conda as an alternative:
-```bash
-brew install conda
-conda create -n pod_env python=3.12
-conda activate pod_env
-pip install -r requirements.txt
-```
-
----
-
-## Troubleshooting
-
-### Docker container exits immediately
-
-Check logs:
-```bash
-make dev-logs
-```
-
-Common causes:
-- `.env` file not created or has wrong paths
-- Database connection timeout (wait longer for MariaDB to start)
-- Port conflicts (see help.md for resolution)
-
-### mysqlclient installation fails on macOS
-
-Ensure you followed the macOS-specific setup steps above and all environment variables are set before running `make init`.
-
-### Database connection refused
-
-- **With Docker:** Ensure the `db` container is running and healthy: `docker ps`
-- **Local:** Ensure MySQL/MariaDB is running: `ps aux | grep -i mysql`
-- Verify `.env` has correct `MYSQL_HOST` and `MYSQL_PORT`
-
----
 
 ## [Go Back](../dev/dev.md)
 
