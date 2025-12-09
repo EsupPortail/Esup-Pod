@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-26 13:54+0200\n"
+"POT-Creation-Date: 2025-01-20 09:49+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
 msgid "No discipline"
@@ -192,6 +192,8 @@ msgstr "Une légende / sous-titre ne peut comporter plus de 110 caractères."
 msgid ""
 "For your video's accessibility, we recommend a maximum of 80 characters."
 msgstr ""
+"Pour l’accessibilité de votre vidéo, nous recommandons un maximum de 80 "
+"caractères."
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Add a caption/subtitle after this one"
@@ -228,8 +230,9 @@ msgid "Time stamps"
 msgstr "Horodatages"
 
 #: pod/completion/static/js/caption_maker.js
-msgid "/80 characters"
-msgstr "80 caractères"
+#, javascript-format
+msgid "%s/%s characters"
+msgstr "%s/%s caractères"
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Error loading caption file: "
@@ -586,8 +589,14 @@ msgid "Open file in a new tab"
 msgstr "Ouvrir le fichier dans un nouvel onglet"
 
 #: pod/podfile/static/podfile/js/filewidget.js
-msgid "Change"
-msgstr "Changer"
+#, javascript-format
+msgid "Change image “%s”"
+msgstr "Changer l’image « %s »"
+
+#: pod/podfile/static/podfile/js/filewidget.js
+#, javascript-format
+msgid "Change file “%s”"
+msgstr "Changer le fichier « %s »"
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Enter new name of folder"
@@ -986,6 +995,9 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Change"
+#~ msgstr "Changer"
 
 #~ msgid "The long answer"
 #~ msgstr "La réponse longue"

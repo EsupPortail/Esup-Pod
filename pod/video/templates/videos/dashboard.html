@@ -13,7 +13,8 @@
 {% block page_content %}
 
   {% if use_category %}
-      <div id="category-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal_title" aria-hidden="true"></div>
+      <div id="category-modal" class="modal fade" tabindex="-1" role="dialog"
+           aria-hidden="true"></div>
   {% endif %}
 
   <div id="bulk-update-container">
@@ -162,6 +163,7 @@
   var nextPage = false;
   var ownerFilter = {{ owner_filter|yesno:'true,false'}};
   var formFieldsets = {{ fieldsets_dashboard|safe }};
+  var listTheme = {{listTheme | safe}};
 
   {% if videos.has_next %}
     page = parseInt("{{videos.next_page_number}}", 10);

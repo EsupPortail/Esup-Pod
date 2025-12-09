@@ -37,6 +37,7 @@ from django.db.models.signals import pre_save
 from pod.main.models import AdditionalChannelTab
 import importlib
 from django.contrib.auth.hashers import make_password
+from pod.main.context_processors import WEBTV_MODE
 
 from sorl.thumbnail import get_thumbnail
 from pod.authentication.models import AccessGroup
@@ -262,9 +263,9 @@ def get_storage_path_video(instance, filename) -> str:
         return os.path.join(
             VIDEOS_DIR,
             instance.owner.owner.hashkey,
-            "%s/%s.%s"
+            os.path.dirname(fname),
+            "%s.%s"
             % (
-                os.path.dirname(fname),
                 slugify(os.path.basename(fname)),
                 extension,
             ),
@@ -684,6 +685,8 @@ class Video(models.Model):
         upload_to=get_storage_path_video,
         max_length=255,
         help_text=_("You can send an audio or video file."),
+        null=WEBTV_MODE,
+        blank=WEBTV_MODE,
     )
     title = models.CharField(
         _("Title"),
@@ -830,6 +833,13 @@ class Video(models.Model):
         _("password"),
         help_text=_("Viewing this video will not be possible without this password."),
         max_length=50,
+        blank=True,
+        null=True,
+    )
+    order = models.PositiveSmallIntegerField(
+        _("order"),
+        help_text=_("Order videos in channels or themes."),
+        default=1,
         blank=True,
         null=True,
     )
@@ -1001,26 +1011,31 @@ class Video(models.Model):
         """
         return 360 if self.is_video else 244
 
-    def get_thumbnail_url(self) -> str:
-        """Get a thumbnail url for the video."""
+    def get_thumbnail_url(self, size="x720") -> str:
+        """Get a thumbnail url for the video, with defined max size."""
         request = None
+        # Initialize default thumbnail URL
+        thumbnail_url = "".join(
+            [
+                "//",
+                get_current_site(request).domain,
+                static(DEFAULT_THUMBNAIL),
+            ]
+        )
         if self.thumbnail and self.thumbnail.file_exist():
-            thumbnail_url = "".join(
-                [
-                    "//",
-                    get_current_site(request).domain,
-                    self.thumbnail.file.url,
-                ]
-            )
+            # Do not serve thumbnail url directly, as it can lead to the video URL
+            # Handle exception to avoid sending an error email
+            try:
+                im = get_thumbnail(self.thumbnail.file, size, crop="center", quality=80)
+                thumbnail_url = im.url
+            except Exception as e:
+                logger.error(
+                    "An error occured during get_thumbnail_url"
+                    " for video %s: %s" % (self.id, e)
+                )
+            return thumbnail_url
         else:
-            thumbnail_url = "".join(
-                [
-                    "//",
-                    get_current_site(request).domain,
-                    static(DEFAULT_THUMBNAIL),
-                ]
-            )
-        return thumbnail_url
+            return thumbnail_url
 
     @property
     def get_thumbnail_admin(self):
@@ -1028,8 +1043,14 @@ class Video(models.Model):
         # fix title for xml description
         title = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", self.title)
         if self.thumbnail and self.thumbnail.file_exist():
-            im = get_thumbnail(self.thumbnail.file, "100x100", crop="center", quality=72)
-            thumbnail_url = im.url
+            # Handle exception to avoid sending an error email
+            try:
+                im = get_thumbnail(
+                    self.thumbnail.file, "100x100", crop="center", quality=72
+                )
+                thumbnail_url = im.url
+            except Exception:
+                thumbnail_url = static(DEFAULT_THUMBNAIL)
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}" loading="lazy">
         else:
@@ -1049,8 +1070,12 @@ class Video(models.Model):
         """Return thumbnail image card of current video."""
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
-            im = get_thumbnail(self.thumbnail.file, "x170", crop="center", quality=72)
-            thumbnail_url = im.url
+            # Handle exception to avoid sending an error email
+            try:
+                im = get_thumbnail(self.thumbnail.file, "x170", crop="center", quality=72)
+                thumbnail_url = im.url
+            except Exception:
+                thumbnail_url = static(DEFAULT_THUMBNAIL)
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}" loading="lazy">
         else:

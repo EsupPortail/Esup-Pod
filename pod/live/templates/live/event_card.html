@@ -8,7 +8,7 @@
         <span class="text-muted small d-flex">
           {% if event.is_current %}
             <span data-toggle="tooltip" title="{% trans 'Current event' %}">
-              <i class="bi bi-soundwave current_event" aria-hidden="true"></i>
+              <i class="bi bi-soundwave current-event" aria-hidden="true"></i>
             </span>
           {%  endif %}
           <span data-toggle="tooltip" title="{{event.broadcaster.name}}">
@@ -56,7 +56,7 @@
       <p class="small video-title">
         <a href="{{event.get_absolute_url}}
            {% if playlist %}?playlist={{playlist.slug}}{% endif %}"
-           title="{{event.title}}">
+           title="{% blocktrans with title=event.title %}See the event “{{ title }}”.{% endblocktrans %}">
             {{event.title|capfirst|truncatechars:43}}
         </a>
         </br>

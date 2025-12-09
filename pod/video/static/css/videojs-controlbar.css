@@ -24,8 +24,11 @@
   margin-right: 1em;
 }
 
-.video-js .vjs-current-time {
+.video-js .vjs-time-control {
   display: block;
+}
+
+.video-js .vjs-current-time {
   padding-right: 0;
 }
 
@@ -35,7 +38,6 @@
 }
 
 .video-js .vjs-duration {
-  display: block;
   padding-left: 0;
 }
 

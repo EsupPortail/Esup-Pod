@@ -176,10 +176,13 @@
         <span class="pod-meta-title">{% trans 'Speaker(s):' %}</span>
         <div>
           <ul>
-            {% get_video_speaker video as speaker_in_video %}
-            {% for speaker in speaker_in_video %}
+            {% get_video_speaker_grouped video as grouped_speakers %}
+            {% for speaker, jobs in grouped_speakers.items %}
               <li>
-                {{ speaker.job.speaker.firstname }} {{ speaker.job.speaker.lastname }} ({{ speaker.job.title }})
+                <strong>{{ speaker.firstname }} {{ speaker.lastname }} </strong>
+                {% for job in jobs %}
+                  <em>{{ job }}</em>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
               </li>
             {% endfor %}
           </ul>

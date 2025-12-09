@@ -4,27 +4,20 @@
 {% load thumbnail %}
 {% load event_tags %}
 
-<div class="tab-content w-100" id="event-meta">
-  {% if event.description %}
-    <div class="tab-pane fade active show" id="summary" role="tabpanel" aria-labelledby="summary-tab">
-      <h2 class="tab-title"><i class="bi bi-justify" aria-hidden="true"></i>&nbsp;{% trans 'Summary' %}</h2>
-      <hr>
-      <p>{{ event.description|safe }}</p>
-    </div>
-  {% endif %}
+{% if event.description%}
+  <div class="pod-info-video__summary my-3" id="summary">
+      <div class="pod-video-description">
+        {{ event.description|safe }}
+      </div>
+  </div>
+{% endif %}
 
-  <div id="info"
-    {% if not event.description %}
-      class="tab-pane fade active show pod-live-info"
-    {% else %}
-      class="tab-pane fade"
-    {% endif %}
-  >
-
-    <!-- <hr> -->
+<div id="video-meta">
+  <div id="info" class="pod-info-video__info">
+    <h2 class="tab-title visually-hidden"><i class=" bi bi-info-circle"></i>&nbsp;{% trans 'Infos' %}</h2>
     <ul class="list-inline d-flex flex-wrap">
       <li class="col-6 col-md-4">
-        <h3 class="meta-title">{% trans 'Broadcasted on:' %}</h3>
+        <span class="pod-meta-title">{% trans 'Broadcasted on:' %}</span>
         <div>
           {% if event.start_date__date == event.end_date__date %}
             {% blocktrans with start_date=event.start_date|date:"d/m/Y" start_time=event.start_date|time:"H:i" end_time=event.end_date|time:"H:i" %}{{start_date}} from {{start_time}} to {{end_time}}{% endblocktrans %}
@@ -34,14 +27,12 @@
         </div>
       </li>
       <li class="col-6 col-md-4">
-        <h3 class="meta-title">{% trans 'Location:' %}</h3>
-        <div>{{ event.broadcaster.building.name }} - {{ event.broadcaster.name }}
-        </div>
+        <span class="pod-meta-title">{% trans 'Location:' %}</span>
+          <div>{{ event.broadcaster.building.name }} - {{ event.broadcaster.name }}</div>
       </li>
       <li class="col-6 col-md-4">
-        <h3 class="meta-title">{% trans 'Added by:' %}</h3>
-        <div>
-          <a class="btn btn-link btn-sm" href="{% url 'videos:videos' %}?owner={{ event.owner.get_username }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+        <span class="pod-meta-title">{% trans 'Added by:' %}</span>
+          <a class="btn btn-link btn-sm px-0" href="{% url 'videos:videos' %}?owner={{ event.owner.get_username}}" {% if request.GET.is_iframe %}target="_blank" {% endif %} title="{% blocktrans with video_user_name=video.owner %}Show video list of user “{{ video_user_name }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
           {% if event.owner.owner.userpicture.file %}
             {% thumbnail event.owner.owner.userpicture.file "x34" as im %}
               <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='userpicture rounded' alt="" loading="lazy">
@@ -49,16 +40,17 @@
           {% endif %}
           {{ event.owner }}
           </a>
-        </div>
       </li>
       <li class="col-6 col-md-4">
-        <h3 class="meta-title">{% trans 'Type:' %}</h3>
-        <div><a href="{% url 'videos:videos' %}?type={{ event.type.slug }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ event.type.title }}</a></div>
+        <span class="pod-meta-title">{% trans 'Type:' %}</span>
+        <a class="btn btn-link btn-sm px-0" href="{% url 'videos:videos' %}?type={{ event.type.slug }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ event.type.title }}</a>
       </li>
     </ul>
   </div>
+</div>
 
-  {% if event.is_draft == False or event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %} <!-- Début modale -->
+  {% if event.is_draft == False or event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %}
+    <!-- Start modal -->
     <div class="modal fade" id="share" tabindex="-1" aria-labelledby="shareLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -118,11 +110,13 @@
                   <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}">
                 </div>
                 <div class="form-group m-2">
-                {% get_event_qrcode event.id as qrcode %}
-                  <label>{% trans 'QR code for this link:' %}&nbsp;</label><br>
+                  {% get_event_qrcode event.id as qrcode %}
+                  <label>{% trans 'QR code for this link:' %}</label><br>
                   {{ qrcode }}
                   <br>
-                    <button id="btn-download-qr-code" type="submit" data-slug="{{ event.slug }}" class="btn btn-primary my-2" title="{% trans 'Download this QR code' %}">{% trans 'Download' %}</button>
+                  <button id="btn-download-qr-code" type="submit" data-slug="{{ event.slug }}"
+                          class="btn btn-primary my-2"
+                          title="{% trans 'Download this QR code' %}">{% trans 'Download' %}</button>
                 </div>
             </fieldset>
           </div> <!-- End modal body-->
@@ -130,4 +124,3 @@
       </div> <!-- End modal dialog-->
     </div> <!-- End modal -->
   {% endif %}
-</div>

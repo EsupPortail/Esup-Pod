@@ -29,26 +29,28 @@
           {% endif %}
           <a href="{{ element.get_absolute_url }}" title="{{ element.title }}">
             {% if type == "video" or type == 'last' %}
-            <img
-              src="{{ element.get_thumbnail_url }}"
-              class="img-fluid d-block w-100"
-              alt=""/>
-            {% elif type == "event" %} {% if element.thumbnail %}
-            <img
-              src="{{ element.get_thumbnail_card }}"
-              class="img-fluid d-block w-100"
-              alt=""/>
-            {% elif element.broadcaster.poster %}
-            <img
-              src="{{ element.broadcaster.get_poster_url }}"
-              class="img-fluid d-block w-100"
-              alt=""/>
-            {% else %}
-            <img
-              src="{{ element.get_thumbnail_card }}"
-              class="img-fluid d-block w-100"
-              alt=""/>
-            {% endif %} {% endif %}
+              <img
+                src="{{ element.get_thumbnail_url }}"
+                class="img-fluid d-block w-100"
+                alt=""/>
+            {% elif type == "event" %}
+              {% if element.thumbnail %}
+                <img
+                  src="{{ element.get_thumbnail_card }}"
+                  class="img-fluid d-block w-100"
+                  alt=""/>
+              {% elif element.broadcaster.poster %}
+                <img
+                  src="{{ element.broadcaster.get_poster_url }}"
+                  class="img-fluid d-block w-100"
+                  alt=""/>
+              {% else %}
+                <img
+                  src="{{ element.get_thumbnail_card }}"
+                  class="img-fluid d-block w-100"
+                  alt=""/>
+              {% endif %}
+            {% endif %}
             <div class="carousel-caption d-none d-md-block">
               <h3 class="video-title">
                 {{ element.title|capfirst|truncatechars:43 }}

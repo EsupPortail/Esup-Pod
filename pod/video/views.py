@@ -1,6 +1,7 @@
 """Esup-Pod videos views."""
 
 from concurrent import futures
+import os
 
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
@@ -28,11 +29,12 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Sum, Min
 
+
 # from django.contrib.auth.hashers import check_password
 
 from dateutil.parser import parse
 from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
-
+from pod.main.context_processors import WEBTV_MODE
 from pod.main.models import AdditionalChannelTab
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
@@ -69,7 +71,6 @@ from .utils import (
     pagination_data,
     get_headband,
     change_owner,
-    get_video_data,
     get_id_from_request,
 )
 from .context_processors import get_available_videos
@@ -221,16 +222,20 @@ def get_theme_children_as_list(channel: Channel, theme_children: QuerySet) -> li
     return children
 
 
-def _regroup_videos_by_theme(request, videos, channel, theme=None):
+def _regroup_videos_by_theme(  # noqa: C901
+    request, videos, page, full_path, channel, theme=None
+):
     """Regroup videos by theme.
 
     Args:
         request (Request): current HTTP Request
         videos (List[Video]): list of video filter by channel
+        page (int): page number
+        full_path (str): URL full path
         channel (Channel): current channel
         theme (Theme, optional): current theme. Defaults to None.
     Returns:
-        Dict[str, Any]: json data
+        JsonResponse for themes in Ajax, or HttpResponse for other cases (videos).
     """
     target = request.GET.get("target", "").lower()
     limit = int(request.GET.get("limit", 12))
@@ -269,6 +274,8 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         theme_children = theme_children.annotate(video_count=Value(0))
         # List of children in the theme
         children = get_theme_children_as_list(channel, theme_children)
+        # Do not send all themes
+        children = children[offset : limit + offset]
         next_url, previous_url, theme_pages_info = pagination_data(
             request.path, offset, limit, count_themes
         )
@@ -291,8 +298,10 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         "description": description,
         "headband": headband,
     }
-    if request.is_ajax():
-        videos = list(
+    """
+    # Old source code.
+    # No need now. Keep it, for historical purposes, until we've verified that the new code works in all cases.
+    videos = list(
             map(
                 lambda v: {
                     **get_video_data(v),
@@ -301,10 +310,30 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
                 videos,
             )
         )
-        response["videos"] = videos
-        return JsonResponse(response, safe=False)
-        # TODO: replace this return by a
-        #  render(request,"videos/video_list.html") like in channel
+    response["videos"] = videos
+    """
+    if request.is_ajax():
+        if target == "themes":
+            # No change to the old system, with data in JSON format
+            return JsonResponse(response, safe=False)
+        else:
+            # New system, with data in HTML format
+            if not videos:
+                # No content
+                return HttpResponse(status=204)
+            else:
+                # Content with videos
+                videos = paginator(videos, page)
+            return render(
+                request,
+                "videos/video_list.html",
+                {
+                    "videos": videos,
+                    "theme": theme,
+                    "channel": channel,
+                    "full_path": full_path,
+                },
+            )
 
     return render(
         request,
@@ -332,6 +361,7 @@ def paginator(videos_list, page):
 def channel(request, slug_c, slug_t=None):
     channel = get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
     videos_list = get_available_videos().filter(channel=channel)
+    videos_list = sort_videos_list(videos_list, "order", "on")
     channel.video_count = videos_list.count()
 
     theme = None
@@ -339,9 +369,6 @@ def channel(request, slug_c, slug_t=None):
         theme = get_object_or_404(Theme, channel=channel, slug=slug_t)
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
-
-    if ORGANIZE_BY_THEME:
-        return _regroup_videos_by_theme(request, videos_list, channel, theme)
 
     page = request.GET.get("page", 1)
     full_path = ""
@@ -351,16 +378,25 @@ def channel(request, slug_c, slug_t=None):
             .replace("?page=%s" % page, "")
             .replace("&page=%s" % page, "")
         )
-
     videos = paginator(videos_list, page)
+
+    if ORGANIZE_BY_THEME:
+        # Specific case
+        return _regroup_videos_by_theme(
+            request, videos_list, page, full_path, channel, theme
+        )
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path},
+            {
+                "channel": channel,
+                "videos": videos,
+                "theme": theme,
+                "full_path": full_path,
+            },
         )
-
     return render(
         request,
         "channel/channel.html",
@@ -641,6 +677,7 @@ def dashboard(request):
     data_context["display_mode"] = display_mode
     data_context["video_list_template"] = template
     data_context["page_title"] = _("Dashboard")
+    data_context["listTheme"] = json.dumps(get_list_theme_in_form(form))
 
     return render(request, "videos/dashboard.html", data_context)
 
@@ -1355,7 +1392,17 @@ def video_delete(request, slug=None):
         if request.method == "POST":
             form = VideoDeleteForm(request.POST)
             if form.is_valid():
+                media_root = settings.MEDIA_ROOT
+                temp_file_path = os.path.join(media_root, "temp_video.mp4")
+                with open(temp_file_path, "wb") as temp_file:
+                    temp_file.write(b"Temporary video content")
+                video.video.name = os.path.relpath(temp_file_path, media_root)
+                video.save()
                 video.delete()
+
+                if os.path.exists(temp_file_path):
+                    os.remove(temp_file_path)
+
                 messages.add_message(
                     request, messages.INFO, _("The media has been deleted.")
                 )
@@ -1382,12 +1429,24 @@ def video_is_deletable(request, video) -> bool:
         messages.add_message(request, messages.ERROR, _("You cannot delete this media."))
         raise PermissionDenied
 
-    if not video.encoded or video.encoding_in_progress is True:
-        messages.add_message(
-            request, messages.ERROR, _("You cannot delete a media that is being encoded.")
-        )
-        return False
-    return True
+    if WEBTV_MODE:
+        if video.encoding_in_progress is True:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("You cannot delete a media that is being encoded."),
+            )
+            return False
+        return True
+    else:
+        if not video.encoded or video.encoding_in_progress is True:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("You cannot delete a media that is being encoded."),
+            )
+            return False
+        return True
 
 
 @csrf_protect

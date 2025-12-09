@@ -33,7 +33,7 @@ from tempfile import NamedTemporaryFile
 import threading
 import logging
 
-DEBUG = getattr(settings, "DEBUG", False)
+DEBUG = getattr(settings, "DEBUG", True)
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True

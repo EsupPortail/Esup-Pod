@@ -91,8 +91,9 @@
   --bs-orange: #c85208;
 
   /* Use system font (faster load) */
-  --font-family-sans-serif: -apple-system, system-ui, "BlinkMacSystemFont",
-    "Segoe UI", "Roboto", "Verdana", sans-serif;
+  --font-family-sans-serif:
+    -apple-system, system-ui, "BlinkMacSystemFont", "Segoe UI", "Roboto",
+    "Verdana", sans-serif;
 
   /** reinit before cleaning all old css vars ***/
   --primary-background-color: var(--pod-background-neutre1-bloc) !important;
@@ -1865,4 +1866,9 @@ body[data-admin-utc-offset]
 /** LINK VIDEO MODAL **/
 #link-video-modal .modal-dialog {
   font-size: 1.7em;
+}
+
+/* No crop on thumbnail */
+img.pod-thumbnail {
+  width: 100%;
 }

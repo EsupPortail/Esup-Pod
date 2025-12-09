@@ -115,6 +115,21 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.7.0"
+                        },
+                        "AI_ENHANCEMENT_PROXY_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "URL of proxy server for request coming from Aristote.",
+                                    "Exemple : '<https://proxy_aristote.univ.fr>'"
+                                ],
+                                "fr": [
+                                    "L’URL du serveur proxy pour les requêtes venant d'Aristote.",
+                                    "Exemple : '<https://proxy_aristote.univ.fr>'"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.2"
                         }
                     },
                     "title": {
@@ -1053,6 +1068,38 @@
                         "fr": "Configuration de l’application dressing"
                     }
                 },
+                "duplicate": {
+                    "description": {
+                        "en": [
+                            "Duplicate App to create a copy of the form of an existing video",
+                            "Set `USE_DUPLICATE` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Duplicate pour créer une copie du formulaire d’une vidéo existante",
+                            "Mettre `USE_DUPLICATE` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_DUPLICATE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Activation of duplicate. Allows users to duplicate a video"
+                                ],
+                                "fr": [
+                                    "Activation de duplicate.",
+                                    "Permet aux utilisateurs de dupliquer une vidéo"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": ""
+                        }
+                    },
+                    "title": {
+                        "en": "Duplicate application configuration",
+                        "fr": "Configuration de l’application duplicate"
+                    }
+                },
                 "enrichment": {
                     "description": {},
                     "settings": {},
@@ -1085,7 +1132,21 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.8.0"
+                        },
+                        "REQUIRED_SPEAKER_FIRSTNAME": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "First name required in the speaker addition form"
+                                ],
+                                "fr": [
+                                    "Prénom obligatoire dans le formulaire d'ajout intervenant"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": ""
                         }
+                        
                     },
                     "title": {
                         "en": "Seaker application configuration",
