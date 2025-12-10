@@ -1,7 +1,7 @@
 PYTHON=python3
 DJANGO_MANAGE=$(PYTHON) manage.py
 DOCKER_COMPOSE_FILE=deployment/dev/docker-compose.yml
-DOCKER_COMPOSE_CMD=docker compose -f $(DOCKER_COMPOSE_FILE)
+DOCKER_COMPOSE_CMD=docker-compose -f $(DOCKER_COMPOSE_FILE)
 DOCKER_SERVICE_NAME=api
 
 .PHONY: help dev-run dev-logs dev-shell dev-enter dev-build dev-stop dev-clean init migrate makemigrations run superuser test clean setup
