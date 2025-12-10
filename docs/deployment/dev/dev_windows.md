@@ -48,7 +48,6 @@ This is the **recommended method**. It isolates the database and all dependencie
    ```bash
    # --- Security ---
    SECRET_KEY=change-me-in-prod-secret-key
-   ALLOWED_HOSTS=127.0.0.1,localhost,0.0.0.0
    EXPOSITION_PORT=8000
 
    # --- Database ---
@@ -59,7 +58,7 @@ This is the **recommended method**. It isolates the database and all dependencie
    MYSQL_HOST=db
    MYSQL_PORT=3307
 
-   # --- Superuser (Development Only) ---
+   # --- Superuser---
    DJANGO_SUPERUSER_USERNAME=admin
    DJANGO_SUPERUSER_EMAIL=admin@example.com
    DJANGO_SUPERUSER_PASSWORD=admin
@@ -126,10 +125,9 @@ cp .env.local .env
 ```bash
 # --- Security ---
 SECRET_KEY=change-me-in-prod-secret-key
-ALLOWED_HOSTS=127.0.0.1,localhost
 EXPOSITION_PORT=8000
 
-# --- Superuser (Development Only) ---
+# --- Superuser ---
 DJANGO_SUPERUSER_USERNAME=admin
 DJANGO_SUPERUSER_EMAIL=admin@example.com
 DJANGO_SUPERUSER_PASSWORD=admin

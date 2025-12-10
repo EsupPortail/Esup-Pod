@@ -36,20 +36,20 @@ Pod_V5_Back/
 
 To ensure stability, the project maintains strict isolation between environments:
 
-| Feature         | Development (Docker)                     | Development (Local)          | Production                                 |
+| Feature         | Development (Docker)                      | Development (Local)           | Production                                  |
 |-----------------|-------------------------------------------|-------------------------------|---------------------------------------------|
 | Docker Compose  | deployment/dev/docker-compose.yml         | N/A                           | deployment/prod/docker-compose.yml          |
 | Settings File   | src.config.settings.dev                   | src.config.settings.dev       | src.config.settings.prod (ou base + env)    |
-| Database        | MariaDB (Service: db)                     | SQLite (db.sqlite3)           | MariaDB (managed)                             |
-| Debug Mode      | True                                      | True                          | False                           |
-| Web Server      | runserver                                 | runserver                     | Nginx + uWSGI                               |
+| Database        | MariaDB (Service: db)                     | SQLite (db.sqlite3)           | TODO                                        |
+| Debug Mode      | True                                      | True                          | TODO                                        |
+| Web Server      | runserver                                 | runserver                     | TODO                                        |
 
 
 ### ⚠️ Environment Selection
 
 Make sure to **choose the correct `.env` file** depending on how you run the project:
 
-* **Using Docker → use the Docker `.env.docker` file** (MariaDB, Redis, container services)
+* **Using Docker → use the Docker `.env.docker` file** (MariaDB, container services)
 * **Using local setup → use the local `.env.local` file** (SQLite and local-only defaults)
 
 Selecting the wrong `.env` will load the wrong database configuration and cause the application to fail.

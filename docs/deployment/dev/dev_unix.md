@@ -56,7 +56,6 @@ cp .env.docker .env
 ```bash
 # --- Security ---
 SECRET_KEY=change-me-in-prod-secret-key
-ALLOWED_HOSTS=127.0.0.1,localhost,0.0.0.0
 EXPOSITION_PORT=8000
 
 # --- Database ---
@@ -67,7 +66,7 @@ MYSQL_ROOT_PASSWORD=root_password
 MYSQL_HOST=db
 MYSQL_PORT=3307
 
-# --- Superuser (Development Only) ---
+# --- Superuser ---
 DJANGO_SUPERUSER_USERNAME=admin
 DJANGO_SUPERUSER_EMAIL=admin@example.com
 DJANGO_SUPERUSER_PASSWORD=admin
@@ -136,7 +135,7 @@ Traditional method. The Makefile helps manage the virtual environment.
 
 ### 1. Prerequisites
 
-* Python 3.12+ installe
+* Python 3.12+ installed
 * venv module (usually included with Python)
 
 Note: You do not need to install a MySQL/MariaDB server locally. The application will automatically switch to SQLite if MySQL configuration is missing.
@@ -151,10 +150,9 @@ cp .env.local .env
 ```bash
 # --- Security ---
 SECRET_KEY=change-me-in-prod-secret-key
-ALLOWED_HOSTS=127.0.0.1,localhost
 EXPOSITION_PORT=8000
 
-# --- Superuser (Development Only) ---
+# --- Superuser ---
 DJANGO_SUPERUSER_USERNAME=admin
 DJANGO_SUPERUSER_EMAIL=admin@example.com
 DJANGO_SUPERUSER_PASSWORD=admin

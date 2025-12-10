@@ -47,7 +47,6 @@ cp .env.local .env
 | Variable | Purpose | Example |
 |----------|---------|---------|
 | `SECRET_KEY` | Django security key (must be random in production) | `django-insecure-abc...` |
-| `ALLOWED_HOSTS` | Which hostnames can access the app | `127.0.0.1,localhost` |
 | `EXPOSITION_PORT` | The port the app runs on | `8000` |
 | `MYSQL_HOST` | Database server address (Docker: `db`, Local: `localhost`) | `db` (Docker) or `localhost` (Local) |
 | `MYSQL_PORT` | Database server port | `3306` (Docker internal) or `3307` (Local) |
