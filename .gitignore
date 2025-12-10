@@ -13,6 +13,8 @@ staticfiles/
 
 # --- Environnement & Secrets ---
 .env
+.env.docker
+.env.local
 .venv/
 venv/
 env/
