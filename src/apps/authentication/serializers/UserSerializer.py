@@ -8,8 +8,9 @@ class UserSerializer(serializers.ModelSerializer):
     """
     Serializer for the User model, enriched with Owner profile data.
     """
-    affiliation = serializers.SerializerMethodField()
-    establishment = serializers.SerializerMethodField()
+    affiliation = serializers.SerializerMethodField(method_name='get_affiliation')
+    establishment = serializers.SerializerMethodField(method_name='get_establishment')
+    userpicture = serializers.SerializerMethodField(method_name='get_userpicture')
 
     class Meta:
         model = User
@@ -21,7 +22,8 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name', 
             'is_staff', 
             'affiliation', 
-            'establishment'
+            'establishment',
+            'userpicture'
         ]
 
     @extend_schema_field(serializers.CharField(allow_null=True))
@@ -36,4 +38,9 @@ class UserSerializer(serializers.ModelSerializer):
         """Returns the user's establishment from the Owner profile."""
         if hasattr(obj, 'owner'):
             return obj.owner.establishment
+        return None
+
+    def get_userpicture(self, obj) -> str | None:
+        if hasattr(obj, 'owner') and obj.owner.userpicture:
+            return obj.owner.userpicture.image.url 
         return None
