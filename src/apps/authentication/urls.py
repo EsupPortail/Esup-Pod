@@ -1,5 +1,6 @@
 from django.urls import path, include
 from django.conf import settings
+import django_cas_ng.views
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -42,6 +43,12 @@ if getattr(settings, 'USE_LOCAL_AUTH', True):
 if getattr(settings, 'USE_CAS', False):
     urlpatterns.append(
         path('token/cas/', CASLoginView.as_view(), name='token_obtain_pair_cas')
+    )
+    urlpatterns.append(
+        path('accounts/login', django_cas_ng.views.LoginView.as_view(), name='cas_ng_login')
+    )
+    urlpatterns.append(
+        path('accounts/logout', django_cas_ng.views.LogoutView.as_view(), name='cas_ng_logout')
     )
 
 if getattr(settings, 'USE_SHIB', False):
