@@ -10,7 +10,7 @@ The application is built on a robust stack designed to ensure separation of conc
 
 * **Backend Framework:** Django (5.2.8) Python (3.12+) with Django Rest Framework (DRF 3.15.2).
 * **Database:** MySql (Containerized).
-* **Web Server (Prod):** Nginx (Reverse Proxy) + uWSGI (Application Server).
+    * **Local Dev (Lite):** SQLite (Auto-configured if no MySQL config found).
 * **Containerization:** Docker & Docker Compose.
 
 ## Directory Structure
@@ -36,18 +36,29 @@ Pod_V5_Back/
 
 To ensure stability, the project maintains strict isolation between environments:
 
-| Feature        | Development (dev)                 | Production (prod)                             |
-| -------------- | --------------------------------- | --------------------------------------------- |
-| Docker Compose | deployment/dev/docker-compose.yml | deployment/prod/docker-compose.yml            |
-| Settings File  | src.config.settings.dev           | src.config.settings.prod (or base + env vars) |
-| Debug Mode     | True (Detailed errors)            | False (Security hardened)                     |
-| Web Server     | runserver (Django built-in)       | Nginx + uWSGI                                 |
-| Static Files   | Served by Django                  | Served by Nginx                               |
+| Feature         | Development (Docker)                      | Development (Local)           | Production                                  |
+|-----------------|-------------------------------------------|-------------------------------|---------------------------------------------|
+| Docker Compose  | deployment/dev/docker-compose.yml         | N/A                           | deployment/prod/docker-compose.yml          |
+| Settings File   | src.config.settings.dev                   | src.config.settings.dev       | src.config.settings.prod (ou base + env)    |
+| Database        | MariaDB (Service: db)                     | SQLite (db.sqlite3)           | TODO                                        |
+| Debug Mode      | True                                      | True                          | TODO                                        |
+| Web Server      | runserver                                 | runserver                     | TODO                                        |
 
-⚠️ **Important:** Make sure to configure the `.env` file before starting the application. When launching in development mode, Django will use `src.config.settings.dev`. [Example `.env` for Development](dev.md#example-env-for-development)
+
+### ⚠️ Environment Selection
+
+Make sure to **choose the correct `.env` file** depending on how you run the project:
+
+* **Using Docker → use the Docker `.env.docker` file** (MariaDB, container services)
+* **Using local setup → use the local `.env.local` file** (SQLite and local-only defaults)
+
+Selecting the wrong `.env` will load the wrong database configuration and cause the application to fail.
+
 
 ## Getting Started
 
-* For local setup instructions, see **[Development Guide](deployment/dev.md)**.
+* For local setup instructions, see **[Development Guide](deployment/dev/dev.md)**.
 * For deployment instructions, see **[Production Guide](deployment/prod.md)**.
 * For maintenance and troubleshooting, see **[Help](deployment/help.md)**.
+
+

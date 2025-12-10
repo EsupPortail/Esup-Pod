@@ -6,7 +6,7 @@ __pycache__/
 
 # --- Django ---
 *.log
-local_settings.py
+settings_local.py
 db.sqlite3
 db.sqlite3-journal
 media/
@@ -14,6 +14,8 @@ staticfiles/
 
 # --- Environnement & Secrets ---
 .env
+.env.docker
+.env.local
 .venv/
 venv/
 env/
@@ -39,4 +41,4 @@ pod/main/static/custom/img
 !pod/custom/settings_local.py.example
 settings_local.py
 transcription/*
-.setup_done
+.github

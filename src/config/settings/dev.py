@@ -1,8 +1,10 @@
 from .base import *
 import os
 
-DEBUG = True
+DEBUG = True  
+CORS_ALLOW_ALL_ORIGINS = True  
 
+# Uncomment for debugging 
 # INSTALLED_APPS += ["debug_toolbar"]
 # MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 
@@ -21,7 +23,7 @@ LOGGING = {
     },
     "handlers": {
         "console": {
-            "level": "DEBUG",
+            "level": "INFO",
             "class": "logging.StreamHandler",
             "formatter": "simple",
         },
@@ -34,9 +36,48 @@ LOGGING = {
         },
         "pod": {
             "handlers": ["console"],
-            "level": "DEBUG",
+            "level": "INFO",
             "propagate": False,
         },
     },
 }
-CORS_ALLOW_ALL_ORIGINS = True
+
+# Detect whether the environment is configured for Docker (MySQL) or not
+HAS_MYSQL_CONFIG = all([
+    os.getenv("MYSQL_HOST"),
+    os.getenv("MYSQL_DATABASE"),
+    os.getenv("MYSQL_USER"),
+    os.getenv("MYSQL_PASSWORD"),
+    os.getenv("MYSQL_PORT"),
+])
+
+USE_DOCKER = HAS_MYSQL_CONFIG
+
+if not HAS_MYSQL_CONFIG:
+    print("[PR] .env is not configured for Docker/MySQL -> using local SQLite instead.")
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+            "TEST": {
+                "NAME": BASE_DIR / "db_test.sqlite3",
+            },
+            "OPTIONS": {
+                "timeout": 20,
+            },
+        }
+    }
+
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "local-cache",
+        }
+    }
+
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+else:
+    print(f"[PR] MySQL configuration detected in .env -> Docker mode enabled (Host: {os.getenv('MYSQL_HOST')}).")
+

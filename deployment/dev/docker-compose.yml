@@ -2,50 +2,42 @@ services:
   db:
     image: mariadb:10.11
     container_name: pod_mariadb_dev
-
     env_file:
       - ../../.env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "${MYSQL_PORT:-3307}:3306"
     volumes:
       - pod_db_data_dev:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     build:
       context: ../../
       dockerfile: deployment/dev/Dockerfile
     container_name: "pod_api_dev${VERSION}"
-
-    tty: true
-    
     volumes:
       - ../../:/app
-
+      - pod_media_dev:/app/media
     ports:
       - "${EXPOSITION_PORT:-8000}:8000"
-
     depends_on:
-      - db
-
+      db:
+        condition: service_started
     env_file:
       - ../../.env
-
     environment:
       MYSQL_HOST: db
       MYSQL_PORT: 3306
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-
-      SECRET_KEY: ${SECRET_KEY}
-
       DJANGO_SETTINGS_MODULE: config.settings.dev
-      ALLOWED_HOSTS: "*,localhost,127.0.0.1,0.0.0.0"
+      ALLOWED_HOSTS: "*"
+    command: ["run-server"]
 
 volumes:
   pod_db_data_dev:
+  pod_media_dev:

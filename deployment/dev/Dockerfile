@@ -1,5 +1,9 @@
 FROM python:3.12-slim
 
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV DEBIAN_FRONTEND=noninteractive
+
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
@@ -7,17 +11,24 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     default-libmysqlclient-dev \
     build-essential \
+    netcat-openbsd \
+    git \
+    dos2unix \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /app/requirements.base.txt
 COPY deployment/dev/requirements.txt /app/requirements.dev.txt
 
-RUN pip install --no-cache-dir -r requirements.base.txt -r requirements.dev.txt
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.base.txt -r requirements.dev.txt
 
-# ENV DEV
 ENV PYTHONPATH=/app/src
 ENV DJANGO_SETTINGS_MODULE=config.settings.dev
 
-EXPOSE ${EXPOSITION_PORT}
+EXPOSE 8000
 
-CMD ["/bin/bash"]
+COPY deployment/dev/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+RUN dos2unix /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
