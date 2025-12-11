@@ -1,5 +1,6 @@
 import os
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.dev")
+# Use local settings as the default environment
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.django.dev.local")  
 application = get_asgi_application()

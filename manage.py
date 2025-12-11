@@ -10,7 +10,8 @@ def main():
     base_path = Path(__file__).resolve().parent
     sys.path.append(str(base_path / "src"))
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.dev")
+    # Use local settings as the default environment
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.django.dev.local")  
 
     try:
         from django.core.management import execute_from_command_line

@@ -1,17 +1,10 @@
 import os
-from pathlib import Path
-from datetime import timedelta
+from config.env import BASE_DIR, env
 
-BASE_DIR = Path(__file__).resolve().parents[2]
-POD_VERSION = os.getenv("VERSION", "0.0.0")
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
+env.read_env(os.path.join(BASE_DIR, '.env'))
 
-CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS", "False") == "True"
-cors_origins_env = os.getenv("CORS_ALLOWED_ORIGINS", "")
-if cors_origins_env:
-    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins_env.split(",") if origin.strip()]
-else:
-    CORS_ALLOWED_ORIGINS = []
+POD_VERSION = env("VERSION")
+SECRET_KEY = env("SECRET_KEY")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -64,22 +57,6 @@ ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-
-# DEFAULT CONFIG (Docker environment): MariaDB
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("MYSQL_DATABASE", "pod_db"),
-        "USER": os.getenv("MYSQL_USER", "pod"),
-        "PASSWORD": os.getenv("MYSQL_PASSWORD", "pod"),
-        "HOST": os.getenv("MYSQL_HOST", "localhost"),
-        "PORT": os.getenv("MYSQL_PORT", "3306"),
-        "OPTIONS": {
-            "charset": "utf8mb4",
-        },
-    }
-}
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -90,39 +67,11 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': False,
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-}
-
-
-# --- CORS ---
-
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
-
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'Pod REST API',
-    'DESCRIPTION': 'API de gestion vidéo (Authentification Locale)',
-    'VERSION': POD_VERSION,
-    'SERVE_INCLUDE_SCHEMA': False,
-    'COMPONENT_SPLIT_REQUEST': True,
-}
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'django_cas_ng.backends.CASBackend',
-]
 
 LANGUAGE_CODE = 'en-en'
 TIME_ZONE = 'UTC'
@@ -154,46 +103,6 @@ for application in INSTALLED_APPS:
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings_local, variable)
 
-# ===================================================
-# CONFIGURATION CAS & AUTHENTICATION (POD)
-# ===================================================
+from config.settings.authentication import *
+from config.settings.swagger import *
 
-CAS_SERVER_URL = "https://cas.univ-lille.fr"
-CAS_VERSION = '3'
-CAS_FORCE_CHANGE_USERNAME_CASE = 'lower'
-CAS_APPLY_ATTRIBUTES_TO_USER = True
-
-LDAP_SERVER = {
-    "url": "ldap://ldap.univ.fr", 
-    "port": 389, 
-    "use_ssl": False
-}
-
-AUTH_LDAP_BIND_DN = "cn=pod,ou=app,dc=univ,dc=fr" 
-AUTH_LDAP_BIND_PASSWORD =  os.getenv("AUTH_LDAP_BIND_PASSWORD", "")
-
-AUTH_LDAP_USER_SEARCH = ("ou=people,dc=univ,dc=fr", "(uid=%(uid)s)")
-
-USER_LDAP_MAPPING_ATTRIBUTES = {
-    "uid": "uid",
-    "mail": "mail",
-    "last_name": "sn",
-    "first_name": "givenname",
-    "primaryAffiliation": "eduPersonPrimaryAffiliation",
-    "affiliations": "eduPersonAffiliation",
-    "groups": "memberOf",
-    "establishment": "establishment",
-}
-
-AFFILIATION_STAFF = ("faculty", "employee", "staff")
-CREATE_GROUP_FROM_AFFILIATION = True
-CREATE_GROUP_FROM_GROUPS = True
-POPULATE_USER = "CAS"
-
-ALLOWED_SUPERUSER_IPS = ["127.0.0.1", "10.0.0.0/8"]
-
-USE_CAS = True  
-
-USE_LDAP = False 
-
-USE_LOCAL_AUTH = True
