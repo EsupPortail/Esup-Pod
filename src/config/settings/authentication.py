@@ -3,9 +3,12 @@ from ..env import env
 from ..django.base import SECRET_KEY
 from datetime import timedelta
 
+USE_LOCAL_AUTH = getattr(settings_local, "USE_LOCAL_AUTH", True)
+
 USE_CAS = getattr(settings_local, "USE_CAS", False)
 USE_LDAP = getattr(settings_local, "USE_LDAP", False)
-USE_LOCAL_AUTH = getattr(settings_local, "USE_LOCAL_AUTH", True)
+USE_SHIB = getattr(settings_local, "USE_SHIB", False)
+USE_OIDC = getattr(settings_local, "USE_OIDC", False)
 
 POPULATE_USER = "CAS" if USE_CAS else "LDAP" if USE_LDAP else None
 
@@ -34,10 +37,6 @@ if USE_CAS:
     CAS_VERSION = '3'
     CAS_FORCE_CHANGE_USERNAME_CASE = 'lower'
     CAS_APPLY_ATTRIBUTES_TO_USER = True
-else:
-    # Valeurs par défaut pour éviter les erreurs d'import si désactivé
-    CAS_SERVER_URL = ""
-    CAS_VERSION = '3'
 
 if USE_LDAP:
     LDAP_SERVER = {
@@ -61,17 +60,41 @@ if USE_LDAP:
         "groups": "memberOf",
         "establishment": "establishment",
     }
-else:
-
-    LDAP_SERVER = {"url": "", "port": 389, "use_ssl": False}
-    AUTH_LDAP_BIND_DN = ""
-    AUTH_LDAP_BIND_PASSWORD = ""
-    AUTH_LDAP_USER_SEARCH = ("", "")
-    USER_LDAP_MAPPING_ATTRIBUTES = {}
-
 
 ALLOWED_SUPERUSER_IPS = ["127.0.0.1", "10.0.0.0/8"]
-
 AFFILIATION_STAFF = ("faculty", "employee", "staff")
 CREATE_GROUP_FROM_AFFILIATION = True
 CREATE_GROUP_FROM_GROUPS = True
+
+# TODO: Verifiy implementation
+if USE_CAS and USE_SHIB:
+    SHIBBOLETH_ATTRIBUTE_MAP = {
+    "REMOTE_USER": (True, "username"),
+    "Shibboleth-givenName": (True, "first_name"),
+    "Shibboleth-sn": (False, "last_name"),
+    "Shibboleth-mail": (False, "email"),
+    "Shibboleth-primary-affiliation": (False, "affiliation"),
+    "Shibboleth-unscoped-affiliation": (False, "affiliations"),
+    }
+
+    SHIBBOLETH_STAFF_ALLOWED_DOMAINS = []
+
+if USE_CAS and USE_OIDC:
+    OIDC_CLAIM_GIVEN_NAME = "given_name"
+    OIDC_CLAIM_FAMILY_NAME = "family_name"
+    OIDC_CLAIM_PREFERRED_USERNAME = "preferred_username"
+
+    OIDC_DEFAULT_AFFILIATION = "member"
+    OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = []
+    OIDC_RP_CLIENT_ID = os.environ.get("OIDC_RP_CLIENT_ID", "mon-client-id")
+    OIDC_RP_CLIENT_SECRET = os.environ.get("OIDC_RP_CLIENT_SECRET", "mon-secret")
+
+    OIDC_OP_TOKEN_ENDPOINT = os.environ.get(
+        "OIDC_OP_TOKEN_ENDPOINT", 
+        "https://auth.example.com/oidc/token"
+    )
+
+    OIDC_OP_USER_ENDPOINT = os.environ.get(
+        "OIDC_OP_USER_ENDPOINT", 
+        "https://auth.example.com/oidc/userinfo"
+    )
