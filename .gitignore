@@ -14,6 +14,7 @@ staticfiles/
 
 # --- Environnement & Secrets ---
 .env
+.env.prod
 .env.docker
 .env.local
 .venv/
