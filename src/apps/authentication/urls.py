@@ -35,12 +35,12 @@ urlpatterns = [
     path('logout-info/', LogoutInfoView.as_view(), name='api_logout_info'),
 ]
 
-if getattr(settings, 'USE_LOCAL_AUTH', True):
+if settings.USE_LOCAL_AUTH:
     urlpatterns.append(
         path('token/', LoginView.as_view(), name='token_obtain_pair')
     )
 
-if getattr(settings, 'USE_CAS', False):
+if settings.USE_CAS:
     urlpatterns.append(
         path('token/cas/', CASLoginView.as_view(), name='token_obtain_pair_cas')
     )
@@ -51,12 +51,12 @@ if getattr(settings, 'USE_CAS', False):
         path('accounts/logout', django_cas_ng.views.LogoutView.as_view(), name='cas_ng_logout')
     )
 
-if getattr(settings, 'USE_SHIB', False):
+if settings.USE_SHIB:
     urlpatterns.append(
         path('token/shibboleth/', ShibbolethLoginView.as_view(), name='token_obtain_pair_shibboleth')
     )
 
-if getattr(settings, 'USE_OIDC', False):
+if settings.USE_OIDC:
     urlpatterns.append(
         path('token/oidc/', OIDCLoginView.as_view(), name='token_obtain_pair_oidc')
     )
