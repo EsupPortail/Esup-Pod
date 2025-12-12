@@ -23,7 +23,8 @@ class UserSerializer(serializers.ModelSerializer):
             'is_staff', 
             'affiliation', 
             'establishment',
-            'userpicture'
+            'userpicture',
+            "is_manager",
         ]
 
     @extend_schema_field(serializers.CharField(allow_null=True))
