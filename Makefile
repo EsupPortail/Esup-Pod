@@ -1,21 +1,26 @@
+# Load the .env 
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
+
 PYTHON=python3
 DJANGO_MANAGE=$(PYTHON) manage.py
 DOCKER_COMPOSE_FILE=deployment/dev/docker-compose.yml
 DOCKER_COMPOSE_CMD=docker compose -f $(DOCKER_COMPOSE_FILE)
 DOCKER_SERVICE_NAME=api
 
-.PHONY: help docker-start docker-logs docker-shell docker-enter docker-build docker-stop docker-clean init migrate makemigrations run superuser test clean setup
+.PHONY: help docker-start docker-logs docker-shell docker-enter docker-build docker-stop docker-clean init migrate makemigrations run superuser test clean setup check-django-env
 
-# ------------------------------------------
-# Help command
-# ------------------------------------------
-help: ## Display this help
+help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 	awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 # ==========================================
 # DOCKER COMMANDS (Recommended)
 # ==========================================
+
+docker-start docker-logs docker-shell docker-enter docker-build docker-stop docker-clean docker-runserver: check-django-env
 
 docker-start: ## Start the full project (auto-setup via entrypoint)
 	@echo "Starting Docker environment..."
@@ -42,7 +47,7 @@ docker-stop: ## Stop the containers
 docker-clean: ## Stop and remove everything (containers, orphaned networks, volumes)
 	$(DOCKER_COMPOSE_CMD) down --remove-orphans --volumes
 
-docker-runserver:
+docker-runserver: ## Start the server when you using shell mode
 	$(DJANGO_MANAGE) runserver 0.0.0.0:${EXPOSITION_PORT}
 
 # ==========================================
@@ -73,7 +78,18 @@ clean: ## Remove pyc files and caches
 	find . -name '*.pyc' -delete
 	find . -name '__pycache__' -type d -exec rm -rf {} +
 
-# Local setup remains manual, Docker setup is automatic
-setup: clean makemigrations migrate
+
+setup: clean makemigrations migrate ## Local setup remains manual, Docker setup is automatic
 	@echo "Setup complete. Database migrations applied."
 	@echo "To create a superuser, run: make superuser"
+
+check-django-env:
+	@# Verify the .env configuration for the Docker context
+	@if [ "$${DJANGO_SETTINGS_MODULE##*.}" != "docker" ]; then \
+		echo "Environment configuration ERROR:"; \
+		echo "   To use Docker, you must correctly configure your .env file."; \
+		echo "   Please refer to the deployment documentation."; \
+		echo "   Current DJANGO_SETTINGS_MODULE: '$${DJANGO_SETTINGS_MODULE}'"; \
+		echo "   Expected: must end with '.docker'"; \
+		exit 1; \
+	fi

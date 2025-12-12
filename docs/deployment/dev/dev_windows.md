@@ -48,7 +48,7 @@ This is the **recommended method**. It isolates the database and all dependencie
 
    ```bash
    # --- Security ---
-   DJANGO_SETTINGS_MODULE='config.django.dev.docker'
+   DJANGO_SETTINGS_MODULE=config.django.dev.docker
    SECRET_KEY=change-me-in-prod-secret-key
    EXPOSITION_PORT=8000
 
@@ -126,7 +126,7 @@ cp .env.local .env
 
 ```bash
 # --- Security ---
-DJANGO_SETTINGS_MODULE='config.django.dev.docker'
+DJANGO_SETTINGS_MODULE=config.django.dev.docker
 SECRET_KEY=change-me-in-prod-secret-key
 EXPOSITION_PORT=8000
 
