@@ -5,7 +5,6 @@ export EXPOSITION_PORT=${EXPOSITION_PORT:-8000}
 export DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-admin}
 export DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-admin@example.com}
 export DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD:-admin}
-export DJANGO_ENV=${DJANGO_ENV:-development}
 
 
 wait_for_db() {
@@ -34,6 +33,9 @@ END
 
 manage_setup() {
     echo "[Docker] Starting automatic setup..."
+
+    echo "[Docker] Generating migrations for all apps if necessary..."
+    python manage.py makemigrations --no-input || true
 
     echo "[Docker] Applying migrations..."
     python manage.py migrate --noinput
