@@ -487,3 +487,35 @@ class LogoutInfoView(APIView):
                 data["oidc"] = oidc_logout
 
         return Response(data)
+    
+class LoginConfigView(APIView):
+    """
+    Retourne la configuration des méthodes d'authentification actives.
+    Permet au frontend de savoir quels boutons de connexion afficher.
+    """
+    permission_classes = [AllowAny]
+
+    @extend_schema(
+        responses={
+            200: inline_serializer(
+                name='LoginConfigResponse',
+                fields={
+                    'use_local': serializers.BooleanField(),
+                    'use_cas': serializers.BooleanField(),
+                    'use_shibboleth': serializers.BooleanField(),
+                    'use_oidc': serializers.BooleanField(),
+                    'shibboleth_name': serializers.CharField(),
+                    'oidc_name': serializers.CharField(),
+                }
+            )
+        }
+    )
+    def get(self, request):
+        return Response({
+            "use_local": getattr(settings, "USE_LOCAL_AUTH", True),
+            "use_cas": getattr(settings, "USE_CAS", False),
+            "use_shibboleth": getattr(settings, "USE_SHIB", False),
+            "use_oidc": getattr(settings, "USE_OIDC", False),
+            "shibboleth_name": getattr(settings, "SHIB_NAME", "Shibboleth"),
+            "oidc_name": getattr(settings, "OIDC_NAME", "OpenID Connect"),
+        })
