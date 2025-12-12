@@ -1,8 +1,10 @@
 import os
 from config.env import BASE_DIR, env
 
+# Lire le fichier .env
 env.read_env(os.path.join(BASE_DIR, '.env'))
 
+# Variables d'environnement essentielles
 POD_VERSION = env("VERSION")
 SECRET_KEY = env("SECRET_KEY")
 
@@ -40,8 +42,8 @@ MIDDLEWARE = [
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"], 
-        "APP_DIRS": True, 
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -81,28 +83,5 @@ SITE_ID = 1
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-##
-# Applications settings (and settings locale if any)
-#
-# Add settings
-for application in INSTALLED_APPS:
-    if application.startswith("src"):
-        path = application.replace(".", os.path.sep) + "/base.py"
-        if os.path.exists(path):
-            _temp = __import__(application, globals(), locals(), ["settings"])
-            for variable in dir(_temp.settings):
-                if variable == variable.upper():
-                    locals()[variable] = getattr(_temp.settings, variable)
-# add local settings
-for application in INSTALLED_APPS:
-    if application.startswith("src"):
-        path = application.replace(".", os.path.sep) + "/settings_local.py"
-        if os.path.exists(path):
-            _temp = __import__(application, globals(), locals(), ["settings_local"])
-            for variable in dir(_temp.settings_local):
-                if variable == variable.upper():
-                    locals()[variable] = getattr(_temp.settings_local, variable)
-
 from config.settings.authentication import *
 from config.settings.swagger import *
-
