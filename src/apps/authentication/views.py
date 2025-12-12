@@ -3,7 +3,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
-from rest_framework import status, viewsets, serializers
+from rest_framework import status, viewsets, serializers, filters
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema, inline_serializer
 from django.shortcuts import get_object_or_404
@@ -358,6 +358,8 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     filterset_fields = ["id", "username", "email"]
     permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter] # Ajout du backend de recherche
+    search_fields = ['username', 'first_name', 'last_name', 'email']
 
 
 class GroupViewSet(viewsets.ModelViewSet):
