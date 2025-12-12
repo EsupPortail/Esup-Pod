@@ -12,17 +12,18 @@ If you're familiar with Docker and just want to get started:
 git clone <your-forked-repo-url>
 cd Pod_V5_Back
 
-make dev-run # Start the full project (auto-setup via entrypoint)
-make dev-enter ## Enter an already running container (for debugging)
-make dev-stop # Stop the containers
+make docker-run # Start the full project (auto-setup via entrypoint)
+make docker-enter ## Enter an already running container (for debugging)
+make docker-stop # Stop the containers
 ```
 
 Make tools:
 ```bash
-make dev-logs  # Show real-time logs (see automatic migrations)
-make dev-shell # Launch a temporary container in shell mode (isolated)
-make dev-build # Force rebuild of Docker images
-make dev-clean: # Stop and remove everything (containers, orphaned networks, volumes)
+make docker-logs  # Show real-time logs (see automatic migrations)
+make docker-shell # Launch a temporary container in shell mode (isolated)
+make docker-runserver # Start the server when you using shell mode
+make docker-build # Force rebuild of Docker images
+make docker-clean: # Stop and remove everything (containers, orphaned networks, volumes)
 ```
 
 ## Scenario 1: Windows WITH Docker (Recommended)
@@ -47,6 +48,7 @@ This is the **recommended method**. It isolates the database and all dependencie
 
    ```bash
    # --- Security ---
+   DJANGO_SETTINGS_MODULE='config.django.dev.docker'
    SECRET_KEY=change-me-in-prod-secret-key
    EXPOSITION_PORT=8000
 
@@ -124,6 +126,7 @@ cp .env.local .env
 
 ```bash
 # --- Security ---
+DJANGO_SETTINGS_MODULE='config.django.dev.docker'
 SECRET_KEY=change-me-in-prod-secret-key
 EXPOSITION_PORT=8000
 

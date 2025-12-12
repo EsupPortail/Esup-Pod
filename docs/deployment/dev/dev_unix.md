@@ -12,17 +12,18 @@ If you're familiar with Docker and just want to get started:
 git clone <your-forked-repo-url>
 cd Pod_V5_Back
 
-make dev-run # Start the full project (auto-setup via entrypoint)
-make dev-enter ## Enter an already running container (for debugging)
-make dev-stop # Stop the containers
+make docker-start # Start the full project (auto-setup via entrypoint)
+make docker-enter ## Enter an already running container (for debugging)
+make docker-stop # Stop the containers
 ```
 
 Make tools:
 ```bash
-make dev-logs  # Show real-time logs (see automatic migrations)
-make dev-shell # Launch a temporary container in shell mode (isolated)
-make dev-build # Force rebuild of Docker images
-make dev-clean: # Stop and remove everything (containers, orphaned networks, volumes)
+make docker-logs  # Show real-time logs (see automatic migrations)
+make docker-shell # Launch a temporary container in shell mode (isolated)
+make docker-runserver # Start the server when you using shell mode
+make docker-build # Force rebuild of Docker images
+make docker-clean: # Stop and remove everything (containers, orphaned networks, volumes)
 ```
 
 
@@ -55,6 +56,7 @@ cp .env.docker .env
 .env.docker file content:
 ```bash
 # --- Security ---
+DJANGO_SETTINGS_MODULE='config.django.dev.docker'
 SECRET_KEY=change-me-in-prod-secret-key
 EXPOSITION_PORT=8000
 
@@ -84,7 +86,7 @@ VERSION=5.0.0-DEV
 3. **Start the project:**
 
 ```bash
-make dev-run
+make docker-start
 ```
 
 This will:
@@ -97,22 +99,22 @@ This will:
 4. **Follow logs:**
 
 ```bash
-make dev-logs
+make docker-logs
 ```
 
 Watch for any errors during migrations or superuser creation. The logs will show when the server is ready.
 
-Access the API at `http://127.0.0.1:8000` once the logs show "Starting development server".
+Access the API at `http://0.0.0.0:8000` once the logs show "Starting development server".
 
 ### 3. Useful Commands (Make + Docker)
 
 | Action | Command          | Description                     |
 | ------ | ---------------- | ------------------------------- |
-| Enter container | `make dev-enter` | Open a bash shell in the running container |
-| Stop   | `make dev-stop`  | Pause the containers (data preserved)            |
-| Clean  | `make dev-clean` | Remove containers + volumes (⚠️ deletes database)  |
-| Rebuild | `make dev-build` | Force rebuild of Docker images |
-| Temp shell | `make dev-shell` | Launch isolated temporary container |
+| Enter container | `make docker-enter` | Open a bash shell in the running container |
+| Stop   | `make docker-stop`  | Pause the containers (data preserved)            |
+| Clean  | `make docker-clean` | Remove containers + volumes (⚠️ deletes database)  |
+| Rebuild | `make docker-build` | Force rebuild of Docker images |
+| Temp shell | `make docker-shell` | Launch isolated temporary container |
 
 ### 4. Database Connection Reference
 
@@ -149,6 +151,7 @@ cp .env.local .env
 
 ```bash
 # --- Security ---
+DJANGO_SETTINGS_MODULE='config.django.dev.local'
 SECRET_KEY=change-me-in-prod-secret-key
 EXPOSITION_PORT=8000
 
