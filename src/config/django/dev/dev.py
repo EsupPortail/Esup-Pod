@@ -4,7 +4,7 @@ import sqlparse
 import re
 
 DEBUG = True
-SHOW_SQL_QUERIES = True 
+SHOW_SQL_QUERIES = False 
 CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = ["*"]
 

@@ -24,7 +24,6 @@ class UserSerializer(serializers.ModelSerializer):
             'affiliation', 
             'establishment',
             'userpicture',
-            "is_manager",
         ]
 
     @extend_schema_field(serializers.CharField(allow_null=True))
