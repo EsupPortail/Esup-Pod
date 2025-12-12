@@ -1,41 +1,40 @@
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
-from rest_framework import status, viewsets, serializers, filters
-from rest_framework.decorators import action
-from drf_spectacular.utils import extend_schema, inline_serializer
-from django.shortcuts import get_object_or_404
+import logging
+import requests
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist
-from django.conf import settings
-import requests
-import logging
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import filters, serializers, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 try:
     from django_cas_ng.utils import get_cas_client
 except ImportError:
     get_cas_client = None
-
-# Models
-from .models.Owner import Owner
 from .models.AccessGroup import AccessGroup
 from .models.GroupSite import GroupSite
+from .models.Owner import Owner
 from .models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION
-
-# Serializers
-from .serializers.CustomTokenObtainPairSerializer import CustomTokenObtainPairSerializer
-from .serializers.UserSerializer import UserSerializer
-from .serializers.CASTokenObtainPairSerializer import CASTokenObtainPairSerializer
-from .serializers.ExternalAuthSerializers import OIDCTokenObtainSerializer, ShibbolethTokenObtainSerializer
-from .serializers.OwnerSerializer import OwnerSerializer, OwnerWithGroupsSerializer
 from .serializers.AccessGroupSerializer import AccessGroupSerializer
+from .serializers.CASTokenObtainPairSerializer import CASTokenObtainPairSerializer
+from .serializers.CustomTokenObtainPairSerializer import CustomTokenObtainPairSerializer
+from .serializers.ExternalAuthSerializers import (
+    OIDCTokenObtainSerializer, 
+    ShibbolethTokenObtainSerializer
+)
 from .serializers.GroupSerializer import GroupSerializer
+from .serializers.OwnerSerializer import OwnerSerializer, OwnerWithGroupsSerializer
 from .serializers.SiteSerializer import SiteSerializer
+from .serializers.UserSerializer import UserSerializer
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -130,10 +129,10 @@ class CASLoginView(APIView):
 class ShibbolethLoginView(APIView):
     """
     **Shibboleth Authentication Endpoint**
-    
-    Cette vue doit être protégée par le SP Shibboleth (Apache/Nginx) qui injecte les headers.
-    Elle lit les headers (REMOTE_USER, etc.), crée ou met à jour l'utilisateur localement
-    selon la logique définie dans l'ancien `ShibbolethRemoteUserBackend` et renvoie des JWT.
+        
+    This view must be protected by the Shibboleth SP (Apache/Nginx) which injects the headers. 
+    It reads the headers (REMOTE_USER, etc.), creates or updates the user locally according 
+    to the logic defined in the former ShibbolethRemoteUserBackend and returns JWTs.
     """
     permission_classes = [AllowAny] 
     serializer_class = ShibbolethTokenObtainSerializer
@@ -207,10 +206,10 @@ class ShibbolethLoginView(APIView):
 class OIDCLoginView(APIView):
     """
     **OIDC Authentication Endpoint**
-    
-    Echange un 'authorization_code' contre des tokens OIDC via le Provider,
-    récupère les infos utilisateur (UserInfo), met à jour la base locale 
-    (logique `OIDCBackend`) et renvoie des JWT.
+
+    Exchanges an 'authorization_code' for OIDC tokens via the Provider, 
+    retrieves user information (UserInfo), 
+    updates the local database (using OIDCBackend logic), and returns JWTs.
     """
     permission_classes = [AllowAny]
     serializer_class = OIDCTokenObtainSerializer
@@ -303,8 +302,8 @@ class OwnerViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='set-user-accessgroup')
     def set_user_accessgroup(self, request):
         """
-        Equivalent de accessgroups_set_user_accessgroup.
-        Assigne des AccessGroups à un user via son username.
+        Equivalent of accessgroups_set_user_accessgroup. 
+        Assigns AccessGroups to a user via their username.
         """
         username = request.data.get("username")
         groups = request.data.get("groups")
@@ -327,8 +326,8 @@ class OwnerViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='remove-user-accessgroup')
     def remove_user_accessgroup(self, request):
         """
-        Equivalent de accessgroups_remove_user_accessgroup.
-        Retire des AccessGroups d'un user via son username.
+        Equivalent of accessgroups_remove_user_accessgroup. 
+        Removes AccessGroups from a user via their username.
         """
         username = request.data.get("username")
         groups = request.data.get("groups")
@@ -393,8 +392,8 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='set-users-by-name')
     def set_users_by_name(self, request):
         """
-        Equivalent de accessgroups_set_users_by_name.
-        Ajoute une liste d'utilisateurs (par username) à un AccessGroup (par code_name).
+        Equivalent of accessgroups_set_users_by_name. 
+        Adds a list of users (by username) to an AccessGroup (by code_name).
         """
         code_name = request.data.get("code_name")
         users = request.data.get("users")
@@ -418,8 +417,8 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='remove-users-by-name')
     def remove_users_by_name(self, request):
         """
-        Equivalent de accessgroups_remove_users_by_name.
-        Retire une liste d'utilisateurs (par username) d'un AccessGroup (par code_name).
+        Equivalent of accessgroups_remove_users_by_name. 
+        Removes a list of users (by username) from an AccessGroup (by code_name).
         """
         code_name = request.data.get("code_name")
         users = request.data.get("users")
@@ -443,9 +442,9 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
     
 class LogoutInfoView(APIView):
     """
-    Retourne les URLs de déconnexion pour les fournisseurs externes.
-    Le frontend doit appeler cet endpoint pour savoir où rediriger l'utilisateur
-    après avoir supprimé le token JWT localement.
+    Returns the logout URLs for external providers. 
+    The frontend must call this endpoint to know where 
+    to redirect the user after deleting the local JWT token.
     """
     permission_classes = [AllowAny]
 
@@ -490,8 +489,8 @@ class LogoutInfoView(APIView):
     
 class LoginConfigView(APIView):
     """
-    Retourne la configuration des méthodes d'authentification actives.
-    Permet au frontend de savoir quels boutons de connexion afficher.
+    Returns the configuration of active authentication methods. 
+    Allows the frontend to know which login buttons to display.
     """
     permission_classes = [AllowAny]
 

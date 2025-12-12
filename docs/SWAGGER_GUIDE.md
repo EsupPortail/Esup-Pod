@@ -1,44 +1,43 @@
-# 📘 Guide de Documentation API (OpenAPI / Swagger)
+# 📘 API Documentation Guide (OpenAPI / Swagger)
 
-Ce projet utilise drf-spectacular pour générer automatiquement une documentation interactive conforme à la spécification OpenAPI 3.0. 
+This project uses drf-spectacular to automatically generate interactive documentation compliant with the OpenAPI 3.0 specification.
 
-Contrairement aux anciennes méthodes (doc écrite à la main), ici le code est la documentation. En annotant correctement vos Vues et Sérialiseurs Django, la documentation se met à jour automatiquement.
+Unlike older methods (hand-written doc), here the code is the documentation. By correctly annotating your Django Views and Serializers, the documentation updates automatically.
 
-## 🚀 1. Accéder à la Documentation
+## 🚀 1. Accessing the Documentation
 
-Une fois le serveur lancé, trois interfaces sont disponibles :
-| Interface  | URL | Usage  |
-| ------------- |:-------------:| ------------- |
-| Swagger UI      | URL/api/docs/     | Pour les Développeurs. Interface interactive permettant de tester les requêtes (GET, POST, DELETE...) directement depuis le navigateur.     |
-| ReDoc      | URL/api/redoc/     | Pour les Lecteurs. Une présentation propre, hiérarchisée et moderne de tout le code.      |
-| Schéma YAML      | URL/api/schema/    | Pour les Machines. Le fichier brut de la spécification. Utile pour générer automatiquement d'autres codes.      |
+Once the server is launched, three interfaces are available: 
+| Interface | URL | Usage | 
+| ------------- |:-------------:| ------------- | 
+| Swagger UI | URL/api/docs/ | For Developers. Interactive interface allowing requests (GET, POST, DELETE...) to be tested directly from the browser. | 
+| ReDoc | URL/api/redoc/ | For Readers. A clean, hierarchical, and modern presentation of all the code. | 
+| YAML Schema | URL/api/schema/ | For Machines. The raw specification file. Useful for automatically generating other codes. |
 
+## 👨‍💻 2. Developer Guide: How to document?
 
-## 👨‍💻 2. Guide Développeur : Comment documenter ?
+A. Documenting a View (Endpoint)
 
-A. Documenter une Vue (Endpoint)
+This is the most important step. We use the @extend_schema decorator on the ViewSet methods.
 
-C'est l'étape la plus importante. On utilise le décorateur @extend_schema sur les méthodes du ViewSet.
-
-A mettre avant la class dans la views.py :
+To place before the class in views.py:
 ```py
-@extend_schema(tags=['Gestion des Vidéos'])  # 1. Groupe tous les endpoints sous ce Tag
+@extend_schema(tags=['Video Management'])  # 1. Groups all endpoints under this Tag
 ```
 
-A mettre sur chaque endpoint dans le views.py :
+To place on each endpoint in views.py:
 ```py
-    @extend_schema(
+@extend_schema(
         summary="test",
         parameters=[
             OpenApiParameter(
                 name='category', 
-                description='Filtrer', 
+                description='Filter', 
                 required=False, 
                 type=str
             )],
         examples=[
             OpenApiExample(
-                'Exemple Simple',
+                'Simple Example',
                 value={
                     'title': 'test',
                     'url': 'localhost',
@@ -47,12 +46,12 @@ A mettre sur chaque endpoint dans le views.py :
             )
         ],
         responses={
-            404: {"description": "Aucun trouvée"}
+            404: {"description": "None found"}
         }
     )
 ```
 
-## 🚦 3. Bonnes Pratiques
-Gérez les erreurs : Documentez toujours les cas d'erreurs (400, 403, 404) dans la section responses. Le front-end doit savoir à quoi s'attendre si ça échoue.
+## 🚦 3. Best Practices
+Handle errors: Always document error cases (400, 403, 404) in the responses section. The front-end must know what to expect if it fails.
 
-Utilisez des exemples : Pour les endpoints complexes (POST/PUT), utilisez OpenApiExample pour montrer un JSON valide.
+Use examples: For complex endpoints (POST/PUT), use OpenApiExample to show valid JSON.

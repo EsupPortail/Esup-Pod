@@ -22,8 +22,8 @@ class OwnerSerializer(serializers.ModelSerializer):
 
 class OwnerWithGroupsSerializer(serializers.ModelSerializer):
     """
-    Serializer spécifique incluant les groupes d'accès (AccessGroups).
-    Utilisé notamment lors de la modification des permissions d'un utilisateur.
+    Specific serializer including AccessGroups.
+    Used in particular when modifying a user's permissions.
     """
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
