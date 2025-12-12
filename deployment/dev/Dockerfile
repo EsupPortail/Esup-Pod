@@ -23,7 +23,7 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.base.txt -r requirements.dev.txt
 
 ENV PYTHONPATH=/app/src
-ENV DJANGO_SETTINGS_MODULE=config.settings.dev
+ENV DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
 
 EXPOSE 8000
 

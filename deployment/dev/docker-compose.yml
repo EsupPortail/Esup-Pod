@@ -34,7 +34,7 @@ services:
     environment:
       MYSQL_HOST: db
       MYSQL_PORT: 3306
-      DJANGO_SETTINGS_MODULE: config.settings.dev
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE}
       ALLOWED_HOSTS: "*"
     command: ["run-server"]
 
