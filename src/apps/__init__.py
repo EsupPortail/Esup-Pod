@@ -1,1 +1,1 @@
-# package marker for apps
+from .utils.models import CustomImageModel
