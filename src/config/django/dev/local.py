@@ -1,4 +1,5 @@
 from .dev import *
+from config.env import BASE_DIR
 
 DATABASES = {
     "default": {
