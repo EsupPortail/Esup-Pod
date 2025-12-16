@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-02 15:45+0000\n"
+"POT-Creation-Date: 2025-12-16 23:10+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
@@ -427,43 +427,37 @@ msgstr ""
 "sont disponibles sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py
-#, fuzzy, python-format
-#| msgid ""
-#| "“%(content_title)s” was processed by the AI. Suggestions for improvement "
-#| "are available on %(site_title)s."
+#, python-format
 msgid ""
-"Something went wrong with IA improvement on “%(content_title)s”. Suggestions "
+"Something went wrong with AI improvement on “%(content_title)s”. Suggestions "
 "for improvement can’t be available on %(site_title)s."
 msgstr ""
 "Une erreur s’est produite sur le traitement par l’IA de "
-"« %(content_title)s ». Les suggestions d’amélioration ne peuvent pas être "
+"« %(content_title)s ». Les suggestions d’amélioration ne peuvent pas être "
 "disponibles sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py
 #, python-format
-msgid "IA improvement #%(content_id)s completed"
+msgid "AI improvement #%(content_id)s completed"
 msgstr "Amélioration de l’IA #%(content_id)s est terminée"
 
 #: pod/ai_enhancement/utils.py
 #, python-format
 msgid ""
-"IA improvement “%(content_title)s” has been completed, and is now available "
+"AI improvement “%(content_title)s” has been completed, and is now available "
 "on %(site_title)s."
 msgstr ""
-"Amélioration de l’AI « %(content_title)s » a été achevée, et est maintenant "
+"Amélioration par l’IA « %(content_title)s » achevée, elle est maintenant "
 "disponible sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py
-#, fuzzy, python-format
-#| msgid ""
-#| "IA improvement “%(content_title)s” has been completed, and is now "
-#| "available on %(site_title)s."
+#, python-format
 msgid ""
-"Something went wrong with IA improvement on “%(content_title)s”  on "
+"Something went wrong with AI improvement on “%(content_title)s”  on "
 "%(site_title)s."
 msgstr ""
 "Une erreur s’est produite sur l’amélioration par l’IA de "
-"« %(content_title)s » sur %(site_title)s."
+"« %(content_title)s » sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
 #: pod/video_encode_transcript/utils.py
@@ -1357,11 +1351,6 @@ msgstr ""
 "Il y a un chevauchement avec la superposition {0}, veuillez changer son "
 "temps de début et/ou de fin."
 
-#: pod/completion/permissions/video.py
-#, python-brace-format
-msgid "{func.__name__}: Permission denied for user {current_user.pk}."
-msgstr ""
-
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
@@ -1400,7 +1389,7 @@ msgstr "Supprimer le contributeur « %(contributor_name)s »"
 
 #: pod/completion/templates/delete_modal.html
 msgid "Delete?"
-msgstr "Supprimer ?"
+msgstr "Supprimer ?"
 
 #: pod/completion/templates/delete_modal.html
 #: pod/completion/templates/track/list_track.html
@@ -1739,8 +1728,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format « ."
-"vtt »."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format "
+"« .vtt »."
 
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
@@ -2499,10 +2488,10 @@ msgid "Editing group for the enrichment of the video"
 msgstr "Spécifier les groupes qui peuvent enrichir la vidéo"
 
 #: pod/enrichment/templates/enrichment/group_enrichment.html
-#, fuzzy, python-format
-#| msgid "Editing group for the enrichment of the video"
+#, python-format
 msgid "Editing group for the enrichment of the video “%(video_title)s”"
-msgstr "Spécifier les groupes qui peuvent enrichir la vidéo"
+msgstr ""
+"Spécifier les groupes qui peuvent enrichir la vidéo « %(video_title)s »"
 
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 msgid "back to editing enrichment"
@@ -4271,11 +4260,11 @@ msgstr "Veuillez spécifier un sujet"
 
 #: pod/main/forms_utils.py
 msgid "Date:"
-msgstr "Date:"
+msgstr "Date :"
 
 #: pod/main/forms_utils.py
 msgid "Time:"
-msgstr "Heure:"
+msgstr "Heure :"
 
 #: pod/main/lang_settings.py
 msgid "Abkhazian"
@@ -5317,8 +5306,6 @@ msgid "Remember this instance"
 msgstr "Se souvenir de l’instance"
 
 #: pod/main/templates/mastodon.html
-#, fuzzy
-#| msgid "Please enter a Mastodon instance URL."
 msgid "Please provide your instance URL."
 msgstr "Veuillez indiquer l’adresse de votre instance."
 
@@ -6227,10 +6214,11 @@ msgid ""
 "without a whiteboard, public and private chat tools, screen sharing, voice "
 "over IP, online polling and the use of office documents."
 msgstr ""
-"Cette solution permet le partage d’images vocales et vidéo, des "
-"présentations avec ou sans tableau blanc, des outils de chat public et "
-"privé, le partage d’écran, la voix sur IP, les sondages en ligne et "
-"l’utilisation de documents bureautiques."
+"Cette solution offre la possibilité de partager des images, des contenus "
+"audio et vidéo, de diffuser des présentations avec ou sans tableau blanc, "
+"d’utiliser des outils de messagerie publique ou privée, de partager son "
+"écran, de communiquer par voix sur IP, de réaliser des sondages en ligne et "
+"de collaborer sur des documents bureautiques."
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid "Informations about webinars"
@@ -6410,11 +6398,12 @@ msgid "The meeting has not started yet."
 msgstr "La réunion n’a pas encore commencé."
 
 #: pod/meeting/templates/meeting/join.html
-#, fuzzy, python-format
-#| msgid "It is scheduled for <b>%(start_date)s</b> at <u>%(start_time)s</u>."
+#, python-format
 msgid ""
 "It is scheduled for <strong>%(start_date)s</strong> at <i>%(start_time)s</i>."
-msgstr "Elle est planifiée le <b>%(start_date)s</b> à <u>%(start_time)s</u>."
+msgstr ""
+"Elle est planifiée le <strong>%(start_date)s</strong> à <i>%(start_time)s</"
+"i>."
 
 #: pod/meeting/templates/meeting/join.html
 msgid "You will be redirected right after the meeting starts."
@@ -6795,10 +6784,8 @@ msgid "You can’t end this webinar live."
 msgstr "Vous ne pouvez pas terminer ce webinaire en direct."
 
 #: pod/meeting/views.py
-#, fuzzy
-#| msgid "You can’t restart this webinar live."
 msgid "You can’t toggle chat for this webinar live."
-msgstr "Vous ne pouvez pas redémarrer ce webinaire en direct."
+msgstr "Vous ne pouvez afficher/cacher le chat pour ce webinaire."
 
 #: pod/meeting/views.py
 msgid "You can’t restart this webinar live."
@@ -6827,19 +6814,19 @@ msgstr ""
 "Erreur de démarrage du mode webinaire pour la réunion « %(name)s » : %(exc)s"
 
 #: pod/meeting/webinar.py
-#, fuzzy, python-format
-#| msgid "Webinar mode has been successfully started for “%(name)s” meeting."
+#, python-format
 msgid ""
 "The option to show/hide the chat has been taken into account for “%(name)s” "
 "meeting."
-msgstr "Le mode webinaire a bien été démarré pour la réunion « %(name)s »."
+msgstr ""
+"L’option permettant d’afficher/masquer le chat a été prise en compte pour la "
+"réunion « %(name)s »."
 
 #: pod/meeting/webinar.py
-#, fuzzy, python-format
-#| msgid "Error to stop webinar mode for “%(name)s” meeting: %(exc)s"
+#, python-format
 msgid "Error to toggle chat for “%(name)s” meeting: %(exc)s"
 msgstr ""
-"Erreur de démarrage du mode webinaire pour la réunion « %(name)s » : %(exc)s"
+"Erreur en affichant/cachant le chat pour la réunion « %(name)s » : %(exc)s"
 
 #: pod/meeting/webinar.py
 msgid ""
@@ -6996,14 +6983,6 @@ msgstr "Protégé par un mot de passe"
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
 msgstr "Privé"
-
-#: pod/playlist/models.py
-#, fuzzy, python-brace-format
-#| msgid "Please choose a title between 1 and %(max)s characters."
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
-msgstr "Veuillez entrer un titre contenant entre 1 et %(max)s caractères."
 
 #: pod/playlist/models.py
 msgid ""
@@ -7225,6 +7204,7 @@ msgstr "Plus"
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/playlist/templates/playlist/playlist_content.html
 #: pod/video/templates/channel/channel.html
+#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/videos.html
 #: pod/video_search/templates/search/search.html
 #, python-format
@@ -7401,6 +7381,10 @@ msgstr "Vous ne pouvez pas accéder à cette liste de lecture."
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
+
+#: pod/playlist/views.py
+msgid "Delete the playlist"
+msgstr "Supprimer la liste de lecture"
 
 #: pod/playlist/views.py
 #, python-format
@@ -7802,7 +7786,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -9879,31 +9863,26 @@ msgid "Submit changes"
 msgstr "Soumettre les changements"
 
 #: pod/video/templates/videos/dashboard.html
-#, fuzzy
-#| msgid "%(counter)s video transcripted"
-#| msgid_plural "%(counter)s videos transcripted"
 msgid "Enter video title"
-msgstr "%(counter)s vidéo transcrite"
+msgstr "Saisissez le titre de la vidéo"
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Use the search field to find a video by its title in your dashboard"
 msgstr ""
+"Utilisez le champ de recherche pour retrouver une vidéo par son titre dans "
+"votre tableau de bord"
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Search for a video by title from your dashboard"
-msgstr ""
+msgstr "Recherchez une vidéo par titre depuis votre tableau de bord"
 
 #: pod/video/templates/videos/dashboard.html
-#, fuzzy
-#| msgid "Clear All"
 msgid "Clear all filters"
-msgstr "Tout effacer"
+msgstr "Effacer tous les filtres"
 
 #: pod/video/templates/videos/dashboard.html
-#, fuzzy
-#| msgid "Clear All"
 msgid "Clear filters"
-msgstr "Tout effacer"
+msgstr "Effacer les filtres"
 
 #: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/dashboard_modal.html
@@ -9911,12 +9890,6 @@ msgid "Multiple actions"
 msgstr "Actions multiples"
 
 #: pod/video/templates/videos/dashboard.html
-#, fuzzy
-#| msgid ""
-#| "To edit several videos at the same time, you can check the ones you want "
-#| "then select an action to perform using the drop-down menu below, finally "
-#| "apply the modification. You can also refine your video search using the "
-#| "filters in the right menu."
 msgid ""
 "To edit several videos at the same time, you can check the ones you want "
 "then select an action to perform using the drop-down menu below, finally "
@@ -9925,8 +9898,8 @@ msgid ""
 msgstr ""
 "Pour éditer plusieurs vidéos en même temps, vous pouvez cocher celles que "
 "vous voulez modifier, puis sélectionner une action à effectuer dans le "
-"formulaire ci-dessous puis appliquer. Vous pouvez également affiner votre "
-"recherche de vidéos en utilisant les filtres du menu de droite."
+"formulaire ci-dessous puis appliquer. Vous pouvez également utiliser les "
+"filtres en haut de page pour affiner votre sélection de vidéos."
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Choose an action"
@@ -9966,32 +9939,24 @@ msgstr[0] "%(counter)s vidéo"
 msgstr[1] "%(counter)s vidéos"
 
 #: pod/video/templates/videos/dashboard.html
-#, fuzzy
-#| msgid "Video cuts"
 msgid "Video controls"
-msgstr "Découpes de vidéo"
+msgstr "Commandes vidéo"
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Select all"
 msgstr "Tout sélectionner"
 
 #: pod/video/templates/videos/dashboard.html
-#, fuzzy
-#| msgid "Select video(s) to edit"
 msgid "Select videos to enable bulk actions."
-msgstr "Sélectionnez la/les vidéo(s) à éditer"
+msgstr "Sélectionnez des vidéos pour activer les actions multiples."
 
 #: pod/video/templates/videos/dashboard.html
-#, fuzzy
-#| msgid "Multiple actions"
 msgid "Go to ”Multiple actions”"
-msgstr "Actions multiples"
+msgstr "Aller vers « Actions multiples »"
 
 #: pod/video/templates/videos/dashboard.html
-#, fuzzy
-#| msgid "Grid display mode"
 msgid "Display mode"
-msgstr "Mode d’affichage par grille"
+msgstr "Mode d’affichage"
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Grid display mode"
@@ -10002,33 +9967,16 @@ msgid "List display mode"
 msgstr "Mode d’affichage par liste"
 
 #: pod/video/templates/videos/dashboard.html
-#, fuzzy
-#| msgid "Stop video"
 msgid "Sort videos"
-msgstr "Arrêter la vidéo"
-
-#: pod/video/templates/videos/dashboard.html
-#, fuzzy, python-format
-#| msgid "%(counter)s video found"
-#| msgid_plural "%(counter)s videos found"
-msgid ""
-"\n"
-"        %(counter)s video found\n"
-"      "
-msgid_plural ""
-"\n"
-"        %(counter)s videos found\n"
-"      "
-msgstr[0] "%(counter)s vidéo trouvée"
-msgstr[1] "%(counter)s vidéos trouvées"
+msgstr "Trier les vidéos"
 
 #: pod/video/templates/videos/filter_aside.html
 msgid ""
 "The videos on the left are automatically sorted according to the filters "
 "selected below. Check options to adjust results."
 msgstr ""
-"Les vidéos à gauche sont automatiquement triées en fonction des filtres "
-"sélectionnés ci-dessous. Vérifiez les options pour ajuster les résultats."
+"Les vidéos à gauche sont automatiquement triées selon les filtres "
+"sélectionnés ci-dessous. Consultez les options pour ajuster les résultats."
 
 #: pod/video/templates/videos/filter_aside.html
 msgid "Filter by user"
@@ -10065,6 +10013,9 @@ msgid ""
 "You can create categories and link them to your videos. Then, use the search "
 "field below to easily find a category so you can edit or delete it."
 msgstr ""
+"Vous pouvez créer des catégories et les associer à vos vidéos. Ensuite, "
+"utilisez le champ de recherche ci-dessous pour retrouver facilement une "
+"catégorie afin de la modifier ou la supprimer."
 
 #: pod/video/templates/videos/footer_link.html
 msgid "Links"
@@ -10269,7 +10220,7 @@ msgstr "Langue principale :"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Hyperlinks:"
-msgstr "Hyperliens :"
+msgstr "Hyperliens :"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Audience:"
@@ -10687,7 +10638,7 @@ msgstr "La note a été sauvegardée."
 
 #: pod/video/tests/test_views.py
 msgid "Method not allowed: Please use post method"
-msgstr "Méthode non autorisée : Veuillez utiliser la méthode post"
+msgstr "Méthode non autorisée : Veuillez utiliser la méthode post"
 
 #: pod/video/tests/test_views.py
 msgid "One or more videos not updated"
@@ -10731,15 +10682,17 @@ msgstr "Édition de la chaîne « %s »"
 
 #: pod/video/views.py
 msgid "No videos matched your filters. Please try adjusting them."
-msgstr ""
+msgstr "Aucune vidéo ne correspond à vos filtres. Veuillez les modifier."
 
 #: pod/video/views.py
 msgid "You haven’t uploaded any videos yet."
-msgstr ""
+msgstr "Vous n’avez pas encore mis en ligne de vidéos."
 
 #: pod/video/views.py
 msgid "Click on “Add a video” to start populating your dashboard."
 msgstr ""
+"Cliquez sur « Ajouter une vidéo » pour commencer à remplir votre tableau de "
+"bord. La vidéo apparaîtra une fois ajoutée."
 
 #: pod/video/views.py
 #, python-format
@@ -10924,6 +10877,8 @@ msgid ""
 "The following “%(target)s” type target does not exist or contains no videos: "
 "%(slug)s."
 msgstr ""
+"La cible de type « %(target)s » suivant(e) n’existe pas ou ne contient "
+"aucune vidéo : %(slug)s."
 
 #: pod/video/views.py
 #, python-format
@@ -10989,13 +10944,11 @@ msgstr "Vous n’avez pas les droits pour supprimer cette catégorie"
 
 #: pod/video/views.py
 msgid "Server error while fetching user videos."
-msgstr ""
+msgstr "Erreur serveur lors de la récupération des vidéos de l’utilisateur."
 
 #: pod/video/views.py
-#, fuzzy
-#| msgid "An Error occurred while processing."
 msgid "Server error while processing filter."
-msgstr "Une erreur est survenue durant l’exécution du processus."
+msgstr "Erreur serveur lors du traitement du filtre."
 
 #: pod/video_encode_transcript/apps.py
 msgid "Video encoding and transcription"
@@ -11174,6 +11127,33 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#, fuzzy, python-format
+#~| msgid "%(counter)s video found"
+#~| msgid_plural "%(counter)s videos found"
+#~ msgid ""
+#~ "\n"
+#~ "        %(counter)s video found\n"
+#~ "      "
+#~ msgid_plural ""
+#~ "\n"
+#~ "        %(counter)s videos found\n"
+#~ "      "
+#~ msgstr[0] "%(counter)s vidéo trouvée"
+#~ msgstr[1] "%(counter)s vidéos trouvées"
+
+#~ msgid "Dashboard Filters"
+#~ msgstr "Filtres du tableau de bord"
+
+#~ msgid "Search by title"
+#~ msgstr "Rechercher par titre"
+
+#~ msgid ""
+#~ "Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+#~ "characters."
+#~ msgstr ""
+#~ "Veuillez entrer un titre contenant entre 1 et "
+#~ "{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
+
 #~ msgid "Clear selection"
 #~ msgstr "Effacer la sélection"
 
@@ -11183,9 +11163,6 @@ msgstr "xAPI Esup-Pod"
 #~ msgstr ""
 #~ "Vous n’avez pas encore mis en ligne de vidéos, veuillez utiliser le "
 #~ "bouton « Ajouter une nouvelle vidéo » pour en ajouter une"
-
-#~ msgid "Delete the playlist"
-#~ msgstr "Supprimer la liste de lecture"
 
 #~ msgid "editor"
 #~ msgstr "éditeur"

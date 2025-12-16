@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-02 15:45+0000\n"
-"PO-Revision-Date: 2025-04-25 10:36+0200\n"
+"POT-Creation-Date: 2025-12-16 23:10+0000\n"
+"PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.7\n"
 
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
@@ -414,26 +414,26 @@ msgstr ""
 #: pod/ai_enhancement/utils.py
 #, python-format
 msgid ""
-"Something went wrong with IA improvement on “%(content_title)s”. Suggestions "
+"Something went wrong with AI improvement on “%(content_title)s”. Suggestions "
 "for improvement can’t be available on %(site_title)s."
 msgstr ""
 
 #: pod/ai_enhancement/utils.py
 #, python-format
-msgid "IA improvement #%(content_id)s completed"
+msgid "AI improvement #%(content_id)s completed"
 msgstr ""
 
 #: pod/ai_enhancement/utils.py
 #, python-format
 msgid ""
-"IA improvement “%(content_title)s” has been completed, and is now available "
+"AI improvement “%(content_title)s” has been completed, and is now available "
 "on %(site_title)s."
 msgstr ""
 
 #: pod/ai_enhancement/utils.py
 #, python-format
 msgid ""
-"Something went wrong with IA improvement on “%(content_title)s”  on "
+"Something went wrong with AI improvement on “%(content_title)s”  on "
 "%(site_title)s."
 msgstr ""
 

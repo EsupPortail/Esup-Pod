@@ -319,3 +319,19 @@ PWA_APP_DEBUG_MODE = locals().get("DEBUG", False)
 # Social share
 
 SOCIAL_SHARE = ["X", "FACEBOOK", "LINKEDIN", "BLUESKY", "MASTODON"]
+
+# Disable TinyMCE relative_urls to avoid auto replace self domain urls
+# i.e : http://pod.localhost:8000/video/0001-podmp4/ become ../../0001-podmp4/
+TINYMCE_DEFAULT_CONFIG = {
+    "theme": "silver",
+    "height": 500,
+    "menubar": False,
+    "plugins": "advlist,autolink,lists,link,image,charmap,print,preview,anchor,"
+    "searchreplace,visualblocks,code,fullscreen,insertdatetime,media,table,paste,"
+    "code,help,wordcount",
+    "toolbar": "undo redo | formatselect | "
+    "bold italic backcolor | alignleft aligncenter "
+    "alignright alignjustify | bullist numlist outdent indent | "
+    "removeformat | help",
+    "relative_urls": False,
+}
