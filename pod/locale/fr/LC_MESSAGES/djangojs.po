@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-02 15:45+0000\n"
+"POT-Creation-Date: 2025-12-04 12:24+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.8\n"
 
 #: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
 msgid "No discipline"
@@ -786,24 +786,20 @@ msgid "Filter option for %s"
 msgstr "Options de filtre pour %s"
 
 #: pod/video/static/js/FilterManager.js
-#, fuzzy
-#| msgid "Filter: %s - %s"
 msgid "Filter: %(name)s - %(label)s"
-msgstr "Filtre : %s - %s"
+msgstr "Filtre : %(name)s - %(label)s"
 
 #: pod/video/static/js/FilterManager.js
-msgid "%(name)s : %(label)s"
-msgstr ""
+msgid "%(name)s: %(label)s"
+msgstr "%(name)s : %(label)s"
 
 #: pod/video/static/js/FilterManager.js
 msgid "Remove filter"
 msgstr "Effacer le filtre"
 
 #: pod/video/static/js/FilterManager.js
-#, fuzzy
-#| msgid "Click to remove the filter: %s - %s"
 msgid "Click to remove the filter: %(name)s - %(label)s"
-msgstr "Cliquez pour supprimer le filtre : %s - %s"
+msgstr "Cliquez pour supprimer le filtre : %(name)s - %(label)s"
 
 #: pod/video/static/js/ajax-display-channels.js
 msgid "%(title)s (%(count)s channel)"
@@ -930,13 +926,11 @@ msgstr "Utilisateur"
 
 #: pod/video/static/js/filter.js
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: pod/video/static/js/filter.js
-#, fuzzy
-#| msgid "No discipline"
 msgid "Discipline"
-msgstr "Aucune discipline"
+msgstr "Discipline"
 
 #: pod/video/static/js/filter.js
 msgid "Tag"
