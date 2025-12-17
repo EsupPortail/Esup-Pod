@@ -29,6 +29,13 @@ jobs:
   Pod-Dev:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_HOST: localhost
+      DATABASE_PORT: '3306'
+      DATABASE_NAME: pod
+      DATABASE_USER: root
+      DATABASE_PASSWORD: root
+
     steps:
 
       - name: Free Disk Space (Ubuntu)
@@ -52,6 +59,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{env.NODE_VERSION}}
+
+      - name: Start MySQL Server
+        run: |
+          sudo systemctl start mysql.service
+          mysql -u root -proot -e "CREATE DATABASE pod CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
       - name: Configure sysctl limits (for ES)
         run: |
@@ -79,6 +91,8 @@ jobs:
           sudo rm -rf /var/lib/apt/lists/*
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
+          # ensure mysqlclient is available
+          pip install mysqlclient
           sudo npm install -g yarn
 
       # FLAKE 8 (see setup.cfg for configurations)

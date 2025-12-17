@@ -1,4 +1,8 @@
-"""Unit tests for recorder views."""
+"""
+    Unit tests for recorder views.
+
+    *  run with 'python manage.py test pod.recorder.tests.test_views --settings=pod.main.test_settings'
+"""
 
 import hashlib
 import os
@@ -56,9 +60,9 @@ class RecorderViewsTestCase(TestCase):
 
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
-        print(" --->  SetUp of RecorderViewsTestCase: OK!")
+        print(" --->  SetUp of RecorderViewsTestCase done.")
 
-    def test_add_recording(self):
+    def test_add_recording(self) -> None:
         """Test method add_recording()."""
 
         self.client = Client()
@@ -87,7 +91,7 @@ class RecorderViewsTestCase(TestCase):
 
         print("   --->  test_add_recording of RecorderViewsTestCase: OK!")
 
-    def test_claim_recording(self):
+    def test_claim_recording(self) -> None:
         """Test method claim_recording()."""
 
         self.client = Client()
@@ -111,13 +115,17 @@ class RecorderViewsTestCase(TestCase):
 
         print("   --->  test_claim_record of RecorderViewsTestCase: OK!")
 
-    def test_delete_record(self):
+    def test_delete_record(self) -> None:
         """Test method delete_recording()."""
+
+        rec_id = RecordingFileTreatment.objects.get(
+            file="/home/pod/files/somefile.mp4"
+        ).id
 
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        url = reverse("record:delete_record", kwargs={"id": 1})
+        url = reverse("record:delete_record", kwargs={"id": rec_id})
         self.client.get(url)
         self.assertRaises(PermissionDenied)
 
@@ -128,10 +136,10 @@ class RecorderViewsTestCase(TestCase):
 
         self.user.is_superuser = True
         self.user.save()
-        url = reverse("record:delete_record", kwargs={"id": 2})
+        url = reverse("record:delete_record", kwargs={"id": 100})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
-        url = reverse("record:delete_record", kwargs={"id": 1})
+        url = reverse("record:delete_record", kwargs={"id": rec_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
@@ -139,7 +147,7 @@ class RecorderViewsTestCase(TestCase):
 
         print("   --->  test_delete_record RecorderViewsTestCase: OK!")
 
-    def test_recorder_notify(self):
+    def test_recorder_notify(self) -> None:
         """Test method recorder_notify()."""
 
         self.client = Client()
@@ -180,7 +188,7 @@ class StudioPodTestView(TestCase):
         "initial_data.json",
     ]
 
-    def create_index_file(self):
+    def create_index_file(self) -> None:
         """Create and write a xml file."""
         text = """
         <html>
@@ -202,13 +210,13 @@ class StudioPodTestView(TestCase):
             file.write(text)
             file.close()
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Create models to be tested."""
         User.objects.create(username="pod")
         print(" --->  SetUp of StudioPodTestView: OK!")
 
-    def test_StudioPodTestView_get_request(self):
-        """Test view studio_pod."""
+    def test_StudioPodTestView_get_request(self) -> None:
+        """Test view studio_pod get."""
         self.create_index_file()
         self.client = Client()
         url = reverse("recorder:studio_pod", kwargs={})
@@ -225,8 +233,8 @@ class StudioPodTestView(TestCase):
 
         print(" --->  test_StudioPodTestView_get_request of openCastTestView: OK!")
 
-    def test_StudioPodTestView_get_request_restrict(self):
-        """Test view studio_pod."""
+    def test_StudioPodTestView_get_request_restrict(self) -> None:
+        """Test view studio_pod get restrict."""
 
         views.__REVATSO__ = True  # override setting value to test
         self.create_index_file()
@@ -252,8 +260,8 @@ class StudioPodTestView(TestCase):
             "of StudioPodTestView: OK!",
         )
 
-    def test_studio_presenter_post(self):
-        """Test view presenter_post."""
+    def test_studio_presenter_post(self) -> None:
+        """Test Studio presenter_post."""
 
         self.client = Client()
         url = reverse("recorder:presenter_post", kwargs={})
@@ -280,7 +288,7 @@ class StudioPodTestView(TestCase):
 
         print(" -->  test_studio_presenter_post of StudioPodTestView: OK!")
 
-    def test_studio_info_me_json(self):
+    def test_studio_info_me_json(self) -> None:
         """Test view info_me_json."""
 
         self.client = Client()
@@ -302,7 +310,7 @@ class StudioPodTestView(TestCase):
 
         print(" -->  test_studio_info_me_json of StudioPodTestView: OK!")
 
-    def test_studio_ingest_createMediaPackage(self):
+    def test_studio_ingest_createMediaPackage(self) -> None:
         """Test view ingest_createMediaPackage."""
 
         self.client = Client()
@@ -340,8 +348,8 @@ class StudioPodTestView(TestCase):
 
         print(" -->  test_studio_ingest_createMediaPackage of StudioPodTestView: OK!")
 
-    def test_studio_ingest_createMediaPackage_with_presenter(self):
-        """Test view presenter_post."""
+    def test_studio_ingest_createMediaPackage_with_presenter(self) -> None:
+        """Test createMediaPackage with presenter_post."""
 
         self.client = Client()
         self.user = User.objects.get(username="pod")
@@ -385,7 +393,7 @@ class StudioPodTestView(TestCase):
             ": OK!",
         )
 
-    def test_studio_ingest_addDCCatalog(self):
+    def test_studio_ingest_addDCCatalog(self) -> None:
         """Test view ingest_addDCCatalog."""
 
         self.client = Client()
@@ -463,7 +471,7 @@ class StudioPodTestView(TestCase):
 
         print(" -->  test_studio_ingest_addDCCatalog of StudioPodTestView: OK!")
 
-    def test_studio_ingest_addAttachment(self):
+    def test_studio_ingest_addAttachment(self) -> None:
         """Test view ingest_addAttachment."""
 
         self.client = Client()
@@ -529,7 +537,7 @@ class StudioPodTestView(TestCase):
 
         print(" -->  test_studio_ingest_addAttachment of StudioPodTestView: OK!")
 
-    def test_studio_ingest_addTrack(self):
+    def test_studio_ingest_addTrack(self) -> None:
         """Test view ingest_addTrack."""
 
         self.client = Client()
@@ -605,7 +613,7 @@ class StudioPodTestView(TestCase):
 
         print(" -->  test_studio_ingest_addTrack of StudioPodTestView: OK!")
 
-    def test_studio_ingest_addCatalog(self):
+    def test_studio_ingest_addCatalog(self) -> None:
         """Test view ingest_addCatalog."""
 
         self.client = Client()
@@ -676,7 +684,7 @@ class StudioPodTestView(TestCase):
 
         print(" -->  test_studio_ingest_addCatalog of StudioPodTestView: OK!")
 
-    def test_studio_ingest_ingest(self):
+    def test_studio_ingest_ingest(self) -> None:
         """Test view ingest_ingest."""
 
         self.client = Client()
@@ -758,7 +766,7 @@ class StudioPodTestView(TestCase):
 class StudioDigestViews(TestCase):
     """Test case for Pod studio views with Digest auth."""
 
-    def test_digest_presenter_post(self):
+    def test_digest_presenter_post(self) -> None:
         """Test Digest restriction on view presenter_post."""
 
         self.client = Client()
@@ -767,7 +775,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_studio_pod of StudioDigestViews: OK!")
 
-    def test_digest_studio_static(self):
+    def test_digest_studio_static(self) -> None:
         """Test Digest restriction on view studio_static."""
 
         self.client = Client()
@@ -776,7 +784,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_studio_static of StudioDigestViews: OK!")
 
-    def test_digest_settings_toml(self):
+    def test_digest_settings_toml(self) -> None:
         """Test Digest restriction on view settings_toml."""
 
         self.client = Client()
@@ -785,7 +793,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_settings_toml of StudioDigestViews: OK!")
 
-    def test_digest_info_me_json(self):
+    def test_digest_info_me_json(self) -> None:
         """Test Digest restriction on view info_me_json."""
 
         self.client = Client()
@@ -794,7 +802,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_info_me_json of StudioDigestViews: OK!")
 
-    def test_digest_ingest_createMediaPackage(self):
+    def test_digest_ingest_createMediaPackage(self) -> None:
         """Test Digest restriction on view ingest_createMediaPackage."""
 
         self.client = Client()
@@ -803,7 +811,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_ingest_createMediaPackage of StudioDigestViews: OK!")
 
-    def test_digest_ingest_addDCCatalog(self):
+    def test_digest_ingest_addDCCatalog(self) -> None:
         """Test Digest restriction on view ingest_addDCCatalog."""
 
         self.client = Client()
@@ -812,7 +820,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_ingest_addDCCatalog of StudioDigestViews: OK!")
 
-    def test_digest_ingest_addAttachment(self):
+    def test_digest_ingest_addAttachment(self) -> None:
         """Test Digest restriction on view ingest_addAttachment."""
 
         self.client = Client()
@@ -821,7 +829,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_ingest_addAttachment of StudioDigestViews: OK!")
 
-    def test_digest_ingest_addTrack(self):
+    def test_digest_ingest_addTrack(self) -> None:
         """Test Digest restriction on view ingest_addTrack."""
 
         self.client = Client()
@@ -830,7 +838,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_ingest_addTrack of StudioDigestViews: OK!")
 
-    def test_digest_ingest_addCatalog(self):
+    def test_digest_ingest_addCatalog(self) -> None:
         """Test Digest restriction on view ingest_addCatalog."""
 
         self.client = Client()
@@ -839,7 +847,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_ingest_addCatalog of StudioDigestViews: OK!")
 
-    def test_digest_ingest_ingest(self):
+    def test_digest_ingest_ingest(self) -> None:
         """Test Digest restriction on view ingest_ingest."""
 
         self.client = Client()
@@ -848,7 +856,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_ingest_ingest of StudioDigestViews: OK!")
 
-    def test_digest_hosts_json(self):
+    def test_digest_hosts_json(self) -> None:
         """Test Digest restriction on view hosts_json."""
 
         self.client = Client()
@@ -857,7 +865,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_hosts_json of StudioDigestViews: OK!")
 
-    def test_digest_capture_admin_config(self):
+    def test_digest_capture_admin_config(self) -> None:
         """Test Digest restriction on view capture_admin_config."""
 
         self.client = Client()
@@ -866,7 +874,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_capture_admin_config of StudioDigestViews: OK!")
 
-    def test_digest_capture_admin(self):
+    def test_digest_capture_admin(self) -> None:
         """Test Digest restriction on view capture_admin_agent."""
 
         self.client = Client()
@@ -875,7 +883,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_capture_admin of StudioDigestViews: OK!")
 
-    def test_digest_admin_ng_series(self):
+    def test_digest_admin_ng_series(self) -> None:
         """Test Digest restriction on view admin_ng_series."""
 
         self.client = Client()
@@ -884,7 +892,7 @@ class StudioDigestViews(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_admin_ng_series of StudioDigestViews: OK!")
 
-    def test_digest_services_available(self):
+    def test_digest_services_available(self) -> None:
         """Test Digest restriction on view services_available."""
 
         self.client = Client()
