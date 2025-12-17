@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load video_tags thumbnail %}
 
 {% block page_extra_head %}
   {% if use_category %}
@@ -19,11 +20,60 @@
            aria-hidden="true"></div>
   {% endif %}
 
-  <div id="bulk-update-container">
+  <hr role="separator">
+
+  <!-- Filtres -->
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div id="filtersBox" class="d-flex align-items-center flex-wrap gap-2"></div>
+      <form
+        id="titleSearchForm"
+        class="d-flex w-50 w-lg-auto flex-grow-1 flex-lg-grow-0 min-w-250"
+        onsubmit="event.preventDefault(); refreshVideosSearch();"
+      >
+        <div class="input-group">
+          <input
+            type="text"
+            name="title"
+            id="titleSearchBox"
+            class="form-control"
+            placeholder="{% trans 'Enter video title' %}"
+            aria-label="{% trans 'Use the search field to find a video by its title in your dashboard' %}"
+            autocomplete="off"
+          >
+          <button
+            type="submit"
+            id="titleSearchBtn"
+            class="btn btn-primary"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            data-bs-original-title="{% trans 'Search for a video by title from your dashboard' %}"
+          >
+            {% trans 'Search' %}
+          </button>
+        </div>
+      </form>
+  </div>
+
+  <div id="activeFilters" class="d-flex align-items-center flex-wrap gap-2">
+    <div id="selectedTags" class="d-flex flex-wrap gap-2"></div>
+    <button
+      type="button"
+      id="filterTags"
+      class="btn btn-link text-primary p-0 d-none"
+      data-bs-toggle="tooltip"
+      data-bs-placement="bottom"
+      data-bs-original-title="{% trans 'Clear all filters' %}">
+      {% trans 'Clear filters' %}
+    </button>
+  </div>
+
+  <hr role="separator" id="bottom-ht-filtre">
+
+  <div id="bulk-update-container" class="mt-3">
 
     <h2>{% trans 'Multiple actions' %}</h2>
     <p id="bulk-update-instructions">
-      {% trans "To edit several videos at the same time, you can check the ones you want then select an action to perform using the drop-down menu below, finally apply the modification. You can also refine your video search using the filters in the right menu." %}
+      {% trans "To edit several videos at the same time, you can check the ones you want then select an action to perform using the drop-down menu below, finally apply the modification. You can also use the filters at the top of the page to refine your video selection." %}
     </p>
 
     <select id="bulk-update-action-select" name="action" class="form-select mb-2" aria-label="{% trans 'Choose an action' %}">
@@ -112,42 +162,92 @@
     {% endfor %}
     </form>
 
-    {% include "videos/dashboard_modal.html" %}
-
     <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalBulkUpdate" disabled>
       {% trans 'Apply' %} <span id="countSelectedVideosBadge" class="badge" title="{% trans 'No video found' %}">
     {% blocktrans count counter=0 %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}</span></button>
-    <button id="select-all-dashboard-elements-btn" type="button" class="btn btn-primary mt-2" onclick="selectAllVideos(videosListContainerId)">{% trans "Select all" %}</button>
-    <button id="reset-dashboard-elements-btn" type="button" class="btn btn-secondary mt-2" onclick="resetDashboardElements()" disabled>{% trans "Clear selection" %}</button>
   </div>
 
-  <div>
-    {% if videos.paginator.count == 0 %}
-      <h2 class="h4">{% trans "No video found"%}</h2>
-      <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the ”Add a new video” button to add one'%}</p>
-    {% else %}
-      <div class="row mt-3">
-        <h2 id="video_count" class="col-5">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
-        <div class="btn-group col-3" role="group">
-          <button title="{% trans 'Grid display mode' %}" class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == "grid" %}active{% endif %}" aria-current="page" onclick="changeDisplayMode('grid')"></button>
-          <button title="{% trans 'List display mode' %}" class="btn btn-outline-primary bi bi-list-check btn-dashboard-display-mode {% if display_mode == "list" %}active{% endif %}" onclick="changeDisplayMode('list')"></button>
+  {% include "videos/dashboard_modal.html" %}
+
+  <div role="toolbar" aria-label="{% trans 'Video controls' %}">
+    <div class="row align-items-center gy-2">
+
+      <div class="col-12 col-lg-auto">
+        <div class="d-flex align-items-center">
+          <input type="checkbox"
+                id="selectAll"
+                class="form-check-input mt-0 me-2"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                aria-label="{% trans 'Select/Deselect all videos' %}"
+                title="{% trans 'Select/Deselect all videos' %}">
+          <div class="d-flex flex-column lh-sm">
+            <label for="selectAll" class="form-check-label text-nowrap mb-0">
+              {% trans 'Select all' %}
+            </label>
+            <small class="filter-info text-muted">
+              {% trans 'Select videos to enable bulk actions.' %}
+            </small>
+          </div>
+          <a href="#bulk-update-action-select"
+            id="skipToBulk"
+            class="pod-skip-link visually-hidden-focusable align-items-center gap-1 ms-2" {# Add margin start #}
+            tabindex="0"
+            aria-label="{% trans 'Go to ”Multiple actions”' %}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="{% trans 'Go to ”Multiple actions”' %}">
+            <i class="bi bi-arrow-up" aria-hidden="true"></i>
+          </a>
         </div>
-        <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-4 mb-2">
+      </div>
+
+      <div class="col-12 col-lg d-flex flex-wrap justify-content-start justify-content-lg-end align-items-center gap-2">
+
+        <div class="btn-group" role="group" aria-label="{% trans 'Display mode' %}">
+          <button type="button"
+                  {% if display_mode == 'grid' %} aria-pressed="true" {% else %} aria-pressed="false" {% endif %}
+                  aria-label="{% trans 'Grid display mode' %}"
+                  class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == 'grid' %}active{% endif %}"
+                  onclick="changeDisplayMode('grid')"
+                  data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Grid display mode' %}">
+          </button>
+          <button type="button"
+                  {% if display_mode == 'list' %} aria-pressed="true" {% else %} aria-pressed="false" {% endif %}
+                  aria-label="{% trans 'List display mode' %}"
+                  class="btn btn-outline-primary bi bi-list-check btn-dashboard-display-mode {% if display_mode == 'list' %}active{% endif %}"
+                  onclick="changeDisplayMode('list')"
+                  data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'List display mode' %}">
+          </button>
+        </div>
+
+        <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms mb-0" style="min-width: 180px;">
+          <label for="sortSelect" class="visually-hidden">{% trans 'Sort videos' %}</label>
           {% include "videos/video_sort_select.html" %}
         </form>
-      </div>
 
-      <div id="video_list_content">
-        {% include 'loader.html' with loaderid="videosListLoader" %}
-        {% include video_list_template %}
       </div>
-    {% endif %}
+    </div>
   </div>
+
+  <hr role="separator">
+
+  <section role="region" aria-labelledby="video_count" aria-live="polite">
+    <p id="video_count" class="col-5">
+      {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+    </p>
+    <div id="video_list_content">
+      {% include 'loader.html' with loaderid="videosListLoader" %}
+      {% include video_list_template %}
+    </div>
+  </section>
+
+
 
 {% endblock page_content %}
 
 {% block page_aside %}
-  {% include 'videos/filter_aside.html' %}
+  {% include 'videos/filter_aside_dashboard.html' %}
 {% endblock page_aside %}
 
 {% block more_script %}
@@ -157,6 +257,9 @@
   <script>
     const urlVideos = "{% url 'video:dashboard' %}";
     const urlUpdateVideos = "{% url 'video:bulk_update' %}";
+    const AVAILABLE_FILTERS_URL = "{% url 'video:dashboard-filters' %}";
+    const DASHBOARD_OWNERS_URL = "{% url 'videos:dashboard-owners' %}";
+    const AVAILABLE_FILTER_URL = "{% url 'video:dashboard-filter-by-name' 'FILTER_NAME_PLACEHOLDER' %}";
     const videosListLoader = document.getElementById("videosListLoader");
     const videosListContainerId = "videos_list";
     let displayMode = "{{ display_mode }}";
@@ -172,7 +275,10 @@
       nextPage = true;
     {% endif %}
   </script>
+  <script src="{% static 'js/link_video_dropdown_menu.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/infinite.js' %}"></script>
+  <script src="{% static 'js/FilterManager.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/filter.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/dashboard.js' %}?ver={{VERSION}}"></script>
@@ -183,7 +289,7 @@
       const CATEGORIES_ADD_URL = "{% url 'video:add_category' %}";
       const CATEGORIES_EDIT_URL = `${window.location.origin}/video/category/edit/`;
       const CATEGORIES_DELETE_URL = `${window.location.origin}/video/category/delete/`;
-      const CATEGORIES_LIST_URL = "{% url 'video:get_categories_list' %}";
+      const CATEGORIES_LIST_URL = "{% url 'video:get_render_categories_list' %}";
       const categoriesListContainer = document.getElementById("categories-list");
       //const BASE_URL = `${window.location.origin}/video/my/categories/`;
       {# create base url link for video management #}

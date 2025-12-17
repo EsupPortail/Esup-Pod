@@ -574,6 +574,7 @@ function manageDisableBtn(element, condition) {
     ? element.removeAttribute("disabled")
     : element.setAttribute("disabled", "");
 }
+
 /** MENU ASIDE **/
 document.addEventListener("DOMContentLoaded", function () {
   //.collapseAside is on the toggle button

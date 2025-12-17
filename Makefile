@@ -10,6 +10,10 @@ help:
 	@echo "Syntax: [make target] where target is in this list:"
 	@awk '/^#/{c=substr($$0,3);next}c&&/^[[:alpha:]][[:alnum:]_-]+:/{print substr($$1,1,index($$1,":")),c}1{c=0}' $(MAKEFILE_LIST) | column -s: -t
 
+# Affiche la doc technique de Pod v4
+doc:
+	open https://esupportail.github.io/Esup-Pod/4.x/index
+
 # Démarre le serveur de test
 start:
 	(sleep 15 ; open http://pod.localhost:8000) &
@@ -33,7 +37,7 @@ install:
 
 # Mise à jour de Pod
 upgrade:
-	git pull origin master
+	git pull origin main
 	python3 -m pip install -r requirements.txt
 	make updatedb
 	make migrate
@@ -41,9 +45,9 @@ upgrade:
 
 # Création des données initiales dans la BDD SQLite intégrée
 createDB:
-	find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
-	find . -path "*/migrations/*.pyc" -delete
 	python3 manage.py delete_flatpages_migrations
+	find . -path "*/migrations/*.py" -not -name "__init__.py" -not -path "./.venv/*" -delete
+	find . -path "*/migrations/*.pyc" -delete
 	make updatedb
 	make migrate
 	python3 -Wd manage.py loaddata initial_data

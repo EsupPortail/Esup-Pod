@@ -1,6 +1,7 @@
 """Esup-Pod videos views."""
 
 from concurrent import futures
+import logging
 import os
 
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
@@ -37,7 +38,11 @@ from dateutil.parser import parse
 from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
 from pod.main.context_processors import WEBTV_MODE
 from pod.main.models import AdditionalChannelTab
-from pod.main.views import in_maintenance
+from pod.main.views import (
+    MENUBAR_HIDE_INACTIVE_OWNERS,
+    MENUBAR_SHOW_STAFF_OWNERS_ONLY,
+    in_maintenance,
+)
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
 from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
@@ -52,6 +57,7 @@ from pod.video.models import Video
 from pod.video.models import Type
 from pod.video.models import Channel
 from pod.video.models import Theme
+from pod.video.models import Discipline
 from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
@@ -70,6 +76,11 @@ from .utils import (
     get_headband,
     change_owner,
     get_id_from_request,
+    get_filtered_categories_for_user,
+    get_filtered_types_for_videos,
+    get_filtered_disciplines_for_videos,
+    get_filtered_tags_for_videos,
+    get_filtered_owners_for_videos,
 )
 from .context_processors import get_available_videos
 from .utils import sort_videos_list
@@ -88,6 +99,8 @@ from itertools import chain
 from django.db import IntegrityError
 from django.db.models import QuerySet
 from django.db import transaction
+
+from django.utils.timezone import timedelta
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -183,6 +196,7 @@ if USE_TRANSCRIPTION:
 
 CHANNELS_PER_BATCH = getattr(settings, "CHANNELS_PER_BATCH", 10)
 
+logger = logging.getLogger(__name__)
 
 # ############################################################################
 # CHANNEL
@@ -586,15 +600,21 @@ def dashboard(request):
 
     if USER_VIDEO_CATEGORY:
         categories = Category.objects.prefetch_related("video").filter(owner=request.user)
-        if len(request.GET.getlist("categories")):
-            categories_checked = request.GET.getlist("categories")
-            categories_videos = categories.filter(
-                slug__in=categories_checked
-            ).values_list("video", flat=True)
-            videos_list = videos_list.filter(pk__in=categories_videos)
+        selected_categories = request.GET.getlist("categories")
 
-        data_context["categories"] = categories
-        data_context["all_categories_videos"] = get_json_videos_categories(request)
+        if selected_categories:
+            category_video_ids = categories.filter(
+                slug__in=selected_categories
+            ).values_list("video", flat=True)
+
+            videos_list = videos_list.filter(pk__in=category_video_ids)
+
+        data_context.update(
+            {
+                "categories": categories,
+                "all_categories_videos": get_json_videos_categories(request),
+            }
+        )
 
     page = request.GET.get("page", 1)
     full_path = ""
@@ -611,6 +631,20 @@ def dashboard(request):
     sorted_videos_list = sort_videos_list(
         filtered_videos_list, sort_field, sort_direction
     )
+
+    error_message = {}
+    if not filtered_videos_list:
+        error_message["main"] = _(
+            "No videos matched your filters. Please try adjusting them."
+        )
+        error_message["types"] = ""
+
+    if not videos_list:
+        error_message["main"] = _("You haven’t uploaded any videos yet.")
+        error_message["types"] = _(
+            "Click on “Add a video” to start populating your dashboard."
+        )
+
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
 
@@ -642,6 +676,7 @@ def dashboard(request):
                 "count_videos": count_videos,
                 "cursus_codes": CURSUS_CODES,
                 "owner_filter": owner_filter,
+                "error_message": error_message,
             },
         )
 
@@ -653,8 +688,10 @@ def dashboard(request):
         initial={"owner": default_owner},
     )
     # Remove fields we don't want to be bulk-modified
-    for unwanted in ["title", "video"]:
-        del form.fields[unwanted]
+    unwanted_fields = ["title", "video", "title_fr", "title_en"]
+    for field_name in unwanted_fields:
+        if field_name in form.fields:
+            del form.fields[field_name]
 
     data_context["form"] = form
     data_context["fieldsets_dashboard"] = [
@@ -683,6 +720,7 @@ def dashboard(request):
     data_context["video_list_template"] = template
     data_context["page_title"] = _("Dashboard")
     data_context["listTheme"] = json.dumps(get_list_theme_in_form(form))
+    data_context["error_message"] = error_message
 
     return render(request, "videos/dashboard.html", data_context)
 
@@ -895,28 +933,32 @@ def get_paginated_videos(paginator, page):
 
 
 def get_filtered_videos_list(request, videos_list):
-    """Return filtered videos list by get parameters."""
-    if request.GET.getlist("type"):
-        videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
-    if request.GET.getlist("discipline"):
-        videos_list = videos_list.filter(
-            discipline__slug__in=request.GET.getlist("discipline")
-        )
-    if (
-        request.user
-        and owner_is_searchable(request.user)
-        and request.GET.getlist("owner")
-    ):
-        # Add filter on additional owners
-        videos_list = videos_list.filter(
-            Q(owner__username__in=request.GET.getlist("owner"))
-            | Q(additional_owners__username__in=request.GET.getlist("owner"))
-        )
-    if request.GET.getlist("tag"):
-        videos_list = videos_list.filter(tags__slug__in=request.GET.getlist("tag"))
+    """Return filtered videos list by GET parameters using AND logic."""
+    title_query = request.GET.get("title")
+    types_selected = request.GET.getlist("type")
+    disciplines_selected = request.GET.getlist("discipline")
+    owners_selected = request.GET.getlist("owner")
+    tags_selected = request.GET.getlist("tag")
+    cursus_selected = request.GET.getlist("cursus")
 
-    if request.GET.getlist("cursus"):
-        videos_list = videos_list.filter(cursus__in=request.GET.getlist("cursus"))
+    if title_query:
+        videos_list = videos_list.filter(
+            Q(title_en__icontains=title_query) | Q(title_fr__icontains=title_query)
+        )
+    if types_selected:
+        videos_list = videos_list.filter(type__slug__in=types_selected)
+    if disciplines_selected:
+        videos_list = videos_list.filter(discipline__slug__in=disciplines_selected)
+    if request.user and owner_is_searchable(request.user) and owners_selected:
+        videos_list = videos_list.filter(
+            Q(owner__username__in=owners_selected)
+            | Q(additional_owners__username__in=owners_selected)
+        )
+    if tags_selected:
+        for tag_slug in tags_selected:
+            videos_list = videos_list.filter(tags__slug=tag_slug)
+    if cursus_selected:
+        videos_list = videos_list.filter(cursus__in=cursus_selected)
     return videos_list.distinct()
 
 
@@ -3043,15 +3085,21 @@ def get_videos_for_category(request, videos_list: dict, category=None):
 
 @login_required(redirect_field_name="referrer")
 @ajax_required
-def get_categories_list(request):
+def get_render_categories_list(request):
     """
-    Get actual categories list for filter_aside elements.
+    Authenticated AJAX view that returns a partial HTML render of the list of video
+    categories owned by the current user.
+
+    This function is typically used to dynamically inject the list of categories
+    into the frontend UI (e.g., sidebar filters).
+
+    Template rendered: 'videos/filter_aside_categories_list.html'
 
     Args:
-        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        request (HttpRequest): The HTTP request object from the client.
 
     Returns:
-        Template of categories list item in filter aside.
+        HttpResponse: Rendered HTML containing the user's categories.
     """
     data_context = {}
     categories = Category.objects.prefetch_related("video").filter(owner=request.user)
@@ -3059,23 +3107,68 @@ def get_categories_list(request):
     return render(request, "videos/filter_aside_categories_list.html", data_context)
 
 
+def get_categories_for_user(user):
+    """
+    Returns a dictionary mapping each category slug to a list of associated video slugs
+    for a given user.
+
+    This function is backend-only and is used to extract user-specific video-category
+    associations in a simple serializable format.
+
+    Args:
+        user (User): The Django user whose categories are queried.
+
+    Returns:
+        dict[str, list[str]]: A dictionary where each key is a category slug,
+                              and the value is a list of video slugs.
+    """
+    categories = Category.objects.prefetch_related("video").filter(owner=user)
+    return {
+        cat.slug: list(cat.video.all().values_list("slug", flat=True))
+        for cat in categories
+    }
+
+
+def get_videos_categories_list(request):
+    """
+    Returns a dictionary of video categories for the currently authenticated user.
+    If the user is not authenticated, an empty dictionary is returned.
+
+    This function is intended for backend logic or as part of an API response.
+
+    Args:
+        request (HttpRequest): The HTTP request containing the user session.
+
+    Returns:
+        dict[str, list[str]]: A dictionary mapping category slugs to lists of
+                              associated video slugs, or an empty dict if not logged in.
+    """
+    if not request.user.is_authenticated:
+        return {}
+    return get_categories_for_user(request.user)
+
+
 @login_required(redirect_field_name="referrer")
 def get_json_videos_categories(request):
     """
-    Get categories with associated videos in json object.
+    Authenticated view that returns the user's video categories as a JSON-formatted string.
+
+    This function retrieves the categories associated with the authenticated user,
+    and serializes the result (a dict of category slugs to video slugs) into JSON.
+
+    Note:
+        This view returns a raw JSON string (not a JsonResponse), which may not be
+        compatible with standard AJAX expectations unless manually handled.
 
     Args:
-        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        request (HttpRequest): The HTTP request containing the authenticated user.
 
     Returns:
-        Json object with category slug as key and array of video(s) as value.
+        str: A JSON string mapping category slugs to lists of video slugs.
     """
-    categories = Category.objects.prefetch_related("video").filter(owner=request.user)
-    all_categories_videos = {}
-    for cat in categories:
-        videos = list(cat.video.all().values_list("slug", flat=True))
-        all_categories_videos[cat.slug] = videos
-    return json.dumps(all_categories_videos)
+    data = get_categories_for_user(request.user)
+    json_data = json.dumps(data)
+    return json_data
 
 
 @login_required(redirect_field_name="referrer")
@@ -3577,3 +3670,143 @@ def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> Json
     """
     channel = Channel.objects.get(slug=slug)
     return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
+
+
+def available_filters(request):
+    """API endpoint to return all available video filters based on user's videos."""
+    user_videos = get_videos_for_owner(request)
+    categories_qs = Category.objects.prefetch_related("video").filter(owner=request.user)
+    categories = list(categories_qs.values("id", "title")[:20])
+    types_qs = (
+        Type.objects.filter(video__in=user_videos)
+        .distinct()
+        .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
+        .values("id", "title", "video_count")[:20]
+    )
+    types = list(types_qs)
+    disciplines_qs = (
+        Discipline.objects.filter(video__in=user_videos)
+        .distinct()
+        .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
+        .values("id", "title", "video_count")[:20]
+    )
+    disciplines = list(disciplines_qs)
+    tags = list(
+        Video.tags.tag_model.objects.filter(video__in=user_videos)
+        .distinct()
+        .values("name", "slug")[:20]
+    )
+    v_filter = get_filtered_videos_list(request, user_videos)
+    aggregate = v_filter.aggregate(duration=Sum("duration"), number=Count("id"))
+    videos_count = aggregate.get("number", 0)
+    videos_duration = (
+        str(timedelta(seconds=aggregate.get("duration", 0)))
+        if aggregate.get("duration")
+        else "0"
+    )
+
+    return JsonResponse(
+        {
+            "categories": categories,
+            "type": types,
+            "discipline": disciplines,
+            "tag": tags,
+            "videos_count": videos_count,
+            "videos_duration": videos_duration,
+        }
+    )
+
+
+def available_filter_by_type(request, filter_name):
+    """
+    API endpoint to return a specific filter list based on user's videos,
+    optionally filtered by a search term, using utility functions.
+    """
+
+    try:
+        user_videos = get_videos_for_owner(request)
+    except Exception as e:
+        logger.error(f"Error fetching videos for owner: {e}", exc_info=True)
+        return JsonResponse(
+            {"error": _("Server error while fetching user videos.")}, status=500
+        )
+
+    filter_name_lower = filter_name.lower()
+    limit = 20
+    search_term = request.GET.get("term", None)
+    data = {}
+    filter_handlers = {
+        "categories": lambda req, uv, term, lim: get_filtered_categories_for_user(
+            req.user, term, lim
+        ),
+        "type": lambda req, uv, term, lim: get_filtered_types_for_videos(uv, term, lim),
+        "discipline": lambda req, uv, term, lim: get_filtered_disciplines_for_videos(
+            uv, term, lim
+        ),
+        "tag": lambda req, uv, term, lim: get_filtered_tags_for_videos(uv, term, lim),
+        "owner": lambda req, uv, term, lim: get_filtered_owners_for_videos(uv, term, lim),
+    }
+
+    try:
+        handler = filter_handlers.get(filter_name_lower)
+
+        if handler:
+            result = handler(request, user_videos, search_term, limit)
+            data[filter_name_lower] = result
+        else:
+            logger.warning(f"Unknown filter type requested: {filter_name}")
+            data[filter_name_lower] = []
+
+    except Exception as e:
+        logger.error(
+            f"Error processing filter '{filter_name}' with term '{search_term}': {e}",
+            exc_info=True,
+        )
+        return JsonResponse(
+            {"error": _("Server error while processing filter.")}, status=500
+        )
+
+    if filter_name_lower not in data:
+        data[filter_name_lower] = []
+
+    return JsonResponse(data)
+
+
+def get_owners_for_videos_on_dashboard(request):
+    """
+    Returns a JSON of users who are owners or additional_owners of the videos present
+    on the dashboard (after applying the dashboard filters).
+    """
+    if not is_ajax(request):
+        return HttpResponseBadRequest()
+
+    videos_qs = get_videos_for_owner(request)
+    filtered_videos_qs = get_filtered_videos_list(request, videos_qs)
+    primary_owner_ids_qs = filtered_videos_qs.values_list("owner_id", flat=True)
+    additional_owner_ids_qs = filtered_videos_qs.values_list(
+        "additional_owners__id", flat=True
+    )
+    primary_ids = set(primary_owner_ids_qs)
+    additional_ids = set(additional_owner_ids_qs)
+    user_ids = {i for i in (primary_ids | additional_ids) if i is not None}
+    if not user_ids:
+        return HttpResponse(json.dumps([]), content_type="application/json")
+
+    users_qs = User.objects.filter(id__in=list(user_ids))
+    if MENUBAR_HIDE_INACTIVE_OWNERS:
+        users_qs = users_qs.filter(is_active=True)
+    if MENUBAR_SHOW_STAFF_OWNERS_ONLY:
+        users_qs = users_qs.filter(is_staff=True)
+
+    try:
+        users_qs = users_qs.annotate(
+            video_count=Count(
+                "video", distinct=True, filter=Q(video__in=filtered_videos_qs)
+            )
+        )
+    except TypeError:
+        users_qs = users_qs.annotate(video_count=Count("video", distinct=True))
+    VALUES = ["id", "username", "first_name", "last_name", "video_count"]
+    users_list = list(users_qs.values(*VALUES).order_by("last_name")[:20])
+
+    return HttpResponse(json.dumps(users_list), content_type="application/json")

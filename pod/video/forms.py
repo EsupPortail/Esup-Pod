@@ -671,7 +671,7 @@ class VideoForm(forms.ModelForm):
                 "classes": "show",
                 "fields": [
                     "visibility",
-                    "is_draft",
+                    # "is_draft",
                     "is_restricted",
                     "restrict_access_to_groups",
                     "password",
