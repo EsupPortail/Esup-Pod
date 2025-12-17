@@ -25,7 +25,7 @@
 
 {% block page_content %}
   {% csrf_token %}
-  <h1 class="h2" id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast pe-2" aria-hidden="true"></i>{{ event.title|title }}</h1>
+  <h1 class="h2" id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast pe-2" aria-hidden="true"></i>{{ event.title }}</h1>
 
   {% if form %}
     {% include 'live/event-form.html' %}
@@ -67,7 +67,7 @@
       <div id="divvideoplayer" style="display:block">
         <div class="row">
           <div class="col">
-            <video id="podvideoplayer"
+            <video id="podvideoplayer" title="{{ event.slug }}"
                  class="video-js vjs-default-skin vjs-big-play-centered"
                  controls height="360" muted autoplay>
               <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">

@@ -465,3 +465,56 @@ button.close {
     align-items: flex-start;
   }
 }
+
+/*****************************************
+ Styles to manage blur for modal in modal.
+ Useful when backdrop is false.
+ ****************************************/
+/*** Light theme ***/
+/* Blur the background for the 1st modal */
+[data-theme="light"] .modal-content.blur-background {
+  background: rgba(255, 255, 255, 0.5) !important;
+  border: 1px solid #CCC !important;
+}
+/* Blur the 1st modal elements */
+[data-theme="light"] .modal-content.blur-background .modal-header *,
+[data-theme="light"] .modal-content.blur-background .modal-body *,
+[data-theme="light"] .modal-content.blur-background .modal-footer * {
+  color: rgba(255, 255, 255, 0.5);
+}
+/* Prevents blurring on the 2nd modal */
+[data-theme="light"] .modal-content.blur-background .modal-content {
+  background-color: var(--pod-background);
+  color: var(--pod-font-color);
+  border: 1px solid #000 !important;
+}
+/* Prevents blurring on the 2nd modal elements */
+[data-theme="light"] .modal-content.blur-background .modal-content * {
+  color: var(--pod-font-color);
+}
+/* Prevents blurring on the 2nd modal buttons */
+[data-theme="light"] .modal-content.blur-background .modal-content .btn {
+  color: var(--bs-btn-color);
+}
+
+/*** Dark theme (see light comments) ***/
+[data-theme="dark"] .modal-content.blur-background {
+  background: rgba(0, 0, 0, 0.7) !important;
+  border: 1px solid #CCC !important;
+}
+[data-theme="dark"] .modal-content.blur-background .modal-header *,
+[data-theme="dark"] .modal-content.blur-background .modal-body *,
+[data-theme="dark"] .modal-content.blur-background .modal-footer * {
+  color: rgba(255, 255, 255, 0.5);
+}
+[data-theme="dark"] .modal-content.blur-background .modal-content {
+  background-color: var(--pod-background-dark);
+  color: var(--pod-font-color-dark);
+  border: 1px solid #FFF !important;
+}
+[data-theme="dark"] .modal-content.blur-background .modal-content * {
+  color: var(--pod-font-color-dark);
+}
+[data-theme="dark"] .modal-content.blur-background .modal-content .btn {
+  color: var(--bs-btn-color);
+}

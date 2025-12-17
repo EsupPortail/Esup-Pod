@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-02 16:11+0200\n"
+"POT-Creation-Date: 2025-12-04 12:24+0100\n"
 "PO-Revision-Date: 2025-04-25 10:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -431,7 +431,7 @@ msgstr ""
 msgid "Ascending sort"
 msgstr ""
 
-#: pod/main/static/js/main.js
+#: pod/main/static/js/main.js pod/video/static/js/filter.js
 msgid "User not found"
 msgstr ""
 
@@ -502,6 +502,10 @@ msgstr ""
 
 #: pod/meeting/static/js/my_meetings.js
 msgid "Unable to find information about the meeting"
+msgstr ""
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "Display/hide the chat"
 msgstr ""
 
 #: pod/meeting/static/js/my_meetings.js
@@ -603,6 +607,10 @@ msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Are you sure you want to delete this folder?"
+msgstr ""
+
+#: pod/podfile/static/podfile/js/filewidget.js
+msgid "Two folders cannot have the same name."
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
@@ -727,6 +735,37 @@ msgstr ""
 msgid "Add a speaker"
 msgstr ""
 
+#: pod/video/static/js/FilterManager.js
+#, javascript-format
+msgid "Show or hide filter options for %s"
+msgstr ""
+
+#: pod/video/static/js/FilterManager.js
+#, javascript-format
+msgid "Search for a %s"
+msgstr ""
+
+#: pod/video/static/js/FilterManager.js
+#, javascript-format
+msgid "Filter option for %s"
+msgstr ""
+
+#: pod/video/static/js/FilterManager.js
+msgid "Filter: %(name)s - %(label)s"
+msgstr ""
+
+#: pod/video/static/js/FilterManager.js
+msgid "%(name)s: %(label)s"
+msgstr ""
+
+#: pod/video/static/js/FilterManager.js
+msgid "Remove filter"
+msgstr ""
+
+#: pod/video/static/js/FilterManager.js
+msgid "Click to remove the filter: %(name)s - %(label)s"
+msgstr ""
+
 #: pod/video/static/js/ajax-display-channels.js
 msgid "%(title)s (%(count)s channel)"
 msgid_plural "%(title)s (%(count)s channels)"
@@ -845,6 +884,26 @@ msgid "Please confirm the deletion of the following video:"
 msgid_plural "Please confirm the deletion of the following videos:"
 msgstr[0] ""
 msgstr[1] ""
+
+#: pod/video/static/js/filter.js
+msgid "User"
+msgstr ""
+
+#: pod/video/static/js/filter.js
+msgid "Type"
+msgstr ""
+
+#: pod/video/static/js/filter.js
+msgid "Discipline"
+msgstr ""
+
+#: pod/video/static/js/filter.js
+msgid "Tag"
+msgstr ""
+
+#: pod/video/static/js/filter.js
+msgid "Category"
+msgstr ""
 
 #: pod/video/static/js/filter_aside_video_list_refresh.js
 msgid "%(count)s video found"

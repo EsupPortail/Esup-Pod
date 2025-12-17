@@ -304,22 +304,29 @@ document.addEventListener("DOMContentLoaded", function (event) {
     let see_recurring_fields = document.getElementById('see_recurring_fields');
     let field_guest_policy = document.getElementById('id_guest_policy');
     let field_enable_chat = document.getElementById('id_enable_chat');
-    // Manage webinar mode: no recurring in such a case and guest policy = Always accept
-    if (is_webinar && see_recurring_fields && field_guest_policy) {
+    let field_is_restricted = document.getElementById('id_is_restricted');
+    // Manage webinar mode: in such a case, no restricted access, no recurring and guest policy = Always accept
+    if (is_webinar && see_recurring_fields && field_guest_policy && field_is_restricted) {
       if (is_webinar.checked) {
         see_recurring_fields.classList.add("d-none");
         field_guest_policy.value = "ALWAYS_ACCEPT";
         field_guest_policy.disabled = true;
+        field_is_restricted.disabled = true;
       }
       is_webinar.addEventListener('change', function (event) {
         if (is_webinar.checked) {
           // No recurrence available for webinars
           see_recurring_fields.classList.add("d-none");
           field_guest_policy.disabled = true;
+          if (field_is_restricted) {
+            field_is_restricted.checked = false;
+          }
+          field_is_restricted.disabled = true;
         } else {
           // Recurrence
           see_recurring_fields.classList.remove("d-none");
           field_guest_policy.disabled = false;
+          field_is_restricted.disabled = false;
           // No chat options for a normal meeting
           if (field_enable_chat) {
             field_enable_chat.checked = false;
