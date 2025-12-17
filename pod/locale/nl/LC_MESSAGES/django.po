@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-04 12:09+0100\n"
+"POT-Creation-Date: 2025-12-16 23:10+0000\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -413,19 +413,33 @@ msgstr ""
 
 #: pod/ai_enhancement/utils.py
 #, python-format
-msgid "IA improvement #%(content_id)s completed"
+msgid ""
+"Something went wrong with AI improvement on “%(content_title)s”. Suggestions "
+"for improvement can’t be available on %(site_title)s."
 msgstr ""
 
-#: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
-#: pod/video_encode_transcript/utils.py
-msgid "Hello,"
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid "AI improvement #%(content_id)s completed"
 msgstr ""
 
 #: pod/ai_enhancement/utils.py
 #, python-format
 msgid ""
-"IA improvement “%(content_title)s” has been completed, and is now available "
+"AI improvement “%(content_title)s” has been completed, and is now available "
 "on %(site_title)s."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid ""
+"Something went wrong with AI improvement on “%(content_title)s”  on "
+"%(site_title)s."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
+#: pod/video_encode_transcript/utils.py
+msgid "Hello,"
 msgstr ""
 
 #: pod/ai_enhancement/utils.py pod/meeting/utils.py
@@ -1288,6 +1302,11 @@ msgstr ""
 msgid ""
 "There is an overlap with the overlay {0}, please change time start and/or "
 "time end values."
+msgstr ""
+
+#: pod/completion/permissions/video.py
+#, python-brace-format
+msgid "{func.__name__}: Permission denied for user {current_user.pk}."
 msgstr ""
 
 #: pod/completion/templates/contributor/form_contributor.html
@@ -6524,6 +6543,13 @@ msgid "Private"
 msgstr ""
 
 #: pod/playlist/models.py
+#, python-brace-format
+msgid ""
+"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"characters."
+msgstr ""
+
+#: pod/playlist/models.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
@@ -6729,7 +6755,6 @@ msgstr ""
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/playlist/templates/playlist/playlist_content.html
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/videos.html
 #: pod/video_search/templates/search/search.html
 #, python-format
@@ -6898,10 +6923,6 @@ msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
-msgstr ""
-
-#: pod/playlist/views.py
-msgid "Delete the playlist"
 msgstr ""
 
 #: pod/playlist/views.py
@@ -7292,7 +7313,7 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: pod/quiz/models.py pod/quiz/tests/test_models.py
+#: pod/quiz/models.py
 msgid "Quiz of video"
 msgstr ""
 
@@ -9293,6 +9314,19 @@ msgstr ""
 msgid "Sort videos"
 msgstr ""
 
+#: pod/video/templates/videos/dashboard.html
+#, python-format
+msgid ""
+"\n"
+"        %(counter)s video found\n"
+"      "
+msgid_plural ""
+"\n"
+"        %(counter)s videos found\n"
+"      "
+msgstr[0] ""
+msgstr[1] ""
+
 #: pod/video/templates/videos/filter_aside.html
 msgid ""
 "The videos on the left are automatically sorted according to the filters "
@@ -10395,11 +10429,6 @@ msgstr ""
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr ""
-
-#, fuzzy
-#~| msgid "Encoding"
-#~ msgid "Encoding task"
-#~ msgstr "Videocodering"
 
 #~ msgid "category title"
 #~ msgstr "categorie titel"

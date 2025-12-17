@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-04 12:09+0100\n"
+"POT-Creation-Date: 2025-12-16 23:10+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -428,22 +428,41 @@ msgstr ""
 
 #: pod/ai_enhancement/utils.py
 #, python-format
-msgid "IA improvement #%(content_id)s completed"
+msgid ""
+"Something went wrong with AI improvement on “%(content_title)s”. Suggestions "
+"for improvement can’t be available on %(site_title)s."
+msgstr ""
+"Une erreur s’est produite sur le traitement par l’IA de "
+"« %(content_title)s ». Les suggestions d’amélioration ne peuvent pas être "
+"disponibles sur %(site_title)s."
+
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid "AI improvement #%(content_id)s completed"
 msgstr "Amélioration de l’IA #%(content_id)s est terminée"
+
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid ""
+"AI improvement “%(content_title)s” has been completed, and is now available "
+"on %(site_title)s."
+msgstr ""
+"Amélioration par l’IA « %(content_title)s » achevée, elle est maintenant "
+"disponible sur %(site_title)s."
+
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid ""
+"Something went wrong with AI improvement on “%(content_title)s”  on "
+"%(site_title)s."
+msgstr ""
+"Une erreur s’est produite sur l’amélioration par l’IA de "
+"« %(content_title)s » sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
 #: pod/video_encode_transcript/utils.py
 msgid "Hello,"
 msgstr "Bonjour,"
-
-#: pod/ai_enhancement/utils.py
-#, python-format
-msgid ""
-"IA improvement “%(content_title)s” has been completed, and is now available "
-"on %(site_title)s."
-msgstr ""
-"Amélioration de l’IA « %(content_title)s » achevée, elle est maintenant "
-"disponible sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py pod/meeting/utils.py
 #: pod/video_encode_transcript/utils.py
