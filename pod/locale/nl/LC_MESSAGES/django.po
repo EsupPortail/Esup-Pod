@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-06 15:10+0100\n"
+"POT-Creation-Date: 2025-12-16 23:10+0000\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -391,8 +391,7 @@ msgstr ""
 #: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
 #: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
 #: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/runner_manager.py
-#: pod/video_encode_transcript/utils.py
+#: pod/video/views.py pod/video_encode_transcript/utils.py
 msgid "Home"
 msgstr ""
 
@@ -414,19 +413,33 @@ msgstr ""
 
 #: pod/ai_enhancement/utils.py
 #, python-format
-msgid "IA improvement #%(content_id)s completed"
+msgid ""
+"Something went wrong with AI improvement on “%(content_title)s”. Suggestions "
+"for improvement can’t be available on %(site_title)s."
 msgstr ""
 
-#: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
-#: pod/video_encode_transcript/utils.py
-msgid "Hello,"
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid "AI improvement #%(content_id)s completed"
 msgstr ""
 
 #: pod/ai_enhancement/utils.py
 #, python-format
 msgid ""
-"IA improvement “%(content_title)s” has been completed, and is now available "
+"AI improvement “%(content_title)s” has been completed, and is now available "
 "on %(site_title)s."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid ""
+"Something went wrong with AI improvement on “%(content_title)s”  on "
+"%(site_title)s."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
+#: pod/video_encode_transcript/utils.py
+msgid "Hello,"
 msgstr ""
 
 #: pod/ai_enhancement/utils.py pod/meeting/utils.py
@@ -2501,7 +2514,7 @@ msgid "User who create this recording"
 msgstr ""
 
 #: pod/import_video/models.py pod/meeting/models.py pod/playlist/models.py
-#: pod/video/models.py pod/video_encode_transcript/models.py
+#: pod/video/models.py
 msgid "Site"
 msgstr ""
 
@@ -2699,6 +2712,7 @@ msgstr ""
 #: pod/import_video/templates/import_video/filter_aside.html
 #: pod/main/templates/navbar_collapse.html
 #: pod/meeting/templates/meeting/filter_aside_recording.html
+#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/filter_aside.html
 #: pod/video/templates/videos/filter_aside_category.html
 #: pod/video_search/forms.py pod/video_search/templates/search/search.html
@@ -5080,6 +5094,8 @@ msgid "Add a new video on"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+#: pod/video/templates/videos/video_list_grid_selectable.html
+#: pod/video/templates/videos/video_list_table_selectable.html
 msgid "Add a video"
 msgstr ""
 
@@ -5757,7 +5773,7 @@ msgstr ""
 msgid "Bearer token for the SIPMediaGW server."
 msgstr ""
 
-#: pod/meeting/models.py pod/video_encode_transcript/models.py
+#: pod/meeting/models.py
 msgid "Example format: 1234"
 msgstr ""
 
@@ -6029,7 +6045,8 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/join.html
 #, python-format
-msgid "It is scheduled for <b>%(start_date)s</b> at <u>%(start_time)s</u>."
+msgid ""
+"It is scheduled for <strong>%(start_date)s</strong> at <i>%(start_time)s</i>."
 msgstr ""
 
 #: pod/meeting/templates/meeting/join.html
@@ -6723,10 +6740,7 @@ msgid "Manage playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-videos-list.html
-#: pod/video/templates/videos/video_list.html
-#: pod/video/templates/videos/video_list_grid_selectable.html
-#: pod/video/templates/videos/video_list_table_selectable.html
-#: pod/video/views.py
+#: pod/video/templates/videos/video_list.html pod/video/views.py
 msgid "Sorry, no video found."
 msgstr ""
 
@@ -6741,7 +6755,6 @@ msgstr ""
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/playlist/templates/playlist/playlist_content.html
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/videos.html
 #: pod/video_search/templates/search/search.html
 #, python-format
@@ -7843,7 +7856,6 @@ msgstr ""
 #: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/video_row_select.html
 #: pod/video/templates/videos/video_sort_select.html
-#: pod/video_encode_transcript/models.py
 msgid "Date added"
 msgstr ""
 
@@ -8854,7 +8866,7 @@ msgstr "Categorie titel"
 msgid "Category"
 msgstr ""
 
-#: pod/video/models.py pod/video/templates/videos/filter_aside_category.html
+#: pod/video/models.py pod/video/templates/videos/filter_aside_dashboard.html
 msgid "Categories"
 msgstr ""
 
@@ -9190,11 +9202,34 @@ msgid "Select video(s) to edit"
 msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
+#: pod/video/templates/videos/dashboard.html
 msgid "Select/Deselect all videos"
 msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Submit changes"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+#, fuzzy
+#| msgid "Filter by title"
+msgid "Enter video title"
+msgstr "Filter op titel"
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Use the search field to find a video by its title in your dashboard"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Search for a video by title from your dashboard"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Clear all filters"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Clear filters"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
@@ -9206,8 +9241,8 @@ msgstr ""
 msgid ""
 "To edit several videos at the same time, you can check the ones you want "
 "then select an action to perform using the drop-down menu below, finally "
-"apply the modification. You can also refine your video search using the "
-"filters in the right menu."
+"apply the modification. You can also use the filters at the top of the page "
+"to refine your video selection."
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
@@ -9248,17 +9283,23 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Video controls"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
 msgid "Select all"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
-msgid "Clear selection"
+msgid "Select videos to enable bulk actions."
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
-msgid ""
-"You have not uploaded any videos yet, please use the ”Add a new video” "
-"button to add one"
+msgid "Go to ”Multiple actions”"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Display mode"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
@@ -9268,6 +9309,23 @@ msgstr ""
 #: pod/video/templates/videos/dashboard.html
 msgid "List display mode"
 msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Sort videos"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+#, python-format
+msgid ""
+"\n"
+"        %(counter)s video found\n"
+"      "
+msgid_plural ""
+"\n"
+"        %(counter)s videos found\n"
+"      "
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/video/templates/videos/filter_aside.html
 msgid ""
@@ -9303,6 +9361,12 @@ msgstr ""
 
 #: pod/video/templates/videos/filter_aside_category.html
 msgid "Type at least 3 chars to filter categories"
+msgstr ""
+
+#: pod/video/templates/videos/filter_aside_dashboard.html
+msgid ""
+"You can create categories and link them to your videos. Then, use the search "
+"field below to easily find a category so you can edit or delete it."
 msgstr ""
 
 #: pod/video/templates/videos/footer_link.html
@@ -9935,6 +9999,18 @@ msgid "Editing the channel “%s”"
 msgstr ""
 
 #: pod/video/views.py
+msgid "No videos matched your filters. Please try adjusting them."
+msgstr ""
+
+#: pod/video/views.py
+msgid "You haven’t uploaded any videos yet."
+msgstr ""
+
+#: pod/video/views.py
+msgid "Click on “Add a video” to start populating your dashboard."
+msgstr ""
+
+#: pod/video/views.py
 #, python-format
 msgid "%(counter)s video removed"
 msgid_plural "%(counter)s videos removed"
@@ -10175,6 +10251,14 @@ msgstr ""
 msgid "You do not have rights to delete this category"
 msgstr ""
 
+#: pod/video/views.py
+msgid "Server error while fetching user videos."
+msgstr ""
+
+#: pod/video/views.py
+msgid "Server error while processing filter."
+msgstr ""
+
 #: pod/video_encode_transcript/apps.py
 msgid "Video encoding and transcription"
 msgstr ""
@@ -10277,120 +10361,6 @@ msgstr ""
 
 #: pod/video_encode_transcript/models.py
 msgid "Video Playlists"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Runner manager name"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Priority"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Priority of the runner manager. Lower values indicate higher priority."
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "URL of the Runner Manager"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Example format: https://manager.univ.fr:port/"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Pod notify URL"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Example format: https://pod.univ.fr:port/notify/runner_manager/"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Bearer token for the Runner Manager."
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Runner manager"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Runner managers"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-#, fuzzy
-#| msgid "Encoding"
-msgid "Encoding task"
-msgstr "Videocodering"
-
-#: pod/video_encode_transcript/models.py
-msgid "Transcription task"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Task type"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Task pending"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Task in progress"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Task completed"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Task failed"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Task timeouted"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Task status"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Task identifier from runner manager"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Identifier of the task provided by the runner manager"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Video associated to the task"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Runner manager that manages this task"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Runner manager that achieves this task"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Script output"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Output from the runner manager script"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Task"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Tasks"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py
