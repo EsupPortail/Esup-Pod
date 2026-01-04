@@ -4,6 +4,8 @@ import os
 import unittest
 from unittest.mock import patch
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.conf import settings
 from pod.authentication.models import AccessGroup
 from pod.dressing.utils import get_dressings, get_dressing_input
 from pod.dressing.models import Dressing
@@ -11,6 +13,13 @@ from pod.dressing.models import Dressing
 
 class DressingUtilitiesTests(unittest.TestCase):
     """TestCase for Esup-Pod dressing utilities."""
+
+    def setUp(self):
+        """Set up test data."""
+        Site.objects.get_or_create(
+            id=getattr(settings, 'SITE_ID', 1),
+            defaults={'domain': 'localhost:8000', 'name': 'localhost:8000'}
+        )
 
     def test_get_dressing_input(self) -> None:
         """Test for the get_dressing_input function."""

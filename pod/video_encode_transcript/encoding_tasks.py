@@ -18,6 +18,7 @@ EMAIL_HOST = getattr(settings_local, "EMAIL_HOST", "")
 DEFAULT_FROM_EMAIL = getattr(settings_local, "DEFAULT_FROM_EMAIL", "")
 ADMINS = getattr(settings_local, "ADMINS", ())
 DEBUG = getattr(settings_local, "DEBUG", True)
+INSTANCE = getattr(settings_local, "INSTANCE", None)
 TEST_REMOTE_ENCODE = getattr(settings_local, "TEST_REMOTE_ENCODE", False)
 
 admins_email = [ad[1] for ad in ADMINS]
@@ -44,6 +45,8 @@ encoding_app = Celery("encoding_tasks", broker=ENCODING_TRANSCODING_CELERY_BROKE
 encoding_app.conf.task_routes = {
     "pod.video_encode_transcript.encoding_tasks.*": {"queue": "encoding"}
 }
+if INSTANCE:
+    encoding_app.conf.broker_transport_options = {"global_keyprefix": INSTANCE}
 
 
 # celery -A pod.video_encode_transcript.encoding_tasks worker -l INFO -Q encoding

@@ -5,6 +5,7 @@ Django version: 3.2.
 """
 
 import os
+INSTANCE = os.getenv("POD_INSTANCE", None)
 
 ##
 # flatpages
@@ -49,6 +50,8 @@ USE_DEBUG_TOOLBAR = True
 #
 # https://docs.djangoproject.com/en/3.2/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["pod.localhost"]
+if INSTANCE:
+    ALLOWED_HOSTS.append(f"{INSTANCE}.localhost")
 
 ##
 # Session settings
@@ -80,10 +83,11 @@ MANAGERS = []
 # to be used with Django.
 #
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+default_db = f"db.{INSTANCE}.sqlite3" if INSTANCE else "db.sqlite3"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "NAME": os.path.join(BASE_DIR, default_db),
     }
 }
 
