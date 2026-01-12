@@ -6,3 +6,10 @@ USE_CAS = False
 USE_LDAP = False
 USE_SHIB = False
 USE_OIDC = False
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
+}
