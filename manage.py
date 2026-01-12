@@ -19,7 +19,7 @@ def main():
         from src.config.env import env
 
     try:
-        settings_module = env.str("DJANGO_SETTINGS_MODULE", default="config.django.dev.dev")
+        settings_module = env.str("DJANGO_SETTINGS_MODULE", default="config.django.dev.test")
 
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_module)
 
