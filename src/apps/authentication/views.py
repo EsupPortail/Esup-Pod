@@ -35,6 +35,7 @@ from .serializers.GroupSerializer import GroupSerializer
 from .serializers.OwnerSerializer import OwnerSerializer, OwnerWithGroupsSerializer
 from .serializers.SiteSerializer import SiteSerializer
 from .serializers.UserSerializer import UserSerializer
+from .services import UserPopulator, get_tokens_for_user
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -131,8 +132,8 @@ class ShibbolethLoginView(APIView):
     **Shibboleth Authentication Endpoint**
         
     This view must be protected by the Shibboleth SP (Apache/Nginx) which injects the headers. 
-    It reads the headers (REMOTE_USER, etc.), creates or updates the user locally according 
-    to the logic defined in the former ShibbolethRemoteUserBackend and returns JWTs.
+    It reads the headers (REMOTE_USER, etc.), creates or updates the user locally 
+    and returns JWTs.
     """
     permission_classes = [AllowAny] 
     serializer_class = ShibbolethTokenObtainSerializer
@@ -140,64 +141,45 @@ class ShibbolethLoginView(APIView):
     def _get_header_value(self, request, header_name):
         return request.META.get(header_name, '')
 
-    def _is_staffable(self, user) -> bool:
-        """Check that given user domain is in authorized domains."""
-        if not SHIBBOLETH_STAFF_ALLOWED_DOMAINS:
-            return True
-        for d in SHIBBOLETH_STAFF_ALLOWED_DOMAINS:
-            if user.username.endswith("@" + d):
-                return True
-        return False
+    def _check_security(self, request) -> bool:
+        """
+        Verify request comes from a trusted source (SP) if configured.
+        """
+        secure_header = getattr(settings, "SHIB_SECURE_HEADER", None)
+        if secure_header:
+            return request.META.get(secure_header) == getattr(settings, "SHIB_SECURE_VALUE", "secure")
+        return True
 
     @extend_schema(request=ShibbolethTokenObtainSerializer)
     def get(self, request, *args, **kwargs):
+        if not self._check_security(request):
+            return Response(
+                {"error": "Insecure request. Missing security header."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         username = self._get_header_value(request, REMOTE_USER_HEADER)
         if not username:
             return Response(
                 {"error": f"Missing {REMOTE_USER_HEADER} header. Shibboleth misconfigured?"}, 
                 status=status.HTTP_401_UNAUTHORIZED
             )
+            
         user, created = User.objects.get_or_create(username=username)
         
+        # Extract attributes
         shib_meta = {}
         for header, (required, field) in SHIBBOLETH_ATTRIBUTE_MAP.items():
             value = self._get_header_value(request, header)
             if value:
                 shib_meta[field] = value
+                
+                # Update basic user fields immediately if present
                 if field in ['first_name', 'last_name', 'email']:
                     setattr(user, field, value)
         
-        user.save()
-        if not hasattr(user, 'owner'):
-            Owner.objects.create(user=user)
-        
-        owner = user.owner
-        owner.auth_type = "Shibboleth"
-        
-        current_site = get_current_site(request)
-        if current_site not in owner.sites.all():
-            owner.sites.add(current_site)
-            
-        affiliation = shib_meta.get("affiliation", "")
-        if affiliation:
-            owner.affiliation = affiliation
-            
-            if is_staff_affiliation(affiliation):
-                user.is_staff = True
-            
-            if CREATE_GROUP_FROM_AFFILIATION:
-                group, _ = Group.objects.get_or_create(name=affiliation)
-                user.groups.add(group)
-
-        affiliations_str = shib_meta.get("affiliations", "")
-        if self._is_staffable(user) and affiliations_str:
-            for aff in affiliations_str.split(";"):
-                if is_staff_affiliation(aff):
-                    user.is_staff = True
-                    break
-
-        user.save()
-        owner.save()
+        populator = UserPopulator(user)
+        populator.run("Shibboleth", shib_meta)
 
         tokens = get_tokens_for_user(user)
         return Response(tokens, status=status.HTTP_200_OK)
@@ -209,7 +191,7 @@ class OIDCLoginView(APIView):
 
     Exchanges an 'authorization_code' for OIDC tokens via the Provider, 
     retrieves user information (UserInfo), 
-    updates the local database (using OIDCBackend logic), and returns JWTs.
+    updates the local database, and returns JWTs.
     """
     permission_classes = [AllowAny]
     serializer_class = OIDCTokenObtainSerializer
@@ -263,29 +245,8 @@ class OIDCLoginView(APIView):
 
         user, created = User.objects.get_or_create(username=username)
 
-        user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, user.first_name)
-        user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, user.last_name)
-        user.email = claims.get("email", user.email)
-        
-        if not hasattr(user, 'owner'):
-             Owner.objects.create(user=user)
-        
-        user.owner.auth_type = "OIDC"
-        
-        if created or not user.owner.affiliation:
-             user.owner.affiliation = OIDC_DEFAULT_AFFILIATION
-
-        for code_name in OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES:
-            try:
-                group = AccessGroup.objects.get(code_name=code_name)
-                user.owner.accessgroups.add(group)
-            except AccessGroup.DoesNotExist:
-                pass
-        
-        user.is_staff = is_staff_affiliation(user.owner.affiliation)
-        
-        user.save()
-        user.owner.save()
+        populator = UserPopulator(user)
+        populator.run("OIDC", claims)
 
         tokens = get_tokens_for_user(user)
         return Response(tokens, status=status.HTTP_200_OK)
