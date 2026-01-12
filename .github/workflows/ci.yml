@@ -44,7 +44,8 @@ jobs:
       # On définit les variables d'env nécessaires pour que Django démarre sans le vrai fichier .env
       env:
         DJANGO_SETTINGS_MODULE: config.django.test.test # Basé sur ton arborescence
-        SECRET_KEY: "test_secret_key_ci_only" 
+        SECRET_KEY: "test_secret_key_ci_only"
+        VERSION: "0.0.0"
       working-directory: .
       run: |
         python manage.py test
