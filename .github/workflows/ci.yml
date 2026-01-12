@@ -45,6 +45,6 @@ jobs:
       env:
         DJANGO_SETTINGS_MODULE: config.django.test.test # Basé sur ton arborescence
         SECRET_KEY: "test_secret_key_ci_only" 
-      working-directory: ./Pod_V5_Back
+      working-directory: .
       run: |
         python manage.py test
