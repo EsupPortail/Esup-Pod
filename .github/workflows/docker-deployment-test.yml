@@ -3,9 +3,9 @@ name: CI/CD & Deployment Check
 # Déclencheurs : Pushes sur les branches principales et toutes les Pull Requests
 on:
   push:
-    branches: [ "main", "dev_v5" ]
+    branches: [ "main", "dev_v5", "feature/CI-CD/deployment-test" ]
   pull_request:
-    branches: [ "main", "dev_v5" ]
+    branches: [ "main", "dev_v5", "feature/CI-CD/deployment-test" ]
 
 jobs:
   # ------------------------------------------------------------------
