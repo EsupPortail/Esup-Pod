@@ -36,9 +36,9 @@ jobs:
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 Pod_V5_Back --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings.
-        flake8 Pod_V5_Back --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 src --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Run Tests
       # On définit les variables d'env nécessaires pour que Django démarre sans le vrai fichier .env
