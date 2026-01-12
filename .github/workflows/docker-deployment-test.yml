@@ -60,17 +60,13 @@ jobs:
     needs: unit-tests # N'exécute ce job que si les tests unitaires passent
     timeout-minutes: 15
 
-    services:
-      # On pourrait définir MariaDB ici, mais on utilise votre docker-compose pour tester la stack complète
-      # C'est plus fidèle à votre processus "make dev-run" ou déploiement prod.
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Create .env for Docker
         # Création d'un .env complet pour Docker (basé sur docs/deployment/dev/dev_unix.md)
-        run: |
+        run: |a
           echo "DJANGO_SETTINGS_MODULE=config.django.prod.prod" > .env
           echo "SECRET_KEY=prod-ci-secret-key-xyz" >> .env
           echo "EXPOSITION_PORT=8000" >> .env
