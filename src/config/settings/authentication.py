@@ -1,16 +1,10 @@
 import os
-from ..django import settings_local
+from datetime import timedelta
 from ..env import env
 from ..django.base import SECRET_KEY
-from datetime import timedelta
+from ..django.settings_local import USE_LOCAL_AUTH, USE_CAS, USE_LDAP, USE_SHIB, USE_OIDC
 
-USE_LOCAL_AUTH = getattr(settings_local, "USE_LOCAL_AUTH", True)
-
-USE_CAS = getattr(settings_local, "USE_CAS", False)
-USE_LDAP = getattr(settings_local, "USE_LDAP", False)
-USE_SHIB = getattr(settings_local, "USE_SHIB", False)
-USE_OIDC = getattr(settings_local, "USE_OIDC", False)
-
+# Derived configuration
 POPULATE_USER = "CAS" if USE_CAS else "LDAP" if USE_LDAP else None
 
 SIMPLE_JWT = {
