@@ -42,4 +42,3 @@ pod/main/static/custom/img
 !pod/custom/settings_local.py.example
 settings_local.py
 transcription/*
-.github
