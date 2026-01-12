@@ -14,17 +14,23 @@ The CI/CD process is divided into two main workflows:
 
 ### 1. Continuous Integration (`ci.yml`)
 
-This workflow runs on every `push` and `pull_request` to any branch.
+This workflow runs on every `push` and `pull_request`. It is designed to be **Cross-Platform** (Linux & Windows).
 
 **Jobs:**
 
-*   **`lint`**: Checks code style and syntax.
-    *   **Tools**: `flake8`.
-    *   **Optimization**: Uses `pip` caching to speed up dependency installation.
-*   **`test`**: Runs the Django test suite.
-    *   **Environment**: Runs inside a Docker container built from `deployment/dev/Dockerfile`.
-    *   **Consistency**: Ensures verification happens in the exact same environment as production (same system libraries, same Python version).
-    *   **Command**: `python manage.py test`.
+*   **`lint`**: Checks code style using `flake8` (runs on Ubuntu).
+*   **`test-native`**: Validates the application in "Native" mode (without Docker).
+    *   **Matrix Strategy**: Runs on both `ubuntu-latest` and `windows-latest`.
+    *   **Steps**:
+        1.  Installs dependencies (`pip install -r requirements.txt`).
+        2.  Runs Unit Tests (`python manage.py test`).
+        3.  **Smoke Test**: Starts the server (`runserver`) and checks health via `curl` to ensure the application boots correctly on the target OS.
+*   **`test-docker`**: Validates the Docker build.
+    *   **OS**: Runs on `ubuntu-latest` (Linux Containers).
+    *   **Goal**: Ensures the Dockerfile builds correctly and tests pass inside the container.
+*   **`test-docker-windows`**: Validates Docker commands on Windows.
+    *   **OS**: Runs on `windows-latest`.
+    *   **Goal**: Verifies that `docker build` and `docker run` commands work correctly in PowerShell, ensuring support for developers using Docker on Windows manually (without Makefile).
 
 ### 2. Dev Deployment (`build-dev.yml`)
 

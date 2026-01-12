@@ -13,3 +13,5 @@ DATABASES = {
         'NAME': ':memory:',
     }
 }
+
+ALLOWED_HOSTS = ["*"]
