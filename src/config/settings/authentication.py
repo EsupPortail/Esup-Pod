@@ -2,7 +2,14 @@ import os
 from datetime import timedelta
 from ..env import env
 from ..django.base import SECRET_KEY
-from ..django.settings_local import USE_LOCAL_AUTH, USE_CAS, USE_LDAP, USE_SHIB, USE_OIDC
+try:
+    from ..django.settings_local import USE_LOCAL_AUTH, USE_CAS, USE_LDAP, USE_SHIB, USE_OIDC
+except ImportError:
+    USE_LOCAL_AUTH = True
+    USE_CAS = False
+    USE_LDAP = False
+    USE_SHIB = False
+    USE_OIDC = False
 
 # Derived configuration
 POPULATE_USER = "CAS" if USE_CAS else "LDAP" if USE_LDAP else None
