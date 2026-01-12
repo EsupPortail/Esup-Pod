@@ -28,6 +28,7 @@ l’utilisation de celles-ci dans le cadre de l’enseignement et la recherche.
 * [Documentation générale (installation, paramétrage etc.)](https://www.esup-portail.org/wiki/display/ES/esup-pod)
 * [Conteneurisation (installation, paramétrage, lancement etc.)](./dockerfile-dev-with-volumes/README.adoc)
 * [Configuration (paramétrage, personnalisation etc.)](./CONFIGURATION_FR.md)
+* [Guide CI/CD (Intégration & Déploiement Continus)](./docs/CI_CD.md)
 
 ## [EN]
 

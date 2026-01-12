@@ -27,6 +27,9 @@ ENV DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
 
 EXPOSE 8000
 
+COPY src /app/src
+COPY manage.py /app/manage.py
+
 COPY deployment/dev/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN dos2unix /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/entrypoint.sh
