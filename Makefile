@@ -20,7 +20,7 @@ help:
 # DOCKER COMMANDS (Recommended)
 # ==========================================
 
-docker-start docker-logs docker-shell docker-enter docker-build docker-stop docker-clean docker-runserver: check-django-env
+docker-start docker-logs docker-shell docker-enter docker-build docker-stop docker-clean docker-runserver docker-test: check-django-env
 
 docker-start: ## Start the full project (auto-setup via entrypoint)
 	@echo "Starting Docker environment..."
@@ -49,6 +49,9 @@ docker-clean: ## Stop and remove everything (containers, orphaned networks, volu
 
 docker-runserver: ## Start the server when you using shell mode
 	$(DJANGO_MANAGE) runserver 0.0.0.0:${EXPOSITION_PORT}
+
+docker-test: ## Run tests inside the running container
+	$(DOCKER_COMPOSE_CMD) exec -T $(DOCKER_SERVICE_NAME) $(DJANGO_MANAGE) test --settings=config.django.test.test
 
 # ==========================================
 # LOCAL COMMANDS (Without Docker)

@@ -29,6 +29,9 @@ l’utilisation de celles-ci dans le cadre de l’enseignement et la recherche.
 * [Conteneurisation (installation, paramétrage, lancement etc.)](./dockerfile-dev-with-volumes/README.adoc)
 * [Configuration (paramétrage, personnalisation etc.)](./CONFIGURATION_FR.md)
 * [Guide CI/CD (Intégration & Déploiement Continus)](./docs/CI_CD.md)
+* [Guide de Déploiement](./docs/DEPLOYMENT.md)
+* [Guide Swagger / API](./docs/SWAGGER_GUIDE.md)
+* [Authentification (TODO)](./docs/TODO_AUTHENTICATION.md)
 
 ## [EN]
 
