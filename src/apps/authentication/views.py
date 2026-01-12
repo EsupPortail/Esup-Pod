@@ -39,6 +39,7 @@ from .serializers.OwnerSerializer import (
 )
 from .serializers.SiteSerializer import SiteSerializer
 from .serializers.UserSerializer import UserSerializer
+from .services import UserPopulator, get_tokens_for_user
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -172,17 +173,23 @@ class ShibbolethLoginView(APIView):
     def _get_header_value(self, request, header_name):
         return request.META.get(header_name, '')
 
-    def _is_staffable(self, user) -> bool:
-        """Check that given user domain is in authorized domains."""
-        if not SHIBBOLETH_STAFF_ALLOWED_DOMAINS:
-            return True
-        for d in SHIBBOLETH_STAFF_ALLOWED_DOMAINS:
-            if user.username.endswith("@" + d):
-                return True
-        return False
+    def _check_security(self, request) -> bool:
+        """
+        Verify request comes from a trusted source (SP) if configured.
+        """
+        secure_header = getattr(settings, "SHIB_SECURE_HEADER", None)
+        if secure_header:
+            return request.META.get(secure_header) == getattr(settings, "SHIB_SECURE_VALUE", "secure")
+        return True
 
     @extend_schema(request=ShibbolethTokenObtainSerializer)
     def get(self, request, *args, **kwargs):
+        if not self._check_security(request):
+            return Response(
+                {"error": "Insecure request. Missing security header."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         username = self._get_header_value(request, REMOTE_USER_HEADER)
         if not username:
             return Response(
@@ -192,14 +199,18 @@ class ShibbolethLoginView(APIView):
                 },
                 status=status.HTTP_401_UNAUTHORIZED
             )
+            
         user, created = User.objects.get_or_create(username=username)
 
         
+        # Extract attributes
         shib_meta = {}
         for header, (required, field) in SHIBBOLETH_ATTRIBUTE_MAP.items():
             value = self._get_header_value(request, header)
             if value:
                 shib_meta[field] = value
+                
+                # Update basic user fields immediately if present
                 if field in ['first_name', 'last_name', 'email']:
                     setattr(user, field, value)
 
