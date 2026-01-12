@@ -82,25 +82,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Tests in Docker (via Makefile)
+      - name: Build Docker image
+        run: |
+          docker build -t test-image -f deployment/dev/Dockerfile .
+
+      - name: Run Tests in Docker
         env:
-          DJANGO_SETTINGS_MODULE: config.django.dev.docker
+          DJANGO_SETTINGS_MODULE: config.django.test.test
           SECRET_KEY: dummy-secret-key
           VERSION: "TEST-DOCKER"
         run: |
-          # Start the environment
-          make docker-start
-          
-          # Wait for services to be ready (healthchecks in docker-compose help, but we wait a bit)
-          echo "Waiting for services to initialize..."
-          sleep 15
-          
-          # Run tests
-          make docker-test
+          docker run --rm \
+            -e DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE \
+            -e SECRET_KEY=$SECRET_KEY \
+            -e VERSION=$VERSION \
+            test-image \
+            python manage.py test --settings=config.django.test.test
 
-      - name: Smoke Test (Check Health)
+      - name: Smoke Test (Start Server & Check Health)
         run: |
-          echo "Checking endpoint..."
-          curl -v http://127.0.0.1:8000/api/docs/ || (make docker-logs && exit 1)
+          docker run -d --name test-server -p 8000:8000 \
+            -e DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE \
+            -e SECRET_KEY=$SECRET_KEY \
+            -e VERSION="SMOKE-TEST" \
+            test-image
           
-          make docker-stop
+          echo "Waiting for server to start..."
+          sleep 10
+          
+          echo "Checking endpoint..."
+          curl -v http://127.0.0.1:8000/api/docs/ || (docker logs test-server && exit 1)
+          
+          docker stop test-server
