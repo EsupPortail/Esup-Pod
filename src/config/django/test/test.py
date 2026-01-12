@@ -1,6 +1,5 @@
 from ..base import *
 
-VERSION='TEST-VERSION'
 
 USE_CAS = False
 USE_LDAP = False
