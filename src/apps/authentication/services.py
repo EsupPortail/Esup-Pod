@@ -88,7 +88,10 @@ def populate_user(user: User, cas_attributes: Optional[Dict[str, Any]]) -> None:
     owner.save()
     user.save()
 
-def populate_user_from_cas(user: User, owner: Owner, attributes: Dict[str, Any]) -> None:
+
+def populate_user_from_cas(
+    user: User, owner: Owner, attributes: Dict[str, Any]
+) -> None:
     """
     Strict implementation of populatedCASbackend.populateUserFromCAS
     """
@@ -106,7 +109,9 @@ def populate_user_from_cas(user: User, owner: Owner, attributes: Dict[str, Any])
                 user.is_staff = True
             
             if create_group_from_aff:
-                accessgroup, group_created = AccessGroup.objects.get_or_create(code_name=affiliation)
+                accessgroup, group_created = (
+                    AccessGroup.objects.get_or_create(code_name=affiliation)
+                )
                 if group_created:
                     accessgroup.display_name = affiliation
                     accessgroup.auto_sync = True
@@ -149,7 +154,8 @@ def _apply_ldap_entry_to_user(user, owner, entry):
     owner.save()
 
     affiliations = get_entry_value(entry, attribute="affiliations", default=[])
-    if isinstance(affiliations, str): affiliations = [affiliations]
+    if isinstance(affiliations, str):
+        affiliations = [affiliations]
 
     create_group_from_aff = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
 
@@ -170,7 +176,7 @@ def _apply_ldap_entry_to_user(user, owner, entry):
     ldap_group_attr = USER_LDAP_MAPPING_ATTRIBUTES.get("groups")
     
     if ldap_group_attr and entry[ldap_group_attr]:
-         groups_element = entry[ldap_group_attr].values
+        groups_element = entry[ldap_group_attr].values
     
     assign_accessgroups(groups_element, user)
 
@@ -211,7 +217,7 @@ def get_entry_value(entry, attribute, default):
     mapping = USER_LDAP_MAPPING_ATTRIBUTES.get(attribute)
     if mapping and entry[mapping]:
         if attribute == "last_name" and isinstance(entry[mapping].value, list):
-             return entry[mapping].value[0]
+            return entry[mapping].value[0]
         elif attribute == "affiliations":
             return entry[mapping].values
         else:
@@ -231,9 +237,19 @@ def get_ldap_conn():
         url = ldap_server_conf["url"]
         server = None
         if isinstance(url, str):
-            server = Server(url, port=ldap_server_conf.get("port", 389), use_ssl=ldap_server_conf.get("use_ssl", False), get_info=ALL)
+            server = Server(
+                url,
+                port=ldap_server_conf.get("port", 389),
+                use_ssl=ldap_server_conf.get("use_ssl", False),
+                get_info=ALL
+            )
         elif isinstance(url, tuple) or isinstance(url, list):
-             server = Server(url[0], port=ldap_server_conf.get("port", 389), use_ssl=ldap_server_conf.get("use_ssl", False), get_info=ALL)
+            server = Server(
+                url[0],
+                port=ldap_server_conf.get("port", 389),
+                use_ssl=ldap_server_conf.get("use_ssl", False),
+                get_info=ALL
+            )
 
         if server:
             conn = Connection(server, auth_bind_dn, auth_bind_pwd, auto_bind=True)

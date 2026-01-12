@@ -4,6 +4,7 @@ from django.conf import settings
 from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema
 
+
 @extend_schema(
     summary="System Information",
     description="Returns the project name and current version",
@@ -29,6 +30,7 @@ class SystemInfoView(APIView):
             "project": "POD V5",
             "version": settings.POD_VERSION,
         })
+
 
 class SystemInfoView2(APIView):
     """

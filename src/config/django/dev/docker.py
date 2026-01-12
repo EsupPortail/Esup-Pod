@@ -1,7 +1,7 @@
-from .dev import *
+from .dev import *  # noqa: F401, F403
 from config.env import env
 
-# Uncomment for debugging 
+# Uncomment for debugging
 # INSTALLED_APPS += ["debug_toolbar"]
 # MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 

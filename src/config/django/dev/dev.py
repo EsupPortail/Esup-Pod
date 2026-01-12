@@ -1,12 +1,13 @@
-from ..base import *
+from ..base import *  # noqa: F401, F403
 import logging
 import sqlparse
 import re
 
 DEBUG = True
-SHOW_SQL_QUERIES = False 
+SHOW_SQL_QUERIES = False
 CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = ["*"]
+
 
 class ColoredFormatter(logging.Formatter):
     grey = "\x1b[38;20m"
@@ -35,8 +36,13 @@ class ColoredFormatter(logging.Formatter):
             match = re.search(r'"\s(\d{3})\s', record.msg)
             if match:
                 code = int(match.group(1))
-                code_color = self.green if code < 400 else (self.yellow if code < 500 else self.red)
-                record.msg = record.msg.replace(str(code), f"{code_color}{code}{self.reset}")
+                code_color = (
+                    self.green if code < 400
+                    else (self.yellow if code < 500 else self.red)
+                )
+                record.msg = record.msg.replace(
+                    str(code), f"{code_color}{code}{self.reset}"
+                )
 
         if record.name == "django.db.backends":
             record.name = "[DB]"
@@ -44,15 +50,16 @@ class ColoredFormatter(logging.Formatter):
             record.name = "[HTTP]"
         elif record.name.startswith("django"):
             record.name = "[DJANGO]"
-        
         if record.name == "[DB]" and sqlparse and hasattr(record, 'sql'):
-             pass 
-        
+            pass
+
         formatted_msg = super().format(record)
-        
+
         if record.name == "[DB]" and sqlparse and "SELECT" in formatted_msg:
-             formatted_msg = sqlparse.format(formatted_msg, reindent=True, keyword_case='upper')
-             formatted_msg = f"{self.grey}{formatted_msg}{self.reset}"
+            formatted_msg = sqlparse.format(
+                formatted_msg, reindent=True, keyword_case='upper'
+            )
+            formatted_msg = f"{self.grey}{formatted_msg}{self.reset}"
 
         return formatted_msg
 
@@ -62,10 +69,9 @@ class SkipIgnorableRequests(logging.Filter):
     """Filtre pour ignorer les bruits de fond du dev server."""
     def filter(self, record):
         msg = record.getMessage()
-        
         if "/static/" in msg or "/media/" in msg:
             return False
-            
+
         ignored_patterns = [
             "GET /serviceworker.js",
             "GET /favicon.ico",
@@ -73,10 +79,9 @@ class SkipIgnorableRequests(logging.Filter):
             "apple-touch-icon",
             "/serviceworker.js"
         ]
-        
         if any(pattern in msg for pattern in ignored_patterns):
             return False
-            
+
         return True
 
 
@@ -86,7 +91,7 @@ LOGGING = {
     "formatters": {
         "colored": {
             "()": ColoredFormatter,
-            "format": "%(levelname)s %(asctime)s %(name)-10s %(message)s", 
+            "format": "%(levelname)s %(asctime)s %(name)-10s %(message)s",
             "datefmt": "%H:%M:%S",
         },
     },
@@ -100,7 +105,7 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "colored",
             "level": "DEBUG",
-            "filters": ["skip_ignorable"], 
+            "filters": ["skip_ignorable"],
         },
     },
     "loggers": {
@@ -109,17 +114,17 @@ LOGGING = {
             "level": "INFO",
             "propagate": False,
         },
-        "django.server": { 
+        "django.server": {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": False,
         },
         "django.utils.autoreload": {
             "handlers": ["console"],
-            "level": "WARNING", 
+            "level": "WARNING",
             "propagate": False,
         },
-        "pod": { 
+        "pod": {
             "handlers": ["console"],
             "level": "DEBUG",
             "propagate": False,

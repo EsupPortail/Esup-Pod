@@ -83,5 +83,5 @@ SITE_ID = 1
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-from config.settings.authentication import *
-from config.settings.swagger import *
+from config.settings.authentication import *  # noqa: E402, F401, F403
+from config.settings.swagger import *  # noqa: E402, F401, F403

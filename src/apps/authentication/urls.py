@@ -7,8 +7,8 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from .views import (
-    LoginView, 
-    UserMeView, 
+    LoginView,
+    UserMeView,
     CASLoginView,
     ShibbolethLoginView,
     OIDCLoginView,
@@ -44,21 +44,41 @@ if settings.USE_LOCAL_AUTH:
 
 if settings.USE_CAS:
     urlpatterns.append(
-        path('token/cas/', CASLoginView.as_view(), name='token_obtain_pair_cas')
+        path(
+            'token/cas/',
+            CASLoginView.as_view(),
+            name='token_obtain_pair_cas'
+        )
     )
     urlpatterns.append(
-        path('accounts/login', django_cas_ng.views.LoginView.as_view(), name='cas_ng_login')
+        path(
+            'accounts/login',
+            django_cas_ng.views.LoginView.as_view(),
+            name='cas_ng_login'
+        )
     )
     urlpatterns.append(
-        path('accounts/logout', django_cas_ng.views.LogoutView.as_view(), name='cas_ng_logout')
+        path(
+            'accounts/logout',
+            django_cas_ng.views.LogoutView.as_view(),
+            name='cas_ng_logout'
+        )
     )
 
 if settings.USE_SHIB:
     urlpatterns.append(
-        path('token/shibboleth/', ShibbolethLoginView.as_view(), name='token_obtain_pair_shibboleth')
+        path(
+            'token/shibboleth/',
+            ShibbolethLoginView.as_view(),
+            name='token_obtain_pair_shibboleth'
+        )
     )
 
 if settings.USE_OIDC:
     urlpatterns.append(
-        path('token/oidc/', OIDCLoginView.as_view(), name='token_obtain_pair_oidc')
+        path(
+            'token/oidc/',
+            OIDCLoginView.as_view(),
+            name='token_obtain_pair_oidc'
+        )
     )

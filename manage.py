@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 from environ import ImproperlyConfigured
 
+
 def main():
     """Run administrative tasks."""
     base_path = Path(__file__).resolve().parent
@@ -25,7 +26,7 @@ def main():
 
         from django.core.management import execute_from_command_line
         execute_from_command_line(sys.argv)
-        
+
     except (ImportError, ImproperlyConfigured) as exc:
         if "django" in str(exc) or isinstance(exc, ImproperlyConfigured):
             msg = (

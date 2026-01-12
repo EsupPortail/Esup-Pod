@@ -99,6 +99,22 @@ jobs:
             test-image \
             python manage.py test --settings=config.django.test.test
 
+      - name: Smoke Test (Start Server & Check Health)
+        run: |
+          docker run -d --name test-server -p 8000:8000 \
+            -e DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE \
+            -e SECRET_KEY=$SECRET_KEY \
+            -e VERSION="SMOKE-TEST" \
+            test-image
+          
+          echo "Waiting for server to start..."
+          sleep 10
+          
+          echo "Checking endpoint..."
+          curl -v http://127.0.0.1:8000/api/docs/ || (docker logs test-server && exit 1)
+          
+          docker stop test-server
+
   test-docker-windows:
     needs: lint
     runs-on: windows-latest
@@ -107,7 +123,7 @@ jobs:
 
       - name: Build Docker image (Windows)
         run: |
-          docker build -t test-image -f deployment/dev/Dockerfile .
+          docker build --platform linux/amd64 -t test-image -f deployment/dev/Dockerfile .
 
       - name: Run Tests in Docker (Windows/PowerShell)
         env:
@@ -121,3 +137,19 @@ jobs:
             -e VERSION=$env:VERSION `
             test-image `
             python manage.py test --settings=config.django.test.test
+
+      - name: Smoke Test (Health Check - Windows)
+        run: |
+          docker run -d --name test-server -p 8000:8000 `
+            -e DJANGO_SETTINGS_MODULE=$env:DJANGO_SETTINGS_MODULE `
+            -e SECRET_KEY=$env:SECRET_KEY `
+            -e VERSION="SMOKE-TEST" `
+            test-image
+
+          echo "Waiting for server..."
+          Start-Sleep -Seconds 15
+
+          echo "Checking endpoint..."
+          curl http://127.0.0.1:8000/api/docs/ -v
+
+          docker stop test-server

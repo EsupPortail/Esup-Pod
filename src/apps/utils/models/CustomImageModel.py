@@ -1,11 +1,12 @@
 import os
 import mimetypes
 from django.db import models
-from django.utils.translation import gettext_lazy as _ 
+from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 from django.conf import settings
 
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
+
 
 def get_upload_path_files(instance, filename) -> str:
     fname, dot, extension = filename.rpartition(".")
@@ -22,7 +23,8 @@ def get_upload_path_files(instance, filename) -> str:
         )
     except ValueError:
         return os.path.join(FILES_DIR, "%s.%s" % (slugify(fname), extension))
-    
+
+
 class CustomImageModel(models.Model):
     """Esup-Pod custom image Model."""
 

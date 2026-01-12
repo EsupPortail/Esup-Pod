@@ -5,13 +5,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import filters, serializers, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -21,25 +19,33 @@ try:
 except ImportError:
     get_cas_client = None
 from .models.AccessGroup import AccessGroup
-from .models.GroupSite import GroupSite
 from .models.Owner import Owner
 from .models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION
 from .serializers.AccessGroupSerializer import AccessGroupSerializer
-from .serializers.CASTokenObtainPairSerializer import CASTokenObtainPairSerializer
-from .serializers.CustomTokenObtainPairSerializer import CustomTokenObtainPairSerializer
+from .serializers.CASTokenObtainPairSerializer import (
+    CASTokenObtainPairSerializer
+)
+from .serializers.CustomTokenObtainPairSerializer import (
+    CustomTokenObtainPairSerializer
+)
 from .serializers.ExternalAuthSerializers import (
-    OIDCTokenObtainSerializer, 
+    OIDCTokenObtainSerializer,
     ShibbolethTokenObtainSerializer
 )
 from .serializers.GroupSerializer import GroupSerializer
-from .serializers.OwnerSerializer import OwnerSerializer, OwnerWithGroupsSerializer
+from .serializers.OwnerSerializer import (
+    OwnerSerializer,
+    OwnerWithGroupsSerializer
+)
 from .serializers.SiteSerializer import SiteSerializer
 from .serializers.UserSerializer import UserSerializer
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
 
-CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
+CREATE_GROUP_FROM_AFFILIATION = getattr(
+    settings, "CREATE_GROUP_FROM_AFFILIATION", False
+)
 
 REMOTE_USER_HEADER = getattr(settings, "REMOTE_USER_HEADER", "REMOTE_USER")
 SHIBBOLETH_ATTRIBUTE_MAP = getattr(
@@ -54,13 +60,26 @@ SHIBBOLETH_ATTRIBUTE_MAP = getattr(
         "Shibboleth-unscoped-affiliation": (False, "affiliations"),
     },
 )
-SHIBBOLETH_STAFF_ALLOWED_DOMAINS = getattr(settings, "SHIBBOLETH_STAFF_ALLOWED_DOMAINS", None)
+SHIBBOLETH_STAFF_ALLOWED_DOMAINS = getattr(
+    settings, "SHIBBOLETH_STAFF_ALLOWED_DOMAINS", None
+)
 
-OIDC_CLAIM_GIVEN_NAME = getattr(settings, "OIDC_CLAIM_GIVEN_NAME", "given_name")
-OIDC_CLAIM_FAMILY_NAME = getattr(settings, "OIDC_CLAIM_FAMILY_NAME", "family_name")
-OIDC_CLAIM_PREFERRED_USERNAME = getattr(settings, "OIDC_CLAIM_PREFERRED_USERNAME", "preferred_username")
-OIDC_DEFAULT_AFFILIATION = getattr(settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION)
-OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = getattr(settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", [])
+OIDC_CLAIM_GIVEN_NAME = getattr(
+    settings, "OIDC_CLAIM_GIVEN_NAME", "given_name"
+)
+OIDC_CLAIM_FAMILY_NAME = getattr(
+    settings, "OIDC_CLAIM_FAMILY_NAME", "family_name"
+)
+OIDC_CLAIM_PREFERRED_USERNAME = getattr(
+    settings, "OIDC_CLAIM_PREFERRED_USERNAME", "preferred_username"
+)
+OIDC_DEFAULT_AFFILIATION = getattr(
+    settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION
+)
+OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = getattr(
+    settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []
+)
+
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -68,7 +87,7 @@ def get_tokens_for_user(user):
     refresh['is_staff'] = user.is_staff
     if hasattr(user, 'owner'):
         refresh['affiliation'] = user.owner.affiliation
-    
+
     return {
         'refresh': str(refresh),
         'access': str(refresh.access_token),
@@ -77,13 +96,17 @@ def get_tokens_for_user(user):
             'email': user.email,
             'first_name': user.first_name,
             'last_name': user.last_name,
-            'affiliation': user.owner.affiliation if hasattr(user, 'owner') else None
+            'affiliation': (
+                user.owner.affiliation if hasattr(user, 'owner') else None
+            )
         }
     }
+
 
 def is_staff_affiliation(affiliation) -> bool:
     """Check if user affiliation correspond to AFFILIATION_STAFF."""
     return affiliation in AFFILIATION_STAFF
+
 
 class LoginView(TokenObtainPairView):
     """
@@ -110,6 +133,7 @@ class UserMeView(APIView):
             
         return Response(data, status=status.HTTP_200_OK)
     
+
 class CASLoginView(APIView):
     """
     **CAS Authentication Endpoint**
@@ -118,11 +142,16 @@ class CASLoginView(APIView):
     permission_classes = [AllowAny]
     serializer_class = CASTokenObtainPairSerializer
 
-    @extend_schema(request=CASTokenObtainPairSerializer, responses=CASTokenObtainPairSerializer)
+    @extend_schema(
+        request=CASTokenObtainPairSerializer,
+        responses=CASTokenObtainPairSerializer
+    )
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            return Response(serializer.validated_data, status=status.HTTP_200_OK)
+            return Response(
+                serializer.validated_data, status=status.HTTP_200_OK
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -130,11 +159,14 @@ class ShibbolethLoginView(APIView):
     """
     **Shibboleth Authentication Endpoint**
         
-    This view must be protected by the Shibboleth SP (Apache/Nginx) which injects the headers. 
-    It reads the headers (REMOTE_USER, etc.), creates or updates the user locally according 
-    to the logic defined in the former ShibbolethRemoteUserBackend and returns JWTs.
+    This view must be protected by the Shibboleth SP (Apache/Nginx)
+    which injects the headers.
+    It reads the headers (REMOTE_USER, etc.), creates or updates the user
+    locally according to the logic defined in the former
+    ShibbolethRemoteUserBackend and returns JWTs.
+    and returns JWTs.
     """
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
     serializer_class = ShibbolethTokenObtainSerializer
 
     def _get_header_value(self, request, header_name):
@@ -154,10 +186,14 @@ class ShibbolethLoginView(APIView):
         username = self._get_header_value(request, REMOTE_USER_HEADER)
         if not username:
             return Response(
-                {"error": f"Missing {REMOTE_USER_HEADER} header. Shibboleth misconfigured?"}, 
+                {
+                    "error": f"Missing {REMOTE_USER_HEADER} header. "
+                             f"Shibboleth misconfigured?"
+                },
                 status=status.HTTP_401_UNAUTHORIZED
             )
         user, created = User.objects.get_or_create(username=username)
+
         
         shib_meta = {}
         for header, (required, field) in SHIBBOLETH_ATTRIBUTE_MAP.items():
@@ -166,25 +202,25 @@ class ShibbolethLoginView(APIView):
                 shib_meta[field] = value
                 if field in ['first_name', 'last_name', 'email']:
                     setattr(user, field, value)
-        
+
         user.save()
         if not hasattr(user, 'owner'):
             Owner.objects.create(user=user)
-        
+
         owner = user.owner
         owner.auth_type = "Shibboleth"
-        
+
         current_site = get_current_site(request)
         if current_site not in owner.sites.all():
             owner.sites.add(current_site)
-            
+
         affiliation = shib_meta.get("affiliation", "")
         if affiliation:
             owner.affiliation = affiliation
-            
+
             if is_staff_affiliation(affiliation):
                 user.is_staff = True
-            
+
             if CREATE_GROUP_FROM_AFFILIATION:
                 group, _ = Group.objects.get_or_create(name=affiliation)
                 user.groups.add(group)
@@ -207,8 +243,8 @@ class OIDCLoginView(APIView):
     """
     **OIDC Authentication Endpoint**
 
-    Exchanges an 'authorization_code' for OIDC tokens via the Provider, 
-    retrieves user information (UserInfo), 
+    Exchanges an 'authorization_code' for OIDC tokens via the Provider,
+    retrieves user information (UserInfo),
     updates the local database (using OIDCBackend logic), and returns JWTs.
     """
     permission_classes = [AllowAny]
@@ -218,7 +254,9 @@ class OIDCLoginView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
 
         code = serializer.validated_data['code']
         redirect_uri = serializer.validated_data['redirect_uri']
@@ -228,7 +266,13 @@ class OIDCLoginView(APIView):
         client_secret = getattr(settings, "OIDC_RP_CLIENT_SECRET", "")
         
         if not token_url:
-             return Response({"error": "OIDC not configured (missing OIDC_OP_TOKEN_ENDPOINT)"}, status=500)
+            return Response(
+                {
+                    "error": "OIDC not configured "
+                             "(missing OIDC_OP_TOKEN_ENDPOINT)"
+                },
+                status=500
+            )
 
         payload = {
             "grant_type": "authorization_code",
@@ -245,7 +289,10 @@ class OIDCLoginView(APIView):
             access_token = tokens_oidc.get("access_token")
         except Exception as e:
             logger.error(f"OIDC Token Exchange failed: {e}")
-            return Response({"error": "Failed to exchange OIDC code"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"error": "Failed to exchange OIDC code"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
 
         userinfo_url = getattr(settings, "OIDC_OP_USER_ENDPOINT", "")
         try:
@@ -255,11 +302,17 @@ class OIDCLoginView(APIView):
             claims = r_user.json()
         except Exception as e:
             logger.error(f"OIDC UserInfo failed: {e}")
-            return Response({"error": "Failed to fetch OIDC user info"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"error": "Failed to fetch OIDC user info"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
 
         username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME)
         if not username:
-            return Response({"error": "Missing username in OIDC claims"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Missing username in OIDC claims"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         user, created = User.objects.get_or_create(username=username)
 
@@ -268,12 +321,12 @@ class OIDCLoginView(APIView):
         user.email = claims.get("email", user.email)
         
         if not hasattr(user, 'owner'):
-             Owner.objects.create(user=user)
+            Owner.objects.create(user=user)
         
         user.owner.auth_type = "OIDC"
         
         if created or not user.owner.affiliation:
-             user.owner.affiliation = OIDC_DEFAULT_AFFILIATION
+            user.owner.affiliation = OIDC_DEFAULT_AFFILIATION
 
         for code_name in OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES:
             try:
@@ -289,6 +342,7 @@ class OIDCLoginView(APIView):
 
         tokens = get_tokens_for_user(user)
         return Response(tokens, status=status.HTTP_200_OK)
+
 
 class OwnerViewSet(viewsets.ModelViewSet):
     """
@@ -309,18 +363,23 @@ class OwnerViewSet(viewsets.ModelViewSet):
         groups = request.data.get("groups")
         
         if not username or groups is None:
-            return Response({"error": "Missing username or groups"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Missing username or groups"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         owner = get_object_or_404(Owner, user__username=username)
-        
+
         for group_code in groups:
             try:
                 accessgroup = AccessGroup.objects.get(code_name=group_code)
-                owner.accessgroups.add(accessgroup) 
+                owner.accessgroups.add(accessgroup)
             except AccessGroup.DoesNotExist:
                 pass
-        
-        serializer = OwnerWithGroupsSerializer(instance=owner, context={"request": request})
+
+        serializer = OwnerWithGroupsSerializer(
+            instance=owner, context={"request": request}
+        )
         return Response(serializer.data)
 
     @action(detail=False, methods=['post'], url_path='remove-user-accessgroup')
@@ -333,10 +392,13 @@ class OwnerViewSet(viewsets.ModelViewSet):
         groups = request.data.get("groups")
         
         if not username or groups is None:
-            return Response({"error": "Missing username or groups"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Missing username or groups"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         owner = get_object_or_404(Owner, user__username=username)
-        
+
         for group_code in groups:
             try:
                 accessgroup = AccessGroup.objects.get(code_name=group_code)
@@ -344,8 +406,10 @@ class OwnerViewSet(viewsets.ModelViewSet):
                     owner.accessgroups.remove(accessgroup)
             except AccessGroup.DoesNotExist:
                 pass
-                
-        serializer = OwnerWithGroupsSerializer(instance=owner, context={"request": request})
+
+        serializer = OwnerWithGroupsSerializer(
+            instance=owner, context={"request": request}
+        )
         return Response(serializer.data)
 
 
@@ -357,7 +421,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     filterset_fields = ["id", "username", "email"]
     permission_classes = [IsAuthenticated]
-    filter_backends = [filters.SearchFilter] # Ajout du backend de recherche
+    filter_backends = [filters.SearchFilter]  # Ajout du backend de recherche
     search_fields = ['username', 'first_name', 'last_name', 'email']
 
 
@@ -392,41 +456,49 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='set-users-by-name')
     def set_users_by_name(self, request):
         """
-        Equivalent of accessgroups_set_users_by_name. 
+        Equivalent of accessgroups_set_users_by_name.
         Adds a list of users (by username) to an AccessGroup (by code_name).
         """
         code_name = request.data.get("code_name")
         users = request.data.get("users")
         
         if not code_name or users is None:
-             return Response({"error": "Missing code_name or users"}, status=status.HTTP_400_BAD_REQUEST)
-             
+            return Response(
+                {"error": "Missing code_name or users"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         accessgroup = get_object_or_404(AccessGroup, code_name=code_name)
         
         for username in users:
             try:
                 owner = Owner.objects.get(user__username=username)
-                accessgroup.users.add(owner) 
+                accessgroup.users.add(owner)
             except Owner.DoesNotExist:
                 pass
         
         return Response(
-            AccessGroupSerializer(instance=accessgroup, context={"request": request}).data
+            AccessGroupSerializer(
+                instance=accessgroup, context={"request": request}
+            ).data
         )
 
     @action(detail=False, methods=['post'], url_path='remove-users-by-name')
     def remove_users_by_name(self, request):
         """
-        Equivalent of accessgroups_remove_users_by_name. 
+        Equivalent of accessgroups_remove_users_by_name.
         Removes a list of users (by username) from an AccessGroup (by code_name).
         """
         code_name = request.data.get("code_name")
         users = request.data.get("users")
-        
         if not code_name or users is None:
-             return Response({"error": "Missing code_name or users"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Missing code_name or users"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         accessgroup = get_object_or_404(AccessGroup, code_name=code_name)
+
         
         for username in users:
             try:
@@ -435,15 +507,19 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
                     accessgroup.users.remove(owner)
             except Owner.DoesNotExist:
                 pass
-                
+
         return Response(
-            AccessGroupSerializer(instance=accessgroup, context={"request": request}).data
+            AccessGroupSerializer(
+                instance=accessgroup,
+                context={"request": request}
+            ).data
         )
-    
+
+
 class LogoutInfoView(APIView):
     """
-    Returns the logout URLs for external providers. 
-    The frontend must call this endpoint to know where 
+    Returns the logout URLs for external providers.
+    The frontend must call this endpoint to know where
     to redirect the user after deleting the local JWT token.
     """
     permission_classes = [AllowAny]
@@ -469,8 +545,12 @@ class LogoutInfoView(APIView):
 
         if getattr(settings, 'USE_CAS', False) and get_cas_client:
             try:
-                client = get_cas_client(service_url=request.build_absolute_uri('/'))
-                data["cas"] = client.get_logout_url(redirect_url=request.build_absolute_uri('/'))
+                client = get_cas_client(
+                    service_url=request.build_absolute_uri('/')
+                )
+                data["cas"] = client.get_logout_url(
+                    redirect_url=request.build_absolute_uri('/')
+                )
             except Exception:
                 pass
 
@@ -486,10 +566,11 @@ class LogoutInfoView(APIView):
                 data["oidc"] = oidc_logout
 
         return Response(data)
-    
+
+
 class LoginConfigView(APIView):
     """
-    Returns the configuration of active authentication methods. 
+    Returns the configuration of active authentication methods.
     Allows the frontend to know which login buttons to display.
     """
     permission_classes = [AllowAny]

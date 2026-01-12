@@ -1,4 +1,4 @@
-from .dev import *
+from .dev import *  # noqa: F401, F403
 from config.env import BASE_DIR
 
 DATABASES = {

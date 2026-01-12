@@ -1,7 +1,7 @@
 import os
 import sys
 from django.core.asgi import get_asgi_application
-from config.env import env 
+from config.env import env
 
 try:
     settings_module = env.str("DJANGO_SETTINGS_MODULE")
@@ -15,7 +15,7 @@ try:
 except Exception as e:
     print(
         f"FATAL ERROR: Failed to initialize the ASGI application. "
-        f"Check that DJANGO_SETTINGS_MODULE is set. Details: {e}", 
+        f"Check that DJANGO_SETTINGS_MODULE is set. Details: {e}",
         file=sys.stderr
     )
     sys.exit(1)
