@@ -29,7 +29,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         # On installe depuis le dossier spécifique
-        pip install -r Pod_V5_Back/requirements.txt
+        pip install -r requirements.txt
         # Installation outils de linting
         pip install flake8
 
