@@ -28,23 +28,13 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        # On installe depuis le dossier spécifique
         pip install -r requirements.txt
-        # Installation outils de linting
         pip install flake8
-
     - name: Lint with flake8
       run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 Pod_V5_Back --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings.
-        flake8 Pod_V5_Back --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-
+        flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 src --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Run Tests
-      # On définit les variables d'env nécessaires pour que Django démarre sans le vrai fichier .env
-      env:
-        DJANGO_SETTINGS_MODULE: config.django.test.test # Basé sur ton arborescence
-        SECRET_KEY: "test_secret_key_ci_only" 
-      working-directory: ./Pod_V5_Back
+      working-directory: .
       run: |
-        python manage.py test
+        python manage.py test --settings=config.django.test.test
