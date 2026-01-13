@@ -60,6 +60,8 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: config.django.test.test
           SECRET_KEY: dummy-secret-key
+          VERSION: "0.1.0-test"
+          PYTHONPATH: src
         run: |
           python manage.py migrate
           pytest --cov=src --cov-report=term-missing
