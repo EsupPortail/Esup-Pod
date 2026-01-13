@@ -7,9 +7,9 @@ from django.contrib.auth.models import User, Permission
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
 from django.utils.translation import gettext_lazy as _
+from src.apps.utils.models.CustomImageModel import CustomImageModel
 
 from .utils import (
-    CustomImageModel,
     AUTH_TYPE,
     AFFILIATION,
     DEFAULT_AFFILIATION,
