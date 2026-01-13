@@ -16,14 +16,14 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
+          python-version: "3.12"
+          cache: "pip"
       - name: Install Dependencies
         run: pip install flake8
       - name: Lint with flake8
         run: |
           flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 src --count --max-complexity=10 --max-line-length=127 --statistics
+          flake8 src --count --statistics
 
   test-native:
     needs: lint
@@ -38,8 +38,8 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
+          python-version: "3.12"
+          cache: "pip"
 
       - name: Install Dependencies
         run: |
@@ -64,15 +64,15 @@ jobs:
           # Start server in background
           python manage.py runserver 0.0.0.0:8000 &
           PID=$!
-          
+
           # Wait for server to start
           echo "Waiting for server to start..."
           sleep 10
-          
+
           # Check health (Root redirects to Swagger, so we check 302 or 200 on api/docs/)
           echo "Checking endpoint..."
           curl -v http://127.0.0.1:8000/api/docs/ || exit 1
-          
+
           # Kill server
           kill $PID || true
 
@@ -106,11 +106,11 @@ jobs:
             -e SECRET_KEY=$SECRET_KEY \
             -e VERSION="SMOKE-TEST" \
             test-image
-          
+
           echo "Waiting for server to start..."
           sleep 10
-          
+
           echo "Checking endpoint..."
           curl -v http://127.0.0.1:8000/api/docs/ || (docker logs test-server && exit 1)
-          
+
           docker stop test-server
