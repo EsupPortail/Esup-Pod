@@ -16,6 +16,6 @@ except Exception as e:
     print(
         f"FATAL ERROR: Failed to initialize the ASGI application. "
         f"Check that DJANGO_SETTINGS_MODULE is set. Details: {e}",
-        file=sys.stderr
+        file=sys.stderr,
     )
     sys.exit(1)

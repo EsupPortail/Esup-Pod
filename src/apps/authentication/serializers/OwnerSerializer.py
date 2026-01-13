@@ -4,9 +4,10 @@ from ..models.Owner import Owner
 
 User = get_user_model()
 
+
 class OwnerSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    
+
     class Meta:
         model = Owner
         fields = (
@@ -20,11 +21,13 @@ class OwnerSerializer(serializers.ModelSerializer):
             "sites",
         )
 
+
 class OwnerWithGroupsSerializer(serializers.ModelSerializer):
     """
     Specific serializer including AccessGroups.
     Used in particular when modifying a user's permissions.
     """
+
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:

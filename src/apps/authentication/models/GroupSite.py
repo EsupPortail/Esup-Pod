@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)
 
+
 class GroupSite(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
     sites = models.ManyToManyField(Site)
@@ -18,6 +19,7 @@ class GroupSite(models.Model):
         verbose_name = _("Group site")
         verbose_name_plural = _("Groups site")
         ordering = ["group"]
+
 
 @receiver(post_save, sender=GroupSite)
 def default_site_groupsite(sender, instance, created: bool, **kwargs) -> None:

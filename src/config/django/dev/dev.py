@@ -27,17 +27,16 @@ class ColoredFormatter(logging.Formatter):
     }
 
     def format(self, record):
-
         color = self.LEVEL_COLORS.get(record.levelno, self.grey)
         record.levelname = f"{color}{record.levelname:<8}{self.reset}"
 
         if record.name == "django.server":
-
             match = re.search(r'"\s(\d{3})\s', record.msg)
             if match:
                 code = int(match.group(1))
                 code_color = (
-                    self.green if code < 400
+                    self.green
+                    if code < 400
                     else (self.yellow if code < 500 else self.red)
                 )
                 record.msg = record.msg.replace(
@@ -50,14 +49,14 @@ class ColoredFormatter(logging.Formatter):
             record.name = "[HTTP]"
         elif record.name.startswith("django"):
             record.name = "[DJANGO]"
-        if record.name == "[DB]" and sqlparse and hasattr(record, 'sql'):
+        if record.name == "[DB]" and sqlparse and hasattr(record, "sql"):
             pass
 
         formatted_msg = super().format(record)
 
         if record.name == "[DB]" and sqlparse and "SELECT" in formatted_msg:
             formatted_msg = sqlparse.format(
-                formatted_msg, reindent=True, keyword_case='upper'
+                formatted_msg, reindent=True, keyword_case="upper"
             )
             formatted_msg = f"{self.grey}{formatted_msg}{self.reset}"
 
@@ -67,6 +66,7 @@ class ColoredFormatter(logging.Formatter):
 # --- FILTRES ---
 class SkipIgnorableRequests(logging.Filter):
     """Filtre pour ignorer les bruits de fond du dev server."""
+
     def filter(self, record):
         msg = record.getMessage()
         if "/static/" in msg or "/media/" in msg:
@@ -77,7 +77,7 @@ class SkipIgnorableRequests(logging.Filter):
             "GET /favicon.ico",
             "GET /manifest.json",
             "apple-touch-icon",
-            "/serviceworker.js"
+            "/serviceworker.js",
         ]
         if any(pattern in msg for pattern in ignored_patterns):
             return False

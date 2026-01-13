@@ -1,6 +1,5 @@
 import logging
 import hashlib
-import traceback
 
 from django.dispatch import receiver
 from django.db import models
@@ -10,50 +9,44 @@ from django.db.models.signals import post_save
 from django.utils.translation import gettext_lazy as _
 
 from .utils import (
-    CustomImageModel, 
-    AUTH_TYPE, 
-    AFFILIATION, 
-    DEFAULT_AFFILIATION, 
-    ESTABLISHMENTS, 
-    HIDE_USERNAME, 
-    SECRET_KEY
+    CustomImageModel,
+    AUTH_TYPE,
+    AFFILIATION,
+    DEFAULT_AFFILIATION,
+    ESTABLISHMENTS,
+    HIDE_USERNAME,
+    SECRET_KEY,
 )
 
 logger = logging.getLogger(__name__)
+
 
 class Owner(models.Model):
     """
     Extends the default Django User model to add specific attributes
     for the POD application (affiliation, establishment, auth type, etc.).
     """
-    user = models.OneToOneField(
-        User, 
-        on_delete=models.CASCADE,
-        related_name='owner'
-    )
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="owner")
     auth_type = models.CharField(
         _("Authentication Type"),
-        max_length=20, 
-        choices=AUTH_TYPE, 
-        default=AUTH_TYPE[0][0]
+        max_length=20,
+        choices=AUTH_TYPE,
+        default=AUTH_TYPE[0][0],
     )
     affiliation = models.CharField(
         _("Affiliation"),
-        max_length=50, 
-        choices=AFFILIATION, 
-        default=DEFAULT_AFFILIATION
+        max_length=50,
+        choices=AFFILIATION,
+        default=DEFAULT_AFFILIATION,
     )
-    commentaire = models.TextField(
-        _("Comment"), 
-        blank=True, 
-        default=""
-    )
+    commentaire = models.TextField(_("Comment"), blank=True, default="")
     hashkey = models.CharField(
-        max_length=64, 
-        unique=True, 
-        blank=True, 
+        max_length=64,
+        unique=True,
+        blank=True,
         default="",
-        help_text=_("Unique hash generated from username and secret key.")
+        help_text=_("Unique hash generated from username and secret key."),
     )
     userpicture = models.ForeignKey(
         CustomImageModel,
@@ -69,17 +62,14 @@ class Owner(models.Model):
         choices=ESTABLISHMENTS,
         default=ESTABLISHMENTS[0][0],
     )
-    
+
     accessgroups = models.ManyToManyField(
-        "authentication.AccessGroup", 
+        "authentication.AccessGroup",
         blank=True,
-        related_name='users',
-        verbose_name=_("Access Groups")
+        related_name="users",
+        verbose_name=_("Access Groups"),
     )
-    sites = models.ManyToManyField(
-        Site,
-        related_name='owners'
-    )
+    sites = models.ManyToManyField(Site, related_name="owners")
     accepts_notifications = models.BooleanField(
         verbose_name=_("Accept notifications"),
         default=None,
@@ -118,7 +108,7 @@ class Owner(models.Model):
             .filter(groupsite__sites=Site.objects.get_current())
             .values_list("id", flat=True)
         )
-        
+
         return (
             self.user.is_staff
             and Permission.objects.filter(group__id__in=group_ids).count() > 0
@@ -127,6 +117,7 @@ class Owner(models.Model):
     @property
     def email(self) -> str:
         return self.user.email
+
 
 @receiver(post_save, sender=Owner)
 def default_site_owner(sender, instance: Owner, created: bool, **kwargs) -> None:
@@ -143,6 +134,6 @@ def create_owner_profile(sender, instance: User, created: bool, **kwargs) -> Non
             Owner.objects.get_or_create(user=instance)
         except Exception as e:
             logger.error(
-                f"Error creating owner profile for user {instance.username}: {e}", 
-                exc_info=True
+                f"Error creating owner profile for user {instance.username}: {e}",
+                exc_info=True,
             )
