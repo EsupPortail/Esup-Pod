@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - dev_v5
+      - feature/CleanDoc
   pull_request:
     branches:
       - dev_v5
       - main
+      - feature/CleanDoc
 
 jobs:
   # 1. Qualité du Code (Fail Fast)
