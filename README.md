@@ -28,10 +28,10 @@ l’utilisation de celles-ci dans le cadre de l’enseignement et la recherche.
 * [Configuration (paramétrage, personnalisation etc.)](./CONFIGURATION_FR(TODO).md)
 * [Guide CI/CD (Intégration & Déploiement Continus)](./docs/CI_CD.md)
 * [Guide de Déploiement](./docs/deployment/README.md)
-* [Guide Swagger / API](./docs/api/guide.md.md)
-* [Authentification (TODO)](./docs/TODO_AUTHENTICATION.md)
+* [Guide Swagger / API](./docs/api/README.md)
+* [Authentification (TODO)](./docs/authentication/README.md)
 
-#### Documentation thechnique POD V4
+#### Documentation technique POD V4
 
 * [Documentation générale (installation, paramétrage etc.)](https://www.esup-portail.org/wiki/display/ES/esup-pod)
 
