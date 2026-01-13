@@ -10,6 +10,7 @@ try:
 except ImportError:
     get_cas_client = None
 
+
 class LogoutInfoView(APIView):
     """
     Returns the logout URLs for external providers.
@@ -54,6 +55,7 @@ class LogoutInfoView(APIView):
                 data["oidc"] = oidc_logout
 
         return Response(data)
+
 
 class LoginConfigView(APIView):
     """

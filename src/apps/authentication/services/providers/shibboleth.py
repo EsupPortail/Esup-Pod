@@ -7,6 +7,7 @@ from ..tokens import get_tokens_for_user
 
 UserModel = get_user_model()
 
+
 class ShibbolethService:
     def check_security(self, request) -> bool:
         """Verify request comes from a trusted source (SP) if configured."""
@@ -42,7 +43,6 @@ class ShibbolethService:
                     setattr(user, field, value)
 
         user.save()
-        
         # Use UserPopulator logic which seems more complete/centralized
         populator = UserPopulator(user)
         populator.run("Shibboleth", shib_meta)

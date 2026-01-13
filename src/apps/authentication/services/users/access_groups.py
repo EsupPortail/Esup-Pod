@@ -1,12 +1,12 @@
 from typing import Any, List
-from django.shortcuts import get_object_or_404
 from ...models.AccessGroup import AccessGroup
 from ...models.Owner import Owner
+
 
 class AccessGroupService:
     @staticmethod
     def set_user_accessgroup(username: str, groups: List[str]) -> Any:
-        owner = Owner.objects.get(user__username=username) # Will raise DoesNotExist
+        owner = Owner.objects.get(user__username=username)  # Will raise DoesNotExist
 
         for group_code in groups:
             try:

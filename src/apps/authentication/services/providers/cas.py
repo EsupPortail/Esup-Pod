@@ -9,6 +9,7 @@ from ..users import UserPopulator
 UserModel = get_user_model()
 logger = logging.getLogger(__name__)
 
+
 def verify_cas_ticket(ticket: str, service_url: str) -> Optional[Any]:
     """
     Verifies the CAS service ticket using django-cas-ng utils.

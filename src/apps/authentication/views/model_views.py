@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
-from django.shortcuts import get_object_or_404
 from rest_framework import filters, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -18,7 +17,9 @@ from ..serializers.SiteSerializer import SiteSerializer
 from ..serializers.UserSerializer import UserSerializer
 from ..services import AccessGroupService
 
+
 User = get_user_model()
+
 
 class UserMeView(APIView):
     """
@@ -37,6 +38,7 @@ class UserMeView(APIView):
             data["establishment"] = request.user.owner.establishment
 
         return Response(data, status=status.HTTP_200_OK)
+
 
 class OwnerViewSet(viewsets.ModelViewSet):
     """
@@ -96,6 +98,7 @@ class OwnerViewSet(viewsets.ModelViewSet):
         except Owner.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing standard Django Users.
@@ -108,6 +111,7 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]  # Ajout du backend de recherche
     search_fields = ["username", "first_name", "last_name", "email"]
 
+
 class GroupViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing Django Groups (Permissions).
@@ -117,6 +121,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
     permission_classes = [IsAuthenticated]
 
+
 class SiteViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing Sites.
@@ -125,6 +130,7 @@ class SiteViewSet(viewsets.ModelViewSet):
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
     permission_classes = [IsAuthenticated]
+
 
 class AccessGroupViewSet(viewsets.ModelViewSet):
     """
@@ -160,7 +166,7 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
                 ).data
             )
         except AccessGroup.DoesNotExist:
-             return Response({"error": "AccessGroup not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "AccessGroup not found"}, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=False, methods=["post"], url_path="remove-users-by-name")
     def remove_users_by_name(self, request):
@@ -184,4 +190,4 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
                 ).data
             )
         except AccessGroup.DoesNotExist:
-             return Response({"error": "AccessGroup not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "AccessGroup not found"}, status=status.HTTP_404_NOT_FOUND)

@@ -16,12 +16,14 @@ from ..services import ShibbolethService, OIDCService
 
 logger = logging.getLogger(__name__)
 
+
 class LoginView(TokenObtainPairView):
     """
     **Authentication Endpoint**
     Accepts a username and password and returns a pair of JWT tokens.
     """
     serializer_class = CustomTokenObtainPairSerializer
+
 
 class CASLoginView(APIView):
     """
@@ -39,6 +41,7 @@ class CASLoginView(APIView):
         if serializer.is_valid():
             return Response(serializer.validated_data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ShibbolethLoginView(APIView):
     """
@@ -71,6 +74,7 @@ class ShibbolethLoginView(APIView):
                 {"error": "Internal Server Error during Shibboleth login."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
 
 class OIDCLoginView(APIView):
     """

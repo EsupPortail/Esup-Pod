@@ -8,6 +8,7 @@ from .core import USER_LDAP_MAPPING_ATTRIBUTES, AUTH_LDAP_USER_SEARCH
 
 logger = logging.getLogger(__name__)
 
+
 def get_ldap_conn():
     """Open and get LDAP connexion."""
     ldap_server_conf = getattr(settings, "LDAP_SERVER", {})

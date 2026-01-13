@@ -8,6 +8,7 @@ from ...models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION
 from ..core import USER_LDAP_MAPPING_ATTRIBUTES
 from ..ldap_client import get_ldap_conn, get_ldap_entry
 
+
 class UserPopulator:
     """
     Handles the population of User and Owner models from external sources (CAS, LDAP).

@@ -57,6 +57,7 @@ AUTH_LDAP_USER_SEARCH = getattr(
     ("ou=people,dc=univ,dc=fr", "(uid=%(uid)s)"),
 )
 
+
 def is_staff_affiliation(affiliation) -> bool:
     """Check if user affiliation correspond to AFFILIATION_STAFF."""
     return affiliation in AFFILIATION_STAFF

@@ -10,6 +10,7 @@ from ..tokens import get_tokens_for_user
 UserModel = get_user_model()
 logger = logging.getLogger(__name__)
 
+
 class OIDCService:
     def process_code(self, code: str, redirect_uri: str) -> Dict[str, Any]:
         """Exchange OIDC code for tokens and populate user."""
@@ -45,10 +46,10 @@ class OIDCService:
             claims = r_user.json()
         except Exception as e:
             logger.error(f"OIDC UserInfo failed: {e}")
-            
+
             # Additional logging for debugging
             logger.error(f"OIDC UserInfo Endpoint: {userinfo_url}")
-            
+
             raise ConnectionError("Failed to fetch OIDC user info")
 
         username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME)
@@ -56,7 +57,7 @@ class OIDCService:
             raise ValueError("Missing username in OIDC claims")
 
         user, created = UserModel.objects.get_or_create(username=username)
-        
+
         # Populate user using centralized logic
         populator = UserPopulator(user)
         populator.run("OIDC", claims)

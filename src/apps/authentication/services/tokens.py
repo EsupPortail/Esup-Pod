@@ -1,5 +1,6 @@
 from typing import Dict, Any
 
+
 def get_tokens_for_user(user) -> Dict[str, Any]:
     from rest_framework_simplejwt.tokens import RefreshToken
 
