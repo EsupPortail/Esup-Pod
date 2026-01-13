@@ -36,9 +36,9 @@ class TestUserPopulator(TestCase):
         # Let's verify owner attribute is updated.
 
     @override_settings(POPULATE_USER="CAS")
-    @patch("src.apps.authentication.services.UserPopulator.run")
+    @patch("src.apps.authentication.services.users.populator.UserPopulator.run")
     def test_verify_cas_ticket_calls_populator(self, mock_run):
-        with patch("src.apps.authentication.services.get_cas_client") as mock_client:
+        with patch("src.apps.authentication.services.providers.cas.get_cas_client") as mock_client:
             mock_cas = MagicMock()
             mock_cas.verify_ticket.return_value = ("casuser", {"attr": "val"}, None)
             mock_client.return_value = mock_cas
