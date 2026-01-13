@@ -13,3 +13,5 @@ exclude =
 
 # The standard length for modern Django
 max-line-length = 120
+
+max-complexity = 18
