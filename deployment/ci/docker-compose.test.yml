@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
   # Container de l'application (Testé)
   api:
     build:
-      context: ../../
+      context: .
       dockerfile: deployment/dev/Dockerfile
     environment:
       - DJANGO_SETTINGS_MODULE=config.django.dev.docker

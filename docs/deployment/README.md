@@ -59,7 +59,7 @@ Selecting the wrong `.env` will load the wrong database configuration and cause 
 ## Getting Started
 
 *   ➡️ **[Development Guide](dev/dev.md)**: Local setup instructions and development environment.
-*   ➡️ **[Production Guide (WIP)](../deployment/prod/notes.md)**: Current notes on production deployment.
+*   ➡️ **[Production Guide (WIP)](prod/notes.md)**: Current notes on production deployment.
 *   ➡️ **[Help](help.md)**: Maintenance, troubleshooting, and operational support.
 
 *   ⬅️ **[Back to Index](../README.md)**
