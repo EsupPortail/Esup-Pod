@@ -1,17 +1,20 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
-User = get_user_model()
+
 
 
 class TestOwnerModel(TestCase):
+    def setUp(self):
+        self.User = get_user_model()
+
     def test_owner_creation_signal(self):
-        user = User.objects.create(username="ownertest")
+        user = self.User.objects.create(username="ownertest")
         self.assertTrue(hasattr(user, "owner"))
         self.assertEqual(user.owner.user, user)
 
     def test_hashkey_generation(self):
-        user = User.objects.create(username="hashkeytest")
+        user = self.User.objects.create(username="hashkeytest")
         owner = user.owner
         # hashkey is generated on save if empty
         owner.save()
@@ -22,7 +25,7 @@ class TestOwnerModel(TestCase):
         self.assertEqual(owner.hashkey, old_hash)
 
     def test_str_representation(self):
-        user = User.objects.create(
+        user = self.User.objects.create(
             username="strtest", first_name="John", last_name="Doe"
         )
         # Depending on HIDE_USERNAME settings, output changes.

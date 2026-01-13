@@ -61,7 +61,7 @@ jobs:
           else
             pip install -r requirements.txt
           fi
-          pip install pytest pytest-cov
+          pip install pytest pytest-cov pytest-django
 
       - name: Run Tests with Coverage
         env:
