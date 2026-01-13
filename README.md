@@ -25,11 +25,7 @@ l’utilisation de celles-ci dans le cadre de l’enseignement et la recherche.
 
 #### Documentation technique POD V5
 
-* [Configuration (paramétrage, personnalisation etc.)](./CONFIGURATION_FR(TODO).md)
-* [Guide CI/CD (Intégration & Déploiement Continus)](./docs/CI_CD.md)
-* [Guide de Déploiement](./docs/deployment/README.md)
-* [Guide Swagger / API](./docs/api/README.md)
-* [Authentification (TODO)](./docs/authentication/README.md)
+* [Documentation générale (installation, paramétrage etc.)](./docs/README.md)
 
 #### Documentation technique POD V4
 
