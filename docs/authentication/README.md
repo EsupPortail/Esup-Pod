@@ -1,4 +1,4 @@
-# 🔐 Authentication: Overview
+# Authentication: Overview
 
 The Pod application authentication module secures access to the API and manages users. It is designed to work in a hybrid mode, accepting both local logins and those from external Identity Providers (SSO).
 

@@ -1,4 +1,4 @@
-# 👨‍💻 API Developer Guide
+# 👨API Developer Guide
 
 How to document your code so it appears in Swagger.
 
@@ -43,8 +43,3 @@ Add this to the specific method (create, list, etc.).
 def create(self, request):
     ...
 ```
-
-## Best Practices
-
-*   **Error Codes**: Always document error cases (400, 403, 404). The frontend needs to know what to expect.
-*   **Examples**: For complex requests (POST/PUT), provide a valid JSON example.

@@ -23,15 +23,17 @@ Le projet et la plateforme qui porte le même nom ont pour but de faciliter
 la mise à disposition de vidéos et de ce fait, d’encourager
 l’utilisation de celles-ci dans le cadre de l’enseignement et la recherche.
 
-#### Documentation technique
+#### Documentation technique POD V5
+
+* [Configuration (paramétrage, personnalisation etc.)](./CONFIGURATION_FR(TODO).md)
+* [Guide CI/CD (Intégration & Déploiement Continus)](./docs/CI_CD.md)
+* [Guide de Déploiement](./docs/deployment/README.md)
+* [Guide Swagger / API](./docs/api/guide.md.md)
+* [Authentification (TODO)](./docs/TODO_AUTHENTICATION.md)
+
+#### Documentation thechnique POD V4
 
 * [Documentation générale (installation, paramétrage etc.)](https://www.esup-portail.org/wiki/display/ES/esup-pod)
-* [Conteneurisation (installation, paramétrage, lancement etc.)](./dockerfile-dev-with-volumes/README.adoc)
-* [Configuration (paramétrage, personnalisation etc.)](./CONFIGURATION_FR.md)
-* [Guide CI/CD (Intégration & Déploiement Continus)](./docs/CI_CD.md)
-* [Guide de Déploiement](./docs/DEPLOYMENT.md)
-* [Guide Swagger / API](./docs/SWAGGER_GUIDE.md)
-* [Authentification (TODO)](./docs/TODO_AUTHENTICATION.md)
 
 ## [EN]
 

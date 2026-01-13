@@ -5,12 +5,6 @@ Docker is used to replicate production services while providing a flexible debug
 
 ## Choose Your Operating System
 
-### Windows
-**[→ Windows Development Guide](dev_windows.md)**
-
-### Linux / macOS
-**[→ Linux & macOS Development Guide](dev_unix.md)**
-
-
-## Navigation
-**[← Back to Deployment Documentation](../../DEPLOYMENT.md)**
+*   ➡️ **[Windows Development Guide](dev_windows.md)**: Development environment setup and workflow on Windows.
+*   ➡️ **[Linux & macOS Development Guide](dev_unix.md)**: Development environment setup and workflow on Linux and macOS.
+*   ⬅️ **[Back to Deployment Documentation](../../README.md)**
