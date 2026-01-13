@@ -23,13 +23,16 @@ class SystemInfoView(APIView):
     Simple view to return public system information,
     including the current version.
     """
+
     permission_classes = [AllowAny]
 
     def get(self, request):
-        return Response({
-            "project": "POD V5",
-            "version": settings.POD_VERSION,
-        })
+        return Response(
+            {
+                "project": "POD V5",
+                "version": settings.POD_VERSION,
+            }
+        )
 
 
 class SystemInfoView2(APIView):
@@ -37,10 +40,13 @@ class SystemInfoView2(APIView):
     Simple view to return public system information,
     including the current version.
     """
+
     permission_classes = [AllowAny]
 
     def get(self, request):
-        return Response({
-            "project": "POD V5",
-            "version": settings.POD_VERSION,
-        })
+        return Response(
+            {
+                "project": "POD V5",
+                "version": settings.POD_VERSION,
+            }
+        )

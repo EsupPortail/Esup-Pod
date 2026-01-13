@@ -9,8 +9,9 @@ from django.contrib.sites.models import Site
 
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
-    from pod.podfile.widgets import CustomFileWidget # TODO : change import path when files will be implamented
-
+    from pod.podfile.widgets import (
+        CustomFileWidget,
+    )  # TODO : change import path when files will be implamented
     __FILEPICKER__ = True
 
 

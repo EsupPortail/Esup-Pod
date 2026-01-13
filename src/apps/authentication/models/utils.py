@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 if getattr(settings, "USE_PODFILE", False):
-    from src.apps.utils.models.CustomImageModel import CustomImageModel # TODO : change import path when files will be implamented
+    pass  # TODO : change import path when files will be implamented
 else:
-    from src.apps.utils.models.CustomImageModel import CustomImageModel
+    pass
 
 HIDE_USERNAME = getattr(settings, "HIDE_USERNAME", False)
 
@@ -51,6 +51,7 @@ ESTABLISHMENTS = getattr(
     ),
 )
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
+
 
 def get_name(self: User) -> str:
     """

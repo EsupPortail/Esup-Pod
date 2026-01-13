@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+
 import os
 import sys
 from pathlib import Path
@@ -20,12 +21,15 @@ def main():
         from src.config.env import env
 
     try:
-        settings_module = env.str("DJANGO_SETTINGS_MODULE", default="config.django.base")
+        settings_module = env.str(
+            "DJANGO_SETTINGS_MODULE", default="config.django.base"
+        )
 
         if settings_module:
             os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_module)
 
         from django.core.management import execute_from_command_line
+
         execute_from_command_line(sys.argv)
 
     except (ImportError, ImproperlyConfigured) as exc:
@@ -42,6 +46,7 @@ def main():
         raise
     except Exception as e:
         import traceback
+
         traceback.print_exc()
         print(f"FATAL ERROR during manage.py execution: {e}", file=sys.stderr)
         sys.exit(1)
