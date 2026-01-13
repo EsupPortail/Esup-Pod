@@ -16,7 +16,7 @@ Interact with the backend via the REST API.
 
 ### [Deployment](deployment/README.md)
 Architecture and production setup.
-*   [Architecture](deployment/README.md): System overview.
+*   [Deployment Guide](deployment/README.md): System overview.
 
 ## Project Structure
 
