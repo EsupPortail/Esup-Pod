@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from ..services import UserPopulator, verify_cas_ticket
 
 User = get_user_model()
@@ -36,6 +36,7 @@ class TestUserPopulator(TestCase):
         # Let's verify owner attribute is updated.
 
     @patch("src.apps.authentication.services.UserPopulator.run")
+    @override_settings(POPULATE_USER="CAS")
     def test_verify_cas_ticket_calls_populator(self, mock_run):
         with patch("src.apps.authentication.services.get_cas_client") as mock_client:
             mock_cas = MagicMock()
