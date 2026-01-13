@@ -2,8 +2,6 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 
 
-
-
 class TestOwnerModel(TestCase):
     def setUp(self):
         self.User = get_user_model()
