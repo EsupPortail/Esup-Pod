@@ -11,20 +11,22 @@ ADMIN_PASS = os.getenv("DJANGO_SUPERUSER_PASSWORD", "admin")
 def log(msg):
     print(f"[E2E] {msg}")
 
-def test_api_health():
+def test_api_health(retries=5):
     url = f"{API_URL}/api/docs/"
-    log(f"Checking Health at {url}...")
-    try:
-        response = requests.get(url, timeout=5)
-        if response.status_code == 200:
-            log("✅ API is responding (200 OK)")
-            return True
-        else:
-            log(f"❌ API Error: {response.status_code}")
-            return False
-    except requests.exceptions.ConnectionError:
-        log("❌ API Unreachable")
-        return False
+    for i in range(retries):
+        log(f"Checking Health at {url} (Attempt {i+1}/{retries})...")
+        try:
+            response = requests.get(url, timeout=10)
+            if response.status_code == 200:
+                log("✅ API is responding (200 OK)")
+                return True
+            else:
+                log(f"⚠️ API returned {response.status_code}, retrying...")
+        except requests.exceptions.RequestException as e:
+            log(f"⚠️ Connection error: {e}, retrying...")
+        time.sleep(5)
+    log("❌ API Unreachable after multiple attempts")
+    return False
 
 def test_admin_login():
     url = f"{API_URL}/accounts/login" # CAS or Standard Login URL depending on config.

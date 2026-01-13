@@ -49,7 +49,13 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install -r requirements.txt
+          # mysqlclient often fails to build on clean Windows runners without dev headers.
+          # We skip it for native tests as we use SQLite.
+          if [ "${{ matrix.os }}" != "windows-latest" ]; then
+            pip install mysqlclient
+          fi
           pip install pytest pytest-cov
+        shell: bash
       - name: Run Tests with Coverage
         env:
           DJANGO_SETTINGS_MODULE: config.django.test.test
@@ -65,24 +71,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Docker Compose
-        run: |
-           # Use the CI specific compose file
-           cp deployment/ci/docker-compose.test.yml docker-compose.yml
-
       - name: Build Stack
-        run: docker compose build
+        run: docker compose -f deployment/ci/docker-compose.test.yml build
 
       - name: Start Stack (API + DB + Redis)
-        run: docker compose up -d
+        run: docker compose -f deployment/ci/docker-compose.test.yml up -d
 
       - name: Wait for Services (Healthcheck)
         run: |
           echo "Waiting for stack to be ready..."
           sleep 15
-          docker compose ps
+          docker compose -f deployment/ci/docker-compose.test.yml ps
           # Check logs if needed
-          docker compose logs api
+          docker compose -f deployment/ci/docker-compose.test.yml logs api
 
       - name: Run Smoke & E2E Tests
         run: |
@@ -107,7 +108,7 @@ jobs:
 
       - name: Teardown
         if: always()
-        run: docker compose down
+        run: docker compose -f deployment/ci/docker-compose.test.yml down
 
   # 6. Delivery (Conditional)
   delivery:
