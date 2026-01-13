@@ -80,34 +80,48 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
       - name: Build Stack
-        run: docker compose -f deployment/ci/docker-compose.test.yml --project-directory . build
+        run: docker compose -f deployment/ci/docker-compose.test.yml --project-directory . build --pull
 
       - name: Start Stack
         run: docker compose -f deployment/ci/docker-compose.test.yml --project-directory . up -d
 
-      - name: Wait for Services (Robust)
+      - name: Wait for Services
         run: |
-          echo "Waiting for API to be healthy..."
-          timeout 30s bash -c 'until curl --silent --fail http://127.0.0.1:8000/api/docs/ > /dev/null; do echo "Retrying..."; sleep 2; done'
-          echo "Stack is ready!"
-          docker compose -f deployment/ci/docker-compose.test.yml logs api
+          set -e
+          echo "Waiting for API..."
+          if ! timeout 90s bash -c 'until curl -sf http://127.0.0.1:8000/api/docs/ > /dev/null; do sleep 2; done'; then
+            echo "API failed to start"
+            docker compose -f deployment/ci/docker-compose.test.yml logs
+            exit 1
+          fi
+
+      - name: Install E2E dependencies
+        run: |
+          pip install --upgrade pip
+          pip install requests
 
       - name: Run Smoke & E2E Tests
-        run: |
-          pip install requests
-          python scripts/e2e_scenario.py
+        run: python scripts/e2e_scenario.py
 
-      - name: Security Audit (Configuration)
+      - name: Basic Load Test
         run: |
-          echo "Security Check Passed (Simulated)"
-
-      - name: Simple Load Test (Concurrency Check)
-        run: |
-          for i in {1..20}; do curl -s -o /dev/null http://127.0.0.1:8000/api/docs/ & done
+          fail=0
+          for i in {1..50}; do
+            curl -sf http://127.0.0.1:8000/api/docs/ > /dev/null || fail=1 &
+          done
           wait
-          echo "Load Test Completed without crash."
+          if [ "$fail" -ne 0 ]; then
+            echo "Load test failed"
+            exit 1
+          fi
 
       - name: Teardown
         if: always()
-        run: docker compose -f deployment/ci/docker-compose.test.yml down
+        run: docker compose -f deployment/ci/docker-compose.test.yml down -v
