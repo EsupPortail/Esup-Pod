@@ -28,7 +28,8 @@ Conçue pour l’Enseignement Supérieur et la Recherche, elle permet la publica
 
 > [!NOTE]
 > Ce dépôt contient le backend **V5 (Python/Django)**.  
-> Pour la version V4 ou la documentation institutionnelle, voir le **wiki ESUP-Portail**.
+> Retrouvez la documentation ici [ESUP-POD V5 Documentation](./docs/README.md)
+> Pour la version V4 ou la documentation institutionnelle, voir le [ESUP-Portail Wiki](https://www.esup-portail.org/wiki/display/ES/esup-pod).
 
 
 ## [EN]
@@ -38,6 +39,7 @@ Ideally suited for Higher Education and Research institutions, it facilitates vi
 
 > [!NOTE]
 > This repository contains the **V5 (Python/Django)** backend.
+> Find the documentation here [ESUP-POD V5 Documentation](./docs/README.md)
 > For the legacy V4 version or specific institutional documentation, please refer to the [ESUP-Portail Wiki](https://www.esup-portail.org/wiki/display/ES/esup-pod).
 
 ### Video file management platform

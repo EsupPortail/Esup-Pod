@@ -100,17 +100,21 @@ jobs:
             python manage.py test --settings=config.django.test.test
 
       - name: Smoke Test (Start Server & Check Health)
+        env:
+          DJANGO_SETTINGS_MODULE: config.django.test.test
+          SECRET_KEY: dummy-secret-key
+          VERSION: "SMOKE-TEST"
         run: |
           docker run -d --name test-server -p 8000:8000 \
             -e DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE \
             -e SECRET_KEY=$SECRET_KEY \
-            -e VERSION="SMOKE-TEST" \
+            -e VERSION=$VERSION \
             test-image
-          
+
           echo "Waiting for server to start..."
           sleep 10
-          
+
           echo "Checking endpoint..."
           curl -v http://127.0.0.1:8000/api/docs/ || (docker logs test-server && exit 1)
-          
+
           docker stop test-server
