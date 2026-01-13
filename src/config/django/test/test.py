@@ -9,7 +9,7 @@ USE_OIDC = True
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": ":memory:",
+        "NAME": os.getenv("TEST_DB_NAME", ":memory:"),
     }
 }
 
