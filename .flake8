@@ -1,0 +1,15 @@
+[flake8]
+# E501: Lines too long (limit increased to 120)
+# W503: Line break before binary operator (conflict with Black/Ruff)
+# F403: 'from module import *' (tolerated in settings)
+ignore = E501, W503, F403
+
+# We exclude files managed by Git or Django
+exclude =
+    .git,
+    __pycache__,
+    venv,
+    */migrations/*
+
+# The standard length for modern Django
+max-line-length = 120
