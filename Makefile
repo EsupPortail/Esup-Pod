@@ -72,7 +72,7 @@ superuser: ## Create a local superuser
 	$(DJANGO_MANAGE) createsuperuser
 
 test: ## Run tests locally
-	$(DJANGO_MANAGE) test
+	$(DJANGO_MANAGE) test --settings=config.django.test.test
 
 clean: ## Remove pyc files and caches
 	find . -name '*.pyc' -delete

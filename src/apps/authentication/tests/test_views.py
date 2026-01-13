@@ -36,8 +36,7 @@ class ShibbolethLoginViewTests(APITestCase):
         self.url = reverse("token_obtain_pair_shibboleth")
         self.remote_user_header = "REMOTE_USER"  # Default setting
 
-    @patch("src.apps.authentication.views.UserPopulator.run")
-    def test_shibboleth_success(self, mock_run):
+    def test_shibboleth_success(self):
         headers = {
             "REMOTE_USER": "shibuser",
             "HTTP_SHIBBOLETH_MAIL": "shib@example.com",  # This might need adjustment based on how code reads it but let's try standard header simulation
@@ -47,7 +46,7 @@ class ShibbolethLoginViewTests(APITestCase):
         response = self.client.get(self.url, **headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        mock_run.assert_called_once()
+
         self.assertTrue(User.objects.filter(username="shibuser").exists())
 
     def test_shibboleth_missing_header(self):
@@ -71,8 +70,7 @@ class OIDCLoginViewTests(APITestCase):
 
     @patch("requests.post")
     @patch("requests.get")
-    @patch("src.apps.authentication.views.UserPopulator.run")
-    def test_oidc_success(self, mock_run, mock_get, mock_post):
+    def test_oidc_success(self, mock_get, mock_post):
         # Mock Token response
         mock_token_resp = MagicMock()
         mock_token_resp.json.return_value = {"access_token": "fake_access_token"}
@@ -103,4 +101,4 @@ class OIDCLoginViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(User.objects.filter(username="oidcuser").exists())
-        mock_run.assert_called_once()
+

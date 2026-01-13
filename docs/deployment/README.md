@@ -55,11 +55,12 @@ Make sure to **choose the correct `.env` file** depending on how you run the pro
 Selecting the wrong `.env` will load the wrong database configuration and cause the application to fail.
 
 
+
 ## Getting Started
 
 *   ➡️ **[Development Guide](dev/dev.md)**: Local setup instructions and development environment.
-*   ➡️ **[Production Guide](prod/prod.md)**: Deployment process and production configuration.
-*   ➡️ **[Help](deployment/help.md)**: Maintenance, troubleshooting, and operational support.
+*   ➡️ **[Production Guide (WIP)](../deployment/prod/notes.md)**: Current notes on production deployment.
+*   ➡️ **[Help](help.md)**: Maintenance, troubleshooting, and operational support.
 
 *   ⬅️ **[Back to Index](../README.md)**
 

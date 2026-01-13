@@ -206,7 +206,7 @@ class ShibbolethLoginView(APIView):
                 user.groups.add(group)
 
         affiliations_str = shib_meta.get("affiliations", "")
-        if self._is_staffable(user) and affiliations_str:
+        if affiliations_str:
             for aff in affiliations_str.split(";"):
                 if is_staff_affiliation(aff):
                     user.is_staff = True

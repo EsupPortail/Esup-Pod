@@ -23,15 +23,22 @@ Le projet et la plateforme qui porte le même nom ont pour but de faciliter
 la mise à disposition de vidéos et de ce fait, d’encourager
 l’utilisation de celles-ci dans le cadre de l’enseignement et la recherche.
 
-#### Documentation technique POD V5
+**Esup-Pod V5** est l’API backend de la plateforme de gestion vidéo Pod.  
+Conçue pour l’Enseignement Supérieur et la Recherche, elle permet la publication, l’enrichissement et la diffusion de vidéos.
 
-* [Documentation générale (installation, paramétrage etc.)](./docs/README.md)
+> [!NOTE]
+> Ce dépôt contient le backend **V5 (Python/Django)**.  
+> Pour la version V4 ou la documentation institutionnelle, voir le **wiki ESUP-Portail**.
 
-#### Documentation technique POD V4
-
-* [Documentation générale (installation, paramétrage etc.)](https://www.esup-portail.org/wiki/display/ES/esup-pod)
 
 ## [EN]
+
+**Esup-Pod V5** is the backend API for the Pod video management platform.
+Ideally suited for Higher Education and Research institutions, it facilitates video publishing, enrichment, and dissemination.
+
+> [!NOTE]
+> This repository contains the **V5 (Python/Django)** backend.
+> For the legacy V4 version or specific institutional documentation, please refer to the [ESUP-Portail Wiki](https://www.esup-portail.org/wiki/display/ES/esup-pod).
 
 ### Video file management platform
 
