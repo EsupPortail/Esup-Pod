@@ -39,23 +39,30 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
+      
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
+
       - name: Install Dependencies
         run: |
-          pip install -r requirements.txt
-          # mysqlclient often fails to build on clean Windows runners without dev headers.
-          # We skip it for native tests as we use SQLite.
-          if [ "${{ matrix.os }}" != "windows-latest" ]; then
-            pip install mysqlclient
+          pip install --upgrade pip
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            # Exclude mysqlclient on Windows to avoid build failures
+            grep -v "mysqlclient" requirements.txt > requirements_no_mysql.txt
+            pip install -r requirements_no_mysql.txt
+          else
+            pip install -r requirements.txt
           fi
           pip install pytest pytest-cov
-        shell: bash
+
       - name: Run Tests with Coverage
         env:
           DJANGO_SETTINGS_MODULE: config.django.test.test
@@ -74,36 +81,29 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build Stack
-        run: docker compose -f deployment/ci/docker-compose.test.yml build
+        run: docker compose -f deployment/ci/docker-compose.test.yml --project-directory . build
 
-      - name: Start Stack (API + DB + Redis)
-        run: docker compose -f deployment/ci/docker-compose.test.yml up -d
+      - name: Start Stack
+        run: docker compose -f deployment/ci/docker-compose.test.yml --project-directory . up -d
 
-      - name: Wait for Services (Healthcheck)
+      - name: Wait for Services (Robust)
         run: |
-          echo "Waiting for stack to be ready..."
-          sleep 15
-          docker compose -f deployment/ci/docker-compose.test.yml ps
-          # Check logs if needed
+          echo "Waiting for API to be healthy..."
+          timeout 30s bash -c 'until curl --silent --fail http://127.0.0.1:8000/api/docs/ > /dev/null; do echo "Retrying..."; sleep 2; done'
+          echo "Stack is ready!"
           docker compose -f deployment/ci/docker-compose.test.yml logs api
 
       - name: Run Smoke & E2E Tests
         run: |
-          # Install requests locally for the script
           pip install requests
           python scripts/e2e_scenario.py
 
       - name: Security Audit (Configuration)
         run: |
-          # Verify DEBUG is True for Test Environment (Expected in CI test compose but check handling)
-          # In Real Prod it should be False.
           echo "Security Check Passed (Simulated)"
 
       - name: Simple Load Test (Concurrency Check)
         run: |
-          # Send 50 concurrent requests to /api/docs/
-          # Using simlple bash loop in background or lightweight tool if installed
-          # Here we just demo it with a loop
           for i in {1..20}; do curl -s -o /dev/null http://127.0.0.1:8000/api/docs/ & done
           wait
           echo "Load Test Completed without crash."
@@ -111,16 +111,3 @@ jobs:
       - name: Teardown
         if: always()
         run: docker compose -f deployment/ci/docker-compose.test.yml down
-
-  # 6. Delivery (Conditional)
-  delivery:
-    needs: test-docker-full
-    if: github.event_name == 'push' && github.ref == 'refs/heads/dev_v5'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build Production Image
-        run: docker build -f deployment/prod/Dockerfile .
-      # - name: Push to GHCR (Authenticated)
-      #   uses: docker/login-action...
-      #   ...
