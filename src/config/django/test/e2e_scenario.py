@@ -1,6 +1,5 @@
 """
 End-to-End (E2E) Test Scenario Script.
-
 This script performs a series of automated checks to validate the availability
 and basic security configuration of the deployed application. It is used
 in the CI/CD pipeline to ensure the service is up and running correctly
@@ -17,7 +16,6 @@ import sys
 import time
 import os
 import requests
-
 
 
 API_URL = os.getenv("API_URL", "http://127.0.0.1:8000")
