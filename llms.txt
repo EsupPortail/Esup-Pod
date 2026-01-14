@@ -1,0 +1,24 @@
+# Pod V5 Backend
+
+> Estup-Pod V5 Backend is a Django-based video management platform. This project handles video storage, encoding, and streaming processing (download/streaming).
+
+## Documentation
+
+- [Project README](README.md): Main overview, features, and quickstart.
+- [Contributing Guide](CONTRIBUTING.md): Guidelines for contributing to the project.
+- [CI/CD Pipeline](docs/CI_CD.md): Details on the Continuous Integration and Deployment workflows.
+- [TODO List](TODO.md): Roadmap and pending tasks.
+
+## API & Authentication
+
+- [API Reference](docs/api/README.md): Overview of the REST API endpoints.
+- [API Guide](docs/api/guide.md): Usage guide for the API.
+- [Authentication](docs/authentication/README.md): Authentication mechanisms (CAS, JWT, Local).
+- [Auth Details](docs/authentication/details.md): Deep dive into authentication flows.
+
+## Deployment
+
+- [Deployment Overview](docs/deployment/README.md): General deployment information.
+- [Development (Unix)](docs/deployment/dev/dev_unix.md): Setup guide for Linux/macOS developers.
+- [Development (Windows)](docs/deployment/dev/dev_windows.md): Setup guide for Windows developers.
+- [Production Deployment](docs/deployment/prod/prod.md): Guide for deploying to production environments.

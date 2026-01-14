@@ -1,0 +1,1519 @@
+openapi: 3.0.3
+info:
+  title: Pod REST API
+  version: 5.0.0-DEV
+  description: Video management API (Local Authentication)
+paths:
+  /api/auth/access-groups/:
+    get:
+      operationId: auth_access_groups_list
+      description: |-
+        ViewSet for managing Access Groups.
+        Includes actions to add/remove users by code name.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccessGroup'
+          description: ''
+    post:
+      operationId: auth_access_groups_create
+      description: |-
+        ViewSet for managing Access Groups.
+        Includes actions to add/remove users by code name.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccessGroupRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AccessGroupRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccessGroupRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessGroup'
+          description: ''
+  /api/auth/access-groups/{id}/:
+    get:
+      operationId: auth_access_groups_retrieve
+      description: |-
+        ViewSet for managing Access Groups.
+        Includes actions to add/remove users by code name.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Access Group.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessGroup'
+          description: ''
+    put:
+      operationId: auth_access_groups_update
+      description: |-
+        ViewSet for managing Access Groups.
+        Includes actions to add/remove users by code name.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Access Group.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccessGroupRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AccessGroupRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccessGroupRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessGroup'
+          description: ''
+    patch:
+      operationId: auth_access_groups_partial_update
+      description: |-
+        ViewSet for managing Access Groups.
+        Includes actions to add/remove users by code name.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Access Group.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAccessGroupRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAccessGroupRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAccessGroupRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessGroup'
+          description: ''
+    delete:
+      operationId: auth_access_groups_destroy
+      description: |-
+        ViewSet for managing Access Groups.
+        Includes actions to add/remove users by code name.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Access Group.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/auth/access-groups/remove-users-by-name/:
+    post:
+      operationId: auth_access_groups_remove_users_by_name_create
+      description: |-
+        Equivalent of accessgroups_remove_users_by_name.
+        Removes a list of users (by username) from an AccessGroup (by code_name).
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccessGroupRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AccessGroupRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccessGroupRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessGroup'
+          description: ''
+  /api/auth/access-groups/set-users-by-name/:
+    post:
+      operationId: auth_access_groups_set_users_by_name_create
+      description: |-
+        Equivalent of accessgroups_set_users_by_name.
+        Adds a list of users (by username) to an AccessGroup (by code_name).
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccessGroupRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AccessGroupRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccessGroupRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessGroup'
+          description: ''
+  /api/auth/groups/:
+    get:
+      operationId: auth_groups_list
+      description: ViewSet for managing Django Groups (Permissions).
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+          description: ''
+    post:
+      operationId: auth_groups_create
+      description: ViewSet for managing Django Groups (Permissions).
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GroupRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GroupRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+  /api/auth/groups/{id}/:
+    get:
+      operationId: auth_groups_retrieve
+      description: ViewSet for managing Django Groups (Permissions).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+    put:
+      operationId: auth_groups_update
+      description: ViewSet for managing Django Groups (Permissions).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GroupRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GroupRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+    patch:
+      operationId: auth_groups_partial_update
+      description: ViewSet for managing Django Groups (Permissions).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: ''
+    delete:
+      operationId: auth_groups_destroy
+      description: ViewSet for managing Django Groups (Permissions).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/auth/login-config/:
+    get:
+      operationId: auth_login_config_retrieve
+      description: |-
+        Returns the configuration of active authentication methods.
+        Allows the frontend to know which login buttons to display.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginConfigResponse'
+          description: ''
+  /api/auth/logout-info/:
+    get:
+      operationId: auth_logout_info_retrieve
+      description: |-
+        Returns the logout URLs for external providers.
+        The frontend must call this endpoint to know where
+        to redirect the user after deleting the local JWT token.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutInfoResponse'
+          description: ''
+  /api/auth/owners/:
+    get:
+      operationId: auth_owners_list
+      description: |-
+        ViewSet for managing Owner profiles.
+        Includes actions to manage access groups for a user.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Owner'
+          description: ''
+    post:
+      operationId: auth_owners_create
+      description: |-
+        ViewSet for managing Owner profiles.
+        Includes actions to manage access groups for a user.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OwnerRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OwnerRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OwnerRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Owner'
+          description: ''
+  /api/auth/owners/{id}/:
+    get:
+      operationId: auth_owners_retrieve
+      description: |-
+        ViewSet for managing Owner profiles.
+        Includes actions to manage access groups for a user.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Owner.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Owner'
+          description: ''
+    put:
+      operationId: auth_owners_update
+      description: |-
+        ViewSet for managing Owner profiles.
+        Includes actions to manage access groups for a user.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Owner.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OwnerRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OwnerRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OwnerRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Owner'
+          description: ''
+    patch:
+      operationId: auth_owners_partial_update
+      description: |-
+        ViewSet for managing Owner profiles.
+        Includes actions to manage access groups for a user.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Owner.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOwnerRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOwnerRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOwnerRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Owner'
+          description: ''
+    delete:
+      operationId: auth_owners_destroy
+      description: |-
+        ViewSet for managing Owner profiles.
+        Includes actions to manage access groups for a user.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Owner.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/auth/owners/remove-user-accessgroup/:
+    post:
+      operationId: auth_owners_remove_user_accessgroup_create
+      description: |-
+        Equivalent of accessgroups_remove_user_accessgroup.
+        Removes AccessGroups from a user via their username.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OwnerRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OwnerRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OwnerRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Owner'
+          description: ''
+  /api/auth/owners/set-user-accessgroup/:
+    post:
+      operationId: auth_owners_set_user_accessgroup_create
+      description: |-
+        Equivalent of accessgroups_set_user_accessgroup.
+        Assigns AccessGroups to a user via their username.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OwnerRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OwnerRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OwnerRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Owner'
+          description: ''
+  /api/auth/sites/:
+    get:
+      operationId: auth_sites_list
+      description: ViewSet for managing Sites.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Site'
+          description: ''
+    post:
+      operationId: auth_sites_create
+      description: ViewSet for managing Sites.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SiteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SiteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SiteRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+          description: ''
+  /api/auth/sites/{id}/:
+    get:
+      operationId: auth_sites_retrieve
+      description: ViewSet for managing Sites.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this site.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+          description: ''
+    put:
+      operationId: auth_sites_update
+      description: ViewSet for managing Sites.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this site.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SiteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SiteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SiteRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+          description: ''
+    patch:
+      operationId: auth_sites_partial_update
+      description: ViewSet for managing Sites.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this site.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSiteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSiteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSiteRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+          description: ''
+    delete:
+      operationId: auth_sites_destroy
+      description: ViewSet for managing Sites.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this site.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/auth/token/:
+    post:
+      operationId: auth_token_create
+      description: |-
+        **Authentication Endpoint**
+        Accepts a username and password and returns a pair of JWT tokens.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
+        required: true
+      responses:
+        '200':
+          description: No response body
+  /api/auth/token/refresh/:
+    post:
+      operationId: auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/auth/token/verify/:
+    post:
+      operationId: auth_token_verify_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerifyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerifyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerifyRequest'
+        required: true
+      responses:
+        '200':
+          description: No response body
+  /api/auth/users/:
+    get:
+      operationId: auth_users_list
+      description: ViewSet for managing standard Django Users.
+      parameters:
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+    post:
+      operationId: auth_users_create
+      description: ViewSet for managing standard Django Users.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/auth/users/{id}/:
+    get:
+      operationId: auth_users_retrieve
+      description: ViewSet for managing standard Django Users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: auth_users_update
+      description: ViewSet for managing standard Django Users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: auth_users_partial_update
+      description: ViewSet for managing standard Django Users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: auth_users_destroy
+      description: ViewSet for managing standard Django Users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/auth/users/me/:
+    get:
+      operationId: auth_users_me_retrieve
+      description: |-
+        **Current User Profile**
+        Returns the profile information of the currently authenticated user.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/info/:
+    get:
+      operationId: info_retrieve
+      description: Returns the project name and current version
+      summary: System Information
+      tags:
+      - info
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project:
+                    type: string
+                    example: POD V5
+                  version:
+                    type: string
+                    example: 5.0.0
+          description: ''
+components:
+  schemas:
+    AccessGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        display_name:
+          type: string
+          description: Readable name of the group.
+          maxLength: 128
+        code_name:
+          type: string
+          description: Unique identifier code (e.g., LDAP group name).
+          maxLength: 250
+        sites:
+          type: array
+          items:
+            type: integer
+          description: Sites accessible by this group.
+        users:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        auto_sync:
+          type: boolean
+          title: Auto synchronize
+          description: If True, this group is automatically managed via external auth
+            (CAS/LDAP).
+      required:
+      - code_name
+      - id
+      - sites
+      - users
+    AccessGroupRequest:
+      type: object
+      properties:
+        display_name:
+          type: string
+          description: Readable name of the group.
+          maxLength: 128
+        code_name:
+          type: string
+          minLength: 1
+          description: Unique identifier code (e.g., LDAP group name).
+          maxLength: 250
+        sites:
+          type: array
+          items:
+            type: integer
+          description: Sites accessible by this group.
+        auto_sync:
+          type: boolean
+          title: Auto synchronize
+          description: If True, this group is automatically managed via external auth
+            (CAS/LDAP).
+      required:
+      - code_name
+      - sites
+    AffiliationEnum:
+      enum:
+      - student
+      - faculty
+      - staff
+      - employee
+      - member
+      - affiliate
+      - alum
+      - library-walk-in
+      - researcher
+      - retired
+      - emeritus
+      - teacher
+      - registered-reader
+      type: string
+      description: |-
+        * `student` - student
+        * `faculty` - faculty
+        * `staff` - staff
+        * `employee` - employee
+        * `member` - member
+        * `affiliate` - affiliate
+        * `alum` - alum
+        * `library-walk-in` - library-walk-in
+        * `researcher` - researcher
+        * `retired` - retired
+        * `emeritus` - emeritus
+        * `teacher` - teacher
+        * `registered-reader` - registered-reader
+    AuthTypeEnum:
+      enum:
+      - local
+      - CAS
+      - OIDC
+      - Shibboleth
+      type: string
+      description: |-
+        * `local` - local
+        * `CAS` - CAS
+        * `OIDC` - OIDC
+        * `Shibboleth` - Shibboleth
+    CustomTokenObtainPairRequest:
+      type: object
+      description: |-
+        Custom JWT Token Serializer.
+
+        Extends the default SimpleJWT serializer to include custom claims
+        in the encrypted token payload (username, staff status, affiliation).
+      properties:
+        username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 150
+      required:
+      - id
+      - name
+    GroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+      required:
+      - name
+    LoginConfigResponse:
+      type: object
+      properties:
+        use_local:
+          type: boolean
+        use_cas:
+          type: boolean
+        use_shibboleth:
+          type: boolean
+        use_oidc:
+          type: boolean
+        shibboleth_name:
+          type: string
+        oidc_name:
+          type: string
+      required:
+      - oidc_name
+      - shibboleth_name
+      - use_cas
+      - use_local
+      - use_oidc
+      - use_shibboleth
+    LogoutInfoResponse:
+      type: object
+      properties:
+        local:
+          type: string
+          nullable: true
+        cas:
+          type: string
+          nullable: true
+        shibboleth:
+          type: string
+          nullable: true
+        oidc:
+          type: string
+          nullable: true
+      required:
+      - cas
+      - local
+      - oidc
+      - shibboleth
+    Owner:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        auth_type:
+          allOf:
+          - $ref: '#/components/schemas/AuthTypeEnum'
+          title: Authentication Type
+        affiliation:
+          $ref: '#/components/schemas/AffiliationEnum'
+        commentaire:
+          type: string
+          title: Comment
+        hashkey:
+          type: string
+          description: Unique hash generated from username and secret key.
+          maxLength: 64
+        userpicture:
+          type: integer
+          nullable: true
+          title: Picture
+        sites:
+          type: array
+          items:
+            type: integer
+      required:
+      - id
+      - sites
+      - user
+    OwnerRequest:
+      type: object
+      properties:
+        user:
+          type: integer
+        auth_type:
+          allOf:
+          - $ref: '#/components/schemas/AuthTypeEnum'
+          title: Authentication Type
+        affiliation:
+          $ref: '#/components/schemas/AffiliationEnum'
+        commentaire:
+          type: string
+          title: Comment
+        hashkey:
+          type: string
+          description: Unique hash generated from username and secret key.
+          maxLength: 64
+        userpicture:
+          type: integer
+          nullable: true
+          title: Picture
+        sites:
+          type: array
+          items:
+            type: integer
+      required:
+      - sites
+      - user
+    PatchedAccessGroupRequest:
+      type: object
+      properties:
+        display_name:
+          type: string
+          description: Readable name of the group.
+          maxLength: 128
+        code_name:
+          type: string
+          minLength: 1
+          description: Unique identifier code (e.g., LDAP group name).
+          maxLength: 250
+        sites:
+          type: array
+          items:
+            type: integer
+          description: Sites accessible by this group.
+        auto_sync:
+          type: boolean
+          title: Auto synchronize
+          description: If True, this group is automatically managed via external auth
+            (CAS/LDAP).
+    PatchedGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+    PatchedOwnerRequest:
+      type: object
+      properties:
+        user:
+          type: integer
+        auth_type:
+          allOf:
+          - $ref: '#/components/schemas/AuthTypeEnum'
+          title: Authentication Type
+        affiliation:
+          $ref: '#/components/schemas/AffiliationEnum'
+        commentaire:
+          type: string
+          title: Comment
+        hashkey:
+          type: string
+          description: Unique hash generated from username and secret key.
+          maxLength: 64
+        userpicture:
+          type: integer
+          nullable: true
+          title: Picture
+        sites:
+          type: array
+          items:
+            type: integer
+    PatchedSiteRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          title: Display name
+          maxLength: 50
+        domain:
+          type: string
+          minLength: 1
+          title: Domain name
+          maxLength: 100
+    PatchedUserRequest:
+      type: object
+      description: Serializer for the User model, enriched with Owner profile data.
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        is_staff:
+          type: boolean
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+    Site:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Display name
+          maxLength: 50
+        domain:
+          type: string
+          title: Domain name
+          maxLength: 100
+      required:
+      - domain
+      - id
+      - name
+    SiteRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          title: Display name
+          maxLength: 50
+        domain:
+          type: string
+          minLength: 1
+          title: Domain name
+          maxLength: 100
+      required:
+      - domain
+      - name
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+      required:
+      - access
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - refresh
+    TokenVerifyRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - token
+    User:
+      type: object
+      description: Serializer for the User model, enriched with Owner profile data.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        is_staff:
+          type: boolean
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+        affiliation:
+          type: string
+          nullable: true
+          readOnly: true
+        establishment:
+          type: string
+          nullable: true
+          readOnly: true
+        userpicture:
+          type: string
+          nullable: true
+          readOnly: true
+      required:
+      - affiliation
+      - establishment
+      - id
+      - username
+      - userpicture
+    UserRequest:
+      type: object
+      description: Serializer for the User model, enriched with Owner profile data.
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        is_staff:
+          type: boolean
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+      required:
+      - username
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

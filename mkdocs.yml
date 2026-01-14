@@ -1,0 +1,22 @@
+site_name: Pod V5 Documentation
+site_description: Documentation for Esup-Pod V5 Backend
+theme:
+  name: material
+
+nav:
+  - Home: README.md
+  - API:
+    - Guide: api/guide.md
+    - Reference: api/README.md
+  - Authentication:
+    - Details: authentication/details.md
+    - Reference: authentication/README.md
+  - Deployment:
+    - Overview: deployment/README.md
+    - Help: deployment/help.md
+    - Prod: deployment/prod/prod.md
+    - Dev:
+      - General: deployment/dev/dev.md
+      - Unix: deployment/dev/dev_unix.md
+      - Windows: deployment/dev/dev_windows.md
+  - CI/CD: CI_CD.md

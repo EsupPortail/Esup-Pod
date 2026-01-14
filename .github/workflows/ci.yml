@@ -4,12 +4,12 @@ on:
   push:
     branches:
       - dev_v5
-      - fix/CI-CD
+      - feature/LLMS-instruction-file
   pull_request:
     branches:
       - dev_v5
       - main
-      - fix/CI-CD
+      - feature/LLMS-instruction-file
 
 jobs:
   # 1. Code Quality (Fail Fast)
@@ -27,7 +27,39 @@ jobs:
       - name: Lint with flake8
         run: flake8 src --count --show-source --statistics
 
-  # 2. Unit Test & Integration (Native)
+  # 2. Schema Validation (Fail Fast)
+  check-schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Generate Schema
+        env:
+          DJANGO_SETTINGS_MODULE: config.django.base
+          SECRET_KEY: dummy-secret-key
+          PYTHONPATH: src
+        run: |
+          python manage.py spectacular --file docs/api-docs-generated.yaml
+
+      - name: Check for Diff
+        run: |
+          if ! diff -u docs/api-docs.yaml docs/api-docs-generated.yaml; then
+            echo "Error: docs/api-docs.yaml is out of sync with code."
+            echo "Please run 'python manage.py spectacular --file docs/api-docs.yaml' and commit the changes."
+            exit 1
+          fi
+
+  # 3. Unit Test & Integration (Native)
   test-native:
     needs: quality-check
     strategy:
@@ -67,7 +99,7 @@ jobs:
           PYTHONPATH: src
         run: |
           python manage.py migrate
-          pytest --cov=src --cov-report=term-missing
+          pytest --cov=src --cov-report=term-missing --cov-fail-under=70
 
   # 3 & 4 & 5. Docker Integration, E2E & Security
   test-docker-full:
@@ -97,6 +129,10 @@ jobs:
             docker compose -f deployment/ci/docker-compose.test.yml logs
             exit 1
           fi
+      
+      - name: Run Tests with Coverage (Inside Docker)
+        run: |
+          docker compose -f deployment/ci/docker-compose.test.yml --project-directory . exec -T api pytest --cov=src --cov-report=term-missing --cov-fail-under=70
 
       - name: Install E2E dependencies
         run: |
