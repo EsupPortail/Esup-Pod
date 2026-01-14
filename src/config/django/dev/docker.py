@@ -1,6 +1,13 @@
 from .dev import *  # noqa: F401, F403
 from config.env import env
 
+# Enable Authentication Providers for Docker/CI Tests
+USE_LOCAL_AUTH = True
+USE_CAS = True
+USE_LDAP = True
+USE_SHIB = True
+USE_OIDC = True
+
 # Uncomment for debugging
 # INSTALLED_APPS += ["debug_toolbar"]
 # MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]

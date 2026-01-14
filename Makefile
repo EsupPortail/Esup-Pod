@@ -71,7 +71,7 @@ run: ## Run local Django server
 superuser: ## Create a local superuser
 	$(DJANGO_MANAGE) createsuperuser
 
-test: ## Run tests locally (without Docker)
+coverage: ## Run tests locally (without Docker)
 	pytest --cov=src --cov-report=term-missing --cov-fail-under=70
 
 clean: ## Remove pyc files and caches
