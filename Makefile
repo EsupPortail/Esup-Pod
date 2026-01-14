@@ -71,7 +71,13 @@ run: ## Run local Django server
 superuser: ## Create a local superuser
 	$(DJANGO_MANAGE) createsuperuser
 
-test: ## Run tests locally
+test: ## Run tests inside Docker (CI environment)
+	@echo "Running tests in Docker (CI config)..."
+	docker compose -f deployment/ci/docker-compose.test.yml up -d
+	docker compose -f deployment/ci/docker-compose.test.yml exec -T api pytest --cov=src --cov-report=term-missing --cov-fail-under=70
+	docker compose -f deployment/ci/docker-compose.test.yml down -v
+
+test-native: ## Run tests locally (without Docker)
 	$(DJANGO_MANAGE) test --settings=config.django.test.test
 
 clean: ## Remove pyc files and caches

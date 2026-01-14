@@ -38,3 +38,10 @@ docker compose -f deployment/ci/docker-compose.test.yml exec api pytest --cov=sr
 docker compose -f deployment/ci/docker-compose.test.yml down -v
 ```
 
+### Using Make (Shortcut)
+If you have `make` installed, you can simply run:
+```bash
+make test
+```
+This will run the tests inside the Docker container using the CI configuration.
+
