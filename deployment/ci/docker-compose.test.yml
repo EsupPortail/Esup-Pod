@@ -11,8 +11,8 @@ services:
       - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - MYSQL_DATABASE=pod_db
-      - MYSQL_USER=pod
-      - MYSQL_PASSWORD=pod
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
       - REDIS_HOST=redis
     ports:
       - "8000:8000"
@@ -30,8 +30,6 @@ services:
       - MARIADB_DATABASE=pod_db
       - MARIADB_USER=pod
       - MARIADB_PASSWORD=pod
-    ports:
-      - "3306:3306"
     healthcheck:
       test: ["CMD-SHELL", "healthcheck.sh --connect --innodb_initialized"]
       interval: 10s
@@ -40,5 +38,3 @@ services:
 
   redis:
     image: redis:7-alpine
-    ports:
-      - "6379:6379"
