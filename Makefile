@@ -7,7 +7,7 @@ endif
 PYTHON=python3
 DJANGO_MANAGE=$(PYTHON) manage.py
 DOCKER_COMPOSE_FILE=deployment/dev/docker-compose.yml
-DOCKER_COMPOSE_CMD=docker compose -f $(DOCKER_COMPOSE_FILE)
+DOCKER_COMPOSE_CMD=docker-compose -f $(DOCKER_COMPOSE_FILE)
 DOCKER_SERVICE_NAME=api
 
 .PHONY: help docker-start docker-logs docker-shell docker-enter docker-build docker-stop docker-clean init migrate makemigrations run superuser test clean setup check-django-env
@@ -71,14 +71,8 @@ run: ## Run local Django server
 superuser: ## Create a local superuser
 	$(DJANGO_MANAGE) createsuperuser
 
-test: ## Run tests inside Docker (CI environment)
-	@echo "Running tests in Docker (CI config)..."
-	docker-compose -f deployment/ci/docker-compose.test.yml up -d
-	docker-compose -f deployment/ci/docker-compose.test.yml exec -T api pytest --cov=src --cov-report=term-missing --cov-fail-under=70
-	docker-compose -f deployment/ci/docker-compose.test.yml down -v
-
-test-native: ## Run tests locally (without Docker)
-	$(DJANGO_MANAGE) test --settings=config.django.test.test
+test: ## Run tests locally (without Docker)
+	pytest --cov=src --cov-report=term-missing --cov-fail-under=70
 
 clean: ## Remove pyc files and caches
 	find . -name '*.pyc' -delete
