@@ -7,26 +7,34 @@ The pipelines are built using **GitHub Actions** and rely on **Docker** for envi
 
 The CI/CD process is divided into two main workflows:
 
-1.  **Continuous Integration (`ci.yml`)**: Ensures code quality and correctness.
-2.  **Dev Deployment (`build-dev.yml`)**: Builds and pushes the development Docker image.
+### Workflows
 
+#### 1. Continuous Integration (`ci.yml`)
 
-## Running Tests with Docker
-To verify your changes locally in an environment identical to the CI
+This workflow runs on every `push` and `pull_request`.
 
-You can reproduce the CI test step locally using Docker. This ensures that if it passes locally, it should pass in CI.
+**Jobs:**
+*   **`quality-check`**: Checks code style using `flake8`.
+*   **`check-schema`**: **[NEW]** Verifies that `docs/api-docs.yaml` matches the codebase. Fails if out of sync.
+*   **`test-native`**: Validates the application on the runner (Ubuntu & Windows).
+*   **`test-docker-full`**: Starts the full stack (App + MySQL + Redis) in Docker and runs tests.
+    *   **Coverage Enforced**: The job fails if test coverage is below **70%**.
+
+## Running Tests Locally
+
+To reproduce the CI environment exactly:
+
+### Using Docker (Recommended)
+You can run the full test suite inside the Docker container, exactly as the CI does:
 
 ```bash
-# 1. Build the test image (same as CI)
-docker build -t test-ci-local -f deployment/dev/Dockerfile .
+# 1. Start the stack
+docker compose -f deployment/ci/docker-compose.test.yml up -d
 
-# 2. Run the tests
-# Note: We pass dummy env vars as they are required for settings, but actual values don't matter for basic tests.
-docker run --rm \
-  -e SECRET_KEY=dummy \
-  -e DJANGO_SETTINGS_MODULE=config.django.test.test \
-  -e VERSION=TEST-LOCAL \
-  test-ci-local \
-  python manage.py test --settings=config.django.test.test
+# 2. Run tests (e.g., matching the CI command)
+docker compose -f deployment/ci/docker-compose.test.yml exec api pytest --cov=src --cov-report=term-missing --cov-fail-under=70
+
+# 3. Teardown
+docker compose -f deployment/ci/docker-compose.test.yml down -v
 ```
 

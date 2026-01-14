@@ -18,6 +18,10 @@ Interact with the backend via the REST API.
 Architecture and production setup.
 *   [Deployment Guide](deployment/README.md): System overview.
 
+### [AI & LLM Helpers](LLM_HELPERS.md)
+Tools and configurations for AI agents.
+*   [Overview](LLM_HELPERS.md): `llms.txt`, MCP config, and Schema automation.
+
 ## Project Structure
 
 ```bash
