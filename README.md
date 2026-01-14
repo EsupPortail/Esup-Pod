@@ -55,6 +55,20 @@ by allowing the publication of videos in the fields of research
 (promotion of platforms, etc.), training (tutorials, distance training, student reports, etc.),
 institutional life (video of events), offering several days of content.
 
+## Quick Start
+
+For developers, a **Makefile** is available to simplify common tasks.
+
+```bash
+make help          # List all available commands
+make docker-start  # Start the project with Docker (Recommended)
+make init          # Initialize environment for local development
+```
+
+For detailed instructions, see:
+*   [Linux & macOS Development Guide](docs/deployment/dev/dev_unix.md)
+*   [Windows Development Guide](docs/deployment/dev/dev_windows.md)
+
 ### Technical documentation
 
 * The documentation (to install, customize, etc…) is on the

@@ -12,7 +12,7 @@ If you're familiar with Docker and just want to get started:
 git clone <your-forked-repo-url>
 cd Pod_V5_Back
 
-make docker-run # Start the full project (auto-setup via entrypoint)
+make docker-start # Start the full project (auto-setup via entrypoint)
 make docker-enter ## Enter an already running container (for debugging)
 make docker-stop # Stop the containers
 ```

@@ -193,7 +193,7 @@ This runs `python manage.py runserver` on port 8000. Access at `http://127.0.0.1
 
 | Action     | Command               | Description                    |
 | ---------- | --------------------- | ------------------------------ |
-| Run tests  | `make test`           | Execute automated tests        |
+| Run tests  | `make test-native`    | Execute automated tests locally |
 | Migrations | `make makemigrations` | Generate migration files       |
 | Database   | `make migrate`        | Apply pending migrations       |
 | Clean      | `make clean`          | Remove `.pyc` files and caches |
