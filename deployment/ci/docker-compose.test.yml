@@ -1,5 +1,4 @@
 services:
-  # Container de l'application (Testé)
   api:
     build:
       context: .
@@ -24,7 +23,6 @@ services:
         condition: service_started
     command: ["run-server"]
 
-  # Base de données MySQL (MariaDB)
   mysql:
     image: mariadb:10.6
     environment:
@@ -40,7 +38,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # Redis (Cache & Celery Broker)
   redis:
     image: redis:7-alpine
     ports:

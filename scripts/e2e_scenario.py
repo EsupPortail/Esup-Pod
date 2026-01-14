@@ -1,64 +1,102 @@
-import sys
-import time
-import requests
-import os
+"""
+End-to-End (E2E) Test Scenario Script.
 
-# Configuration
+This script performs a series of automated checks to validate the availability
+and basic security configuration of the deployed application. It is used
+in the CI/CD pipeline to ensure the service is up and running correctly
+after deployment.
+
+Checks included:
+1. API Health: Verifies that the API documentation endpoint is reachable.
+2. Security Headers: Checks for the presence of essential security headers.
+3. Admin Access: Confirms that the authentication login page is accessible.
+"""
+
+import sys
+
+import time
+import os
+import requests
+
+
+
 API_URL = os.getenv("API_URL", "http://127.0.0.1:8000")
 ADMIN_USER = os.getenv("DJANGO_SUPERUSER_USERNAME", "admin")
 ADMIN_PASS = os.getenv("DJANGO_SUPERUSER_PASSWORD", "admin")
 
+DEFAULT_TIMEOUT = 10
+RETRY_DELAY = 5
 
-def log(msg):
-    print(f"[E2E] {msg}")
+
+def log(message: str) -> None:
+    """Print formatted E2E log message."""
+    print(f"[E2E] {message}")
 
 
-def test_api_health(retries=5):
+def test_api_health(retries: int = 5) -> bool:
+    """
+    Check if the API documentation endpoint is reachable.
+    Retries several times before failing.
+    """
     url = f"{API_URL}/api/docs/"
-    for i in range(retries):
-        log(f"Checking Health at {url} (Attempt {i + 1}/{retries})...")
+
+    for attempt in range(1, retries + 1):
+        log(f"Checking API health at {url} (attempt {attempt}/{retries})")
+
         try:
-            response = requests.get(url, timeout=10)
+            response = requests.get(url, timeout=DEFAULT_TIMEOUT)
+
             if response.status_code == 200:
-                log("✅ API is responding (200 OK)")
+                log("API is responding (200 OK)")
                 return True
-            else:
-                log(f"⚠️ API returned {response.status_code}, retrying...")
-        except requests.exceptions.RequestException as e:
-            log(f"⚠️ Connection error: {e}, retrying...")
-        time.sleep(5)
-    log("❌ API Unreachable after multiple attempts")
+
+            log(f"Unexpected status code: {response.status_code}")
+
+        except requests.RequestException as exc:
+            log(f"Connection error: {exc}")
+
+        time.sleep(RETRY_DELAY)
+
+    log("API unreachable after multiple attempts")
     return False
 
 
-def test_admin_login():
-    url = f"{API_URL}/accounts/login"  # CAS or Standard Login URL depending on config.
-    # NOTE: Since we don't have a standard REST auth endpoint enabled by default in base setup yet without CAS,
-    # and we act as a headless client, we will check if the Login Page exists (redirects usually).
+def test_admin_login() -> None:
+    """
+    Check if the authentication endpoint is reachable.
+    This does not authenticate, only verifies that the login page exists.
+    """
+    url = f"{API_URL}/accounts/login"
+    log(f"Checking auth endpoint at {url}")
 
-    log(f"Checking Auth Endpoint at {url}...")
-    response = requests.get(url, allow_redirects=True)
+    response = requests.get(url, allow_redirects=True, timeout=DEFAULT_TIMEOUT)
+
     if response.status_code == 200:
-        log("✅ Auth login page reachable")
+        log("Auth login page reachable")
     else:
-        log(f"⚠️ Auth page status: {response.status_code}")
+        log(f"Auth page returned status {response.status_code}")
 
 
-def test_security_headers():
+def test_security_headers() -> None:
+    """
+    Check presence of basic security headers.
+    """
     url = f"{API_URL}/api/docs/"
-    log("Checking Security Headers...")
-    response = requests.get(url)
-    # Example check
-    if 'X-Frame-Options' in response.headers:
-        log("✅ X-Frame-Options present")
+    log("Checking security headers")
+
+    response = requests.get(url, timeout=DEFAULT_TIMEOUT)
+
+    if "X-Frame-Options" in response.headers:
+        log("X-Frame-Options header is present")
     else:
-        log("⚠️ Missing X-Frame-Options")
+        log("Missing X-Frame-Options header")
 
 
-def run_tests():
-    log("Starting E2E Tests...")
+def run_tests() -> None:
+    """Run all E2E checks."""
+    log("Starting E2E tests")
 
-    # Warup Wait
+    # Warmup delay
     time.sleep(2)
 
     if not test_api_health():
@@ -67,7 +105,7 @@ def run_tests():
     test_security_headers()
     test_admin_login()
 
-    log("🎉 All Checks Passed!")
+    log("All checks completed")
 
 
 if __name__ == "__main__":

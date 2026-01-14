@@ -12,7 +12,7 @@ on:
       - fix/CI-CD
 
 jobs:
-  # 1. Qualité du Code (Fail Fast)
+  # 1. Code Quality (Fail Fast)
   quality-check:
     runs-on: ubuntu-latest
     steps:
@@ -31,7 +31,7 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 src --count --max-complexity=10 --max-line-length=127 --statistics
 
-  # 2. Tests Unitaires & Intégration (Native)
+  # 2. Unit Test & Integration (Native)
   test-native:
     needs: quality-check
     strategy:
