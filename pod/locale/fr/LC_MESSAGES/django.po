@@ -10048,8 +10048,8 @@ msgid "Original version"
 msgstr "Version originale"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
-msgid "Enhance the video with AI"
-msgstr "Améliorer la vidéo avec l’IA"
+msgid "Complete the video with AI"
+msgstr "Compléter la vidéo avec l’IA"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Complete the video"
