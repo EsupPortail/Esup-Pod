@@ -30,7 +30,13 @@ Thumbs.db
 # --- Docker ---
 mysql_data/
 
-# Custom files
+# --- Custom files ---
 log/
 media/
 transcription/
+
+
+# --- Tests & Coverage ---
+.coverage
+.pytest_cache/
+htmlcov/

@@ -1,11 +1,6 @@
 import os
 from ..base import *  # noqa: F401, F403
-
-USE_LOCAL_AUTH = True
-USE_CAS = True
-USE_LDAP = True
-USE_SHIB = True
-USE_OIDC = True
+from config.django.test.init_env import *  # noqa: F401, F403
 
 DATABASES = {
     "default": {
