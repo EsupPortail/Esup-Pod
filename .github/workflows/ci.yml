@@ -12,7 +12,7 @@ on:
       - feature/LLMS-instruction-file
 
 jobs:
-  # 1. Code Quality (Fail Fast)
+  # 1. Code Quality
   quality-check:
     runs-on: ubuntu-latest
     steps:
@@ -27,84 +27,9 @@ jobs:
       - name: Lint with flake8
         run: flake8 src --count --show-source --statistics
 
-  # 2. Schema Validation (Fail Fast)
-  check-schema:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-
-      - name: Generate Schema
-        env:
-          DJANGO_SETTINGS_MODULE: config.django.base
-          SECRET_KEY: dummy-secret-key
-          PYTHONPATH: src
-        run: |
-          python manage.py spectacular --file docs/api-docs-generated.yaml
-
-      - name: Check for Diff
-        run: |
-          if ! diff -u docs/api-docs.yaml docs/api-docs-generated.yaml; then
-            echo "Error: docs/api-docs.yaml is out of sync with code."
-            echo "Please run 'python manage.py spectacular --file docs/api-docs.yaml' and commit the changes."
-            exit 1
-          fi
-
-  # 3. Unit Test & Integration (Native)
-  test-native:
-    needs: quality-check
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - name: Install Dependencies
-        run: |
-          pip install --upgrade pip
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            # Exclude mysqlclient on Windows to avoid build failures
-            grep -v "mysqlclient" requirements.txt > requirements_no_mysql.txt
-            pip install -r requirements_no_mysql.txt
-          else
-            pip install -r requirements.txt
-          fi
-          pip install pytest pytest-cov pytest-django
-
-      - name: Run Tests with Coverage
-        env:
-          DJANGO_SETTINGS_MODULE: config.django.test.test
-          SECRET_KEY: dummy-secret-key
-          VERSION: "0.1.0-test"
-          PYTHONPATH: src
-        run: |
-          # TODO: fix coverage to 70%
-          python manage.py migrate
-          pytest --cov=src --cov-report=term-missing --cov-fail-under=60
-
-  # 3 & 4 & 5. Docker Integration, E2E & Security
+  # 2. Docker Integration, E2E & Security (The Authoritative Test)
   test-docker-full:
-    needs: test-native
+    needs: [quality-check]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -113,28 +38,48 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'
 
       - name: Build Stack
-        run: docker compose -f deployment/ci/docker-compose.test.yml --project-directory . build --pull
+        run: docker compose -f deployment/dev/docker-compose.yml --project-directory . build --pull
 
       - name: Start Stack
-        run: docker compose -f deployment/ci/docker-compose.test.yml --project-directory . up -d
+        run: docker compose -f deployment/dev/docker-compose.yml --project-directory . up -d
 
       - name: Wait for Services
         run: |
           set -e
           echo "Waiting for API..."
-          if ! timeout 90s bash -c 'until curl -sf http://127.0.0.1:8000/api/docs/ > /dev/null; do sleep 2; done'; then
+          # Retry loop to wait for API to be ready
+          count=0
+          until curl -sf http://127.0.0.1:8000/api/docs/ > /dev/null || [ $count -eq 60 ]; do
+             echo "Waiting for API... ($count/60)"
+             sleep 2
+             count=$((count+1))
+          done
+          
+          if [ $count -eq 60 ]; then
             echo "API failed to start"
-            docker compose -f deployment/ci/docker-compose.test.yml logs
+            docker compose -f deployment/dev/docker-compose.yml logs
             exit 1
           fi
-      
-      - name: Run Tests with Coverage (Inside Docker)
-        # TODO: fix coverage to 70%
+
+      # Schema Validation
+      - name: Check Schema Consistency
         run: |
-          docker compose -f deployment/ci/docker-compose.test.yml --project-directory . exec -T api pytest --cov=src --cov-report=term-missing --cov-fail-under=60
+          # Generate schema inside the container
+          docker compose -f deployment/dev/docker-compose.yml exec -T -e DJANGO_SETTINGS_MODULE=config.django.base api python manage.py spectacular --file docs/api-docs-generated.yaml
+          
+          # Check for changes
+          if ! diff -u docs/api-docs.yaml docs/api-docs-generated.yaml; then
+            echo "Error: docs/api-docs.yaml is out of sync with code."
+            echo "Please run 'make start' and 'docker compose exec api python manage.py spectacular --file docs/api-docs.yaml' locally and commit the changes."
+            exit 1
+          fi
+
+      - name: Run Tests with Coverage (Inside Docker)
+        run: |
+          # Use the dedicated test config: config.django.test.docker
+          docker compose -f deployment/dev/docker-compose.yml --project-directory . exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker api pytest --cov=src --cov-report=term-missing --cov-fail-under=60
 
       - name: Install E2E dependencies
         run: |
@@ -142,6 +87,7 @@ jobs:
           pip install requests
 
       - name: Run Smoke & E2E Tests
+        # Runs against the running docker container from the host
         run: python src/config/django/test/e2e_scenario.py
 
       - name: Basic Load Test
@@ -158,4 +104,4 @@ jobs:
 
       - name: Teardown
         if: always()
-        run: docker compose -f deployment/ci/docker-compose.test.yml down -v
+        run: docker compose -f deployment/dev/docker-compose.yml down -v

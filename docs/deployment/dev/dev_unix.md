@@ -12,24 +12,24 @@ If you're familiar with Docker and just want to get started:
 git clone <your-forked-repo-url>
 cd Pod_V5_Back
 
-make docker-start # Start the full project (auto-setup via entrypoint)
-make docker-enter ## Enter an already running container (for debugging)
-make docker-stop # Stop the containers
+make start  # Start the full project (auto-setup via entrypoint)
+make enter  ## Enter an already running container (for debugging)
+make stop   # Stop the containers
 ```
 
 Make tools:
 ```bash
-make docker-logs  # Show real-time logs (see automatic migrations)
-make docker-shell # Launch a temporary container in shell mode (isolated)
-make docker-runserver # Start the server when you using shell mode
-make docker-build # Force rebuild of Docker images
-make docker-clean: # Stop and remove everything (containers, orphaned networks, volumes)
+make logs       # Show real-time logs (see automatic migrations)
+make shell      # Launch a temporary container in shell mode (isolated)
+make runserver  # Start the server when you using shell mode
+make build      # Force rebuild of Docker images
+make clean      # Stop and remove everything (containers, orphaned networks, volumes)
 ```
 
 
-## Scenario 1: Linux/Mac WITH Docker (Recommended)
+## Development Guide
 
-This is the **recommended method**: fast, isolated, and uses Make to control Docker.
+This is the **supported method**: fast, isolated, and uses Make to control Docker.
 
 ### 1. Prerequisites
 
@@ -86,7 +86,7 @@ VERSION=5.0.0-DEV
 3. **Start the project:**
 
 ```bash
-make docker-start
+make start
 ```
 
 This will:
@@ -99,22 +99,43 @@ This will:
 4. **Follow logs:**
 
 ```bash
-make docker-logs
+make logs
 ```
 
 Watch for any errors during migrations or superuser creation. The logs will show when the server is ready.
 
 Access the API at `http://0.0.0.0:8000` once the logs show "Starting development server".
 
-### 3. Useful Commands (Make + Docker)
+### 3. Running Tests
+
+Tests are executed **inside the Docker container** against a dedicated MySQL test database (`test_pod_db`).
+This ensures that the test environment matches the production environment exactly.
+
+To run tests:
+
+```bash
+make test
+```
+
+This command will:
+1.  Execute `pytest` inside the `api` container.
+2.  Use the `config.django.test.docker` settings.
+3.  Automatically create/flush the `test_pod_db`.
+4.  Run with **all authentication providers enabled** (LDAP, CAS, Shibboleth, OIDC).
+
+> [!NOTE]
+> The test database is ephemeral and can be destroyed/recreated by the test runner.
+> Do NOT use `test_pod_db` for development data.
+
+### 4. Useful Commands (Make + Docker)
 
 | Action | Command          | Description                     |
 | ------ | ---------------- | ------------------------------- |
-| Enter container | `make docker-enter` | Open a bash shell in the running container |
-| Stop   | `make docker-stop`  | Pause the containers (data preserved)            |
-| Clean  | `make docker-clean` | Remove containers + volumes (⚠️ deletes database)  |
-| Rebuild | `make docker-build` | Force rebuild of Docker images |
-| Temp shell | `make docker-shell` | Launch isolated temporary container |
+| Enter container | `make enter` | Open a bash shell in the running container |
+| Stop   | `make stop`  | Pause the containers (data preserved)            |
+| Clean  | `make clean` | Remove containers + volumes (⚠️ deletes database)  |
+| Rebuild | `make build` | Force rebuild of Docker images |
+| Temp shell | `make shell` | Launch isolated temporary container |
 
 ### 4. Database Connection Reference
 
@@ -129,76 +150,4 @@ Example: connecting with MySQL client from your machine:
 mysql -h 127.0.0.1 -P 3307 -u pod_user -p pod_db
 ```
 
----
-
-## Scenario 2: Linux/Mac Local
-
-Traditional method. The Makefile helps manage the virtual environment.
-
-### 1. Prerequisites
-
-* Python 3.12+ installed
-* venv module (usually included with Python)
-
-Note: You do not need to install a MySQL/MariaDB server locally. The application will automatically switch to SQLite if MySQL configuration is missing.
-
-### 2. Configuration (.env)
-
-Copy the example environment configuration and customize it:
-```bash
-cp .env.local .env
-```
-
-```bash
-# --- Security ---
-DJANGO_SETTINGS_MODULE=config.django.dev.local
-SECRET_KEY=change-me-in-prod-secret-key
-EXPOSITION_PORT=8000
-
-# --- Superuser ---
-DJANGO_SUPERUSER_USERNAME=admin
-DJANGO_SUPERUSER_EMAIL=admin@example.com
-DJANGO_SUPERUSER_PASSWORD=admin
-
-# --- Versioning ---
-VERSION=5.0.0-DEV
-```
-
-3. Installation & Starting
-The Makefile provides commands for local (non-Docker) usage.
-
-**First-time setup:**
-```bash
-# Create a virtual environment using workon (mkvirtualenv)
-mkvirtualenv pod_v5_back
-workon pod_v5_back
-
-# Install dependencies
-make init
-
-# Generate migrations and apply them
-make makemigrations
-make migrate
-
-# Create a superuser interactively
-make superuser
-
-# Run the serveur
-make run
-```
-
-This runs `python manage.py runserver` on port 8000. Access at `http://127.0.0.1:8000`.
-
-### 4. Other Local Commands
-
-| Action     | Command               | Description                    |
-| ---------- | --------------------- | ------------------------------ |
-| Run tests  | `make test-native`    | Execute automated tests locally |
-| Migrations | `make makemigrations` | Generate migration files       |
-| Database   | `make migrate`        | Apply pending migrations       |
-| Clean      | `make clean`          | Remove `.pyc` files and caches |
-
-
 ## [Go Back](../dev/dev.md)
-
-

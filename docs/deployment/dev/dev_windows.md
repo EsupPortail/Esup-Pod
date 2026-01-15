@@ -1,6 +1,6 @@
 # Windows Development Guide
 
-Welcome! Choose your preferred development setup below.
+Welcome! This guide assumes a Docker-based workflow using **Docker Desktop**.
 
 Note: If you are on Linux or macOS, please refer to the [Linux/macOS Development Guide](dev_unix.md).
 
@@ -12,28 +12,29 @@ If you're familiar with Docker and just want to get started:
 git clone <your-forked-repo-url>
 cd Pod_V5_Back
 
-make docker-start # Start the full project (auto-setup via entrypoint)
-make docker-enter ## Enter an already running container (for debugging)
-make docker-stop # Stop the containers
+make start  # Start the full project (auto-setup via entrypoint)
+make enter  ## Enter an already running container (for debugging)
+make stop   # Stop the containers
 ```
 
 Make tools:
 ```bash
-make docker-logs  # Show real-time logs (see automatic migrations)
-make docker-shell # Launch a temporary container in shell mode (isolated)
-make docker-runserver # Start the server when you using shell mode
-make docker-build # Force rebuild of Docker images
-make docker-clean: # Stop and remove everything (containers, orphaned networks, volumes)
+make logs       # Show real-time logs (see automatic migrations)
+make shell      # Launch a temporary container in shell mode (isolated)
+make runserver  # Start the server when you using shell mode
+make build      # Force rebuild of Docker images
+make clean      # Stop and remove everything (containers, orphaned networks, volumes)
 ```
 
-## Scenario 1: Windows WITH Docker (Recommended)
+## Development Guide (Docker)
 
-This is the **recommended method**. It isolates the database and all dependencies for a clean, reliable setup.
+This is the **supported method**. It isolates the database and all dependencies for a clean, reliable setup.
 
 ### 1. Prerequisites
 
 * Install **Docker Desktop**.
 * (Optional but recommended) Enable **WSL2**.
+* Install **Make** (often included in Git Bash or installable via package managers like Chocolatey: `choco install make`).
 
 ### 2. Getting Started
 
@@ -70,11 +71,10 @@ This is the **recommended method**. It isolates the database and all dependencie
    ```
 
 2. **Start the project:**
-   Open PowerShell or CMD in the `deployment/dev` folder and run:
+   Open PowerShell or CMD in the project root and run:
 
    ```powershell
-   cd deployment/dev
-   docker-compose up --build -d
+   make start
    ```
 
    The `entrypoint.sh` script will automatically:
@@ -83,77 +83,28 @@ This is the **recommended method**. It isolates the database and all dependencie
    * Apply migrations
    * Create a superuser (`admin/admin`)
 
-### 3. Useful Docker Commands
+### 3. Running Tests
 
-| Action          | Command (run from `deployment/dev`) |
-| --------------- | ----------------------------------- |
-| View logs       | `docker-compose logs -f api`        |
-| Stop containers | `docker-compose stop`               |
-| Full reset      | `docker-compose down -v`            |
-| Open shell      | `docker-compose exec api bash`      |
+Tests are executed **inside the Docker container** against a dedicated MySQL test database (`test_pod_db`).
 
-
-## Scenario 2: Windows WITHOUT Docker (Local Installation)
-
-Use this method if Docker cannot be used. **The project will automatically use SQLite as the database.**
-
-### 1. Prerequisites
-
-* **Python 3.12+** installed
-
-### 2. Installation (PowerShell)
+To run tests:
 
 ```powershell
-# 1. Create virtual environment
-python -m venv venv
-
-# 2. Activate virtual environment
-.\venv\Scripts\Activate.ps1
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# Install development dependencies
-pip install -r deployment/dev/requirements.txt
+make test
 ```
 
-### 3. Configuration (.env)
+This ensures:
+*   Tests run in the same environment as production.
+*   All auth providers are active (`USE_LDAP`, `USE_CAS`, etc).
+*   The `test_pod_db` is used, preserving your development data in `pod_db`.
 
-Copy the example environment configuration and customize it:
-```bash
-cp .env.local .env
-```
+### 4. Useful Docker Commands
 
-```bash
-# --- Security ---
-DJANGO_SETTINGS_MODULE=config.django.dev.docker
-SECRET_KEY=change-me-in-prod-secret-key
-EXPOSITION_PORT=8000
-
-# --- Superuser ---
-DJANGO_SUPERUSER_USERNAME=admin
-DJANGO_SUPERUSER_EMAIL=admin@example.com
-DJANGO_SUPERUSER_PASSWORD=admin
-
-# --- Versioning ---
-VERSION=5.0.0-DEV
-```
-
-### 4. Start the Project
-
-Run the following commands manually:
-
-```powershell
-# Apply migrations
-python manage.py migrate
-
-# Create an admin user (one-time)
-python manage.py createsuperuser
-
-# Start the development server
-python manage.py runserver
-```
-
-The application will be accessible at [http://127.0.0.1:8000](http://127.0.0.1:8000).
+| Action          | Command      |
+| --------------- | ------------ |
+| View logs       | `make logs`  |
+| Stop containers | `make stop`  |
+| Full reset      | `make clean` |
+| Open shell      | `make enter` |
 
 ## [Go Back](../dev/dev.md)

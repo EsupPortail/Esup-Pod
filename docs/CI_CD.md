@@ -5,7 +5,7 @@ The pipelines are built using **GitHub Actions** and rely on **Docker** for envi
 
 ## Overview
 
-The CI/CD process is divided into two main workflows:
+The CI/CD process is streamlined to use a **Single Source of Truth**: the Docker environment.
 
 ### Workflows
 
@@ -15,33 +15,37 @@ This workflow runs on every `push` and `pull_request`.
 
 **Jobs:**
 *   **`quality-check`**: Checks code style using `flake8`.
-*   **`check-schema`**: **[NEW]** Verifies that `docs/api-docs.yaml` matches the codebase. Fails if out of sync.
-*   **`test-native`**: Validates the application on the runner (Ubuntu & Windows).
-*   **`test-docker-full`**: Starts the full stack (App + MySQL + Redis) in Docker and runs tests.
-    *   **Coverage Enforced**: The job fails if test coverage is below **70%**.
+*   **`test-docker-full`**: The authoritative test suite.
+    *   Builds the stack using `deployment/dev/docker-compose.yml`.
+    *   Validates the OpenAPI schema consistency (inside Docker).
+    *   Runs the full Python test suite with `pytest` (inside Docker).
+    *   Runs E2E scenarios against the running API.
+    *   **Coverage Enforced**: The job fails if test coverage is below **60%**.
 
 ## Running Tests Locally
 
 To reproduce the CI environment exactly:
 
-### Using Docker (Recommended)
-You can run the full test suite inside the Docker container, exactly as the CI does:
+### Using Make (Recommended)
 
-```bash
-# 1. Start the stack
-docker compose -f deployment/ci/docker-compose.test.yml up -d
+Simply run:
 
-# 2. Run tests (e.g., matching the CI command)
-docker compose -f deployment/ci/docker-compose.test.yml exec api pytest --cov=src --cov-report=term-missing --cov-fail-under=70
-
-# 3. Teardown
-docker compose -f deployment/ci/docker-compose.test.yml down -v
-```
-
-### Using Make (Shortcut)
-If you have `make` installed, you can simply run:
 ```bash
 make test
 ```
-This will run the tests inside the Docker container using the CI configuration.
 
+This will run `pytest` inside the running Docker container, using the dedicated test settings (`config.django.test.docker`).
+
+### Manual Docker Command
+
+If you do not have `make` or want to run the raw command:
+
+```bash
+docker compose -f deployment/dev/docker-compose.yml exec -e DJANGO_SETTINGS_MODULE=config.django.test.docker api pytest --cov=src
+```
+
+### Test Environment Details
+
+*   **Database**: Uses a separate `test_pod_db` MySQL database.
+*   **Authentication**: explicitely enables `USE_LDAP`, `USE_CAS`, `USE_SHIB`, `USE_OIDC` to verify auth flows.
+*   **Settings**: Uses `src/config/django/test/docker.py`.

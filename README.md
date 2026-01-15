@@ -61,8 +61,8 @@ For developers, a **Makefile** is available to simplify common tasks.
 
 ```bash
 make help          # List all available commands
-make docker-start  # Start the project with Docker (Recommended)
-make init          # Initialize environment for local development
+make start         # Start the project with Docker
+make test          # Run tests inside Docker
 ```
 
 For detailed instructions, see:

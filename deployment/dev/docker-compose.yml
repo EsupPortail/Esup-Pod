@@ -10,6 +10,7 @@ services:
       - "${MYSQL_PORT:-3307}:3306"
     volumes:
       - pod_db_data_dev:/var/lib/mysql
+      - ./init_test_db.sql:/docker-entrypoint-initdb.d/init_test_db.sql
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
