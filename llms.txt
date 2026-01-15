@@ -19,6 +19,5 @@
 ## Deployment
 
 - [Deployment Overview](docs/deployment/README.md): General deployment information.
-- [Development (Unix)](docs/deployment/dev/dev_unix.md): Setup guide for Linux/macOS developers.
-- [Development (Windows)](docs/deployment/dev/dev_windows.md): Setup guide for Windows developers.
-- [Production Deployment](docs/deployment/prod/prod.md): Guide for deploying to production environments.
+- [Development deployment](docs/deployment/dev/dev.md): Setup guide for developers.
+- [Production deployment](docs/deployment/prod/prod.md): Guide for deploying to production environments.
