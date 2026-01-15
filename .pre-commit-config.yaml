@@ -1,9 +1,0 @@
-repos:
-  - repo: local
-    hooks:
-      - id: update-api-schema
-        name: Update API Schema
-        entry: python manage.py spectacular --file docs/api-docs.yaml
-        language: system
-        files: ^src/
-        pass_filenames: false

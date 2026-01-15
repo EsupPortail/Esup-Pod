@@ -5,7 +5,7 @@ ifneq (,$(wildcard ./.env))
 endif
 
 DOCKER_COMPOSE_FILE=deployment/dev/docker-compose.yml
-DOCKER_COMPOSE_CMD=docker compose -f $(DOCKER_COMPOSE_FILE)
+DOCKER_COMPOSE_CMD=docker-compose -f $(DOCKER_COMPOSE_FILE)
 DOCKER_SERVICE_NAME=api
 
 .PHONY: help start logs shell enter build stop clean runserver test check-django-env

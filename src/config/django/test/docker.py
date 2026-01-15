@@ -1,13 +1,17 @@
+import os
+
+# FORCE ENABLE AUTH PROVIDERS FOR TESTS
+# We set these environment variables BEFORE importing dev/base settings
+# so that src.config.settings.authentication reads them as True.
+os.environ["USE_CAS"] = "True"
+os.environ["USE_LDAP"] = "True"
+os.environ["USE_SHIB"] = "True"
+os.environ["USE_OIDC"] = "True"
+
 from config.django.dev.docker import *  # noqa: F401, F403
 from config.env import env
 
-# Enable Authentication Providers for Docker/CI Tests
-USE_LOCAL_AUTH = True
-USE_CAS = True
-USE_LDAP = True
-USE_SHIB = True
-USE_OIDC = True
-
+# TESTS SETTINGS
 DEBUG = False
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 

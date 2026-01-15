@@ -17,7 +17,6 @@ This workflow runs on every `push` and `pull_request`.
 *   **`quality-check`**: Checks code style using `flake8`.
 *   **`test-docker-full`**: The authoritative test suite.
     *   Builds the stack using `make build` and `make start`.
-    *   Validates the OpenAPI schema consistency (inside Docker).
     *   Runs the full Python test suite with `make test` (inside Docker).
     *   Runs E2E scenarios against the running API.
     *   **Coverage Enforced**: The job fails if test coverage is below **60%**.

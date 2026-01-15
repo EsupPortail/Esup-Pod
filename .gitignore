@@ -28,16 +28,9 @@ env/
 Thumbs.db
 
 # --- Docker ---
-mysql_data/src/config/settings/settings_local.py
+mysql_data/
 
-# Custom files  #
-#################
-import_data/
+# Custom files
 log/
 media/
-pod/*/migrations/
-pod/custom/*
-pod/main/static/custom/img
-!pod/custom/settings_local.py.example
-settings_local.py
-transcription/*
+transcription/

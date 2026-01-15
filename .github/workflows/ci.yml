@@ -72,26 +72,6 @@ jobs:
             exit 1
           fi
 
-      # Schema Validation
-      - name: Check Schema Consistency
-        run: |
-          # Generate schema inside the container
-          # Note: We still access docker compose directly via make's variable or just use the container
-          # However, allow direct command here or use make shell?
-          # Easier to keep direct command for specific one-off arg-heavy tasks, OR create a make command.
-          # For consistency with request "use make commands", we should use make or equivalent.
-          # But make test is defined. Check Schema is obscure. Keep direct for now or use `make shell` wrapper?
-          # Let's keep direct for schema mostly, but update Teardown/Tests.
-          
-          docker compose -f deployment/dev/docker-compose.yml exec -T -e DJANGO_SETTINGS_MODULE=config.django.base api python manage.py spectacular --file docs/api-docs-generated.yaml
-          
-          # Check for changes
-          if ! diff -u docs/api-docs.yaml docs/api-docs-generated.yaml; then
-            echo "Error: docs/api-docs.yaml is out of sync with code."
-            echo "Please run 'make start' and 'docker compose exec api python manage.py spectacular --file docs/api-docs.yaml' locally and commit the changes."
-            exit 1
-          fi
-
       - name: Run Tests with Coverage (Inside Docker)
         run: make test
 

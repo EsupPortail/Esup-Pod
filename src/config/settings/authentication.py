@@ -3,20 +3,12 @@ from datetime import timedelta
 from ..env import env
 from ..django.base import SECRET_KEY
 
-try:
-    from ..django.settings_local import (
-        USE_LOCAL_AUTH,
-        USE_CAS,
-        USE_LDAP,
-        USE_SHIB,
-        USE_OIDC,
-    )
-except ImportError:
-    USE_LOCAL_AUTH = True
-    USE_CAS = False
-    USE_LDAP = False
-    USE_SHIB = False
-    USE_OIDC = False
+# Retrieve Feature Flags from Environment (default: False for security)
+USE_LOCAL_AUTH = env.bool("USE_LOCAL_AUTH", default=True)  # Default to True for dev/simple setups? Or env default?
+USE_CAS = env.bool("USE_CAS", default=False)
+USE_LDAP = env.bool("USE_LDAP", default=False)
+USE_SHIB = env.bool("USE_SHIB", default=False)
+USE_OIDC = env.bool("USE_OIDC", default=False)
 
 # Derived configuration
 POPULATE_USER = "CAS" if USE_CAS else "LDAP" if USE_LDAP else None

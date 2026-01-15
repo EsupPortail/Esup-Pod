@@ -66,8 +66,7 @@ make test          # Run tests inside Docker
 ```
 
 For detailed instructions, see:
-*   [Linux & macOS Development Guide](docs/deployment/dev/dev_unix.md)
-*   [Windows Development Guide](docs/deployment/dev/dev_windows.md)
+*   [Development Guide](docs/deployment/dev/dev.md)
 
 ### Technical documentation
 
