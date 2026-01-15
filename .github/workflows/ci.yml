@@ -43,9 +43,15 @@ jobs:
         run: cp .env.docker .env
 
       - name: Build Stack
+        env:
+          VERSION: 5.0.0-DEV
+          DJANGO_SETTINGS_MODULE: config.django.dev.docker
         run: docker compose -f deployment/dev/docker-compose.yml build --pull
 
       - name: Start Stack
+        env:
+          VERSION: 5.0.0-DEV
+          DJANGO_SETTINGS_MODULE: config.django.dev.docker
         run: docker compose -f deployment/dev/docker-compose.yml up -d
 
       - name: Wait for Services
