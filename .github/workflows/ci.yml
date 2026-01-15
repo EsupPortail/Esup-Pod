@@ -43,10 +43,10 @@ jobs:
         run: cp .env.docker .env
 
       - name: Build Stack
-        run: docker compose -f deployment/dev/docker-compose.yml --project-directory . build --pull
+        run: docker compose -f deployment/dev/docker-compose.yml build --pull
 
       - name: Start Stack
-        run: docker compose -f deployment/dev/docker-compose.yml --project-directory . up -d
+        run: docker compose -f deployment/dev/docker-compose.yml up -d
 
       - name: Wait for Services
         run: |
@@ -82,7 +82,7 @@ jobs:
       - name: Run Tests with Coverage (Inside Docker)
         run: |
           # Use the dedicated test config: config.django.test.docker
-          docker compose -f deployment/dev/docker-compose.yml --project-directory . exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker api pytest --cov=src --cov-report=term-missing --cov-fail-under=60
+          docker compose -f deployment/dev/docker-compose.yml exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker api pytest --cov=src --cov-report=term-missing --cov-fail-under=60
 
       - name: Install E2E dependencies
         run: |
