@@ -368,7 +368,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/auth/login-config/:
+  /api/auth/config/:
     get:
       operationId: auth_login_config_retrieve
       description: |-

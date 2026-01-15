@@ -34,7 +34,7 @@ urlpatterns = [
     path("token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("users/me/", UserMeView.as_view(), name="user_me"),
     path("logout-info/", LogoutInfoView.as_view(), name="api_logout_info"),
-    path("login-config/", LoginConfigView.as_view(), name="api_login_config"),
+    path("config/", LoginConfigView.as_view(), name="api_login_config"),
 ]
 
 if settings.USE_LOCAL_AUTH:
