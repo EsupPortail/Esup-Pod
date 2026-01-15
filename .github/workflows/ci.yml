@@ -39,6 +39,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Create .env file
+        run: cp .env.docker .env
+
       - name: Build Stack
         run: docker compose -f deployment/dev/docker-compose.yml --project-directory . build --pull
 
