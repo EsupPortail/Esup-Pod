@@ -46,13 +46,13 @@ jobs:
         env:
           VERSION: 5.0.0-DEV
           DJANGO_SETTINGS_MODULE: config.django.dev.docker
-        run: docker compose -f deployment/dev/docker-compose.yml build --pull
+        run: make build
 
       - name: Start Stack
         env:
           VERSION: 5.0.0-DEV
           DJANGO_SETTINGS_MODULE: config.django.dev.docker
-        run: docker compose -f deployment/dev/docker-compose.yml up -d
+        run: make start
 
       - name: Wait for Services
         run: |
@@ -68,7 +68,7 @@ jobs:
           
           if [ $count -eq 60 ]; then
             echo "API failed to start"
-            docker compose -f deployment/dev/docker-compose.yml logs
+            make logs
             exit 1
           fi
 
@@ -76,6 +76,13 @@ jobs:
       - name: Check Schema Consistency
         run: |
           # Generate schema inside the container
+          # Note: We still access docker compose directly via make's variable or just use the container
+          # However, allow direct command here or use make shell?
+          # Easier to keep direct command for specific one-off arg-heavy tasks, OR create a make command.
+          # For consistency with request "use make commands", we should use make or equivalent.
+          # But make test is defined. Check Schema is obscure. Keep direct for now or use `make shell` wrapper?
+          # Let's keep direct for schema mostly, but update Teardown/Tests.
+          
           docker compose -f deployment/dev/docker-compose.yml exec -T -e DJANGO_SETTINGS_MODULE=config.django.base api python manage.py spectacular --file docs/api-docs-generated.yaml
           
           # Check for changes
@@ -86,9 +93,7 @@ jobs:
           fi
 
       - name: Run Tests with Coverage (Inside Docker)
-        run: |
-          # Use the dedicated test config: config.django.test.docker
-          docker compose -f deployment/dev/docker-compose.yml exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker api pytest --cov=src --cov-report=term-missing --cov-fail-under=60
+        run: make test
 
       - name: Install E2E dependencies
         run: |
@@ -113,4 +118,4 @@ jobs:
 
       - name: Teardown
         if: always()
-        run: docker compose -f deployment/dev/docker-compose.yml down -v
+        run: make clean
