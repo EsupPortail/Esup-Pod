@@ -39,7 +39,6 @@ Create a `.env` file in the project root to set these variables.
 | **`MYSQL_PORT`** | ❌ | `3306` | Port of the DB service. |
 
 ### Authentication Feature Flags
-
 Modules can be enabled/disabled without changing code.
 
 | Variable | Default | Description |
@@ -50,17 +49,46 @@ Modules can be enabled/disabled without changing code.
 | **`USE_SHIB`** | `False` | Enable Shibboleth authentication. |
 | **`USE_OIDC`** | `False` | Enable OpenID Connect authentication. |
 
+### CAS Configuration (If enabled)
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| **`CAS_SERVER_URL`** | `https://cas.univ-lille.fr` | URL of your CAS server. |
+| **`CAS_VERSION`** | `3` | CAS protocol version. |
+
 ### LDAP Configuration (If enabled)
-
-| Variable | Description |
-| :--- | :--- |
-| **`AUTH_LDAP_BIND_PASSWORD`** | Password for the Bind DN user. |
-
-*(Note: Other LDAP settings like Server URL are currently hardcoded in `src/config/settings/authentication.py` but will be moved to env vars in future updates.)*
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| **`LDAP_SERVER_URL`** | `ldap://ldap.univ.fr` | LDAP server URL. |
+| **`LDAP_SERVER_PORT`** | `389` | LDAP server port. |
+| **`LDAP_SERVER_USE_SSL`** | `False` | Use SSL for LDAP connection. |
+| **`AUTH_LDAP_BIND_PASSWORD`** | *(None)* | Password for the Bind DN user. |
 
 ---
 
-## 3. How to Customize Settings
+## 3. Configuration Scenarios
+
+### Scenario: University Instance (CAS Only)
+To configure Pod for a University where users only log in via CAS and local accounts are disabled:
+1.  **Modify `.env`**:
+    ```bash
+    USE_LOCAL_AUTH=False
+    USE_CAS=True
+    CAS_SERVER_URL=https://cas.votre-univ.fr
+    ```
+2.  **Restart**: `make start`
+
+### Scenario: Local Development (Default)
+1.  **Modify `.env`**:
+    ```bash
+    USE_LOCAL_AUTH=True
+    USE_CAS=False
+    USE_LDAP=False
+    ```
+2.  **Restart**: `make start`
+
+---
+
+## 4. How to Customize Settings
 
 ### Adding a new setting
 1.  Define the variable in your `.env` file.

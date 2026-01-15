@@ -34,13 +34,16 @@ if USE_CAS:
     AUTHENTICATION_BACKENDS.append("django_cas_ng.backends.CASBackend")
 
 if USE_CAS:
-    CAS_SERVER_URL = "https://cas.univ-lille.fr"
-    CAS_VERSION = "3"
+    CAS_SERVER_URL = env("CAS_SERVER_URL", default="https://cas.univ-lille.fr")
+    CAS_VERSION = env("CAS_VERSION", default="3")
     CAS_FORCE_CHANGE_USERNAME_CASE = "lower"
     CAS_APPLY_ATTRIBUTES_TO_USER = True
 
 if USE_LDAP:
-    LDAP_SERVER = {"url": "ldap://ldap.univ.fr", "port": 389, "use_ssl": False}
+    LDAP_SERVER_URL = env("LDAP_SERVER_URL", default="ldap://ldap.univ.fr")
+    LDAP_SERVER_PORT = env.int("LDAP_SERVER_PORT", default=389)
+    LDAP_SERVER_USE_SSL = env.bool("LDAP_SERVER_USE_SSL", default=False)
+    LDAP_SERVER = {"url": LDAP_SERVER_URL, "port": LDAP_SERVER_PORT, "use_ssl": LDAP_SERVER_USE_SSL}
 
     AUTH_LDAP_BIND_DN = "cn=pod,ou=app,dc=univ,dc=fr"
     AUTH_LDAP_BIND_PASSWORD = env("AUTH_LDAP_BIND_PASSWORD", default="")
