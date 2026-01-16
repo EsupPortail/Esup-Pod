@@ -1,16 +1,31 @@
 [flake8]
-# E501: Lines too long (limit increased to 120)
-# W503: Line break before binary operator (conflict with Black/Ruff)
-# F403: 'from module import *' (tolerated in settings)
-ignore = E501, W503, F403
-
-# We exclude files managed by Git or Django
-exclude =
+exclude = 
     .git,
-    __pycache__,
+    pod/*/migrations/*,
+    *_settings.py,
+    node_modules,
+    pod/static/*,
+    pod/custom/tenants/*/*,
     venv,
-    */migrations/*
+    .venv
 
-# The standard length for modern Django
-max-line-length = 120
-max-complexity = 18
+max-complexity = 9
+max-line-length = 90
+
+# See https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#flake8
+ignore =
+    # Black
+    E501,
+    E203,
+    W503,
+
+    # Pydocstyle
+    D107,
+    D105,
+
+    # flake8-annotations
+    ANN002,
+    ANN003,
+    ANN101,
+    ANN102,
+    ANN204
