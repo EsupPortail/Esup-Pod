@@ -41,3 +41,14 @@
   - relations
   - règles métier
 - [ ] Proposer un **schéma propre + évolutif**
+
+
+Table vidéo : 
+- Titre *
+- id *
+- description
+- miniature
+- #proprio *
+- #proprios-add
+- etat *
+- flux video 
