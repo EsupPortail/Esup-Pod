@@ -156,10 +156,8 @@ class RecordingTestCase(TestCase):
         recording.source_file = ""
         recording.save()
         self.assertEqual(2, len(recording.verify_attributs()))
-        print(
-            "   --->  test_verifying_attributs_fst_cases \
-            of RecordingTestCase: OK!"
-        )
+        print("   --->  test_verifying_attributs_fst_cases \
+            of RecordingTestCase: OK!")
 
     # Testing the two elif cases of verify_attibuts method
     def test_verifying_attributs_snd_cases(self):
@@ -169,10 +167,8 @@ class RecordingTestCase(TestCase):
         recording.source_file = "/home/pod/files/somefile.mp4"
         recording.save()
         self.assertEqual(2, len(recording.verify_attributs()))
-        print(
-            "   --->  test_verifying_attributs_snd_cases \
-            of RecordingTestCase: OK!"
-        )
+        print("   --->  test_verifying_attributs_snd_cases \
+            of RecordingTestCase: OK!")
 
     def test_clean_raise_exception(self):
         """Test method clean()."""

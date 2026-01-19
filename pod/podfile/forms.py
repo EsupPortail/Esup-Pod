@@ -12,7 +12,6 @@ from .models import UserFolder
 from .models import CustomFileModel
 from .models import CustomImageModel
 
-
 FILE_ALLOWED_EXTENSIONS = getattr(
     settings,
     "FILE_ALLOWED_EXTENSIONS",

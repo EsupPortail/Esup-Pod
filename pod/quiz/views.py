@@ -396,7 +396,7 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
 
     if request.method == "POST":
-        (percentage_score, questions_stats, questions_answers, questions_form_errors) = (
+        percentage_score, questions_stats, questions_answers, questions_form_errors = (
             process_quiz_submission(request, quiz)
         )
         form_submitted = True

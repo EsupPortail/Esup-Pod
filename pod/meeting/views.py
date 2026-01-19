@@ -49,7 +49,6 @@ from pod.meeting.webinar_utils import search_for_available_livegateway, manage_w
 from pod.live.models import Event
 from pod.live.views import can_manage_event
 
-
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
 )
@@ -1037,8 +1036,7 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
     )
     if meeting.recurrence:
         html_content = (
-            _(
-                """
+            _("""
             <p>Hello,</p>
             <p>%(owner)s invites you to a recurring meeting %(meeting_title)s.</p>
             <p>Start date: %(start_date_time)s</p>
@@ -1047,8 +1045,7 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
             <p>Here is the link to join the meeting: %(join_link)s</p>
             <p>You need this password to enter: %(password)s</p>
             <p>Regards</p>
-        """
-            )
+        """)
             % {
                 "owner": full_name,
                 "meeting_title": meeting.name,
@@ -1063,16 +1060,14 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
     else:
         if meeting.is_personal:
             html_content = (
-                _(
-                    """
+                _("""
                 <p>Hello,</p>
                 <p>%(owner)s invites you to the meeting <strong>%(meeting_title)s</strong>.</p>
                 <p>here the link to join the meeting:
                 <a href="%(join_link)s">%(join_link)s</a></p>
                 <p>You need this password to enter: <strong>%(password)s</strong></p>
                 <p>Regards</p>
-            """
-                )
+            """)
                 % {
                     "owner": full_name,
                     "meeting_title": meeting.name,
@@ -1086,8 +1081,7 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
             )
         else:
             html_content = (
-                _(
-                    """
+                _("""
                 <p>Hello,</p>
                 <p>%(owner)s invites you to the meeting <strong>%(meeting_title)s</strong>.</p>
                 <p>Start date: %(start_date_time)s </p>
@@ -1096,8 +1090,7 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
                 <a href="%(join_link)s">%(join_link)s</a></p>
                 <p>You need this password to enter: <strong>%(password)s</strong></p>
                 <p>Regards</p>
-            """
-                )
+            """)
                 % {
                     "owner": full_name,
                     "meeting_title": meeting.name,
@@ -1121,15 +1114,10 @@ def create_ics(request: WSGIRequest, meeting: Meeting) -> str:
         "owner": meeting.owner.get_full_name(),
         "meeting_title": meeting.name,
     }
-    description = (
-        _(
-            """
+    description = _("""
         Here is the link to join the meeting: %(join_link)s
         You need this password to enter: %(password)s
-    """
-        )
-        % {"join_link": join_link, "password": meeting.attendee_password}
-    )
+    """) % {"join_link": join_link, "password": meeting.attendee_password}
     event_description = "\\n".join(
         line for line in description.replace("    ", "").split("\n")
     )

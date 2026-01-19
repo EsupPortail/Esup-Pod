@@ -523,10 +523,8 @@ class VideoRenditionTestCase(TestCase):
             "VideoRendition num %s with resolution %s" % ("%04d" % vr.id, vr.resolution),
         )
         vr.clean()
-        print(
-            " --->  test_VideoRendition_creation_by_default of \
-            VideoRenditionTestCase: OK!"
-        )
+        print(" --->  test_VideoRendition_creation_by_default of \
+            VideoRenditionTestCase: OK!")
 
     def test_VideoRendition_creation_with_values(self) -> None:
         # print("check resolution error")
@@ -574,10 +572,8 @@ class VideoRenditionTestCase(TestCase):
             "VideoRendition num %s with resolution %s" % ("%04d" % vr.id, vr.resolution),
         )
         self.assertRaises(ValidationError, vr.clean)
-        print(
-            " --->  test_VideoRendition_creation_with_values of \
-            VideoRenditionTestCase: OK!"
-        )
+        print(" --->  test_VideoRendition_creation_with_values of \
+            VideoRenditionTestCase: OK!")
 
     def test_delete_object(self) -> None:
         self.create_video_rendition(resolution="640x365")

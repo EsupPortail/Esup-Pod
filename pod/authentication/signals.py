@@ -37,11 +37,8 @@ def cas_user_logout_callback(sender, **kwargs) -> None:
     """Callback for CAS user logout signal."""
     args = {}
     args.update(kwargs)
-    print(
-        """cas_user_logout_callback:
+    print("""cas_user_logout_callback:
     user: %s
     session: %s
     ticket: %s
-    """
-        % (args.get("user"), args.get("session"), args.get("ticket"))
-    )
+    """ % (args.get("user"), args.get("session"), args.get("ticket")))
