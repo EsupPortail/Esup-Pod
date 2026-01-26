@@ -1,7 +1,8 @@
 import os
 from datetime import timedelta
-from ..env import env
+
 from ..django.base import SECRET_KEY
+from ..env import env
 
 # Retrieve Feature Flags from Environment (default: False for security)
 USE_LOCAL_AUTH = env.bool("USE_LOCAL_AUTH", default=True)  # Default to True for dev/simple setups? Or env default?

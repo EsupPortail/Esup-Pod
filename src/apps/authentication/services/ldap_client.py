@@ -1,10 +1,11 @@
 import logging
-from typing import Optional, Any
+from typing import Any, Optional
+
 from django.conf import settings
-from ldap3 import Server, Connection, ALL, SUBTREE
+from ldap3 import ALL, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPBindError, LDAPSocketOpenError
 
-from .core import USER_LDAP_MAPPING_ATTRIBUTES, AUTH_LDAP_USER_SEARCH
+from .core import AUTH_LDAP_USER_SEARCH, USER_LDAP_MAPPING_ATTRIBUTES
 
 logger = logging.getLogger(__name__)
 

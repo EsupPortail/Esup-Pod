@@ -1,17 +1,16 @@
-from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import RedirectView
-from django.conf import settings
-from django.contrib.auth import views as auth_views
 import django_cas_ng.views
-
-from config.router import router
-
+from django.conf import settings
+from django.contrib import admin
+from django.contrib.auth import views as auth_views
+from django.urls import include, path
+from django.views.generic import RedirectView
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+
+from config.router import router
 
 urlpatterns = [
     # Redirection to Swagger

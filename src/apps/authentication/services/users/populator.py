@@ -1,9 +1,10 @@
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
+
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
 
-from ...models import Owner, AccessGroup
+from ...models import AccessGroup, Owner
 from ...models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION
 from ..core import USER_LDAP_MAPPING_ATTRIBUTES
 from ..ldap_client import get_ldap_conn, get_ldap_entry

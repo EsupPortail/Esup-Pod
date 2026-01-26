@@ -1,17 +1,18 @@
 from django import forms
-from .models import Owner, GroupSite
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.utils.translation import gettext_lazy as _
 from django.contrib.sites.models import Site
+from django.utils.translation import gettext_lazy as _
+
+from .models import GroupSite, Owner
 
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
-    from pod.podfile.widgets import (
+    from pod.podfile.widgets import (  # TODO : change import path when files will be implamented
         CustomFileWidget,
-    )  # TODO : change import path when files will be implamented
+    )
     __FILEPICKER__ = True
 
 

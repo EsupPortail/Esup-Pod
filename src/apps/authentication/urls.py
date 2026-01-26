@@ -1,24 +1,25 @@
-from django.urls import path, include
-from django.conf import settings
 import django_cas_ng.views
+from django.conf import settings
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+
 from .views import (
-    LoginView,
-    UserMeView,
+    AccessGroupViewSet,
     CASLoginView,
-    ShibbolethLoginView,
+    GroupViewSet,
+    LoginConfigView,
+    LoginView,
+    LogoutInfoView,
     OIDCLoginView,
     OwnerViewSet,
-    UserViewSet,
-    GroupViewSet,
+    ShibbolethLoginView,
     SiteViewSet,
-    AccessGroupViewSet,
-    LogoutInfoView,
-    LoginConfigView,
+    UserMeView,
+    UserViewSet,
 )
 
 router = DefaultRouter()

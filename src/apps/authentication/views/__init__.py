@@ -1,13 +1,13 @@
-from .login_views import LoginView, CASLoginView, ShibbolethLoginView, OIDCLoginView
+from .config_views import LoginConfigView, LogoutInfoView
+from .login_views import CASLoginView, LoginView, OIDCLoginView, ShibbolethLoginView
 from .model_views import (
-    UserMeView,
-    OwnerViewSet,
-    UserViewSet,
-    GroupViewSet,
-    SiteViewSet,
     AccessGroupViewSet,
+    GroupViewSet,
+    OwnerViewSet,
+    SiteViewSet,
+    UserMeView,
+    UserViewSet,
 )
-from .config_views import LogoutInfoView, LoginConfigView
 
 __all__ = [
     "LoginView",

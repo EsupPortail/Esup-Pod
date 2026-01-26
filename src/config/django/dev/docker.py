@@ -1,5 +1,6 @@
-from .dev import *  # noqa: F401, F403
 from config.env import env
+
+from .dev import *  # noqa: F401, F403
 
 # DEFAULT CONFIG (Docker environment): MariaDB
 DATABASES = {

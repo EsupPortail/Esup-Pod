@@ -11,12 +11,11 @@ Checks included:
 3. Admin Access: Confirms that the authentication login page is accessible.
 """
 
-import sys
-
-import time
 import os
-import requests
+import sys
+import time
 
+import requests
 
 API_URL = os.getenv("API_URL", "http://127.0.0.1:8000")
 ADMIN_USER = os.getenv("DJANGO_SUPERUSER_USERNAME", "admin")

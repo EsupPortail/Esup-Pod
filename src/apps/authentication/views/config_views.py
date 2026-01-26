@@ -1,9 +1,9 @@
 from django.conf import settings
+from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema, inline_serializer
 
 try:
     from django_cas_ng.utils import get_cas_client

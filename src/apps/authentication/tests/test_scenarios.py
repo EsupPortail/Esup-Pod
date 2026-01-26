@@ -1,10 +1,11 @@
 import sys
 from importlib import reload
+
 from django.conf import settings
+from django.contrib.auth import views as auth_views
 from django.test import TestCase, override_settings
 from django.urls import clear_url_caches, resolve
 from django_cas_ng import views as cas_views
-from django.contrib.auth import views as auth_views
 
 
 def reload_urlconf():

@@ -1,16 +1,16 @@
 from django.contrib.auth.models import User
 
+from .AccessGroup import AccessGroup
+from .GroupSite import GroupSite
+from .Owner import Owner
 from .utils import (
     AFFILIATION,
     AFFILIATION_STAFF,
-    DEFAULT_AFFILIATION,
     AUTH_TYPE,
+    DEFAULT_AFFILIATION,
     ESTABLISHMENTS,
     HIDE_USERNAME,
 )
-from .Owner import Owner
-from .AccessGroup import AccessGroup
-from .GroupSite import GroupSite
 
 
 def get_name(self: User) -> str:

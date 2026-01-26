@@ -1,18 +1,15 @@
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User
-from django.utils.translation import gettext_lazy as _
-from django.utils.html import format_html
-from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.models import Group
-from django.contrib.sites.models import Site
 from django.contrib.admin import widgets
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import Group, User
+from django.contrib.sites.models import Site
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 
-from .models import AccessGroup
-from .models import Owner, GroupSite
-from .forms import OwnerAdminForm, GroupSiteAdminForm
-from .forms import GroupAdminForm
+from .forms import GroupAdminForm, GroupSiteAdminForm, OwnerAdminForm
+from .models import AccessGroup, GroupSite, Owner
 
 # Define an inline admin descriptor for Owner model
 # which acts a bit like a singleton

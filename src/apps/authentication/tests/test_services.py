@@ -1,6 +1,8 @@
 from unittest.mock import MagicMock, patch
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
+
 from ..services import UserPopulator, verify_cas_ticket
 
 User = get_user_model()
