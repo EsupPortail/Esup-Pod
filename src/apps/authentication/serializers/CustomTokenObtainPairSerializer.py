@@ -1,5 +1,6 @@
+from typing import Any, Dict
+
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from typing import Dict, Any
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

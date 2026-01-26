@@ -1,18 +1,19 @@
 import logging
-from rest_framework.views import APIView
-from rest_framework.response import Response
+
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-from drf_spectacular.utils import extend_schema
 
-from ..serializers.CustomTokenObtainPairSerializer import CustomTokenObtainPairSerializer
 from ..serializers.CASTokenObtainPairSerializer import CASTokenObtainPairSerializer
+from ..serializers.CustomTokenObtainPairSerializer import CustomTokenObtainPairSerializer
 from ..serializers.ExternalAuthSerializers import (
     OIDCTokenObtainSerializer,
     ShibbolethTokenObtainSerializer,
 )
-from ..services import ShibbolethService, OIDCService
+from ..services import OIDCService, ShibbolethService
 
 logger = logging.getLogger(__name__)
 

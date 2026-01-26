@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
-from rest_framework import filters, viewsets, status
+from drf_spectacular.utils import extend_schema
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema
 
 from ..models.AccessGroup import AccessGroup
 from ..models.Owner import Owner
@@ -16,7 +16,6 @@ from ..serializers.OwnerSerializer import OwnerSerializer, OwnerWithGroupsSerial
 from ..serializers.SiteSerializer import SiteSerializer
 from ..serializers.UserSerializer import UserSerializer
 from ..services import AccessGroupService
-
 
 User = get_user_model()
 

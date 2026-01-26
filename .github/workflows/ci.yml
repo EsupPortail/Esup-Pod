@@ -23,9 +23,25 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
       - name: Install dependencies
-        run: pip install flake8
+        run: pip install flake8 isort
+      - name: iSort check
+        run: isort --check --diff src
       - name: Lint with flake8
         run: flake8 src --count --show-source --statistics
+      - name: Check for non-breaking spaces (NBSP)
+        run: |
+          # Use grep to find non-breaking spaces (\xa0) in src directory, ignoring binary files
+          if grep -rnIP "\xa0" src; then
+            echo "Error: Non-breaking spaces (NBSP) found in the codebase. Please remove them."
+            exit 1
+          fi
+      - name: Check for trailing whitespace
+        run: |
+          # Use grep to find trailing whitespace (space or tab at end of line), ignoring binary files
+          if grep -rnI '[[:blank:]]$' src; then
+            echo "Error: Trailing whitespace found in the codebase. Please remove them."
+            exit 1
+          fi
 
   # 2. Docker Integration, E2E & Security (The Authoritative Test)
   test-docker-full:

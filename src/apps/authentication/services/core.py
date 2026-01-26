@@ -1,4 +1,5 @@
 from django.conf import settings
+
 from ..models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION
 
 GROUP_STAFF = AFFILIATION_STAFF

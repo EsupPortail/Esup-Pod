@@ -1,7 +1,9 @@
-from ..base import *  # noqa: F401, F403
 import logging
-import sqlparse
 import re
+
+import sqlparse
+
+from ..base import *  # noqa: F401, F403
 
 DEBUG = True
 SHOW_SQL_QUERIES = False

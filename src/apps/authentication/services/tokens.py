@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Any, Dict
 
 
 def get_tokens_for_user(user) -> Dict[str, Any]:

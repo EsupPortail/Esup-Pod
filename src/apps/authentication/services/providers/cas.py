@@ -1,5 +1,6 @@
 import logging
-from typing import Optional, Any
+from typing import Any, Optional
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django_cas_ng.utils import get_cas_client

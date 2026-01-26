@@ -1,9 +1,10 @@
-import os
 import mimetypes
-from django.db import models
-from django.utils.translation import gettext_lazy as _
-from django.utils.text import slugify
+import os
+
 from django.conf import settings
+from django.db import models
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
 

@@ -1,11 +1,13 @@
 import logging
+from typing import Any, Dict
+
 import requests
-from typing import Dict, Any
 from django.conf import settings
 from django.contrib.auth import get_user_model
+
 from ..core import OIDC_CLAIM_PREFERRED_USERNAME
-from ..users import UserPopulator
 from ..tokens import get_tokens_for_user
+from ..users import UserPopulator
 
 UserModel = get_user_model()
 logger = logging.getLogger(__name__)

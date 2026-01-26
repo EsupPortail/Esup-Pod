@@ -1,16 +1,18 @@
-import logging
 import hashlib
+import logging
 
-from django.dispatch import receiver
-from django.db import models
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import Permission, User
 from django.contrib.sites.models import Site
+from django.db import models
 from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+
 from src.apps.utils.models.CustomImageModel import CustomImageModel
+
 from .utils import (
-    AUTH_TYPE,
     AFFILIATION,
+    AUTH_TYPE,
     DEFAULT_AFFILIATION,
     ESTABLISHMENTS,
     HIDE_USERNAME,

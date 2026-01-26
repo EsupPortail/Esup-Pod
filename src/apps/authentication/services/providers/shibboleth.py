@@ -1,9 +1,11 @@
-from typing import Dict, Any
+from typing import Any, Dict
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from ..core import SHIBBOLETH_ATTRIBUTE_MAP, REMOTE_USER_HEADER
-from ..users import UserPopulator
+
+from ..core import REMOTE_USER_HEADER, SHIBBOLETH_ATTRIBUTE_MAP
 from ..tokens import get_tokens_for_user
+from ..users import UserPopulator
 
 UserModel = get_user_model()
 
