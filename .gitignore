@@ -40,3 +40,4 @@ transcription/
 .coverage
 .pytest_cache/
 htmlcov/
+.coverage

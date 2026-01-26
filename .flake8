@@ -1,13 +1,28 @@
 [flake8]
-exclude = 
+exclude =
+    # Version Control & Environments
     .git,
-    pod/*/migrations/*,
-    *_settings.py,
-    node_modules,
-    pod/static/*,
-    pod/custom/tenants/*/*,
+    .venv,
     venv,
-    .venv
+    __pycache__,
+
+    # Testing & Coverage
+    .pytest_cache,
+    htmlcov,
+
+    # Migrations
+    */migrations/*,
+
+    # Static & Media
+    src/static/*,
+    staticfiles,
+    media,
+    node_modules,
+
+    # Specific Custom ignores
+    *_settings.py,
+    src/custom/tenants/*/*,
+    docs
 
 max-complexity = 9
 max-line-length = 90
