@@ -43,14 +43,3 @@ A list of much-appreciated contributors who have submitted patches and reported 
 * Loic Bonavent, University of Montpellier
 * Guillaume Condesse, University of Bordeaux
 * All participants of the October 2018 Pod Technical Workshop
-
-Pictures credits
-----------------------------
-
-* default.svg: adapted from Play button Icon
-  by [Freepik](https://www.freepik.com/free-vector) - Freepik License
-* cookie.svg:
-  [oatmeal cookie created by pch.vector](https://www.freepik.com/vectors/logo) - Freepik License
-* default-playlist.svg: Music, Note, Musical Note
-  by [krzysztof-m](https://pixabay.com/fr/users/1363864/) -
-  [Pixabay free for use & download licence](https://pixabay.com/fr/service/terms/)

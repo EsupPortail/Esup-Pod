@@ -12,6 +12,11 @@ logger = logging.getLogger(__name__)
 
 
 class GroupSite(models.Model):
+    """
+    Model linking a Group to one or more Sites.
+    Extends the default Group model to allow site-specific group associations.
+    """
+
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
     sites = models.ManyToManyField(Site)
 
@@ -23,12 +28,19 @@ class GroupSite(models.Model):
 
 @receiver(post_save, sender=GroupSite)
 def default_site_groupsite(sender, instance, created: bool, **kwargs) -> None:
+    """
+    Signal receiver to assign the current site to a GroupSite instance if no site is set.
+    Triggered after a GroupSite is saved.
+    """
     if instance.pk and instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
 @receiver(post_save, sender=Group)
 def create_groupsite_profile(sender, instance, created: bool, **kwargs) -> None:
+    """
+    Signal receiver to automatically create a GroupSite profile when a new Group is created.
+    """
     if created:
         try:
             GroupSite.objects.get_or_create(group=instance)

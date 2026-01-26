@@ -8,7 +8,7 @@ This documentation outlines the architecture, development workflow, and producti
 
 The application is built on a robust stack designed to ensure separation of concerns between the development and production environments.
 
-* **Backend Framework:** Django (5.2.8) Python (3.12+) with Django Rest Framework (DRF 3.15.2).
+* **Backend Framework:** Django with Django Rest Framework (DRF).
 * **Database:** MySql (Containerized).
     * **Local Dev (Lite):** SQLite (Auto-configured if no MySQL config found).
 * **Containerization:** Docker & Docker Compose.
