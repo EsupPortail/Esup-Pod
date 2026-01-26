@@ -1,5 +1,5 @@
-from config.django.dev.docker import *  # noqa: F401, F403
 from config.django.test.init_env import *  # noqa: F401, F403
+from config.django.dev.docker import *  # noqa: F401, F403
 from config.env import env
 
 DEBUG = False
