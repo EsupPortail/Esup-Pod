@@ -28,8 +28,7 @@ jobs:
 
       - name: Format code with Black
         run: |
-          # Black modifie automatiquement les fichiers pour corriger le style
-          black src
+          black . -l 90
 
       - name: Lint with flake8
         run: flake8 src --count --show-source --statistics
