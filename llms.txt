@@ -1,6 +1,6 @@
 # Pod V5 Backend
 
-> Estup-Pod V5 Backend is a Django-based video management platform. This project handles video storage, encoding, and streaming processing (download/streaming).
+> Esup-Pod V5 Backend is a Django-based video management platform. This project handles video storage, encoding, and streaming processing (download/streaming).
 
 ## Documentation
 

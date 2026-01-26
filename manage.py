@@ -21,9 +21,7 @@ def main():
         from src.config.env import env
 
     try:
-        settings_module = env.str(
-            "DJANGO_SETTINGS_MODULE", default="config.django.base"
-        )
+        settings_module = env.str("DJANGO_SETTINGS_MODULE", default="config.django.base")
 
         if settings_module:
             os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_module)

@@ -14,7 +14,11 @@ We use **Docker** to replicate production services while providing a flexible de
 ### 🪟 Windows
 *   Install **Docker Desktop**.
 *   (Recommended) Enable **WSL2** backend for Docker.
-*   Install **Make** (via Git Bash, or `choco install make`).
+*   Install **Chocolatey** (required to use `choco`): https://chocolatey.org/install
+*   Install **Make**:
+    ```powershell
+    choco install make
+    ```
 *   **Note**: Run commands from PowerShell or Git Bash.
 
 ---

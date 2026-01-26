@@ -15,8 +15,8 @@ from .utils import (
 
 def get_name(self: User) -> str:
     """
-    Retourne le nom complet de l'utilisateur, incluant le username s'il n'est pas caché.
-    Remplace la méthode __str__ par défaut de Django.
+    Returns the user's full name, including the username if it is not hidden.
+    Overrides Django's default __str__ method.
     """
     if HIDE_USERNAME or not self.is_authenticated:
         name = self.get_full_name().strip()
