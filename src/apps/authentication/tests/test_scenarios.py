@@ -24,8 +24,8 @@ class AuthenticationScenariosTests(TestCase):
     @override_settings(
         USE_CAS=True,
         USE_LOCAL_AUTH=False,
-        AUTHENTICATION_BACKENDS=['django_cas_ng.backends.CASBackend'],
-        CAS_SERVER_URL='https://cas.example.com'
+        AUTHENTICATION_BACKENDS=["django_cas_ng.backends.CASBackend"],
+        CAS_SERVER_URL="https://cas.example.com",
     )
     def test_university_mode_cas_only(self):
         """
@@ -39,16 +39,16 @@ class AuthenticationScenariosTests(TestCase):
         reload_urlconf()
 
         # 1. Verify URL resolution
-        resolver_match = resolve('/accounts/login')
+        resolver_match = resolve("/accounts/login")
         self.assertEqual(resolver_match.func.view_class, cas_views.LoginView)
 
-        resolver_match_logout = resolve('/accounts/logout')
+        resolver_match_logout = resolve("/accounts/logout")
         self.assertEqual(resolver_match_logout.func.view_class, cas_views.LogoutView)
 
     @override_settings(
         USE_CAS=False,
         USE_LOCAL_AUTH=True,
-        AUTHENTICATION_BACKENDS=['django.contrib.auth.backends.ModelBackend']
+        AUTHENTICATION_BACKENDS=["django.contrib.auth.backends.ModelBackend"],
     )
     def test_local_mode_default(self):
         """
@@ -62,8 +62,8 @@ class AuthenticationScenariosTests(TestCase):
         reload_urlconf()
 
         # 1. Verify URL resolution
-        resolver_match = resolve('/accounts/login')
+        resolver_match = resolve("/accounts/login")
         self.assertEqual(resolver_match.func.view_class, auth_views.LoginView)
 
-        resolver_match_logout = resolve('/accounts/logout')
+        resolver_match_logout = resolve("/accounts/logout")
         self.assertEqual(resolver_match_logout.func.view_class, auth_views.LogoutView)

@@ -37,8 +37,8 @@ class CASTokenObtainPairSerializer(serializers.Serializer):
                 "email": user.email,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
-                "affiliation": user.owner.affiliation
-                if hasattr(user, "owner")
-                else None,
+                "affiliation": (
+                    user.owner.affiliation if hasattr(user, "owner") else None
+                ),
             },
         }
