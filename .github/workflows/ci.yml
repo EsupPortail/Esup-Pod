@@ -79,7 +79,7 @@ jobs:
              sleep 2
              count=$((count+1))
           done
-          
+
           if [ $count -eq 60 ]; then
             echo "API failed to start"
             make logs
