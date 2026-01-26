@@ -298,6 +298,9 @@ class Encoding_video_model(Encoding_video):
         return video
 
     def wait_for_file(self, filepath) -> None:
+        """
+        Wait for a file to appear at the specified path, polling once per second up to 40 seconds max.
+        """
         time_to_wait = 40
         time_counter = 0
         logger.info("wait_for_file: %s" % filepath)
