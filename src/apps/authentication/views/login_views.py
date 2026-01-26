@@ -8,7 +8,9 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from ..serializers.CASTokenObtainPairSerializer import CASTokenObtainPairSerializer
-from ..serializers.CustomTokenObtainPairSerializer import CustomTokenObtainPairSerializer
+from ..serializers.CustomTokenObtainPairSerializer import (
+    CustomTokenObtainPairSerializer,
+)
 from ..serializers.ExternalAuthSerializers import (
     OIDCTokenObtainSerializer,
     ShibbolethTokenObtainSerializer,
@@ -23,6 +25,7 @@ class LoginView(TokenObtainPairView):
     **Authentication Endpoint**
     Accepts a username and password and returns a pair of JWT tokens.
     """
+
     serializer_class = CustomTokenObtainPairSerializer
 
 
@@ -31,6 +34,7 @@ class CASLoginView(APIView):
     **CAS Authentication Endpoint**
     Exchange a valid CAS ticket for a JWT token pair.
     """
+
     permission_classes = [AllowAny]
     serializer_class = CASTokenObtainPairSerializer
 
@@ -53,6 +57,7 @@ class ShibbolethLoginView(APIView):
     It reads the headers (REMOTE_USER, etc.), creates or updates the user
     locally according to the logic defined in the ShibbolethService and returns JWTs.
     """
+
     permission_classes = [AllowAny]
     serializer_class = ShibbolethTokenObtainSerializer
     service = ShibbolethService()
@@ -85,6 +90,7 @@ class OIDCLoginView(APIView):
     retrieves user information (UserInfo),
     updates the local database, and returns JWTs.
     """
+
     permission_classes = [AllowAny]
     serializer_class = OIDCTokenObtainSerializer
     service = OIDCService()
@@ -102,7 +108,9 @@ class OIDCLoginView(APIView):
             tokens = self.service.process_code(code, redirect_uri)
             return Response(tokens, status=status.HTTP_200_OK)
         except EnvironmentError as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
         except ValueError as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except ConnectionError as e:

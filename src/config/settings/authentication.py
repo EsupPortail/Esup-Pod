@@ -5,7 +5,9 @@ from ..django.base import SECRET_KEY
 from ..env import env
 
 # Retrieve Feature Flags from Environment (default: False for security)
-USE_LOCAL_AUTH = env.bool("USE_LOCAL_AUTH", default=True)  # Default to True for dev/simple setups? Or env default?
+USE_LOCAL_AUTH = env.bool(
+    "USE_LOCAL_AUTH", default=True
+)  # Default to True for dev/simple setups? Or env default?
 USE_CAS = env.bool("USE_CAS", default=False)
 USE_LDAP = env.bool("USE_LDAP", default=False)
 USE_SHIB = env.bool("USE_SHIB", default=False)
@@ -44,7 +46,11 @@ if USE_LDAP:
     LDAP_SERVER_URL = env("LDAP_SERVER_URL", default="ldap://ldap.univ.fr")
     LDAP_SERVER_PORT = env.int("LDAP_SERVER_PORT", default=389)
     LDAP_SERVER_USE_SSL = env.bool("LDAP_SERVER_USE_SSL", default=False)
-    LDAP_SERVER = {"url": LDAP_SERVER_URL, "port": LDAP_SERVER_PORT, "use_ssl": LDAP_SERVER_USE_SSL}
+    LDAP_SERVER = {
+        "url": LDAP_SERVER_URL,
+        "port": LDAP_SERVER_PORT,
+        "use_ssl": LDAP_SERVER_USE_SSL,
+    }
 
     AUTH_LDAP_BIND_DN = "cn=pod,ou=app,dc=univ,dc=fr"
     AUTH_LDAP_BIND_PASSWORD = env("AUTH_LDAP_BIND_PASSWORD", default="")

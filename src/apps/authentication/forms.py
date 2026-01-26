@@ -13,6 +13,7 @@ if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.widgets import (  # TODO : change import path when files will be implamented
         CustomFileWidget,
     )
+
     __FILEPICKER__ = True
 
 
