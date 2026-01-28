@@ -9,30 +9,30 @@ from django.utils.translation import gettext_lazy as _
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 
-def get_upload_path_files(instance, filename) -> str:
-    fname, dot, extension = filename.rpartition(".")
-    try:
-        fname.index("/")
-        return os.path.join(
-            FILES_DIR,
-            "%s/%s.%s"
-            % (
-                os.path.dirname(fname),
-                slugify(os.path.basename(fname)),
-                extension,
-            ),
-        )
-    except ValueError:
-        return os.path.join(FILES_DIR, "%s.%s" % (slugify(fname), extension))
-
-
 class CustomImageModel(models.Model):
     """Esup-Pod custom image Model."""
+
+    @staticmethod
+    def get_upload_path_files(instance, filename) -> str:
+        fname, dot, extension = filename.rpartition(".")
+        try:
+            fname.index("/")
+            return os.path.join(
+                FILES_DIR,
+                "%s/%s.%s"
+                % (
+                    os.path.dirname(fname),
+                    slugify(os.path.basename(fname)),
+                    extension,
+                ),
+            )
+        except ValueError:
+            return os.path.join(FILES_DIR, "%s.%s" % (slugify(fname), extension))
 
     file = models.ImageField(
         _("Image"),
         null=True,
-        upload_to=get_upload_path_files,
+        upload_to="get_upload_path_files",
         blank=True,
         max_length=255,
     )
