@@ -41,6 +41,7 @@ if USE_CAS:
     CAS_VERSION = env("CAS_VERSION", default="3")
     CAS_FORCE_CHANGE_USERNAME_CASE = "lower"
     CAS_APPLY_ATTRIBUTES_TO_USER = True
+    CAS_ADMIN_REDIRECT = False
 
 if USE_LDAP:
     LDAP_SERVER_URL = env("LDAP_SERVER_URL", default="ldap://ldap.univ.fr")
