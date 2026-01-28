@@ -68,7 +68,10 @@ if USE_LDAP:
         "establishment": "establishment",
     }
 
-ALLOWED_SUPERUSER_IPS = ["127.0.0.1", "10.0.0.0/8"]
+ALLOWED_SUPERUSER_IPS = env.list(
+    "ALLOWED_SUPERUSER_IPS",
+    default=["127.0.0.1", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"],
+)
 AFFILIATION_STAFF = ("faculty", "employee", "staff")
 CREATE_GROUP_FROM_AFFILIATION = True
 CREATE_GROUP_FROM_GROUPS = True

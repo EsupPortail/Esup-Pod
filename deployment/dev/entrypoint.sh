@@ -1,79 +1,115 @@
 #!/bin/bash
 set -e
 
+# --- Configuration ---
 export EXPOSITION_PORT=${EXPOSITION_PORT:-8000}
 export DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-admin}
 export DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-admin@example.com}
 export DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD:-admin}
 
+# --- Functions ---
+
+log() { echo -e "\033[1;34m[Docker-Setup]\033[0m $1"; }
+error() { echo -e "\033[1;31m[Docker-Error]\033[0m $1"; }
 
 wait_for_db() {
-    echo "[Docker] Checking database availability..."
-    
+    log "Waiting for the database..."
     python3 << END
-import sys
-import time
-import os
+import sys, time
 from django.db import connections
 from django.db.utils import OperationalError
-
-connected = False
-while not connected:
+max_tries = 30
+for i in range(max_tries):
     try:
         connections['default'].cursor()
-        connected = True
+        sys.exit(0)
     except OperationalError:
-        print("[Docker] DB not ready yet, retrying in 1s...")
         time.sleep(1)
-
-sys.exit(0)
+sys.exit(1)
 END
-    echo "[Docker] Successfully connected to the database."
+    if [ $? -eq 0 ]; then
+        log "Database connected."
+    else
+        error "Cannot connect to the database."
+        exit 1
+    fi
 }
 
 manage_setup() {
-    echo "[Docker] Starting automatic setup..."
+    log "Starting setup..."
 
-    echo "[Docker] Generating migrations for all apps if necessary..."
-    python manage.py makemigrations --no-input || true
+    # 1. Check for missing migrations
+    log "Checking migration files..."
+    # Attempts to make migrations. If code changed but files haven't, it creates them.
+    python manage.py makemigrations --no-input
 
-    echo "[Docker] Applying migrations..."
-    python manage.py migrate --noinput
+    # 2. Apply migrations (Critical step)
+    log "Applying migrations..."
+    if ! python manage.py migrate --noinput; then
+        error "MIGRATION FAILED!"
+        echo "---------------------------------------------------"
+        echo "It seems your database is inconsistent."
+        echo "Then restart the server."
+        echo "---------------------------------------------------"
+        exit 1
+    fi
 
-    echo "[Docker] Collecting static files..."
+    # 3. Statics
+    log "Collecting static files..."
     python manage.py collectstatic --noinput --clear
 
-    echo "[Docker] Checking superuser..."
+    # 4. Superuser
+    log "Checking Superuser..."
     python manage.py shell << END
 import os
 from django.contrib.auth import get_user_model
-
+from django.contrib.sites.models import Site
 User = get_user_model()
-username = os.environ.get('DJANGO_SUPERUSER_USERNAME')
-email = os.environ.get('DJANGO_SUPERUSER_EMAIL')
-password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
+u = os.environ.get('DJANGO_SUPERUSER_USERNAME')
+e = os.environ.get('DJANGO_SUPERUSER_EMAIL')
+p = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
+print("[Docker-Setup] Checking Superuser...")
+if u and p:
+    user_qs = User.objects.filter(username=u)
+    if not user_qs.exists():
+        print(f"[Docker-Setup] Creating superuser: {u}")
+        su = User.objects.create_superuser(username=u, email=e, password=p)
+    else:
+        su = user_qs.first()
 
-if not username or not password:
-    print(f"[Django] ERROR: Missing environment variables for the superuser.")
-elif not User.objects.filter(username=username).exists():
-    print(f"[Django] Creating superuser: {username}")
-    User.objects.create_superuser(username=username, email=email, password=password)
+    # Ensure superuser has full permissions
+    su.is_staff = True
+    su.is_superuser = True
+    su.save()
+
+    # Dev Setup: Ensure Owner profile is linked to the default site
+    # This is required for Pod's multi-site permissions to work correctly in Admin
+    from src.apps.authentication.models import Owner
+    owner, created = Owner.objects.get_or_create(user=su)
+    if Site.objects.exists():
+        current_site = Site.objects.first()
+        if current_site not in owner.sites.all():
+            owner.sites.add(current_site)
+            owner.save()
+            print(f"[Docker-Setup] Superuser {u} linked to site {current_site.domain}")
+
+    print(f"[Docker-Setup] Superuser {u} ready (is_superuser={su.is_superuser})")
 else:
-    print(f"[Django] Superuser '{username}' already exists. No action taken.")
+    print("[Docker-Error] Superuser credentials are not fully set.")
 END
 }
+
+# --- Main ---
 
 wait_for_db
 
 if [ "$1" = "run-server" ]; then
     manage_setup
-    echo "[Docker] Starting Django server on port $EXPOSITION_PORT..."
+    log "Starting Django server..."
     exec python manage.py runserver 0.0.0.0:"$EXPOSITION_PORT"
-
 elif [ "$1" = "shell-mode" ]; then
-    echo "[Docker] Interactive shell mode."
+    log "Interactive shell mode."
     exec /bin/bash
-
 else
     exec "$@"
 fi

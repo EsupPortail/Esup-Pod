@@ -1,4 +1,4 @@
-# Load the .env 
+# Load the .env
 ifneq (,$(wildcard ./.env))
     include .env
     export

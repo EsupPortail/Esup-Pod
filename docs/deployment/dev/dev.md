@@ -97,4 +97,4 @@ This command will:
 *   **From Host Machine**: Connect to `localhost:3307`
     *   User: `pod_user` / Password: `pod_password` (or as set in `.env`)
     *   Database: `pod_db`
-*   **From Docker**: Connect to host `db` port `3306`.
+*   **From Docker**: ```shell docker exec -it pod_mariadb_dev mariadb -u root -p ``
