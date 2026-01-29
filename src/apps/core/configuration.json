@@ -24,8 +24,8 @@
                 ],
                 "fr": [
                   "L’URL de l’API pour l’IA d’amélioration des vidéos.",
-                  "Exemple : '<https://aristote.univ.fr/api>'",
-                  "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
+                  "Exemple : '<https://aristote.univ.fr/api>'",
+                  "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
                 ]
               },
               "pod_version_end": "",
@@ -52,8 +52,8 @@
                 ],
                 "fr": [
                   "L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.",
-                  "Exemple : '<https://aristote.univ.fr/cgu>'",
-                  "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
+                  "Exemple : '<https://aristote.univ.fr/cgu>'",
+                  "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
                 ]
               },
               "pod_version_end": "",
@@ -65,7 +65,7 @@
                 "en": ["The video enhancement AI client ID.", "Example: 'v1'"],
                 "fr": [
                   "L’ID du client de l’IA d’amélioration des vidéos.",
-                  "Exemple : 'v1'"
+                  "Exemple : 'v1'"
                 ]
               },
               "pod_version_end": "",
@@ -104,7 +104,7 @@
                 ],
                 "fr": [
                   "L’URL du serveur proxy pour les requêtes venant d'Aristote.",
-                  "Exemple : '<https://proxy_aristote.univ.fr>'"
+                  "Exemple : '<https://proxy_aristote.univ.fr>'"
                 ]
               },
               "pod_version_end": "",
@@ -232,7 +232,7 @@
                 "en": [""],
                 "fr": [
                   "Type d’authentification possible sur votre instance.",
-                  " Choix : local, CAS, OIDC, Shibboleth"
+                  " Choix : local, CAS, OIDC, Shibboleth"
                 ]
               },
               "pod_version_end": "",
@@ -255,7 +255,7 @@
                 ],
                 "fr": [
                   "Permet d’activer l’authentification CAS pour la partie admin",
-                  "Voir : [pypi.org/project/django-cas-sso](https://pypi.org/project/django-cas-sso/)"
+                  "Voir : [pypi.org/project/django-cas-sso](https://pypi.org/project/django-cas-sso/)"
                 ]
               },
               "pod_version_end": "",
@@ -709,10 +709,10 @@
                 "fr": [
                   "Information de connection au serveur LDAP.",
                   "Le champ url peut contenir une ou plusieurs url",
-                  " pour ajouter des hôtes de référence, exemple :",
-                  "Si un seul host :",
+                  " pour ajouter des hôtes de référence, exemple :",
+                  "Si un seul host :",
                   "`{'url': \"ldap.univ.fr'', 'port': 389, 'use_ssl': False}`",
-                  "Si plusieurs :",
+                  "Si plusieurs :",
                   "`{'url': (\"ldap.univ.fr'',\"ldap2.univ.fr\"), 'port': 389, 'use_ssl': False}`"
                 ]
               },
@@ -827,7 +827,7 @@
                 "fr": [
                   "Différents paramètres pour OIDC",
                   "tant que `mozilla_django_oidc` n’accepte pas le mécanisme de discovery",
-                  "_ref : [mozilla/mozilla-django-oidc](https://github.com/mozilla/mozilla-django-oidc/pull/309)_"
+                  "_ref : [mozilla/mozilla-django-oidc](https://github.com/mozilla/mozilla-django-oidc/pull/309)_"
                 ]
               },
               "pod_version_end": "",
@@ -897,7 +897,7 @@
                 "fr": [
                   "Si utilisation de la connection CAS, renseigne les champs du compte",
                   "de la personne depuis une source externe.",
-                  "Valeurs possibles :",
+                  "Valeurs possibles :",
                   " * None (pas de renseignement),",
                   " * CAS (renseigne les champs depuis les informations renvoyées par le CAS),"
                 ]
@@ -1146,9 +1146,9 @@
                 "en": [""],
                 "fr": [
                   "Paramétrage des chemins du modèle pour la compilation",
-                  "Pour télécharger les modèles : [alphacephei.com/vosk](https://alphacephei.com/vosk/lm#update-process)",
+                  "Pour télécharger les modèles : [alphacephei.com/vosk](https://alphacephei.com/vosk/lm#update-process)",
                   "Ajouter le modèle dans les sous-dossier de la langue correspondante",
-                  "Exemple pour le français : `/path/of/project/Esup-Pod/compile-model/fr/`"
+                  "Exemple pour le français : `/path/of/project/Esup-Pod/compile-model/fr/`"
                 ]
               },
               "pod_version_end": "",
@@ -1585,7 +1585,7 @@
                   "",
                   "Paramétrage des modèles pour la transcription des directs",
                   "La documentation sera présente prochaînement",
-                  "Pour télécharger les Modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)",
+                  "Pour télécharger les Modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)",
                   "```python",
                   "LIVE_VOSK_MODEL = {",
                   "   'fr': {",
@@ -2441,7 +2441,7 @@
                 "en": ["Default video type identifier (if not specified)."],
                 "fr": [
                   "Identifiant du type de vidéo par défaut (si non spécifié).",
-                  "(Exemple : 3 pour Colloque/conférence, 4 pour Cours…)"
+                  "(Exemple : 3 pour Colloque/conférence, 4 pour Cours…)"
                 ]
               },
               "pod_version_end": "",
@@ -2467,7 +2467,7 @@
                 "fr": [
                   "Permet de spécifier la valeur par défaut du placement de la vidéo du",
                   "presenteur par rapport à la vidéo de présentation (écran)",
-                  "les valeurs possibles sont :",
+                  "les valeurs possibles sont :",
                   " * \"mid\" (écran et caméra ont la même taille)",
                   " * \"piph\" (le presenteur est incrusté dans la vidéo en haut à droite)",
                   " * \"pipb\" (le presenteur est incrusté dans la vidéo en bas à droite)",
@@ -2523,7 +2523,7 @@
                 ],
                 "fr": [
                   "Chemin d’accès web (public) au répertoire de dépot des enregistrements (`DEFAULT_RECORDER_PATH`).",
-                  "Attention : penser à modifier la conf de NGINX."
+                  "Attention : penser à modifier la conf de NGINX."
                 ]
               },
               "pod_version_end": "",
@@ -2832,7 +2832,7 @@
               "description": {
                 "en": [""],
                 "fr": [
-                  "Licence proposées pour les vidéos en creative commons : ",
+                  "Licence proposées pour les vidéos en creative commons : ",
                   "```python",
                   "LICENCE_CHOICES = (",
                   "    ('by', (\"Attribution 4.0 International (CC BY 4.0)\")),",
@@ -2858,7 +2858,7 @@
                 "en": [""],
                 "fr": [
                   "Fixe une durée maximale que la date de suppression d’une vidéo ne peut dépasser.",
-                  "Par défaut : 10 (Année courante + 10 ans)."
+                  "Par défaut : 10 (Année courante + 10 ans)."
                 ]
               },
               "pod_version_end": "",
@@ -3034,7 +3034,7 @@
                 "fr": [
                   "Ce paramètre permet d’activer l’envoi d’évènements sur le lecteur vidéo à Matomo.",
                   "N’est utile que si le code piwik / matomo est présent dans l’instance de Esup-Pod.",
-                  "Les évènements envoyés sont :",
+                  "Les évènements envoyés sont :",
                   "   play, pause, seeked, ended, ratechange, fullscreen, error, loadmetadata",
                   "Pour rajouter le code Piwik/Matomo dans votre instance de Pod,",
                   "il suffit de créer un fichier `pod/custom/templates/custom/tracking.html`",
@@ -3393,9 +3393,9 @@
                 "en": [""],
                 "fr": [
                   "Permet d’ajouter l’attribut obligatoire dans",
-                  "le formulaire d’edition et d’ajout d’une video :",
-                  "Exemple de valeur : `[\"discipline\", \"tags\"]`",
-                  "NB : les champs cachés et suivant ne sont pas pris en compte :",
+                  "le formulaire d’edition et d’ajout d’une video :",
+                  "Exemple de valeur : `[\"discipline\", \"tags\"]`",
+                  "NB : les champs cachés et suivant ne sont pas pris en compte :",
                   "`(video, title, type, owner, date_added, cursus, main_lang)`"
                 ]
               },
@@ -3552,7 +3552,7 @@
                   "",
                   "Il faut renseigner l’url du redis sur lequel Celery",
                   "va chercher les ordres d’encodage et de transcription",
-                  "par exemple : \"redis://redis.localhost:6379/7\""
+                  "par exemple : \"redis://redis.localhost:6379/7\""
                 ]
               },
               "pod_version_end": "",
@@ -3605,7 +3605,7 @@
                 "fr": [
                   "Adresse de l’API rest à appeler en fin d’encodage",
                   "distant ou de transcription à distance.",
-                  "Exemple : `https://pod.univ.fr/rest/`"
+                  "Exemple : `https://pod.univ.fr/rest/`"
                 ]
               },
               "pod_version_end": "",
@@ -3734,7 +3734,7 @@
                 "en": [""],
                 "fr": [
                   "Version d’ElasticSearch.",
-                  "valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.",
+                  "valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.",
                   "Attention, le paquet elasticsearch-py doit correspondre à la version du serveur. ",
                   "pour la 8, `pip3 install elasticsearch==8.17.2`.",
                   "Voir [elasticsearch-py.readthedocs.io](https://elasticsearch-py.readthedocs.io/)",
@@ -3816,7 +3816,7 @@
                 "en": [""],
                 "fr": [
                   "",
-                  "URL de destination pour l’envoi des statements. I.E. : `https://ralph.univ.fr/xAPI/statements`"
+                  "URL de destination pour l’envoi des statements. I.E. : `https://ralph.univ.fr/xAPI/statements`"
                 ]
               },
               "pod_version_end": "",
@@ -3850,9 +3850,9 @@
                   "C’est un dictionnaire imbriqué dont les contenus font correspondre",
                   "l’alias de base de données avec un dictionnaire contenant",
                   "les options de chacune des bases de données.",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#databases)_",
-                  "valeur par défaut : une base de données au format sqlite",
-                  "Voici un exemple de configuration pour utiliser une base MySQL :",
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#databases)_",
+                  "valeur par défaut : une base de données au format sqlite",
+                  "Voici un exemple de configuration pour utiliser une base MySQL :",
                   "```python",
                   "DATABASES = {",
                   "    'default': {",
@@ -3933,7 +3933,7 @@
                 "en": [""],
                 "fr": [
                   "nom du serveur smtp ",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#email-host)_"
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#email-host)_"
                 ]
               },
               "pod_version_end": "",
@@ -4062,7 +4062,7 @@
                   "Une liste contenant les sujets de contact dont l’utilisateur",
                   "sera seul destinataire plutôt que le(s) manager(s).",
                   "Si la liste est vide, les mails de contact seront envoyés au(x) manager(s).",
-                  "Valeurs possibles :",
+                  "Valeurs possibles :",
                   "`info`, `contribute`, `request_password`,",
                   "`inapropriate_content`, `bug`, `other`"
                 ]
@@ -4434,7 +4434,7 @@
                   "Le répertoire dans lequel stocker temporairement les données",
                   "(typiquement pour les fichiers plus grands que `FILE_UPLOAD_MAX_MEMORY_SIZE`)",
                   "lors des téléversements de fichiers.",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#file-upload-temp-dir)_"
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#file-upload-temp-dir)_"
                 ]
               },
               "pod_version_end": "",
@@ -4448,7 +4448,7 @@
                   "Chemin absolu du système de fichiers pointant vers le répertoire qui contiendra",
                   "les fichiers téléversés par les utilisateurs.<br>",
                   "Attention, ce répertoire doit exister.<br>",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-MEDIA_ROOT)_"
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-MEDIA_ROOT)_"
                 ]
               },
               "pod_version_end": "",
@@ -4473,7 +4473,7 @@
                   "Indique à django de compresser automatiquement les fichiers css/js",
                   "les plus gros lors du collectstatic pour optimiser les tailles de requetes.<br>",
                   "À combiner avec un réglage webserver (`gzip_static on;` sur nginx)<br>",
-                  "_ref : [whs/django-static-compress](https://github.com/whs/django-static-compress)"
+                  "_ref : [whs/django-static-compress](https://github.com/whs/django-static-compress)"
                 ]
               },
               "pod_version_end": "",
@@ -4487,7 +4487,7 @@
                   "Le chemin absolu vers le répertoire dans lequel collectstatic rassemble",
                   "les fichiers statiques en vue du déploiement.",
                   "Ce chemin sera précisé dans le fichier de configurtation du vhost nginx.<br>",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-STATIC_ROOT)_"
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-STATIC_ROOT)_"
                 ]
               },
               "pod_version_end": "",
@@ -4577,11 +4577,11 @@
                   "Lorsque DEBUG=False et qu’une vue lève une exception,",
                   "Django envoie un courriel à ces personnes contenant les informations complètes de l’exception.<br>",
                   "Chaque élément de la liste doit être un tuple au format",
-                  "« (nom complet, adresse électronique) ».<br>",
-                  "Exemple : `[('John', 'john@example.com'), ('Mary', 'mary@example.com')]`<br>",
+                  "« (nom complet, adresse électronique) ».<br>",
+                  "Exemple : `[('John', 'john@example.com'), ('Mary', 'mary@example.com')]`<br>",
                   "Dans Pod, les \"admins\" sont également destinataires des courriels de contact,",
                   "d’encodage ou de flux RSS si la variable `CONTACT_US_EMAIL` n’est pas renseignée.<br>",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#admins)_"
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#admins)_"
                 ]
               },
               "pod_version_end": "",
@@ -4595,7 +4595,7 @@
                   "Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.<br>",
                   "C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP,",
                   "qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.<br>",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#allowed-hosts)_"
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#allowed-hosts)_"
                 ]
               },
               "pod_version_end": "",
@@ -4706,7 +4706,7 @@
                   "l’ensemble des requetes en https.",
                   "Idem pour les cookies de session et de cross-sites qui seront également sécurisés<br>",
                   "Il faut les passer à False en cas d’usage du runserver (phase de développement / debugage)<br>",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#secure-ssl-redirect)_"
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#secure-ssl-redirect)_"
                 ]
               },
               "pod_version_end": "",
@@ -4796,7 +4796,7 @@
                 "fr": [
                   "Une valeur booléenne qui active ou désactive le mode de débogage.<br>",
                   "Ne déployez jamais de site en production avec le réglage DEBUG activé.<br>",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#debug)_"
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#debug)_"
                 ]
               },
               "pod_version_end": "",
@@ -4974,7 +4974,7 @@
                 "en": [""],
                 "fr": [
                   "url de redirection pour l’authentification de l’utilisateur",
-                  "voir : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#login-url)"
+                  "voir : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#login-url)"
                 ]
               },
               "pod_version_end": "",
@@ -4990,7 +4990,7 @@
                   "Le premier manager renseigné est également contact des flus RSS.<br>",
                   "Ils sont aussi destinataires des courriels de contact",
                   "si la variable `CONTACT_US_EMAIL` n’est pas renseignée.<br>",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#managers)_"
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#managers)_"
                 ]
               },
               "pod_version_end": "",
@@ -5067,8 +5067,8 @@
                   "La clé secrète d’une installation Django.<br>",
                   "Elle est utilisée dans le contexte de la signature cryptographique,",
                   "et doit être définie à une valeur unique et non prédictible.<br>",
-                  "Vous pouvez utiliser ce site pour en générer une : [djecrety.ir](https://djecrety.ir/)<br>",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#secret-key)_"
+                  "Vous pouvez utiliser ce site pour en générer une : [djecrety.ir](https://djecrety.ir/)<br>",
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#secret-key)_"
                 ]
               },
               "pod_version_end": "",
@@ -5192,7 +5192,7 @@
                   "L’identifiant (nombre entier) du site actuel.",
                   "Peut être utilisé pour mettre en place une instance multi-tenant",
                   "et ainsi gérer dans une même base de données du contenu pour plusieurs sites.<br>",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#site-id)_"
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#site-id)_"
                 ]
               },
               "pod_version_end": "",
@@ -5287,7 +5287,7 @@
                 "en": [""],
                 "fr": [
                   "Une chaîne représentant le fuseau horaire pour cette installation.<br>",
-                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-TIME_ZONE)_",
+                  "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-TIME_ZONE)_",
                   "Liste des adresses destinataires des courriels de contact"
                 ]
               },
@@ -5300,12 +5300,12 @@
                 "en": [
                   "A boolean value that enables or disables the debugging tool.<br>",
                   "Never deploy a production site with USE_DEBUG_TOOLBAR enabled.<br>",
-                  "_ref : [django-debug-toolbar.readthedocs.io](https://django-debug-toolbar.readthedocs.io/en/latest/)_"
+                  "_ref : [django-debug-toolbar.readthedocs.io](https://django-debug-toolbar.readthedocs.io/en/latest/)_"
                 ],
                 "fr": [
                   "Une valeur booléenne qui active ou désactive l’outil de débogage.<br>",
                   "Ne déployez jamais de site en production avec le réglage USE_DEBUG_TOOLBAR activé.<br>",
-                  "_ref : [django-debug-toolbar.readthedocs.io](https://django-debug-toolbar.readthedocs.io/en/latest/)_"
+                  "_ref : [django-debug-toolbar.readthedocs.io](https://django-debug-toolbar.readthedocs.io/en/latest/)_"
                 ]
               },
               "pod_version_end": "",
@@ -5763,7 +5763,7 @@
                   "'LINK_PLAYER_NAME': _('Home'),",
                   " ",
                   "# Texte affiché dans le footer. Une ligne par entrée, accepte du code html.",
-                  "# Par exemple :",
+                  "# Par exemple :",
                   "# ( '42, rue Paul Duez',",
                   "#   '59000 Lille - France',",
                   "#   ('<a href=\"https://goo.gl/maps/AZnyBK4hHaM2\"'",
@@ -5775,7 +5775,7 @@
                   " ",
                   "# Si souhaitée, à créer et sauvegarder",
                   "#  dans le répertoire static de l’application custom et",
-                  "#  préciser le chemin d’accès. Par exemple : \"custom/etab.css\"",
+                  "#  préciser le chemin d’accès. Par exemple : \"custom/etab.css\"",
                   "'CSS_OVERRIDE': '',",
                   " ",
                   "# Vous pouvez créer un template dans votre application custom et",
@@ -5853,9 +5853,9 @@
                 ],
                 "fr": [
                   "Paramétrage des modèles pour la transcription",
-                  "Voir la documentation à cette adresse :",
+                  "Voir la documentation à cette adresse :",
                   "[esupportail.github.io](https://esupportail.github.io/Esup-Pod/4.x/Installation/optional/auto-transcription-install_fr)",
-                  "Pour télécharger les modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)",
+                  "Pour télécharger les modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)",
                   "```python",
                   "TRANSCRIPTION_MODEL_PARAM = {",
                   "    # le modèle vosk",
@@ -5940,7 +5940,7 @@
               "description": {
                 "en": ["Choice of transcription tool: `VOSK` or `WHISPER`."],
                 "fr": [
-                  "Choix de l’outil pour la transcription : `VOSK`ou `WHISPER`."
+                  "Choix de l’outil pour la transcription : `VOSK`ou `WHISPER`."
                 ]
               },
               "pod_version_end": "",
@@ -5991,10 +5991,10 @@
           "La plateforme Esup-Pod se base sur le framework Django écrit en Python.",
           "Elle est compatible avec les versions 3.9, 3.10 et 3.12 de Python.",
           "",
-          "**Django Version : 4.2 LTS**",
+          "**Django Version : 4.2 LTS**",
           "",
-          "> La documentation complète du framework : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/)<br>",
-          "> L’ensemble des variables de configuration du framework est accessible à cette adresse : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/)",
+          "> La documentation complète du framework : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/)<br>",
+          "> L’ensemble des variables de configuration du framework est accessible à cette adresse : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/)",
           "",
           "Voici les configurations des applications tierces utilisées par Esup-Pod."
         ]
@@ -6130,7 +6130,7 @@
               "PWA_APP_DIR = \"ltr\"",
               "PWA_APP_LANG = \"fr-FR\"",
               "```",
-              "Pour en savoir plus : [silviolleite/django-pwa](https://github.com/silviolleite/django-pwa)"
+              "Pour en savoir plus : [silviolleite/django-pwa](https://github.com/silviolleite/django-pwa)"
             ]
           },
           "pod_version_end": "",
