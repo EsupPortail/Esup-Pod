@@ -103,10 +103,12 @@ class Command(BaseCommand):
                 msg += "  >> No description available.\n"
         return msg
 
-    def get_description(self, description: list) -> str:
+    def get_description(self, description) -> str:
         """Get a setting description in MD format."""
         msg = ""
         code = False
+        if isinstance(description, str):
+            description = [description]
         for line in description:
             if line == "":
                 msg += "  >>\n"
