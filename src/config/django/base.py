@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "src.apps.utils",
     "src.apps.authentication",
     "src.apps.info",
+    "src.apps.core",
 ]
 
 MIDDLEWARE = [
