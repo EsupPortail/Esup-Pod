@@ -12,6 +12,10 @@ class CoreConfig(AppConfig):
     verbose_name = "Core Configuration Management"
 
     def ready(self):
-        conf_path = os.path.join(settings.BASE_DIR, "src", "apps", "core", "configuration.json")
+        conf_path = os.path.join(
+            settings.BASE_DIR, "src", "apps", "core", "configuration.json"
+        )
         if not os.path.exists(conf_path):
-            logger.warning(f"Configuration file missing at {conf_path}. Management commands won't work.")
+            logger.warning(
+                f"Configuration file missing at {conf_path}. Management commands won't work."
+            )

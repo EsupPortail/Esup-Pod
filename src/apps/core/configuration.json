@@ -95,19 +95,6 @@
               "pod_version_end": "",
               "pod_version_init": "3.7.0"
             },
-            "USE_AI_ENHANCEMENT": {
-              "default_value": false,
-              "description": {
-                "en": [
-                  "Activation of artificial intelligence enhancements. Allows users to use it."
-                ],
-                "fr": [
-                  "Activation des améliorations de l'intelligence artificielle. Permet aux utilisateurs de l'utiliser."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.7.0"
-            },
             "AI_ENHANCEMENT_PROXY_URL": {
               "default_value": "",
               "description": {
@@ -122,6 +109,19 @@
               },
               "pod_version_end": "",
               "pod_version_init": "3.8.2"
+            },
+            "USE_AI_ENHANCEMENT": {
+              "default_value": false,
+              "description": {
+                "en": [
+                  "Activation of artificial intelligence enhancements. Allows users to use it."
+                ],
+                "fr": [
+                  "Activation des améliorations de l'intelligence artificielle. Permet aux utilisateurs de l'utiliser."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.7.0"
             }
           },
           "title": {
@@ -132,15 +132,6 @@
         "authentication": {
           "description": {},
           "settings": {
-            "CAS_ADMIN_AFFILIATION": {
-              "default": null,
-              "description": {
-                "en": "Affiliation required to access the Django admin interface via CAS.",
-                "fr": "Affiliation requise pour accéder à l'interface d'administration Django via CAS."
-              },
-              "pod_version_init": "5.0.0",
-              "pod_version_end": ""
-            },
             "AFFILIATION": {
               "default_value": "",
               "description": {
@@ -247,6 +238,15 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "CAS_ADMIN_AFFILIATION": {
+              "default": null,
+              "description": {
+                "en": "Affiliation required to access the Django admin interface via CAS.",
+                "fr": "Affiliation requise pour accéder à l'interface d'administration Django via CAS."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "CAS_ADMIN_AUTH": {
               "default_value": false,
               "description": {
@@ -261,21 +261,92 @@
               "pod_version_end": "",
               "pod_version_init": "3.1.0"
             },
-            "CAS_FORCE_LOWERCASE_USERNAME": {
+            "CAS_ADMIN_PREFIX": {
+              "default": null,
+              "description": {
+                "en": "Prefix of the admin URL to protect with CAS (optional).",
+                "fr": "Préfixe de l'URL d'administration à protéger avec CAS (optionnel)."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_ADMIN_REDIRECT": {
               "default_value": false,
               "description": {
-                "en": [
-                  "Force CAS username to lowercase (prevents duplicate account creation in some cases).",
-                  " DEPRECATED as of Pod 4.0. Use `CAS_FORCE_CHANGE_USERNAME_CASE`."
-                ],
+                "en": ["Redirect to CAS login for admin interface."],
                 "fr": [
-                  "Forcer le passage en minuscule du nom d’utilisateur CAS",
-                  "(permet de prévenir des doubles créations de comptes dans certains cas).",
-                  "OBSOLÈTE à partir de Pod 4.0. Utilisez `CAS_FORCE_CHANGE_USERNAME_CASE`"
+                  "Rediriger vers la connexion CAS pour l'interface d'administration."
                 ]
               },
-              "pod_version_end": "4.0",
-              "pod_version_init": "3.1"
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_AFFILIATIONS_HANDLERS": {
+              "default": [],
+              "description": {
+                "en": "List of custom handlers to manage CAS affiliations.",
+                "fr": "Liste des gestionnaires personnalisés pour gérer les affiliations CAS."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_AFFILIATIONS_KEY": {
+              "default": "affiliation",
+              "description": {
+                "en": "Attribute key returned by CAS containing the user's affiliations.",
+                "fr": "Clé de l'attribut renvoyé par le CAS contenant les affiliations de l'utilisateur."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_APPLY_ATTRIBUTES_TO_USER": {
+              "default_value": true,
+              "description": {
+                "en": [
+                  "Automatically apply attributes returned by CAS to the user profile."
+                ],
+                "fr": [
+                  "Appliquer automatiquement les attributs renvoyés par le CAS au profil de l'utilisateur."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_CHECK_NEXT": {
+              "default": true,
+              "description": {
+                "en": "Verify that the 'next' parameter redirects to an internal domain to prevent open redirects.",
+                "fr": "Vérifie que le paramètre 'next' redirige vers un domaine interne pour éviter les redirections ouvertes."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_CREATE_USER": {
+              "default": true,
+              "description": {
+                "en": "Create a Django user automatically if the CAS authenticated user does not exist.",
+                "fr": "Créer un utilisateur Django automatiquement si l'utilisateur authentifié CAS n'existe pas."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_CREATE_USER_WITH_ID": {
+              "default": false,
+              "description": {
+                "en": "Use the CAS ID as the primary key for the created user.",
+                "fr": "Utiliser l'ID CAS comme clé primaire pour l'utilisateur créé."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_EXTRA_LOGIN_PARAMS": {
+              "default": {},
+              "description": {
+                "en": "Extra parameters to send to the CAS server during login.",
+                "fr": "Paramètres supplémentaires à envoyer au serveur CAS lors de la connexion."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
             },
             "CAS_FORCE_CHANGE_USERNAME_CASE": {
               "default_value": false,
@@ -294,6 +365,31 @@
               "pod_version_end": "",
               "pod_version_init": "4.0"
             },
+            "CAS_FORCE_LOWERCASE_USERNAME": {
+              "default_value": false,
+              "description": {
+                "en": [
+                  "Force CAS username to lowercase (prevents duplicate account creation in some cases).",
+                  " DEPRECATED as of Pod 4.0. Use `CAS_FORCE_CHANGE_USERNAME_CASE`."
+                ],
+                "fr": [
+                  "Forcer le passage en minuscule du nom d’utilisateur CAS",
+                  "(permet de prévenir des doubles créations de comptes dans certains cas).",
+                  "OBSOLÈTE à partir de Pod 4.0. Utilisez `CAS_FORCE_CHANGE_USERNAME_CASE`"
+                ]
+              },
+              "pod_version_end": "4.0",
+              "pod_version_init": "3.1"
+            },
+            "CAS_FORCE_SSL_SERVICE_URL": {
+              "default": false,
+              "description": {
+                "en": "Force the service URL sent to CAS to use HTTPS.",
+                "fr": "Forcer l'URL de service envoyée au CAS à utiliser HTTPS."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "CAS_GATEWAY": {
               "default_value": false,
               "description": {
@@ -311,6 +407,60 @@
               "pod_version_end": "4.0",
               "pod_version_init": "3.1"
             },
+            "CAS_IGNORE_REFERER": {
+              "default": false,
+              "description": {
+                "en": "Ignore the Referer header when determining the 'next' redirect URL.",
+                "fr": "Ignorer l'en-tête Referer lors de la détermination de l'URL de redirection 'next'."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_LOCAL_NAME_FIELD": {
+              "default": "username",
+              "description": {
+                "en": "Field of the user model to store the CAS username.",
+                "fr": "Champ du modèle utilisateur pour stocker le nom d'utilisateur CAS."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_LOGGED_MSG": {
+              "default": "You are logged in as %s.",
+              "description": {
+                "en": "Message displayed when the user is successfully logged in.",
+                "fr": "Message affiché lorsque l'utilisateur est connecté avec succès."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_LOGIN_MSG": {
+              "default": null,
+              "description": {
+                "en": "Message displayed when the user needs to log in.",
+                "fr": "Message affiché lorsque l'utilisateur doit se connecter."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_LOGIN_NEXT_PAGE": {
+              "default": null,
+              "description": {
+                "en": "URL to redirect to after a successful login if no 'next' parameter is provided.",
+                "fr": "URL vers laquelle rediriger après une connexion réussie si aucun paramètre 'next' n'est fourni."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_LOGIN_URL_NAME": {
+              "default": "cas_ng_login",
+              "description": {
+                "en": "Name of the URL pattern for the CAS login view.",
+                "fr": "Nom du motif d'URL pour la vue de connexion CAS."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "CAS_LOGOUT_COMPLETELY": {
               "default_value": true,
               "description": {
@@ -324,18 +474,23 @@
               "pod_version_end": "",
               "pod_version_init": "3.1.0"
             },
-            "CAS_SERVER_URL": {
-              "default_value": "sso_cas",
+            "CAS_LOGOUT_NEXT_PAGE": {
+              "default": null,
               "description": {
-                "en": [
-                  "Url of the institution’s CAS server. In the format https://url_cas"
-                ],
-                "fr": [
-                  "Url du serveur CAS de l’établissement. Format `http://url_cas`"
-                ]
+                "en": "URL to redirect to after logout.",
+                "fr": "URL vers laquelle rediriger après la déconnexion."
               },
               "pod_version_end": "",
-              "pod_version_init": "3.1"
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_LOGOUT_URL_NAME": {
+              "default": "cas_ng_logout",
+              "description": {
+                "en": "Name of the URL pattern for the CAS logout view.",
+                "fr": "Nom du motif d'URL pour la vue de déconnexion CAS."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
             },
             "CAS_MAP_AFFILIATIONS": {
               "default_value": false,
@@ -353,6 +508,109 @@
               },
               "pod_version_end": "",
               "pod_version_init": "4.0"
+            },
+            "CAS_PROXY_CALLBACK": {
+              "default": null,
+              "description": {
+                "en": "The URL to be used as the proxy callback.",
+                "fr": "L'URL à utiliser comme rappel (callback) de proxy."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_REDIRECT_URL": {
+              "default": "/",
+              "description": {
+                "en": "URL to redirect to after successful login if no 'next' parameter is present.",
+                "fr": "URL de redirection après une connexion réussie si aucun paramètre 'next' n'est présent."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_RENAME_ATTRIBUTES": {
+              "default": {},
+              "description": {
+                "en": "A dictionary to rename CAS attributes in the user session.",
+                "fr": "Un dictionnaire pour renommer les attributs CAS dans la session utilisateur."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_RENEW": {
+              "default": false,
+              "description": {
+                "en": "Enforce CAS renew parameter (force re-login even if SSO session exists).",
+                "fr": "Forcer le paramètre renew du CAS (oblige à se reconnecter même si une session SSO existe)."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_RETRY_LOGIN": {
+              "default": false,
+              "description": {
+                "en": "Retry login if the CAS ticket validation fails.",
+                "fr": "Réessayer la connexion si la validation du ticket CAS échoue."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_SERVER_URL": {
+              "default_value": "sso_cas",
+              "description": {
+                "en": [
+                  "Url of the institution’s CAS server. In the format https://url_cas"
+                ],
+                "fr": [
+                  "Url du serveur CAS de l’établissement. Format `http://url_cas`"
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.1"
+            },
+            "CAS_SESSION_FACTORY": {
+              "default": null,
+              "description": {
+                "en": "Custom factory to create the user session.",
+                "fr": "Usine personnalisée pour créer la session utilisateur."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_STORE_NEXT": {
+              "default": false,
+              "description": {
+                "en": "Store the 'next' URL in the session instead of passing it as a GET parameter.",
+                "fr": "Stocker l'URL 'next' dans la session au lieu de la passer en paramètre GET."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_USERNAME_ATTRIBUTE": {
+              "default": "uid",
+              "description": {
+                "en": "The attribute in the CAS response that contains the username.",
+                "fr": "L'attribut dans la réponse CAS qui contient le nom d'utilisateur."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_VERIFY_SSL_CERTIFICATE": {
+              "default": true,
+              "description": {
+                "en": "Verify the SSL certificate of the CAS server.",
+                "fr": "Vérifier le certificat SSL du serveur CAS."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CAS_VERSION": {
+              "default_value": "3",
+              "description": {
+                "en": ["CAS protocol version."],
+                "fr": ["Version du protocole CAS."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
             },
             "CREATE_GROUP_FROM_AFFILIATION": {
               "default_value": false,
@@ -461,11 +719,49 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "LDAP_SERVER_PORT": {
+              "default_value": 389,
+              "description": {
+                "en": ["LDAP server port."],
+                "fr": ["Port du serveur LDAP."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "LDAP_SERVER_URL": {
+              "default_value": "ldap://ldap.univ.fr",
+              "description": {
+                "en": ["LDAP server URL."],
+                "fr": ["URL du serveur LDAP."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "LDAP_SERVER_USE_SSL": {
+              "default_value": false,
+              "description": {
+                "en": ["Use SSL for LDAP connection."],
+                "fr": ["Utiliser SSL pour la connexion LDAP."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "OIDC_CLAIM_FAMILY_NAME": {
               "default_value": "family_name",
               "description": {
                 "en": [""],
                 "fr": [""]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.1"
+            },
+            "OIDC_CLAIM_GIVEN_NAME": {
+              "default_value": "given_name",
+              "description": {
+                "en": [""],
+                "fr": [
+                  "Noms des Claim permettant de récupérer les attributs nom, prénom, email"
+                ]
               },
               "pod_version_end": "",
               "pod_version_init": "3.1"
@@ -477,17 +773,6 @@
                 "fr": [
                   "Noms des Claim permettant de récupérer",
                   "l’attribut login mais dépendant de l’attribut du client dans l’IDP."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.1"
-            },
-            "OIDC_CLAIM_GIVEN_NAME": {
-              "default_value": "given_name",
-              "description": {
-                "en": [""],
-                "fr": [
-                  "Noms des Claim permettant de récupérer les attributs nom, prénom, email"
                 ]
               },
               "pod_version_end": "",
@@ -548,6 +833,15 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "OIDC_OP_LOGOUT_ENDPOINT": {
+              "default_value": "",
+              "description": {
+                "en": ["OIDC provider logout endpoint."],
+                "fr": ["Endpoint de déconnexion du fournisseur OIDC."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "OIDC_OP_TOKEN_ENDPOINT": {
               "default_value": "https",
               "description": {
@@ -565,15 +859,6 @@
               },
               "pod_version_end": "",
               "pod_version_init": "3.1"
-            },
-            "OIDC_OP_LOGOUT_ENDPOINT": {
-              "default_value": "",
-              "description": {
-                "en": ["OIDC provider logout endpoint."],
-                "fr": ["Endpoint de déconnexion du fournisseur OIDC."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "5.0.0"
             },
             "OIDC_RP_CLIENT_ID": {
               "default_value": "os.environ",
@@ -682,6 +967,15 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "SIMPLE_JWT": {
+              "default_value": {},
+              "description": {
+                "en": ["Configuration for JSON Web Tokens (JWT)."],
+                "fr": ["Configuration pour les JSON Web Tokens (JWT)."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "USER_CAS_MAPPING_ATTRIBUTES": {
               "default_value": "",
               "description": {
@@ -718,6 +1012,28 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "USE_LDAP": {
+              "default_value": false,
+              "description": {
+                "en": ["Enable LDAP authentication."],
+                "fr": ["Activer l'authentification LDAP."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "USE_LOCAL_AUTH": {
+              "default_value": true,
+              "description": {
+                "en": [
+                  "Enable local authentication (username/password stored in database)."
+                ],
+                "fr": [
+                  "Activer l'authentification locale (nom d'utilisateur/mot de passe stockés dans la base de données)."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "USE_OIDC": {
               "default_value": false,
               "description": {
@@ -739,97 +1055,6 @@
               },
               "pod_version_end": "",
               "pod_version_init": "3.1"
-            },
-            "USE_LOCAL_AUTH": {
-              "default_value": true,
-              "description": {
-                "en": [
-                  "Enable local authentication (username/password stored in database)."
-                ],
-                "fr": [
-                  "Activer l'authentification locale (nom d'utilisateur/mot de passe stockés dans la base de données)."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "5.0.0"
-            },
-            "USE_LDAP": {
-              "default_value": false,
-              "description": {
-                "en": ["Enable LDAP authentication."],
-                "fr": ["Activer l'authentification LDAP."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "5.0.0"
-            },
-            "CAS_VERSION": {
-              "default_value": "3",
-              "description": {
-                "en": ["CAS protocol version."],
-                "fr": ["Version du protocole CAS."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "5.0.0"
-            },
-            "CAS_APPLY_ATTRIBUTES_TO_USER": {
-              "default_value": true,
-              "description": {
-                "en": [
-                  "Automatically apply attributes returned by CAS to the user profile."
-                ],
-                "fr": [
-                  "Appliquer automatiquement les attributs renvoyés par le CAS au profil de l'utilisateur."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "5.0.0"
-            },
-            "CAS_ADMIN_REDIRECT": {
-              "default_value": false,
-              "description": {
-                "en": ["Redirect to CAS login for admin interface."],
-                "fr": [
-                  "Rediriger vers la connexion CAS pour l'interface d'administration."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "5.0.0"
-            },
-            "LDAP_SERVER_URL": {
-              "default_value": "ldap://ldap.univ.fr",
-              "description": {
-                "en": ["LDAP server URL."],
-                "fr": ["URL du serveur LDAP."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "5.0.0"
-            },
-            "LDAP_SERVER_PORT": {
-              "default_value": 389,
-              "description": {
-                "en": ["LDAP server port."],
-                "fr": ["Port du serveur LDAP."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "5.0.0"
-            },
-            "LDAP_SERVER_USE_SSL": {
-              "default_value": false,
-              "description": {
-                "en": ["Use SSL for LDAP connection."],
-                "fr": ["Utiliser SSL pour la connexion LDAP."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "5.0.0"
-            },
-            "SIMPLE_JWT": {
-              "default_value": {},
-              "description": {
-                "en": ["Configuration for JSON Web Tokens (JWT)."],
-                "fr": ["Configuration pour les JSON Web Tokens (JWT)."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "5.0.0"
             }
           },
           "title": {
@@ -1056,6 +1281,14 @@
             "fr": "Configuration de l’application duplicate"
           }
         },
+        "enrichment": {
+          "description": {},
+          "settings": {},
+          "title": {
+            "en": "",
+            "fr": "Configuration de l’application enrichment"
+          }
+        },
         "hyperlinks": {
           "description": {
             "en": [
@@ -1083,52 +1316,6 @@
             "fr": "Configuration de l’application Liens"
           }
         },
-        "enrichment": {
-          "description": {},
-          "settings": {},
-          "title": {
-            "en": "",
-            "fr": "Configuration de l’application enrichment"
-          }
-        },
-        "speaker": {
-          "description": {
-            "en": [
-              "Speaker application to add speakers to video.",
-              "Set `USE_SPEAKER` to True to activate this application."
-            ],
-            "fr": [
-              "Application Intervenant permettant d'ajouter des intervenants à la vidéo.",
-              "Mettre `USE_SPEAKER` à True pour activer cette application."
-            ]
-          },
-          "settings": {
-            "USE_SPEAKER": {
-              "default_value": false,
-              "description": {
-                "en": ["Activation of the Speaker application"],
-                "fr": ["Activation de l’application Intervenant"]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.8.0"
-            },
-            "REQUIRED_SPEAKER_FIRSTNAME": {
-              "default_value": true,
-              "description": {
-                "en": ["First name required in the speaker addition form"],
-                "fr": [
-                  "Prénom obligatoire dans le formulaire d'ajout intervenant"
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": ""
-            }
-          },
-          "title": {
-            "en": "Speaker application configuration",
-            "fr": "Configuration de l’application Intervenant"
-          }
-        },
         "import_video": {
           "description": {
             "en": [
@@ -1141,6 +1328,36 @@
             ]
           },
           "settings": {
+            "IMPORT_VIDEO_BBB_RECORDER_PATH": {
+              "default_value": "/data/bbb-recorder/media/",
+              "description": {
+                "en": [
+                  "Directory that will contain the video files generated by bbb-recorder."
+                ],
+                "fr": [
+                  "Répertoire qui contiendra les fichiers vidéo générés par bbb-recorder."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.5.1"
+            },
+            "IMPORT_VIDEO_BBB_RECORDER_PLUGIN": {
+              "default_value": "/home/pod/bbb-recorder/",
+              "description": {
+                "en": [
+                  "bbb-recorder plugin directory (see [jibon57/bbb-recorder](https://github.com/jibon57/bbb-recorder) documentation).",
+                  "bbb-recorder must be installed in this directory, on all encoding servers.",
+                  "bbb-recorder creates a Downloads directory, at the same level, which requires disk space."
+                ],
+                "fr": [
+                  "Répertoire du plugin bbb-recorder (voir la documentation [jibon57/bbb-recorder](https://github.com/jibon57/bbb-recorder)).",
+                  "bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d’encodage.",
+                  "bbb-recorder crée un répertoire Downloads, au même niveau, qui nécessite de l’espace disque."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.5.1"
+            },
             "MAX_UPLOAD_SIZE_ON_IMPORT": {
               "default_value": 4,
               "description": {
@@ -1186,36 +1403,6 @@
                 "fr": [
                   "Utilisation du plugin bbb-recorder pour le module import-vidéo; ",
                   "utile pour convertir une présentation BigBlueButton en fichier vidéo."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.5.1"
-            },
-            "IMPORT_VIDEO_BBB_RECORDER_PLUGIN": {
-              "default_value": "/home/pod/bbb-recorder/",
-              "description": {
-                "en": [
-                  "bbb-recorder plugin directory (see [jibon57/bbb-recorder](https://github.com/jibon57/bbb-recorder) documentation).",
-                  "bbb-recorder must be installed in this directory, on all encoding servers.",
-                  "bbb-recorder creates a Downloads directory, at the same level, which requires disk space."
-                ],
-                "fr": [
-                  "Répertoire du plugin bbb-recorder (voir la documentation [jibon57/bbb-recorder](https://github.com/jibon57/bbb-recorder)).",
-                  "bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d’encodage.",
-                  "bbb-recorder crée un répertoire Downloads, au même niveau, qui nécessite de l’espace disque."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.5.1"
-            },
-            "IMPORT_VIDEO_BBB_RECORDER_PATH": {
-              "default_value": "/data/bbb-recorder/media/",
-              "description": {
-                "en": [
-                  "Directory that will contain the video files generated by bbb-recorder."
-                ],
-                "fr": [
-                  "Répertoire qui contiendra les fichiers vidéo générés par bbb-recorder."
                 ]
               },
               "pod_version_end": "",
@@ -1535,6 +1722,17 @@
               "pod_version_end": "3.6.0",
               "pod_version_init": "3.2.0"
             },
+            "SOCIAL_SHARE": {
+              "default_value": "['X', 'FACEBOOK', 'LINKEDIN', 'BLUESKY', 'MASTODON']",
+              "description": {
+                "en": ["Choice of display of social network sharing links"],
+                "fr": [
+                  "Choix d'affichage des liens de partage des réseaux sociaux"
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "4.0.0"
+            },
             "USE_BBB": {
               "default_value": true,
               "description": {
@@ -1606,17 +1804,6 @@
               },
               "pod_version_end": "",
               "pod_version_init": "3.7.0"
-            },
-            "SOCIAL_SHARE": {
-              "default_value": "['X', 'FACEBOOK', 'LINKEDIN', 'BLUESKY', 'MASTODON']",
-              "description": {
-                "en": ["Choice of display of social network sharing links"],
-                "fr": [
-                  "Choix d'affichage des liens de partage des réseaux sociaux"
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "4.0.0"
             }
           },
           "title": {
@@ -1850,56 +2037,17 @@
               "pod_version_end": "",
               "pod_version_init": "3.1.0"
             },
-            "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY": {
-              "default_value": false,
+            "MEETING_WEBINAR_AFFILIATION": {
+              "default_value": "['faculty', 'employee', 'staff']",
               "description": {
-                "en": [""],
+                "en": [
+                  "Access groups or affiliations of people authorized to create a webinar"
+                ],
                 "fr": [
-                  "Seuls les utilisateurs \"staff\" pourront éditer les réunions"
+                  "Groupes d’accès ou affiliations des personnes autorisées à créer un webinaire"
                 ]
               },
               "pod_version_end": "",
-              "pod_version_init": "3.1"
-            },
-            "USE_MEETING_WEBINAR": {
-              "default_value": false,
-              "description": {
-                "en": ["Activate Webinar mode for the meetings module"],
-                "fr": [
-                  "Activation du mode Webinaire pour le module des réunions"
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.6.0"
-            },
-            "MEETING_WEBINAR_SIPMEDIAGW_URL": {
-              "default_value": "",
-              "description": {
-                "en": [
-                  "URL of the SIPMediaGW server that manages webinars (e.g. `https://sipmediagw.univ.fr`)",
-                  "Retired as of Pod version 3.8.2 (replaced by the meetings module, see live gateway)"
-                ],
-                "fr": [
-                  "URL du serveur SIPMediaGW qui gère les webinaires (Ex: `https://sipmediagw.univ.fr`)",
-                  "Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions, cf. passerelle de live)"
-                ]
-              },
-              "pod_version_end": "3.8.2",
-              "pod_version_init": "3.6.0"
-            },
-            "MEETING_WEBINAR_SIPMEDIAGW_TOKEN": {
-              "default_value": "",
-              "description": {
-                "en": [
-                  "Bearer token for the SIPMediaGW server that manages webinars",
-                  "Retired as of Pod version 3.8.2 (see live gateway)"
-                ],
-                "fr": [
-                  "Jeton bearer du serveur SIPMediaGW qui gère les webinaires",
-                  "Retiré à partir de la version 3.8.2 de Pod (cf. passerelle de live)"
-                ]
-              },
-              "pod_version_end": "3.8.2",
               "pod_version_init": "3.6.0"
             },
             "MEETING_WEBINAR_FIELDS": {
@@ -1924,19 +2072,6 @@
               "pod_version_end": "",
               "pod_version_init": "3.6.0"
             },
-            "MEETING_WEBINAR_AFFILIATION": {
-              "default_value": "['faculty', 'employee', 'staff']",
-              "description": {
-                "en": [
-                  "Access groups or affiliations of people authorized to create a webinar"
-                ],
-                "fr": [
-                  "Groupes d’accès ou affiliations des personnes autorisées à créer un webinaire"
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.6.0"
-            },
             "MEETING_WEBINAR_GROUP_ADMIN": {
               "default_value": "webinar admin",
               "description": {
@@ -1946,6 +2081,47 @@
               "pod_version_end": "",
               "pod_version_init": "3.6.0"
             },
+            "MEETING_WEBINAR_SIPMEDIAGW_TOKEN": {
+              "default_value": "",
+              "description": {
+                "en": [
+                  "Bearer token for the SIPMediaGW server that manages webinars",
+                  "Retired as of Pod version 3.8.2 (see live gateway)"
+                ],
+                "fr": [
+                  "Jeton bearer du serveur SIPMediaGW qui gère les webinaires",
+                  "Retiré à partir de la version 3.8.2 de Pod (cf. passerelle de live)"
+                ]
+              },
+              "pod_version_end": "3.8.2",
+              "pod_version_init": "3.6.0"
+            },
+            "MEETING_WEBINAR_SIPMEDIAGW_URL": {
+              "default_value": "",
+              "description": {
+                "en": [
+                  "URL of the SIPMediaGW server that manages webinars (e.g. `https://sipmediagw.univ.fr`)",
+                  "Retired as of Pod version 3.8.2 (replaced by the meetings module, see live gateway)"
+                ],
+                "fr": [
+                  "URL du serveur SIPMediaGW qui gère les webinaires (Ex: `https://sipmediagw.univ.fr`)",
+                  "Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions, cf. passerelle de live)"
+                ]
+              },
+              "pod_version_end": "3.8.2",
+              "pod_version_init": "3.6.0"
+            },
+            "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY": {
+              "default_value": false,
+              "description": {
+                "en": [""],
+                "fr": [
+                  "Seuls les utilisateurs \"staff\" pourront éditer les réunions"
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.1"
+            },
             "USE_MEETING": {
               "default_value": false,
               "description": {
@@ -1954,6 +2130,17 @@
               },
               "pod_version_end": "",
               "pod_version_init": "3.1"
+            },
+            "USE_MEETING_WEBINAR": {
+              "default_value": false,
+              "description": {
+                "en": ["Activate Webinar mode for the meetings module"],
+                "fr": [
+                  "Activation du mode Webinaire pour le module des réunions"
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.6.0"
             }
           },
           "title": {
@@ -2454,6 +2641,44 @@
             "fr": "Configuration de l’application recorder"
           }
         },
+        "speaker": {
+          "description": {
+            "en": [
+              "Speaker application to add speakers to video.",
+              "Set `USE_SPEAKER` to True to activate this application."
+            ],
+            "fr": [
+              "Application Intervenant permettant d'ajouter des intervenants à la vidéo.",
+              "Mettre `USE_SPEAKER` à True pour activer cette application."
+            ]
+          },
+          "settings": {
+            "REQUIRED_SPEAKER_FIRSTNAME": {
+              "default_value": true,
+              "description": {
+                "en": ["First name required in the speaker addition form"],
+                "fr": [
+                  "Prénom obligatoire dans le formulaire d'ajout intervenant"
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": ""
+            },
+            "USE_SPEAKER": {
+              "default_value": false,
+              "description": {
+                "en": ["Activation of the Speaker application"],
+                "fr": ["Activation de l’application Intervenant"]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.8.0"
+            }
+          },
+          "title": {
+            "en": "Speaker application configuration",
+            "fr": "Configuration de l’application Intervenant"
+          }
+        },
         "video": {
           "description": {},
           "settings": {
@@ -2652,21 +2877,6 @@
               "pod_version_end": "",
               "pod_version_init": "3.1.0"
             },
-            "NUMBER_TAGS_CLOUD": {
-              "default_value": 20,
-              "description": {
-                "en": [
-                  "Number of most important tags displayed in the cloud on the home page.",
-                  "TAGULOUS_WEIGHT_MIN and TAGULOUS_WEIGHT_MAX parameters are not used."
-                ],
-                "fr": [
-                  "Nombre de mots-clés les plus importants affichés dans le nuage de la page d'accueil.",
-                  "Les paramètres TAGULOUS_WEIGHT_MIN et TAGULOUS_WEIGHT_MAX ne sont pas utilisés."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "4.0.0"
-            },
             "NOTES_STATUS": {
               "default_value": "()",
               "description": {
@@ -2684,6 +2894,21 @@
               },
               "pod_version_end": "",
               "pod_version_init": "3.1.0"
+            },
+            "NUMBER_TAGS_CLOUD": {
+              "default_value": 20,
+              "description": {
+                "en": [
+                  "Number of most important tags displayed in the cloud on the home page.",
+                  "TAGULOUS_WEIGHT_MIN and TAGULOUS_WEIGHT_MAX parameters are not used."
+                ],
+                "fr": [
+                  "Nombre de mots-clés les plus importants affichés dans le nuage de la page d'accueil.",
+                  "Les paramètres TAGULOUS_WEIGHT_MIN et TAGULOUS_WEIGHT_MAX ne sont pas utilisés."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "4.0.0"
             },
             "OEMBED": {
               "default_value": false,
@@ -3354,13 +3579,17 @@
               "pod_version_end": "",
               "pod_version_init": "3.1.0"
             },
-            "USE_REMOTE_ENCODING_TRANSCODING": {
-              "default_value": false,
+            "POD_API_TOKEN": {
+              "default_value": "",
               "description": {
-                "en": [""],
+                "en": [
+                  "Authentication token used for the call at the end of remote encoding or remote transcription.",
+                  "To create it, go to Admin > Authentication token > token."
+                ],
                 "fr": [
-                  "",
-                  "Si True, active l’encodage et la transcription sur un environnement distant via redis+celery"
+                  "Token d’authentification utilisé pour l’appel",
+                  "en fin d’encodage distant ou de transcription à distance.",
+                  "Pour le créer, il faut aller dans la partie Admin > Jeton d’authentification > token."
                 ]
               },
               "pod_version_end": "",
@@ -3382,17 +3611,13 @@
               "pod_version_end": "",
               "pod_version_init": "3.5.1"
             },
-            "POD_API_TOKEN": {
-              "default_value": "",
+            "USE_REMOTE_ENCODING_TRANSCODING": {
+              "default_value": false,
               "description": {
-                "en": [
-                  "Authentication token used for the call at the end of remote encoding or remote transcription.",
-                  "To create it, go to Admin > Authentication token > token."
-                ],
+                "en": [""],
                 "fr": [
-                  "Token d’authentification utilisé pour l’appel",
-                  "en fin d’encodage distant ou de transcription à distance.",
-                  "Pour le créer, il faut aller dans la partie Admin > Jeton d’authentification > token."
+                  "",
+                  "Si True, active l’encodage et la transcription sur un environnement distant via redis+celery"
                 ]
               },
               "pod_version_end": "",
@@ -3469,6 +3694,19 @@
               "pod_version_end": "",
               "pod_version_init": "3.1.0"
             },
+            "ES_OPTIONS": {
+              "default_value": {},
+              "description": {
+                "en": [""],
+                "fr": [
+                  "Options d’ElasticSearch, notamment utilisées pour ES8 en SSL et avec un user en paramètre",
+                  "Voir [www.elastic.co](https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/config.html)",
+                  "pour plus d’informations."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.1.0"
+            },
             "ES_TIMEOUT": {
               "default_value": 30,
               "description": {
@@ -3501,19 +3739,6 @@
                   "pour la 8, `pip3 install elasticsearch==8.17.2`.",
                   "Voir [elasticsearch-py.readthedocs.io](https://elasticsearch-py.readthedocs.io/)",
                   "pour plus d’information."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.1.0"
-            },
-            "ES_OPTIONS": {
-              "default_value": {},
-              "description": {
-                "en": [""],
-                "fr": [
-                  "Options d’ElasticSearch, notamment utilisées pour ES8 en SSL et avec un user en paramètre",
-                  "Voir [www.elastic.co](https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/config.html)",
-                  "pour plus d’informations."
                 ]
               },
               "pod_version_end": "",
@@ -3693,6 +3918,15 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "EMAIL_BACKEND": {
+              "default_value": "django.core.mail.backends.smtp.EmailBackend",
+              "description": {
+                "en": ["The backend to use for sending emails."],
+                "fr": ["Le backend à utiliser pour l'envoi de courriels."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.1"
+            },
             "EMAIL_HOST": {
               "default_value": "smtp.univ.fr",
               "description": {
@@ -3700,6 +3934,32 @@
                 "fr": [
                   "nom du serveur smtp ",
                   "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#email-host)_"
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.1"
+            },
+            "EMAIL_HOST_PASSWORD": {
+              "default_value": "",
+              "description": {
+                "en": [
+                  "Password to use for the SMTP server defined in EMAIL_HOST."
+                ],
+                "fr": [
+                  "Mot de passe à utiliser pour le serveur SMTP défini dans EMAIL_HOST."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.1"
+            },
+            "EMAIL_HOST_USER": {
+              "default_value": "",
+              "description": {
+                "en": [
+                  "Username to use for the SMTP server defined in EMAIL_HOST."
+                ],
+                "fr": [
+                  "Nom d'utilisateur à utiliser pour le serveur SMTP défini dans EMAIL_HOST."
                 ]
               },
               "pod_version_end": "",
@@ -3723,6 +3983,19 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "EMAIL_USE_TLS": {
+              "default_value": false,
+              "description": {
+                "en": [
+                  "Whether to use a TLS (secure) connection when talking to the SMTP server."
+                ],
+                "fr": [
+                  "Indique s'il faut utiliser une connexion TLS (sécurisée) lors de la communication avec le serveur SMTP."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.1"
+            },
             "NOTIFY_SENDER": {
               "default_value": "True",
               "description": {
@@ -3742,54 +4015,6 @@
                 "en": [""],
                 "fr": [
                   "Expediteur par défaut pour les envois automatique (erreur de code etc.)"
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.1"
-            },
-            "EMAIL_BACKEND": {
-              "default_value": "django.core.mail.backends.smtp.EmailBackend",
-              "description": {
-                "en": ["The backend to use for sending emails."],
-                "fr": ["Le backend à utiliser pour l'envoi de courriels."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.1"
-            },
-            "EMAIL_USE_TLS": {
-              "default_value": false,
-              "description": {
-                "en": [
-                  "Whether to use a TLS (secure) connection when talking to the SMTP server."
-                ],
-                "fr": [
-                  "Indique s'il faut utiliser une connexion TLS (sécurisée) lors de la communication avec le serveur SMTP."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.1"
-            },
-            "EMAIL_HOST_USER": {
-              "default_value": "",
-              "description": {
-                "en": [
-                  "Username to use for the SMTP server defined in EMAIL_HOST."
-                ],
-                "fr": [
-                  "Nom d'utilisateur à utiliser pour le serveur SMTP défini dans EMAIL_HOST."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.1"
-            },
-            "EMAIL_HOST_PASSWORD": {
-              "default_value": "",
-              "description": {
-                "en": [
-                  "Password to use for the SMTP server defined in EMAIL_HOST."
-                ],
-                "fr": [
-                  "Mot de passe à utiliser pour le serveur SMTP défini dans EMAIL_HOST."
                 ]
               },
               "pod_version_end": "",
@@ -3908,6 +4133,110 @@
               },
               "pod_version_end": "",
               "pod_version_init": "3.1.0"
+            },
+            "FFMPEG_DRESSING_AUDIO": {
+              "default_value": "[%(param_in)s]anull[%(param_out)s]",
+              "description": {
+                "en": [
+                  "Processes audio without modifications for inclusion in the temporary dressed video."
+                ],
+                "fr": [
+                  "Traite l'audio sans modifications pour l'inclure dans la vidéo temporaire d'habillage."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "4.0.0"
+            },
+            "FFMPEG_DRESSING_CONCAT": {
+              "default_value": "%(params)sconcat=n=%(number)s:v=1:a=1:unsafe=1[v][a]",
+              "description": {
+                "en": [
+                  "Concatenates multiple video and audio streams into a single temporary dressed video output."
+                ],
+                "fr": [
+                  "Concatène plusieurs flux vidéo et audio en une seule sortie de vidéo temporaire d'habillage."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.5.0"
+            },
+            "FFMPEG_DRESSING_FILTER_COMPLEX": {
+              "default_value": " -filter_complex \"%(filter)s\" ",
+              "description": {
+                "en": [
+                  "Applies complex filter chains to the intermediate dressed video using FFmpeg."
+                ],
+                "fr": [
+                  "Applique des chaînes de filtres complexes à la vidéo intermédiaire d'habillage avec FFmpeg."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.5.0"
+            },
+            "FFMPEG_DRESSING_INPUT": {
+              "default_value": " -i \"%(input)s\" ",
+              "description": {
+                "en": [
+                  "Defines the input file for FFmpeg processing of the intermediate dressed video."
+                ],
+                "fr": [
+                  "Définit le fichier d'entrée pour le traitement FFmpeg de la vidéo intermédiaire d'habillage."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.5.0"
+            },
+            "FFMPEG_DRESSING_OUTPUT": {
+              "default_value": " -c:v libx264 -y -vsync 0 \"%(output)s\" ",
+              "description": {
+                "en": [
+                  "Specifies the FFmpeg output encoding settings for generating the temporary dressed video file, using the H.264 codec with forced overwrite and synchronized video output."
+                ],
+                "fr": [
+                  "Spécifie les paramètres d'encodage de sortie FFmpeg pour générer le fichier vidéo temporaire d'habillage, utilisant le codec H.264 avec écrasement forcé et synchronisation de la sortie vidéo."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.5.0"
+            },
+            "FFMPEG_DRESSING_SCALE": {
+              "default_value": "[%(number)s]scale=w='if(gt(a,16/9),16/9*%(height)s,-2)':h='if(gt(a,16/9),-2,%(height)s)',pad=ceil(16/9*%(height)s):%(height)s:(ow-iw)/2:(oh-ih)/2[%(name)s]",
+              "description": {
+                "en": [
+                  "Rescales the intermediate dressed video to maintain a 16:9 aspect ratio with padding if necessary."
+                ],
+                "fr": [
+                  "Redimensionne la vidéo intermédiaire d'habillage pour maintenir un ratio d'aspect 16:9 avec ajout de bordures si nécessaire."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.5.0"
+            },
+            "FFMPEG_DRESSING_SILENT": {
+              "default_value": " -f lavfi -t %(duration)s -i anullsrc=r=44100:cl=stereo",
+              "description": {
+                "en": [
+                  "Generates silent audio of specified duration for the temporary dressed video."
+                ],
+                "fr": [
+                  "Génère un audio silencieux d'une durée spécifiée pour la vidéo temporaire d'habillage."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "4.0.0"
+            },
+            "FFMPEG_DRESSING_WATERMARK": {
+              "default_value": " [1]format=rgba,colorchannelmixer=aa=%(opacity)s[logo]; [logo][vid]scale2ref=oh*mdar:ih*0.1[logo][video2]; [video2][logo]%(position)s%(name_out)s ",
+              "description": {
+                "en": [
+                  "Adds a watermark to the intermediate dressed video with customizable opacity and position."
+                ],
+                "fr": [
+                  "Ajoute un filigrane à la vidéo intermédiaire d'habillage avec une opacité et une position personnalisables."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.5.0"
             },
             "FFMPEG_EXTRACT_SUBTITLE": {
               "default_value": "-map 0:%(index)s -f webvtt -y \"%(output)s\"",
@@ -4070,110 +4399,6 @@
               },
               "pod_version_end": "",
               "pod_version_init": "3.1.0"
-            },
-            "FFMPEG_DRESSING_OUTPUT": {
-              "default_value": " -c:v libx264 -y -vsync 0 \"%(output)s\" ",
-              "description": {
-                "en": [
-                  "Specifies the FFmpeg output encoding settings for generating the temporary dressed video file, using the H.264 codec with forced overwrite and synchronized video output."
-                ],
-                "fr": [
-                  "Spécifie les paramètres d'encodage de sortie FFmpeg pour générer le fichier vidéo temporaire d'habillage, utilisant le codec H.264 avec écrasement forcé et synchronisation de la sortie vidéo."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.5.0"
-            },
-            "FFMPEG_DRESSING_INPUT": {
-              "default_value": " -i \"%(input)s\" ",
-              "description": {
-                "en": [
-                  "Defines the input file for FFmpeg processing of the intermediate dressed video."
-                ],
-                "fr": [
-                  "Définit le fichier d'entrée pour le traitement FFmpeg de la vidéo intermédiaire d'habillage."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.5.0"
-            },
-            "FFMPEG_DRESSING_FILTER_COMPLEX": {
-              "default_value": " -filter_complex \"%(filter)s\" ",
-              "description": {
-                "en": [
-                  "Applies complex filter chains to the intermediate dressed video using FFmpeg."
-                ],
-                "fr": [
-                  "Applique des chaînes de filtres complexes à la vidéo intermédiaire d'habillage avec FFmpeg."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.5.0"
-            },
-            "FFMPEG_DRESSING_WATERMARK": {
-              "default_value": " [1]format=rgba,colorchannelmixer=aa=%(opacity)s[logo]; [logo][vid]scale2ref=oh*mdar:ih*0.1[logo][video2]; [video2][logo]%(position)s%(name_out)s ",
-              "description": {
-                "en": [
-                  "Adds a watermark to the intermediate dressed video with customizable opacity and position."
-                ],
-                "fr": [
-                  "Ajoute un filigrane à la vidéo intermédiaire d'habillage avec une opacité et une position personnalisables."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.5.0"
-            },
-            "FFMPEG_DRESSING_SCALE": {
-              "default_value": "[%(number)s]scale=w='if(gt(a,16/9),16/9*%(height)s,-2)':h='if(gt(a,16/9),-2,%(height)s)',pad=ceil(16/9*%(height)s):%(height)s:(ow-iw)/2:(oh-ih)/2[%(name)s]",
-              "description": {
-                "en": [
-                  "Rescales the intermediate dressed video to maintain a 16:9 aspect ratio with padding if necessary."
-                ],
-                "fr": [
-                  "Redimensionne la vidéo intermédiaire d'habillage pour maintenir un ratio d'aspect 16:9 avec ajout de bordures si nécessaire."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.5.0"
-            },
-            "FFMPEG_DRESSING_CONCAT": {
-              "default_value": "%(params)sconcat=n=%(number)s:v=1:a=1:unsafe=1[v][a]",
-              "description": {
-                "en": [
-                  "Concatenates multiple video and audio streams into a single temporary dressed video output."
-                ],
-                "fr": [
-                  "Concatène plusieurs flux vidéo et audio en une seule sortie de vidéo temporaire d'habillage."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.5.0"
-            },
-            "FFMPEG_DRESSING_SILENT": {
-              "default_value": " -f lavfi -t %(duration)s -i anullsrc=r=44100:cl=stereo",
-              "description": {
-                "en": [
-                  "Generates silent audio of specified duration for the temporary dressed video."
-                ],
-                "fr": [
-                  "Génère un audio silencieux d'une durée spécifiée pour la vidéo temporaire d'habillage."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "4.0.0"
-            },
-            "FFMPEG_DRESSING_AUDIO": {
-              "default_value": "[%(param_in)s]anull[%(param_out)s]",
-              "description": {
-                "en": [
-                  "Processes audio without modifications for inclusion in the temporary dressed video."
-                ],
-                "fr": [
-                  "Traite l'audio sans modifications pour l'inclure dans la vidéo temporaire d'habillage."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "4.0.0"
             }
           },
           "title": {
@@ -4376,6 +4601,24 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "ASGI_APPLICATION": {
+              "default_value": "config.asgi.application",
+              "description": {
+                "en": ["Path to the ASGI application object."],
+                "fr": ["Chemin vers l'objet application ASGI."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "4.0"
+            },
+            "AUTHENTICATION_BACKENDS": {
+              "default": ["django.contrib.auth.backends.ModelBackend"],
+              "description": {
+                "en": "List of authentication backends to use (e.g., ModelBackend, CASBackend).",
+                "fr": "Liste des backends d'authentification à utiliser (ex: ModelBackend, CASBackend)."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "BASE_DIR": {
               "default_value": "os.path.dirname(os.path.dirname(os.path.abspath(__file__)))",
               "description": {
@@ -4418,6 +4661,42 @@
               "pod_version_end": "",
               "pod_version_init": "3.1.0"
             },
+            "CACHE_MIDDLEWARE_ALIAS": {
+              "default": "default",
+              "description": {
+                "en": "The cache alias to use for the cache middleware.",
+                "fr": "L'alias de cache à utiliser pour le middleware de cache."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CACHE_MIDDLEWARE_KEY_PREFIX": {
+              "default": "",
+              "description": {
+                "en": "Prefix for cache keys generated by the cache middleware.",
+                "fr": "Préfixe des clés de cache générées par le middleware de cache."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CACHE_MIDDLEWARE_SECONDS": {
+              "default": 600,
+              "description": {
+                "en": "Default duration in seconds for caching pages.",
+                "fr": "Durée par défaut en secondes pour la mise en cache des pages."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "CORS_ALLOW_ALL_ORIGINS": {
+              "default_value": false,
+              "description": {
+                "en": ["Allow all origins for CORS requests."],
+                "fr": ["Autoriser toutes les origines pour les requêtes CORS."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "CSRF_COOKIE_SECURE": {
               "default_value": "not DEBUG",
               "description": {
@@ -4433,6 +4712,83 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "DATABASE_ROUTERS": {
+              "default": [],
+              "description": {
+                "en": "List of router classes to control database operations.",
+                "fr": "Liste des classes de routeurs pour contrôler les opérations de base de données."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "DATA_UPLOAD_MAX_MEMORY_SIZE": {
+              "default": 2621440,
+              "description": {
+                "en": "Maximum size in bytes (default 2.5MB) for a request body before raising a SuspiciousOperation.",
+                "fr": "Taille maximale en octets (défaut 2.5MB) du corps d'une requête avant de lever une SuspiciousOperation."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "DATA_UPLOAD_MAX_NUMBER_FIELDS": {
+              "default": 1000,
+              "description": {
+                "en": "Maximum number of fields allowed in a GET or POST request.",
+                "fr": "Nombre maximum de champs autorisés dans une requête GET ou POST."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "DATA_UPLOAD_MAX_NUMBER_FILES": {
+              "default": 100,
+              "description": {
+                "en": "Maximum number of files allowed in a single upload.",
+                "fr": "Nombre maximum de fichiers autorisés dans un seul téléchargement."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "DATETIME_FORMAT": {
+              "default": "N j, Y, P",
+              "description": {
+                "en": "The default output format for datetime objects in templates.",
+                "fr": "Le format de sortie par défaut pour les objets datetime dans les templates."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "DATETIME_INPUT_FORMATS": {
+              "default": [
+                "%Y-%m-%d %H:%M:%S",
+                "%Y-%m-%d %H:%M:%S.%f",
+                "%Y-%m-%d %H:%M",
+                "%Y-%m-%d"
+              ],
+              "description": {
+                "en": "List of formats accepted when parsing datetimes in forms.",
+                "fr": "Liste des formats acceptés lors de l'analyse des dates/heures dans les formulaires."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "DATE_FORMAT": {
+              "default": "N j, Y",
+              "description": {
+                "en": "The default output format for date objects in templates.",
+                "fr": "Le format de sortie par défaut pour les objets date dans les templates."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "DATE_INPUT_FORMATS": {
+              "default": ["%Y-%m-%d", "%m/%d/%Y", "%m/%d/%y"],
+              "description": {
+                "en": "List of formats accepted when parsing dates in forms.",
+                "fr": "Liste des formats acceptés lors de l'analyse des dates dans les formulaires."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "DEBUG": {
               "default_value": true,
               "description": {
@@ -4446,22 +4802,171 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
-            "USE_DEBUG_TOOLBAR": {
-              "default_value": true,
+            "DECIMAL_SEPARATOR": {
+              "default": ".",
               "description": {
-                "en": [
-                  "A boolean value that enables or disables the debugging tool.<br>",
-                  "Never deploy a production site with USE_DEBUG_TOOLBAR enabled.<br>",
-                  "_ref : [django-debug-toolbar.readthedocs.io](https://django-debug-toolbar.readthedocs.io/en/latest/)_"
-                ],
+                "en": "The decimal separator used when formatting numbers.",
+                "fr": "Le séparateur décimal utilisé lors du formatage des nombres."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "DEFAULT_AUTO_FIELD": {
+              "default_value": "django.db.models.AutoField",
+              "description": {
+                "en": ["Default type for auto-created primary keys."],
                 "fr": [
-                  "Une valeur booléenne qui active ou désactive l’outil de débogage.<br>",
-                  "Ne déployez jamais de site en production avec le réglage USE_DEBUG_TOOLBAR activé.<br>",
-                  "_ref : [django-debug-toolbar.readthedocs.io](https://django-debug-toolbar.readthedocs.io/en/latest/)_"
+                  "Type par défaut pour les clés primaires créées automatiquement."
                 ]
               },
               "pod_version_end": "",
-              "pod_version_init": "3.5.0"
+              "pod_version_init": "4.0"
+            },
+            "DISALLOWED_USER_AGENTS": {
+              "default": [],
+              "description": {
+                "en": "List of compiled regular expression objects representing User-Agent strings that are not allowed to visit any page.",
+                "fr": "Liste d'expressions régulières compilées représentant les chaînes User-Agent qui ne sont pas autorisées à visiter le site."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "FIRST_DAY_OF_WEEK": {
+              "default": 0,
+              "description": {
+                "en": "Number representing the first day of the week (0=Sunday, 1=Monday).",
+                "fr": "Nombre représentant le premier jour de la semaine (0=Dimanche, 1=Lundi)."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "FIXTURE_DIRS": {
+              "default": [],
+              "description": {
+                "en": "List of directories to search for fixture files, in addition to the 'fixtures' directory of each app.",
+                "fr": "Liste des répertoires où chercher des fichiers fixtures, en plus du répertoire 'fixtures' de chaque application."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "FORCE_SCRIPT_NAME": {
+              "default": null,
+              "description": {
+                "en": "If not None, this value will be used as the value of the SCRIPT_NAME environment variable in any HTTP request.",
+                "fr": "Si non défini à None, cette valeur sera utilisée comme valeur de la variable d'environnement SCRIPT_NAME dans toute requête HTTP."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "FORMAT_MODULE_PATH": {
+              "default": null,
+              "description": {
+                "en": "Python path to a module that contains project-specific format definitions.",
+                "fr": "Chemin Python vers un module contenant des définitions de format spécifiques au projet."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "FORMS_URLFIELD_ASSUME_HTTPS": {
+              "default": false,
+              "description": {
+                "en": "If True, URLField will assume HTTPS if no scheme is provided.",
+                "fr": "Si True, URLField supposera HTTPS si aucun schéma n'est fourni."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "FORM_RENDERER": {
+              "default": "django.forms.renderers.DjangoTemplates",
+              "description": {
+                "en": "The class to render forms.",
+                "fr": "La classe utilisée pour le rendu des formulaires."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "IGNORABLE_404_URLS": {
+              "default": [],
+              "description": {
+                "en": "List of compiled regular expression objects describing URLs that should be ignored when reporting 404 errors via email.",
+                "fr": "Liste d'objets d'expressions régulières compilées décrivant les URL qui doivent être ignorées lors du signalement des erreurs 404 par e-mail."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "LANGUAGE_COOKIE_AGE": {
+              "default": null,
+              "description": {
+                "en": "The age of the language cookie, in seconds.",
+                "fr": "La durée de vie du cookie de langue, en secondes."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "LANGUAGE_COOKIE_DOMAIN": {
+              "default": null,
+              "description": {
+                "en": "The domain to use for the language cookie.",
+                "fr": "Le domaine à utiliser pour le cookie de langue."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "LANGUAGE_COOKIE_HTTPONLY": {
+              "default": false,
+              "description": {
+                "en": "Whether to use HTTPOnly flag on the language cookie.",
+                "fr": "Si le drapeau HTTPOnly doit être utilisé sur le cookie de langue."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "LANGUAGE_COOKIE_NAME": {
+              "default": "django_language",
+              "description": {
+                "en": "The name of the language cookie.",
+                "fr": "Le nom du cookie de langue."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "LANGUAGE_COOKIE_PATH": {
+              "default": "/",
+              "description": {
+                "en": "The path set on the language cookie.",
+                "fr": "Le chemin défini sur le cookie de langue."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "LANGUAGE_COOKIE_SAMESITE": {
+              "default": "Lax",
+              "description": {
+                "en": "The value of the SameSite flag on the language cookie.",
+                "fr": "La valeur du drapeau SameSite sur le cookie de langue."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "LANGUAGE_COOKIE_SECURE": {
+              "default": false,
+              "description": {
+                "en": "Whether to use the Secure flag on the language cookie.",
+                "fr": "Si le drapeau Secure doit être utilisé sur le cookie de langue."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "LOGGING": {
+              "default_value": {},
+              "description": {
+                "en": ["Logging configuration dictionary."],
+                "fr": [
+                  "Dictionnaire de configuration pour la journalisation (logging)."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.1"
             },
             "LOGIN_URL": {
               "default_value": "/authentication_login/",
@@ -4491,6 +4996,42 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "MONTH_DAY_FORMAT": {
+              "default": "F j",
+              "description": {
+                "en": "The default formatting for date fields in Django templates.",
+                "fr": "Le formatage par défaut pour les champs de date dans les templates Django."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "NUMBER_GROUPING": {
+              "default": 0,
+              "description": {
+                "en": "Number of digits grouped together on the integer part of a number.",
+                "fr": "Nombre de chiffres groupés ensemble sur la partie entière d'un nombre."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "POD_VERSION": {
+              "default_value": "",
+              "description": {
+                "en": ["Current version of the Pod application."],
+                "fr": ["Version actuelle de l'application Pod."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.1"
+            },
+            "PREPEND_WWW": {
+              "default": false,
+              "description": {
+                "en": "Whether to prepend the 'www.' subdomain to URLs that don't have it.",
+                "fr": "Si le sous-domaine 'www.' doit être ajouté aux URL qui ne l'ont pas."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "PROXY_HOST": {
               "default_value": "",
               "description": {
@@ -4508,6 +5049,15 @@
               },
               "pod_version_end": "",
               "pod_version_init": "3.1.0"
+            },
+            "REST_FRAMEWORK": {
+              "default_value": {},
+              "description": {
+                "en": ["REST Framework specific settings."],
+                "fr": ["Paramètres spécifiques au REST Framework."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
             },
             "SECRET_KEY": {
               "default_value": "A_CHANGER",
@@ -4587,6 +5137,53 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "SETTINGS_MODULE": {
+              "default": null,
+              "description": {
+                "en": "The Python path to the settings module being used.",
+                "fr": "Le chemin Python vers le module de configuration utilisé."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "SHORT_DATETIME_FORMAT": {
+              "default": "m/d/Y P",
+              "description": {
+                "en": "The default formatting for datetime objects in Django templates.",
+                "fr": "Le formatage par défaut pour les objets datetime dans les templates Django."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "SHORT_DATE_FORMAT": {
+              "default": "m/d/Y",
+              "description": {
+                "en": "The default formatting for date objects in Django templates.",
+                "fr": "Le formatage par défaut pour les objets date dans les templates Django."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "SHOW_SQL_QUERIES": {
+              "default_value": false,
+              "description": {
+                "en": ["Display SQL queries in the console (debug mode)."],
+                "fr": [
+                  "Afficher les requêtes SQL dans la console (mode debug)."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "SIGNING_BACKEND": {
+              "default": "django.core.signing.TimestampSigner",
+              "description": {
+                "en": "The backend used for signing cookies and other data.",
+                "fr": "Le backend utilisé pour signer les cookies et autres données."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "SITE_ID": {
               "default_value": 1,
               "description": {
@@ -4600,6 +5197,35 @@
               },
               "pod_version_end": "",
               "pod_version_init": "3.1"
+            },
+            "SPECTACULAR_SETTINGS": {
+              "default_value": {},
+              "description": {
+                "en": [
+                  "Configuration for the OpenAPI schema generation via drf-spectacular."
+                ],
+                "fr": [
+                  "Configuration pour la génération du schéma OpenAPI via drf-spectacular."
+                ]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "STORAGES": {
+              "default": {
+                "default": {
+                  "BACKEND": "django.core.files.storage.FileSystemStorage"
+                },
+                "staticfiles": {
+                  "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"
+                }
+              },
+              "description": {
+                "en": "Controls the storage backends for files (Django 4.2+).",
+                "fr": "Contrôle les backends de stockage pour les fichiers (Django 4.2+)."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
             },
             "TEST_SETTINGS": {
               "default_value": false,
@@ -4628,6 +5254,33 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "THOUSAND_SEPARATOR": {
+              "default": ",",
+              "description": {
+                "en": "The default thousand separator used when formatting numbers.",
+                "fr": "Le séparateur de milliers par défaut utilisé lors du formatage des nombres."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "TIME_FORMAT": {
+              "default": "P",
+              "description": {
+                "en": "The default output format for time objects in templates.",
+                "fr": "Le format de sortie par défaut pour les objets heure dans les templates."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
+            "TIME_INPUT_FORMATS": {
+              "default": ["%H:%M:%S", "%H:%M:%S.%f", "%H:%M"],
+              "description": {
+                "en": "List of formats accepted when parsing time in forms.",
+                "fr": "Liste des formats acceptés lors de l'analyse de l'heure dans les formulaires."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "TIME_ZONE": {
               "default_value": "UTC",
               "description": {
@@ -4641,34 +5294,22 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
-            "POD_VERSION": {
-              "default_value": "",
+            "USE_DEBUG_TOOLBAR": {
+              "default_value": true,
               "description": {
-                "en": ["Current version of the Pod application."],
-                "fr": ["Version actuelle de l'application Pod."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.1"
-            },
-            "SHOW_SQL_QUERIES": {
-              "default_value": false,
-              "description": {
-                "en": ["Display SQL queries in the console (debug mode)."],
+                "en": [
+                  "A boolean value that enables or disables the debugging tool.<br>",
+                  "Never deploy a production site with USE_DEBUG_TOOLBAR enabled.<br>",
+                  "_ref : [django-debug-toolbar.readthedocs.io](https://django-debug-toolbar.readthedocs.io/en/latest/)_"
+                ],
                 "fr": [
-                  "Afficher les requêtes SQL dans la console (mode debug)."
+                  "Une valeur booléenne qui active ou désactive l’outil de débogage.<br>",
+                  "Ne déployez jamais de site en production avec le réglage USE_DEBUG_TOOLBAR activé.<br>",
+                  "_ref : [django-debug-toolbar.readthedocs.io](https://django-debug-toolbar.readthedocs.io/en/latest/)_"
                 ]
               },
               "pod_version_end": "",
-              "pod_version_init": "5.0.0"
-            },
-            "CORS_ALLOW_ALL_ORIGINS": {
-              "default_value": false,
-              "description": {
-                "en": ["Allow all origins for CORS requests."],
-                "fr": ["Autoriser toutes les origines pour les requêtes CORS."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "5.0.0"
+              "pod_version_init": "3.5.0"
             },
             "USE_I18N": {
               "default_value": true,
@@ -4679,6 +5320,15 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
+            "USE_THOUSAND_SEPARATOR": {
+              "default": false,
+              "description": {
+                "en": "Whether to display numbers with a thousand separator.",
+                "fr": "Si les nombres doivent être affichés avec un séparateur de milliers."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
+            },
             "USE_TZ": {
               "default_value": true,
               "description": {
@@ -4688,16 +5338,23 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
-            "DEFAULT_AUTO_FIELD": {
-              "default_value": "django.db.models.AutoField",
+            "USE_X_FORWARDED_HOST": {
+              "default": false,
               "description": {
-                "en": ["Default type for auto-created primary keys."],
-                "fr": [
-                  "Type par défaut pour les clés primaires créées automatiquement."
-                ]
+                "en": "Whether to use the X-Forwarded-Host header instead of the Host header.",
+                "fr": "Si l'en-tête X-Forwarded-Host doit être utilisé à la place de l'en-tête Host."
               },
               "pod_version_end": "",
-              "pod_version_init": "4.0"
+              "pod_version_init": "5.0.0"
+            },
+            "USE_X_FORWARDED_PORT": {
+              "default": false,
+              "description": {
+                "en": "Whether to use the X-Forwarded-Port header to determine the request port.",
+                "fr": "Si l'en-tête X-Forwarded-Port doit être utilisé pour déterminer le port de la requête."
+              },
+              "pod_version_end": "",
+              "pod_version_init": "5.0.0"
             },
             "WSGI_APPLICATION": {
               "default_value": "config.wsgi.application",
@@ -4708,44 +5365,11 @@
               "pod_version_end": "",
               "pod_version_init": "3.1"
             },
-            "ASGI_APPLICATION": {
-              "default_value": "config.asgi.application",
+            "YEAR_MONTH_FORMAT": {
+              "default": "F Y",
               "description": {
-                "en": ["Path to the ASGI application object."],
-                "fr": ["Chemin vers l'objet application ASGI."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "4.0"
-            },
-            "LOGGING": {
-              "default_value": {},
-              "description": {
-                "en": ["Logging configuration dictionary."],
-                "fr": [
-                  "Dictionnaire de configuration pour la journalisation (logging)."
-                ]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.1"
-            },
-            "REST_FRAMEWORK": {
-              "default_value": {},
-              "description": {
-                "en": ["REST Framework specific settings."],
-                "fr": ["Paramètres spécifiques au REST Framework."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "5.0.0"
-            },
-            "SPECTACULAR_SETTINGS": {
-              "default_value": {},
-              "description": {
-                "en": [
-                  "Configuration for the OpenAPI schema generation via drf-spectacular."
-                ],
-                "fr": [
-                  "Configuration pour la génération du schéma OpenAPI via drf-spectacular."
-                ]
+                "en": "The default formatting for date fields when only the year and month are displayed.",
+                "fr": "Le formatage par défaut des champs de date lorsque seuls l'année et le mois sont affichés."
               },
               "pod_version_end": "",
               "pod_version_init": "5.0.0"
@@ -4775,15 +5399,6 @@
               "pod_version_end": "",
               "pod_version_init": "3.1.0"
             },
-            "ARCHIVE_OWNER_USERNAME": {
-              "default_value": "\"archive\"",
-              "description": {
-                "en": [""],
-                "fr": ["Nom de l’utilisateur pour l’archivage des vidéos."]
-              },
-              "pod_version_end": "",
-              "pod_version_init": "3.1.0"
-            },
             "ARCHIVE_HOW_MANY_DAYS": {
               "default_value": "365",
               "description": {
@@ -4796,6 +5411,15 @@
               },
               "pod_version_end": "",
               "pod_version_init": "3.8.0"
+            },
+            "ARCHIVE_OWNER_USERNAME": {
+              "default_value": "\"archive\"",
+              "description": {
+                "en": [""],
+                "fr": ["Nom de l’utilisateur pour l’archivage des vidéos."]
+              },
+              "pod_version_end": "",
+              "pod_version_init": "3.1.0"
             },
             "POD_ARCHIVE_AFFILIATION": {
               "default_value": "[]",

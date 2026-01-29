@@ -1,44 +1,41 @@
 from django.core.management.base import BaseCommand, CommandError
-from config.env import env
-
+from django.conf import settings as django_settings
 import json
 import os
 
-from src.config import settings
-
-try:
-    VERSION = env("VERSION")
-except AttributeError:
-    VERSION = "5.0.0"
+VERSION = getattr(django_settings, "VERSION", "5.0.0")
 
 
 class Command(BaseCommand):
     help = "Add setting to specific app configuration"
 
     def add_arguments(self, parser):
-        parser.add_argument("app_name", type=str, help="Name of the app (e.g., authentication)")
-        parser.add_argument("setting_name", type=str, help="Name of the setting (e.g., MY_NEW_SETTING)")
+        parser.add_argument(
+            "app_name", type=str, help="Name of the app (e.g., authentication)"
+        )
+        parser.add_argument(
+            "setting_name", type=str, help="Name of the setting (e.g., MY_NEW_SETTING)"
+        )
 
     def get_setting(self, options, config_part):
         data = app_settings = settings = []
-        filename = os.path.join(settings.BASE_DIR, "src", "apps", "core", "configuration.json")
+        filename = os.path.join(
+            django_settings.BASE_DIR, "src", "apps", "core", "configuration.json"
+        )
         with open(filename, "r", encoding="utf-8") as json_file:
             data = json.load(json_file)
-
         if options["app_name"] == "pod":
             app_settings = data[0]["configuration_pod"]["description"]
             app_name = config_part
         else:
             app_settings = data[0]["configuration_apps"]["description"]
             app_name = options["app_name"]
-
         try:
             settings = app_settings[app_name]["settings"]
         except KeyError:
             raise CommandError(
                 'Application name "%s" not found in configuration file' % app_name
             )
-
         if settings.get(options["setting_name"]):
             self.stdout.write(self.style.WARNING(20 * "*"))
             self.stdout.write(
@@ -57,24 +54,27 @@ class Command(BaseCommand):
             return {}
 
     def get_configuration_pod(self):
-        filename = os.path.join(settings.BASE_DIR, "src", "apps", "core", "configuration.json")
+        filename = os.path.join(
+            django_settings.BASE_DIR, "src", "apps", "core", "configuration.json"
+        )
         with open(filename, "r", encoding="utf-8") as json_file:
             data = json.load(json_file)
         return data[0]["configuration_pod"]["description"].keys()
 
     def save_setting(self, options, config_part, setting):
-        filename = os.path.join(settings.BASE_DIR, "src", "apps", "core", "configuration.json")
+        filename = os.path.join(
+            django_settings.BASE_DIR, "src", "apps", "core", "configuration.json"
+        )
         with open(filename, "r", encoding="utf-8") as json_file:
             data = json.load(json_file)
-
         if options["app_name"] == "pod":
             data[0]["configuration_pod"]["description"][config_part]["settings"][
                 options["setting_name"]
             ] = setting
         else:
-            data[0]["configuration_apps"]["description"][options["app_name"]]["settings"][
-                options["setting_name"]
-            ] = setting
+            data[0]["configuration_apps"]["description"][options["app_name"]][
+                "settings"
+            ][options["setting_name"]] = setting
         os.remove(filename)
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f, sort_keys=True, indent=4, ensure_ascii=False)
@@ -114,7 +114,6 @@ class Command(BaseCommand):
             self.style.SUCCESS('Setting name "%s"' % options["setting_name"])
         )
         self.stdout.write(self.style.SUCCESS('App name "%s"' % options["app_name"]))
-
         config_part = "main"
         if options["app_name"] == "pod":
             list_conf = self.get_configuration_pod()
@@ -128,33 +127,30 @@ class Command(BaseCommand):
             if config_part not in list_conf:
                 self.stdout.write(self.style.ERROR("Configuration not available!"))
                 return
-
         setting = self.get_setting(options, config_part)
-
         pod_version_init = input(
             "Pod initial version (leave blank to put current version: %s): " % VERSION
         )
         if pod_version_init == "":
             pod_version_init = VERSION
-
         pod_version_end = input(
             "Pod last version (i.e: 2.9.0, deprecated or not use anymore): "
         )
-
         default_value = self.fix_default_value(setting.get("default_value", ""))
-
         print("Add a english description (leave blank and type enter to leave):")
         previous_value = (
-            setting["description"].get("en", [""]) if setting.get("description") else [""]
+            setting["description"].get("en", [""])
+            if setting.get("description")
+            else [""]
         )
         description_en = self.get_description(previous_value)
-
         print("Add a french description (leave blank and type enter to leave):")
         previous_value = (
-            setting["description"].get("fr", [""]) if setting.get("description") else [""]
+            setting["description"].get("fr", [""])
+            if setting.get("description")
+            else [""]
         )
         description_fr = self.get_description(previous_value)
-
         setting = {
             "pod_version_init": pod_version_init,
             "pod_version_end": pod_version_end,
@@ -172,7 +168,5 @@ class Command(BaseCommand):
         if confirm != "y":
             self.stdout.write(self.style.ERROR("Not saving, End!"))
             return
-
         self.save_setting(options, config_part, setting)
-
         self.stdout.write(self.style.SUCCESS("End!"))
