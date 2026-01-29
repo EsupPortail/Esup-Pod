@@ -19,8 +19,8 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
+          python-version: "3.12"
+          cache: "pip"
 
       - name: Install dependencies
         run: |
@@ -42,6 +42,10 @@ jobs:
           fi
 
       - name: Settings Audit
+        env:
+          VERSION: "5.0.0"
+          SECRET_KEY: "temporary-key-for-ci"
+          DJANGO_SETTINGS_MODULE: "config.django.base"
         run: python manage.py comparesettings
 
   # 2. Docker Integration, E2E & Security (The Authoritative Test)
@@ -54,7 +58,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Create .env file
         run: cp .env.docker .env
