@@ -24,6 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          pip install -r requirements.txt
           pip install flake8 black
 
       - name: Format code with Black
@@ -39,6 +40,9 @@ jobs:
             echo "Error: Non-breaking spaces (NBSP) found in the codebase. Please remove them."
             exit 1
           fi
+
+      - name: Settings Audit
+        run: python manage.py comparesettings
 
   # 2. Docker Integration, E2E & Security (The Authoritative Test)
   test-docker-full:
