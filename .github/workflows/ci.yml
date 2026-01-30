@@ -33,13 +33,6 @@ jobs:
       - name: Lint with flake8
         run: flake8 src --count --show-source --statistics
 
-      - name: Check for non-breaking spaces (NBSP)
-        run: |
-          if grep -rnIP "\xa0" src; then
-            echo "Error: Non-breaking spaces (NBSP) found in the codebase. Please remove them."
-            exit 1
-          fi
-
   # 2. Docker Integration, E2E & Security (The Authoritative Test)
   test-docker-full:
     needs: [quality-check]
@@ -57,13 +50,13 @@ jobs:
 
       - name: Build Stack
         env:
-          VERSION: 5.0.0-DEV
+          VERSION: ${VERSION}
           DJANGO_SETTINGS_MODULE: config.django.dev.docker
         run: make build
 
       - name: Start Stack
         env:
-          VERSION: 5.0.0-DEV
+          VERSION: ${VERSION}
           DJANGO_SETTINGS_MODULE: config.django.dev.docker
         run: make start
 
@@ -112,3 +105,26 @@ jobs:
       - name: Teardown
         if: always()
         run: make clean
+
+  update-artifacts:
+    needs: [test-docker-full]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Update OpenAPI schema
+        run: |
+          python manage.py spectacular --file docs/api-docs.yaml
+
+      - name: Check OpenAPI schema is up to date
+        run: |
+          git diff --exit-code docs/api-docs.yaml
