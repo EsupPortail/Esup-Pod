@@ -12,7 +12,7 @@ services:
       - pod_db_data_dev:/var/lib/mysql
       - ./init_test_db.sql:/docker-entrypoint-initdb.d/init_test_db.sql
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ["CMD", "script/healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -35,7 +35,7 @@ services:
     environment:
       MYSQL_HOST: db
       MYSQL_PORT: 3306
-      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE}
+      DJANGO_SETTINGS_MODULE: config.django.dev.docker
       ALLOWED_HOSTS: "*"
     command: ["run-server"]
 
