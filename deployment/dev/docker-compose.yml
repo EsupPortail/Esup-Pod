@@ -12,7 +12,7 @@ services:
       - pod_db_data_dev:/var/lib/mysql
       - ./init_test_db.sql:/docker-entrypoint-initdb.d/init_test_db.sql
     healthcheck:
-      test: ["CMD", "script/healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ["CMD", "scripts/healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 5
