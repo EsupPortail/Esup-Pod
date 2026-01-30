@@ -9,6 +9,7 @@ import os
 import sys
 
 from django.core.asgi import get_asgi_application
+from django.core.exceptions import ImproperlyConfigured
 
 from config.env import env
 
@@ -21,7 +22,7 @@ try:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_module)
     application = get_asgi_application()
 
-except Exception as e:
+except (ImproperlyConfigured, ImportError, ValueError) as e:
     print(
         f"FATAL ERROR: Failed to initialize the ASGI application. "
         f"Check that DJANGO_SETTINGS_MODULE is set. Details: {e}",
