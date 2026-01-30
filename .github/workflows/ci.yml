@@ -122,6 +122,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Update OpenAPI schema
+        env:
+          VERSION: ${VERSION}
+          DJANGO_SETTINGS_MODULE: config.django.dev.docker
         run: |
           python manage.py spectacular --file docs/api-docs.yaml
 
