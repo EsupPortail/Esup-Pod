@@ -8,18 +8,20 @@ We use **Docker** to replicate production services while providing a flexible de
 ## 1. Prerequisites (Choose your OS)
 
 ### 🐧 Linux & macOS
-*   **Docker** & **Docker Compose** installed.
-*   **Make** installed (`sudo apt install make` on Linux or XCode Command Line Tools on macOS).
+
+- **Docker** & **Docker Compose** installed.
+- **Make** installed (`sudo apt install make` on Linux or XCode Command Line Tools on macOS).
 
 ### 🪟 Windows
-*   Install **Docker Desktop**.
-*   (Recommended) Enable **WSL2** backend for Docker.
-*   Install **Chocolatey** (required to use `choco`): https://chocolatey.org/install
-*   Install **Make**:
-    ```powershell
-    choco install make
-    ```
-*   **Note**: Run commands from PowerShell or Git Bash.
+
+- Install **Docker Desktop**.
+- (Recommended) Enable **WSL2** backend for Docker.
+- Install **Chocolatey** (required to use `choco`): https://chocolatey.org/install
+- Install **Make**:
+  ```powershell
+  choco install make
+  ```
+- **Note**: Run commands from PowerShell or Git Bash.
 
 ---
 
@@ -53,30 +55,30 @@ cp .env.docker .env
 
 **Key Variables in `.env`:**
 
-*   `MYSQL_PASSWORD`, `SECRET_KEY`: Change these for security.
-*   `DJANGO_SUPERUSER_PASSWORD`: Default admin password.
-*   **Feature Flags**: Toggle authentication methods as needed:
-    ```bash
-    # --- Authentication Features ---
-    USE_LOCAL_AUTH=True
-    USE_CAS=False
-    USE_LDAP=False
-    USE_OIDC=False
-    ```
+- `MYSQL_PASSWORD`, `SECRET_KEY`: Change these for security.
+- `DJANGO_SUPERUSER_PASSWORD`: Default admin password.
+- **Feature Flags**: Toggle authentication methods as needed:
+  ```bash
+  # --- Authentication Features ---
+  USE_LOCAL_AUTH=True
+  USE_CAS=False
+  USE_LDAP=False
+  USE_OIDC=False
+  ```
 
 ### Managing the App (Make Commands)
 
 We provide a `Makefile` to simplify Docker commands.
 
-| Command | Description |
-| :--- | :--- |
+| Command          | Description                                                                                  |
+| :--------------- | :------------------------------------------------------------------------------------------- |
 | **`make start`** | **Start the full stack** (Builds images, starts DB+API, runs migrations, creates superuser). |
-| **`make stop`** | Stop containers (preserves data). |
-| **`make logs`** | View real-time logs from containers. |
-| **`make shell`** | Launch an isolated temporary shell for debugging. |
-| **`make enter`** | Enter the *running* API container (bash). |
-| **`make clean`** | **Destructive**: Removes containers and volumes (database is lost). |
-| **`make build`** | Force rebuild of Docker images. |
+| **`make stop`**  | Stop containers (preserves data).                                                            |
+| **`make logs`**  | View real-time logs from containers.                                                         |
+| **`make shell`** | Launch an isolated temporary shell for debugging.                                            |
+| **`make enter`** | Enter the _running_ API container (bash).                                                    |
+| **`make clean`** | **Destructive**: Removes containers and volumes (database is lost).                          |
+| **`make build`** | Force rebuild of Docker images.                                                              |
 
 ### Running Tests
 
@@ -88,13 +90,14 @@ make test
 ```
 
 This command will:
+
 1.  Run `pytest` in the container.
 2.  Enable **ALL** authentication providers (CAS, LDAP, etc.) to ensure full coverage.
 3.  Report code coverage.
 
 ### Database Access
 
-*   **From Host Machine**: Connect to `localhost:3307`
-    *   User: `pod_user` / Password: `pod_password` (or as set in `.env`)
-    *   Database: `pod_db`
-*   **From Docker**: ```shell docker exec -it pod_mariadb_dev mariadb -u root -p ``
+- **From Host Machine**: Connect to `localhost:3307`
+  - User: `pod_user` / Password: `pod_password` (or as set in `.env`)
+  - Database: `pod_db`
+- **From Docker**: ``shell docker exec -it pod_mariadb_dev mariadb -u root -p `
