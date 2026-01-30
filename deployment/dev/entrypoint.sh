@@ -29,7 +29,7 @@ error() {
 
 wait_for_db() {
     log "Waiting for the database..."
-    tree
+
     if ! python3 deployment/dev/script/wait_for_db.py \
         2> >(tee /tmp/wait_for_db.err >&2); then
         error "Database connection failed."

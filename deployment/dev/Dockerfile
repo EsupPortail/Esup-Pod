@@ -24,7 +24,7 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.base.txt -r requirements.dev.txt
 
 ENV PYTHONPATH=/app:/app/src
-ENV DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+ENV DJANGO_SETTINGS_MODULE=config.django.dev.docker
 
 EXPOSE 8000
 

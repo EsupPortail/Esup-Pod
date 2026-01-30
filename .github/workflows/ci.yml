@@ -50,13 +50,13 @@ jobs:
 
       - name: Build Stack
         env:
-          VERSION: 5.0.0-DEV
+          VERSION: ${VERSION}
           DJANGO_SETTINGS_MODULE: config.django.dev.docker
         run: make build
 
       - name: Start Stack
         env:
-          VERSION: 5.0.0-DEV
+          VERSION: ${VERSION}
           DJANGO_SETTINGS_MODULE: config.django.dev.docker
         run: make start
 
