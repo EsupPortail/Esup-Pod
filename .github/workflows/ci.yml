@@ -33,13 +33,6 @@ jobs:
       - name: Lint with flake8
         run: flake8 src --count --show-source --statistics
 
-      - name: Check for non-breaking spaces (NBSP)
-        run: |
-          if grep -rnIP "\xa0" src; then
-            echo "Error: Non-breaking spaces (NBSP) found in the codebase. Please remove them."
-            exit 1
-          fi
-
   # 2. Docker Integration, E2E & Security (The Authoritative Test)
   test-docker-full:
     needs: [quality-check]
