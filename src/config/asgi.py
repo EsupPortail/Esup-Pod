@@ -1,3 +1,10 @@
+"""
+ASGI configuration.
+
+Exposes the ASGI callable as a module-level variable named ``application``.
+Validates that `DJANGO_SETTINGS_MODULE` is correctly set before initializing
+the application to ensure fail-fast behavior in misconfigured environments.
+"""
 import os
 import sys
 
