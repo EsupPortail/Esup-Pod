@@ -3,6 +3,7 @@
 How to document your code so it appears in Swagger.
 
 ## Principle
+
 Documentation lives in the code. By using `drf-spectacular` decorators, you keep the documentation synchronized with the implementation.
 
 ## Documenting a View
