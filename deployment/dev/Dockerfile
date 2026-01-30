@@ -31,7 +31,7 @@ EXPOSE 8000
 COPY src /app/src
 COPY manage.py /app/manage.py
 
-COPY deployment/dev/script.entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY deployment/dev/scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN dos2unix /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/entrypoint.sh
 

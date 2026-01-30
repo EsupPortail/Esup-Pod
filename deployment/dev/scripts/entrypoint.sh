@@ -30,7 +30,7 @@ error() {
 wait_for_db() {
     log "Waiting for the database..."
 
-    if ! python3 deployment/dev/script/wait_for_db.py \
+    if ! python3 deployment/dev/scripts/wait_for_db.py \
         2> >(tee /tmp/wait_for_db.err >&2); then
         error "Database connection failed."
         error "$(cat /tmp/wait_for_db.err)"
@@ -43,7 +43,7 @@ wait_for_db() {
 manage_setup() {
     log "Running Django setup..."
 
-    if ! python3 deployment/dev/script/manage_setup.py \
+    if ! python3 deployment/dev/scripts/manage_setup.py \
         2> >(tee /tmp/manage_setup.err >&2); then
         error "Django setup failed."
         error "$(cat /tmp/manage_setup.err)"
