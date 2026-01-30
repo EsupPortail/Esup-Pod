@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     netcat-openbsd \
     git \
     dos2unix \
+    tree \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /app/requirements.base.txt
@@ -22,7 +23,7 @@ COPY deployment/dev/requirements.txt /app/requirements.dev.txt
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.base.txt -r requirements.dev.txt
 
-ENV PYTHONPATH=/app/src
+ENV PYTHONPATH=/app:/app/src
 ENV DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
 
 EXPOSE 8000
