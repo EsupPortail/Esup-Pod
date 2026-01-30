@@ -1,12 +1,12 @@
-# 🛠️ Configuration Management Commands — Pod V5
+# Configuration Management Commands — Pod V5
 
-> **Navigation:** [🏠 Back to Home](../README.md) | [⚙️ Configuration](../configuration.md)
+> **Navigation:** [Back to Home](../README.md) | [Configuration](../configuration.md)
 
 This document details the maintenance tools developed for the **core** application of Pod V5. These commands ensure project integrity by linking the source code (Python), the data repository (JSON), and the user documentation (Markdown).
 
 ---
 
-## 📌 Overview
+## Overview
 
 To keep technical documentation always up to date, Pod V5 uses a `configuration.json` file as the **single source of truth**. This file contains metadata for each setting:
 
@@ -18,17 +18,17 @@ The commands below automate the synchronization between this file and the rest o
 
 ---
 
-## 🔍 1. Compliance Audit: `comparesettings`
+## 1. Compliance Audit: `comparesettings`
 
 **Purpose:** Verify that all settings defined in the Python code are documented in the JSON repository.
 
-### ⚙️ How it works
+### How it works
 
 1. **Scan**: Analyzes active Django settings via `dir(settings)`.
 2. **Filter**: Ignores internal and technical variables (via `IGNORED_PREFIXES`).
 3. **Comparison**: Checks the results against the `configuration_pod` and `configuration_apps` sections of the JSON file.
 
-### 🚀 Usage
+### Usage
 
 ```bash
 python manage.py comparesettings
@@ -38,17 +38,17 @@ python manage.py comparesettings
 
 ---
 
-## ➕ 2. Addition Assistant: `addsetting`
+## 2. Addition Assistant: `addsetting`
 
 **Purpose:** Properly add a new setting to the JSON file without syntax errors.
 
-### ⚙️ How it works
+### How it works
 
 - **Interactive Interface** asking for the target application (pod or business application).
 - **Metadata Collection**: Start/end versions, default value, and FR/EN descriptions.
 - **Secure Save** in `src/apps/core/configuration.json`.
 
-### 🚀 Usage
+### Usage
 
 ```bash
 python manage.py addsetting <app_name> <setting_name>
@@ -56,17 +56,17 @@ python manage.py addsetting <app_name> <setting_name>
 
 ---
 
-## 📄 3. Documentation Generator: `createconfiguration`
+## 3. Documentation Generator: `createconfiguration`
 
 **Purpose:** Transform the technical JSON into readable Markdown files for end users.
 
-### ⚙️ How it works
+### How it works
 
 - **Extraction**: Builds a structured document from the JSON.
 - **Formatting**: Handles rich text formats and code blocks.
 - **Internationalization**: Supports bilingual descriptions.
 
-### 🚀 Usage
+### Usage
 
 ```bash
 # Generate documentation in French (CONFIGURATION_FR.md)
@@ -78,7 +78,7 @@ python manage.py createconfiguration en
 
 ---
 
-## ⚙️ CI/CD Integration
+## CI/CD Integration
 
 The `comparesettings` script is integrated into the **GitHub Actions** quality pipeline. It ensures that no new code can be merged if its settings are not documented.
 
