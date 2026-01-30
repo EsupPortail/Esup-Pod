@@ -1,3 +1,10 @@
+"""
+Environment configuration module.
+
+Initializes the `django-environ` environment to handle configuration variables.
+Defines the project's base directory (`BASE_DIR`) and loads settings from the
+`.env` file if it exists, ensuring seamless configuration management.
+"""
 from pathlib import Path
 
 import environ
