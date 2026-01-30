@@ -35,7 +35,7 @@ services:
     environment:
       MYSQL_HOST: db
       MYSQL_PORT: 3306
-      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE}
+      DJANGO_SETTINGS_MODULE: config.django.dev.docker
       ALLOWED_HOSTS: "*"
     command: ["run-server"]
 

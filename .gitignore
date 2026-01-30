@@ -11,7 +11,7 @@ db.sqlite3
 db.sqlite3-journal
 media/
 staticfiles/
-src/*/migrations/
+src/*/migrations/*_initial.py
 
 # --- Environnement & Secrets ---
 .env
