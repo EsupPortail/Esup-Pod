@@ -13,7 +13,6 @@ from ..utils import (
     get_favorite_playlist_for_user,
 )
 
-
 register = Library()
 
 

@@ -49,10 +49,8 @@ class authenticationViewsTestCase(TestCase):
         response = self.client.post("/authentication_logout/")
         self.assertRedirects(response, "/accounts/logout/?next=/", target_status_code=302)
 
-        print(
-            "   --->  test_authentication_logout \
-            of authenticationViewsTestCase: OK!"
-        )
+        print("   --->  test_authentication_logout \
+            of authenticationViewsTestCase: OK!")
 
     def test_userpicture(self) -> None:
         self.client = Client()

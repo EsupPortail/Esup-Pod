@@ -150,10 +150,8 @@ class ObsolescenceTestCase(TestCase):
         video60 = Video.objects.get(id=3)
         mail = cmd.notify_user(video60, 60)
         self.assertEqual(mail, 1)
-        print(
-            "--->  test_notify_user_obsolete_video of \
-            ObsolescenceTestCase: OK"
-        )
+        print("--->  test_notify_user_obsolete_video of \
+            ObsolescenceTestCase: OK")
 
     def test_obsolete_video(self):
         """Check that videos with deletion date in 7,30 and 60 days will be notified."""

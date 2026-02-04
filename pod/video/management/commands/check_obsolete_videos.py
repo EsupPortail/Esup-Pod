@@ -21,7 +21,6 @@ from pod.video.models import Video, VideoToDelete
 
 from datetime import date, timedelta
 
-
 USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
 USE_ESTABLISHMENT = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 MANAGERS = getattr(settings, "MANAGERS", [])

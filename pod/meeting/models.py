@@ -277,14 +277,12 @@ class Meeting(models.Model):
         null=True,
         blank=True,
         verbose_name=_("Slides"),
-        help_text=_(
-            """
+        help_text=_("""
         BigBlueButton will accept Office documents (.doc .docx .pptx),
         text documents(.txt), images (.png ,.jpg) and Adobe Acrobat documents (.pdf);
         we recommend converting documents to .pdf prior to uploading for best results.
         Maximum size is 30 MB or 150 pages per document.
-        """
-        ),
+        """),
         on_delete=models.CASCADE,
     )
     site = models.ForeignKey(Site, verbose_name=_("Site"), on_delete=models.CASCADE)
@@ -787,9 +785,7 @@ class Meeting(models.Model):
         """
         if role not in ["MODERATOR", "VIEWER"]:
             msg = {}
-            msg[
-                "error"
-            ] = """
+            msg["error"] = """
                 Define user role for the meeting. Valid values are MODERATOR or VIEWER
             """
             msg["returncode"] = ""
