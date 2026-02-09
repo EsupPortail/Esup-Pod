@@ -51,9 +51,7 @@ class UserPopulator:
 
     def _populate_from_cas(self, attributes: Dict[str, Any]) -> None:
         """Map CAS attributes to User/Owner."""
-        self.owner.affiliation = attributes.get(
-            "primaryAffiliation", DEFAULT_AFFILIATION
-        )
+        self.owner.affiliation = attributes.get("primaryAffiliation", DEFAULT_AFFILIATION)
 
         # Handle affiliations list for group creation/staff status
         affiliations = attributes.get("affiliation", [])
@@ -152,9 +150,7 @@ class UserPopulator:
 
     def _process_affiliations(self, affiliations: List[str]) -> None:
         """Process list of affiliations to set staff status and create AccessGroups."""
-        create_group_from_aff = getattr(
-            settings, "CREATE_GROUP_FROM_AFFILIATION", False
-        )
+        create_group_from_aff = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
         current_site = Site.objects.get_current()
 
         for affiliation in affiliations:

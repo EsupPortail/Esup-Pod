@@ -1,6 +1,6 @@
 TODO
 
-.env.prod : 
+.env.prod :
 
 ```bash
 # Django will load the production settings module

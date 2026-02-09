@@ -7,6 +7,7 @@ and retrieves allowed hosts from environment variables.
 Usage:
     export DJANGO_SETTINGS_MODULE=config.django.prod.prod
 """
+
 from config.env import env
 
 from ..base import *  # noqa: F401, F403

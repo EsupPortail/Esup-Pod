@@ -8,6 +8,7 @@ Usage:
     export DJANGO_SETTINGS_MODULE=config.django.dev.local
     python manage.py runserver
 """
+
 from config.env import BASE_DIR
 
 from .dev import *  # noqa: F401, F403

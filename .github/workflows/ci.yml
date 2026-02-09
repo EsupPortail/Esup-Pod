@@ -19,11 +19,12 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
+          python-version: "3.12"
+          cache: "pip"
 
       - name: Install dependencies
         run: |
+          pip install -r requirements.txt
           pip install flake8 black
 
       - name: Format code with Black
@@ -43,7 +44,7 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Create .env file
         run: cp .env.docker .env
@@ -79,7 +80,7 @@ jobs:
           fi
 
       - name: Run Tests with Coverage (Inside Docker)
-        run: make test
+        run: make test-cov
 
       - name: Install E2E dependencies
         run: |
@@ -105,3 +106,4 @@ jobs:
       - name: Teardown
         if: always()
         run: make clean
+
