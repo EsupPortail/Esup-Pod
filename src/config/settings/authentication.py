@@ -1,3 +1,10 @@
+"""
+Authentication configuration module.
+
+Dynamic setup of authentication backends (Local, CAS, LDAP, OIDC, Shibboleth)
+based on environment feature flags. Configures JWT settings, identity provider
+details, and IP restrictions for superusers.
+"""
 import os
 from datetime import timedelta
 
