@@ -1,11 +1,11 @@
 # CI/CD Documentation
 
 This document describes the Continuous Integration (CI) and Continuous Deployment (CD) pipelines for the Pod project.
-The pipelines are built using **GitHub Actions** and rely on **Docker** for environment consistency.
+The pipelines are built using GitHub Actions and rely on Docker for environment consistency.
 
 ## Overview
 
-The CI/CD process is streamlined to use a **Single Source of Truth**: the Docker environment.
+The CI/CD process is streamlined to use a Single Source of Truth: the Docker environment. Our local Makefile mirrors the logic used in GitHub Actions.
 
 ### Workflows
 
@@ -15,21 +15,27 @@ This workflow runs on every `push` and `pull_request`.
 
 **Jobs:**
 
-- **`quality-check`**: Checks code style using `flake8`.
-- **`test-docker-full`**: The authoritative test suite.
-  - Builds the stack using `make build` and `make start`.
-  - Runs the full Python test suite with `make test` (inside Docker).
-  - Runs E2E scenarios against the running API.
-  - **Coverage Enforced**: The job fails if test coverage is below **60%**.
+- **`quality-check`**: Checks code style using `flake8` and formatting with `black`.
+- **`test-docker-full`**: Equivalent to make test-cov.
+    - Builds the stack.
+    - Runs the full Python test suite.
+    - Coverage Enforced: The job fails if test coverage is below than is descided.
+
+## Running Pipelines Locally
+
+You can run the exact same sequence as the CI on your machine to ensure your PR will pass:
+
+```shell
+make ci
+```
+
+This command chains: build ➔ lint ➔ test-cov ➔ clean.
 
 ## Running Tests Locally
-
-To reproduce the CI environment exactly:
 
 ### Using Make (Recommended)
 
 Simply run:
-
 ```bash
 make test
 ```
@@ -47,5 +53,4 @@ docker compose -f deployment/dev/docker-compose.yml exec -e DJANGO_SETTINGS_MODU
 ### Test Environment Details
 
 - **Database**: Uses a separate `test_pod_db` MySQL database.
-- **Authentication**: explicitely enables `USE_LDAP`, `USE_CAS`, `USE_SHIB`, `USE_OIDC` to verify auth flows.
 - **Settings**: Uses `src/config/django/test/docker.py`.
