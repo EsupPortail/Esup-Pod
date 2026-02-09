@@ -21,9 +21,7 @@ class OIDCService:
         client_secret = getattr(settings, "OIDC_RP_CLIENT_SECRET", "")
 
         if not token_url:
-            raise EnvironmentError(
-                "OIDC not configured (missing OIDC_OP_TOKEN_ENDPOINT)"
-            )
+            raise EnvironmentError("OIDC not configured (missing OIDC_OP_TOKEN_ENDPOINT)")
 
         payload = {
             "grant_type": "authorization_code",

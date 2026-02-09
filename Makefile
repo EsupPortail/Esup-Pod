@@ -59,7 +59,7 @@ stop: ## Stop running containers
 	$(DOCKER_COMPOSE_CMD) stop
 	$(call info,Containers stopped. Use 'make clean' to remove them entirely.)
 
-ci: build lint test clean ## Local CI pipeline: build → lint → test → clean
+ci: build lint test-cov clean ## Local CI pipeline: build → lint → test → clean
 	$(call info,CI sequence completed.)
 
 lint: start ## Run linters (black, flake8) inside the API service

@@ -86,10 +86,7 @@ def setup_superuser() -> None:
         if site not in owner.sites.all():
             owner.sites.add(site)
             owner.save()
-            print(
-                f"[Python] Superuser '{username}' linked "
-                f"to site '{site.domain}'."
-            )
+            print(f"[Python] Superuser '{username}' linked " f"to site '{site.domain}'.")
 
 
 def main() -> None:
