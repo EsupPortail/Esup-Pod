@@ -41,3 +41,7 @@ transcription/
 .pytest_cache/
 htmlcov/
 .coverage
+
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
