@@ -42,13 +42,17 @@ logs: ## Show real-time logs for the main service
 	$(call info,Attaching to logs for service '$(DOCKER_SERVICE_NAME)' (tail=100)...)
 	$(DOCKER_COMPOSE_CMD) logs -f --tail=100 $(DOCKER_SERVICE_NAME)
 
-shell: start ## Launch an isolated shell in a new container (run --rm)
+shell: start ## Launch an isolated shell in a new container
 	$(call info,Opening a new ephemeral shell in service '$(DOCKER_SERVICE_NAME)'...)
 	$(DOCKER_COMPOSE_CMD) run --rm --service-ports $(DOCKER_SERVICE_NAME) shell-mode
 
-enter: start ## Enter an already running container (exec)
+enter: start ## Enter an already running container
 	$(call info,Entering running container for service '$(DOCKER_SERVICE_NAME)'...)
 	$(DOCKER_COMPOSE_CMD) exec $(DOCKER_SERVICE_NAME) /bin/bash
+
+db-shell: start ## Enter the database shell
+	$(call info,Entering database shell as root...)
+	$(DOCKER_COMPOSE_CMD) exec db mariadb -u root -p$(MYSQL_ROOT_PASSWORD)
 
 build: ## Force Docker image rebuild
 	$(call info,Building Docker images (stack: $(STACK_NAME))...)
