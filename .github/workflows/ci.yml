@@ -79,7 +79,7 @@ jobs:
           fi
 
       - name: Run Tests with Coverage (Inside Docker)
-        run: make test
+        run: make test-cov
 
       - name: Install E2E dependencies
         run: |
@@ -105,3 +105,4 @@ jobs:
       - name: Teardown
         if: always()
         run: make clean
+
