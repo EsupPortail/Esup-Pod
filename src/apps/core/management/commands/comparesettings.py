@@ -91,15 +91,29 @@ class Command(BaseCommand):
         missing_in_json = sorted(list(set(local_settings_list) - set(json_settings)))
         extra_in_json = sorted(list(set(json_settings) - set(local_settings_list)))
         if missing_in_json:
-            self.stdout.write(self.style.ERROR(f"\nMissing in configuration.json ({len(missing_in_json)}):"))
+            self.stdout.write(
+                self.style.ERROR(
+                    f"\nMissing in configuration.json ({len(missing_in_json)}):"
+                )
+            )
             for s in missing_in_json:
                 self.stdout.write(f"   - {s}")
-            self.stdout.write(self.style.ERROR("\nSettings audit failed. Please use 'addsetting' command."))
+            self.stdout.write(
+                self.style.ERROR(
+                    "\nSettings audit failed. Please use 'addsetting' command."
+                )
+            )
             sys.exit(1)
         else:
             if extra_in_json:
-                self.stdout.write(self.style.WARNING(f"\nExtra in JSON (not in code): {extra_in_json}"))
-            self.stdout.write(self.style.SUCCESS("\nAll code settings are documented in configuration.json"))
+                self.stdout.write(
+                    self.style.WARNING(f"\nExtra in JSON (not in code): {extra_in_json}")
+                )
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "\nAll code settings are documented in configuration.json"
+                )
+            )
 
     def print_log(self, title: str, data: list[str]) -> None:
         print(20 * "-")

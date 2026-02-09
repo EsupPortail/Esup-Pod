@@ -6,6 +6,7 @@ Defines installed apps, middleware, template engines, DRF configuration,
 and static/media file paths. Loads environment variables and imports
 specialized component settings (authentication, swagger).
 """
+
 import os
 
 from config.env import BASE_DIR, env

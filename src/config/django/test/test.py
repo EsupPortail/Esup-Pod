@@ -8,6 +8,7 @@ Usage:
     export DJANGO_SETTINGS_MODULE=config.django.test.test
     pytest
 """
+
 import os
 
 from config.django.test.init_env import *  # noqa: F401, F403
