@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "src.apps.authentication",
     "src.apps.info",
     "src.apps.core",
+    "src.apps.video",
 ]
 
 MIDDLEWARE = [
