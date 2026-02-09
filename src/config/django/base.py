@@ -1,11 +1,19 @@
+"""
+Base Django configuration.
+
+Core settings shared across all environments (dev, test, prod).
+Defines installed apps, middleware, template engines, DRF configuration,
+and static/media file paths. Loads environment variables and imports
+specialized component settings (authentication, swagger).
+"""
 import os
 
 from config.env import BASE_DIR, env
 
-# Lire le fichier .env
+# Read .env file
 env.read_env(os.path.join(BASE_DIR, ".env"))
 
-# Variables d'environnement essentielles
+# Core settings
 POD_VERSION = env("VERSION")
 SECRET_KEY = env("SECRET_KEY")
 

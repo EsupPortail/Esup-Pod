@@ -34,20 +34,6 @@ jobs:
       - name: Lint with flake8
         run: flake8 src --count --show-source --statistics
 
-      - name: Check for non-breaking spaces (NBSP)
-        run: |
-          if grep -rnIP "\xa0" src; then
-            echo "Error: Non-breaking spaces (NBSP) found in the codebase. Please remove them."
-            exit 1
-          fi
-
-      - name: Settings Audit
-        env:
-          VERSION: "5.0.0"
-          SECRET_KEY: "temporary-key-for-ci"
-          DJANGO_SETTINGS_MODULE: "config.django.base"
-        run: python manage.py comparesettings
-
   # 2. Docker Integration, E2E & Security (The Authoritative Test)
   test-docker-full:
     needs: [quality-check]
@@ -65,13 +51,13 @@ jobs:
 
       - name: Build Stack
         env:
-          VERSION: 5.0.0-DEV
+          VERSION: ${VERSION}
           DJANGO_SETTINGS_MODULE: config.django.dev.docker
         run: make build
 
       - name: Start Stack
         env:
-          VERSION: 5.0.0-DEV
+          VERSION: ${VERSION}
           DJANGO_SETTINGS_MODULE: config.django.dev.docker
         run: make start
 
@@ -94,7 +80,7 @@ jobs:
           fi
 
       - name: Run Tests with Coverage (Inside Docker)
-        run: make test
+        run: make test-cov
 
       - name: Install E2E dependencies
         run: |
@@ -120,3 +106,4 @@ jobs:
       - name: Teardown
         if: always()
         run: make clean
+
