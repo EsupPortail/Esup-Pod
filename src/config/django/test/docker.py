@@ -9,6 +9,7 @@ Usage:
     export DJANGO_SETTINGS_MODULE=config.django.test.docker
     python manage.py test
 """
+
 from config.django.test.init_env import *  # noqa: F401, F403 # isort:skip
 from config.django.dev.docker import *  # noqa: F401, F403
 from config.env import env

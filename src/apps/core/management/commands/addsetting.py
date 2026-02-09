@@ -72,9 +72,9 @@ class Command(BaseCommand):
                 options["setting_name"]
             ] = setting
         else:
-            data[0]["configuration_apps"]["description"][options["app_name"]][
-                "settings"
-            ][options["setting_name"]] = setting
+            data[0]["configuration_apps"]["description"][options["app_name"]]["settings"][
+                options["setting_name"]
+            ] = setting
         os.remove(filename)
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f, sort_keys=True, indent=4, ensure_ascii=False)
@@ -139,16 +139,12 @@ class Command(BaseCommand):
         default_value = self.fix_default_value(setting.get("default_value", ""))
         print("Add a english description (leave blank and type enter to leave):")
         previous_value = (
-            setting["description"].get("en", [""])
-            if setting.get("description")
-            else [""]
+            setting["description"].get("en", [""]) if setting.get("description") else [""]
         )
         description_en = self.get_description(previous_value)
         print("Add a french description (leave blank and type enter to leave):")
         previous_value = (
-            setting["description"].get("fr", [""])
-            if setting.get("description")
-            else [""]
+            setting["description"].get("fr", [""]) if setting.get("description") else [""]
         )
         description_fr = self.get_description(previous_value)
         setting = {

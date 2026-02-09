@@ -5,6 +5,7 @@ Defines the root routing for the project, including Admin, API endpoints,
 and Swagger/Redoc documentation. Dynamically configures authentication routes
 (CAS vs. standard login) based on project settings.
 """
+
 import django_cas_ng.views
 from django.conf import settings
 from django.contrib import admin

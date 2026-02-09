@@ -71,9 +71,7 @@ class OwnerViewSet(viewsets.ModelViewSet):
             )
             return Response(serializer.data)
         except Owner.DoesNotExist:
-            return Response(
-                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=False, methods=["post"], url_path="remove-user-accessgroup")
     def remove_user_accessgroup(self, request):
@@ -97,9 +95,7 @@ class OwnerViewSet(viewsets.ModelViewSet):
             )
             return Response(serializer.data)
         except Owner.DoesNotExist:
-            return Response(
-                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class UserViewSet(viewsets.ModelViewSet):
