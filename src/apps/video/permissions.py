@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
+class IsOwnerOrCoOwnerOrReadOnly(permissions.BasePermission):
     """
     Permission personnalisée :
     - Lecture (GET, HEAD, OPTIONS) autorisée pour tout le monde (selon la vue).
@@ -11,5 +11,12 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-
-        return obj.owner == request.user
+        if not request.user or not request.user.is_authenticated:
+            return False
+        if obj.owner == request.user:
+            return True
+        if obj.co_owners.filter(pk=request.user.pk).exists():
+            if request.method == 'DELETE':
+                return False
+            return True
+        return False

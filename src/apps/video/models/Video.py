@@ -79,6 +79,7 @@ class Video(models.Model):
         help_text=_("Automatically generated image from the video."),
     )
     duration = models.IntegerField(_("Duration (s)"), default=0, editable=False)
+    view_count = models.PositiveIntegerField(_("View Count"), default=0, editable=False)
     is_360 = models.BooleanField(
         _("360° Video"),
         default=False,
