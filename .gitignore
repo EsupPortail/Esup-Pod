@@ -39,6 +39,9 @@ log/
 media/
 transcription/
 src/config/settings/*
+!src/config/settings/__init__.py
+!src/config/settings/README.md
+!src/config/settings/*.example
 
 
 # --- Tests & Coverage ---
