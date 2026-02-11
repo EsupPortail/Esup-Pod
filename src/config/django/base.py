@@ -100,9 +100,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 # ==============================================================================
 # MODULAR SETTINGS LOADING
 # ==============================================================================
-# Instead of a single settings_local.py or a giant .env, we load overrides
-# from src/config/settings/{app}.py.
-# This allows developers to toggle feature flags using Python code.
+# 1. Load Defaults: src/config/defaults/{app}.py
+# 2. Load Overrides: src/config/settings/{app}.py (local customization)
 
 APPS_WITH_CUSTOM_SETTINGS = [
     "authentication",
@@ -112,16 +111,20 @@ APPS_WITH_CUSTOM_SETTINGS = [
 ]
 
 for app_config_name in APPS_WITH_CUSTOM_SETTINGS:
+    # 1. Load Defaults
     try:
-        # Import the module: src.config.settings.{app}
-        mod = __import__(f"src.config.settings.{app_config_name}", fromlist=["*"])
-
-        # Apply uppercase variables to local scope (standard Django settings behavior)
-        for setting_name in dir(mod):
+        mod_default = __import__(f"src.config.defaults.{app_config_name}", fromlist=["*"])
+        for setting_name in dir(mod_default):
             if setting_name.isupper():
-                locals()[setting_name] = getattr(mod, setting_name)
-
+                locals()[setting_name] = getattr(mod_default, setting_name)
     except ImportError:
-        # It is perfectly fine if the file does not exist.
-        # It means the developer wants to use default values.
-        pass
+        pass  # No defaults for this app
+
+    # 2. Load Overrides
+    try:
+        mod_override = __import__(f"src.config.settings.{app_config_name}", fromlist=["*"])
+        for setting_name in dir(mod_override):
+            if setting_name.isupper():
+                locals()[setting_name] = getattr(mod_override, setting_name)
+    except ImportError:
+        pass  # No local overrides for this app
