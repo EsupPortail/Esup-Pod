@@ -1,5 +1,4 @@
 import django_cas_ng.views
-from django.conf import settings
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
@@ -7,6 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
+from .conf import auth_settings
 from .views import (
     AccessGroupViewSet,
     CASLoginView,
@@ -38,10 +38,10 @@ urlpatterns = [
     path("config/", LoginConfigView.as_view(), name="api_login_config"),
 ]
 
-if settings.USE_LOCAL_AUTH:
+if auth_settings.use_local_auth:
     urlpatterns.append(path("token/", LoginView.as_view(), name="token_obtain_pair"))
 
-if settings.USE_CAS:
+if auth_settings.use_cas:
     urlpatterns.append(
         path("token/cas/", CASLoginView.as_view(), name="token_obtain_pair_cas")
     )
@@ -60,7 +60,7 @@ if settings.USE_CAS:
         )
     )
 
-if settings.USE_SHIB:
+if auth_settings.use_shib:
     urlpatterns.append(
         path(
             "token/shibboleth/",
@@ -69,7 +69,7 @@ if settings.USE_SHIB:
         )
     )
 
-if settings.USE_OIDC:
+if auth_settings.use_oidc:
     urlpatterns.append(
         path("token/oidc/", OIDCLoginView.as_view(), name="token_obtain_pair_oidc")
     )

@@ -48,8 +48,8 @@ To ensure stability, the project maintains strict isolation between environments
 
 Make sure to **choose the correct `.env` file** depending on how you run the project:
 
-- **Using Docker → use the Docker `.env.docker` file** (MariaDB, container services)
-- **Using local setup → use the local `.env.local` file** (SQLite and local-only defaults)
+- **Using Docker → use the Docker `.env.example` file** (MariaDB, container services)
+- **Using local setup (SQLite and local-only defaults)**
 
 Selecting the wrong `.env` will load the wrong database configuration and cause the application to fail.
 

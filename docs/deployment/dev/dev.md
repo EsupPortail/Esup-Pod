@@ -33,38 +33,45 @@ If you are familiar with Docker:
 git clone <your-forked-repo-url>
 cd Pod_V5_Back
 
-cp .env.docker .env   # Copy template
+cp .env.example .env   # Copy template
 make start            # Start project
 make logs             # Watch logs
 ```
 
 The app will be available at `http://localhost:8000`.
 
----
 
-## 3. Development Guide
+## 3. Configuration Guide
 
-### Configuration (.env)
+Esup-Pod V5 separates **Infrastructure Configuration** (Secrets) from **Feature Flags**.
 
-The project uses environment variables for configuration.
-Copy the included template and customize it if necessary:
+### Infrastructure & Secrets (`.env`)
 
-```bash
-cp .env.docker .env
-```
+The `.env` file is strictly reserved for sensitive information. It should **not** contain boolean flags or UI settings.
 
-**Key Variables in `.env`:**
+- **Contents**: Database passwords, `SECRET_KEY`, API tokens (e.g., `POD_API_TOKEN`), LDAP/OIDC credentials.
+- **Setup**: Copy `.env.example` to `.env` and fill in your local credentials.
 
-- `MYSQL_PASSWORD`, `SECRET_KEY`: Change these for security.
-- `DJANGO_SUPERUSER_PASSWORD`: Default admin password.
-- **Feature Flags**: Toggle authentication methods as needed:
-  ```bash
-  # --- Authentication Features ---
-  USE_LOCAL_AUTH=True
-  USE_CAS=False
-  USE_LDAP=False
-  USE_OIDC=False
+### Feature Flags (`src/config/settings/`)
+
+Customization is handled via modular Python files instead of a single large environment file.
+
+- **Modular approach**: Each application (e.g., `video`, `authentication`) has its own configuration schema.
+- **Customization**: To override default settings, create or modify a Python file in `src/config/settings/{app_name}.py`.
+- **Example**: To change the upload limit, edit `src/config/settings/video.py`:
+  ```python
+  MAX_UPLOAD_SIZE_GB = 10
   ```
+- **Benefits**: You get full IDE auto-completion and type checking.
+
+### How it works (Pydantic Validation)
+
+The system uses **Pydantic** `BaseSettings` to ensure configuration integrity:
+1. **Defaults**: Pydantic loads hardcoded default values.
+2. **Secrets**: Sensitive values are injected from the `.env` file.
+3. **Overrides**: Specific settings are loaded from `src/config/settings/{app_name}.py`.
+4. **Validation**: If a type mismatch occurs (e.g., a string instead of a boolean), the application will fail to start with a clear error message.
+
 
 ### Managing the App (Make Commands)
 
