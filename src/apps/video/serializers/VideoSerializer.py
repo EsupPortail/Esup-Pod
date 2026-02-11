@@ -35,6 +35,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "co_owners",
             "status",
             "status_label",
+            "is_auth_required",
             "password",
             "has_password",
             "subtitles",
@@ -73,11 +74,13 @@ class VideoSerializer(serializers.ModelSerializer):
         )
         if is_privileged:
             return self._get_absolute_url(obj.video_file, request)
-        if obj.password:
-            return None
         if not obj.allow_downloading:
             return None
-
+        if obj.status == Video.Status.RESTRICTED:
+            if obj.password:
+                return None
+            if obj.is_auth_required and (not user or not user.is_authenticated):
+                return None
         return self._get_absolute_url(obj.video_file, request)
 
     def _get_absolute_url(self, file_field, request):

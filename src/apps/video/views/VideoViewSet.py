@@ -9,6 +9,7 @@ from rest_framework.decorators import action
 import os
 from rest_framework.exceptions import PermissionDenied
 from django.contrib.auth.hashers import check_password
+from django.db.models import F
 
 
 class VideoViewSet(viewsets.ModelViewSet):
@@ -25,7 +26,10 @@ class VideoViewSet(viewsets.ModelViewSet):
         user = self.request.user
         qs = Video.objects.all()
         if not user.is_authenticated:
-            return qs.filter(status=Video.Status.PUBLISHED)
+            return qs.filter(
+                Q(status=Video.Status.PUBLISHED)
+                | (Q(status=Video.Status.RESTRICTED) & Q(is_auth_required=False))
+            ).distinct()
         if user.is_superuser:
             return qs
         return qs.filter(
@@ -58,19 +62,20 @@ class VideoViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def register_view(self, request, slug=None):
         video = self.get_object()
-        video.view_count += 1
+        video.view_count = F('view_count') + 1
         video.save(update_fields=['view_count'])
+        video.refresh_from_db()
         return Response({'status': 'viewed', 'count': video.view_count})
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
     def unlock(self, request, slug=None):
         """
-        Permet de récupérer l'URL d'une vidéo protégée par mot de passe.
-        Payload: { "password": "mon_mot_de_passe" }
+        Déverrouille une vidéo RESTRICTED avec mot de passe.
         """
         video = self.get_object()
-        if video.status == Video.Status.RESTRICTED and not request.user.is_authenticated:
-            raise PermissionDenied("Vous devez être connecté pour accéder à cette vidéo.")
+        if video.status == Video.Status.RESTRICTED and video.is_auth_required:
+            if not request.user.is_authenticated:
+                raise PermissionDenied("Vous devez être connecté pour accéder à cette vidéo.")
         input_password = request.data.get('password')
         if video.password and check_password(input_password, video.password):
             request = self.context.get('request')

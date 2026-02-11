@@ -12,7 +12,7 @@ class Video(models.Model):
     class Status(models.TextChoices):
         DRAFT = "DR", _("Draft (Private)")
         PUBLISHED = "PU", _("Published (Public)")
-        RESTRICTED = "RE", _("Restricted (Auth only)")
+        RESTRICTED = "RE", _("Restricted (Access Controlled)")
         ENCODING = "EN", _("Encoding in progress")
         ERROR = "ER", _("Encoding Error")
 
@@ -105,6 +105,11 @@ class Video(models.Model):
         choices=Status.choices,
         default=Status.ENCODING,
         db_index=True,
+    )
+    is_auth_required = models.BooleanField(
+        _("Authentication Required"),
+        default=False,
+        help_text=_("If checked, users must be logged in to access this video (even if they have the password).")
     )
     password = models.CharField(
         _("Password"),
