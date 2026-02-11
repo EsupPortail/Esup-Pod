@@ -4,39 +4,27 @@ Welcome to the Pod V5 Project Documentation. This guide is intended for develope
 
 ## Table of Contents
 
-### [Authentication](authentication/README.md)
+### Navigation par Application (One Doc Per App)
 
-Understand and configure security.
+Bienvenue dans la documentation officielle de Pod V5. Chaque application dispose de sa propre documentation dédiée.
 
-- [Overview](authentication/README.md): Supported methods (Local, CAS, LDAP).
-- [Technical Details](authentication/details.md): Advanced configuration, attribute mapping, and internal workings.
+- **[Configuration & Personnalisation](configuration.md)** : Le hub central pour paramétrer votre instance, gérer les variables d'environnement et les surcharges locales.
+- **[Authentication](authentication/README.md)** : Connexion locale, CAS, LDAP, OIDC et gestion des utilisateurs.
+- **[API & Swagger](api/README.md)** : Guide d'utilisation et de documentation de l'API REST.
+- **[Core & Management](core/MANAGEMENT_COMMANDS.md)** : Commandes CLI pour l'audit et la maintenance.
+- **[Déploiement & CI/CD](deployment/README.md)** : Architecture Docker, production et automatisation GitHub Actions.
+- **[AI & LLM Helpers](LLM_HELPERS.md)** : Contexte pour les agents IA et LLM.
 
-### [API & Swagger](api/README.md)
+---
 
-Interact with the backend via the REST API.
+### Règles & Contributions
 
-- [Swagger Access](api/README.md): Links to interactive documentation.
-- [Developer Guide](api/guide.md): How to document new endpoints.
+Pour maintenir la qualité du projet, merci de vous référer aux guides suivants (sources uniques de vérité) :
 
-### [Deployment & CI/CD](deployment/README.md)
+- **[Guide des Contributions](../CONTRIBUTING.md)** : Règles de codage, messages de commit et workflow de PR.
+- **[Code de Conduite](../CODE_OF_CONDUCT.md)** : Engagement de la communauté.
+- **[Licence](../COPYING.LESSER)** : Mentions légales LGPL 3.0.
 
-Architecture, production setup, and automation.
-
-- [Deployment Overview](deployment/README.md): System architecture.
-- [Development Guide](deployment/dev/dev.md): How to setup local environment (Docker/Make).
-- [CI/CD Pipelines](CI_CD.md): Understanding the GitHub Actions workflows.
-
-### [AI & LLM Helpers](LLM_HELPERS.md)
-
-Tools and configurations for AI agents.
-
-- [Overview](LLM_HELPERS.md): `llms.txt` documentation context.
-
-### [Configuration](configuration.md)
-
-- [Environment Variables](configuration.md): Complete list of .env variables.
-- [Customization](configuration.md#3-how-to-customize-settings): How to add settings or apps.
-- [Management Commands](core/MANAGEMENT_COMMANDS.md): Tools to audit and sync settings.
 
 ---
 
