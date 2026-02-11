@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional
 
-from django.conf import settings
+from ...conf import auth_settings
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -93,19 +93,18 @@ class UserPopulator:
 
     def _populate_from_oidc(self, attributes: Dict[str, Any]) -> None:
         """Map OIDC claims to User/Owner."""
-        given_name_claim = getattr(settings, "OIDC_CLAIM_GIVEN_NAME", "given_name")
-        family_name_claim = getattr(settings, "OIDC_CLAIM_FAMILY_NAME", "family_name")
+
+        given_name_claim = auth_settings.oidc_claim_given_name
+        family_name_claim = auth_settings.oidc_claim_family_name
 
         self.user.first_name = attributes.get(given_name_claim, self.user.first_name)
         self.user.last_name = attributes.get(family_name_claim, self.user.last_name)
         self.user.email = attributes.get("email", self.user.email)
 
-        self.owner.affiliation = getattr(
-            settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION
-        )
+        self.owner.affiliation = auth_settings.oidc_default_affiliation
 
         # OIDC default access groups
-        oidc_groups = getattr(settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", [])
+        oidc_groups = auth_settings.oidc_default_access_group_code_names
         self._assign_access_groups(oidc_groups)
 
         # Is user staff?
@@ -152,9 +151,8 @@ class UserPopulator:
 
     def _process_affiliations(self, affiliations: List[str]) -> None:
         """Process list of affiliations to set staff status and create AccessGroups."""
-        create_group_from_aff = getattr(
-            settings, "CREATE_GROUP_FROM_AFFILIATION", False
-        )
+
+        create_group_from_aff = auth_settings.create_group_from_affiliation
         current_site = Site.objects.get_current()
 
         for affiliation in affiliations:
@@ -175,7 +173,8 @@ class UserPopulator:
 
     def _assign_access_groups(self, groups: List[str]) -> None:
         """Assign AccessGroups based on group codes."""
-        create_group_from_groups = getattr(settings, "CREATE_GROUP_FROM_GROUPS", False)
+
+        create_group_from_groups = auth_settings.create_group_from_groups
         current_site = Site.objects.get_current()
 
         for group_code in groups:
@@ -213,5 +212,6 @@ class UserPopulator:
 
     @staticmethod
     def _is_ldap_configured() -> bool:
-        ldap_config = getattr(settings, "LDAP_SERVER", {})
+
+        ldap_config = auth_settings.ldap_server
         return bool(ldap_config.get("url"))

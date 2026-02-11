@@ -1,0 +1,239 @@
+"""
+Authentication configuration.
+
+Typed and validated configuration for the authentication app using pydantic-settings.
+"""
+
+from typing import Dict, List, Optional, Tuple, Type
+
+
+from pydantic import Field, SecretStr
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+)
+from src.apps.utils.conf import DjangoSettingsSource
+from src.config.defaults import authentication as defaults
+
+
+class AuthConfig(BaseSettings):
+    """Authentication configuration with typed fields and validation."""
+
+    # --- Feature Flags ---
+    use_local_auth: bool = Field(
+        default=defaults.USE_LOCAL_AUTH,
+        description="Enable local Django authentication (username/password).",
+    )
+    use_cas: bool = Field(
+        default=defaults.USE_CAS,
+        description="Enable CAS (Central Authentication Service).",
+    )
+    use_ldap: bool = Field(
+        default=defaults.USE_LDAP,
+        description="Enable LDAP user lookup for populating user attributes.",
+    )
+    use_shib: bool = Field(
+        default=defaults.USE_SHIB,
+        description="Enable Shibboleth authentication.",
+    )
+    use_oidc: bool = Field(
+        default=defaults.USE_OIDC,
+        description="Enable OpenID Connect authentication.",
+    )
+
+    # --- CAS Configuration ---
+    cas_server_url: str = Field(
+        default=defaults.CAS_SERVER_URL,
+        description="URL of the CAS server.",
+    )
+    cas_version: str = Field(
+        default=defaults.CAS_VERSION,
+        description="CAS protocol version.",
+    )
+    cas_force_change_username_case: str = Field(
+        default=defaults.CAS_FORCE_CHANGE_USERNAME_CASE,
+        description="Force CAS username case: 'lower', 'upper', or 'False'.",
+    )
+    cas_apply_attributes_to_user: bool = Field(
+        default=defaults.CAS_APPLY_ATTRIBUTES_TO_USER,
+        description="Apply CAS attributes directly to the Django user model.",
+    )
+    cas_admin_redirect: bool = Field(
+        default=defaults.CAS_ADMIN_REDIRECT,
+        description="Redirect admin login to CAS.",
+    )
+
+    # --- LDAP Configuration ---
+    ldap_server_url: str = Field(
+        default=defaults.LDAP_SERVER_URL,
+        description="LDAP server URL.",
+    )
+    ldap_server_port: int = Field(
+        default=defaults.LDAP_SERVER_PORT,
+        description="LDAP server port.",
+    )
+    ldap_server_use_ssl: bool = Field(
+        default=defaults.LDAP_SERVER_USE_SSL,
+        description="Use SSL for LDAP connection.",
+    )
+    ldap_bind_dn: str = Field(
+        default=defaults.LDAP_BIND_DN,
+        description="LDAP bind DN.",
+    )
+    ldap_bind_password: SecretStr = Field(
+        default=defaults.LDAP_BIND_PASSWORD,
+        description="LDAP bind password (secret).",
+    )
+    ldap_user_search_base: str = Field(
+        default=defaults.LDAP_USER_SEARCH_BASE,
+        description="LDAP search base for users.",
+    )
+    ldap_user_search_filter: str = Field(
+        default=defaults.LDAP_USER_SEARCH_FILTER,
+        description="LDAP search filter for users.",
+    )
+    ldap_mapping_attributes: Dict[str, str] = Field(
+        default=defaults.LDAP_MAPPING_ATTRIBUTES,
+        description="Mapping from internal user fields to LDAP attributes.",
+    )
+
+    # --- OIDC Configuration ---
+    oidc_rp_client_id: str = Field(
+        default=defaults.OIDC_RP_CLIENT_ID,
+        description="OIDC Relying Party client ID.",
+    )
+    oidc_rp_client_secret: SecretStr = Field(
+        default=defaults.OIDC_RP_CLIENT_SECRET,
+        description="OIDC Relying Party client secret.",
+    )
+    oidc_op_token_endpoint: str = Field(
+        default=defaults.OIDC_OP_TOKEN_ENDPOINT,
+        description="OIDC Provider token endpoint.",
+    )
+    oidc_op_user_endpoint: str = Field(
+        default=defaults.OIDC_OP_USER_ENDPOINT,
+        description="OIDC Provider user info endpoint.",
+    )
+    oidc_claim_given_name: str = Field(
+        default=defaults.OIDC_CLAIM_GIVEN_NAME,
+        description="OIDC claim for given name.",
+    )
+    oidc_claim_family_name: str = Field(
+        default=defaults.OIDC_CLAIM_FAMILY_NAME,
+        description="OIDC claim for family name.",
+    )
+    oidc_claim_preferred_username: str = Field(
+        default=defaults.OIDC_CLAIM_PREFERRED_USERNAME,
+        description="OIDC claim for preferred username.",
+    )
+    oidc_default_affiliation: str = Field(
+        default=defaults.OIDC_DEFAULT_AFFILIATION,
+        description="Default affiliation for OIDC-authenticated users.",
+    )
+    oidc_default_access_group_code_names: List[str] = Field(
+        default=defaults.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES,
+        description="Default access groups for OIDC-authenticated users.",
+    )
+
+    # --- Shibboleth Configuration ---
+    shibboleth_staff_allowed_domains: Optional[List[str]] = Field(
+        default=defaults.SHIBBOLETH_STAFF_ALLOWED_DOMAINS,
+        description="Domains allowed for Shibboleth staff users.",
+    )
+    shib_secure_header: Optional[str] = Field(
+        default=defaults.SHIB_SECURE_HEADER,
+        description="HTTP header to check for Shibboleth security (e.g., HTTP_X_SHIB_SECURE).",
+    )
+    shib_secure_value: str = Field(
+        default=defaults.SHIB_SECURE_VALUE,
+        description="Value expected in shib_secure_header.",
+    )
+    shibboleth_attribute_map: Dict[str, Tuple[bool, str]] = Field(
+        default=defaults.SHIBBOLETH_ATTRIBUTE_MAP,
+        description="Mapping from Shibboleth headers to user fields.",
+    )
+
+    # --- Group / Affiliation ---
+    affiliation_staff: Tuple[str, ...] = Field(
+        default=defaults.AFFILIATION_STAFF,
+        description="Affiliations that grant staff status.",
+    )
+    create_group_from_affiliation: bool = Field(
+        default=defaults.CREATE_GROUP_FROM_AFFILIATION,
+        description="Auto-create access groups from user affiliations.",
+    )
+    create_group_from_groups: bool = Field(
+        default=defaults.CREATE_GROUP_FROM_GROUPS,
+        description="Auto-create groups from LDAP/CAS group attributes.",
+    )
+
+    # --- Security ---
+    allowed_superuser_ips: List[str] = Field(
+        default=defaults.ALLOWED_SUPERUSER_IPS,
+        description="IP addresses/ranges from which superuser access is allowed.",
+    )
+
+    # --- UI ---
+    hide_username: bool = Field(
+        default=defaults.HIDE_USERNAME,
+        description="Hide usernames on the platform (GDPR compliance).",
+    )
+    use_establishment_field: bool = Field(
+        default=defaults.USE_ESTABLISHMENT_FIELD,
+        description="Add an establishment attribute to users.",
+    )
+
+    # --- Remote User ---
+    remote_user_header: str = Field(
+        default=defaults.REMOTE_USER_HEADER,
+        description="HTTP header containing the remote username.",
+    )
+
+    @property
+    def populate_user(self) -> Optional[str]:
+        """Determine user population strategy based on active flags."""
+        if self.use_cas:
+            return "CAS"
+        if self.use_ldap:
+            return "LDAP"
+        return None
+
+    @property
+    def ldap_server(self) -> dict:
+        """Build the LDAP server configuration dict."""
+        return {
+            "url": self.ldap_server_url,
+            "port": self.ldap_server_port,
+            "use_ssl": self.ldap_server_use_ssl,
+        }
+
+    model_config = SettingsConfigDict(
+        env_prefix="POD_AUTH_",
+        case_sensitive=False,
+    )
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: Type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> Tuple[PydanticBaseSettingsSource, ...]:
+        """
+        Add DjangoSettingsSource to priority list.
+        Order: Init > Env > Django Settings > DotEnv > Secrets > Defaults
+        """
+        return (
+            init_settings,
+            env_settings,
+            DjangoSettingsSource(settings_cls),
+            dotenv_settings,
+            file_secret_settings,
+        )
+
+
+# Singleton instance
+auth_settings = AuthConfig()

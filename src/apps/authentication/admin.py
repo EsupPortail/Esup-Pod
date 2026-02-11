@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import widgets
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -11,10 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from .forms import GroupAdminForm, GroupSiteAdminForm, OwnerAdminForm
 from .models import AccessGroup, GroupSite, Owner
 
-# Define an inline admin descriptor for Owner model
-# which acts a bit like a singleton
-
-USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
+from .conf import auth_settings
 
 
 class GroupSiteInline(admin.StackedInline):
@@ -105,7 +101,7 @@ class UserAdmin(BaseUserAdmin):
         "is_active",
         ("groups", admin.RelatedOnlyFieldListFilter),
     )
-    if USE_ESTABLISHMENT_FIELD:
+    if auth_settings.use_establishment_field:
         list_display = list_display + ("owner_establishment",)
 
     # readonly_fields=('is_superuser',)

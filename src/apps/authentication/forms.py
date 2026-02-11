@@ -10,7 +10,7 @@ from .models import GroupSite, Owner
 
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
-    from pod.podfile.widgets import (  # TODO : change import path when files will be implamented
+    from pod.podfile.widgets import (  # TODO : enregistrer userpicture dans notre file système car on abandone l'app PodFile
         CustomFileWidget,
     )
 

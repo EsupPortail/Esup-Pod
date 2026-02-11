@@ -8,12 +8,12 @@ import ipaddress
 
 from django.utils.translation import gettext_lazy as _
 
+from .conf import auth_settings
+
 
 def ip_in_allowed_range(ip) -> bool:
-    """Make sure the IP is one of the authorized ones."""
-    from django.conf import settings
 
-    ALLOWED_SUPERUSER_IPS = getattr(settings, "ALLOWED_SUPERUSER_IPS", [])
+    ALLOWED_SUPERUSER_IPS = auth_settings.allowed_superuser_ips
 
     try:
         ip_obj = ipaddress.ip_address(ip)

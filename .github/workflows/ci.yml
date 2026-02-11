@@ -47,7 +47,7 @@ jobs:
           python-version: "3.12"
 
       - name: Create .env file
-        run: cp .env.docker .env
+        run: cp .env.example .env
 
       - name: Build Stack
         env:

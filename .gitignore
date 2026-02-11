@@ -12,6 +12,9 @@ db.sqlite3-journal
 media/
 staticfiles/
 src/apps/*/migrations/*_initial.py
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
 
 # --- Environnement & Secrets ---
 .env
@@ -35,13 +38,10 @@ mysql_data/
 log/
 media/
 transcription/
+src/config/settings/*
 
 
 # --- Tests & Coverage ---
 .pytest_cache/
 htmlcov/
 .coverage
-
-**/migrations/**
-!**/migrations
-!**/migrations/__init__.py
