@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Optional
 
-from django.conf import settings
+from ..conf import auth_settings
 from ldap3 import ALL, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPBindError, LDAPSocketOpenError
 
@@ -12,9 +12,10 @@ logger = logging.getLogger(__name__)
 
 def get_ldap_conn():
     """Open and get LDAP connexion."""
-    ldap_server_conf = getattr(settings, "LDAP_SERVER", {})
-    auth_bind_dn = getattr(settings, "AUTH_LDAP_BIND_DN", "")
-    auth_bind_pwd = getattr(settings, "AUTH_LDAP_BIND_PASSWORD", "")
+
+    ldap_server_conf = auth_settings.ldap_server
+    auth_bind_dn = auth_settings.ldap_bind_dn
+    auth_bind_pwd = auth_settings.ldap_bind_password.get_secret_value()
 
     url = ldap_server_conf.get("url")
     if not url:

@@ -1,1 +1,1 @@
-from .VideoViewSet import VideoViewSet # noqa: F401 E261
+from .VideoViewSet import VideoViewSet  # noqa: F401 E261

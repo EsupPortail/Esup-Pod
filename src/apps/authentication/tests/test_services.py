@@ -1,8 +1,9 @@
 from unittest.mock import MagicMock, patch
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase, override_settings
+from django.test import TestCase
 
+from ..conf import AuthConfig
 from ..services import UserPopulator, verify_cas_ticket
 
 User = get_user_model()
@@ -32,14 +33,15 @@ class TestUserPopulator(TestCase):
         self.assertEqual(self.user.owner.auth_type, "CAS")
         self.assertEqual(self.user.owner.affiliation, "student")
 
-        # Check groups - depends on create_group settings, but let's assume default behaviour
-        # or mock settings.
-        # By default CREATE_GROUP_FROM_GROUPS might be False.
-        # Let's verify owner attribute is updated.
-
-    @override_settings(POPULATE_USER="CAS")
+    @patch(
+        "src.apps.authentication.services.providers.cas.auth_settings",
+        new_callable=lambda: AuthConfig(
+            use_cas=True,
+            use_ldap=False,
+        ),
+    )
     @patch("src.apps.authentication.services.users.populator.UserPopulator.run")
-    def test_verify_cas_ticket_calls_populator(self, mock_run):
+    def test_verify_cas_ticket_calls_populator(self, mock_run, mock_settings):
         with patch(
             "src.apps.authentication.services.providers.cas.get_cas_client"
         ) as mock_client:

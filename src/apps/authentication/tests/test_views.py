@@ -5,6 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from ..conf import AuthConfig
 from ..models import Owner
 
 User = get_user_model()
@@ -36,34 +37,37 @@ class LoginViewTests(APITestCase):
 class ShibbolethLoginViewTests(APITestCase):
     def setUp(self):
         self.url = reverse("token_obtain_pair_shibboleth")
-        self.remote_user_header = "REMOTE_USER"  # Default setting
+        self.remote_user_header = "REMOTE_USER"
 
     def test_shibboleth_success(self):
         headers = {
             "REMOTE_USER": "shibuser",
-            "HTTP_SHIBBOLETH_MAIL": "shib@example.com",  # This might need adjustment based on how code reads it but let's try standard header simulation
+            "HTTP_SHIBBOLETH_MAIL": "shib@example.com",
         }
-        # Assuming no security header required by default test settings or mocked
-
         response = self.client.get(self.url, **headers)
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         self.assertTrue(User.objects.filter(username="shibuser").exists())
 
     def test_shibboleth_missing_header(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_shibboleth_security_check_fail(self):
-        with self.settings(
-            SHIB_SECURE_HEADER="HTTP_X_SECURE", SHIB_SECURE_VALUE="secret"
-        ):
-            headers = {
-                "HTTP_REMOTE_USER": "shibuser",
-            }
-            response = self.client.get(self.url, **headers)
-            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    @patch(
+        "src.apps.authentication.services.providers.shibboleth.auth_settings",
+        new_callable=lambda: AuthConfig(
+            remote_user_header="REMOTE_USER",
+            shib_secure_header="HTTP_X_SECURE",
+            shib_secure_value="secret",
+        ),
+    )
+    def test_shibboleth_security_check_fail(self, mock_settings):
+        """Test that missing security header returns 403."""
+        headers = {
+            "HTTP_REMOTE_USER": "shibuser",
+        }
+        # The secure header (HTTP_X_SECURE) is missing in the request
+        response = self.client.get(self.url, **headers)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class OIDCLoginViewTests(APITestCase):
@@ -72,7 +76,18 @@ class OIDCLoginViewTests(APITestCase):
 
     @patch("requests.post")
     @patch("requests.get")
-    def test_oidc_success(self, mock_get, mock_post):
+    @patch(
+        "src.apps.authentication.services.providers.oidc.auth_settings",
+        # FIX: Une seule lambda pour instancier l'objet directement
+        new_callable=lambda: AuthConfig(
+            use_oidc=True,
+            oidc_rp_client_id="client",
+            oidc_rp_client_secret="secret",
+            oidc_op_token_endpoint="http://oidc/token",
+            oidc_op_user_endpoint="http://oidc/userinfo",
+        ),
+    )
+    def test_oidc_success(self, mock_settings, mock_get, mock_post):
         # Mock Token response
         mock_token_resp = MagicMock()
         mock_token_resp.json.return_value = {"access_token": "fake_access_token"}
@@ -91,15 +106,7 @@ class OIDCLoginViewTests(APITestCase):
         mock_get.return_value = mock_user_resp
 
         data = {"code": "auth_code", "redirect_uri": "http://localhost/callback"}
-
-        # We need to ensure OIDC settings are present
-        with self.settings(
-            OIDC_OP_TOKEN_ENDPOINT="http://oidc/token",
-            OIDC_OP_USER_ENDPOINT="http://oidc/userinfo",
-            OIDC_RP_CLIENT_ID="client",
-            OIDC_RP_CLIENT_SECRET="secret",
-        ):
-            response = self.client.post(self.url, data)
+        response = self.client.post(self.url, data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(User.objects.filter(username="oidcuser").exists())
