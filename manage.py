@@ -3,6 +3,8 @@
 
 import os
 import sys
+
+from src.config.env import env
 from pathlib import Path
 from environ import ImproperlyConfigured
 
@@ -11,14 +13,6 @@ def main():
     """Run administrative tasks."""
     base_path = Path(__file__).resolve().parent
     sys.path.append(str(base_path / "src"))
-
-    # Import env after adding `src` to sys.path so package resolution is unambiguous
-    try:
-        # Prefer the package-style import used by settings: `config.env`
-        from config.env import env
-    except Exception:
-        # Fall back to `src.config.env` if needed
-        from src.config.env import env
 
     try:
         settings_module = env.str("DJANGO_SETTINGS_MODULE", default="config.django.base")

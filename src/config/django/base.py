@@ -3,19 +3,23 @@ Base Django configuration.
 
 Core settings shared across all environments (dev, test, prod).
 Defines installed apps, middleware, template engines, DRF configuration,
-and static/media file paths. Loads environment variables and imports
-specialized component settings (authentication, swagger).
+and static/media file paths.
+
+REFACTOR NOTE:
+Configuration is now modular. Feature flags and app-specific settings
+should be placed in `src/config/settings/{app_name}.py`.
 """
 
 import os
 
+
 from config.env import BASE_DIR, env
 
-# Read .env file
+# Read .env file (Secrets only)
 env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # Core settings
-POD_VERSION = env("VERSION")
+POD_VERSION = env("VERSION", default="5.0.0-DEV")
 SECRET_KEY = env("SECRET_KEY")
 
 INSTALLED_APPS = [
@@ -93,5 +97,31 @@ SITE_ID = 1
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-from config.settings.authentication import *  # noqa: E402, F401, F403
-from config.settings.swagger import *  # noqa: E402, F401, F403
+# ==============================================================================
+# MODULAR SETTINGS LOADING
+# ==============================================================================
+# Instead of a single settings_local.py or a giant .env, we load overrides
+# from src/config/settings/{app}.py.
+# This allows developers to toggle feature flags using Python code.
+
+APPS_WITH_CUSTOM_SETTINGS = [
+    "authentication",
+    "video",
+    "swagger",
+    "core",
+]
+
+for app_config_name in APPS_WITH_CUSTOM_SETTINGS:
+    try:
+        # Import the module: src.config.settings.{app}
+        mod = __import__(f"src.config.settings.{app_config_name}", fromlist=["*"])
+
+        # Apply uppercase variables to local scope (standard Django settings behavior)
+        for setting_name in dir(mod):
+            if setting_name.isupper():
+                locals()[setting_name] = getattr(mod, setting_name)
+
+    except ImportError:
+        # It is perfectly fine if the file does not exist.
+        # It means the developer wants to use default values.
+        pass

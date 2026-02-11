@@ -1,33 +1,42 @@
 import sys
 from importlib import reload
+from unittest.mock import patch
 
 from django.conf import settings
 from django.contrib.auth import views as auth_views
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.urls import clear_url_caches, resolve
 from django_cas_ng import views as cas_views
 
+from ..conf import AuthConfig
+
 
 def reload_urlconf():
+    """Reload URL configurations after settings change."""
     clear_url_caches()
-    if settings.ROOT_URLCONF in sys.modules:
-        reload(sys.modules[settings.ROOT_URLCONF])
+    # Reload authentication URLs (which read auth_settings at module level)
+    auth_urls_module = "src.apps.authentication.urls"
+    config_urls_module = settings.ROOT_URLCONF
+
+    for mod in [auth_urls_module, config_urls_module]:
+        if mod in sys.modules:
+            reload(sys.modules[mod])
 
 
 class AuthenticationScenariosTests(TestCase):
 
     def tearDown(self):
-        # Reset to default state after each test to avoid side effects
         clear_url_caches()
         reload_urlconf()
 
-    @override_settings(
-        USE_CAS=True,
-        USE_LOCAL_AUTH=False,
-        AUTHENTICATION_BACKENDS=["django_cas_ng.backends.CASBackend"],
-        CAS_SERVER_URL="https://cas.example.com",
+    @patch(
+        "src.apps.authentication.conf.auth_settings",
+        new_callable=lambda: AuthConfig(
+            use_cas=True,
+            use_local_auth=False,
+        ),
     )
-    def test_university_mode_cas_only(self):
+    def test_university_mode_cas_only(self, mock_settings):
         """
         Scenario: University / Production Mode
         - CAS is Enabled
@@ -38,19 +47,20 @@ class AuthenticationScenariosTests(TestCase):
         """
         reload_urlconf()
 
-        # 1. Verify URL resolution
         resolver_match = resolve("/accounts/login")
         self.assertEqual(resolver_match.func.view_class, cas_views.LoginView)
 
         resolver_match_logout = resolve("/accounts/logout")
         self.assertEqual(resolver_match_logout.func.view_class, cas_views.LogoutView)
 
-    @override_settings(
-        USE_CAS=False,
-        USE_LOCAL_AUTH=True,
-        AUTHENTICATION_BACKENDS=["django.contrib.auth.backends.ModelBackend"],
+    @patch(
+        "src.apps.authentication.conf.auth_settings",
+        new_callable=lambda: AuthConfig(
+            use_cas=False,
+            use_local_auth=True,
+        ),
     )
-    def test_local_mode_default(self):
+    def test_local_mode_default(self, mock_settings):
         """
         Scenario: Local Development Mode
         - CAS is Disabled
@@ -61,7 +71,6 @@ class AuthenticationScenariosTests(TestCase):
         """
         reload_urlconf()
 
-        # 1. Verify URL resolution
         resolver_match = resolve("/accounts/login")
         self.assertEqual(resolver_match.func.view_class, auth_views.LoginView)
 

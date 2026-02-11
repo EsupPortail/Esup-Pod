@@ -12,11 +12,11 @@ class VideoViewSet(viewsets.ModelViewSet):
     serializer_class = VideoSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
-    lookup_field = 'slug'
+    lookup_field = "slug"
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['title', 'description', 'owner__username']
-    ordering_fields = ['created_at', 'title']
-    ordering = ['-created_at']
+    search_fields = ["title", "description", "owner__username"]
+    ordering_fields = ["created_at", "title"]
+    ordering = ["-created_at"]
 
     def get_queryset(self):
         user = self.request.user
@@ -26,17 +26,16 @@ class VideoViewSet(viewsets.ModelViewSet):
         if user.is_superuser:
             return qs
         return qs.filter(
-            Q(status=Video.Status.PUBLISHED) | Q(status=Video.Status.RESTRICTED) | Q(owner=user)
+            Q(status=Video.Status.PUBLISHED)
+            | Q(status=Video.Status.RESTRICTED)
+            | Q(owner=user)
         ).distinct()
 
     def perform_create(self, serializer):
-        serializer.save(
-            owner=self.request.user,
-            status=Video.Status.ENCODING
-        )
+        serializer.save(owner=self.request.user, status=Video.Status.ENCODING)
 
 
-@action(detail=True, methods=['get'])
+@action(detail=True, methods=["get"])
 def stream(self, request, slug=None):
     """
     Endpoint spécifique pour la lecture vidéo.
@@ -48,7 +47,7 @@ def stream(self, request, slug=None):
     path = video.video_file.path
     if not os.path.exists(path):
         raise Http404("Video file not found on disk")
-    file = open(path, 'rb')
+    file = open(path, "rb")
     response = FileResponse(file)
-    response['Content-Type'] = 'video/mp4'
+    response["Content-Type"] = "video/mp4"
     return response

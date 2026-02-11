@@ -9,36 +9,26 @@ from src.apps.video.services.storage import get_storage_path_video
 
 class Video(models.Model):
     class Status(models.TextChoices):
-        DRAFT = 'DR', _('Draft (Private)')
-        PUBLISHED = 'PU', _('Published (Public)')
-        RESTRICTED = 'RE', _('Restricted (Auth only)')
-        ENCODING = 'EN', _('Encoding in progress')
-        ERROR = 'ER', _('Encoding Error')
+        DRAFT = "DR", _("Draft (Private)")
+        PUBLISHED = "PU", _("Published (Public)")
+        RESTRICTED = "RE", _("Restricted (Auth only)")
+        ENCODING = "EN", _("Encoding in progress")
+        ERROR = "ER", _("Encoding Error")
 
     title = models.CharField(_("Title"), max_length=250)
-    slug = models.SlugField(
-        _("Slug"),
-        unique=True,
-        max_length=255,
-        editable=False
-    )
+    slug = models.SlugField(_("Slug"), unique=True, max_length=255, editable=False)
     description = models.TextField(_("Description"), blank=True)
     video_file = models.FileField(
-        _("Video File"),
-        upload_to=get_storage_path_video,
-        max_length=255
+        _("Video File"), upload_to=get_storage_path_video, max_length=255
     )
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="videos",
         on_delete=models.CASCADE,
-        verbose_name=_("Owner")
+        verbose_name=_("Owner"),
     )
     status = models.CharField(
-        _("Status"),
-        max_length=2,
-        choices=Status.choices,
-        default=Status.ENCODING
+        _("Status"), max_length=2, choices=Status.choices, default=Status.ENCODING
     )
     duration = models.IntegerField(_("Duration"), default=0, editable=False)
     created_at = models.DateTimeField(default=timezone.now)
@@ -49,7 +39,7 @@ class Video(models.Model):
         verbose_name = _("Video")
         verbose_name_plural = _("Videos")
         indexes = [
-            models.Index(fields=['status']),
+            models.Index(fields=["status"]),
         ]
 
     def save(self, *args, **kwargs):

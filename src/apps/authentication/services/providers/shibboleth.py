@@ -1,6 +1,7 @@
 from typing import Any, Dict
 
-from django.conf import settings
+from ...conf import auth_settings
+
 from django.contrib.auth import get_user_model
 
 from ..core import REMOTE_USER_HEADER, SHIBBOLETH_ATTRIBUTE_MAP
@@ -13,11 +14,9 @@ UserModel = get_user_model()
 class ShibbolethService:
     def check_security(self, request) -> bool:
         """Verify request comes from a trusted source (SP) if configured."""
-        secure_header = getattr(settings, "SHIB_SECURE_HEADER", None)
+        secure_header = auth_settings.shib_secure_header
         if secure_header:
-            return request.META.get(secure_header) == getattr(
-                settings, "SHIB_SECURE_VALUE", "secure"
-            )
+            return request.META.get(secure_header) == auth_settings.shib_secure_value
         return True
 
     def get_header_value(self, request, header_name):

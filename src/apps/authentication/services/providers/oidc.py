@@ -2,7 +2,8 @@ import logging
 from typing import Any, Dict
 
 import requests
-from django.conf import settings
+from ...conf import auth_settings
+
 from django.contrib.auth import get_user_model
 
 from ..core import OIDC_CLAIM_PREFERRED_USERNAME
@@ -16,9 +17,10 @@ logger = logging.getLogger(__name__)
 class OIDCService:
     def process_code(self, code: str, redirect_uri: str) -> Dict[str, Any]:
         """Exchange OIDC code for tokens and populate user."""
-        token_url = getattr(settings, "OIDC_OP_TOKEN_ENDPOINT", "")
-        client_id = getattr(settings, "OIDC_RP_CLIENT_ID", "")
-        client_secret = getattr(settings, "OIDC_RP_CLIENT_SECRET", "")
+
+        token_url = auth_settings.oidc_op_token_endpoint
+        client_id = auth_settings.oidc_rp_client_id
+        client_secret = auth_settings.oidc_rp_client_secret.get_secret_value()
 
         if not token_url:
             raise EnvironmentError("OIDC not configured (missing OIDC_OP_TOKEN_ENDPOINT)")
@@ -40,7 +42,7 @@ class OIDCService:
             logger.error(f"OIDC Token Exchange failed: {e}")
             raise ConnectionError("Failed to exchange OIDC code")
 
-        userinfo_url = getattr(settings, "OIDC_OP_USER_ENDPOINT", "")
+        userinfo_url = auth_settings.oidc_op_user_endpoint
         try:
             headers = {"Authorization": f"Bearer {access_token}"}
             r_user = requests.get(userinfo_url, headers=headers)

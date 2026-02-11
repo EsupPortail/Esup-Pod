@@ -3,11 +3,10 @@ Main URL configuration.
 
 Defines the root routing for the project, including Admin, API endpoints,
 and Swagger/Redoc documentation. Dynamically configures authentication routes
-(CAS vs. standard login) based on project settings.
+(CAS vs. standard login) based on AuthConfig.
 """
 
 import django_cas_ng.views
-from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
@@ -19,6 +18,7 @@ from drf_spectacular.views import (
 )
 
 from config.router import router
+from src.apps.authentication.conf import auth_settings
 
 urlpatterns = [
     # Redirection to Swagger
@@ -37,7 +37,7 @@ urlpatterns = [
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]
 
-if getattr(settings, "USE_CAS", False):
+if auth_settings.use_cas:
     urlpatterns += [
         path(
             "accounts/login",
