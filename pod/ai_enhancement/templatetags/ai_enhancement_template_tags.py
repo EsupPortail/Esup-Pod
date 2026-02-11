@@ -10,7 +10,6 @@ from pod.ai_enhancement.utils import (
 )
 from pod.video.models import Video
 
-
 USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
 AI_ENHANCEMENT_TO_STAFF_ONLY = getattr(settings, "AI_ENHANCEMENT_TO_STAFF_ONLY", True)
 

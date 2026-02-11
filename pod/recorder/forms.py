@@ -7,7 +7,6 @@ from .models import Recording, Recorder
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from django_select2 import forms as s2forms
 
-
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
 ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = getattr(
     settings, "ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER", True

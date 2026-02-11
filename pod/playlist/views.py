@@ -50,7 +50,6 @@ from .utils import (
 import json
 import hashlib
 
-
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
     "TEMPLATE_VISIBLE_SETTINGS",

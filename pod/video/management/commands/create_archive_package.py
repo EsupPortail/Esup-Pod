@@ -24,7 +24,6 @@ from pod.completion.models import Contributor, Document, Overlay, Track
 from pod.enrichment.models import Enrichment
 from pod.main.utils import sizeof_fmt
 
-
 """CUSTOM PARAMETERS."""
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 ARCHIVE_ROOT = getattr(settings, "ARCHIVE_ROOT", "/video_archiving")
