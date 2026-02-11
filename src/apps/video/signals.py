@@ -46,6 +46,5 @@ def video_post_save(sender, instance, created, **kwargs):
             if os.path.exists(file_path):
                 duration = extract_video_duration(file_path)
                 Video.objects.filter(pk=instance.pk).update(
-                    duration=duration,
-                    status=Video.Status.PUBLISHED
+                    duration=duration, status=Video.Status.PUBLISHED
                 )
