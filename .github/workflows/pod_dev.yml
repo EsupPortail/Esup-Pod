@@ -21,7 +21,7 @@ env:
   ELASTICSEARCH_TAG: "elasticsearch:8.17.3"
   NODE_VERSION: "23"
   NODE_TAG: "node:23"
-  PYTHON_TAG: "python:3.10-bullseye"
+  PYTHON_TAG: "python:3.10-bookworm"
   REDIS_TAG: "redis:alpine3.21"
   DOCKER_ENV: "full-test"
 

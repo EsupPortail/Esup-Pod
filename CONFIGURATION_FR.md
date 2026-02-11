@@ -3,7 +3,9 @@
 ## Informations générales
 
 La plateforme Esup-Pod se base sur le framework Django écrit en Python.<br>
-Elle est compatible avec les versions 3.9, 3.10 et 3.12 de Python.<br>
+Elle est compatible avec les versions 3.10 et 3.12 de Python.<br>
+
+> Attention : à partir d’Esup-Pod version 4.2, la version 3.9 de Python n’est plus supportée.
 
 **Django Version : 4.2 LTS**<br>
 
@@ -629,32 +631,32 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> TEMPLATE_VISIBLE_SETTINGS = {
   >> # Titre du site.
   >> 'TITLE_SITE': 'Pod',
-  >>  
+  >>
   >> # Description du site.
   >> 'DESC_SITE': 'L’objectif d’Esup-Pod est de faciliter la mise à disposition
   >> de vidéos et ainsi d’encourager son utilisation dans l’enseignement et la recherche.',
-  >>  
+  >>
   >> # Titre de l’établissement.
   >> 'TITLE_ETB': 'University name',
-  >>  
+  >>
   >> # Logo affiché en haut à gauche sur toutes les pages.
   >> # Doit se situer dans le répertoire static
   >> 'LOGO_SITE': 'img/logoPod.svg',
-  >>  
+  >>
   >> # Logo affiché dans le footer sur toutes les pages.
   >> # Doit se situer dans le répertoire static
   >> 'LOGO_ETB': 'img/esup-pod.svg',
-  >>  
+  >>
   >> # Logo affiché sur le player video.
   >> # Doit se situer dans le répertoire static
   >> 'LOGO_PLAYER': 'img/pod_favicon.svg',
-  >>  
+  >>
   >> # Lien de destination du logo affiché sur le player.
   >> 'LINK_PLAYER': '',
-  >>  
+  >>
   >> # Intitulé de la page de redirection du logo affiché sur le player.
   >> 'LINK_PLAYER_NAME': _('Home'),
-  >>  
+  >>
   >> # Texte affiché dans le footer. Une ligne par entrée, accepte du code html.
   >> # Par exemple :
   >> # ( '42, rue Paul Duez',
@@ -662,15 +664,15 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> #   ('<a href="https://goo.gl/maps/AZnyBK4hHaM2"'
   >> #    ' target="_blank">Google maps</a>') )
   >> 'FOOTER_TEXT': ('',),
-  >>  
+  >>
   >> # Icone affichée dans la barre d'adresse du navigateur
   >> 'FAVICON': 'img/pod_favicon.svg',
-  >>  
+  >>
   >> # Si souhaitée, à créer et sauvegarder
   >> #  dans le répertoire static de l’application custom et
   >> #  préciser le chemin d’accès. Par exemple : "custom/etab.css"
   >> 'CSS_OVERRIDE': '',
-  >>  
+  >>
   >> # Vous pouvez créer un template dans votre application custom et
   >> #  indiquer son chemin dans cette variable pour que ce code html,
   >> # ce template soit affiché en haut de votre page, le code est ajouté
@@ -679,11 +681,11 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> # '/opt/django_projects/podv4/pod/custom/templates/custom/preheader.html'
   >> # alors la variable doit prendre la valeur 'custom/preheader.html'
   >> 'PRE_HEADER_TEMPLATE': '',
-  >>  
+  >>
   >> # Idem que pre-header, le code contenu dans le template
   >> #  sera affiché juste avant la fermeture du body. (Or iframe)
   >> 'POST_FOOTER_TEMPLATE': '',
-  >>  
+  >>
   >> # vous pouvez créer un template dans votre application custom
   >> #  pour y intégrer votre code Piwik ou Google analytics.
   >> # Ce template est inséré dans toutes les pages de la plateforme,
