@@ -19,7 +19,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "thumbnail",
             "duration",
             "is_360",
-            "is_audio_only",
+            "is_video",
             "owner",
             "co_owners",
             "status",
