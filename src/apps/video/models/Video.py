@@ -4,12 +4,7 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 from django.utils import timezone
-from src.apps.video.services.storage import get_storage_path_video
-
-
-def get_storage_path_image(instance, filename):
-    ext = filename.split(".")[-1]
-    return f"images/{instance.slug}_{uuid.uuid4().hex[:6]}.{ext}"
+from src.apps.video.services.storage import get_storage_path_video, get_storage_path_image
 
 
 class Video(models.Model):
