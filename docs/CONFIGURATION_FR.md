@@ -1,6 +1,11 @@
 # Configuration de la plateforme Esup-Pod
 
+> [!IMPORTANT]
+> Cette documentation est une référence pour les variables historiques du projet.
+> Pour comprendre **comment configurer** votre instance (fichiers de surcharge, hiérarchie), merci de vous référer au guide principal : **[Documentation de Configuration (EN)](configuration.md)**.
+
 ## Informations générales
+
 
 La plateforme Esup-Pod se base sur le framework Django écrit en Python.<br>
 Elle est compatible avec les versions 3.9, 3.10 et 3.12 de Python.<br>
@@ -394,86 +399,8 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> Chemin vers l'objet application ASGI.<br>
 * `AUTHENTICATION_BACKENDS`
   > default value: `['django.contrib.auth.backends.ModelBackend']`
-  >> L<br>
-  >> i<br>
-  >> s<br>
-  >> t<br>
-  >> e<br>
-  >> <br>
-  >> d<br>
-  >> e<br>
-  >> s<br>
-  >> <br>
-  >> b<br>
-  >> a<br>
-  >> c<br>
-  >> k<br>
-  >> e<br>
-  >> n<br>
-  >> d<br>
-  >> s<br>
-  >> <br>
-  >> d<br>
-  >> '<br>
-  >> a<br>
-  >> u<br>
-  >> t<br>
-  >> h<br>
-  >> e<br>
-  >> n<br>
-  >> t<br>
-  >> i<br>
-  >> f<br>
-  >> i<br>
-  >> c<br>
-  >> a<br>
-  >> t<br>
-  >> i<br>
-  >> o<br>
-  >> n<br>
-  >> <br>
-  >> à<br>
-  >> <br>
-  >> u<br>
-  >> t<br>
-  >> i<br>
-  >> l<br>
-  >> i<br>
-  >> s<br>
-  >> e<br>
-  >> r<br>
-  >> <br>
-  >> (<br>
-  >> e<br>
-  >> x<br>
-  >> :<br>
-  >> <br>
-  >> M<br>
-  >> o<br>
-  >> d<br>
-  >> e<br>
-  >> l<br>
-  >> B<br>
-  >> a<br>
-  >> c<br>
-  >> k<br>
-  >> e<br>
-  >> n<br>
-  >> d<br>
-  >> ,<br>
-  >> <br>
-  >> C<br>
-  >> A<br>
-  >> S<br>
-  >> B<br>
-  >> a<br>
-  >> c<br>
-  >> k<br>
-  >> e<br>
-  >> n<br>
-  >> d<br>
-  >> )<br>
-  >> .<br>
+  >> Liste des backends d'authentification à utiliser (ex: ModelBackend, CASBackend).
+<br>
 * `BASE_DIR`
   > default value: `os.path.dirname(os.path.dirname(os.path.abspath(__file__)))`
   >> répertoire de base<br>
@@ -506,126 +433,12 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >>
 * `CACHE_MIDDLEWARE_ALIAS`
   > default value: `default`
-  >> L<br>
-  >> '<br>
-  >> a<br>
-  >> l<br>
-  >> i<br>
-  >> a<br>
-  >> s<br>
-  >> <br>
-  >> d<br>
-  >> e<br>
-  >> <br>
-  >> c<br>
-  >> a<br>
-  >> c<br>
-  >> h<br>
-  >> e<br>
-  >> <br>
-  >> à<br>
-  >> <br>
-  >> u<br>
-  >> t<br>
-  >> i<br>
-  >> l<br>
-  >> i<br>
-  >> s<br>
-  >> e<br>
-  >> r<br>
-  >> <br>
-  >> p<br>
-  >> o<br>
-  >> u<br>
-  >> r<br>
-  >> <br>
-  >> l<br>
-  >> e<br>
-  >> <br>
-  >> m<br>
-  >> i<br>
-  >> d<br>
-  >> d<br>
-  >> l<br>
-  >> e<br>
-  >> w<br>
-  >> a<br>
-  >> r<br>
-  >> e<br>
-  >> <br>
-  >> d<br>
-  >> e<br>
-  >> <br>
-  >> c<br>
-  >> a<br>
-  >> c<br>
-  >> h<br>
-  >> e<br>
-  >> .<br>
+  >> L'alias de cache à utiliser pour le middleware de cache.
+<br>
 * `CACHE_MIDDLEWARE_KEY_PREFIX`
   > default value: ``
-  >> P<br>
-  >> r<br>
-  >> é<br>
-  >> f<br>
-  >> i<br>
-  >> x<br>
-  >> e<br>
-  >> <br>
-  >> d<br>
-  >> e<br>
-  >> s<br>
-  >> <br>
-  >> c<br>
-  >> l<br>
-  >> é<br>
-  >> s<br>
-  >> <br>
-  >> d<br>
-  >> e<br>
-  >> <br>
-  >> c<br>
-  >> a<br>
-  >> c<br>
-  >> h<br>
-  >> e<br>
-  >> <br>
-  >> g<br>
-  >> é<br>
-  >> n<br>
-  >> é<br>
-  >> r<br>
-  >> é<br>
-  >> e<br>
-  >> s<br>
-  >> <br>
-  >> p<br>
-  >> a<br>
-  >> r<br>
-  >> <br>
-  >> l<br>
-  >> e<br>
-  >> <br>
-  >> m<br>
-  >> i<br>
-  >> d<br>
-  >> d<br>
-  >> l<br>
-  >> e<br>
-  >> w<br>
-  >> a<br>
-  >> r<br>
-  >> e<br>
-  >> <br>
-  >> d<br>
-  >> e<br>
-  >> <br>
-  >> c<br>
-  >> a<br>
-  >> c<br>
-  >> h<br>
-  >> e<br>
-  >> .<br>
+  >> Préfixe de clés de cache générées par le middleware de cache.
+<br>
 * `CACHE_MIDDLEWARE_SECONDS`
   > default value: `600`
   >> D<br>
@@ -701,85 +514,8 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#secure-ssl-redirect)_<br>
 * `DATABASE_ROUTERS`
   > default value: `[]`
-  >> L<br>
-  >> i<br>
-  >> s<br>
-  >> t<br>
-  >> e<br>
-  >> <br>
-  >> d<br>
-  >> e<br>
-  >> s<br>
-  >> <br>
-  >> c<br>
-  >> l<br>
-  >> a<br>
-  >> s<br>
-  >> s<br>
-  >> e<br>
-  >> s<br>
-  >> <br>
-  >> d<br>
-  >> e<br>
-  >> <br>
-  >> r<br>
-  >> o<br>
-  >> u<br>
-  >> t<br>
-  >> e<br>
-  >> u<br>
-  >> r<br>
-  >> s<br>
-  >> <br>
-  >> p<br>
-  >> o<br>
-  >> u<br>
-  >> r<br>
-  >> <br>
-  >> c<br>
-  >> o<br>
-  >> n<br>
-  >> t<br>
-  >> r<br>
-  >> ô<br>
-  >> l<br>
-  >> e<br>
-  >> r<br>
-  >> <br>
-  >> l<br>
-  >> e<br>
-  >> s<br>
-  >> <br>
-  >> o<br>
-  >> p<br>
-  >> é<br>
-  >> r<br>
-  >> a<br>
-  >> t<br>
-  >> i<br>
-  >> o<br>
-  >> n<br>
-  >> s<br>
-  >> <br>
-  >> d<br>
-  >> e<br>
-  >> <br>
-  >> b<br>
-  >> a<br>
-  >> s<br>
-  >> e<br>
-  >> <br>
-  >> d<br>
-  >> e<br>
-  >> <br>
-  >> d<br>
-  >> o<br>
-  >> n<br>
-  >> n<br>
-  >> é<br>
-  >> e<br>
-  >> s<br>
-  >> .<br>
+  >> Liste des classes de routeurs pour contrôler les opérations de base de données.
+<br>
 * `DATA_UPLOAD_MAX_MEMORY_SIZE`
   > default value: `2621440`
   >> T<br>
