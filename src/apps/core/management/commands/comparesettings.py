@@ -10,54 +10,16 @@ class Command(BaseCommand):
     help = "Compare settings in code vs configuration.json"
 
     IGNORED_PREFIXES = (
-        "DJANGO",
-        "DATABASES",
-        "TEMPLATES",
-        "INSTALLED_APPS",
-        "MIDDLEWARE",
-        "AUTH_",
-        "CORS_",
-        "CSRF_",
-        "LOGGING",
-        "MESSAGE_",
-        "SECURE_",
-        "SESSION_",
-        "STATIC",
-        "TEST",
-        "WSGI",
-        "ADMIN",
-        "DEFAULT",
-        "EMAIL",
-        "SERVER_EMAIL",
-        "FILE_UPLOAD",
-        "INTERNAL_IPS",
-        "LANGUAGES",
-        "LOCALE",
-        "MANAGERS",
-        "MEDIA",
-        "MIGRATION",
-        "ROOT_URLCONF",
-        "SECRET_KEY",
-        "SIGNING_KEY",
-        "SILENCED_SYSTEM_CHECKS",
-        "SITE_ID",
-        "TIME_ZONE",
-        "USE_I18N",
-        "USE_L10N",
-        "USE_TZ",
-        "X_FRAME_OPTIONS",
-        "ABSOLUTE_URL",
-        "ALLOWED_HOSTS",
-        "APPEND_SLASH",
-        "ASGI",
-        "BASE_DIR",
-        "CACHES",
-        "DEBUG",
-        "LOGIN",
-        "LOGOUT",
-        "PASSWORD",
-        "REST_FRAMEWORK",
-        "SIMPLE_JWT",
+        "DJANGO", "DATABASES", "TEMPLATES", "INSTALLED_APPS", "MIDDLEWARE",
+        "AUTH_", "CORS_", "CSRF_", "LOGGING", "MESSAGE_", "SECURE_",
+        "SESSION_", "STATIC", "TEST", "WSGI", "ADMIN", "DEFAULT", "EMAIL",
+        "SERVER_EMAIL", "FILE_UPLOAD", "INTERNAL_IPS", "LANGUAGES", "LOCALE",
+        "MANAGERS", "MEDIA", "MIGRATION", "ROOT_URLCONF", "SECRET_KEY",
+        "SIGNING_KEY", "SILENCED_SYSTEM_CHECKS", "SITE_ID", "TIME_ZONE",
+        "USE_I18N", "USE_L10N", "USE_TZ", "X_FRAME_OPTIONS", "ABSOLUTE_URL",
+        "ALLOWED_HOSTS", "APPEND_SLASH", "ASGI", "BASE_DIR", "CACHES",
+        "DEBUG", "LOGIN", "LOGOUT", "PASSWORD", "REST_FRAMEWORK",
+        "SIMPLE_JWT", "SPECTACULAR_SETTINGS"
     )
 
     def handle(self, *args, **options):
@@ -77,19 +39,22 @@ class Command(BaseCommand):
         if not os.path.exists(conf_path):
             self.stdout.write(self.style.ERROR(f"File not found: {conf_path}"))
             sys.exit(1)
+            
         with open(conf_path, "r", encoding="utf-8") as json_file:
             data = json.load(json_file)
+            
         json_settings = []
-        if "configuration_pod" in data[0]:
-            pod_settings = data[0]["configuration_pod"].get("description", {})
-            for section in pod_settings.values():
-                json_settings.extend(section.get("settings", {}).keys())
         if "configuration_apps" in data[0]:
             app_settings = data[0]["configuration_apps"].get("description", {})
             for app in app_settings.values():
                 json_settings.extend(app.get("settings", {}).keys())
+            
+            # Also check top level settings if any
+            json_settings.extend(data[0]["configuration_apps"].get("settings", {}).keys())
+
         missing_in_json = sorted(list(set(local_settings_list) - set(json_settings)))
         extra_in_json = sorted(list(set(json_settings) - set(local_settings_list)))
+
         if missing_in_json:
             self.stdout.write(
                 self.style.ERROR(
@@ -114,13 +79,3 @@ class Command(BaseCommand):
                     "\nAll code settings are documented in configuration.json"
                 )
             )
-
-    def print_log(self, title: str, data: list[str]) -> None:
-        print(20 * "-")
-        print(f"{title}:")
-        if not data:
-            print("\n    (None)")
-        else:
-            print("\n    - " + "\n    - ".join(data[:20]))
-            if len(data) > 20:
-                print(f"    ... and {len(data) - 20} more.")
