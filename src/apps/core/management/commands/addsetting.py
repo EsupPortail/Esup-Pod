@@ -22,17 +22,19 @@ class Command(BaseCommand):
         )
         with open(filename, "r", encoding="utf-8") as json_file:
             data = json.load(json_file)
-        
+
         app_name = options["app_name"]
-        
+
         # We only look in configuration_apps -> description
         if app_name not in data[0]["configuration_apps"]["description"]:
-             raise CommandError(
+            raise CommandError(
                 'Application name "%s" not found in configuration file' % app_name
             )
 
-        app_settings = data[0]["configuration_apps"]["description"][app_name].get("settings", {})
-        
+        app_settings = data[0]["configuration_apps"]["description"][app_name].get(
+            "settings", {}
+        )
+
         if app_settings.get(options["setting_name"]):
             self.stdout.write(self.style.WARNING(20 * "*"))
             self.stdout.write(
@@ -56,11 +58,11 @@ class Command(BaseCommand):
         )
         with open(filename, "r", encoding="utf-8") as json_file:
             data = json.load(json_file)
-        
+
         app_name = options["app_name"]
         if "settings" not in data[0]["configuration_apps"]["description"][app_name]:
             data[0]["configuration_apps"]["description"][app_name]["settings"] = {}
-            
+
         data[0]["configuration_apps"]["description"][app_name]["settings"][
             options["setting_name"]
         ] = setting
@@ -80,7 +82,7 @@ class Command(BaseCommand):
         if default_value == "True":
             default_value = True
         if not isinstance(default_value, bool) and str(default_value).isdigit():
-             default_value = int(default_value)
+            default_value = int(default_value)
         return default_value
 
     def get_description(self, previous_description):
@@ -102,35 +104,36 @@ class Command(BaseCommand):
             self.style.SUCCESS('Setting name "%s"' % options["setting_name"])
         )
         self.stdout.write(self.style.SUCCESS('App name "%s"' % options["app_name"]))
-        
+
         setting = self.get_setting(options)
-        
+
         current_version = getattr(django_settings, "POD_VERSION", "5.0.0")
-        
+
         pod_version_init = input(
-            "Pod initial version (leave blank to put current version: %s): " % current_version
+            "Pod initial version (leave blank to put current version: %s): "
+            % current_version
         )
         if pod_version_init == "":
             pod_version_init = current_version
-            
+
         pod_version_end = input(
             "Pod last version (i.e: 2.9.0, deprecated or not use anymore): "
         )
-        
+
         default_value = self.fix_default_value(setting.get("default_value", ""))
-        
+
         print("Add a english description (leave blank and type enter to leave):")
         previous_value = (
             setting["description"].get("en", [""]) if setting.get("description") else [""]
         )
         description_en = self.get_description(previous_value)
-        
+
         print("Add a french description (leave blank and type enter to leave):")
         previous_value = (
             setting["description"].get("fr", [""]) if setting.get("description") else [""]
         )
         description_fr = self.get_description(previous_value)
-        
+
         setting = {
             "pod_version_init": pod_version_init,
             "default_value": default_value,

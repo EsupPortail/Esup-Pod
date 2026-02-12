@@ -10,16 +10,55 @@ class Command(BaseCommand):
     help = "Compare settings in code vs configuration.json"
 
     IGNORED_PREFIXES = (
-        "DJANGO", "DATABASES", "TEMPLATES", "INSTALLED_APPS", "MIDDLEWARE",
-        "AUTH_", "CORS_", "CSRF_", "LOGGING", "MESSAGE_", "SECURE_",
-        "SESSION_", "STATIC", "TEST", "WSGI", "ADMIN", "DEFAULT", "EMAIL",
-        "SERVER_EMAIL", "FILE_UPLOAD", "INTERNAL_IPS", "LANGUAGES", "LOCALE",
-        "MANAGERS", "MEDIA", "MIGRATION", "ROOT_URLCONF", "SECRET_KEY",
-        "SIGNING_KEY", "SILENCED_SYSTEM_CHECKS", "SITE_ID", "TIME_ZONE",
-        "USE_I18N", "USE_L10N", "USE_TZ", "X_FRAME_OPTIONS", "ABSOLUTE_URL",
-        "ALLOWED_HOSTS", "APPEND_SLASH", "ASGI", "BASE_DIR", "CACHES",
-        "DEBUG", "LOGIN", "LOGOUT", "PASSWORD", "REST_FRAMEWORK",
-        "SIMPLE_JWT", "SPECTACULAR_SETTINGS"
+        "DJANGO",
+        "DATABASES",
+        "TEMPLATES",
+        "INSTALLED_APPS",
+        "MIDDLEWARE",
+        "AUTH_",
+        "CORS_",
+        "CSRF_",
+        "LOGGING",
+        "MESSAGE_",
+        "SECURE_",
+        "SESSION_",
+        "STATIC",
+        "TEST",
+        "WSGI",
+        "ADMIN",
+        "DEFAULT",
+        "EMAIL",
+        "SERVER_EMAIL",
+        "FILE_UPLOAD",
+        "INTERNAL_IPS",
+        "LANGUAGES",
+        "LOCALE",
+        "MANAGERS",
+        "MEDIA",
+        "MIGRATION",
+        "ROOT_URLCONF",
+        "SECRET_KEY",
+        "SIGNING_KEY",
+        "SILENCED_SYSTEM_CHECKS",
+        "SITE_ID",
+        "TIME_ZONE",
+        "USE_I18N",
+        "USE_L10N",
+        "USE_TZ",
+        "X_FRAME_OPTIONS",
+        "ABSOLUTE_URL",
+        "ALLOWED_HOSTS",
+        "APPEND_SLASH",
+        "ASGI",
+        "BASE_DIR",
+        "CACHES",
+        "DEBUG",
+        "LOGIN",
+        "LOGOUT",
+        "PASSWORD",
+        "REST_FRAMEWORK",
+        "SIMPLE_JWT",
+        "SPECTACULAR_SETTINGS",
     )
 
     def handle(self, *args, **options):
@@ -39,16 +78,16 @@ class Command(BaseCommand):
         if not os.path.exists(conf_path):
             self.stdout.write(self.style.ERROR(f"File not found: {conf_path}"))
             sys.exit(1)
-            
+
         with open(conf_path, "r", encoding="utf-8") as json_file:
             data = json.load(json_file)
-            
+
         json_settings = []
         if "configuration_apps" in data[0]:
             app_settings = data[0]["configuration_apps"].get("description", {})
             for app in app_settings.values():
                 json_settings.extend(app.get("settings", {}).keys())
-            
+
             # Also check top level settings if any
             json_settings.extend(data[0]["configuration_apps"].get("settings", {}).keys())
 

@@ -118,21 +118,18 @@ APPS_WITH_CUSTOM_SETTINGS = [
     "core",
 ]
 
-for app_config_name in APPS_WITH_CUSTOM_SETTINGS:
-    # 1. Load Defaults
-    try:
-        mod_default = __import__(f"src.config.defaults.{app_config_name}", fromlist=["*"])
-        for setting_name in dir(mod_default):
-            if setting_name.isupper():
-                locals()[setting_name] = getattr(mod_default, setting_name)
-    except ImportError:
-        pass  # No defaults for this app
 
-    # 2. Load Overrides
+def _load_settings_from_module(module_path):
+    """Load uppercase settings from a module into globals."""
     try:
-        mod_override = __import__(f"src.config.settings.{app_config_name}", fromlist=["*"])
-        for setting_name in dir(mod_override):
+        mod = __import__(module_path, fromlist=["*"])
+        for setting_name in dir(mod):
             if setting_name.isupper():
-                locals()[setting_name] = getattr(mod_override, setting_name)
+                globals()[setting_name] = getattr(mod, setting_name)
     except ImportError:
-        pass  # No local overrides for this app
+        pass  # Module not found, skip
+
+
+for app_config_name in APPS_WITH_CUSTOM_SETTINGS:
+    _load_settings_from_module(f"src.config.defaults.{app_config_name}")
+    _load_settings_from_module(f"src.config.settings.{app_config_name}")
