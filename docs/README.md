@@ -4,39 +4,26 @@ Welcome to the Pod V5 Project Documentation. This guide is intended for develope
 
 ## Table of Contents
 
-### [Authentication](authentication/README.md)
+### Application Documentation (One Doc Per App)
 
-Understand and configure security.
+Welcome to the official Pod V5 documentation. Each application has its own dedicated documentation.
 
-- [Overview](authentication/README.md): Supported methods (Local, CAS, LDAP).
-- [Technical Details](authentication/details.md): Advanced configuration, attribute mapping, and internal workings.
+- **[Configuration & Customization](configuration.md)**: Central hub for configuring your instance, managing environment variables, and local overrides.
+- **[Authentication](authentication/README.md)**: Local login, CAS, LDAP, OIDC, and user management.
+- **[API & Swagger](api/README.md)**: REST API usage and documentation guide.
+- **[Core & Management](core/MANAGEMENT_COMMANDS.md)**: CLI commands for audit and maintenance.
+- **[Deployment & CI/CD](deployment/README.md)**: Docker architecture, production, and GitHub Actions automation.
+- **[AI & LLM Helpers](LLM_HELPERS.md)**: Context for AI agents and LLMs.
 
-### [API & Swagger](api/README.md)
+---
 
-Interact with the backend via the REST API.
+### Rules & Contributions
 
-- [Swagger Access](api/README.md): Links to interactive documentation.
-- [Developer Guide](api/guide.md): How to document new endpoints.
+To maintain project quality, please refer to the following guides (single sources of truth):
 
-### [Deployment & CI/CD](deployment/README.md)
-
-Architecture, production setup, and automation.
-
-- [Deployment Overview](deployment/README.md): System architecture.
-- [Development Guide](deployment/dev/dev.md): How to setup local environment (Docker/Make).
-- [CI/CD Pipelines](CI_CD.md): Understanding the GitHub Actions workflows.
-
-### [AI & LLM Helpers](LLM_HELPERS.md)
-
-Tools and configurations for AI agents.
-
-- [Overview](LLM_HELPERS.md): `llms.txt` documentation context.
-
-### [Configuration](configuration.md)
-
-- [Environment Variables](configuration.md): Complete list of .env variables.
-- [Customization](configuration.md#3-how-to-customize-settings): How to add settings or apps.
-- [Management Commands](core/MANAGEMENT_COMMANDS.md): Tools to audit and sync settings.
+- **[Contribution Guide](../CONTRIBUTING.md)**: Coding rules, commit messages, and PR workflow.
+- **[Code of Conduct](../CODE_OF_CONDUCT.md)**: Community commitment.
+- **[License](../COPYING.LESSER)**: LGPL 3.0 legal notices.
 
 ---
 
@@ -53,13 +40,3 @@ Pod_V5/
 ├── docs/               # Documentation (You are here)
 └── manage.py           # Django CLI
 ```
-
-## Configuration Hierarchy
-
-The project uses a **Environment Variable Driven** configuration:
-
-1.  **Docker / System**: Environment variables are set in `.env` (or CI secrets).
-2.  **`src/config/env.py`**: Loads variables using `django-environ`.
-3.  **`src/config/django/*.py`**: Settings files consume these variables.
-    - **Features Flags**: `USE_LDAP`, `USE_CAS`, etc. are toggled via env vars.
-    - **No `settings_local.py`**: We do not use local python override files. Use `.env` for everything.

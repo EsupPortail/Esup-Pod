@@ -83,6 +83,14 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Pod REST API",
+    "DESCRIPTION": "Video management API (Local Authentication)",
+    "VERSION": POD_VERSION,
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+}
+
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -100,9 +108,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 # ==============================================================================
 # MODULAR SETTINGS LOADING
 # ==============================================================================
-# Instead of a single settings_local.py or a giant .env, we load overrides
-# from src/config/settings/{app}.py.
-# This allows developers to toggle feature flags using Python code.
+# 1. Load Defaults: src/config/defaults/{app}.py
+# 2. Load Overrides: src/config/settings/{app}.py (local customization)
 
 APPS_WITH_CUSTOM_SETTINGS = [
     "authentication",
@@ -111,17 +118,18 @@ APPS_WITH_CUSTOM_SETTINGS = [
     "core",
 ]
 
-for app_config_name in APPS_WITH_CUSTOM_SETTINGS:
-    try:
-        # Import the module: src.config.settings.{app}
-        mod = __import__(f"src.config.settings.{app_config_name}", fromlist=["*"])
 
-        # Apply uppercase variables to local scope (standard Django settings behavior)
+def _load_settings_from_module(module_path):
+    """Load uppercase settings from a module into globals."""
+    try:
+        mod = __import__(module_path, fromlist=["*"])
         for setting_name in dir(mod):
             if setting_name.isupper():
-                locals()[setting_name] = getattr(mod, setting_name)
-
+                globals()[setting_name] = getattr(mod, setting_name)
     except ImportError:
-        # It is perfectly fine if the file does not exist.
-        # It means the developer wants to use default values.
-        pass
+        pass  # Module not found, skip
+
+
+for app_config_name in APPS_WITH_CUSTOM_SETTINGS:
+    _load_settings_from_module(f"src.config.defaults.{app_config_name}")
+    _load_settings_from_module(f"src.config.settings.{app_config_name}")

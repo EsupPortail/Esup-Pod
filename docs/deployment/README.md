@@ -24,8 +24,9 @@ Pod_V5_Back/
 │   └── prod/            # Production specific Docker setup
 ├── src/                 # Application Source Code
 │   ├── apps/            # Domain-specific Django apps
-│   └── config/          # Project configuration (settings, urls, wsgi)
-│       └── settings/    # Split settings (base.py, dev.py)
+│   └── config/          # Project configuration
+│       ├── django/      # Core Project Settings (base, dev, prod)
+│       └── settings/    # Functional Customization (features flags: video, auth...)
 ├── docs/                # Documentation
 ├── manage.py            # Django entry point
 ├── Makefile             # Command shortcuts
