@@ -1,7 +1,7 @@
 # Configuration Guide
 
 This guide describes how to configure **Esup-Pod V5**.
-The project adheres to the [Twelve-Factor App](https://12factor.net/config) methodology, storing configuration in the **environment**.
+The project adheres to the Twelve-Factor App methodology, storing configuration in the **environment**.
 
 ## Configuration Hierarchy
 
@@ -12,25 +12,25 @@ The project adheres to the [Twelve-Factor App](https://12factor.net/config) meth
     - `dev/docker.py`: Development overrides (consumes `.env` defaults).
     - `test/docker.py`: Test-specific overrides (forces feature flags).
 
-## 1. Hiérarchie de Configuration
+## 1. Configuration Hierarchy
 
-Le projet suit une logique modulaire :
+The project follows a modular logic:
 
-1.  **Valeurs par défaut** : Définies dans `src/config/defaults/{app_name}.py`. **Ne jamais modifier ces fichiers.**
-2.  **Infrastructure & Secrets (`.env`)** : Variables d'environnement pour les services (DB, Host, Keys).
-3.  **Surcharges Applicatives (`src/config/settings/{app_name}.py`)** : C'est ici que se passe la personnalisation fonctionnelle (ex: `video.py`, `authentication.py`).
+1.  **Defaults**: Defined in `src/config/defaults/{app_name}.py`. **Never modify these files.**
+2.  **Infrastructure & Secrets (`.env`)**: Environment variables for services (DB, Host, Keys).
+3.  **Application Overrides (`src/config/settings/{app_name}.py`)**: This is where functional customization happens (e.g., `video.py`, `authentication.py`).
 
 ---
 
-## 2. Comment Personnaliser mon Instance ?
+## 2. How to Customize My Instance?
 
-Pour modifier un comportement (limites d'upload, couleurs, activations de modules) :
+To modify behavior (upload limits, colors, module activation):
 
-1.  **Identifiez l'application** concernée dans `docs/` (ex: `docs/authentication/`).
-2.  **Créez le fichier de surcharge** dans `src/config/settings/` s'il n'existe pas (ex: `src/config/settings/video.py`).
-    - Vous pouvez vous inspirer des fichiers `.example` présents dans ce dossier.
-3.  **Ajoutez vos variables** en MAJUSCULES. Elles écraseront les valeurs par défaut au démarrage de l'application.
+1.  **Identify the application** concerned in `docs/` (e.g., `docs/authentication/`).
+2.  **Create the override file** in `src/config/settings/` if it does not exist (e.g., `src/config/settings/video.py`).
+    - You can take inspiration from the `.example` files present in this folder.
+3.  **Add your variables** in UPPERCASE. They will overwrite the default values when the application starts.
 
 > [!TIP]
-> Pour voir la liste complète des variables disponibles pour une application, consultez le fichier `src/config/defaults/{app_name}.py` correspondant.
+> To see the complete list of available variables for an application, consult the corresponding `src/config/defaults/{app_name}.py` file.
 

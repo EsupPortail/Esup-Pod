@@ -1,4 +1,4 @@
-# 👨API Developer Guide
+# API Developer Guide
 
 How to document your code so it appears in Swagger.
 
