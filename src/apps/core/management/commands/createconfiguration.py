@@ -38,18 +38,18 @@ class Command(BaseCommand):
         )
         with open(filename, "r", encoding="utf-8") as json_file:
             self.data = json.load(json_file)
-        
+
         output = ""
         output += self.get_configuration("apps")
-        
+
         output_dir = os.path.join(settings.BASE_DIR, "docs")
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-            
+
         md_filename = os.path.join(
             output_dir, f"CONFIGURATION_{self.language.upper()}.md"
         )
-        
+
         with open(md_filename, "w", encoding="utf-8") as f:
             f.write(output)
         self.stdout.write(self.style.SUCCESS("Successfully export configuration"))
@@ -61,30 +61,32 @@ class Command(BaseCommand):
             return ""
 
         root_config = self.data[0][config_key]
-        
+
         # Title of main section
         msg = "\n## %s\n" % (
             root_config.get("title", {}).get(self.language, "Configuration")
         )
 
         descs = root_config.get("description", {})
-        
+
         # Iterate over subsections (apps: authentication, core, etc.)
         for _key, desc in descs.items():
-            msg += "\n### %s\n\n" % desc.get("title", {}).get(self.language, _key.capitalize())
-            
+            msg += "\n### %s\n\n" % desc.get("title", {}).get(
+                self.language, _key.capitalize()
+            )
+
             desc_list = desc.get("description", {}).get(self.language, [])
             for line in desc_list:
                 if line != "":
                     msg += "%s<br>\n" % line
                 else:
                     msg += "\n"
-            
+
             if desc_list and len(desc_list) > 0:
                 msg += "\n"
-                
+
             msg += self.get_settings(desc.get("settings", {}))
-            
+
         # Top level settings if any
         msg += self.get_settings(root_config.get("settings", {}))
         return msg
