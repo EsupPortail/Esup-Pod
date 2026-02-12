@@ -1,4 +1,4 @@
-# 🛠 API & Swagger
+# API & Swagger
 
 The Pod V5 API is automatically documented according to the **OpenAPI 3.0** specification using the `drf-spectacular` library.
 
