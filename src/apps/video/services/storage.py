@@ -14,5 +14,5 @@ def get_storage_path_video(instance, filename: str) -> str:
 
 
 def get_storage_path_image(instance, filename: str) -> str:
-    ext = filename.split('.')[-1]
+    ext = filename.split(".")[-1]
     return f"images/{instance.slug}_{uuid.uuid4().hex[:6]}.{ext}"

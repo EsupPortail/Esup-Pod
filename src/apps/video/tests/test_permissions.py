@@ -56,7 +56,10 @@ class VideoPermissionsTests(APITestCase):
         self.video_restricted = Video.objects.create(
             title="Restricted Video",
             owner=self.user_owner,
+            status=Video.Status.RESTRICTED,
+            is_auth_required=True,
             video_file=self.video_content,
+            duration=120,
         )
         # Force status to RESTRICTED and duration to 1 (to bypass signal override)
         Video.objects.filter(pk=self.video_restricted.pk).update(
@@ -181,7 +184,7 @@ class VideoPermissionsTests(APITestCase):
         video_file = SimpleUploadedFile(
             "new.mp4", b"new_content", content_type="video/mp4"
         )
-        data = {"title": "New Video", "video_file": video_file}
+        data = {"title": "New Video", "video_file": video_file, "date_of_event": "2026-02-11"}
 
         response = self.client.post(self.list_url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

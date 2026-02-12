@@ -14,7 +14,10 @@ from django.db.models import F
 
 class VideoViewSet(viewsets.ModelViewSet):
     serializer_class = VideoSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrCoOwnerOrReadOnly]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrCoOwnerOrReadOnly,
+    ]
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
     lookup_field = "slug"
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
@@ -59,15 +62,15 @@ class VideoViewSet(viewsets.ModelViewSet):
         response["Content-Type"] = "video/mp4"
         return response
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def register_view(self, request, slug=None):
         video = self.get_object()
-        video.view_count = F('view_count') + 1
-        video.save(update_fields=['view_count'])
+        video.view_count = F("view_count") + 1
+        video.save(update_fields=["view_count"])
         video.refresh_from_db()
-        return Response({'status': 'viewed', 'count': video.view_count})
+        return Response({"status": "viewed", "count": video.view_count})
 
-    @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
+    @action(detail=True, methods=["post"], permission_classes=[permissions.AllowAny])
     def unlock(self, request, slug=None):
         """
         Déverrouille une vidéo RESTRICTED avec mot de passe.
@@ -75,10 +78,16 @@ class VideoViewSet(viewsets.ModelViewSet):
         video = self.get_object()
         if video.status == Video.Status.RESTRICTED and video.is_auth_required:
             if not request.user.is_authenticated:
-                raise PermissionDenied("Vous devez être connecté pour accéder à cette vidéo.")
-        input_password = request.data.get('password')
+                raise PermissionDenied(
+                    "Vous devez être connecté pour accéder à cette vidéo."
+                )
+        input_password = request.data.get("password")
         if video.password and check_password(input_password, video.password):
-            request = self.context.get('request')
-            url = request.build_absolute_uri(video.video_file.url) if video.video_file else None
-            return Response({'video_url': url})
-        return Response({'error': 'Mot de passe incorrect'}, status=403)
+            request = self.context.get("request")
+            url = (
+                request.build_absolute_uri(video.video_file.url)
+                if video.video_file
+                else None
+            )
+            return Response({"video_url": url})
+        return Response({"error": "Mot de passe incorrect"}, status=403)

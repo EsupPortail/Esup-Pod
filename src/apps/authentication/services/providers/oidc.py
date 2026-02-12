@@ -23,9 +23,7 @@ class OIDCService:
         client_secret = auth_settings.oidc_rp_client_secret.get_secret_value()
 
         if not token_url:
-            raise EnvironmentError(
-                "OIDC not configured (missing OIDC_OP_TOKEN_ENDPOINT)"
-            )
+            raise EnvironmentError("OIDC not configured (missing OIDC_OP_TOKEN_ENDPOINT)")
 
         payload = {
             "grant_type": "authorization_code",

@@ -1,3 +1,4 @@
+from datetime import date
 import uuid
 from django.db import models
 from django.conf import settings
@@ -109,7 +110,9 @@ class Video(models.Model):
     is_auth_required = models.BooleanField(
         _("Authentication Required"),
         default=False,
-        help_text=_("If checked, users must be logged in to access this video (even if they have the password).")
+        help_text=_(
+            "If checked, users must be logged in to access this video (even if they have the password)."
+        ),
     )
     password = models.CharField(
         _("Password"),
@@ -142,7 +145,7 @@ class Video(models.Model):
     )
     # 6.CONTENT DESCRIPTION & CLASSIFICATION
     date_of_event = models.DateField(
-        _("Date of Event"), default=timezone.now, blank=True, null=True
+        _("Date of Event"), default=date.today, blank=True, null=True
     )
     license = models.CharField(
         _("License"),

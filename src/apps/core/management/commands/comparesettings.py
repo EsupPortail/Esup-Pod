@@ -107,9 +107,7 @@ class Command(BaseCommand):
         else:
             if extra_in_json:
                 self.stdout.write(
-                    self.style.WARNING(
-                        f"\nExtra in JSON (not in code): {extra_in_json}"
-                    )
+                    self.style.WARNING(f"\nExtra in JSON (not in code): {extra_in_json}")
                 )
             self.stdout.write(
                 self.style.SUCCESS(

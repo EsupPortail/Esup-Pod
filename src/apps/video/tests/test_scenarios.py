@@ -35,7 +35,7 @@ class VideoValidationTests(APITestCase):
 
     def test_create_video_success(self):
         """Test_Create_Video_Success"""
-        data = {"title": "Valid Video", "video_file": self.video_content}
+        data = {"title": "Valid Video", "video_file": self.video_content, "date_of_event": "2026-01-01"}
         response = self.client.post(self.url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Video.objects.filter(title="Valid Video").exists())
@@ -70,7 +70,7 @@ class VideoValidationTests(APITestCase):
         Documentation says 'Draft', code does 'Published'.
         Adapting check to Code reality -> Published.
         """
-        data = {"title": "Default Status Video", "video_file": self.video_content}
+        data = {"title": "Default Status Video", "video_file": self.video_content, "date_of_event": "2026-01-01"}
         response = self.client.post(self.url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         video = Video.objects.get(title="Default Status Video")

@@ -16,7 +16,7 @@ class IsOwnerOrCoOwnerOrReadOnly(permissions.BasePermission):
         if obj.owner == request.user:
             return True
         if obj.co_owners.filter(pk=request.user.pk).exists():
-            if request.method == 'DELETE':
+            if request.method == "DELETE":
                 return False
             return True
         return False

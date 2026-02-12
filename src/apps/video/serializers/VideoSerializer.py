@@ -3,6 +3,7 @@ from rest_framework import serializers
 from src.apps.video.models import Video
 from .SubtitleSerializer import SubtitleSerializer
 from django.contrib.auth.hashers import make_password
+
 User = get_user_model()
 
 
@@ -10,14 +11,16 @@ class VideoSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source="owner.username")
     video_url = serializers.SerializerMethodField()
     status_label = serializers.CharField(source="get_status_display", read_only=True)
-    has_password = serializers.BooleanField(source='password', read_only=True)
+    has_password = serializers.BooleanField(source="password", read_only=True)
     password = serializers.CharField(write_only=True, required=False)
     subtitles = SubtitleSerializer(many=True, read_only=True)
     co_owners = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=User.objects.all(),
-        required=False
+        many=True, queryset=User.objects.all(), required=False
     )
+    date_of_event = serializers.DateField(required=False, allow_null=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+    date_to_delete = serializers.DateField(required=False, allow_null=True)
 
     class Meta:
         model = Video
@@ -26,6 +29,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "title",
             "slug",
             "description",
+            "video_file",
             "video_url",
             "thumbnail",
             "duration",
@@ -49,6 +53,9 @@ class VideoSerializer(serializers.ModelSerializer):
             "updated_at",
             "date_to_delete",
         ]
+        extra_kwargs = {
+            "video_file": {"write_only": True},
+        }
         read_only_fields = [
             "slug",
             "created_at",
@@ -56,7 +63,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "duration",
             "owner",
             "status_label",
-            "subtitles"
+            "subtitles",
         ]
 
     def validate_password(self, value):
@@ -66,11 +73,16 @@ class VideoSerializer(serializers.ModelSerializer):
         return value
 
     def get_video_url(self, obj):
-        request = self.context.get('request')
+        request = self.context.get("request")
         user = request.user if request else None
         is_privileged = (
-            user and user.is_authenticated
-            and (user.is_superuser or obj.owner == user or obj.co_owners.filter(pk=user.pk).exists())
+            user
+            and user.is_authenticated
+            and (
+                user.is_superuser
+                or obj.owner == user
+                or obj.co_owners.filter(pk=user.pk).exists()
+            )
         )
         if is_privileged:
             return self._get_absolute_url(obj.video_file, request)
@@ -84,7 +96,7 @@ class VideoSerializer(serializers.ModelSerializer):
         return self._get_absolute_url(obj.video_file, request)
 
     def _get_absolute_url(self, file_field, request):
-        if file_field and hasattr(file_field, 'url'):
+        if file_field and hasattr(file_field, "url"):
             if request:
                 return request.build_absolute_uri(file_field.url)
             return file_field.url
