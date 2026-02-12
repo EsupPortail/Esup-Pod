@@ -1,9 +1,6 @@
 """
 Settings package initialization.
 
-Aggregates specialized configuration modules for Authentication and Swagger
-to make them easily accessible.
+This package is used for local configuration overrides.
+See README.md for details.
 """
-
-from .authentication import *  # noqa: F401, F403
-from .swagger import *  # noqa: F401, F403
