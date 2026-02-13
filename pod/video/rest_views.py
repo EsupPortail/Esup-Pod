@@ -1,22 +1,22 @@
 """Esup-Pod REST views."""
 
-from rest_framework import serializers, viewsets, renderers
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.decorators import action
+import json
 
-from django.template.loader import render_to_string
-
-from .models import Channel, Theme, Type, Discipline, Video, ViewCount
-from .context_processors import get_available_videos
 from django.db.models import Q
+from django.template.loader import render_to_string
+from rest_framework import renderers, serializers, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from pod.main.utils import remove_trailing_spaces
+
+from .context_processors import get_available_videos
+from .models import Channel, Discipline, Theme, Type, Video, ViewCount
 
 # commented for v3
 # from .remote_encode import start_store_remote_encoding_video
 
-import json
 
 # Serializers define the API representation.
 
