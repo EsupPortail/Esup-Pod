@@ -7,12 +7,13 @@ from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from pod.recorder.models import Recording
-from pod.video.models import Video
-from pod.video.rest_views import VideoSerializer
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
+
+from pod.recorder.models import Recording
+from pod.video.models import Video
+from pod.video.rest_views import VideoSerializer
 
 from .models import EncodingAudio, EncodingVideo, PlaylistVideo, VideoRendition
 
