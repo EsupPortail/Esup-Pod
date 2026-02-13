@@ -187,6 +187,7 @@ ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 HIDE_USER_FILTER = getattr(settings, "HIDE_USER_FILTER", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
+USE_RUNNER_MANAGER = getattr(settings, "USE_RUNNER_MANAGER", False)
 
 if USE_TRANSCRIPTION:
     from ..video_encode_transcript import transcript
@@ -1214,6 +1215,27 @@ def toggle_render_video_when_is_playlist_player(request):
         return Http404()
 
 
+def _get_video_queue_context(video: Video | None) -> dict:
+    """Return queue context for a video waiting for encoding."""
+    if not USE_RUNNER_MANAGER or not video or not video.id:
+        return {"video_task_queue_rank": None, "video_task_queue_total": None}
+
+    if not video.video or video.get_encoding_step != "":
+        return {"video_task_queue_rank": None, "video_task_queue_total": None}
+
+    from pod.video_encode_transcript.task_queue import (
+        get_video_pending_encoding_queue_info,
+        refresh_pending_task_ranks,
+    )
+
+    refresh_pending_task_ranks()
+    rank, total = get_video_pending_encoding_queue_info(video)
+    return {
+        "video_task_queue_rank": rank,
+        "video_task_queue_total": total,
+    }
+
+
 def render_video(
     request,
     id,
@@ -1271,6 +1293,8 @@ def render_video(
                 "listNotes": listNotes,
                 "owner_filter": owner_filter,
                 "playlist": playlist if request.GET.get("playlist") else None,
+                "USE_RUNNER_MANAGER": USE_RUNNER_MANAGER,
+                **_get_video_queue_context(video),
                 **more_data,
             },
         )
@@ -1303,6 +1327,8 @@ def render_video(
                     "form": form,
                     "listNotes": listNotes,
                     "owner_filter": owner_filter,
+                    "USE_RUNNER_MANAGER": USE_RUNNER_MANAGER,
+                    **_get_video_queue_context(video),
                     **more_data,
                 },
             )
@@ -1385,7 +1411,12 @@ def video_edit(request, slug=None):
     return render(
         request,
         "videos/video_edit.html",
-        {"form": form, "listTheme": json.dumps(get_list_theme_in_form(form))},
+        {
+            "form": form,
+            "listTheme": json.dumps(get_list_theme_in_form(form)),
+            "USE_RUNNER_MANAGER": USE_RUNNER_MANAGER,
+            **_get_video_queue_context(form.instance if form else None),
+        },
     )
 
 
@@ -1582,8 +1613,13 @@ def video_transcript(request, slug=None):
         )
         raise PermissionDenied
 
-    if request.user != video.owner and not (
-        request.user.is_superuser or request.user.has_perm("video.change_video")
+    if (
+        video
+        and request.user != video.owner
+        and (
+            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+        )
+        and (request.user not in video.additional_owners.all())
     ):
         messages.add_message(request, messages.ERROR, _("You cannot manage this video."))
         raise PermissionDenied

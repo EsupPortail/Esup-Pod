@@ -3,6 +3,7 @@
 import os
 from django.conf import settings
 from django.contrib import admin
+from django.contrib import messages
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from .models import Recording, Recorder, RecordingFile
@@ -15,6 +16,7 @@ from pod.video.models import Type
 # Register your models here.
 
 RECORDER_ADDITIONAL_FIELDS = getattr(settings, "RECORDER_ADDITIONAL_FIELDS", ())
+USE_RUNNER_MANAGER = getattr(settings, "USE_RUNNER_MANAGER", False)
 
 
 @admin.register(Recording)
@@ -23,6 +25,8 @@ class RecordingAdmin(admin.ModelAdmin):
     list_display_links = ("title",)
     list_filter = ("type",)
     autocomplete_fields = ["recorder", "user"]
+    if USE_RUNNER_MANAGER:
+        actions = ["encode_recording"]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
@@ -38,6 +42,23 @@ class RecordingAdmin(admin.ModelAdmin):
         if not request.user.is_superuser:
             qs = qs.filter(recorder__sites=get_current_site(request))
         return qs
+
+    @admin.action(description=_("Encode selected recordings and create new video"))
+    def encode_recording(self, request, queryset) -> None:
+        if USE_RUNNER_MANAGER:
+            # Import here to avoid circular import
+            from pod.video_encode_transcript.runner_manager import encode_studio_recording
+            for item in queryset:
+                try:
+                    if item.type == "studio":
+                        self.message_user(request, _(f"Studio recording {item.id} encoding started"), messages.SUCCESS)
+                        # Encode studio recording via Runner Manager
+                        encode_studio_recording(item.id)
+                    else:
+                        # Display a message to the admin user
+                        self.message_user(request, _(f"Recording {item.id} is not a studio recording and can't be encoded"), messages.WARNING)
+                except Exception as e:
+                    self.message_user(request, _(f"Error for {item}: {e}"), messages.ERROR)
 
 
 @admin.register(RecordingFileTreatment)

@@ -4,25 +4,24 @@ Video & Audio Remote encoding test cases.
 *  run with `python manage.py test pod.video_encode_transcript.tests.test_remote_encode_transcode`
 """
 
+import json
+import os
+import shutil
+import time
 from unittest import TestCase, skipUnless
+
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
-
+from pod.completion.models import Track
 from pod.cut.models import CutVideo
 from pod.dressing.models import Dressing
-from pod.video.models import Video, Type
+from pod.video.models import Type, Video
 from pod.video_encode_transcript import encode
-from pod.video_encode_transcript.models import EncodingVideo, PlaylistVideo, EncodingLog
-from pod.completion.models import Track
-
-import shutil
-import os
-import time
-import json
+from pod.video_encode_transcript.models import EncodingLog, EncodingVideo, PlaylistVideo
+from rest_framework.authtoken.models import Token
 
 TEST_REMOTE_ENCODE = getattr(settings, "TEST_REMOTE_ENCODE", False)
 VIDEO_TEST = "pod/main/static/video_test/video_test_encodage_transcription.mp4"
@@ -37,8 +36,7 @@ if USE_TRANSCRIPTION:
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 if getattr(settings, "USE_PODFILE", False):
-    from pod.podfile.models import CustomImageModel
-    from pod.podfile.models import UserFolder
+    from pod.podfile.models import CustomImageModel, UserFolder
 
     FILEPICKER = True
 else:
@@ -229,7 +227,9 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         simplefile = SimpleUploadedFile(
             name="testimage.jpg",
-            content=open(os.path.join(currentdir, "tests", "testimage.jpg"), "rb").read(),
+            content=open(
+                os.path.join(currentdir, "tests", "testimage.jpg"), "rb"
+            ).read(),
             content_type="image/jpeg",
         )
         if FILEPICKER:

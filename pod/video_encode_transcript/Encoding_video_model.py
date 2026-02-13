@@ -1,32 +1,23 @@
 """Model for video encoding."""
 
+import json
 import logging
 import os
 import re
-from django.conf import settings
-from .models import EncodingVideo
-from .models import EncodingAudio
-from .models import VideoRendition
-from .models import PlaylistVideo
-from .models import EncodingLog
-from pod.video.models import Video
-from pod.completion.models import Track
-from django.core.files import File
-from .Encoding_video import (
-    Encoding_video,
-    FFMPEG_NB_THUMBNAIL,
-    FFMPEG_CREATE_THUMBNAIL,
-    FFMPEG_CMD,
-    FFMPEG_INPUT,
-    FFMPEG_NB_THREADS,
-)
-from pod.video.models import LANG_CHOICES
-import json
 import time
-from .encoding_utils import (
-    launch_cmd,
-    check_file,
-)
+
+from django.conf import settings
+from django.core.files import File
+
+from pod.completion.models import Track
+from pod.video.models import LANG_CHOICES, Video
+
+from .encoding_utils import check_file, launch_cmd
+from .Encoding_video import (FFMPEG_CMD, FFMPEG_CREATE_THUMBNAIL, FFMPEG_INPUT,
+                             FFMPEG_NB_THREADS, FFMPEG_NB_THUMBNAIL,
+                             Encoding_video)
+from .models import (EncodingAudio, EncodingLog, EncodingVideo, PlaylistVideo,
+                     VideoRendition)
 
 DEBUG = getattr(settings, "DEBUG", True)
 logger = logging.getLogger(__name__)
@@ -53,12 +44,10 @@ DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
-    from pod.podfile.models import CustomImageModel
-    from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import CustomFileModel, CustomImageModel
 else:
     __FILEPICKER__ = False
-    from pod.main.models import CustomImageModel
-    from pod.main.models import CustomFileModel
+    from pod.main.models import CustomFileModel, CustomImageModel
 
 
 class Encoding_video_model(Encoding_video):
@@ -139,7 +128,9 @@ class Encoding_video_model(Encoding_video):
                     name="audio",
                     video=video_to_encode,
                     encoding_format=(
-                        "audio/mp3" if (encode_item == "list_mp3_files") else "video/mp4"
+                        "audio/mp3"
+                        if (encode_item == "list_mp3_files")
+                        else "video/mp4"
                     ),
                     # need to double check path
                     source_file=self.get_true_path(mp3_files[audio_file]),
@@ -150,7 +141,9 @@ class Encoding_video_model(Encoding_video):
         for video_file in mp4_files:
             if not check_file(mp4_files[video_file]):
                 continue
-            rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
+            rendition = VideoRendition.objects.get(
+                resolution__contains="x" + video_file
+            )
             encod_name = video_file + "p"
             encoding, created = EncodingVideo.objects.get_or_create(
                 name=encod_name,
@@ -164,7 +157,9 @@ class Encoding_video_model(Encoding_video):
         for video_file in hls_files:
             if not check_file(hls_files[video_file]):
                 continue
-            rendition = VideoRendition.objects.get(resolution__contains="x" + video_file)
+            rendition = VideoRendition.objects.get(
+                resolution__contains="x" + video_file
+            )
             encod_name = video_file + "p"
             encoding, created = PlaylistVideo.objects.get_or_create(
                 name=encod_name,

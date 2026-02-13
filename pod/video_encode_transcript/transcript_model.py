@@ -1,17 +1,16 @@
-import numpy as np
+import datetime as dt
+import json
+import logging
+import os
 import shlex
 import subprocess
-import json
-
-import os
-from timeit import default_timer as timer
-import datetime as dt
 from datetime import timedelta
-import webvtt
-from webvtt import WebVTT, Caption
 from shlex import quote
+from timeit import default_timer as timer
 
-import logging
+import numpy as np
+import webvtt
+from webvtt import Caption, WebVTT
 
 try:
     from ..custom import settings_local
@@ -27,7 +26,7 @@ USE_TRANSCRIPTION = getattr(settings_local, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
     TRANSCRIPTION_TYPE = getattr(settings_local, "TRANSCRIPTION_TYPE", "WHISPER")
     if TRANSCRIPTION_TYPE == "VOSK":
-        from vosk import Model, KaldiRecognizer
+        from vosk import KaldiRecognizer, Model
     elif TRANSCRIPTION_TYPE == "WHISPER":
         import whisper
         from whisper.utils import get_writer
@@ -52,7 +51,9 @@ log = logging.getLogger(__name__)
 
 def get_model(lang):
     """Get model for Whisper or Vosk software to transcript audio."""
-    transript_model = Model(TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"])
+    transript_model = Model(
+        TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"]
+    )
     return transript_model
 
 
@@ -213,7 +214,10 @@ def words_to_vtt(
         # 0.58, 'duration': 7.34}
         text_caption.append(word["word"])
         if not (
-            (((word[start_key]) - start_caption) < TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH)
+            (
+                ((word[start_key]) - start_caption)
+                < TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH
+            )
             and (
                 next_word is not None
                 and (blank_duration < TRANSCRIPTION_STT_SENTENCE_BLANK_SPLIT_TIME)

@@ -9,6 +9,8 @@ from django.template.loader import render_to_string
 
 from .models import Channel, Theme, Type, Discipline, Video, ViewCount
 from .context_processors import get_available_videos
+from django.db.models import Q
+
 from pod.main.utils import remove_trailing_spaces
 
 # commented for v3
@@ -210,9 +212,12 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def user_videos(self, request):
+        # Manage additional_owners filtering
+        username = request.GET.get("username")
         user_videos = self.filter_queryset(self.get_queryset()).filter(
-            owner__username=request.GET.get("username")
-        )
+            Q(owner__username=username)
+            | Q(additional_owners__username=username)
+        ).distinct()
         if request.GET.get("encoded") and request.GET.get("encoded") == "true":
             user_videos = user_videos.exclude(
                 pk__in=[vid.id for vid in user_videos if not vid.encoded]

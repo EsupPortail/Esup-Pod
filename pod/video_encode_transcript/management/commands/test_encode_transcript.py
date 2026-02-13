@@ -1,19 +1,17 @@
-from django.core.management.base import BaseCommand, CommandError
-
-from django.conf import settings
-from django.core.files.temp import NamedTemporaryFile
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
-from pod.video.models import Video, Type
-from pod.video_encode_transcript import encode
-from pod.video_encode_transcript.models import EncodingVideo
-from pod.video_encode_transcript.models import PlaylistVideo
-from pod.completion.models import Track
-
-import shutil
 import os
+import shutil
 import time
+
 import coverage
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.files.temp import NamedTemporaryFile
+from django.core.management.base import BaseCommand, CommandError
+from pod.completion.models import Track
+from pod.video.models import Type, Video
+from pod.video_encode_transcript import encode
+from pod.video_encode_transcript.models import EncodingVideo, PlaylistVideo
+from rest_framework.authtoken.models import Token
 
 VIDEO_TEST = "pod/main/static/video_test/video_test_encodage_transcription.webm"
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
@@ -115,7 +113,9 @@ class Command(BaseCommand):
             video=video,
             encoding_format="application/x-mpegURL",
         )
-        list_mp4 = EncodingVideo.objects.filter(video=video, encoding_format="video/mp4")
+        list_mp4 = EncodingVideo.objects.filter(
+            video=video, encoding_format="video/mp4"
+        )
         if not len(list_mp2t) > 0:
             raise CommandError("no video/mp2t found")
         if not len(list_mp2t) + 1 == len(list_playlist_video):

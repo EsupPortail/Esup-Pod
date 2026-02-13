@@ -5,6 +5,7 @@ Run with `python manage.py test pod.video_encode_transcript.tests.EncodingUtilit
 """
 
 import unittest
+
 from ..encoding_utils import get_dressing_position_value, sec_to_timestamp
 
 

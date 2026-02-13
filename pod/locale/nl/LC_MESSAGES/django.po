@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 23:10+0000\n"
+"POT-Creation-Date: 2026-01-09 09:58+0100\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -6212,6 +6212,7 @@ msgid "Has user joined?"
 msgstr ""
 
 #: pod/meeting/views.py pod/recorder/models.py
+#: pod/video_encode_transcript/models.py
 msgid "Recording"
 msgstr ""
 
@@ -7606,6 +7607,25 @@ msgstr ""
 #: pod/quiz/views.py
 #, python-format
 msgid "Quiz edition for the video “%s”"
+msgstr ""
+
+#: pod/recorder/admin.py
+msgid "Encode selected recordings and create new video"
+msgstr ""
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Studio recording {item.id} encoding started"
+msgstr ""
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Recording {item.id} is not a studio recording and can't be encoded"
+msgstr ""
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Error for {item}: {e}"
 msgstr ""
 
 #: pod/recorder/admin.py
@@ -10361,6 +10381,120 @@ msgstr ""
 
 #: pod/video_encode_transcript/models.py
 msgid "Video Playlists"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner Manager name"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority of the Runner Manager. Lower values indicate higher priority."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "URL of the Runner Manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Example format: https://manager.univ.fr:port/"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Bearer token for the Runner Manager."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner managers"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+#, fuzzy
+#| msgid "Encoding"
+msgid "Encoding task"
+msgstr "Videocodering"
+
+#: pod/video_encode_transcript/models.py
+msgid "Studio task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Transcription task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task type"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task pending"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task in progress"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task completed"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task failed"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task timeouted"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task status"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task identifier from runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Identifier of the task provided by the runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Video associated to the task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Studio recording associated to the task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager that manages this task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager that achieves this task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Script output"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Output from the runner manager script"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Tasks"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py

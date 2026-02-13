@@ -1,27 +1,17 @@
 """This module handles studio encoding with CPU."""
 
-import time
-import subprocess
 import json
+import subprocess
+import time
 
 if __name__ == "__main__":
-    from encoding_settings import (
-        FFMPEG_CMD,
-        FFPROBE_CMD,
-        FFMPEG_CRF,
-        FFMPEG_NB_THREADS,
-        FFPROBE_GET_INFO,
-        FFMPEG_STUDIO_COMMAND,
-    )
+    from encoding_settings import (FFMPEG_CMD, FFMPEG_CRF, FFMPEG_NB_THREADS,
+                                   FFMPEG_STUDIO_COMMAND, FFPROBE_CMD,
+                                   FFPROBE_GET_INFO)
 else:
-    from .encoding_settings import (
-        FFMPEG_CMD,
-        FFPROBE_CMD,
-        FFMPEG_CRF,
-        FFMPEG_NB_THREADS,
-        FFPROBE_GET_INFO,
-        FFMPEG_STUDIO_COMMAND,
-    )
+    from .encoding_settings import (FFMPEG_CMD, FFMPEG_CRF, FFMPEG_NB_THREADS,
+                                    FFMPEG_STUDIO_COMMAND, FFPROBE_CMD,
+                                    FFPROBE_GET_INFO)
 
 try:
     from django.conf import settings
@@ -171,7 +161,10 @@ def launch_encode_video_studio(input_video, subtime, subcmd, video_output):
     msg += "- %s\n" % ffmpegStudioCommand
     logfile = video_output.replace(".mp4", ".log")
     ffmpegstudio = subprocess.run(
-        ffmpegStudioCommand, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+        ffmpegStudioCommand,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
     )
     with open(logfile, "ab") as f:
         f.write(b"\n\ffmpegstudio:\n\n")

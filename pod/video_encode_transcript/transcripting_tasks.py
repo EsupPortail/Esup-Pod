@@ -3,11 +3,13 @@
 # pip3 install celery==5.4.0
 # pip3 install webvtt-py
 # pip3 install redis==4.5.4
-from celery import Celery
-from tempfile import NamedTemporaryFile
 import logging
 import os
+from tempfile import NamedTemporaryFile
+
 import requests
+from celery import Celery
+
 from ..main.settings import MEDIA_ROOT
 
 # call local settings directly

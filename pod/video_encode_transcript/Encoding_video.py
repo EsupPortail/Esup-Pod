@@ -6,88 +6,59 @@ import logging
 import os
 import time
 import unicodedata
-from webvtt import WebVTT, Caption
+
+from webvtt import Caption, WebVTT
 
 if __name__ == "__main__":
-    from encoding_utils import (
-        get_dressing_position_value,
-        get_info_from_video,
-        get_list_rendition,
-        launch_cmd,
-        check_file,
-    )
-    from encoding_settings import (
-        FFMPEG_CMD,
-        FFPROBE_CMD,
-        FFPROBE_GET_INFO,
-        FFMPEG_CRF,
-        FFMPEG_PRESET,
-        FFMPEG_PROFILE,
-        FFMPEG_LEVEL,
-        FFMPEG_HLS_TIME,
-        FFMPEG_INPUT,
-        FFMPEG_LIBX,
-        FFMPEG_MP4_ENCODE,
-        FFMPEG_HLS_COMMON_PARAMS,
-        FFMPEG_HLS_ENCODE_PARAMS,
-        FFMPEG_MP3_ENCODE,
-        FFMPEG_M4A_ENCODE,
-        FFMPEG_NB_THREADS,
-        FFMPEG_AUDIO_BITRATE,
-        FFMPEG_EXTRACT_THUMBNAIL,
-        FFMPEG_NB_THUMBNAIL,
-        FFMPEG_CREATE_THUMBNAIL,
-        FFMPEG_CREATE_OVERVIEW,
-        FFMPEG_EXTRACT_SUBTITLE,
-        FFMPEG_DRESSING_INPUT,
-        FFMPEG_DRESSING_OUTPUT,
-        FFMPEG_DRESSING_WATERMARK,
-        FFMPEG_DRESSING_FILTER_COMPLEX,
-        FFMPEG_DRESSING_SCALE,
-        FFMPEG_DRESSING_CONCAT,
-        FFMPEG_DRESSING_SILENT,
-        FFMPEG_DRESSING_AUDIO,
-    )
+    from encoding_settings import (FFMPEG_AUDIO_BITRATE, FFMPEG_CMD,
+                                   FFMPEG_CREATE_OVERVIEW,
+                                   FFMPEG_CREATE_THUMBNAIL, FFMPEG_CRF,
+                                   FFMPEG_DRESSING_AUDIO,
+                                   FFMPEG_DRESSING_CONCAT,
+                                   FFMPEG_DRESSING_FILTER_COMPLEX,
+                                   FFMPEG_DRESSING_INPUT,
+                                   FFMPEG_DRESSING_OUTPUT,
+                                   FFMPEG_DRESSING_SCALE,
+                                   FFMPEG_DRESSING_SILENT,
+                                   FFMPEG_DRESSING_WATERMARK,
+                                   FFMPEG_EXTRACT_SUBTITLE,
+                                   FFMPEG_EXTRACT_THUMBNAIL,
+                                   FFMPEG_HLS_COMMON_PARAMS,
+                                   FFMPEG_HLS_ENCODE_PARAMS, FFMPEG_HLS_TIME,
+                                   FFMPEG_INPUT, FFMPEG_LEVEL, FFMPEG_LIBX,
+                                   FFMPEG_M4A_ENCODE, FFMPEG_MP3_ENCODE,
+                                   FFMPEG_MP4_ENCODE, FFMPEG_NB_THREADS,
+                                   FFMPEG_NB_THUMBNAIL, FFMPEG_PRESET,
+                                   FFMPEG_PROFILE, FFPROBE_CMD,
+                                   FFPROBE_GET_INFO)
+    from encoding_utils import (check_file, get_dressing_position_value,
+                                get_info_from_video, get_list_rendition,
+                                launch_cmd)
 else:
-    from .encoding_utils import (
-        get_dressing_position_value,
-        get_info_from_video,
-        get_list_rendition,
-        launch_cmd,
-        check_file,
-    )
-    from .encoding_settings import (
-        FFMPEG_CMD,
-        FFPROBE_CMD,
-        FFPROBE_GET_INFO,
-        FFMPEG_CRF,
-        FFMPEG_PRESET,
-        FFMPEG_PROFILE,
-        FFMPEG_LEVEL,
-        FFMPEG_HLS_TIME,
-        FFMPEG_INPUT,
-        FFMPEG_LIBX,
-        FFMPEG_MP4_ENCODE,
-        FFMPEG_HLS_COMMON_PARAMS,
-        FFMPEG_HLS_ENCODE_PARAMS,
-        FFMPEG_MP3_ENCODE,
-        FFMPEG_M4A_ENCODE,
-        FFMPEG_NB_THREADS,
-        FFMPEG_AUDIO_BITRATE,
-        FFMPEG_EXTRACT_THUMBNAIL,
-        FFMPEG_NB_THUMBNAIL,
-        FFMPEG_CREATE_THUMBNAIL,
-        FFMPEG_CREATE_OVERVIEW,
-        FFMPEG_EXTRACT_SUBTITLE,
-        FFMPEG_DRESSING_INPUT,
-        FFMPEG_DRESSING_OUTPUT,
-        FFMPEG_DRESSING_WATERMARK,
-        FFMPEG_DRESSING_FILTER_COMPLEX,
-        FFMPEG_DRESSING_SCALE,
-        FFMPEG_DRESSING_CONCAT,
-        FFMPEG_DRESSING_SILENT,
-        FFMPEG_DRESSING_AUDIO,
-    )
+    from .encoding_settings import (FFMPEG_AUDIO_BITRATE, FFMPEG_CMD,
+                                    FFMPEG_CREATE_OVERVIEW,
+                                    FFMPEG_CREATE_THUMBNAIL, FFMPEG_CRF,
+                                    FFMPEG_DRESSING_AUDIO,
+                                    FFMPEG_DRESSING_CONCAT,
+                                    FFMPEG_DRESSING_FILTER_COMPLEX,
+                                    FFMPEG_DRESSING_INPUT,
+                                    FFMPEG_DRESSING_OUTPUT,
+                                    FFMPEG_DRESSING_SCALE,
+                                    FFMPEG_DRESSING_SILENT,
+                                    FFMPEG_DRESSING_WATERMARK,
+                                    FFMPEG_EXTRACT_SUBTITLE,
+                                    FFMPEG_EXTRACT_THUMBNAIL,
+                                    FFMPEG_HLS_COMMON_PARAMS,
+                                    FFMPEG_HLS_ENCODE_PARAMS, FFMPEG_HLS_TIME,
+                                    FFMPEG_INPUT, FFMPEG_LEVEL, FFMPEG_LIBX,
+                                    FFMPEG_M4A_ENCODE, FFMPEG_MP3_ENCODE,
+                                    FFMPEG_MP4_ENCODE, FFMPEG_NB_THREADS,
+                                    FFMPEG_NB_THUMBNAIL, FFMPEG_PRESET,
+                                    FFMPEG_PROFILE, FFPROBE_CMD,
+                                    FFPROBE_GET_INFO)
+    from .encoding_utils import (check_file, get_dressing_position_value,
+                                 get_info_from_video, get_list_rendition,
+                                 launch_cmd)
 
 __author__ = "Nicolas CAN <nicolas.can@univ-lille.fr>"
 __license__ = "LGPL v3"
@@ -124,7 +95,9 @@ try:
     FFMPEG_MP3_ENCODE = getattr(settings, "FFMPEG_MP3_ENCODE", FFMPEG_MP3_ENCODE)
     FFMPEG_M4A_ENCODE = getattr(settings, "FFMPEG_M4A_ENCODE", FFMPEG_M4A_ENCODE)
     FFMPEG_NB_THREADS = getattr(settings, "FFMPEG_NB_THREADS", FFMPEG_NB_THREADS)
-    FFMPEG_AUDIO_BITRATE = getattr(settings, "FFMPEG_AUDIO_BITRATE", FFMPEG_AUDIO_BITRATE)
+    FFMPEG_AUDIO_BITRATE = getattr(
+        settings, "FFMPEG_AUDIO_BITRATE", FFMPEG_AUDIO_BITRATE
+    )
     FFMPEG_EXTRACT_THUMBNAIL = getattr(
         settings, "FFMPEG_EXTRACT_THUMBNAIL", FFMPEG_EXTRACT_THUMBNAIL
     )
@@ -197,7 +170,13 @@ class Encoding_video:
     dressing_input = ""
 
     def __init__(
-        self, id=0, video_file="", start=0, stop=0, json_dressing=None, dressing_input=""
+        self,
+        id=0,
+        video_file="",
+        start=0,
+        stop=0,
+        json_dressing=None,
+        dressing_input="",
     ) -> None:
         """Initialize a new Encoding_video object."""
         self.id = id
@@ -250,7 +229,11 @@ class Encoding_video:
         msg += return_msg + "\n"
         self.add_encoding_log("probe_cmd", probe_cmd, True, msg)
         try:
-            duration = int(float("%s" % info["format"]["duration"]))
+            fmt = info.get("format") if info else None
+            if fmt and fmt.get("duration") is not None:
+                duration = int(float("%s" % fmt.get("duration")))
+            else:
+                raise KeyError("duration")
         except (RuntimeError, KeyError, AttributeError, ValueError, TypeError) as err:
             msg = "\nUnexpected error: {0}".format(err)
             self.add_encoding_log("duration", "", True, msg)
@@ -272,7 +255,11 @@ class Encoding_video:
         msg += return_msg + "\n"
         duration = 0
         try:
-            duration = int(float("%s" % info["format"]["duration"]))
+            fmt = info.get("format") if info else None
+            if fmt and fmt.get("duration") is not None:
+                duration = int(float("%s" % fmt.get("duration")))
+            else:
+                raise KeyError("duration")
         except (RuntimeError, KeyError, AttributeError, ValueError, TypeError) as err:
             msg += "\nUnexpected error: {0}".format(err)
         self.add_encoding_log("fix_duration", "", True, msg)
@@ -306,7 +293,9 @@ class Encoding_video:
             language = ""
             if stream.get("tags"):
                 language = stream.get("tags").get("language", "")
-            self.list_subtitle_track["%s" % stream.get("index")] = {"language": language}
+            self.list_subtitle_track["%s" % stream.get("index")] = {
+                "language": language
+            }
 
     def get_output_dir(self) -> str:
         dirname = os.path.dirname(self.video_file)
@@ -476,7 +465,9 @@ class Encoding_video:
                     duration = self.json_dressing.get(duration_key)
 
                     try:
-                        duration = int(duration) if duration and int(duration) > 0 else 1
+                        duration = (
+                            int(duration) if duration and int(duration) > 0 else 1
+                        )
                     except (ValueError, TypeError):
                         duration = 1
 
@@ -557,9 +548,11 @@ class Encoding_video:
         Returns:
             A string representing the FFMPEG command for applying the watermark.
         """
-        opacity = self.json_dressing["opacity"] / 100.0
+        if not self.json_dressing:
+            return ""
+        opacity = self.json_dressing.get("opacity", 100) / 100.0
         position = get_dressing_position_value(
-            self.json_dressing["position_orig"], height
+            self.json_dressing.get("position_orig", "center"), height
         )
         name_out = (
             "[video]"
@@ -581,8 +574,8 @@ class Encoding_video:
         height: str,
         credit_type: str,
         name: str,
-        order: str,
-        interval_silent: str,
+        order: int,
+        interval_silent: int,
     ):
         """
         Add opening or ending credits to the FFmpeg command by updating the filters and parameters.
@@ -593,8 +586,8 @@ class Encoding_video:
             height (str): The height of the video used for scaling the credit overlay.
             credit_type (str): Specifies the type of credits to add, either 'opening_credits' or 'ending_credits'.
             name (str): The identifier for the credit video or overlay to be used in the FFmpeg filter graph.
-            order (str): The position identifier for the audio stream, used to sync audio with the credits.
-            interval_silent (str): Counter indicating the number of silent audio intervals inserted, used when adding silent audio tracks.
+            order (int): The position identifier for the audio stream, used to sync audio with the credits.
+            interval_silent (int): Counter indicating the number of silent audio intervals inserted, used when adding silent audio tracks.
 
         Returns:
             tuple:
@@ -621,7 +614,8 @@ class Encoding_video:
             params = f"{params}[{name}][{audio_out}]"
 
         filters.append(
-            FFMPEG_DRESSING_SCALE % {"number": str(order), "height": height, "name": name}
+            FFMPEG_DRESSING_SCALE
+            % {"number": str(order), "height": height, "name": name}
         )
 
         return filters, params, interval_silent
@@ -679,7 +673,9 @@ class Encoding_video:
             "input": self.video_file,
             "nb_threads": FFMPEG_NB_THREADS,
         }
-        output_file = os.path.join(self.output_dir, "audio_%s.mp3" % FFMPEG_AUDIO_BITRATE)
+        output_file = os.path.join(
+            self.output_dir, "audio_%s.mp3" % FFMPEG_AUDIO_BITRATE
+        )
         mp3_command += FFMPEG_MP3_ENCODE % {
             # "audio_bitrate": AUDIO_BITRATE,
             "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
@@ -694,7 +690,9 @@ class Encoding_video:
             "input": self.video_file,
             "nb_threads": FFMPEG_NB_THREADS,
         }
-        output_file = os.path.join(self.output_dir, "audio_%s.m4a" % FFMPEG_AUDIO_BITRATE)
+        output_file = os.path.join(
+            self.output_dir, "audio_%s.m4a" % FFMPEG_AUDIO_BITRATE
+        )
         m4a_command += FFMPEG_M4A_ENCODE % {
             "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
             "audio_bitrate": FFMPEG_AUDIO_BITRATE,
@@ -734,6 +732,9 @@ class Encoding_video:
     def get_create_thumbnail_command(self) -> str:
         thumbnail_command = "%s " % FFMPEG_CMD
         first_item = self.get_first_item()
+        if not first_item or first_item[0] not in self.list_mp4_files:
+            logger.error("No MP4 rendition available to create thumbnails.")
+            return ""
         input_file = self.list_mp4_files[first_item[0]]
         thumbnail_command += FFMPEG_INPUT % {
             "input": input_file,
@@ -766,6 +767,9 @@ class Encoding_video:
 
     def create_overview(self) -> None:
         first_item = self.get_first_item()
+        if not first_item or first_item[0] not in self.list_mp4_files:
+            logger.error("No MP4 rendition available to create overview.")
+            return
         # overview combine for 160x90
         in_height = list(self.list_video_track.items())[0][1]["height"]
         in_width = list(self.list_video_track.items())[0][1]["width"]
@@ -944,8 +948,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
     logger.debug(args.start)
     filename = fix_input(args.input)
+    dressing_data = None
+    if args.dressing:
+        try:
+            dressing_data = json.loads(args.dressing)
+        except json.JSONDecodeError:
+            logger.error("Invalid dressing JSON provided, ignoring it.")
     encoding_video = Encoding_video(
-        args.id, filename, args.start, args.stop, args.dressing
+        args.id, filename, args.start, args.stop, dressing_data
     )
     # error if uncommented
     # encoding_video.encoding_log += start

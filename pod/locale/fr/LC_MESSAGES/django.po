@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 23:10+0000\n"
+"POT-Creation-Date: 2026-01-09 09:58+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -6398,12 +6398,9 @@ msgid "The meeting has not started yet."
 msgstr "La réunion n’a pas encore commencé."
 
 #: pod/meeting/templates/meeting/join.html
-#, python-format
 msgid ""
 "It is scheduled for <strong>%(start_date)s</strong> at <i>%(start_time)s</i>."
-msgstr ""
-"Elle est planifiée le <strong>%(start_date)s</strong> à <i>%(start_time)s</"
-"i>."
+msgstr "Elle est planifiée le <strong>%(start_date)s</strong> à <i>%(start_time)s</i>."
 
 #: pod/meeting/templates/meeting/join.html
 msgid "You will be redirected right after the meeting starts."
@@ -6578,6 +6575,7 @@ msgid "Has user joined?"
 msgstr "Utilisateurs connectés ?"
 
 #: pod/meeting/views.py pod/recorder/models.py
+#: pod/video_encode_transcript/models.py
 msgid "Recording"
 msgstr "Enregistrement"
 
@@ -6820,7 +6818,7 @@ msgid ""
 "meeting."
 msgstr ""
 "L’option permettant d’afficher/masquer le chat a été prise en compte pour la "
-"réunion « %(name)s »."
+"réunion « %(name)s »."
 
 #: pod/meeting/webinar.py
 #, python-format
@@ -6983,6 +6981,15 @@ msgstr "Protégé par un mot de passe"
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
 msgstr "Privé"
+
+#: pod/playlist/models.py
+#, python-brace-format
+msgid ""
+"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"characters."
+msgstr ""
+"Veuillez entrer un titre contenant entre 1 et "
+"{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
 
 #: pod/playlist/models.py
 msgid ""
@@ -8105,6 +8112,25 @@ msgstr "Vous ne pouvez pas éditer ce quiz."
 #, python-format
 msgid "Quiz edition for the video “%s”"
 msgstr "Modification du quiz pour la vidéo « %s »"
+
+#: pod/recorder/admin.py
+msgid "Encode selected recordings and create new video"
+msgstr "Encoder les enregistrements sélectionnés et créer une nouvelle vidéo"
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Studio recording {item.id} encoding started"
+msgstr "Encodage de l'enregistrement en studio {item.id} démarré"
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Recording {item.id} is not a studio recording and can't be encoded"
+msgstr "L'enregistrement {item.id} n'est pas un enregistrement studio et ne peut pas être encodé."
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Error for {item}: {e}"
+msgstr "Erreur pour {item} : {e}"
 
 #: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
@@ -11057,6 +11083,118 @@ msgstr "Liste de lecture"
 #: pod/video_encode_transcript/models.py
 msgid "Video Playlists"
 msgstr "Listes de lecture"
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner Manager name"
+msgstr "Nom du Runner Manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority"
+msgstr "Priorité"
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority of the Runner Manager. Lower values indicate higher priority."
+msgstr "Priorité du Runner Manager. Les valeurs les plus basses indiquent une priorité plus élevée."
+
+#: pod/video_encode_transcript/models.py
+msgid "URL of the Runner Manager"
+msgstr "URL du Runner Manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "Example format: https://manager.univ.fr:port/"
+msgstr "Exemple de format : https://manager.univ.fr:port/"
+
+#: pod/video_encode_transcript/models.py
+msgid "Bearer token for the Runner Manager."
+msgstr "Jeton Bearer pour le Runner Manager."
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager"
+msgstr "Runner manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner managers"
+msgstr "Runner managers"
+
+#: pod/video_encode_transcript/models.py
+msgid "Encoding task"
+msgstr "Tâche d’encodage"
+
+#: pod/video_encode_transcript/models.py
+msgid "Studio task"
+msgstr "Tâche Studio"
+
+#: pod/video_encode_transcript/models.py
+msgid "Transcription task"
+msgstr "Tâche de transcription"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task type"
+msgstr "Type de tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task pending"
+msgstr "Tâche en attente"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task in progress"
+msgstr "Tâche en cours"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task completed"
+msgstr "Tâche terminée"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task failed"
+msgstr "Tâche échouée"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task timeouted"
+msgstr "Tâche expirée"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task status"
+msgstr "Statut de la tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task identifier from runner manager"
+msgstr "Identifiant de tâche du runner manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "Identifier of the task provided by the runner manager"
+msgstr "Identifiant de la tâche fourni par le runner manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "Video associated to the task"
+msgstr "Vidéo associée à la tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Studio recording associated to the task"
+msgstr "Enregistrement studio associé à la tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager that manages this task"
+msgstr "Runner manager qui gère cette tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager that achieves this task"
+msgstr "Runner manager qui accomplit cette tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Script output"
+msgstr "Sortie du script"
+
+#: pod/video_encode_transcript/models.py
+msgid "Output from the runner manager script"
+msgstr "Sortie du script du runner manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task"
+msgstr "Tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Tasks"
+msgstr "Tâches"
 
 #: pod/video_encode_transcript/utils.py
 msgid "Encoding"

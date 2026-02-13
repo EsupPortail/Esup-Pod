@@ -101,6 +101,9 @@
     <div class="alert alert-warning" role="alert">
       <i class="bi bi-hourglass-split" aria-hidden="true"></i>
       {% trans 'The video is currently waiting for encoding.' %}
+      {% if USE_RUNNER_MANAGER %}
+        {% include "videos/video_queue_runner_manager.html" %}
+      {% endif %}
     </div>
   {% endif %}
   {% if video.encoding_in_progress %}
