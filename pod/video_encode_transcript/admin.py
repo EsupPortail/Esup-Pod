@@ -1,9 +1,9 @@
 import requests
 from django.contrib import admin, messages
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect
 from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseRedirect
 from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.html import format_html
@@ -12,8 +12,16 @@ from django.utils.translation import gettext_lazy as _
 
 from pod.video.models import Video
 
-from .models import (EncodingAudio, EncodingLog, EncodingStep, EncodingVideo,
-                     PlaylistVideo, RunnerManager, Task, VideoRendition)
+from .models import (
+    EncodingAudio,
+    EncodingLog,
+    EncodingStep,
+    EncodingVideo,
+    PlaylistVideo,
+    RunnerManager,
+    Task,
+    VideoRendition,
+)
 from .task_queue import refresh_pending_task_ranks
 
 
@@ -173,7 +181,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
         admin (ModelAdmin): admin model
     """
 
-    change_form_template = "admin/video_encode_transcript/runnermanager/change_form.html"
+    change_form_template = "admin_test_connection.html"
 
     list_display = (
         "id",
@@ -372,7 +380,7 @@ class TaskAdmin(admin.ModelAdmin):
     def status_badge(self, obj):
         badge_map = {
             "pending": "bg-secondary",
-            "running": "bg-primary",
+            "running": "bg-warning text-dark",
             "failed": "bg-danger",
             "timeout": "bg-danger",
             "completed": "bg-success",
