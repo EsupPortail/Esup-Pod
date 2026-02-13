@@ -1,0 +1,38 @@
+{% extends "admin/change_form.html" %}
+{% load admin_urls i18n %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    .object-tools a.test-connection-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: #0b57d0;
+      color: #fff;
+    }
+
+    .object-tools a.test-connection-link:hover,
+    .object-tools a.test-connection-link:focus {
+      background: #0848ab;
+      color: #fff;
+    }
+
+    .object-tools a.test-connection-link .test-connection-icon {
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+  </style>
+{% endblock %}
+
+{% block object-tools-items %}
+  {{ block.super }}
+  {% if change and original %}
+    <li>
+      <a class="test-connection-link" href="{% url 'admin:video_encode_transcript_runnermanager_test_connection' original.pk|admin_urlquote %}">
+        <span class="test-connection-icon" aria-hidden="true">&#9881;</span>
+        {% trans "Test connection" %}
+      </a>
+    </li>
+  {% endif %}
+{% endblock %}
