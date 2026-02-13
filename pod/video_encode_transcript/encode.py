@@ -5,13 +5,14 @@ import threading
 import time
 
 from django.conf import settings
+from webpush.models import PushInformation
+
 from pod.cut.models import CutVideo
 from pod.dressing.models import Dressing
 from pod.dressing.utils import get_dressing_input
 from pod.main.tasks import task_start_encode, task_start_encode_studio
 from pod.recorder.models import Recording
 from pod.video.models import Video
-from webpush.models import PushInformation
 
 from .encoding_settings import FFMPEG_DRESSING_INPUT
 from .encoding_studio import start_encode_video_studio
@@ -58,54 +59,9 @@ USE_RUNNER_MANAGER = getattr(settings, "USE_RUNNER_MANAGER", False)
 # ##########################################################################
 
 
-# Disable for the moment, will be reactivated in future version
-def start_remote_encode(video_id):
-    """Start Remote encoding."""
-    """
-    # load module here to prevent circular import
-    from .runner_manager_utils import remote_encode_video
-    log.info("START ENCODE VIDEO ID %s" % video_id)
-    t = threading.Thread(target=remote_encode_video,
-                         args=[video_id])
-    # UM - LB - Put False to manage encoding video managed by BBB
-    # t.setDaemon(True)
-    t.setDaemon(False)
-    t.start()
-    """
-    video_to_check = Video.objects.get(id=video_id)
-    # Management by extension
-    extension = video_to_check.video.name.split(".")[-1]
-    extension = extension.lower()
-    # Management by owner
-    # owner_hashkey = video_to_check.owner.owner.hashkey
-    # print("EXTENSION et OWNER HASHKEY " + extension + " -- " + owner_hashkey)
-    log.info("start_remote_encode VIDEO ID %s" % video_id)
-    # Example for WMV files or Lipcom user
-    # if extension == "wmv" or owner_hashkey != "d63a3e988d2f4b79f15b7d1ac0ed0eaf7d486fc25720038350b5982de42843b0":
-    # Management of "mov" and "wmv" files
-    if extension == "mov" or extension == "wmv":
-        log.info("START MOV or WMV ENCODE VIDEO ID %s" % video_id)
-        start_encode(video_id)
-    else:
-        log.info("START REMOTE ENCODE VIDEO ID %s" % video_id)
-        """
-        # load module here to prevent circular import
-        from .runner_manager_utils import remote_encode_video
-        if extension == "webm":
-            log.info("start directly WEBM remote_encode VIDEO ID %s" % video_id)
-            remote_encode_video(video_id)
-        else:
-            log.info("start a thread - NO MOV or WMV - remote_encode VIDEO ID %s" % video_id)
-            log.info("START ENCODE VIDEO ID %s" % video_id)
-            t = threading.Thread(target=remote_encode_video, args=[video_id])
-            # t.setDaemon(True)
-            t.setDaemon(False)
-            t.start()
-        """
-
-
 def start_encode(video_id: int, threaded=True) -> None:
     """Start video encoding."""
+    # Special case for runner manager: delegate encoding to a remote service and return immediately without threading logic
     if USE_RUNNER_MANAGER:
         log.info("Start encode, with runner manager, for id: %s" % video_id)
         # Load module here to prevent circular import
@@ -130,6 +86,7 @@ def start_encode_studio(
     recording_id, video_output, videos, subtime, presenter, threaded=True
 ) -> None:
     """Start studio encoding."""
+    # Special case for runner manager: delegate encoding to a remote service and return immediately without threading logic
     if USE_RUNNER_MANAGER:
         log.info("Start encode studio, with runner manager, for id: %s" % recording_id)
         # Load module here to prevent circular import
