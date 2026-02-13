@@ -3,6 +3,7 @@ from rest_framework import serializers
 from src.apps.video.models import Video
 from .SubtitleSerializer import SubtitleSerializer
 from django.contrib.auth.hashers import make_password
+from src.apps.video.services.core import VIDEO_ALLOWED_EXTENSIONS, VIDEO_MAX_UPLOAD_SIZE
 
 User = get_user_model()
 
@@ -101,3 +102,18 @@ class VideoSerializer(serializers.ModelSerializer):
                 return request.build_absolute_uri(file_field.url)
             return file_field.url
         return None
+
+    def validate_video_file(self, value):
+        if value:
+            ext = value.name.split('.')[-1].lower()
+            allowed_exts = [e.lstrip('.') for e in VIDEO_ALLOWED_EXTENSIONS]
+            if ext not in allowed_exts:
+                raise serializers.ValidationError(
+                    f"Format non supporté. Formats autorisés : {', '.join(allowed_exts)}"
+                )
+            max_bytes = VIDEO_MAX_UPLOAD_SIZE * 1024 * 1024 * 1024
+            if value.size > max_bytes:
+                raise serializers.ValidationError(
+                    f"Le fichier dépasse la taille maximale autorisée de {VIDEO_MAX_UPLOAD_SIZE} Go."
+                )
+        return value
