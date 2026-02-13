@@ -8,11 +8,17 @@ from src.apps.video.services.metadata import extract_video_duration
 @receiver(post_delete, sender=Video)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
-    Supprime le fichier physique quand l'objet Video est supprimé.
+    Supprime les fichiers physiques du disque lorsque l'objet Video est supprimé.
     """
     if instance.video_file:
         if os.path.isfile(instance.video_file.path):
             os.remove(instance.video_file.path)
+    if instance.thumbnail:
+        if os.path.isfile(instance.thumbnail.path):
+            os.remove(instance.thumbnail.path)
+    if instance.overview:
+        if os.path.isfile(instance.overview.path):
+            os.remove(instance.overview.path)
 
 
 @receiver(pre_save, sender=Video)
