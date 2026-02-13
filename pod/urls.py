@@ -1,27 +1,26 @@
 """Esup-pod URL configuration."""
 
+import importlib.util
+
 from django.conf import settings
-from django.urls import include
-from django.urls import path, re_path
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.views.i18n import JavaScriptCatalog
+from django.urls import include, path, re_path
 from django.utils.translation import gettext_lazy as _
+from django.views.i18n import JavaScriptCatalog
 
-import importlib.util
-
+from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.main.views import (
     contact_us,
     download_file,
-    user_autocomplete,
+    info_pod,
     maintenance,
     robots_txt,
-    info_pod,
-    userpicture,
     set_notifications,
+    user_autocomplete,
+    userpicture,
 )
-from pod.main.rest_router import urlpatterns as rest_urlpatterns
 
 USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
@@ -203,7 +202,9 @@ if USE_HYPERLINKS:
 # IMPORT_VIDEO
 if USE_IMPORT_VIDEO:
     urlpatterns += [
-        path("import_video/", include("pod.import_video.urls", namespace="import_video")),
+        path(
+            "import_video/", include("pod.import_video.urls", namespace="import_video")
+        ),
     ]
 
 if USE_DUPLICATE:
@@ -214,7 +215,12 @@ if USE_DUPLICATE:
 # RUNNER_MANAGER
 if USE_RUNNER_MANAGER:
     urlpatterns += [
-        path("runner/", include("pod.video_encode_transcript.urls", namespace="video_encode_transcript")),
+        path(
+            "runner/",
+            include(
+                "pod.video_encode_transcript.urls", namespace="video_encode_transcript"
+            ),
+        ),
     ]
 
 if settings.DEBUG:
