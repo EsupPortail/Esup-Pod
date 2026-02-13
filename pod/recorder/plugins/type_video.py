@@ -1,11 +1,12 @@
 # video type process
-import threading
-import logging
 import datetime
+import logging
 import os
 import shutil
+import threading
 
 from django.conf import settings
+
 from pod.video.models import Video, get_storage_path_video
 from pod.video_encode_transcript import encode
 
