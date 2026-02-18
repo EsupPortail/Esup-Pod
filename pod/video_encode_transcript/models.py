@@ -509,8 +509,8 @@ class RunnerManager(models.Model):
         verbose_name_plural = _("Runner managers")
         constraints = [
             models.UniqueConstraint(
-                fields=["url"],
-                name="runner_manager_unique_url",
+                fields=["url", "site"],
+                name="runner_manager_unique_url_site",
             ),
         ]
 
