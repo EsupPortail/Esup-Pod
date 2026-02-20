@@ -30,6 +30,7 @@ from pod.video_encode_transcript.runner_manager_utils import (
 )
 from pod.video_encode_transcript.task_queue import refresh_pending_task_ranks
 from pod.video_encode_transcript.transcript import save_vtt_and_notify
+from pod.video_encode_transcript.utils import send_email_item
 
 log = logging.getLogger(__name__)
 
@@ -278,6 +279,9 @@ def notify_task_end(request: WSGIRequest) -> JsonResponse:
         )
 
     _apply_notify_payload_to_task(task, data)
+
+    if task.status == "failed":
+        send_email_item(f"Task {task.id} failed", "Task", task.task_id)
 
     if task.status == "completed":
         download_and_import_task_result(task)
