@@ -5,6 +5,7 @@ Run with `python manage.py test pod.video_encode_transcript.tests.test_notify_ta
 """
 
 import json
+from unittest.mock import patch
 
 from django.contrib.sites.models import Site
 from django.test import RequestFactory, TestCase
@@ -36,7 +37,7 @@ class NotifyTaskEndAuthTests(TestCase):
             status="pending",
         )
 
-    def _post_notify(self, authorization: str | None = None):
+    def _post_notify(self, authorization: str | None = None, status: str = "running"):
         """Send a JSON notify_task_end request with an optional bearer token."""
         headers = {}
         if authorization is not None:
@@ -44,7 +45,7 @@ class NotifyTaskEndAuthTests(TestCase):
         return notify_task_end(
             self.factory.post(
                 "/runner/notify_task_end/",
-                data=json.dumps({"task_id": self.task.task_id, "status": "running"}),
+                data=json.dumps({"task_id": self.task.task_id, "status": status}),
                 content_type="application/json",
                 **headers,
             )
@@ -73,3 +74,15 @@ class NotifyTaskEndAuthTests(TestCase):
 
         self.task.refresh_from_db()
         self.assertEqual(self.task.status, "running")
+
+    @patch("pod.video_encode_transcript.views.send_email_item")
+    def test_notify_task_end_sends_alert_on_failed_status(self, mock_send_email_item):
+        """Send an alert email when runner notifies a failed task."""
+        response = self._post_notify("Bearer runner-token", status="failed")
+        self.assertEqual(response.status_code, 200)
+
+        self.task.refresh_from_db()
+        self.assertEqual(self.task.status, "failed")
+        mock_send_email_item.assert_called_once_with(
+            f"Task {self.task.id} failed", "Task", self.task.task_id
+        )
