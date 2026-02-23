@@ -34,6 +34,9 @@ jobs:
       - name: Lint with flake8
         run: flake8 src --count --show-source --statistics
 
+      - name: Validate configuration and CONFIGURATION.md
+        run: python manage.py validate_config --dry-run
+
   # 2. Docker Integration, E2E & Security (The Authoritative Test)
   test-docker-full:
     needs: [quality-check]
