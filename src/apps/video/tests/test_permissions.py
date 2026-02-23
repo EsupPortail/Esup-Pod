@@ -184,7 +184,11 @@ class VideoPermissionsTests(APITestCase):
         video_file = SimpleUploadedFile(
             "new.mp4", b"new_content", content_type="video/mp4"
         )
-        data = {"title": "New Video", "video_file": video_file, "date_of_event": "2026-02-11"}
+        data = {
+            "title": "New Video",
+            "video_file": video_file,
+            "date_of_event": "2026-02-11",
+        }
 
         response = self.client.post(self.list_url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
