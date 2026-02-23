@@ -611,8 +611,10 @@ def _prepare_transcription_parameters(video: Video) -> ParametersDict:
         Parameter dictionary for the Runner Manager.
     """
     try:
+        from .transcript import resolve_transcription_language
+
         # Requested language (video `transcript` field)
-        lang = getattr(video, "transcript", "") or ""
+        lang = resolve_transcription_language(video)
 
         # Options from settings (optional on runner side)
         transcription_type = getattr(settings, "TRANSCRIPTION_TYPE", None)
