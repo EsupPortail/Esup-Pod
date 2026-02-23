@@ -33,7 +33,9 @@ class RecordingAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
-            kwargs["queryset"] = Recorder.objects.filter(sites=Site.objects.get_current())
+            kwargs["queryset"] = Recorder.objects.filter(
+                sites=Site.objects.get_current()
+            )
         if (db_field.name) == "user":
             kwargs["queryset"] = User.objects.filter(
                 owner__sites=Site.objects.get_current()
@@ -59,19 +61,33 @@ class RecordingAdmin(admin.ModelAdmin):
         """
         if USE_RUNNER_MANAGER:
             # Import here to avoid circular import
-            from pod.video_encode_transcript.runner_manager import \
-                encode_studio_recording
+            from pod.video_encode_transcript.runner_manager import (
+                encode_studio_recording,
+            )
+
             for item in queryset:
                 try:
                     if item.type == "studio":
-                        self.message_user(request, _(f"Studio recording {item.id} encoding started"), messages.SUCCESS)
+                        self.message_user(
+                            request,
+                            _(f"Studio recording {item.id} encoding started"),
+                            messages.SUCCESS,
+                        )
                         # Encode studio recording via Runner Manager
                         encode_studio_recording(item.id)
                     else:
                         # Display a message to the admin user
-                        self.message_user(request, _(f"Recording {item.id} is not a studio recording and can't be encoded"), messages.WARNING)
+                        self.message_user(
+                            request,
+                            _(
+                                f"Recording {item.id} is not a studio recording and can’t be encoded"
+                            ),
+                            messages.WARNING,
+                        )
                 except Exception as e:
-                    self.message_user(request, _(f"Error for {item}: {e}"), messages.ERROR)
+                    self.message_user(
+                        request, _(f"Error for {item}: {e}"), messages.ERROR
+                    )
 
 
 @admin.register(RecordingFileTreatment)
@@ -91,7 +107,9 @@ class RecordingFileTreatmentAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
-            kwargs["queryset"] = Recorder.objects.filter(sites=Site.objects.get_current())
+            kwargs["queryset"] = Recorder.objects.filter(
+                sites=Site.objects.get_current()
+            )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_queryset(self, request):
@@ -199,5 +217,7 @@ class RecordingFileAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
-            kwargs["queryset"] = Recorder.objects.filter(sites=Site.objects.get_current())
+            kwargs["queryset"] = Recorder.objects.filter(
+                sites=Site.objects.get_current()
+            )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
