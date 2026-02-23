@@ -1,5 +1,12 @@
-import json
+"""
+Django management command to add or update a setting inside a specific
+application configuration stored in `configuration.json`.
+
+Launch with `python3 manage.py addsetting <app_name> <setting_name>`
+"""
+
 import os
+import json
 
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings as django_settings
