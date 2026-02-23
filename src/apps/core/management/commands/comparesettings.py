@@ -1,9 +1,21 @@
-from django.core.management.base import BaseCommand
-from django.conf import settings
+"""
+Django management command to compare runtime settings defined in code
+against those documented in `configuration.json`.
+
+Launch with `python3 manage.py comparesettings`
+
+Returns:
+    - ERROR if undocumented settings are detected.
+    - WARNING if configuration.json contains extra entries.
+    - SUCCESS if configuration is fully documented.
+"""
 
 import sys
 import json
 import os
+
+from django.core.management.base import BaseCommand
+from django.conf import settings
 
 
 class Command(BaseCommand):
