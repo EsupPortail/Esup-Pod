@@ -433,7 +433,7 @@ msgid ""
 "Something went wrong with AI improvement on “%(content_title)s”. Suggestions "
 "for improvement can’t be available on %(site_title)s."
 msgstr ""
-"Une erreur s’est produite sur le traitement par l’IA de « %(content_title)s "
+"Une erreur s’est produite sur le traitement par l’IA de « %(content_title)s "
 "». Les suggestions d’amélioration ne peuvent pas être disponibles sur "
 "%(site_title)s."
 
@@ -457,7 +457,7 @@ msgid ""
 "Something went wrong with AI improvement on “%(content_title)s”  on "
 "%(site_title)s."
 msgstr ""
-"Une erreur s’est produite sur l’amélioration par l’IA de « %(content_title)s "
+"Une erreur s’est produite sur l’amélioration par l’IA de « %(content_title)s "
 "» sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
@@ -1355,7 +1355,7 @@ msgstr ""
 #: pod/completion/permissions/video.py
 #, python-brace-format
 msgid "{func.__name__}: Permission denied for user {current_user.pk}."
-msgstr ""
+msgstr "{func.__name__}: Permission refusée pour l’utilisateur {current_user.pk}."
 
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
@@ -6079,7 +6079,7 @@ msgstr "Exemple de format : %(url)s"
 
 #: pod/meeting/models.py
 msgid "Bearer token for the SIPMediaGW server."
-msgstr "Jeton Bearer pour le serveur SIPMediaGW."
+msgstr "Jeton porteur pour le serveur SIPMediaGW."
 
 #: pod/meeting/models.py
 msgid "Example format: 1234"
@@ -6826,7 +6826,7 @@ msgid ""
 "meeting."
 msgstr ""
 "L’option permettant d’afficher/masquer le chat a été prise en compte pour la "
-"réunion « %(name)s »."
+"réunion « %(name)s »."
 
 #: pod/meeting/webinar.py
 #, python-format
@@ -8124,13 +8124,13 @@ msgstr "Encoder les enregistrements sélectionnés et créer une nouvelle vidéo
 #: pod/recorder/admin.py
 #, python-brace-format
 msgid "Studio recording {item.id} encoding started"
-msgstr "Encodage de l'enregistrement en studio {item.id} démarré"
+msgstr "Encodage de l’enregistrement en studio {item.id} démarré"
 
 #: pod/recorder/admin.py
 #, python-brace-format
-msgid "Recording {item.id} is not a studio recording and can't be encoded"
+msgid "Recording {item.id} is not a studio recording and can’t be encoded"
 msgstr ""
-"L'enregistrement {item.id} n'est pas un enregistrement studio et ne peut pas "
+"L’enregistrement {item.id} n’est pas un enregistrement studio et ne peut pas "
 "être encodé."
 
 #: pod/recorder/admin.py
@@ -11181,7 +11181,7 @@ msgstr "Exemple de format : https://manager.univ.fr:port/"
 
 #: pod/video_encode_transcript/models.py
 msgid "Bearer token for the runner manager."
-msgstr "Jeton Bearer pour le runner manager."
+msgstr "Jeton porteur pour le runner manager."
 
 #: pod/video_encode_transcript/models.py
 msgid "Example format: 6YqG_73xt-9s8v5aBz"
