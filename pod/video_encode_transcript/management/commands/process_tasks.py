@@ -736,7 +736,9 @@ class Command(BaseCommand):
         Try to submit a transcription task to available runner managers.
         Returns True if successful, False otherwise.
         """
-        from pod.video_encode_transcript.transcript import resolve_transcription_language
+        from pod.video_encode_transcript.transcript import (
+            resolve_transcription_language,
+        )
 
         # Get settings
         SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
