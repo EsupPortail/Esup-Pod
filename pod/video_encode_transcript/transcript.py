@@ -69,6 +69,39 @@ USE_RUNNER_MANAGER = getattr(settings, "USE_RUNNER_MANAGER", False)
 log = logging.getLogger(__name__)
 
 
+def resolve_transcription_language(video: Video, lang_code: str | None = None) -> str:
+    """Resolve transcription language with fallbacks.
+
+    Priority:
+    1. Explicit lang_code argument.
+    2. Video.transcript field.
+    3. Last existing subtitle track language for this video.
+    4. Video.main_lang.
+    5. DEFAULT_LANG_TRACK setting (fallback "fr").
+    """
+    if lang_code:
+        return lang_code
+
+    if getattr(video, "transcript", None):
+        return str(video.transcript)
+
+    track_lang = (
+        Track.objects.filter(video=video, kind="subtitles")
+        .exclude(lang__isnull=True)
+        .exclude(lang="")
+        .order_by("-id")
+        .values_list("lang", flat=True)
+        .first()
+    )
+    if track_lang:
+        return str(track_lang)
+
+    if getattr(video, "main_lang", None):
+        return str(video.main_lang)
+
+    return str(getattr(settings, "DEFAULT_LANG_TRACK", "fr"))
+
+
 def start_transcript(video_id, threaded=True) -> None:
     """
     Call to start transcript main function.
@@ -167,7 +200,7 @@ def save_vtt_and_notify_with_lang(
 def save_vtt(video: Video, webvtt: WebVTT, lang_code: str = None) -> str:
     """Save webvtt file with the video."""
     msg = "\nSAVE TRANSCRIPT WEBVTT : %s" % time.ctime()
-    lang = lang_code if lang_code else video.transcript
+    lang = resolve_transcription_language(video, lang_code)
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:
