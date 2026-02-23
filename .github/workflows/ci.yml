@@ -34,14 +34,12 @@ jobs:
       - name: Lint with flake8
         run: flake8 src --count --show-source --statistics
 
+      - name: Create .env file
+        run: cp .env.example .env
+
       - name: Validate flags configuration
-        env:
-          VERSION: ${VERSION}
-          DJANGO_SETTINGS_MODULE: config.django.dev.docker
-        run: |
-          make build 
-          python manage.py validate_config --dry-run
-          make clean
+        run:  python manage.py validate_config --dry-run
+
 
   # 2. Docker Integration, E2E & Security (The Authoritative Test)
   test-docker-full:
