@@ -28,7 +28,7 @@ Execution flow:
 Important behavior:
 - If no runner manager exists for the site, submission is skipped.
 - Network/API errors on one runner do not stop processing; the command tries
-  the next configured runner.
+the next configured runner.
 - Cleanup is skipped when `RM_TASKS_DELETED_AFTER_DAYS` is missing, invalid,
   or <= 0.
 
@@ -36,8 +36,8 @@ CLI:
 - `python manage.py process_tasks`
 - `python manage.py process_tasks --max-tasks 20 --site example.org`
 
-Example cron (every 2 minutes):
-`*/2 * * * * cd /path/to/podv4 && python manage.py process_tasks >> /home/pod/django_projects/podv4/pod/log/process_tasks.log 2>&1`
+Example cron (every 3 minutes):
+`*/3 * * * * /usr/bin/bash -c 'export WORKON_HOME=/home/pod/.virtualenvs; export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3; cd /usr/local/django_projects/podv4; source /usr/local/bin/virtualenvwrapper.sh; workon django_pod4; python manage.py process_tasks >> /usr/local/django_projects/podv4/pod/log/process_tasks.log 2>&1'`
 """
 
 import json
@@ -736,6 +736,8 @@ class Command(BaseCommand):
         Try to submit a transcription task to available runner managers.
         Returns True if successful, False otherwise.
         """
+        from pod.video_encode_transcript.transcript import resolve_transcription_language
+
         # Get settings
         SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
         VERSION = getattr(settings, "VERSION", "4.X")
@@ -763,7 +765,7 @@ class Command(BaseCommand):
         transcription_type = getattr(settings, "TRANSCRIPTION_TYPE", None)
         normalize = bool(getattr(settings, "TRANSCRIPTION_NORMALIZE", False))
         params = {
-            "language": getattr(video, "transcript", "") or "",
+            "language": resolve_transcription_language(video),
             "duration": float(getattr(video, "duration", 0) or 0),
             "normalize": normalize,
         }
