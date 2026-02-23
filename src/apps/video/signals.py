@@ -46,11 +46,15 @@ def video_post_save(sender, instance, created, **kwargs):
     Au moment de la création (upload terminé), on calcule la durée
     et on passe la vidéo en PUBLISHED (puisqu'on ne fait pas d'encodage complexe pour l'instant).
     """
-    print(f"DEBUG: video_post_save triggered. Created={created}, File={instance.video_file}")
+    print(
+        f"DEBUG: video_post_save triggered. Created={created}, File={instance.video_file}"
+    )
     if created and instance.video_file:
         if instance.duration == 0:
             file_path = instance.video_file.path
-            print(f"DEBUG: Processing file at {file_path}. Exists={os.path.exists(file_path)}")
+            print(
+                f"DEBUG: Processing file at {file_path}. Exists={os.path.exists(file_path)}"
+            )
             if os.path.exists(file_path):
                 duration = extract_video_duration(file_path)
                 print(f"DEBUG: Extracted duration={duration}. Updating status...")
