@@ -3445,7 +3445,7 @@
                             "Application pour l’encodage et la transcription de vidéo.",
                             "Il est possible d’encoder en local ou en distant.",
                             "Pour l’encodage distant, il est préférable d’utiliser le système d’externalisation des encodages et transcriptions, ",
-                            "Esup-Runner, avec utilisation de runner managers. Sinon, il est aussi possible d’utiliser encore Celery dans ce cas là."
+                            "Esup-Runner, avec utilisation de runner managers. Sinon, il est aussi possible d’utiliser Celery dans ce cas là."
                         ]
                     },
                     "settings": {
