@@ -1,3 +1,8 @@
+"""Transcription helpers for Esup-Pod video encoding workflows.
+
+This module prepares audio, runs Vosk or Whisper inference, and builds WebVTT captions.
+"""
+
 import datetime as dt
 import json
 import logging
