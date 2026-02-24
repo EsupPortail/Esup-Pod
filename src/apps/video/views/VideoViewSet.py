@@ -37,6 +37,12 @@ class VideoViewSet(viewsets.ModelViewSet):
             return qs.filter(q_filter).distinct()
         if user.is_superuser:
             return qs
+
+        # Authenticated users see:
+        # - Published videos
+        # - Restricted videos
+        # - Their own videos (Drafts/Encoding/Error included)
+        # - Videos they co-own
         return qs.filter(
             Q(status=Video.Status.PUBLISHED)
             | Q(status=Video.Status.RESTRICTED)
