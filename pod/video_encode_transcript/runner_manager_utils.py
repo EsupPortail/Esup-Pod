@@ -1,4 +1,4 @@
-"""Utilities for storing and importing remote encoding artifacts.
+"""Utilities for storing and importing remote encoding artifacts in Esup-Pod.
 
 This module orchestrates post-encoding persistence for videos and recordings:
 - updates encoding logs and processing state,
@@ -111,8 +111,8 @@ def store_before_remote_encoding_recording(
 ) -> None:
     """Store pre-encoding metadata for a recording."""
     recording = Recording.objects.get(id=recording_id)
-    msg = "\nStart at : %s" % time.ctime()
-    msg += "\nprocess manager remote encode : %s with data %s" % (execute_url, data)
+    msg = "\nStart at: %s" % time.ctime()
+    msg += "\nprocess manager remote encode: %s with data %s" % (execute_url, data)
     recording.comment += msg
     recording.save()
 
@@ -132,7 +132,7 @@ def store_before_remote_encoding_video(
     video_id: int, execute_url: str, data: dict[str, Any]
 ) -> None:
     """Initialize video state and logs before remote encoding starts."""
-    start = "Start at : %s" % time.ctime()
+    start = "Start at: %s" % time.ctime()
     msg = ""
     video_to_encode = Video.objects.get(id=video_id)
     video_to_encode.encoding_in_progress = True
@@ -146,11 +146,11 @@ def store_before_remote_encoding_video(
     if check_file(video_to_encode.video.path):
         change_encoding_step(video_id, 1, "remove old data")
         remove_msg = remove_old_data(video_id)
-        add_encoding_log(video_id, "remove old data : %s" % remove_msg)
+        add_encoding_log(video_id, "remove old data: %s" % remove_msg)
 
         change_encoding_step(video_id, 2, "create output dir")
         output_dir = create_outputdir(video_id, video_to_encode.video.path)
-        add_encoding_log(video_id, "output_dir : %s" % output_dir)
+        add_encoding_log(video_id, "output_dir: %s" % output_dir)
 
         open(output_dir + "/encoding.log", "w").close()
         with open(output_dir + "/encoding.log", "a") as f:
@@ -159,11 +159,11 @@ def store_before_remote_encoding_video(
         change_encoding_step(video_id, 3, "process manager remote encode")
         add_encoding_log(
             video_id,
-            "process manager remote encode : %s with data %s" % (execute_url, data),
+            "process manager remote encode: %s with data %s" % (execute_url, data),
         )
 
     else:
-        msg += "Wrong file or path : " + "\n%s" % video_to_encode.video.path
+        msg += "Wrong file or path: " + "\n%s" % video_to_encode.video.path
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
@@ -198,9 +198,9 @@ def store_after_remote_encoding_video(video_id: int) -> None:
     video_encoding.encoding_in_progress = False
     video_encoding.save()
 
-    add_encoding_log(video_id, "End : %s" % time.ctime())
+    add_encoding_log(video_id, "End: %s" % time.ctime())
     with open(output_dir + "/encoding.log", "a") as f:
-        f.write("\n\nEnd : %s" % time.ctime())
+        f.write("\n\nEnd: %s" % time.ctime())
 
     if (
         USE_NOTIFICATIONS
@@ -337,7 +337,7 @@ def import_remote_thumbnail(
             thumbnail.save()
             video_to_encode.thumbnail = thumbnail
             video_to_encode.save()
-        msg += "\n- thumbnailfilename :\n%s" % thumbnailfilename
+        msg += "\n- thumbnailfilename:\n%s" % thumbnailfilename
     else:
         msg += "\nERROR THUMBNAILS %s " % thumbnailfilename
         msg += "Wrong file or path"
@@ -370,7 +370,7 @@ def import_remote_audio(
                     os.path.join(settings.MEDIA_ROOT, ""), ""
                 )
                 encoding.save()
-                msg += "\n- encode_video_mp3 :\n%s" % audiofilename
+                msg += "\n- encode_video_mp3:\n%s" % audiofilename
             else:
                 msg += "\n- encode_video_mp3 Wrong file or path "
                 msg += audiofilename + " "
@@ -390,7 +390,7 @@ def import_remote_audio(
                     os.path.join(settings.MEDIA_ROOT, ""), ""
                 )
                 encoding.save()
-                msg += "\n- encode_video_m4a :\n%s" % audiofilename
+                msg += "\n- encode_video_m4a:\n%s" % audiofilename
             else:
                 msg += "\n- encode_video_m4a Wrong file or path "
                 msg += audiofilename + " "
@@ -440,10 +440,10 @@ def import_remote_video(
             )
             playlist.save()
 
-            msg += "\n- Playlist :\n%s" % playlist_master_file
+            msg += "\n- Playlist:\n%s" % playlist_master_file
         else:
             msg = (
-                "save_playlist_master Wrong file or path : "
+                "save_playlist_master Wrong file or path: "
                 + "\n%s" % playlist_master_file
             )
             add_encoding_log(video_to_encode.id, msg)
@@ -458,7 +458,7 @@ def import_mp4(
     """Persist a single MP4 rendition into EncodingVideo."""
     filename = os.path.splitext(encod_video["filename"])[0]
     videofilenameMp4 = os.path.join(output_dir, "%s.mp4" % filename)
-    msg = "\n- videofilenameMp4 :\n%s" % videofilenameMp4
+    msg = "\n- videofilenameMp4:\n%s" % videofilenameMp4
     if check_file(videofilenameMp4):
         rendition = VideoRendition.objects.get(resolution=encod_video["rendition"])
         encoding, created = EncodingVideo.objects.get_or_create(
@@ -472,7 +472,7 @@ def import_mp4(
         )
         encoding.save()
     else:
-        msg = "save_mp4_file Wrong file or path : " + "\n%s " % (videofilenameMp4)
+        msg = "save_mp4_file Wrong file or path: " + "\n%s " % (videofilenameMp4)
         add_encoding_log(video_to_encode.id, msg)
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
@@ -488,8 +488,8 @@ def import_m3u8(
     filename = os.path.splitext(encod_video["filename"])[0]
     videofilenameM3u8 = os.path.join(output_dir, "%s.m3u8" % filename)
     videofilenameTS = os.path.join(output_dir, "%s.ts" % filename)
-    msg += "\n- videofilenameM3u8 :\n%s" % videofilenameM3u8
-    msg += "\n- videofilenameTS :\n%s" % videofilenameTS
+    msg += "\n- videofilenameM3u8:\n%s" % videofilenameM3u8
+    msg += "\n- videofilenameTS:\n%s" % videofilenameTS
 
     rendition = VideoRendition.objects.get(resolution=encod_video["rendition"])
 
@@ -532,7 +532,7 @@ def import_m3u8(
             encod_video["filename"],
         )
     else:
-        msg = "save_playlist_file Wrong file or path : " + "\n%s and %s" % (
+        msg = "save_playlist_file Wrong file or path: " + "\n%s and %s" % (
             videofilenameM3u8,
             videofilenameTS,
         )
