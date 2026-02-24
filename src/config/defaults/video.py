@@ -28,4 +28,4 @@ RESTRICT_EDIT_TO_STAFF = False
 HOMEPAGE_SHOWS_PASSWORDED = False
 
 # Cache
-CACHE_TIMEOUT = 600 # TODO A voir quand il y aura redis
+CACHE_TIMEOUT = 600  # TODO A voir quand il y aura redis

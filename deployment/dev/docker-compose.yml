@@ -38,7 +38,37 @@ services:
       DJANGO_SETTINGS_MODULE: config.django.dev.docker
       ALLOWED_HOSTS: "*"
     command: ["run-server"]
+  redis:
+    image: redis:7
+    container_name: pod_redis_dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - pod_redis_data_dev:/data
+
+  celery:
+    build:
+      context: ../../
+      dockerfile: deployment/dev/Dockerfile
+    container_name: "pod_celery_dev${VERSION}"
+    volumes:
+      - ../../:/app
+      - ../../media:/app/media
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+    env_file:
+      - ../../.env
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      DJANGO_SETTINGS_MODULE: config.django.dev.docker
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    command: ["celery", "-A", "config", "worker", "-l", "info"]
 
 volumes:
   pod_db_data_dev:
-
+  pod_redis_data_dev:

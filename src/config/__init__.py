@@ -11,3 +11,7 @@ try:
     from .django.settings_local import *  # noqa: F401, F403
 except ImportError:
     pass
+
+from .celery import app as celery_app
+
+__all__ = ("celery_app",)

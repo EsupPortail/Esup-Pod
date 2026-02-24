@@ -33,9 +33,11 @@ class VideoViewSet(viewsets.ModelViewSet):
         user = self.request.user
         qs = Video.objects.all()
         if not user.is_authenticated:
-            q_filter = Q(status=Video.Status.PUBLISHED) | (Q(status=Video.Status.RESTRICTED) & Q(is_auth_required=False))
+            q_filter = Q(status=Video.Status.PUBLISHED) | (
+                Q(status=Video.Status.RESTRICTED) & Q(is_auth_required=False)
+            )
             if not video_settings.homepage_shows_passworded:
-                q_filter &= ~Q(password__isnull=False) & ~Q(password__exact='')
+                q_filter &= ~Q(password__isnull=False) & ~Q(password__exact="")
             return qs.filter(q_filter).distinct()
         if user.is_superuser:
             return qs
@@ -53,21 +55,31 @@ class VideoViewSet(viewsets.ModelViewSet):
         ).distinct()
 
     def perform_create(self, serializer):
-        user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file='')
+        user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file="")
         total_bytes = sum(v.video_file.size for v in user_videos if v.video_file)
-        incoming_file = self.request.FILES.get('video_file')
+        incoming_file = self.request.FILES.get("video_file")
         incoming_size = incoming_file.size if incoming_file else 0
         max_quota_bytes = encoding_settings.user_quota_size_gb * 1024 * 1024 * 1024
         if total_bytes + incoming_size > max_quota_bytes:
-            raise ValidationError({
-                "video_file": f"Quota dépassé. Vous êtes limité à {encoding_settings.user_quota_size_gb} Go."
-            })
-        licence_fournie = self.request.data.get('license')
-        serializer.save(
+            raise ValidationError(
+                {
+                    "video_file": f"Quota dépassé. Vous êtes limité à {encoding_settings.user_quota_size_gb} Go."
+                }
+            )
+        licence_fournie = self.request.data.get("license")
+        video = serializer.save(
             owner=self.request.user,
             status=Video.Status.ENCODING,
-            license=licence_fournie if licence_fournie else video_settings.default_license
+            license=(
+                licence_fournie if licence_fournie else video_settings.default_license
+            ),
         )
+
+        if video.video_file:
+            from src.apps.encoding.tasks import trigger_runner_encoding_task
+
+            source_url = self.request.build_absolute_uri(video.video_file.url)
+            trigger_runner_encoding_task.delay(video.pk, source_url)
 
     @action(detail=True, methods=["get"])
     def stream(self, request, slug=None):
@@ -81,9 +93,13 @@ class VideoViewSet(viewsets.ModelViewSet):
         if not is_owner_or_admin:
             if video.status == Video.Status.RESTRICTED:
                 if video.is_auth_required and not user.is_authenticated:
-                    raise PermissionDenied("Authentification requise pour lire cette vidéo.")
+                    raise PermissionDenied(
+                        "Authentification requise pour lire cette vidéo."
+                    )
                 if video.password:
-                    raise PermissionDenied("Accès direct au flux interdit. Mot de passe requis.")
+                    raise PermissionDenied(
+                        "Accès direct au flux interdit. Mot de passe requis."
+                    )
             elif video.status == Video.Status.DRAFT:
                 raise PermissionDenied("Cette vidéo est privée.")
         if not video.video_file:
@@ -103,6 +119,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         video.save(update_fields=["view_count"])
         video.refresh_from_db()
         from datetime import date
+
         view_count_obj, created = video.view_counts.get_or_create(date=date.today())
         view_count_obj.count = F("count") + 1
         view_count_obj.save(update_fields=["count"])

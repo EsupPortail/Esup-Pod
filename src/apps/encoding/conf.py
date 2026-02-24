@@ -11,7 +11,6 @@ from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
     PydanticBaseSettingsSource,
-    SettingsConfigDict,
 )
 from src.apps.utils.conf import DjangoSettingsSource
 from src.config.defaults import encoding as defaults
@@ -50,7 +49,7 @@ class EncodingConfig(BaseSettings):
         description="Max disk space per user in GB.",
     )
 
-        # --- Encoding / FFmpeg ---
+    # --- Encoding / FFmpeg ---
     ffmpeg_cmd: str = Field(
         default=defaults.FFMPEG_CMD, description="Path to ffmpeg binary."
     )
@@ -97,4 +96,3 @@ class EncodingConfig(BaseSettings):
 
 # Singleton instance
 encoding_settings = EncodingConfig()
-
