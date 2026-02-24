@@ -15,8 +15,8 @@ import os
 
 from config.env import BASE_DIR, env
 
-# Read .env file (Secrets only)
-env.read_env(os.path.join(BASE_DIR, ".env"))
+# Read .env file (Secrets only) - already handled in config.env
+# env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # Core settings
 POD_VERSION = env("VERSION", default="5.0.0-DEV")

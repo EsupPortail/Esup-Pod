@@ -2,6 +2,8 @@ import logging
 
 from typing import Any, Optional
 from ..conf import auth_settings
+from config.env import env
+from src.config.defaults import authentication as defaults
 from ldap3 import ALL, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPBindError, LDAPSocketOpenError
 
@@ -12,8 +14,8 @@ def get_ldap_conn():
     """Open and get LDAP connexion."""
 
     ldap_server_conf = auth_settings.ldap_server
-    auth_bind_dn = auth_settings.ldap_bind_dn
-    auth_bind_pwd = auth_settings.ldap_bind_password.get_secret_value()
+    auth_bind_dn = env("LDAP_BIND_DN", default=defaults.LDAP_BIND_DN)
+    auth_bind_pwd = env("LDAP_BIND_PASSWORD", default=defaults.LDAP_BIND_PASSWORD)
 
     url = ldap_server_conf.get("url")
     if not url:

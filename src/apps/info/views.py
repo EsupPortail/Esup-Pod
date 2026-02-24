@@ -1,11 +1,14 @@
+import importlib
+import pkgutil
+
 from django.conf import settings
 from drf_spectacular.utils import extend_schema
+from pydantic_settings import BaseSettings
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from src.apps.authentication.conf import auth_settings
-from src.apps.video.conf import video_settings
+from src import apps
 
 
 @extend_schema(
@@ -60,9 +63,24 @@ class ConfigInfoView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        return Response(
-            {
-                "authentication": auth_settings.model_dump(mode="json"),
-                "video": video_settings.model_dump(mode="json"),
-            }
-        )
+        configurations = {}
+
+        # Dynamically discover conf.py in each app in src.apps
+        for loader, module_name, is_pkg in pkgutil.iter_modules(apps.__path__):
+            try:
+                # Try to import the conf module for the app
+                conf_module_path = f"src.apps.{module_name}.conf"
+                conf_mod = importlib.import_module(conf_module_path)
+
+                # Look for an instance of BaseSettings in the module
+                for attr_name in dir(conf_mod):
+                    attr = getattr(conf_mod, attr_name)
+                    if isinstance(attr, BaseSettings):
+                        # Use model_dump to get only the declared fields
+                        configurations[module_name] = attr.model_dump(mode="json")
+                        break
+            except (ImportError, AttributeError):
+                # Skip apps without a conf.py or BaseSettings
+                continue
+
+        return Response(configurations)
