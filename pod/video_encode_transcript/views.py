@@ -1,4 +1,4 @@
-"""Views and helpers, useful only for Runner Manager callbacks and artifact imports.
+"""Views and helpers, useful only for Runner Manager callbacks and artifact imports in Esup-Pod.
 
 This module handles the full post-processing flow for remote tasks:
 - validate and authorize webhook notifications,
@@ -567,9 +567,7 @@ def _save_manifest_files(
     return dest_dir, dest_vtt_path
 
 
-def _create_video_from_studio_task(
-    task: Task, extracted_dir: str | None = None
-) -> int:
+def _create_video_from_studio_task(task: Task, extracted_dir: str | None = None) -> int:
     """Create a Pod video from a studio task and relocate artifacts.
 
     Workflow:
