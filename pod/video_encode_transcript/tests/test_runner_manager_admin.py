@@ -1,5 +1,5 @@
 """
-Runner manager admin interface tests.
+Runner manager admin interface tests for Esup-Pod.
 
 Run with `python manage.py test pod.video_encode_transcript.tests.test_runner_manager_admin`
 """
