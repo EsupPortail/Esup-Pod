@@ -30,7 +30,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from pod.main.utils import is_ajax
 from .utils import update_shared_user
 
-
 __FOLDER_FILE_TYPE__ = ["image", "file"]
 
 

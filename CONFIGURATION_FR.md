@@ -3,7 +3,9 @@
 ## Informations générales
 
 La plateforme Esup-Pod se base sur le framework Django écrit en Python.<br>
-Elle est compatible avec les versions 3.9, 3.10 et 3.12 de Python.<br>
+Elle est compatible avec les versions 3.10 et 3.12 de Python.<br>
+> Attention : à partir d’Esup-Pod version 4.2,<br>
+ la version 3.9 de Python n’est plus supportée.<br>
 
 **Django Version : 4.2 LTS**<br>
 

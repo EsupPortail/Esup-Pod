@@ -9,7 +9,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from pod.recorder.models import Recording
 from pod.video.remote_encode import store_remote_encoding_studio
 
-
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 
 

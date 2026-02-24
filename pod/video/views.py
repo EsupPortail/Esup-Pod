@@ -31,7 +31,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Sum, Min
 
-
 # from django.contrib.auth.hashers import check_password
 
 from dateutil.parser import parse
@@ -755,7 +754,7 @@ def bulk_update(request):
             if update_action == "fields":
                 # Bulk update fields
                 update_fields = json.loads(request.POST.get("update_fields"))
-                (result["updated_videos"], fields_errors, status) = bulk_update_fields(
+                result["updated_videos"], fields_errors, status = bulk_update_fields(
                     request, videos_list, update_fields
                 )
                 result["fields_errors"] = fields_errors
@@ -1892,7 +1891,7 @@ def video_note_form(request, slug):
 
 def video_note_form_case(request, params):
     """Editing/creating a note."""
-    (idNote, idCom, note, com) = params
+    idNote, idCom, note, com = params
     noteToDisplay, comToDisplay = None, None
     listNotesCom, dictComments = None, None
     comToEdit, noteToEdit = None, None
@@ -2307,11 +2306,8 @@ def video_note_download(request, slug):
         str(_("Content")),
     ]
     response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = (
-        "attachment; \
-        filename=%s_notes_and_comments.csv"
-        % slug
-    )
+    response["Content-Disposition"] = "attachment; \
+        filename=%s_notes_and_comments.csv" % slug
     df.to_csv(
         path_or_buf=response,
         sep="|",

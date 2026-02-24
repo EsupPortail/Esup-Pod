@@ -1083,11 +1083,8 @@ class Video(models.Model):
             # height="{{ im.height }}" loading="lazy">
         else:
             thumbnail_url = static(DEFAULT_THUMBNAIL)
-        return (
-            '<img class="pod-thumbnail" src="%s" alt="%s"\
-            loading="lazy">'
-            % (thumbnail_url, self.title)
-        )
+        return '<img class="pod-thumbnail" src="%s" alt="%s"\
+            loading="lazy">' % (thumbnail_url, self.title)
 
     @property
     def duration_in_time(self) -> str:

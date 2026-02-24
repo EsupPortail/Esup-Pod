@@ -20,7 +20,6 @@ from pod.live.models import Building, Broadcaster
 from pod.meeting.models import LiveGateway
 from pod.video.models import Type
 
-
 VIDEO_TEST = getattr(settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp4")
 ROOT_URLCONF = getattr(settings, "ROOT_URLCONF", "http://testserver")
 

@@ -25,8 +25,8 @@
   <!-- Filtres -->
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
     <div id="filtersBox" class="d-flex align-items-center flex-wrap gap-2"></div>
-      <form 
-        id="titleSearchForm" 
+      <form
+        id="titleSearchForm"
         class="d-flex w-50 w-lg-auto flex-grow-1 flex-lg-grow-0 min-w-250"
         onsubmit="event.preventDefault(); refreshVideosSearch();"
       >
@@ -173,19 +173,19 @@
     <div class="row align-items-center gy-2">
 
       <div class="col-12 col-lg-auto">
-        <div class="d-flex align-items-center"> 
+        <div class="d-flex align-items-center">
           <input type="checkbox"
                 id="selectAll"
-                class="form-check-input mt-0 me-2" 
+                class="form-check-input mt-0 me-2"
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
                 aria-label="{% trans 'Select/Deselect all videos' %}"
                 title="{% trans 'Select/Deselect all videos' %}">
-          <div class="d-flex flex-column lh-sm"> 
-            <label for="selectAll" class="form-check-label text-nowrap mb-0"> 
+          <div class="d-flex flex-column lh-sm">
+            <label for="selectAll" class="form-check-label text-nowrap mb-0">
               {% trans 'Select all' %}
             </label>
-            <small class="filter-info text-muted"> 
+            <small class="filter-info text-muted">
               {% trans 'Select videos to enable bulk actions.' %}
             </small>
           </div>
@@ -234,11 +234,7 @@
 
   <section role="region" aria-labelledby="video_count" aria-live="polite">
     <p id="video_count" class="col-5">
-      {% blocktrans count counter=count_videos %}
-        {{ counter }} video found
-      {% plural %}
-        {{ counter }} videos found
-      {% endblocktrans %}
+      {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
     </p>
     <div id="video_list_content">
       {% include 'loader.html' with loaderid="videosListLoader" %}
@@ -282,7 +278,7 @@
   <script src="{% static 'js/link_video_dropdown_menu.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/infinite.js' %}"></script>
   <script src="{% static 'js/FilterManager.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'js/filter.js' %}?ver={{VERSION}}"></script> 
+  <script src="{% static 'js/filter.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/dashboard.js' %}?ver={{VERSION}}"></script>

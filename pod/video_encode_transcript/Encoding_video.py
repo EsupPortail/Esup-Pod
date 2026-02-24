@@ -265,9 +265,7 @@ class Encoding_video:
         msg = "--> get_info_video\n"
         probe_cmd = 'ffprobe -v quiet -show_entries format=duration -hide_banner  \
                     -of default=noprint_wrappers=1:nokey=1 -print_format json -i \
-                    "{}"'.format(
-            input_file
-        )
+                    "{}"'.format(input_file)
         info, return_msg = get_info_from_video(probe_cmd)
         msg += json.dumps(info, indent=2)
         msg += " \n"

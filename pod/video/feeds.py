@@ -19,7 +19,6 @@ from pod.video.models import Theme
 import re
 import os
 
-
 ##
 # Settings exposed in templates
 #

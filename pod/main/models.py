@@ -14,7 +14,6 @@ import os
 import mimetypes
 from tinymce.models import HTMLField
 
-
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 

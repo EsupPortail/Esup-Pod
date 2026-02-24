@@ -50,7 +50,6 @@ from pytubefix.exceptions import PytubeFixError, VideoUnavailable
 from pod.main.tasks import task_start_bbb_presentation_encode_and_upload_to_pod
 from pod.main.tasks import task_start_bbb_presentation_encode_and_move_to_destination
 
-
 RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY", True
 )

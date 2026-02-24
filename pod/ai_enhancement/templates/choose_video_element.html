@@ -122,6 +122,6 @@
   {{ form.media }}
   <script src="{% static 'ai_enhancement/js/enrich-form.js' %}?ver={{ VERSION }}"></script>
   <script>
-    addEventListeners("{{ video.slug }}", "{{ video.title }}", "{{ video.description|safe }}", "{{ video.disciplines }}", "{% url 'ai_enhancement:enhance_video_json' video_slug=video.slug %}");
+    addEventListeners("{{ video.slug }}", "{{ video.title|escapejs }}", "{{ video.description|escapejs  }}", "{{ video.disciplines|escapejs }}", "{% url 'ai_enhancement:enhance_video_json' video_slug=video.slug %}");
   </script>
 {% endblock more_script %}

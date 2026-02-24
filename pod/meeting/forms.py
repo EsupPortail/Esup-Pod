@@ -20,7 +20,6 @@ from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.main.forms_utils import OwnerWidget, AddOwnerWidget
 from pod.meeting.webinar import start_webinar, stop_webinar, toggle_rtmp_gateway
 
-
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
