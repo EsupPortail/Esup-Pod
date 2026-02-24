@@ -1,4 +1,4 @@
-"""Runner Manager orchestration helpers for encoding and transcription tasks.
+"""Runner Manager orchestration helpers for encoding and transcription tasks in Esup-Pod.
 
 This module builds task payloads, dispatches them to available runner managers,
 and keeps local task rows synchronized with runner-side task status.
