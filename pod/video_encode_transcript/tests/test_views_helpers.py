@@ -1,5 +1,5 @@
 """
-Views helper unit tests for video encoding workflows.
+Views helper unit tests for Esup-Pod video encoding workflows.
 
 Run with `python manage.py test pod.video_encode_transcript.tests.test_views_helpers`
 """
