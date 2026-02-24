@@ -161,12 +161,14 @@ class PlaylistVideoAdmin(admin.ModelAdmin):
     list_filter = ["encoding_format"]
 
     def get_queryset(self, request):
+        """Limit queryset to objects linked to the current site for non-superusers."""
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
             qs = qs.filter(video__sites=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """Restrict selectable videos to those available on the current site."""
         if (db_field.name) == "video":
             kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
 
@@ -196,6 +198,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
     search_fields = ["id", "name", "site"]
 
     def get_urls(self):
+        """Register the custom admin endpoint used to test runner connectivity."""
         custom_urls = [
             path(
                 "<path:object_id>/test-connection/",
@@ -221,12 +224,14 @@ class RunnerManagerAdmin(admin.ModelAdmin):
         }
 
     def _change_url(self, runner_manager: RunnerManager) -> str:
+        """Build the admin change URL for a runner manager instance."""
         return reverse(
             "admin:video_encode_transcript_runnermanager_change",
             args=[runner_manager.pk],
         )
 
     def test_connection_view(self, request, object_id):
+        """Call the runner health endpoint and show the result in admin messages."""
         runner_manager = self.get_object(request, object_id)
         if runner_manager is None:
             self.message_user(
@@ -344,6 +349,7 @@ class TaskAdmin(admin.ModelAdmin):
     actions = ["relaunch_selected_tasks"]
 
     def get_readonly_fields(self, request, obj=None):
+        """Keep type and status immutable after task creation."""
         if obj is None:
             return self.readonly_fields
         return [*self.readonly_fields, "type", "status"]
@@ -354,30 +360,35 @@ class TaskAdmin(admin.ModelAdmin):
 
     @admin.display(description="Video ID", ordering="video__id")
     def video_id_display(self, obj):
+        """Display the related video identifier, or '-' when absent."""
         if not obj.video_id:
             return "-"
         return obj.video_id
 
     @admin.display(description="Video", ordering="video__title")
     def video_label(self, obj):
+        """Display a truncated video title, or '-' when no video is linked."""
         if not obj.video_id:
             return "-"
         return self._truncate_label(obj.video.title)
 
     @admin.display(description="Recording ID", ordering="recording__id")
     def recording_id_display(self, obj):
+        """Display the related recording identifier, or '-' when absent."""
         if not obj.recording_id:
             return "-"
         return obj.recording_id
 
     @admin.display(description="Recording", ordering="recording__title")
     def recording_label(self, obj):
+        """Display a truncated recording title, or '-' when not linked."""
         if not obj.recording_id:
             return "-"
         return self._truncate_label(obj.recording.title)
 
     @admin.display(description="Statut", ordering="status")
     def status_badge(self, obj):
+        """Render task status with a colored badge in list display."""
         badge_map = {
             "pending": "bg-secondary",
             "running": "bg-warning text-dark",
@@ -395,6 +406,7 @@ class TaskAdmin(admin.ModelAdmin):
 
     @admin.action(description=_("Restart selected tasks"))
     def relaunch_selected_tasks(self, request, queryset):
+        """Reset selected tasks and relaunch one job per unique source."""
         from .runner_manager import (
             encode_studio_recording,
             encode_video,
