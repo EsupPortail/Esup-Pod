@@ -78,11 +78,11 @@ clean: stop ## Full shutdown and cleanup (containers, volumes, orphans)
 
 test: start ## Run tests inside the container (pytest)
 	$(call info,Running tests with DJANGO_SETTINGS_MODULE=config.django.test.docker...)
-	$(DOCKER_COMPOSE_CMD) exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker $(DOCKER_SERVICE_NAME) pytest
+	$(DOCKER_COMPOSE_CMD) exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker $(DOCKER_SERVICE_NAME) bash -c "python3 deployment/dev/scripts/wait_for_db.py && pytest"
 
 test-cov: start ## Run tests with coverage report
 	$(call info,Running tests with coverage...)
-	$(DOCKER_COMPOSE_CMD) exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker $(DOCKER_SERVICE_NAME) pytest --cov=src --cov-report=term-missing --cov-fail-under=60
+	$(DOCKER_COMPOSE_CMD) exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker $(DOCKER_SERVICE_NAME) bash -c "python3 deployment/dev/scripts/wait_for_db.py && pytest --cov=src --cov-report=term-missing --cov-fail-under=60"
 
 check-django-env: ## Environment checks (DJANGO_SETTINGS_MODULE must end with .docker)
 	$(call info,Checking DJANGO_SETTINGS_MODULE...)

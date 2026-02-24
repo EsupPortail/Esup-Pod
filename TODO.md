@@ -8,3 +8,5 @@
 - [] Intérer les test comme dis précédament 
 - Verifier la bonne utilisation optimiser de Redis et de Celery Pour l'encodage, et annalyse les problématique de disponibilité du manager comment on fait si il est pas la , des time oute ? etc 
 
+- []  Pour la fgestions des flags sensible dans les conf j'ai penser a tout laisser dans les conf.py meme si c'est dasninfo sensible , puis dans un fichier constants.py dans info on définit une liste de flags qui ne doisve pas etre afficher par le endpoint info/conf.
+
