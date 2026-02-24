@@ -1,4 +1,4 @@
-"""URL patterns used in video_encode_transcript application."""
+"""URL patterns used for Esup-Pod in video_encode_transcript application."""
 
 from django.urls import path
 from pod.video_encode_transcript.views import notify_task_end
