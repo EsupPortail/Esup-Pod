@@ -1,5 +1,5 @@
 """
-Notify-task-end authentication tests.
+Notify-task-end authentication tests for Esup-Pod.
 
 Run with `python manage.py test pod.video_encode_transcript.tests.test_notify_task_end`
 """
