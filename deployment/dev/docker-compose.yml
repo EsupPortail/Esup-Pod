@@ -24,7 +24,7 @@ services:
     container_name: "pod_api_dev${VERSION}"
     volumes:
       - ../../:/app
-      - pod_media_dev:/app/media
+      - ../../media:/app/media
     ports:
       - "${EXPOSITION_PORT:-8000}:8000"
     depends_on:
@@ -41,4 +41,4 @@ services:
 
 volumes:
   pod_db_data_dev:
-  pod_media_dev:
+
