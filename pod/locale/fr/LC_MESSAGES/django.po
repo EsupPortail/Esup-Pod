@@ -1355,7 +1355,7 @@ msgstr ""
 #: pod/completion/permissions/video.py
 #, python-brace-format
 msgid "{func.__name__}: Permission denied for user {current_user.pk}."
-msgstr "{func.__name__}: Permission refusée pour l’utilisateur {current_user.pk}."
+msgstr "{func.__name__} : Permission refusée pour l’utilisateur {current_user.pk}."
 
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
