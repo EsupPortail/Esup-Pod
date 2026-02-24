@@ -4,7 +4,7 @@ Video configuration.
 Typed and validated configuration for the video app using pydantic-settings.
 """
 
-from typing import List, Tuple, Type
+from typing import List, Tuple, Type, Dict, Any
 
 
 from pydantic import Field
@@ -159,6 +159,54 @@ class VideoConfig(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="POD_VIDEO_",
         case_sensitive=False,
+    )
+
+    # --- Transcription ---
+    use_transcription: bool = Field(
+        default=defaults.USE_TRANSCRIPTION,
+        description="Enable automatic audio transcription.",
+    )
+    transcription_model_param: Dict[str, Any] = Field(
+        default=defaults.TRANSCRIPTION_MODEL_PARAM,
+        description="Parameters for the transcription model engine.",
+    )
+    transcription_type: str = Field(
+        default=defaults.TRANSCRIPTION_TYPE,
+        description="Type of transcription engine to use (e.g., WHISPER).",
+    )
+
+    # --- Third Party & Plugins ---
+    third_party_apps: List[str] = Field(
+        default=defaults.THIRD_PARTY_APPS,
+        description="List of active third-party applications (plugins).",
+    )
+    use_podfile: bool = Field(
+        default=defaults.USE_PODFILE,
+        description="Enable Podfile physical folder synchronization.",
+    )
+
+    # --- Metadata (Dublin Core) ---
+    default_dc_coverage: str = Field(
+        default=defaults.DEFAULT_DC_COVERAGE,
+        description="Default Dublin Core coverage metadata.",
+    )
+    default_dc_rights: str = Field(
+        default=defaults.DEFAULT_DC_RIGHTS,
+        description="Default Dublin Core rights metadata.",
+    )
+    template_visible_settings: Dict[str, str] = Field(
+        default=defaults.TEMPLATE_VISIBLE_SETTINGS,
+        description="Global display settings (e.g. TITLE_ETB) for metadata.",
+    )
+
+    # --- Media Defaults ---
+    default_thumbnail: str = Field(
+        default=defaults.DEFAULT_THUMBNAIL,
+        description="Path to the default video thumbnail.",
+    )
+    default_type_id: int = Field(
+        default=defaults.DEFAULT_TYPE_ID,
+        description="Default Type ID for new videos.",
     )
 
     @classmethod
