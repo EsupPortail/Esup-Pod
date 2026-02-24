@@ -1,14 +1,11 @@
 import logging
-from typing import Any, Dict
-
 import requests
+
 from ...conf import auth_settings
-
-from django.contrib.auth import get_user_model
-
-from ..core import OIDC_CLAIM_PREFERRED_USERNAME
 from ..tokens import get_tokens_for_user
 from ..users import UserPopulator
+from django.contrib.auth import get_user_model
+from typing import Any, Dict
 
 UserModel = get_user_model()
 logger = logging.getLogger(__name__)
@@ -56,7 +53,7 @@ class OIDCService:
 
             raise ConnectionError("Failed to fetch OIDC user info")
 
-        username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME)
+        username = claims.get(auth_settings.oidc_claim_preferred_username)
         if not username:
             raise ValueError("Missing username in OIDC claims")
 

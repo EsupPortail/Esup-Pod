@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from src.apps.video.services.core import RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+from .conf import video_settings
 
 
 class IsOwnerOrCoOwnerOrReadOnly(permissions.BasePermission):
@@ -11,7 +11,7 @@ class IsOwnerOrCoOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and not request.user.is_staff:
+        if video_settings.restrict_edit_to_staff and not request.user.is_staff:
             return False
         return (
             obj.owner == request.user
