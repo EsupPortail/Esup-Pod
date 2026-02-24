@@ -62,6 +62,16 @@ __all__ = [
     "HOMEPAGE_SHOWS_PASSWORDED",
     "USE_DUPLICATE",
     "USE_CUT",
+    "USE_TRANSCRIPTION",
+    "TRANSCRIPTION_MODEL_PARAM",
+    "TRANSCRIPTION_TYPE",
+    "THIRD_PARTY_APPS",
+    "USE_PODFILE",
+    "DEFAULT_DC_COVERAGE",
+    "DEFAULT_DC_RIGHTS",
+    "TEMPLATE_VISIBLE_SETTINGS",
+    "DEFAULT_THUMBNAIL",
+    "DEFAULT_TYPE_ID",
 ]
 
 # --- Storage ---
@@ -110,3 +120,21 @@ HOMEPAGE_SHOWS_PASSWORDED = video_settings.homepage_shows_passworded
 
 # --- Cache ---
 CACHE_VIDEO_DEFAULT_TIMEOUT = video_settings.cache_timeout
+
+# --- Transcription ---
+USE_TRANSCRIPTION = video_settings.use_transcription
+TRANSCRIPTION_MODEL_PARAM = video_settings.transcription_model_param
+TRANSCRIPTION_TYPE = video_settings.transcription_type
+
+# --- Third Party & Plugins ---
+THIRD_PARTY_APPS = video_settings.third_party_apps
+USE_PODFILE = video_settings.use_podfile
+
+# --- Metadata (Dublin Core) ---
+DEFAULT_DC_COVERAGE = video_settings.default_dc_coverage
+DEFAULT_DC_RIGHTS = video_settings.default_dc_rights
+TEMPLATE_VISIBLE_SETTINGS = video_settings.template_visible_settings
+
+# --- Media Defaults ---
+DEFAULT_THUMBNAIL = video_settings.default_thumbnail
+DEFAULT_TYPE_ID = video_settings.default_type_id

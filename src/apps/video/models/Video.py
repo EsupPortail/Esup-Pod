@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 from django.utils import timezone
 from src.apps.video.services.storage import get_storage_path_video, get_storage_path_image
+from django.contrib.auth.hashers import make_password
 
 
 class Video(models.Model):
@@ -201,11 +202,20 @@ class Video(models.Model):
             models.Index(fields=["created_at"]),
         ]
 
+    def set_password(self) -> None:
+        """
+        Chiffre le mot de passe si la vidéo est protégée.
+        Un mot de passe déjà chiffré ne sera pas rechiffré.
+        """
+        if self.password and not self.password.startswith("pbkdf2_sha256$"):
+            self.password = make_password(self.password, hasher="pbkdf2_sha256")
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.title)
             unique_id = str(uuid.uuid4())[:8]
             self.slug = f"{base_slug}-{unique_id}"
+        self.set_password()
         super().save(*args, **kwargs)
 
     def __str__(self):
