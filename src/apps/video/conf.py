@@ -20,54 +20,6 @@ from src.config.defaults import video as defaults
 class VideoConfig(BaseSettings):
     """Video app configuration with typed fields and validation."""
 
-    # --- Storage ---
-    videos_dir: str = Field(
-        default=defaults.VIDEOS_DIR,
-        description="Default directory for video uploads.",
-    )
-    thumbnails_dir: str = Field(
-        default=defaults.THUMBNAILS_DIR,
-        description="Default directory for video thumbnails.",
-    )
-
-    # --- Upload ---
-    max_upload_size_gb: int = Field(
-        default=defaults.MAX_UPLOAD_SIZE_GB,
-        description="Maximum video upload size in GB.",
-    )
-    allowed_extensions: Tuple[str, ...] = Field(
-        default=defaults.ALLOWED_EXTENSIONS,
-        description="Allowed video file extensions.",
-    )
-    video_required_fields: List[str] = Field(
-        default=defaults.VIDEO_REQUIRED_FIELDS,
-        description="List of required fields when uploading a video.",
-    )
-
-    # --- Encoding / FFmpeg ---
-    ffmpeg_cmd: str = Field(
-        default=defaults.FFMPEG_CMD, description="Path to ffmpeg binary."
-    )
-    ffprobe_cmd: str = Field(
-        default=defaults.FFPROBE_CMD, description="Path to ffprobe binary."
-    )
-    ffmpeg_crf: int = Field(
-        default=defaults.FFMPEG_CRF,
-        description="FFmpeg CRF value (Constant Rate Factor). Lower = better quality.",
-    )
-    ffmpeg_nb_threads: str = Field(
-        default=defaults.FFMPEG_NB_THREADS,
-        description="FFmpeg encoding preset.",
-    )
-    ffprobe_get_info: str = Field(
-        default=defaults.FFPROBE_GET_INFO,
-        description="FFprobe info detail level.",
-    )
-    chunk_size: int = Field(
-        default=defaults.CHUNK_SIZE,
-        description="Chunk size for file operations.",
-    )
-
     # --- Feature Flags ---
     use_stats_view: bool = Field(
         default=defaults.USE_STATS_VIEW,
@@ -98,11 +50,7 @@ class VideoConfig(BaseSettings):
         description="Allow authenticated users to upload videos.",
     )
 
-    # --- Quota / Licensing ---
-    user_quota_size_gb: int = Field(
-        default=defaults.USER_QUOTA_SIZE_GB,
-        description="Max disk space per user in GB.",
-    )
+    # --- Licensing ---
     default_license: str = Field(
         default=defaults.DEFAULT_LICENSE,
         description="Default license for uploaded videos.",

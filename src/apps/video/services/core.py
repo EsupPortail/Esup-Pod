@@ -2,84 +2,37 @@
 Video core services.
 
 Exposes configuration values and constants for the video app.
-Configuration is sourced from VideoConfig (conf.py), constants from constants.py.
+Configuration is sourced from VideoSettings (conf.py) and EncodingSettings, constants from constants.py.
 """
 
+from src.apps.encoding.constants import ENCODING_CHOICES, FORMAT_CHOICES
 from ..conf import video_settings
+from src.apps.encoding.conf import encoding_settings
 from ..constants import (
     ALL_LANG_CHOICES,
     CURSUS_CODES,
-    ENCODING_CHOICES,
-    FORMAT_CHOICES,
     LANG_CHOICES,
     NOTES_STATUS,
     PREF_LANG_CHOICES,
     SOCIAL_SHARE,
 )
 
-# --- Re-export constants for backward compatibility ---
-__all__ = [
-    # Constants
-    "ALL_LANG_CHOICES",
-    "PREF_LANG_CHOICES",
-    "LANG_CHOICES",
-    "FORMAT_CHOICES",
-    "ENCODING_CHOICES",
-    "NOTES_STATUS",
-    "CURSUS_CODES",
-    "SOCIAL_SHARE",
-    # Config values (from VideoConfig)
-    "VIDEOS_DIR",
-    "THUMBNAILS_DIR",
-    "VIDEO_ALLOWED_EXTENSIONS",
-    "VIDEO_MAX_UPLOAD_SIZE",
-    "VIDEO_REQUIRED_FIELDS",
-    "FFMPEG_CMD",
-    "FFPROBE_CMD",
-    "FFMPEG_CRF",
-    "FFMPEG_NB_THREADS",
-    "FFPROBE_GET_INFO",
-    "CHUNK_SIZE",
-    "USE_STATS_VIEW",
-    "VIEW_STATS_AUTH",
-    "CACHE_VIDEO_DEFAULT_TIMEOUT",
-    "USER_VIDEO_CATEGORY",
-    "HIDE_USER_FILTER",
-    "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY",
-    "HIDE_TAGS",
-    "FORCE_LOWERCASE_TAGS",
-    "MAX_TAG_LENGTH",
-    "NUMBER_TAGS_CLOUD",
-    "HIDE_SHARE",
-    "HIDE_DISCIPLINES",
-    "HIDE_CURSUS",
-    "HIDE_TYPES",
-    "WEBTV_MODE",
-    "ALLOW_AUTHENTICATED_UPLOAD",
-    "USER_QUOTA_SIZE",
-    "DEFAULT_LICENSE",
-    "CHANNEL_MODE",
-    "HOMEPAGE_SHOWS_PASSWORDED",
-    "USE_DUPLICATE",
-    "USE_CUT",
-]
-
 # --- Storage ---
-VIDEOS_DIR = video_settings.videos_dir
-THUMBNAILS_DIR = video_settings.thumbnails_dir
+VIDEOS_DIR = encoding_settings.videos_dir
+THUMBNAILS_DIR = encoding_settings.thumbnails_dir
 
 # --- Upload ---
-VIDEO_MAX_UPLOAD_SIZE = video_settings.max_upload_size_gb
-VIDEO_ALLOWED_EXTENSIONS = video_settings.allowed_extensions
-VIDEO_REQUIRED_FIELDS = video_settings.video_required_fields
+VIDEO_MAX_UPLOAD_SIZE = encoding_settings.max_upload_size_gb
+VIDEO_ALLOWED_EXTENSIONS = encoding_settings.allowed_extensions
+VIDEO_REQUIRED_FIELDS = encoding_settings.video_required_fields
 
 # --- Encoding / FFmpeg ---
-FFMPEG_CMD = video_settings.ffmpeg_cmd
-FFPROBE_CMD = video_settings.ffprobe_cmd
-FFMPEG_CRF = video_settings.ffmpeg_crf
-FFMPEG_NB_THREADS = video_settings.ffmpeg_nb_threads
-FFPROBE_GET_INFO = video_settings.ffprobe_get_info
-CHUNK_SIZE = video_settings.chunk_size
+FFMPEG_CMD = encoding_settings.ffmpeg_cmd
+FFPROBE_CMD = encoding_settings.ffprobe_cmd
+FFMPEG_CRF = encoding_settings.ffmpeg_crf
+FFMPEG_NB_THREADS = encoding_settings.ffmpeg_nb_threads
+FFPROBE_GET_INFO = encoding_settings.ffprobe_get_info
+CHUNK_SIZE = encoding_settings.chunk_size
 
 # --- Feature Flags ---
 USE_STATS_VIEW = video_settings.use_stats_view
@@ -91,7 +44,7 @@ USE_CUT = video_settings.use_cut
 ALLOW_AUTHENTICATED_UPLOAD = video_settings.allow_authenticated_upload
 
 # --- Quota / Licensing ---
-USER_QUOTA_SIZE = video_settings.user_quota_size_gb
+USER_QUOTA_SIZE = encoding_settings.user_quota_size_gb
 DEFAULT_LICENSE = video_settings.default_license
 CHANNEL_MODE = video_settings.channel_mode
 
