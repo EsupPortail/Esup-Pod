@@ -1,5 +1,5 @@
 """
-Runner manager round-robin ordering tests.
+Runner manager round-robin ordering tests for Esup-Pod.
 
 Run with `python manage.py test pod.video_encode_transcript.tests.test_runner_manager_round_robin`
 """
