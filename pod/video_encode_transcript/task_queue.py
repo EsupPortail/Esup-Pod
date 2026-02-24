@@ -1,4 +1,4 @@
-"""Queue ranking helpers for encoding/transcription task dispatch.
+"""Queue ranking helpers for encoding/transcription task dispatch in Esup-Pod.
 
 The queue is intentionally simple:
 - only pending tasks receive a rank,
