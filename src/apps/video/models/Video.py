@@ -5,7 +5,10 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 from django.utils import timezone
-from src.apps.video.services.storage import get_storage_path_video, get_storage_path_image
+from src.apps.encoding.services.storage import (
+    get_storage_path_video,
+    get_storage_path_image,
+)
 
 
 class Video(models.Model):

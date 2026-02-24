@@ -5,7 +5,6 @@ from ..conf import auth_settings
 from ldap3 import ALL, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPBindError, LDAPSocketOpenError
 
-
 logger = logging.getLogger(__name__)
 
 

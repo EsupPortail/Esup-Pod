@@ -8,6 +8,7 @@ import shutil
 from django.test import override_settings
 from datetime import timedelta
 from django.utils import timezone
+from unittest.mock import patch
 import unittest
 
 User = get_user_model()
@@ -33,9 +34,14 @@ class VideoValidationTests(APITestCase):
         )
         self.url = "/api/videos/"
 
-    def test_create_video_success(self):
+    @patch("src.apps.encoding.tasks.trigger_runner_encoding_task.delay")
+    def test_create_video_success(self, mock_trigger):
         """Test_Create_Video_Success"""
-        data = {"title": "Valid Video", "video_file": self.video_content, "date_of_event": "2026-01-01"}
+        data = {
+            "title": "Valid Video",
+            "video_file": self.video_content,
+            "date_of_event": "2026-01-01",
+        }
         response = self.client.post(self.url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(Video.objects.filter(title="Valid Video").exists())
@@ -63,14 +69,19 @@ class VideoValidationTests(APITestCase):
         response = self.client.post(self.url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_default_status(self):
+    @patch("src.apps.encoding.tasks.trigger_runner_encoding_task.delay")
+    def test_default_status(self, mock_trigger):
         """
         Test_Default_Status equivalent.
         Current implementation: Signal auto-publishes video upon upload if duration is 0 (mock file).
         Documentation says 'Draft', code does 'Published'.
         Adapting check to Code reality -> Published.
         """
-        data = {"title": "Default Status Video", "video_file": self.video_content, "date_of_event": "2026-01-01"}
+        data = {
+            "title": "Default Status Video",
+            "video_file": self.video_content,
+            "date_of_event": "2026-01-01",
+        }
         response = self.client.post(self.url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         video = Video.objects.get(title="Default Status Video")

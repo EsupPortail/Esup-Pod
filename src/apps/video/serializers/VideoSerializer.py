@@ -105,8 +105,8 @@ class VideoSerializer(serializers.ModelSerializer):
 
     def validate_video_file(self, value):
         if value:
-            ext = value.name.split('.')[-1].lower()
-            allowed_exts = [e.lstrip('.') for e in encoding_settings.allowed_extensions]
+            ext = value.name.split(".")[-1].lower()
+            allowed_exts = [e.lstrip(".") for e in encoding_settings.allowed_extensions]
             if ext not in allowed_exts:
                 raise serializers.ValidationError(
                     f"Format non supporté. Formats autorisés : {', '.join(allowed_exts)}"

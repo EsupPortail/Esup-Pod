@@ -4,7 +4,7 @@ Video configuration.
 Typed and validated configuration for the video app using pydantic-settings.
 """
 
-from typing import List, Tuple, Type
+from typing import Tuple, Type
 
 
 from pydantic import Field
