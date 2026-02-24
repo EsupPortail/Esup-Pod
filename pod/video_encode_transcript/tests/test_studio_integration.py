@@ -1,5 +1,5 @@
 """
-Studio task integration tests for video creation helpers.
+Studio task integration tests for Esup-Pod video creation helpers.
 
 Run with `python manage.py test pod.video_encode_transcript.tests.test_studio_integration`
 """
