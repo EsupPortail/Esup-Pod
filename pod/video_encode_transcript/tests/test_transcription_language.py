@@ -1,4 +1,4 @@
-"""Tests for transcription language resolution fallbacks."""
+"""Tests for Esup-Pod transcription language resolution fallbacks."""
 
 from django.contrib.auth.models import User
 from django.test import TestCase
@@ -17,6 +17,7 @@ class TranscriptionLanguageResolutionTests(TestCase):
     ]
 
     def setUp(self) -> None:
+        """Create a baseline video object used by each language fallback test."""
         owner = User.objects.create(username="lang_resolution_owner")
         videotype = Type.objects.create(title="others")
         self.video = Video.objects.create(
@@ -28,13 +29,17 @@ class TranscriptionLanguageResolutionTests(TestCase):
         )
 
     def test_resolve_transcription_language_prefers_video_transcript(self) -> None:
+        """Use video.transcript when it is explicitly set."""
         self.video.transcript = "en"
         self.video.save(update_fields=["transcript"])
         Track.objects.create(video=self.video, lang="de")
 
         self.assertEqual(resolve_transcription_language(self.video), "en")
 
-    def test_resolve_transcription_language_uses_track_when_transcript_empty(self) -> None:
+    def test_resolve_transcription_language_uses_track_when_transcript_empty(
+        self,
+    ) -> None:
+        """Fallback to the first available track language when transcript is empty."""
         self.video.transcript = ""
         self.video.save(update_fields=["transcript"])
         Track.objects.create(video=self.video, lang="de")
@@ -42,6 +47,7 @@ class TranscriptionLanguageResolutionTests(TestCase):
         self.assertEqual(resolve_transcription_language(self.video), "de")
 
     def test_prepare_transcription_parameters_uses_resolved_language(self) -> None:
+        """Pass the resolved fallback language into transcription runner params."""
         self.video.transcript = ""
         self.video.save(update_fields=["transcript"])
         Track.objects.create(video=self.video, lang="es")
