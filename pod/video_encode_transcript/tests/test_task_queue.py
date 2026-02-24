@@ -1,5 +1,5 @@
 """
-Task queue ranking and lookup tests.
+Task queue ranking and lookup tests for Esup-Pod.
 
 Run with `python manage.py test pod.video_encode_transcript.tests.test_task_queue`
 """
