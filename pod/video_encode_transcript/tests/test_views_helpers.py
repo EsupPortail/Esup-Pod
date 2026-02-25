@@ -8,8 +8,14 @@ import os
 import shutil
 import tempfile
 import unittest
+from hashlib import sha256
+from types import SimpleNamespace
+from unittest.mock import patch
+
+import requests
 
 from pod.video_encode_transcript.views import (
+    _download_and_store_manifest_member,
     _get_user_hashkey_from_recording,
     _merge_or_move_directory,
 )
@@ -132,6 +138,197 @@ class ViewsHelpersTests(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             _get_user_hashkey_from_recording(BadRecording())
+
+    def test_download_and_store_manifest_member_retries_chunked_transfer(self):
+        """Retry streamed download on chunked transfer break and overwrite partial data."""
+
+        class FakeResponse:
+            def __init__(
+                self,
+                chunks: list[bytes],
+                error: Exception | None = None,
+            ) -> None:
+                self._chunks = chunks
+                self._error = error
+                self.closed = False
+
+            def iter_content(self, chunk_size: int = 0):
+                del chunk_size
+                for chunk in self._chunks:
+                    yield chunk
+                if self._error is not None:
+                    raise self._error
+
+            def close(self) -> None:
+                self.closed = True
+
+        first = FakeResponse(
+            [b"partial"],
+            requests.exceptions.ChunkedEncodingError("Connection broken"),
+        )
+        second = FakeResponse([b"complete"])
+        task = SimpleNamespace(id=7)
+
+        with patch(
+            "pod.video_encode_transcript.views._download_manifest_member",
+            side_effect=[first, second],
+        ) as mock_download:
+            with patch("pod.video_encode_transcript.views.time.sleep") as mock_sleep:
+                with patch(
+                    "pod.video_encode_transcript.views._compute_manifest_retry_delay",
+                    return_value=0.0,
+                ):
+                    dest_path = _download_and_store_manifest_member(
+                        "https://runner.example/result/file",
+                        {"Authorization": "Bearer test"},
+                        "folder/video.mp4",
+                        task,
+                        self.tmp_root,
+                        max_attempts=2,
+                    )
+
+        self.assertEqual(mock_download.call_count, 2)
+        self.assertEqual(mock_sleep.call_count, 1)
+        self.assertTrue(first.closed)
+        self.assertTrue(second.closed)
+        self.assertIsNotNone(dest_path)
+        self.assertTrue(isinstance(dest_path, str))
+        with open(str(dest_path), "rb") as f:
+            self.assertEqual(f.read(), b"complete")
+
+    def test_download_and_store_manifest_member_removes_partial_file_on_failure(self):
+        """Clean up partial file and return None when all retries fail."""
+
+        class FailingResponse:
+            def __init__(self) -> None:
+                self.closed = False
+
+            def iter_content(self, chunk_size: int = 0):
+                del chunk_size
+                yield b"incomplete"
+                raise requests.exceptions.ChunkedEncodingError("stream interrupted")
+
+            def close(self) -> None:
+                self.closed = True
+
+        responses = [FailingResponse(), FailingResponse()]
+        task = SimpleNamespace(id=9)
+
+        with patch(
+            "pod.video_encode_transcript.views._download_manifest_member",
+            side_effect=responses,
+        ):
+            with patch("pod.video_encode_transcript.views.time.sleep"):
+                with patch(
+                    "pod.video_encode_transcript.views._compute_manifest_retry_delay",
+                    return_value=0.0,
+                ):
+                    dest_path = _download_and_store_manifest_member(
+                        "https://runner.example/result/file",
+                        {"Authorization": "Bearer test"},
+                        "broken/output.bin",
+                        task,
+                        self.tmp_root,
+                        max_attempts=2,
+                    )
+
+        self.assertIsNone(dest_path)
+        self.assertFalse(
+            os.path.exists(os.path.join(self.tmp_root, "broken", "output.bin"))
+        )
+        self.assertTrue(all(response.closed for response in responses))
+
+    def test_download_and_store_manifest_member_retries_on_checksum_mismatch(self):
+        """Retry when checksum validation fails and keep final valid file."""
+
+        class FakeResponse:
+            def __init__(self, chunks: list[bytes]) -> None:
+                self._chunks = chunks
+                self.closed = False
+
+            def iter_content(self, chunk_size: int = 0):
+                del chunk_size
+                for chunk in self._chunks:
+                    yield chunk
+
+            def close(self) -> None:
+                self.closed = True
+
+        expected_hash = sha256(b"good-data").hexdigest()
+        first = FakeResponse([b"bad-data"])
+        second = FakeResponse([b"good-data"])
+        task = SimpleNamespace(id=11)
+
+        with patch(
+            "pod.video_encode_transcript.views._download_manifest_member",
+            side_effect=[first, second],
+        ) as mock_download:
+            with patch("pod.video_encode_transcript.views.time.sleep") as mock_sleep:
+                with patch(
+                    "pod.video_encode_transcript.views._compute_manifest_retry_delay",
+                    return_value=0.0,
+                ):
+                    dest_path = _download_and_store_manifest_member(
+                        "https://runner.example/result/file",
+                        {"Authorization": "Bearer test"},
+                        "checksum/output.bin",
+                        task,
+                        self.tmp_root,
+                        expected_sha256=expected_hash,
+                        max_attempts=2,
+                    )
+
+        self.assertEqual(mock_download.call_count, 2)
+        self.assertEqual(mock_sleep.call_count, 1)
+        self.assertTrue(first.closed)
+        self.assertTrue(second.closed)
+        self.assertIsNotNone(dest_path)
+        self.assertTrue(isinstance(dest_path, str))
+        with open(str(dest_path), "rb") as f:
+            self.assertEqual(f.read(), b"good-data")
+
+    def test_download_and_store_manifest_member_atomic_write_keeps_existing_file(self):
+        """Do not corrupt existing file when checksum validation fails."""
+
+        class FakeResponse:
+            def __init__(self, chunks: list[bytes]) -> None:
+                self._chunks = chunks
+                self.closed = False
+
+            def iter_content(self, chunk_size: int = 0):
+                del chunk_size
+                for chunk in self._chunks:
+                    yield chunk
+
+            def close(self) -> None:
+                self.closed = True
+
+        expected_hash = sha256(b"expected").hexdigest()
+        task = SimpleNamespace(id=12)
+        existing_path = os.path.join(self.tmp_root, "atomic", "artifact.bin")
+        os.makedirs(os.path.dirname(existing_path), exist_ok=True)
+        with open(existing_path, "wb") as f:
+            f.write(b"stable-data")
+
+        failing_response = FakeResponse([b"corrupt-data"])
+        with patch(
+            "pod.video_encode_transcript.views._download_manifest_member",
+            return_value=failing_response,
+        ):
+            dest_path = _download_and_store_manifest_member(
+                "https://runner.example/result/file",
+                {"Authorization": "Bearer test"},
+                "atomic/artifact.bin",
+                task,
+                self.tmp_root,
+                expected_sha256=expected_hash,
+                max_attempts=1,
+            )
+
+        self.assertIsNone(dest_path)
+        self.assertTrue(failing_response.closed)
+        with open(existing_path, "rb") as f:
+            self.assertEqual(f.read(), b"stable-data")
 
 
 if __name__ == "__main__":
