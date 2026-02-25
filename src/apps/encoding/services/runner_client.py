@@ -19,6 +19,7 @@ class RunnerClient:
         self,
         video_id: str,
         source_url: str,
+        notify_url: str = "",
         parameters: Dict[str, Any] = None,
     ) -> Dict[str, Any]:
         """
@@ -32,7 +33,7 @@ class RunnerClient:
             "app_version": "5.0.0",
             "task_type": "encoding",
             "source_url": source_url,
-            "notify_url": "",  # Deprecated endpoint wait for next user iterations
+            "notify_url": notify_url,
             "parameters": parameters or {},
         }
 
@@ -58,8 +59,7 @@ class RunnerClient:
 
 def get_runner_client() -> RunnerClient:
     """Factory to get the configured runner client."""
-    # Assuming these attributes exist or will be added to encoding_settings
-    # The user's .env has POD_ENCODING_MANAGER_URL and TOKEN
-    manager_url = getattr(encoding_settings, "manager_url", "")
-    manager_token = getattr(encoding_settings, "manager_token", "")
+    from config.env import env
+    manager_url = env("ENCODING_MANAGER_URL", default="")
+    manager_token = env("ENCODING_MANAGER_TOKEN", default="")
     return RunnerClient(url=manager_url, token=manager_token)
