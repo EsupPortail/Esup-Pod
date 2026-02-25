@@ -24,22 +24,27 @@ class AuthConfig(BaseSettings):
     use_local_auth: bool = Field(
         default=defaults.USE_LOCAL_AUTH,
         description="Enable local Django authentication (username/password).",
+        json_schema_extra={"public": True},
     )
     use_cas: bool = Field(
         default=defaults.USE_CAS,
         description="Enable CAS (Central Authentication Service).",
+        json_schema_extra={"public": True},
     )
     use_ldap: bool = Field(
         default=defaults.USE_LDAP,
         description="Enable LDAP user lookup for populating user attributes.",
+        json_schema_extra={"public": True},
     )
     use_shib: bool = Field(
         default=defaults.USE_SHIB,
         description="Enable Shibboleth authentication.",
+        json_schema_extra={"public": True},
     )
     use_oidc: bool = Field(
         default=defaults.USE_OIDC,
         description="Enable OpenID Connect authentication.",
+        json_schema_extra={"public": True},
     )
 
     # --- CAS Configuration ---
@@ -136,10 +141,12 @@ class AuthConfig(BaseSettings):
     hide_username: bool = Field(
         default=defaults.HIDE_USERNAME,
         description="Hide usernames on the platform (GDPR compliance).",
+        json_schema_extra={"public": True},
     )
     use_establishment_field: bool = Field(
         default=defaults.USE_ESTABLISHMENT_FIELD,
         description="Add an establishment attribute to users.",
+        json_schema_extra={"public": True},
     )
 
     # --- Remote User ---
@@ -168,7 +175,6 @@ class AuthConfig(BaseSettings):
         }
 
     model_config = SettingsConfigDict(
-        env_prefix="POD_AUTH_",
         case_sensitive=False,
     )
 

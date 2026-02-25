@@ -1,7 +1,10 @@
+import logging
 import subprocess
 import json
 import math
 from pathlib import Path  # noqa #F401
+
+logger = logging.getLogger(__name__)
 
 
 def extract_video_duration(file_path):
@@ -24,5 +27,6 @@ def extract_video_duration(file_path):
         duration_float = float(data["format"]["duration"])
         return math.ceil(duration_float)
     except Exception as e:
-        print(f"Error extracting duration: {e}")
+        logger.warning("Failed to extract duration from %s: %s", file_path, e)
         return 0
+
