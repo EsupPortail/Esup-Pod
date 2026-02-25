@@ -4,6 +4,9 @@ from .Video import Video
 
 
 class Subtitle(models.Model):
+    """
+    Model representing a subtitle for a video.
+    """
     class Language(models.TextChoices):
         FRENCH = "fr", _("French")
         ENGLISH = "en", _("English")

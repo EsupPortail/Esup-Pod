@@ -6,9 +6,9 @@ from src.apps.video.serializers import SubtitleSerializer
 
 class IsSubtitleVideoOwnerOrReadOnly(permissions.BasePermission):
     """
-    Permission personnalisée :
-    - Lecture : Autorisée pour tout le monde (ou selon la config globale).
-    - Écriture/Suppression : Autorisée uniquement si l'utilisateur est le propriétaire de la vidéo liée.
+    Custom permission:
+    - Read: Allowed for everyone (or based on global config).
+    - Write/Delete: Allowed only if the user is the owner of the linked video.
     """
 
     def has_object_permission(self, request, view, obj):
@@ -19,7 +19,7 @@ class IsSubtitleVideoOwnerOrReadOnly(permissions.BasePermission):
 
 class SubtitleViewSet(viewsets.ModelViewSet):
     """
-    API endpoint pour gérer les sous-titres (upload, listing, suppression).
+    API endpoint to handle subtitles (upload, listing, deletion).
     """
 
     queryset = Subtitle.objects.all()
@@ -32,7 +32,7 @@ class SubtitleViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-        Permet de filtrer les sous-titres par vidéo.
+        Allows filtering subtitles by video.
         Usage: /api/subtitles/?video_id=12
         """
         queryset = super().get_queryset()
@@ -43,7 +43,7 @@ class SubtitleViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """
-        Vérification de sécurité au moment de la création.
+        Security check at creation time.
         """
         video = serializer.validated_data.get("video")
         if (
@@ -52,6 +52,6 @@ class SubtitleViewSet(viewsets.ModelViewSet):
             and not self.request.user.is_superuser
         ):
             raise PermissionDenied(
-                "Vous ne pouvez pas ajouter de sous-titres à une vidéo qui ne vous appartient pas."
+                "You cannot add subtitles to a video that does not belong to you."
             )
         serializer.save()

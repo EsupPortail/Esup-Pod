@@ -3,12 +3,15 @@ from rest_framework import serializers
 from src.apps.video.models import Video
 from .SubtitleSerializer import SubtitleSerializer
 from django.contrib.auth.hashers import make_password
-from src.apps.video.services.core import VIDEO_ALLOWED_EXTENSIONS, VIDEO_MAX_UPLOAD_SIZE
+from src.apps.video.services.core import VIDEO_ALLOWED_EXTENSIONS, VIDEO_MAX_UPLOAD_SIZE, WEBTV_MODE
 
 User = get_user_model()
 
 
 class VideoSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Video model.
+    """
     owner = serializers.ReadOnlyField(source="owner.username")
     video_url = serializers.SerializerMethodField()
     status_label = serializers.CharField(source="get_status_display", read_only=True)
@@ -22,6 +25,7 @@ class VideoSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     date_to_delete = serializers.DateField(required=False, allow_null=True)
+    thumbnail_url = serializers.ReadOnlyField()
 
     class Meta:
         model = Video
@@ -42,6 +46,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "status_label",
             "is_auth_required",
             "password",
+            'thumbnail_url',
             "has_password",
             "subtitles",
             "allow_downloading",
@@ -68,7 +73,7 @@ class VideoSerializer(serializers.ModelSerializer):
         ]
 
     def validate_password(self, value):
-        """Hash le mot de passe s'il est fourni."""
+        """Hashes the password if it is provided."""
         if value:
             return make_password(value)
         return value
@@ -109,11 +114,32 @@ class VideoSerializer(serializers.ModelSerializer):
             allowed_exts = [e.lstrip('.') for e in VIDEO_ALLOWED_EXTENSIONS]
             if ext not in allowed_exts:
                 raise serializers.ValidationError(
-                    f"Format non supporté. Formats autorisés : {', '.join(allowed_exts)}"
+                    f"Unsupported format. Allowed formats: {', '.join(allowed_exts)}"
                 )
             max_bytes = VIDEO_MAX_UPLOAD_SIZE * 1024 * 1024 * 1024
             if value.size > max_bytes:
                 raise serializers.ValidationError(
-                    f"Le fichier dépasse la taille maximale autorisée de {VIDEO_MAX_UPLOAD_SIZE} Go."
+                    f"The file exceeds the maximum allowed size of {VIDEO_MAX_UPLOAD_SIZE} GB."
                 )
         return value
+
+    def validate(self, attrs):
+        """
+        Global validation to handle WEBTV_MODE.
+        """
+        attrs = super().validate(attrs)
+        has_video_file = 'video_file' in attrs and attrs['video_file'] is not None
+        if not self.instance:
+            if not WEBTV_MODE and not has_video_file:
+                raise serializers.ValidationError({
+                    "video_file": "A video file is required because WEBTV mode is disabled."
+                })
+        else:
+            already_has_file = bool(self.instance.video_file)
+            is_clearing_file = 'video_file' in attrs and attrs['video_file'] is None
+            if not WEBTV_MODE:
+                if (not already_has_file and not has_video_file) or is_clearing_file:
+                    raise serializers.ValidationError({
+                        "video_file": "The video must include a source file (WEBTV_MODE disabled)."
+                    })
+        return attrs

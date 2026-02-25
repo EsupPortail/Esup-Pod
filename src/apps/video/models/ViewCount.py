@@ -5,6 +5,9 @@ from django.utils.translation import gettext_lazy as _
 
 
 class ViewCount(models.Model):
+    """
+    Model representing the view count for a video on a specific date.
+    """
     video = models.ForeignKey(Video, related_name='view_counts', on_delete=models.CASCADE)
     date = models.DateField(_("Date"), default=date.today)
     count = models.PositiveIntegerField(_("View Count"), default=0)
