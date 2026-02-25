@@ -4,9 +4,7 @@ Video configuration.
 Typed and validated configuration for the video app using pydantic-settings.
 """
 
-from typing import List, Tuple, Type, Dict
-
-
+from typing import Tuple, Type, Dict
 from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
@@ -20,134 +18,110 @@ from src.config.defaults import video as defaults
 class VideoConfig(BaseSettings):
     """Video app configuration with typed fields and validation."""
 
-    # --- Storage ---
-    videos_dir: str = Field(
-        default=defaults.VIDEOS_DIR,
-        description="Default directory for video uploads.",
-    )
-    thumbnails_dir: str = Field(
-        default=defaults.THUMBNAILS_DIR,
-        description="Default directory for video thumbnails.",
-    )
-
-    # --- Upload ---
-    max_upload_size_gb: int = Field(
-        default=defaults.MAX_UPLOAD_SIZE_GB,
-        description="Maximum video upload size in GB.",
-    )
-    allowed_extensions: Tuple[str, ...] = Field(
-        default=defaults.ALLOWED_EXTENSIONS,
-        description="Allowed video file extensions.",
-    )
-    video_required_fields: List[str] = Field(
-        default=defaults.VIDEO_REQUIRED_FIELDS,
-        description="List of required fields when uploading a video.",
-    )
-
-    # --- Encoding / FFmpeg ---
-    ffmpeg_cmd: str = Field(
-        default=defaults.FFMPEG_CMD, description="Path to ffmpeg binary."
-    )
-    ffprobe_cmd: str = Field(
-        default=defaults.FFPROBE_CMD, description="Path to ffprobe binary."
-    )
-    ffmpeg_crf: int = Field(
-        default=defaults.FFMPEG_CRF,
-        description="FFmpeg CRF value (Constant Rate Factor). Lower = better quality.",
-    )
-    ffmpeg_nb_threads: str = Field(
-        default=defaults.FFMPEG_NB_THREADS,
-        description="FFmpeg encoding preset.",
-    )
-    ffprobe_get_info: str = Field(
-        default=defaults.FFPROBE_GET_INFO,
-        description="FFprobe info detail level.",
-    )
-    chunk_size: int = Field(
-        default=defaults.CHUNK_SIZE,
-        description="Chunk size for file operations.",
-    )
-
     # --- Feature Flags ---
     use_stats_view: bool = Field(
         default=defaults.USE_STATS_VIEW,
         description="Enable video statistics view.",
+        json_schema_extra={"public": True},
     )
     view_stats_auth: bool = Field(
         default=defaults.VIEW_STATS_AUTH,
         description="Require authentication to view statistics.",
+        json_schema_extra={"public": True},
     )
     user_video_category: bool = Field(
         default=defaults.USER_VIDEO_CATEGORY,
         description="Enable per-user video categories.",
+        json_schema_extra={"public": True},
     )
     webtv_mode: bool = Field(
         default=defaults.WEBTV_MODE,
         description="Enable WebTV mode (channel-based display).",
+        json_schema_extra={"public": True},
     )
     use_duplicate: bool = Field(
         default=defaults.USE_DUPLICATE,
         description="Enable video form duplication.",
+        json_schema_extra={"public": True},
     )
     use_cut: bool = Field(
         default=defaults.USE_CUT,
         description="Enable video cutting feature.",
+        json_schema_extra={"public": True},
     )
     allow_authenticated_upload: bool = Field(
         default=defaults.ALLOW_AUTHENTICATED_UPLOAD,
         description="Allow authenticated users to upload videos.",
+        json_schema_extra={"public": True},
     )
 
-    # --- Quota / Licensing ---
-    user_quota_size_gb: int = Field(
-        default=defaults.USER_QUOTA_SIZE_GB,
-        description="Max disk space per user in GB.",
-    )
+    # --- Licensing ---
     default_license: str = Field(
         default=defaults.DEFAULT_LICENSE,
         description="Default license for uploaded videos.",
+        json_schema_extra={"public": True},
     )
     channel_mode: bool = Field(
         default=defaults.CHANNEL_MODE,
         description="Display videos by thematic channels.",
+        json_schema_extra={"public": True},
     )
 
     # --- UI / Display Flags ---
     hide_user_filter: bool = Field(
         default=defaults.HIDE_USER_FILTER,
         description="Hide the user filter in the video list (RGPD).",
+        json_schema_extra={"public": True},
     )
     hide_tags: bool = Field(
-        default=defaults.HIDE_TAGS, description="Hide tags in the video list."
+        default=defaults.HIDE_TAGS,
+        description="Hide tags in the video list.",
+        json_schema_extra={"public": True},
     )
     force_lowercase_tags: bool = Field(
-        default=defaults.FORCE_LOWERCASE_TAGS, description="Force tags to lowercase."
+        default=defaults.FORCE_LOWERCASE_TAGS,
+        description="Force tags to lowercase.",
+        json_schema_extra={"public": True},
     )
     max_tag_length: int = Field(
-        default=defaults.MAX_TAG_LENGTH, description="Maximum tag length."
+        default=defaults.MAX_TAG_LENGTH,
+        description="Maximum tag length.",
+        json_schema_extra={"public": True},
     )
     number_tags_cloud: int = Field(
-        default=defaults.NUMBER_TAGS_CLOUD, description="Number of tags in the cloud."
+        default=defaults.NUMBER_TAGS_CLOUD,
+        description="Number of tags in the cloud.",
+        json_schema_extra={"public": True},
     )
     hide_share: bool = Field(
-        default=defaults.HIDE_SHARE, description="Hide the share button."
+        default=defaults.HIDE_SHARE,
+        description="Hide the share button.",
+        json_schema_extra={"public": True},
     )
     hide_disciplines: bool = Field(
-        default=defaults.HIDE_DISCIPLINES, description="Hide disciplines filter."
+        default=defaults.HIDE_DISCIPLINES,
+        description="Hide disciplines filter.",
+        json_schema_extra={"public": True},
     )
     hide_cursus: bool = Field(
-        default=defaults.HIDE_CURSUS, description="Hide cursus filter."
+        default=defaults.HIDE_CURSUS,
+        description="Hide cursus filter.",
+        json_schema_extra={"public": True},
     )
     hide_types: bool = Field(
-        default=defaults.HIDE_TYPES, description="Hide types filter."
+        default=defaults.HIDE_TYPES,
+        description="Hide types filter.",
+        json_schema_extra={"public": True},
     )
     restrict_edit_to_staff: bool = Field(
         default=defaults.RESTRICT_EDIT_TO_STAFF,
         description="Restrict video editing to staff users only.",
+        json_schema_extra={"public": True},
     )
     homepage_shows_passworded: bool = Field(
         default=defaults.HOMEPAGE_SHOWS_PASSWORDED,
         description="Show password-protected videos on the homepage.",
+        json_schema_extra={"public": True},
     )
 
     # --- Cache ---
@@ -157,7 +131,6 @@ class VideoConfig(BaseSettings):
     )
 
     model_config = SettingsConfigDict(
-        env_prefix="POD_VIDEO_",
         case_sensitive=False,
     )
 

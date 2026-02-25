@@ -1,7 +1,7 @@
 services:
   db:
     image: mariadb:10.11
-    container_name: pod_mariadb_dev
+    container_name: pod-v5-api-db-${VERSION:-dev}
     env_file:
       - ../../.env
     environment:
@@ -21,10 +21,10 @@ services:
     build:
       context: ../../
       dockerfile: deployment/dev/Dockerfile
-    container_name: "pod_api_dev${VERSION}"
+    container_name: "pod-v5-api-${VERSION:-dev}"
     volumes:
       - ../../:/app
-      - pod_media_dev:/app/media
+      - ../../media:/app/media
     ports:
       - "${EXPOSITION_PORT:-8000}:8000"
     depends_on:
@@ -37,8 +37,40 @@ services:
       MYSQL_PORT: 3306
       DJANGO_SETTINGS_MODULE: config.django.dev.docker
       ALLOWED_HOSTS: "*"
+      SERVICE_LABEL: api
     command: ["run-server"]
+  redis:
+    image: redis:7
+    container_name: pod-v5-api-redis-${VERSION:-dev}
+    ports:
+      - "${REDIS_PORT:-6380}:6379"
+    volumes:
+      - pod_redis_data_dev:/data
+
+  celery:
+    build:
+      context: ../../
+      dockerfile: deployment/dev/Dockerfile
+    container_name: "pod-v5-api-celery-${VERSION:-dev}"
+    volumes:
+      - ../../:/app
+      - ../../media:/app/media
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+    env_file:
+      - ../../.env
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      DJANGO_SETTINGS_MODULE: config.django.dev.docker
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      SERVICE_LABEL: celery
+    command: ["celery", "-A", "config", "worker", "-l", "info"]
 
 volumes:
   pod_db_data_dev:
-  pod_media_dev:
+  pod_redis_data_dev:

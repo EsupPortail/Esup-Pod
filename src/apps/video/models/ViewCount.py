@@ -13,8 +13,8 @@ class ViewCount(models.Model):
     count = models.PositiveIntegerField(_("View Count"), default=0)
 
     class Meta:
-        unique_together = ('video', 'date')
-        ordering = ['-date']
+        unique_together = ("video", "date")
+        ordering = ["-date"]
 
     def __str__(self):
         return f"{self.video.title} - {self.date}: {self.count}"

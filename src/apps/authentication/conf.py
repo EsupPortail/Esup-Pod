@@ -7,7 +7,7 @@ Typed and validated configuration for the authentication app using pydantic-sett
 from typing import Dict, List, Optional, Tuple, Type
 
 
-from pydantic import Field, SecretStr
+from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
     PydanticBaseSettingsSource,
@@ -24,29 +24,30 @@ class AuthConfig(BaseSettings):
     use_local_auth: bool = Field(
         default=defaults.USE_LOCAL_AUTH,
         description="Enable local Django authentication (username/password).",
+        json_schema_extra={"public": True},
     )
     use_cas: bool = Field(
         default=defaults.USE_CAS,
         description="Enable CAS (Central Authentication Service).",
+        json_schema_extra={"public": True},
     )
     use_ldap: bool = Field(
         default=defaults.USE_LDAP,
         description="Enable LDAP user lookup for populating user attributes.",
+        json_schema_extra={"public": True},
     )
     use_shib: bool = Field(
         default=defaults.USE_SHIB,
         description="Enable Shibboleth authentication.",
+        json_schema_extra={"public": True},
     )
     use_oidc: bool = Field(
         default=defaults.USE_OIDC,
         description="Enable OpenID Connect authentication.",
+        json_schema_extra={"public": True},
     )
 
     # --- CAS Configuration ---
-    cas_server_url: str = Field(
-        default=defaults.CAS_SERVER_URL,
-        description="URL of the CAS server.",
-    )
     cas_version: str = Field(
         default=defaults.CAS_VERSION,
         description="CAS protocol version.",
@@ -65,25 +66,9 @@ class AuthConfig(BaseSettings):
     )
 
     # --- LDAP Configuration ---
-    ldap_server_url: str = Field(
-        default=defaults.LDAP_SERVER_URL,
-        description="LDAP server URL.",
-    )
-    ldap_server_port: int = Field(
-        default=defaults.LDAP_SERVER_PORT,
-        description="LDAP server port.",
-    )
     ldap_server_use_ssl: bool = Field(
         default=defaults.LDAP_SERVER_USE_SSL,
         description="Use SSL for LDAP connection.",
-    )
-    ldap_bind_dn: str = Field(
-        default=defaults.LDAP_BIND_DN,
-        description="LDAP bind DN.",
-    )
-    ldap_bind_password: SecretStr = Field(
-        default=defaults.LDAP_BIND_PASSWORD,
-        description="LDAP bind password (secret).",
     )
     ldap_user_search_base: str = Field(
         default=defaults.LDAP_USER_SEARCH_BASE,
@@ -99,22 +84,6 @@ class AuthConfig(BaseSettings):
     )
 
     # --- OIDC Configuration ---
-    oidc_rp_client_id: str = Field(
-        default=defaults.OIDC_RP_CLIENT_ID,
-        description="OIDC Relying Party client ID.",
-    )
-    oidc_rp_client_secret: SecretStr = Field(
-        default=defaults.OIDC_RP_CLIENT_SECRET,
-        description="OIDC Relying Party client secret.",
-    )
-    oidc_op_token_endpoint: str = Field(
-        default=defaults.OIDC_OP_TOKEN_ENDPOINT,
-        description="OIDC Provider token endpoint.",
-    )
-    oidc_op_user_endpoint: str = Field(
-        default=defaults.OIDC_OP_USER_ENDPOINT,
-        description="OIDC Provider user info endpoint.",
-    )
     oidc_claim_given_name: str = Field(
         default=defaults.OIDC_CLAIM_GIVEN_NAME,
         description="OIDC claim for given name.",
@@ -168,20 +137,16 @@ class AuthConfig(BaseSettings):
         description="Auto-create groups from LDAP/CAS group attributes.",
     )
 
-    # --- Security ---
-    allowed_superuser_ips: List[str] = Field(
-        default=defaults.ALLOWED_SUPERUSER_IPS,
-        description="IP addresses/ranges from which superuser access is allowed.",
-    )
-
     # --- UI ---
     hide_username: bool = Field(
         default=defaults.HIDE_USERNAME,
         description="Hide usernames on the platform (GDPR compliance).",
+        json_schema_extra={"public": True},
     )
     use_establishment_field: bool = Field(
         default=defaults.USE_ESTABLISHMENT_FIELD,
         description="Add an establishment attribute to users.",
+        json_schema_extra={"public": True},
     )
 
     # --- Remote User ---
@@ -202,14 +167,15 @@ class AuthConfig(BaseSettings):
     @property
     def ldap_server(self) -> dict:
         """Build the LDAP server configuration dict."""
+        from config.env import env
+
         return {
-            "url": self.ldap_server_url,
-            "port": self.ldap_server_port,
+            "url": env("LDAP_SERVER_URL", default=defaults.LDAP_SERVER_URL),
+            "port": env.int("LDAP_SERVER_PORT", default=defaults.LDAP_SERVER_PORT),
             "use_ssl": self.ldap_server_use_ssl,
         }
 
     model_config = SettingsConfigDict(
-        env_prefix="POD_AUTH_",
         case_sensitive=False,
     )
 

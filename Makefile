@@ -10,6 +10,12 @@ STACK_NAME ?= esup-pod-back
 DOCKER_COMPOSE_CMD := docker compose -p $(STACK_NAME) -f $(DOCKER_COMPOSE_FILE)
 LOG_PREFIX := \033[36m[make]\033[0m
 
+# Handle positional arguments for 'logs' (e.g., make logs celery)
+ifeq (logs,$(firstword $(MAKECMDGOALS)))
+  LOG_TARGET_SERVICE := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(LOG_TARGET_SERVICE):;@:)
+endif
+
 # Helper: $(call info,Message)
 define info
 	@printf "$(LOG_PREFIX) %s\n" "$(1)"
@@ -38,9 +44,15 @@ full-restart: ## Full reset then start (clean + start)
 	$(MAKE) clean
 	$(MAKE) start
 
-logs: ## Show real-time logs for the main service
-	$(call info,Attaching to logs for service '$(DOCKER_SERVICE_NAME)' (tail=100)...)
-	$(DOCKER_COMPOSE_CMD) logs -f --tail=100 $(DOCKER_SERVICE_NAME)
+logs: ## Follow logs (default: app service). Usage: make logs [service_name]
+	$(call info,Attaching to logs (service: $(if $(LOG_TARGET_SERVICE),$(LOG_TARGET_SERVICE),$(DOCKER_SERVICE_NAME)))...)
+	@$(DOCKER_COMPOSE_CMD) logs -f --tail=100 $(if $(LOG_TARGET_SERVICE),$(LOG_TARGET_SERVICE),$(DOCKER_SERVICE_NAME))
+
+logs-api: ## Show real-time logs for the API service only
+	$(DOCKER_COMPOSE_CMD) logs -f --tail=100 api
+
+logs-celery: ## Show real-time logs for the Celery worker only
+	$(DOCKER_COMPOSE_CMD) logs -f --tail=100 celery
 
 shell: start ## Launch an isolated shell in a new container
 	$(call info,Opening a new ephemeral shell in service '$(DOCKER_SERVICE_NAME)'...)
@@ -78,11 +90,11 @@ clean: stop ## Full shutdown and cleanup (containers, volumes, orphans)
 
 test: start ## Run tests inside the container (pytest)
 	$(call info,Running tests with DJANGO_SETTINGS_MODULE=config.django.test.docker...)
-	$(DOCKER_COMPOSE_CMD) exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker $(DOCKER_SERVICE_NAME) pytest
+	$(DOCKER_COMPOSE_CMD) exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker $(DOCKER_SERVICE_NAME) bash -c "python3 deployment/dev/scripts/wait_for_db.py && pytest"
 
 test-cov: start ## Run tests with coverage report
 	$(call info,Running tests with coverage...)
-	$(DOCKER_COMPOSE_CMD) exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker $(DOCKER_SERVICE_NAME) pytest --cov=src --cov-report=term-missing --cov-fail-under=60
+	$(DOCKER_COMPOSE_CMD) exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker $(DOCKER_SERVICE_NAME) bash -c "python3 deployment/dev/scripts/wait_for_db.py && pytest --cov=src --cov-report=term-missing --cov-fail-under=60"
 
 check-django-env: ## Environment checks (DJANGO_SETTINGS_MODULE must end with .docker)
 	$(call info,Checking DJANGO_SETTINGS_MODULE...)

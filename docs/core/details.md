@@ -1,6 +1,8 @@
-# Configuration Management Commands — Pod V5
+# Core & Management: Technical Details
 
-> **Navigation:** [Back to Home](../README.md) | [Configuration](../configuration.md)
+This document details the maintenance tools developed for the **core** application of Pod V5. These commands ensure project integrity by linking the source code (Python), the data repository (JSON), and the user documentation (Markdown).
+
+> **Navigation:** [Back to Overview](README.md) | [Back to Index](../README.md)
 
 This document details the maintenance tools developed for the **core** application of Pod V5. These commands ensure project integrity by linking the source code (Python), the data repository (JSON), and the user documentation (Markdown).
 
@@ -94,3 +96,8 @@ The `comparesettings` script is integrated into the **GitHub Actions** quality p
 ---
 
 > **Pod V5 Team** | [Documentation Index](../README.md)
+
+## Further Reading
+
+- ⬅️ **[Back to Overview](README.md)**
+- ⬅️ **[Back to Index](../README.md)**

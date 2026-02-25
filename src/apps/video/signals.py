@@ -1,8 +1,12 @@
+import logging
 import os
+
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from src.apps.video.models import Video
 from src.apps.video.services.metadata import extract_video_duration
+
+logger = logging.getLogger(__name__)
 
 
 @receiver(post_delete, sender=Video)
@@ -46,19 +50,27 @@ def video_post_save(sender, instance, created, **kwargs):
     At the time of creation (upload finished), calculate the duration
     and set the video to PUBLISHED (since we don't do complex encoding for now).
     """
-    print(
-        f"DEBUG: video_post_save triggered. Created={created}, File={instance.video_file}"
+    logger.debug(
+        "video_post_save triggered. created=%s, file=%s",
+        created,
+        instance.video_file,
     )
     if created and instance.video_file:
         if instance.duration == 0:
             file_path = instance.video_file.path
-            print(
-                f"DEBUG: Processing file at {file_path}. Exists={os.path.exists(file_path)}"
+            logger.debug(
+                "Processing file at %s. exists=%s",
+                file_path,
+                os.path.exists(file_path),
             )
             if os.path.exists(file_path):
                 duration = extract_video_duration(file_path)
-                print(f"DEBUG: Extracted duration={duration}. Updating status...")
-                Video.objects.filter(pk=instance.pk).update(
-                    duration=duration, status=Video.Status.PUBLISHED
+                logger.debug(
+                    "Extracted duration=%s. Updating status to PUBLISHED...", duration
                 )
-                print("DEBUG: Status updated to PUBLISHED")
+                Video.objects.filter(pk=instance.pk).update(
+                    duration=duration
+                )
+                logger.info(
+                    "Video pk=%s published with duration=%ss.", instance.pk, duration
+                )
