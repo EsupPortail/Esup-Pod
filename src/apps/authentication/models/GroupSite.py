@@ -44,5 +44,6 @@ def create_groupsite_profile(sender, instance, created: bool, **kwargs) -> None:
         try:
             GroupSite.objects.get_or_create(group=instance)
         except Exception as e:
-            logger.exception("Failed to create GroupSite profile for group %r: %s", instance, e)
-
+            logger.exception(
+                "Failed to create GroupSite profile for group %r: %s", instance, e
+            )

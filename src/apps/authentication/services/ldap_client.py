@@ -5,7 +5,7 @@ from ..conf import auth_settings
 from config.env import env
 from src.config.defaults import authentication as defaults
 from ldap3 import ALL, SUBTREE, Connection, Server
-from ldap3.core.exceptions import LDAPBindError, LDAPSocketOpenError
+from ldap3.core.exceptions import LDAPBindError, LDAPException, LDAPSocketOpenError
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ def get_ldap_conn():
             return Connection(server, auth_bind_dn, auth_bind_pwd, auto_bind=True)
 
     except (LDAPBindError, LDAPSocketOpenError) as err:
-        logger.error(f"LDAP Connection Error: {err}")
+        logger.error("LDAP connection error: %s", err, exc_info=True)
         return None
     return None
 
@@ -62,6 +62,6 @@ def get_ldap_entry(conn: Connection, username: str) -> Optional[Any]:
             size_limit=1,
         )
         return conn.entries[0] if len(conn.entries) > 0 else None
-    except Exception as err:
-        logger.error(f"LDAP Search Error: {err}")
+    except (LDAPException, KeyError) as err:
+        logger.error("LDAP search error for user %r: %s", username, err, exc_info=True)
         return None

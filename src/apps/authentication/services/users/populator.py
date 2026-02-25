@@ -1,10 +1,13 @@
 from typing import Any, Dict, List, Optional
+import logging
 from ...conf import auth_settings
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
 from ...models import AccessGroup, Owner
 from ...models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION
 from ..ldap_client import get_ldap_conn, get_ldap_entry
+
+logger = logging.getLogger(__name__)
 
 
 class UserPopulator:
@@ -192,7 +195,10 @@ class UserPopulator:
                     accessgroup = AccessGroup.objects.get(code_name=group_code)
                     self.owner.accessgroups.add(accessgroup)
                 except ObjectDoesNotExist:
-                    pass
+                    logger.debug(
+                        "AccessGroup with code_name %r not found in database, skipping.",
+                        group_code,
+                    )
 
     def _get_ldap_value(self, entry: Any, attribute: str, default: Any) -> Any:
         mapping = auth_settings.ldap_mapping_attributes.get(attribute)

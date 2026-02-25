@@ -15,8 +15,7 @@ class CustomImageModel(models.Model):
     @staticmethod
     def get_upload_path_files(instance, filename) -> str:
         fname, dot, extension = filename.rpartition(".")
-        try:
-            fname.index("/")
+        if "/" in fname:
             return os.path.join(
                 FILES_DIR,
                 "%s/%s.%s"
@@ -26,8 +25,7 @@ class CustomImageModel(models.Model):
                     extension,
                 ),
             )
-        except ValueError:
-            return os.path.join(FILES_DIR, "%s.%s" % (slugify(fname), extension))
+        return os.path.join(FILES_DIR, "%s.%s" % (slugify(fname), extension))
 
     file = models.ImageField(
         _("Image"),

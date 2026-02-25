@@ -1,7 +1,10 @@
+import logging
 from typing import Any, List
 
 from ...models.AccessGroup import AccessGroup
 from ...models.Owner import Owner
+
+logger = logging.getLogger(__name__)
 
 
 class AccessGroupService:
@@ -14,7 +17,10 @@ class AccessGroupService:
                 accessgroup = AccessGroup.objects.get(code_name=group_code)
                 owner.accessgroups.add(accessgroup)
             except AccessGroup.DoesNotExist:
-                pass
+                logger.debug(
+                    "set_user_accessgroup: AccessGroup %r not found, skipping.",
+                    group_code,
+                )
         return owner
 
     @staticmethod
@@ -27,7 +33,10 @@ class AccessGroupService:
                 if accessgroup in owner.accessgroups.all():
                     owner.accessgroups.remove(accessgroup)
             except AccessGroup.DoesNotExist:
-                pass
+                logger.debug(
+                    "remove_user_accessgroup: AccessGroup %r not found, skipping.",
+                    group_code,
+                )
         return owner
 
     @staticmethod
@@ -39,7 +48,10 @@ class AccessGroupService:
                 owner = Owner.objects.get(user__username=username)
                 accessgroup.users.add(owner)
             except Owner.DoesNotExist:
-                pass
+                logger.debug(
+                    "set_users_by_name: Owner for username %r not found, skipping.",
+                    username,
+                )
         return accessgroup
 
     @staticmethod
@@ -52,5 +64,8 @@ class AccessGroupService:
                 if owner in accessgroup.users.all():
                     accessgroup.users.remove(owner)
             except Owner.DoesNotExist:
-                pass
+                logger.debug(
+                    "remove_users_by_name: Owner for username %r not found, skipping.",
+                    username,
+                )
         return accessgroup

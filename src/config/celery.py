@@ -23,4 +23,3 @@ app.autodiscover_tasks()
 @app.task(bind=True, ignore_result=True)
 def debug_task(self):
     logger.debug("Debug task received: %r", self.request)
-
