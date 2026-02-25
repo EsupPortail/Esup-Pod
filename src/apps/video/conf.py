@@ -4,7 +4,7 @@ Video configuration.
 Typed and validated configuration for the video app using pydantic-settings.
 """
 
-from typing import List, Tuple, Type, Dict, Any
+from typing import List, Tuple, Type, Dict
 
 
 from pydantic import Field
@@ -161,28 +161,14 @@ class VideoConfig(BaseSettings):
         case_sensitive=False,
     )
 
-    # --- Transcription ---
-    use_transcription: bool = Field(
-        default=defaults.USE_TRANSCRIPTION,
-        description="Enable automatic audio transcription.",
+    # --- Expiration Settings ---
+    accommodation_years: Dict[str, int] = Field(
+        default_factory=lambda: defaults.ACCOMMODATION_YEARS,
+        description="Dictionary linking an affiliation to a number of years before expiration.",
     )
-    transcription_model_param: Dict[str, Any] = Field(
-        default=defaults.TRANSCRIPTION_MODEL_PARAM,
-        description="Parameters for the transcription model engine.",
-    )
-    transcription_type: str = Field(
-        default=defaults.TRANSCRIPTION_TYPE,
-        description="Type of transcription engine to use (e.g., WHISPER).",
-    )
-
-    # --- Third Party & Plugins ---
-    third_party_apps: List[str] = Field(
-        default=defaults.THIRD_PARTY_APPS,
-        description="List of active third-party applications (plugins).",
-    )
-    use_podfile: bool = Field(
-        default=defaults.USE_PODFILE,
-        description="Enable Podfile physical folder synchronization.",
+    default_year_date_delete: int = Field(
+        default=defaults.DEFAULT_YEAR_DATE_DELETE,
+        description="Default number of years before a video is deleted.",
     )
 
     # --- Metadata (Dublin Core) ---

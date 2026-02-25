@@ -8,7 +8,7 @@ from src.apps.video.services.metadata import extract_video_duration
 @receiver(post_delete, sender=Video)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
-    Supprime les fichiers physiques du disque lorsque l'objet Video est supprimé.
+    Deletes physical files from the disk when the Video object is deleted.
     """
     if instance.video_file:
         if os.path.isfile(instance.video_file.path):
@@ -24,7 +24,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 @receiver(pre_save, sender=Video)
 def auto_delete_file_on_change(sender, instance, **kwargs):
     """
-    Supprime l'ancien fichier si on upload une nouvelle version pour la même vidéo.
+    Deletes the old file if a new version is uploaded for the same video.
     """
     if not instance.pk:
         return False
@@ -43,8 +43,8 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 @receiver(post_save, sender=Video)
 def video_post_save(sender, instance, created, **kwargs):
     """
-    Au moment de la création (upload terminé), on calcule la durée
-    et on passe la vidéo en PUBLISHED (puisqu'on ne fait pas d'encodage complexe pour l'instant).
+    At the time of creation (upload finished), calculate the duration
+    and set the video to PUBLISHED (since we don't do complex encoding for now).
     """
     print(
         f"DEBUG: video_post_save triggered. Created={created}, File={instance.video_file}"

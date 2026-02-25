@@ -5,11 +5,15 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 from django.utils import timezone
+from src.apps.video.services.core import DEFAULT_THUMBNAIL, DEFAULT_DC_COVERAGE, DEFAULT_DC_RIGHTS, TEMPLATE_VISIBLE_SETTINGS
 from src.apps.video.services.storage import get_storage_path_video, get_storage_path_image
 from django.contrib.auth.hashers import make_password
 
 
 class Video(models.Model):
+    """
+    Model representing a video.
+    """
     # 1.CHOICES
     class Status(models.TextChoices):
         DRAFT = "DR", _("Draft (Private)")
@@ -176,7 +180,7 @@ class Video(models.Model):
         help_text=_("Language of the available audio transcription."),
     )
     # Relations Placeholder (À décommenter quand les modèles seront créés)
-    # type = models.ForeignKey("video.Type", on_delete=models.SET_NULL, null=True)
+    # type = models.ForeignKey("video.Type", on_delete=models.SET_NULL, null=True, default=DEFAULT_TYPE_ID)
     # channels = models.ManyToManyField("video.Channel", blank=True)
     # themes = models.ManyToManyField("video.Theme", blank=True)
     # disciplines = models.ManyToManyField("video.Discipline", blank=True)
@@ -202,10 +206,30 @@ class Video(models.Model):
             models.Index(fields=["created_at"]),
         ]
 
+    @property
+    def thumbnail_url(self):
+        """Returns the thumbnail URL or the default one if it doesn't exist."""
+        if self.thumbnail and hasattr(self.thumbnail, 'url'):
+            return self.thumbnail.url
+        return DEFAULT_THUMBNAIL
+
+    def get_dublin_core(self):
+        """Generates Dublin Core metadata in dictionary format."""
+        return {
+            "title": self.title,
+            "description": self.description or "",
+            "creator": self.owner.username if self.owner else "",
+            "publisher": TEMPLATE_VISIBLE_SETTINGS.get("TITLE_ETB", "University name"),
+            "date": self.created_at.strftime("%Y-%m-%d") if self.created_at else "",
+            "format": "video/mp4",
+            "rights": self.license if self.license else DEFAULT_DC_RIGHTS,
+            "coverage": DEFAULT_DC_COVERAGE,
+        }
+
     def set_password(self) -> None:
         """
-        Chiffre le mot de passe si la vidéo est protégée.
-        Un mot de passe déjà chiffré ne sera pas rechiffré.
+        Encrypts the password if the video is protected.
+        An already encrypted password will not be re-encrypted.
         """
         if self.password and not self.password.startswith("pbkdf2_sha256$"):
             self.password = make_password(self.password, hasher="pbkdf2_sha256")
@@ -216,6 +240,14 @@ class Video(models.Model):
             unique_id = str(uuid.uuid4())[:8]
             self.slug = f"{base_slug}-{unique_id}"
         self.set_password()
+        if not self.id:
+            from src.apps.video.services.metadata import calculate_expiration_date
+            self.date_to_delete = calculate_expiration_date(self.owner)
+        if self.pk:
+            old_version = Video.objects.get(pk=self.pk)
+            if old_version.owner != self.owner:
+                from src.apps.video.services.storage import move_video_files_to_new_owner
+                move_video_files_to_new_owner(self, old_version.owner, self.owner)
         super().save(*args, **kwargs)
 
     def __str__(self):

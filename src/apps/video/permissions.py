@@ -4,17 +4,18 @@ from src.apps.video.services.core import RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONL
 
 class IsOwnerOrCoOwnerOrReadOnly(permissions.BasePermission):
     """
-    Permission personnalisée :
-    - Lecture (GET, HEAD, OPTIONS) autorisée pour tout le monde (selon la vue).
-    - Écriture (PUT, PATCH, DELETE) autorisée uniquement pour le propriétaire.
+    Custom permission:
+    - Read (GET, HEAD, OPTIONS) allowed for everyone (depending on the view).
+    - Write (PUT, PATCH, DELETE) allowed only for the owner.
     """
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and not request.user.is_staff:
-            return False
-        return (
-            obj.owner == request.user
-            or obj.co_owners.filter(pk=request.user.pk).exists()
-            or request.user.is_superuser
-        )
+        if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
+            return request.user and (request.user.is_staff or request.user.is_superuser)
+        is_owner = obj.owner == request.user
+        is_staff = request.user.is_staff or request.user.is_superuser
+        is_co_owner = request.user in obj.co_owners.all()
+        if request.method == 'DELETE':
+            return is_owner or is_staff
+        return is_owner or is_co_owner or is_staff

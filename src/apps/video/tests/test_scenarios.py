@@ -45,7 +45,7 @@ class VideoValidationTests(APITestCase):
         self.assertTrue(Video.objects.filter(title="Valid Video").exists())
 
     def test_create_video_fail_no_owner(self):
-        """Test_Create_Video_Fail_No_Owner: Tenter de créer une vidéo sans propriétaire"""
+        """Test_Create_Video_Fail_No_Owner: Try to create a video without an owner"""
         self.client.logout()
         data = {"title": "No Owner Video", "video_file": self.video_content}
         response = self.client.post(self.url, data, format="multipart")
@@ -131,7 +131,7 @@ class VideoValidationTests(APITestCase):
 
     @unittest.skip("Model field 'deletion_date' missing")
     def test_publish_fail_dirty_state(self):
-        """Test_Publish_Fail_Dirty_State: Refus publication si suppression programmée"""
+        """Test_Publish_Fail_Dirty_State: Refuse publication if deletion is scheduled"""
         video = Video.objects.create(
             title="Dirty State",
             owner=self.user,
@@ -184,7 +184,7 @@ class VideoPermissionsTests(APITestCase):
         self.url = f"/api/videos/{self.video.slug}/"
 
     def test_edit_by_owner(self):
-        """Test_Edit_By_Owner: L'utilisateur connecté est owner"""
+        """Test_Edit_By_Owner: Connected user is the owner"""
         self.client.force_authenticate(user=self.owner)
         data = {"title": "Updated by Owner"}
         response = self.client.patch(self.url, data)
@@ -193,20 +193,20 @@ class VideoPermissionsTests(APITestCase):
         self.assertEqual(self.video.title, "Updated by Owner")
 
     def test_edit_by_stranger(self):
-        """Test_Edit_By_Stranger: Utilisateur non owner ni co-owner"""
+        """Test_Edit_By_Stranger: User is neither owner nor co-owner"""
         self.client.force_authenticate(user=self.stranger)
         data = {"title": "Updated by Stranger"}
         response = self.client.patch(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_view_public_anonymous(self):
-        """Test_View_Public_Anonymous: Vidéo publique vue par utilisateur non connecté"""
+        """Test_View_Public_Anonymous: Public video viewed by anonymous user"""
         self.client.logout()
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_view_draft_owner(self):
-        """Test_View_Draft_Owner: Brouillon visible par owner"""
+        """Test_View_Draft_Owner: Draft visible by owner"""
         # Set to Draft
         Video.objects.filter(pk=self.video.pk).update(status=Video.Status.DRAFT)
 
@@ -215,7 +215,7 @@ class VideoPermissionsTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_view_draft_stranger(self):
-        """Test_View_Draft_Stranger: Brouillon invisible par utilisateur lambda"""
+        """Test_View_Draft_Stranger: Draft invisible to random user"""
         Video.objects.filter(pk=self.video.pk).update(status=Video.Status.DRAFT)
 
         self.client.force_authenticate(user=self.stranger)

@@ -15,6 +15,10 @@ from rest_framework.exceptions import ValidationError
 
 
 class VideoViewSet(viewsets.ModelViewSet):
+    """
+    API view set for the Video model.
+    """
+    queryset = Video.objects.all()
     serializer_class = VideoSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
@@ -52,7 +56,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         max_quota_bytes = USER_QUOTA_SIZE * 1024 * 1024 * 1024
         if total_bytes + incoming_size > max_quota_bytes:
             raise ValidationError({
-                "video_file": f"Quota dépassé. Vous êtes limité à {USER_QUOTA_SIZE} Go."
+                "video_file": f"Quota exceeded. You are limited to {USER_QUOTA_SIZE} GB."
             })
         licence_fournie = self.request.data.get('license')
         serializer.save(
@@ -73,11 +77,11 @@ class VideoViewSet(viewsets.ModelViewSet):
         if not is_owner_or_admin:
             if video.status == Video.Status.RESTRICTED:
                 if video.is_auth_required and not user.is_authenticated:
-                    raise PermissionDenied("Authentification requise pour lire cette vidéo.")
+                    raise PermissionDenied("Authentication required to play this video.")
                 if video.password:
-                    raise PermissionDenied("Accès direct au flux interdit. Mot de passe requis.")
+                    raise PermissionDenied("Direct stream access forbidden. Password required.")
             elif video.status == Video.Status.DRAFT:
-                raise PermissionDenied("Cette vidéo est privée.")
+                raise PermissionDenied("This video is private.")
         if not video.video_file:
             raise Http404("Video file not found")
         path = video.video_file.path
@@ -103,13 +107,13 @@ class VideoViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"], permission_classes=[permissions.AllowAny])
     def unlock(self, request, slug=None):
         """
-        Déverrouille une vidéo RESTRICTED avec mot de passe.
+        Unlocks a RESTRICTED video with a password.
         """
         video = self.get_object()
         if video.status == Video.Status.RESTRICTED and video.is_auth_required:
             if not request.user.is_authenticated:
                 raise PermissionDenied(
-                    "Vous devez être connecté pour accéder à cette vidéo."
+                    "You must be logged in to access this video."
                 )
         input_password = request.data.get("password")
         if video.password and check_password(input_password, video.password):
@@ -120,4 +124,4 @@ class VideoViewSet(viewsets.ModelViewSet):
                 else None
             )
             return Response({"video_url": url})
-        return Response({"error": "Mot de passe incorrect"}, status=403)
+        return Response({"error": "Incorrect password"}, status=403)
