@@ -101,6 +101,54 @@ class Command(BaseCommand):
             help="Site domain to filter tasks (default: current site)",
         )
 
+    def print_log(self, message: str) -> None:
+        """
+        Print a plain log message to command stdout.
+
+        Args:
+            message: Message to display
+
+        Returns:
+            None
+        """
+        self.stdout.write(message)
+
+    def print_warning(self, message: str) -> None:
+        """
+        Print a warning-styled message to command stdout.
+
+        Args:
+            message: Warning message to display
+
+        Returns:
+            None
+        """
+        self.stdout.write(self.style.WARNING(message))
+
+    def print_error(self, message: str) -> None:
+        """
+        Print an error-styled message to command stdout.
+
+        Args:
+            message: Error message to display
+
+        Returns:
+            None
+        """
+        self.stdout.write(self.style.ERROR(message))
+
+    def print_success(self, message: str) -> None:
+        """
+        Print a success-styled message to command stdout.
+
+        Args:
+            message: Success message to display
+
+        Returns:
+            None
+        """
+        self.stdout.write(self.style.SUCCESS(message))
+
     def _sort_tasks_by_priority(self, all_pending_tasks, max_tasks: int) -> list:
         """
         Sort encoding tasks by priority (non-students first) and limit to max_tasks.
@@ -140,7 +188,7 @@ class Command(BaseCommand):
             try:
                 return Site.objects.get(domain=site_domain)
             except Site.DoesNotExist:
-                self.stdout.write(self.style.ERROR(f"Site {site_domain} not found"))
+                self.print_error(f"Site {site_domain} not found")
                 return None
         return Site.objects.get_current()
 
@@ -206,45 +254,35 @@ class Command(BaseCommand):
         ).select_related("runner_manager")
 
         if not stalled_tasks:
-            self.stdout.write("No stalled running tasks found")
+            self.print_log("No stalled running tasks found")
             return
 
-        self.stdout.write(
+        self.print_log(
             f"Found {stalled_tasks.count()} task(s) running for more than 2 hours"
         )
 
         for task in stalled_tasks:
-            self.stdout.write(f"Checking status of task {task.id}...")
+            self.print_log(f"Checking status of task {task.id}...")
             status = self._check_task_status(task)
 
             # Handle based on status
             if status == "completed" or status == "warning":
                 # Problem found: task not completed on Pod side
                 # Retrieve data from runner manager
-                self.stdout.write(
-                    self.style.WARNING(
-                        f"Task {task.id} is {status}, retrieving data from runner manager"
-                    )
+                self.print_warning(
+                    f"Task {task.id} is {status}, retrieving data from runner manager"
                 )
                 handle_stalled_task(task, status)
             elif status == "running":
                 # Still running, wait longer
-                self.stdout.write(
-                    self.style.SUCCESS(
-                        f"Task {task.id} is still {status}, waiting longer before taking action"
-                    )
+                self.print_success(
+                    f"Task {task.id} is still {status}, waiting longer before taking action"
                 )
             elif status:
                 # Still not completed, no action taken
-                self.stdout.write(
-                    self.style.WARNING(
-                        f"Task {task.id} is still {status}, no action taken"
-                    )
-                )
+                self.print_warning(f"Task {task.id} is still {status}, no action taken")
             else:
-                self.stdout.write(
-                    self.style.ERROR(f"Could not verify status of task {task.id}")
-                )
+                self.print_error(f"Could not verify status of task {task.id}")
 
     def _process_tasks(
         self, pending_tasks: list, site: Site, runner_managers: list
@@ -266,34 +304,24 @@ class Command(BaseCommand):
                 video = Video.objects.get(id=task.video_id)
                 priority = get_user_priority(video)
                 priority_label = "LOW (student)" if priority == 2 else "HIGH"
-                self.stdout.write(
+                self.print_log(
                     f"Processing task {task.id} for video {video.id} - Priority: {priority_label}"
                 )
                 result = self._submit_encoding_task(video, task, site, runner_managers)
                 if result:
                     success_count += 1
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            f"Successfully submitted encoding task for video {video.id}"
-                        )
+                    self.print_success(
+                        f"Successfully submitted encoding task for video {video.id}"
                     )
                 else:
-                    self.stdout.write(
-                        self.style.WARNING(
-                            f"Could not submit encoding task for video {video.id} (no runner available)"
-                        )
+                    self.print_warning(
+                        f"Could not submit encoding task for video {video.id} (no runner available)"
                     )
             except Video.DoesNotExist:
-                self.stdout.write(
-                    self.style.ERROR(
-                        f"Video {task.video_id} not found for task {task.id}"
-                    )
-                )
+                self.print_error(f"Video {task.video_id} not found for task {task.id}")
             except Exception as exc:
-                self.stdout.write(
-                    self.style.ERROR(
-                        f"Error processing task {task.id} for video {task.video_id}: {str(exc)}"
-                    )
+                self.print_error(
+                    f"Error processing task {task.id} for video {task.video_id}: {str(exc)}"
                 )
         return success_count
 
@@ -315,7 +343,7 @@ class Command(BaseCommand):
         for task in pending_tasks:
             try:
                 recording = Recording.objects.get(id=task.recording_id)
-                self.stdout.write(
+                self.print_log(
                     f"Processing studio task {task.id} for recording {recording.id}"
                 )
                 result = self._submit_studio_task(
@@ -323,28 +351,20 @@ class Command(BaseCommand):
                 )
                 if result:
                     success_count += 1
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            f"Successfully submitted studio task for recording {recording.id}"
-                        )
+                    self.print_success(
+                        f"Successfully submitted studio task for recording {recording.id}"
                     )
                 else:
-                    self.stdout.write(
-                        self.style.WARNING(
-                            f"Could not submit studio task for recording {recording.id} (no runner available)"
-                        )
+                    self.print_warning(
+                        f"Could not submit studio task for recording {recording.id} (no runner available)"
                     )
             except Recording.DoesNotExist:
-                self.stdout.write(
-                    self.style.ERROR(
-                        f"Recording {task.recording_id} not found for task {task.id}"
-                    )
+                self.print_error(
+                    f"Recording {task.recording_id} not found for task {task.id}"
                 )
             except Exception as exc:
-                self.stdout.write(
-                    self.style.ERROR(
-                        f"Error processing studio task {task.id} for recording {task.recording_id}: {str(exc)}"
-                    )
+                self.print_error(
+                    f"Error processing studio task {task.id} for recording {task.recording_id}: {str(exc)}"
                 )
         return success_count
 
@@ -368,7 +388,7 @@ class Command(BaseCommand):
                 video = Video.objects.get(id=task.video_id)
                 priority = get_user_priority(video)
                 priority_label = "LOW (student)" if priority == 2 else "HIGH"
-                self.stdout.write(
+                self.print_log(
                     f"Processing transcription task {task.id} for video {video.id} - Priority: {priority_label}"
                 )
                 result = self._submit_transcription_task(
@@ -376,28 +396,18 @@ class Command(BaseCommand):
                 )
                 if result:
                     success_count += 1
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            f"Successfully submitted transcription task for video {video.id}"
-                        )
+                    self.print_success(
+                        f"Successfully submitted transcription task for video {video.id}"
                     )
                 else:
-                    self.stdout.write(
-                        self.style.WARNING(
-                            f"Could not submit transcription task for video {video.id} (no runner available)"
-                        )
+                    self.print_warning(
+                        f"Could not submit transcription task for video {video.id} (no runner available)"
                     )
             except Video.DoesNotExist:
-                self.stdout.write(
-                    self.style.ERROR(
-                        f"Video {task.video_id} not found for task {task.id}"
-                    )
-                )
+                self.print_error(f"Video {task.video_id} not found for task {task.id}")
             except Exception as exc:
-                self.stdout.write(
-                    self.style.ERROR(
-                        f"Error processing transcription task {task.id} for video {task.video_id}: {str(exc)}"
-                    )
+                self.print_error(
+                    f"Error processing transcription task {task.id} for video {task.video_id}: {str(exc)}"
                 )
         return success_count
 
@@ -411,21 +421,17 @@ class Command(BaseCommand):
         retention_setting = getattr(settings, "RM_TASKS_DELETED_AFTER_DAYS", None)
 
         if retention_setting is None:
-            self.stdout.write(
-                "Skipping cleanup: RM_TASKS_DELETED_AFTER_DAYS is not set"
-            )
+            self.print_log("Skipping cleanup: RM_TASKS_DELETED_AFTER_DAYS is not set")
             return 0
 
         try:
             retention_days = int(retention_setting)
         except (TypeError, ValueError):
-            self.stdout.write(
-                self.style.ERROR("RM_TASKS_DELETED_AFTER_DAYS must be an integer")
-            )
+            self.print_error("RM_TASKS_DELETED_AFTER_DAYS must be an integer")
             return 0
 
         if retention_days <= 0:
-            self.stdout.write("Skipping cleanup: RM_TASKS_DELETED_AFTER_DAYS is <= 0")
+            self.print_log("Skipping cleanup: RM_TASKS_DELETED_AFTER_DAYS is <= 0")
             return 0
 
         cutoff_date = timezone.now() - timedelta(days=retention_days)
@@ -434,10 +440,8 @@ class Command(BaseCommand):
 
         if deleted_count:
             old_tasks.delete()
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"Deleted {deleted_count} completed task(s) older than {retention_days} day(s)"
-                )
+            self.print_success(
+                f"Deleted {deleted_count} completed task(s) older than {retention_days} day(s)"
             )
             log.info(
                 "Deleted %s completed task(s) older than %s day(s)",
@@ -445,7 +449,7 @@ class Command(BaseCommand):
                 retention_days,
             )
         else:
-            self.stdout.write("No completed tasks to delete")
+            self.print_log("No completed tasks to delete")
 
         return deleted_count
 
@@ -458,15 +462,15 @@ class Command(BaseCommand):
         if not site:
             return
 
-        self.stdout.write(f"Processing tasks for site: {site.domain}")
-        self.stdout.write("=" * 60)
+        self.print_log(f"Processing tasks for site: {site.domain}")
+        self.print_log("=" * 60)
 
         # First, check running tasks that might be stalled
-        self.stdout.write("\n1. Checking running tasks...")
+        self.print_log("\n1. Checking running tasks...")
         self._check_running_tasks(site)
 
         # Then, process pending tasks
-        self.stdout.write("\n2. Processing pending encoding tasks...")
+        self.print_log("\n2. Processing pending encoding tasks...")
         refresh_pending_task_ranks()
 
         # Get pending encoding tasks (without limiting to max_tasks yet)
@@ -504,20 +508,18 @@ class Command(BaseCommand):
             and not all_pending_studio_tasks
             and not all_pending_transcription_tasks
         ):
-            self.stdout.write(
-                self.style.SUCCESS(
-                    "No pending tasks found (encoding, transcription or studio)"
-                )
+            self.print_success(
+                "No pending tasks found (encoding, transcription or studio)"
             )
-            self.stdout.write("\n3. Cleaning completed tasks...")
+            self.print_log("\n3. Cleaning completed tasks...")
             self._delete_old_completed_tasks()
             return
 
-        self.stdout.write(f"Found {all_pending_tasks.count()} pending encoding task(s)")
-        self.stdout.write(
+        self.print_log(f"Found {all_pending_tasks.count()} pending encoding task(s)")
+        self.print_log(
             f"Found {all_pending_studio_tasks.count()} pending studio task(s)"
         )
-        self.stdout.write(
+        self.print_log(
             f"Found {all_pending_transcription_tasks.count()} pending transcription task(s)"
         )
 
@@ -528,7 +530,7 @@ class Command(BaseCommand):
             all_pending_transcription_tasks, max_tasks
         )
 
-        self.stdout.write(
+        self.print_log(
             f"Processing {len(pending_tasks)} task(s) after priority sorting"
         )
 
@@ -538,10 +540,8 @@ class Command(BaseCommand):
         )
 
         if not runner_managers:
-            self.stdout.write(
-                self.style.WARNING(
-                    f"No runner manager defined for site {site.domain}. Cannot process tasks."
-                )
+            self.print_warning(
+                f"No runner manager defined for site {site.domain}. Cannot process tasks."
             )
             return
 
@@ -557,15 +557,13 @@ class Command(BaseCommand):
         )
         refresh_pending_task_ranks()
 
-        self.stdout.write("\n3. Cleaning completed tasks...")
+        self.print_log("\n3. Cleaning completed tasks...")
         self._delete_old_completed_tasks()
 
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"Completed: encoding {success_count_encoding}/{len(pending_tasks)}; "
-                f"transcription {success_count_transcription}/{len(pending_transcription_tasks)}; "
-                f"studio {success_count_studio}/{len(pending_studio_tasks)} successfully submitted"
-            )
+        self.print_success(
+            f"Completed: encoding {success_count_encoding}/{len(pending_tasks)}; "
+            f"transcription {success_count_transcription}/{len(pending_transcription_tasks)}; "
+            f"studio {success_count_studio}/{len(pending_studio_tasks)} successfully submitted"
         )
 
     def _submit_encoding_task(
