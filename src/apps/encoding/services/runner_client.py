@@ -43,10 +43,17 @@ class RunnerClient:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logger.error(f"Failed to execute task on runner manager: {e}")
+            logger.error(
+                "Failed to execute task on runner manager: %s",
+                e,
+                exc_info=True,
+            )
             if hasattr(e, "response") and e.response is not None:
-                logger.error(f"Runner manager response: {e.response.text}")
-            raise ConnectionError(f"Runner manager API error: {e}")
+                logger.error(
+                    "Runner manager response body: %s",
+                    e.response.text,
+                )
+            raise ConnectionError("Runner manager API error: %s" % e)
 
 
 def get_runner_client() -> RunnerClient:

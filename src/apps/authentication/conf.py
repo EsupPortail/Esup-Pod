@@ -7,7 +7,7 @@ Typed and validated configuration for the authentication app using pydantic-sett
 from typing import Dict, List, Optional, Tuple, Type
 
 
-from pydantic import Field, SecretStr
+from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
     PydanticBaseSettingsSource,
@@ -168,6 +168,7 @@ class AuthConfig(BaseSettings):
     def ldap_server(self) -> dict:
         """Build the LDAP server configuration dict."""
         from config.env import env
+
         return {
             "url": env("LDAP_SERVER_URL", default=defaults.LDAP_SERVER_URL),
             "port": env.int("LDAP_SERVER_PORT", default=defaults.LDAP_SERVER_PORT),

@@ -28,7 +28,7 @@ class ColoredFormatter(logging.Formatter):
 
     # Couleur par service pour le préfixe
     SERVICE_COLORS = {
-        "API": "\x1b[36;1m",      # Cyan gras
+        "API": "\x1b[36;1m",  # Cyan gras
         "CELERY": "\x1b[35;1m",  # Magenta gras
     }
 

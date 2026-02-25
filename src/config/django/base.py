@@ -10,10 +10,12 @@ Configuration is now modular. Feature flags and app-specific settings
 should be placed in `src/config/settings/{app_name}.py`.
 """
 
-import os
+import logging
 
 
 from config.env import BASE_DIR, env
+
+logger = logging.getLogger(__name__)
 
 # Read .env file (Secrets only) - already handled in config.env
 # env.read_env(os.path.join(BASE_DIR, ".env"))
@@ -133,7 +135,7 @@ def _load_settings_from_module(module_path):
             if setting_name.isupper():
                 globals()[setting_name] = getattr(mod, setting_name)
     except ImportError:
-        pass  # Module not found, skip
+        logger.debug("Optional settings module not found, skipping: %s", module_path)
 
 
 for app_config_name in APPS_WITH_CUSTOM_SETTINGS:

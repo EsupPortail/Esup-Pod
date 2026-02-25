@@ -1,6 +1,9 @@
 import logging
+
+import requests.exceptions
 from celery import shared_task
 from django.shortcuts import get_object_or_404
+
 from src.apps.video.models import Video
 from src.apps.encoding.constants import ENCODING_CHOICES
 from .services.runner_client import get_runner_client
@@ -12,8 +15,9 @@ logger = logging.getLogger(__name__)
 def trigger_runner_encoding_task(self, video_id: int, source_url: str):
     """
     Triggers an encoding task on the runner manager for a given video.
+    Retries automatically on connection errors (up to max_retries times).
     """
-    logger.info(f"Triggering encoding task for video {video_id}")
+    logger.info("Triggering encoding task for video %s", video_id)
     video = get_object_or_404(Video, pk=video_id)
 
     try:
@@ -26,15 +30,37 @@ def trigger_runner_encoding_task(self, video_id: int, source_url: str):
                 "slug": video.slug,
                 "title": video.title,
                 "encoding_choices": ENCODING_CHOICES,
-                # any extra parameters can be added here
             },
         )
         logger.info(
-            f"Runner manager accepted task for video {video_id}. Response: {response}"
+            "Runner manager accepted task for video %s. Response: %s",
+            video_id,
+            response,
         )
         return response
+    except requests.exceptions.RequestException as exc:
+        # Network / connectivity errors from the runner client — retriable.
+        logger.warning(
+            "Connection error while triggering encoding for video %s "
+            "(attempt %s/%s): %s",
+            video_id,
+            self.request.retries + 1,
+            self.max_retries,
+            exc,
+        )
+        raise self.retry(exc=exc)
     except Exception as exc:
-        logger.error(f"Failed to trigger encoding for video {video_id}: {exc}")
+        # Unexpected errors (bugs, DB issues, etc.) — not retriable.
+        logger.error(
+            "Unexpected error while triggering encoding for video %s: %s",
+            video_id,
+            exc,
+            exc_info=True,
+        )
         video.status = Video.Status.ERROR
         video.save(update_fields=["status"])
-        raise self.retry(exc=exc)
+        logger.info(
+            "Video %s status set to ERROR after unrecoverable encoding failure.",
+            video_id,
+        )
+        raise

@@ -19,7 +19,9 @@ class OIDCService:
 
         token_url = env("OIDC_OP_TOKEN_ENDPOINT", default=defaults.OIDC_OP_TOKEN_ENDPOINT)
         client_id = env("OIDC_RP_CLIENT_ID", default=defaults.OIDC_RP_CLIENT_ID)
-        client_secret = env("OIDC_RP_CLIENT_SECRET", default=defaults.OIDC_RP_CLIENT_SECRET)
+        client_secret = env(
+            "OIDC_RP_CLIENT_SECRET", default=defaults.OIDC_RP_CLIENT_SECRET
+        )
 
         if not token_url:
             raise EnvironmentError("OIDC not configured (missing OIDC_OP_TOKEN_ENDPOINT)")
@@ -37,22 +39,25 @@ class OIDCService:
             r_token.raise_for_status()
             tokens_oidc = r_token.json()
             access_token = tokens_oidc.get("access_token")
-        except Exception as e:
-            logger.error(f"OIDC Token Exchange failed: {e}")
+        except requests.exceptions.RequestException as e:
+            logger.error("OIDC token exchange failed: %s", e, exc_info=True)
             raise ConnectionError("Failed to exchange OIDC code")
 
-        userinfo_url = env("OIDC_OP_USER_ENDPOINT", default=defaults.OIDC_OP_USER_ENDPOINT)
+        userinfo_url = env(
+            "OIDC_OP_USER_ENDPOINT", default=defaults.OIDC_OP_USER_ENDPOINT
+        )
         try:
             headers = {"Authorization": f"Bearer {access_token}"}
             r_user = requests.get(userinfo_url, headers=headers)
             r_user.raise_for_status()
             claims = r_user.json()
-        except Exception as e:
-            logger.error(f"OIDC UserInfo failed: {e}")
-
-            # Additional logging for debugging
-            logger.error(f"OIDC UserInfo Endpoint: {userinfo_url}")
-
+        except requests.exceptions.RequestException as e:
+            logger.error(
+                "OIDC UserInfo request failed (endpoint: %s): %s",
+                userinfo_url,
+                e,
+                exc_info=True,
+            )
             raise ConnectionError("Failed to fetch OIDC user info")
 
         username = claims.get(auth_settings.oidc_claim_preferred_username)

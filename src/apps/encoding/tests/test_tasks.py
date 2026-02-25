@@ -77,6 +77,6 @@ class EncodingTaskTestCase(TestCase):
         self.assertEqual(str(context.exception), "Retry Triggered")
         mock_client.execute_task.assert_called_once()
 
-        # Verify video status changed to ERROR because of the exception raised before retry
+        # Verify video status remains ENCODING during retry period
         video = Video.objects.get(id=self.video.id)
-        self.assertEqual(video.status, Video.Status.ERROR)
+        self.assertEqual(video.status, Video.Status.ENCODING)

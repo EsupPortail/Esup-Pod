@@ -15,9 +15,7 @@ USE_OIDC = False
 # CAS Defaults
 CAS_SERVER_URL = env("CAS_SERVER_URL", default="https://cas.univ-lille.fr")
 CAS_VERSION = env("CAS_VERSION", default="3")
-CAS_FORCE_CHANGE_USERNAME_CASE = env(
-    "CAS_FORCE_CHANGE_USERNAME_CASE", default="lower"
-)
+CAS_FORCE_CHANGE_USERNAME_CASE = env("CAS_FORCE_CHANGE_USERNAME_CASE", default="lower")
 CAS_APPLY_ATTRIBUTES_TO_USER = env.bool("CAS_APPLY_ATTRIBUTES_TO_USER", default=True)
 CAS_ADMIN_REDIRECT = env.bool("CAS_ADMIN_REDIRECT", default=False)
 
@@ -51,9 +49,7 @@ CREATE_GROUP_FROM_AFFILIATION = True
 CREATE_GROUP_FROM_GROUPS = True
 SHIBBOLETH_STAFF_ALLOWED_DOMAINS = []
 
-LDAP_USER_SEARCH_BASE = env(
-    "LDAP_USER_SEARCH_BASE", default="ou=people,dc=univ,dc=fr"
-)
+LDAP_USER_SEARCH_BASE = env("LDAP_USER_SEARCH_BASE", default="ou=people,dc=univ,dc=fr")
 LDAP_USER_SEARCH_FILTER = env("LDAP_USER_SEARCH_FILTER", default="(uid=%(uid)s)")
 LDAP_MAPPING_ATTRIBUTES = {
     "uid": "uid",
