@@ -18,5 +18,5 @@ For automation needs (API client generation, etc.), the raw schema is available:
 
 ## Further Reading
 
-- ➡️ **[Technical Details & Configuration](guide.md)**: How to document your code so it appears in Swagger.
+- ➡️ **[Technical Details & Configuration](details.md)**: How to document your code so it appears in Swagger.
 - ⬅️ **[Back to Index](../README.md)**

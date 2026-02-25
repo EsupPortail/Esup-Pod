@@ -4,16 +4,23 @@ Welcome to the Pod V5 Project Documentation. This guide is intended for develope
 
 ## Table of Contents
 
+### Configuration
+
+- **[Configuration & Customization](configuration.md)**: Central hub for configuring your instance, managing environment variables, and local overrides.
+
 ### Application Documentation (One Doc Per App)
 
-Welcome to the official Pod V5 documentation. Each application has its own dedicated documentation.
+Each application has its own dedicated documentation with overview and technical details.
 
-- **[Configuration & Customization](configuration.md)**: Central hub for configuring your instance, managing environment variables, and local overrides.  
-- **[Encoding](encoding/README.md)**: Encoding system and video storage using esup-runners & filesystem
 - **[Authentication](authentication/README.md)**: Local login, CAS, LDAP, OIDC, and user management.
+- **[Encoding](encoding/README.md)**: Video transcoding with Celery, Redis, and external Runner Manager.
 - **[API & Swagger](api/README.md)**: REST API usage and documentation guide.
-- **[Core & Management](core/MANAGEMENT_COMMANDS.md)**: CLI commands for audit and maintenance.
-- **[Deployment & CI/CD](deployment/README.md)**: Docker architecture, production, and GitHub Actions automation.
+- **[Core & Management](core/README.md)**: CLI commands for audit and maintenance.
+
+### Infrastructure & Deployment
+
+- **[Deployment Guide](deployment/README.md)**: Docker architecture, environment setup, and deployment strategies.
+- **[CI/CD & Testing](CI_CD.md)**: GitHub Actions pipelines, local testing, and quality checks.
 
 ---
 
@@ -29,8 +36,8 @@ To maintain project quality, please refer to the following guides (single source
 
 ## Project Structure
 
-```bash
-Pod_V5/
+```
+Pod_V5_Back/
 ├── src/
 │   ├── apps/           # Django Apps (Business Logic)
 │   └── config/         # Configuration & Settings
