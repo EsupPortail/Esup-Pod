@@ -33,20 +33,24 @@ class EncodingConfig(BaseSettings):
     max_upload_size_gb: int = Field(
         default=defaults.MAX_UPLOAD_SIZE_GB,
         description="Maximum video upload size in GB.",
+        json_schema_extra={"public": True},
     )
     allowed_extensions: Tuple[str, ...] = Field(
         default=defaults.ALLOWED_EXTENSIONS,
         description="Allowed video file extensions.",
+        json_schema_extra={"public": True},
     )
     video_required_fields: List[str] = Field(
         default=defaults.VIDEO_REQUIRED_FIELDS,
         description="List of required fields when uploading a video.",
+        json_schema_extra={"public": True},
     )
 
     # --- Quota / Licensing ---
     user_quota_size_gb: int = Field(
         default=defaults.USER_QUOTA_SIZE_GB,
         description="Max disk space per user in GB.",
+        json_schema_extra={"public": True},
     )
 
     # --- Encoding / FFmpeg ---
