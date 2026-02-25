@@ -9,8 +9,12 @@ This module handles the full post-processing flow for remote tasks:
 import json
 import logging
 import os
+import random
 import secrets
 import shutil
+import tempfile
+import time
+from hashlib import sha256
 from typing import TypeAlias, TypedDict, cast
 
 import requests
@@ -35,6 +39,9 @@ from pod.video_encode_transcript.utils import send_email_item
 log = logging.getLogger(__name__)
 
 DEBUG = getattr(settings, "DEBUG", True)
+MANIFEST_MEMBER_DOWNLOAD_MAX_RETRIES = 5
+MANIFEST_MEMBER_DOWNLOAD_BACKOFF_BASE_SECONDS = 0.5
+MANIFEST_MEMBER_DOWNLOAD_BACKOFF_MAX_SECONDS = 8.0
 
 media_root_setting = getattr(settings, "MEDIA_ROOT", None)
 if not media_root_setting:
@@ -72,6 +79,10 @@ class ResultManifest(TypedDict, total=False):
     """Manifest returned by the Runner Manager result endpoint."""
 
     files: list[object]
+
+
+class ManifestMemberIntegrityError(RuntimeError):
+    """Raised when a downloaded manifest member fails integrity validation."""
 
 
 def _build_result_url(manager_url: str, task_id: str) -> str:
@@ -451,11 +462,9 @@ def _should_extract_transcription_member(member: str) -> bool:
     return base_l.endswith(".vtt") or base_l.endswith(".json")
 
 
-def _should_download_manifest_member(
-    task: Task, dest_dir: str, file_path: object
-) -> bool:
+def _should_download_manifest_member(task: Task, dest_dir: str, file_path: str) -> bool:
     """Return True when the given manifest entry should be downloaded."""
-    if not isinstance(file_path, str) or not file_path:
+    if not file_path:
         return False
 
     if task.type == "transcription" and not _should_extract_transcription_member(
@@ -497,7 +506,10 @@ def _download_manifest_member(
 
 
 def _store_manifest_member(
-    response: requests.Response, dest_dir: str, file_path: str
+    response: requests.Response,
+    dest_dir: str,
+    file_path: str,
+    expected_sha256: str | None = None,
 ) -> str:
     """Write a downloaded manifest member to disk and return destination path."""
     dest_path = os.path.normpath(os.path.join(dest_dir, file_path))
@@ -509,12 +521,190 @@ def _store_manifest_member(
         os.makedirs(dest_path, exist_ok=True)
         return dest_path
 
-    with open(dest_path, "wb") as target:
-        for chunk in response.iter_content(chunk_size=1024 * 1024):
-            if chunk:
-                target.write(chunk)
+    temp_path = _create_manifest_temp_path(parent or dest_dir)
+    try:
+        actual_sha256 = _stream_manifest_member_to_tempfile(response, temp_path)
+        _validate_manifest_member_checksum(file_path, expected_sha256, actual_sha256)
+        os.replace(temp_path, dest_path)
+    except Exception:
+        _remove_file_if_exists(temp_path)
+        raise
 
     return dest_path
+
+
+def _create_manifest_temp_path(temp_dir: str) -> str:
+    """Create and return an empty temporary file path for atomic writes."""
+    temp_file_descriptor, temp_path = tempfile.mkstemp(
+        prefix=".manifest_",
+        suffix=".part",
+        dir=temp_dir,
+    )
+    os.close(temp_file_descriptor)
+    return temp_path
+
+
+def _stream_manifest_member_to_tempfile(response: requests.Response, temp_path: str) -> str:
+    """Stream response content to temp_path and return computed SHA-256."""
+    checksum = sha256()
+    with open(temp_path, "wb") as target:
+        for chunk in response.iter_content(chunk_size=1024 * 1024):
+            if not chunk:
+                continue
+            target.write(chunk)
+            checksum.update(chunk)
+    return checksum.hexdigest()
+
+
+def _validate_manifest_member_checksum(
+    file_path: str,
+    expected_sha256: str | None,
+    actual_sha256: str,
+) -> None:
+    """Raise on checksum mismatch when manifest provides an expected hash."""
+    if expected_sha256 is None:
+        return
+    if actual_sha256 == expected_sha256:
+        return
+    raise ManifestMemberIntegrityError(
+        f"Checksum mismatch for {file_path}: expected {expected_sha256}"
+    )
+
+
+def _remove_file_if_exists(path: str) -> None:
+    """Delete file if present, ignoring absence and cleanup race conditions."""
+    try:
+        os.remove(path)
+    except FileNotFoundError:
+        pass
+    except OSError:
+        pass
+
+
+def _parse_manifest_member_entry(
+    task: Task, manifest_entry: object
+) -> tuple[str | None, str | None]:
+    """Extract (file_path, optional_sha256) from one manifest entry."""
+    if isinstance(manifest_entry, str):
+        return manifest_entry, None
+
+    if not isinstance(manifest_entry, dict):
+        log.warning(
+            "Ignored manifest entry with unsupported format for task %s: %r",
+            task.id,
+            manifest_entry,
+        )
+        return None, None
+
+    file_path = manifest_entry.get("file_path")
+    if not isinstance(file_path, str) or not file_path:
+        alt_file_path = manifest_entry.get("path")
+        if isinstance(alt_file_path, str) and alt_file_path:
+            file_path = alt_file_path
+        else:
+            log.warning(
+                "Ignored manifest entry without file path for task %s: %r",
+                task.id,
+                manifest_entry,
+            )
+            return None, None
+
+    checksum_value = manifest_entry.get("sha256")
+    if checksum_value is None:
+        return file_path, None
+
+    if not isinstance(checksum_value, str):
+        log.warning(
+            "Ignored non-string sha256 for file %s in task %s",
+            file_path,
+            task.id,
+        )
+        return file_path, None
+
+    normalized_checksum = checksum_value.strip().lower()
+    if len(normalized_checksum) != 64 or any(
+        char not in "0123456789abcdef" for char in normalized_checksum
+    ):
+        log.warning(
+            "Ignored invalid sha256 for file %s in task %s",
+            file_path,
+            task.id,
+        )
+        return file_path, None
+
+    return file_path, normalized_checksum
+
+
+def _compute_manifest_retry_delay(attempt: int) -> float:
+    """Return delay in seconds using exponential backoff with full jitter."""
+    exponential_delay = min(
+        MANIFEST_MEMBER_DOWNLOAD_BACKOFF_MAX_SECONDS,
+        MANIFEST_MEMBER_DOWNLOAD_BACKOFF_BASE_SECONDS * (2 ** (attempt - 1)),
+    )
+    return random.uniform(0.0, exponential_delay)
+
+
+def _download_and_store_manifest_member(
+    url: str,
+    headers: HeadersDict,
+    file_path: str,
+    task: Task,
+    dest_dir: str,
+    expected_sha256: str | None = None,
+    max_attempts: int = MANIFEST_MEMBER_DOWNLOAD_MAX_RETRIES,
+) -> str | None:
+    """Download and store one manifest file with retry and integrity checks."""
+    for attempt in range(1, max_attempts + 1):
+        response = _download_manifest_member(url, headers, file_path, task)
+        if response is None:
+            if attempt == max_attempts:
+                return None
+            retry_delay = _compute_manifest_retry_delay(attempt)
+            log.warning(
+                "Retrying file %s for task %s after failed request (%s/%s), next try in %.2fs",
+                file_path,
+                task.id,
+                attempt,
+                max_attempts,
+                retry_delay,
+            )
+            time.sleep(retry_delay)
+            continue
+
+        try:
+            return _store_manifest_member(
+                response,
+                dest_dir,
+                file_path,
+                expected_sha256=expected_sha256,
+            )
+        except (requests.RequestException, ManifestMemberIntegrityError) as exc:
+            if attempt == max_attempts:
+                log.error(
+                    "Failed to fully download file %s for task %s after %s attempts: %s",
+                    file_path,
+                    task.id,
+                    max_attempts,
+                    exc,
+                )
+                return None
+            retry_delay = _compute_manifest_retry_delay(attempt)
+            log.warning(
+                "Retrying file %s for task %s after streamed transfer/integrity error (%s/%s), next try in %.2fs: %s",
+                file_path,
+                task.id,
+                attempt,
+                max_attempts,
+                retry_delay,
+                exc,
+            )
+            time.sleep(retry_delay)
+        except OSError as exc:
+            log.error(f"Failed to write file {file_path} for task {task.id}: {exc}")
+            return None
+        finally:
+            response.close()
+    return None
 
 
 def _save_manifest_files(
@@ -549,17 +739,26 @@ def _save_manifest_files(
     dest_vtt_path = ""
     headers = _build_file_headers(token)
 
-    for file_path in files:
+    for manifest_entry in files:
+        file_path, expected_sha256 = _parse_manifest_member_entry(task, manifest_entry)
+        if file_path is None:
+            continue
+
         if not _should_download_manifest_member(task, dest_dir, file_path):
             continue
 
-        safe_file_path = str(file_path)
-        url = _build_result_file_url(manager_url, task.task_id, safe_file_path)
-        response = _download_manifest_member(url, headers, safe_file_path, task)
-        if response is None:
+        url = _build_result_file_url(manager_url, task.task_id, file_path)
+        dest_path = _download_and_store_manifest_member(
+            url,
+            headers,
+            file_path,
+            task,
+            dest_dir,
+            expected_sha256=expected_sha256,
+        )
+        if dest_path is None:
             return None, ""
 
-        dest_path = _store_manifest_member(response, dest_dir, safe_file_path)
         if task.type == "transcription" and dest_path.lower().endswith(".vtt"):
             dest_vtt_path = dest_path
 
