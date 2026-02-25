@@ -8,12 +8,12 @@ Welcome to the Pod V5 Project Documentation. This guide is intended for develope
 
 Welcome to the official Pod V5 documentation. Each application has its own dedicated documentation.
 
-- **[Configuration & Customization](configuration.md)**: Central hub for configuring your instance, managing environment variables, and local overrides.
+- **[Configuration & Customization](configuration.md)**: Central hub for configuring your instance, managing environment variables, and local overrides.  
+- **[Encoding](encoding/README.md)**: Encoding system and video storage using esup-runners & filesystem
 - **[Authentication](authentication/README.md)**: Local login, CAS, LDAP, OIDC, and user management.
 - **[API & Swagger](api/README.md)**: REST API usage and documentation guide.
 - **[Core & Management](core/MANAGEMENT_COMMANDS.md)**: CLI commands for audit and maintenance.
 - **[Deployment & CI/CD](deployment/README.md)**: Docker architecture, production, and GitHub Actions automation.
-- **[AI & LLM Helpers](LLM_HELPERS.md)**: Context for AI agents and LLMs.
 
 ---
 
