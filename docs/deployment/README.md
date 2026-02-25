@@ -1,8 +1,8 @@
-# Project Overview & Architecture
+# Deployment & Architecture: Overview
 
 ## Introduction
 
-This documentation outlines the architecture, development workflow, and production deployment strategies for the Pod_V5_Back Django API. The project is designed for scalability and maintainability, utilizing Docker for containerization and a split-settings approach for environment management.
+This documentation outlines the architecture, environment setup, and deployment strategies for Pod V5. The project is designed for scalability and maintainability, utilizing Docker for containerization and a split-settings approach for environment management.
 
 ## System Architecture
 
@@ -56,8 +56,7 @@ Selecting the wrong `.env` will load the wrong database configuration and cause 
 
 ## Getting Started
 
-- ➡️ **[Development Guide](dev/dev.md)**: Local setup instructions and development environment.
-- ➡️ **[Production Guide (WIP)](prod/notes.md)**: Current notes on production deployment.
-- ➡️ **[Help](help.md)**: Maintenance, troubleshooting, and operational support.
+- ➡️ **[Development Environment](dev/dev.md)**: Local setup instructions and Docker workflow.
+- ➡️ **[Production Deployment](prod/prod.md)**: Production setup and deployment strategies (WIP).
 
 - ⬅️ **[Back to Index](../README.md)**

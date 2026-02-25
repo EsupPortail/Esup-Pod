@@ -8,8 +8,7 @@ from django.test import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
-
-
+from unittest.mock import patch
 from src.apps.video.models import Video
 
 User = get_user_model()
@@ -176,7 +175,8 @@ class VideoPermissionsTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Video.objects.filter(id=self.video_draft.id).exists())
 
-    def test_create_video(self):
+    @patch("src.apps.encoding.tasks.trigger_runner_encoding_task.delay")
+    def test_create_video(self, mock_trigger):
         """Test video creation."""
         self.client.force_authenticate(user=self.user_owner)
 

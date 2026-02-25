@@ -8,6 +8,7 @@ import shutil
 from django.test import override_settings
 from datetime import timedelta
 from django.utils import timezone
+from unittest.mock import patch
 import unittest
 from unittest.mock import patch
 
@@ -34,7 +35,8 @@ class VideoValidationTests(APITestCase):
         )
         self.url = "/api/videos/"
 
-    def test_create_video_success(self):
+    @patch("src.apps.encoding.tasks.trigger_runner_encoding_task.delay")
+    def test_create_video_success(self, mock_trigger):
         """Test_Create_Video_Success"""
         data = {
             "title": "Valid Video",
@@ -68,7 +70,8 @@ class VideoValidationTests(APITestCase):
         response = self.client.post(self.url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_default_status(self):
+    @patch("src.apps.encoding.tasks.trigger_runner_encoding_task.delay")
+    def test_default_status(self, mock_trigger):
         """
         Test_Default_Status equivalent.
         Current implementation: Signal auto-publishes video upon upload if duration is 0 (mock file).

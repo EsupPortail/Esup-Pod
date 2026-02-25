@@ -20,6 +20,9 @@ from drf_spectacular.views import (
 from config.router import router
 from src.apps.authentication.conf import auth_settings
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     # Redirection to Swagger
     path("", RedirectView.as_view(url="api/docs/", permanent=False)),
@@ -27,6 +30,7 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("api/info/", include("src.apps.info.urls")),
     path("api/auth/", include("src.apps.authentication.urls")),
+    path("api/encoding/", include("src.apps.encoding.urls")),
     # SWAGGER
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
@@ -59,3 +63,6 @@ else:
         ),
         path("accounts/logout", auth_views.LogoutView.as_view(), name="cas_ng_logout"),
     ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

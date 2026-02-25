@@ -81,10 +81,6 @@ class OIDCLoginViewTests(APITestCase):
         # FIX: Une seule lambda pour instancier l'objet directement
         new_callable=lambda: AuthConfig(
             use_oidc=True,
-            oidc_rp_client_id="client",
-            oidc_rp_client_secret="secret",
-            oidc_op_token_endpoint="http://oidc/token",
-            oidc_op_user_endpoint="http://oidc/userinfo",
         ),
     )
     def test_oidc_success(self, mock_settings, mock_get, mock_post):

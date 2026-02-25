@@ -6,6 +6,7 @@ Validates that `DJANGO_SETTINGS_MODULE` is correctly set before initializing
 the application to ensure fail-fast behavior in misconfigured environments.
 """
 
+import logging
 import os
 import sys
 
@@ -13,6 +14,8 @@ from django.core.wsgi import get_wsgi_application
 from django.core.exceptions import ImproperlyConfigured
 
 from config.env import env
+
+logger = logging.getLogger(__name__)
 
 try:
     settings_module = env.str("DJANGO_SETTINGS_MODULE")
@@ -24,9 +27,10 @@ try:
     application = get_wsgi_application()
 
 except (ImproperlyConfigured, ImportError, ValueError) as e:
-    print(
-        f"FATAL ERROR: Failed to initialize the WSGI application. "
-        f"Check that DJANGO_SETTINGS_MODULE is set. Details: {e}",
-        file=sys.stderr,
+    logger.critical(
+        "FATAL ERROR: Failed to initialize the WSGI application. "
+        "Check that DJANGO_SETTINGS_MODULE is set. Details: %s",
+        e,
+        exc_info=True,
     )
     sys.exit(1)

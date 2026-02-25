@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from src.apps.video.services.core import RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+from .conf import video_settings
 
 
 class IsOwnerOrCoOwnerOrReadOnly(permissions.BasePermission):
@@ -8,10 +8,11 @@ class IsOwnerOrCoOwnerOrReadOnly(permissions.BasePermission):
     - Read (GET, HEAD, OPTIONS) allowed for everyone (depending on the view).
     - Write (PUT, PATCH, DELETE) allowed only for the owner.
     """
+
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
+        if video_settings.restrict_edit_to_staff:
             return request.user and (request.user.is_staff or request.user.is_superuser)
         is_owner = obj.owner == request.user
         is_staff = request.user.is_staff or request.user.is_superuser

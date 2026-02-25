@@ -5,9 +5,12 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 from django.utils import timezone
-from src.apps.video.services.core import DEFAULT_THUMBNAIL, DEFAULT_DC_COVERAGE, DEFAULT_DC_RIGHTS, TEMPLATE_VISIBLE_SETTINGS
-from src.apps.video.services.storage import get_storage_path_video, get_storage_path_image
 from django.contrib.auth.hashers import make_password
+from src.apps.encoding.services.storage import (
+    get_storage_path_video,
+    get_storage_path_image,
+)
+from video.conf import video_settings
 
 
 class Video(models.Model):
@@ -211,7 +214,7 @@ class Video(models.Model):
         """Returns the thumbnail URL or the default one if it doesn't exist."""
         if self.thumbnail and hasattr(self.thumbnail, 'url'):
             return self.thumbnail.url
-        return DEFAULT_THUMBNAIL
+        return video_settings.default_thumbnail
 
     def get_dublin_core(self):
         """Generates Dublin Core metadata in dictionary format."""
@@ -219,11 +222,11 @@ class Video(models.Model):
             "title": self.title,
             "description": self.description or "",
             "creator": self.owner.username if self.owner else "",
-            "publisher": TEMPLATE_VISIBLE_SETTINGS.get("TITLE_ETB", "University name"),
+            "publisher": video_settings.template_visible_settings.get("TITLE_ETB", "University name"),
             "date": self.created_at.strftime("%Y-%m-%d") if self.created_at else "",
             "format": "video/mp4",
-            "rights": self.license if self.license else DEFAULT_DC_RIGHTS,
-            "coverage": DEFAULT_DC_COVERAGE,
+            "rights": self.license if self.license else video_settings.default_dc_rights,
+            "coverage": video_settings.default_dc_coverage,
         }
 
     def set_password(self) -> None:

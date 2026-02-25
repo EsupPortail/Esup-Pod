@@ -3,7 +3,8 @@ from rest_framework import serializers
 from src.apps.video.models import Video
 from .SubtitleSerializer import SubtitleSerializer
 from django.contrib.auth.hashers import make_password
-from src.apps.video.services.core import VIDEO_ALLOWED_EXTENSIONS, VIDEO_MAX_UPLOAD_SIZE, WEBTV_MODE
+from src.apps.encoding.conf import encoding_settings
+from src.apps.video.conf import video_settings
 
 User = get_user_model()
 
@@ -110,16 +111,16 @@ class VideoSerializer(serializers.ModelSerializer):
 
     def validate_video_file(self, value):
         if value:
-            ext = value.name.split('.')[-1].lower()
-            allowed_exts = [e.lstrip('.') for e in VIDEO_ALLOWED_EXTENSIONS]
+            ext = value.name.split(".")[-1].lower()
+            allowed_exts = [e.lstrip(".") for e in encoding_settings.allowed_extensions]
             if ext not in allowed_exts:
                 raise serializers.ValidationError(
                     f"Unsupported format. Allowed formats: {', '.join(allowed_exts)}"
                 )
-            max_bytes = VIDEO_MAX_UPLOAD_SIZE * 1024 * 1024 * 1024
+            max_bytes = encoding_settings.max_upload_size_gb * 1024 * 1024 * 1024
             if value.size > max_bytes:
                 raise serializers.ValidationError(
-                    f"The file exceeds the maximum allowed size of {VIDEO_MAX_UPLOAD_SIZE} GB."
+                    f"The file exceeds the maximum allowed size of {encoding_settings.max_upload_size_gb} GB."
                 )
         return value
 
@@ -133,7 +134,7 @@ class VideoSerializer(serializers.ModelSerializer):
         is_clearing_file = 'video_file' in attrs and attrs['video_file'] is None
         has_file_after_update = (already_has_file and not is_clearing_file) or has_video_file_in_req
         final_status = attrs.get('status', self.instance.status if self.instance else None)
-        if not WEBTV_MODE:
+        if not video_settings.webtv_mode:
             if not has_file_after_update:
                 raise serializers.ValidationError({
                     "video_file": "A video file is required because WEBTV mode is disabled."

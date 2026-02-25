@@ -1,13 +1,13 @@
 from typing import Any, Dict, List, Optional
-
+import logging
 from ...conf import auth_settings
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
-
 from ...models import AccessGroup, Owner
 from ...models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION
-from ..core import USER_LDAP_MAPPING_ATTRIBUTES
 from ..ldap_client import get_ldap_conn, get_ldap_entry
+
+logger = logging.getLogger(__name__)
 
 
 class UserPopulator:
@@ -140,7 +140,7 @@ class UserPopulator:
         self._process_affiliations(affiliations)
 
         # Groups from LDAP
-        ldap_group_attr = USER_LDAP_MAPPING_ATTRIBUTES.get("groups")
+        ldap_group_attr = auth_settings.ldap_mapping_attributes.get("groups")
         groups_element = []
         if ldap_group_attr and entry[ldap_group_attr]:
             groups_element = entry[ldap_group_attr].values
@@ -195,10 +195,13 @@ class UserPopulator:
                     accessgroup = AccessGroup.objects.get(code_name=group_code)
                     self.owner.accessgroups.add(accessgroup)
                 except ObjectDoesNotExist:
-                    pass
+                    logger.debug(
+                        "AccessGroup with code_name %r not found in database, skipping.",
+                        group_code,
+                    )
 
     def _get_ldap_value(self, entry: Any, attribute: str, default: Any) -> Any:
-        mapping = USER_LDAP_MAPPING_ATTRIBUTES.get(attribute)
+        mapping = auth_settings.ldap_mapping_attributes.get(attribute)
         if mapping and entry[mapping]:
             if attribute == "last_name" and isinstance(entry[mapping].value, list):
                 return entry[mapping].value[0]

@@ -5,6 +5,8 @@ Exposes authentication configuration to the React frontend
 so it knows which login buttons to display and logout URLs to use.
 """
 
+import logging
+
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers
 from rest_framework.permissions import AllowAny
@@ -12,6 +14,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from ..conf import auth_settings
+
+logger = logging.getLogger(__name__)
 
 try:
     from django_cas_ng.utils import get_cas_client
@@ -48,8 +52,12 @@ class LogoutInfoView(APIView):
                 data["cas"] = client.get_logout_url(
                     redirect_url=request.build_absolute_uri("/")
                 )
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(
+                    "Failed to build CAS logout URL: %s",
+                    e,
+                    exc_info=True,
+                )
 
         if auth_settings.use_shib:
             # TODO: Add shib_logout_url to AuthConfig if needed
