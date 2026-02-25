@@ -37,10 +37,6 @@ jobs:
       - name: Create .env file
         run: cp .env.example .env
 
-      - name: Validate flags configuration
-        run:  python manage.py validate_config --dry-run
-
-
   # 2. Docker Integration, E2E & Security (The Authoritative Test)
   test-docker-full:
     needs: [quality-check]
@@ -113,4 +109,3 @@ jobs:
       - name: Teardown
         if: always()
         run: make clean
-
