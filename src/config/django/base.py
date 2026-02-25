@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 # Core settings
 POD_VERSION = env("VERSION", default="5.0.0-DEV")
 SECRET_KEY = env("SECRET_KEY")
+SITE_URL = env("SITE_URL", default="http://localhost:8000")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     "src.apps.info",
     "src.apps.core",
     "src.apps.video",
+    "src.apps.encoding",
 ]
 
 MIDDLEWARE = [
@@ -124,6 +126,7 @@ APPS_WITH_CUSTOM_SETTINGS = [
     "video",
     "swagger",
     "core",
+    "encoding",
 ]
 
 
