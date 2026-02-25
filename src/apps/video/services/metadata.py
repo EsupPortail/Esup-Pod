@@ -5,7 +5,7 @@ import math
 from pathlib import Path  # noqa #F401
 from datetime import date
 from django.utils import timezone
-from src.apps.video.services.core import ACCOMMODATION_YEARS, DEFAULT_YEAR_DATE_DELETE
+from src.apps.video.conf import video_settings
 
 logger = logging.getLogger(__name__)
 
@@ -61,12 +61,23 @@ def calculate_expiration_date(owner):
     """
     Calculates the deletion date based on the user's affiliation.
     """
-    user_affiliations = owner.owner.affiliation if hasattr(owner, 'owner') and hasattr(owner.owner, 'affiliation') else None
+    user_affiliations = (
+        owner.owner.affiliation
+        if hasattr(owner, "owner") and hasattr(owner.owner, "affiliation")
+        else None
+    )
     if not user_affiliations:
-        years = DEFAULT_YEAR_DATE_DELETE
+        years = video_settings.default_year_date_delete
     elif isinstance(user_affiliations, list):
-        durations = [ACCOMMODATION_YEARS.get(aff, DEFAULT_YEAR_DATE_DELETE) for aff in user_affiliations]
-        years = max(durations) if durations else DEFAULT_YEAR_DATE_DELETE
+        durations = [
+            video_settings.accommodation_years.get(
+                aff, video_settings.default_year_date_delete
+            )
+            for aff in user_affiliations
+        ]
+        years = max(durations) if durations else video_settings.default_year_date_delete
     else:
-        years = ACCOMMODATION_YEARS.get(user_affiliations, DEFAULT_YEAR_DATE_DELETE)
+        years = video_settings.accommodation_years.get(
+            user_affiliations, video_settings.default_year_date_delete
+        )
     return date.today() + timezone.timedelta(days=years * 365)

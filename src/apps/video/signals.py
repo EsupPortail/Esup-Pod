@@ -68,9 +68,7 @@ def video_post_save(sender, instance, created, **kwargs):
                 logger.debug(
                     "Extracted duration=%s. Updating status to PUBLISHED...", duration
                 )
-                Video.objects.filter(pk=instance.pk).update(
-                    duration=duration
-                )
+                Video.objects.filter(pk=instance.pk).update(duration=duration)
                 logger.info(
                     "Video pk=%s published with duration=%ss.", instance.pk, duration
                 )

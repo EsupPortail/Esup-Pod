@@ -13,6 +13,7 @@ class VideoSerializer(serializers.ModelSerializer):
     """
     Serializer for the Video model.
     """
+
     owner = serializers.ReadOnlyField(source="owner.username")
     video_url = serializers.SerializerMethodField()
     status_label = serializers.CharField(source="get_status_display", read_only=True)
@@ -47,7 +48,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "status_label",
             "is_auth_required",
             "password",
-            'thumbnail_url',
+            "thumbnail_url",
             "has_password",
             "subtitles",
             "allow_downloading",
@@ -129,18 +130,26 @@ class VideoSerializer(serializers.ModelSerializer):
         Global validation to handle WEBTV_MODE.
         """
         attrs = super().validate(attrs)
-        has_video_file_in_req = 'video_file' in attrs and attrs['video_file'] is not None
+        has_video_file_in_req = "video_file" in attrs and attrs["video_file"] is not None
         already_has_file = bool(self.instance.video_file) if self.instance else False
-        is_clearing_file = 'video_file' in attrs and attrs['video_file'] is None
-        has_file_after_update = (already_has_file and not is_clearing_file) or has_video_file_in_req
-        final_status = attrs.get('status', self.instance.status if self.instance else None)
+        is_clearing_file = "video_file" in attrs and attrs["video_file"] is None
+        has_file_after_update = (
+            already_has_file and not is_clearing_file
+        ) or has_video_file_in_req
+        final_status = attrs.get(
+            "status", self.instance.status if self.instance else None
+        )
         if not video_settings.webtv_mode:
             if not has_file_after_update:
-                raise serializers.ValidationError({
-                    "video_file": "A video file is required because WEBTV mode is disabled."
-                })
+                raise serializers.ValidationError(
+                    {
+                        "video_file": "A video file is required because WEBTV mode is disabled."
+                    }
+                )
             if final_status == Video.Status.PUBLISHED and not has_file_after_update:
-                raise serializers.ValidationError({
-                    "status": "Cannot publish a video that has no source file (WebTV mode disabled)."
-                })
+                raise serializers.ValidationError(
+                    {
+                        "status": "Cannot publish a video that has no source file (WebTV mode disabled)."
+                    }
+                )
         return attrs

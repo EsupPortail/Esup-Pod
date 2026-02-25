@@ -5,6 +5,7 @@ class VideoConfig(AppConfig):
     """
     Configuration for the video app.
     """
+
     name = "src.apps.video"
     label = "video"
     verbose_name = "Video Management"

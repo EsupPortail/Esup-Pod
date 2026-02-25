@@ -17,6 +17,6 @@ class IsOwnerOrCoOwnerOrReadOnly(permissions.BasePermission):
         is_owner = obj.owner == request.user
         is_staff = request.user.is_staff or request.user.is_superuser
         is_co_owner = request.user in obj.co_owners.all()
-        if request.method == 'DELETE':
+        if request.method == "DELETE":
             return is_owner or is_staff
         return is_owner or is_co_owner or is_staff

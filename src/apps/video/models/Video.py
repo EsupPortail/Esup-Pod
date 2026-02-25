@@ -10,13 +10,14 @@ from src.apps.encoding.services.storage import (
     get_storage_path_video,
     get_storage_path_image,
 )
-from video.conf import video_settings
+from src.apps.video.conf import video_settings
 
 
 class Video(models.Model):
     """
     Model representing a video.
     """
+
     # 1.CHOICES
     class Status(models.TextChoices):
         DRAFT = "DR", _("Draft (Private)")
@@ -212,7 +213,7 @@ class Video(models.Model):
     @property
     def thumbnail_url(self):
         """Returns the thumbnail URL or the default one if it doesn't exist."""
-        if self.thumbnail and hasattr(self.thumbnail, 'url'):
+        if self.thumbnail and hasattr(self.thumbnail, "url"):
             return self.thumbnail.url
         return video_settings.default_thumbnail
 
@@ -222,7 +223,9 @@ class Video(models.Model):
             "title": self.title,
             "description": self.description or "",
             "creator": self.owner.username if self.owner else "",
-            "publisher": video_settings.template_visible_settings.get("TITLE_ETB", "University name"),
+            "publisher": video_settings.template_visible_settings.get(
+                "TITLE_ETB", "University name"
+            ),
             "date": self.created_at.strftime("%Y-%m-%d") if self.created_at else "",
             "format": "video/mp4",
             "rights": self.license if self.license else video_settings.default_dc_rights,
@@ -249,7 +252,9 @@ class Video(models.Model):
         if self.pk:
             old_version = Video.objects.get(pk=self.pk)
             if old_version.owner != self.owner:
-                from src.apps.video.services.storage import move_video_files_to_new_owner
+                from src.apps.encoding.services.storage import (
+                    move_video_files_to_new_owner,
+                )
                 move_video_files_to_new_owner(self, old_version.owner, self.owner)
         super().save(*args, **kwargs)
 

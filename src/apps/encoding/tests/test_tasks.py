@@ -43,6 +43,7 @@ class EncodingTaskTestCase(TestCase):
         mock_client.execute_task.assert_called_once_with(
             video_id=str(self.video.slug),
             source_url=source_url,
+            notify_url="http://localhost:8000/api/encoding/webhook/",
             parameters={
                 "video_id": str(self.video.id),
                 "slug": self.video.slug,

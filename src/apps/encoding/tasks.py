@@ -33,8 +33,8 @@ def trigger_runner_encoding_task(self, video_id: int, source_url: str):
         # Base URL might be tricky in Celery. Let's try to pass it from the view if possible,
         # or use a setting. For now, let's assume we can construct it if we have the host.
         # Better: pass it as an argument to the task.
-        
-        # ACTUALLY: Let's use the source_url to guess the base URL if needed, 
+
+        # ACTUALLY: Let's use the source_url to guess the base URL if needed,
         # but the best way is to have a SITE_URL setting.
         site_url = getattr(settings, "SITE_URL", "http://localhost:8000")
         notify_url = f"{site_url.rstrip('/')}{webhook_path}"

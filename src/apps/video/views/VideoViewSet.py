@@ -20,6 +20,7 @@ class VideoViewSet(viewsets.ModelViewSet):
     """
     API view set for the Video model.
     """
+
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
     permission_classes = [
@@ -99,7 +100,9 @@ class VideoViewSet(viewsets.ModelViewSet):
                 if video.is_auth_required and not user.is_authenticated:
                     raise PermissionDenied("Authentication required to play this video.")
                 if video.password:
-                    raise PermissionDenied("Direct stream access forbidden. Password required.")
+                    raise PermissionDenied(
+                        "Direct stream access forbidden. Password required."
+                    )
             elif video.status == Video.Status.DRAFT:
                 raise PermissionDenied("This video is private.")
         if not video.video_file:
@@ -133,9 +136,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         video = self.get_object()
         if video.status == Video.Status.RESTRICTED and video.is_auth_required:
             if not request.user.is_authenticated:
-                raise PermissionDenied(
-                    "You must be logged in to access this video."
-                )
+                raise PermissionDenied("You must be logged in to access this video.")
         input_password = request.data.get("password")
         if video.password and check_password(input_password, video.password):
             request = self.context.get("request")
