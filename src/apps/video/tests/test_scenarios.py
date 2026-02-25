@@ -9,6 +9,7 @@ from django.test import override_settings
 from datetime import timedelta
 from django.utils import timezone
 import unittest
+from unittest.mock import patch
 
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp()
@@ -105,29 +106,31 @@ class VideoValidationTests(APITestCase):
         video.refresh_from_db()
         self.assertEqual(video.status, Video.Status.PUBLISHED)
 
-    @unittest.expectedFailure
-    def test_publish_fail_no_source(self):
-        """Test_Publish_Fail_No_Source"""
+    @patch('src.apps.video.serializers.VideoSerializer.WEBTV_MODE', False)
+    def test_publish_fail_no_source_when_webtv_disabled(self):
+        """Test: Impossible to publish a video without a source file if WEBTV_MODE = False"""
         video = Video.objects.create(
-            title="No Source", owner=self.user, status=Video.Status.DRAFT
+            title="No Source Normal", owner=self.user, status=Video.Status.DRAFT
         )
-        # video_file is missing/empty
-
         url = f"{self.url}{video.slug}/"
         data = {"status": Video.Status.PUBLISHED}
         response = self.client.patch(url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        video.refresh_from_db()
+        self.assertNotEqual(video.status, Video.Status.PUBLISHED)
 
-        # Should fail.
-        # However, DRF serializer validation might pass if only status is updated and model constraints are not enforced on update for other fields?
-        # Let's see. If it fails, good. If not, we might need to enforce it in Serializer.validate_status or Model.clean.
-        if response.status_code == status.HTTP_200_OK:
-            # Check if it actually published.
-            video.refresh_from_db()
-            # If it published without source, this is a BUG/RISK as per scenario.
-            # We assert it did NOT publish.
-            self.assertNotEqual(video.status, Video.Status.PUBLISHED)
-        else:
-            self.assertNotEqual(response.status_code, status.HTTP_200_OK)
+    @patch('src.apps.video.serializers.VideoSerializer.WEBTV_MODE', True)
+    def test_publish_success_no_source_when_webtv_enabled(self):
+        """Test: Allowed to publish a video without a source file if WEBTV_MODE = True"""
+        video = Video.objects.create(
+            title="No Source WebTV", owner=self.user, status=Video.Status.DRAFT
+        )
+        url = f"{self.url}{video.slug}/"
+        data = {"status": Video.Status.PUBLISHED}
+        response = self.client.patch(url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        video.refresh_from_db()
+        self.assertEqual(video.status, Video.Status.PUBLISHED)
 
     @unittest.skip("Model field 'deletion_date' missing")
     def test_publish_fail_dirty_state(self):
