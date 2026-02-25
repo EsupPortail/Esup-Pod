@@ -2,8 +2,6 @@ import logging
 from typing import Any, Dict
 import requests
 
-from src.apps.encoding.conf import encoding_settings
-
 logger = logging.getLogger(__name__)
 
 

@@ -39,9 +39,6 @@ manage_setup() {
     log "Collecting static files..."
     python manage.py collectstatic --noinput --clear
 
-    log "Validating configuration..."
-    python manage.py validate_config
-
     log "Ensuring superuser and site configuration..."
     if ! python manage.py ensure_superuser 2> >(tee /tmp/ensure_superuser.err >&2); then
         error "Superuser configuration failed."

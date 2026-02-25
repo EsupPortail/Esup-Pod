@@ -1,7 +1,9 @@
 import os
 import uuid
+import shutil
 from django.utils.text import slugify
 from src.apps.encoding.conf import encoding_settings
+from django.conf import settings
 
 
 def get_storage_path_video(instance, filename: str) -> str:
@@ -19,3 +21,27 @@ def get_storage_path_image(instance, filename: str) -> str:
     return os.path.join(
         encoding_settings.thumbnails_dir, f"{instance.slug}_{uuid.uuid4().hex[:6]}.{ext}"
     )
+
+
+def move_video_files_to_new_owner(video, old_owner, new_owner):
+    """
+    Physically moves the video folder and updates the paths in the database.
+    """
+    old_hash = old_owner.owner.hashkey
+    new_hash = new_owner.owner.hashkey
+    if old_hash == new_hash:
+        return
+    video_folder_name = f"{video.id:04d}"
+    old_base_path = os.path.join(
+        settings.MEDIA_ROOT, "videos", old_hash, video_folder_name
+    )
+    new_user_path = os.path.join(settings.MEDIA_ROOT, "videos", new_hash)
+    new_base_path = os.path.join(new_user_path, video_folder_name)
+    if os.path.exists(old_base_path):
+        os.makedirs(new_user_path, exist_ok=True)
+        shutil.move(old_base_path, new_base_path)
+    if video.video_file:
+        video.video_file.name = video.video_file.name.replace(old_hash, new_hash)
+    if video.thumbnail:
+        video.thumbnail.name = video.thumbnail.name.replace(old_hash, new_hash)
+    video.save(update_fields=["video_file", "thumbnail"])

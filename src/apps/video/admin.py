@@ -7,6 +7,7 @@ class VideoAdmin(admin.ModelAdmin):
     """
     Admin interface for the Video model.
     """
+
     list_display = ("title", "owner", "status", "created_at", "file_size_mb")
     list_filter = ("status", "created_at")
     search_fields = ("title", "description", "owner__username", "owner__email")
