@@ -68,6 +68,9 @@
       {% if form.instance.id and form.instance.get_encoding_step == "" %}
         <div class="alert alert-warning" role="alert">
           {% trans "The video is currently waiting for encoding." %}
+          {% if USE_RUNNER_MANAGER %}
+            {% include "videos/video_queue_runner_manager.html" %}
+          {% endif %}
         </div>
       {% endif %}
 

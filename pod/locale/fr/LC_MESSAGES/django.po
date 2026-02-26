@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 23:10+0000\n"
+"POT-Creation-Date: 2026-02-13 09:52+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -404,7 +404,8 @@ msgstr ""
 #: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
 #: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
 #: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/utils.py
+#: pod/video/views.py pod/video_encode_transcript/runner_manager.py
+#: pod/video_encode_transcript/utils.py
 msgid "Home"
 msgstr "Accueil"
 
@@ -432,9 +433,9 @@ msgid ""
 "Something went wrong with AI improvement on “%(content_title)s”. Suggestions "
 "for improvement can’t be available on %(site_title)s."
 msgstr ""
-"Une erreur s’est produite sur le traitement par l’IA de "
-"« %(content_title)s ». Les suggestions d’amélioration ne peuvent pas être "
-"disponibles sur %(site_title)s."
+"Une erreur s’est produite sur le traitement par l’IA de « %(content_title)s "
+"». Les suggestions d’amélioration ne peuvent pas être disponibles sur "
+"%(site_title)s."
 
 #: pod/ai_enhancement/utils.py
 #, python-format
@@ -456,8 +457,8 @@ msgid ""
 "Something went wrong with AI improvement on “%(content_title)s”  on "
 "%(site_title)s."
 msgstr ""
-"Une erreur s’est produite sur l’amélioration par l’IA de "
-"« %(content_title)s » sur %(site_title)s."
+"Une erreur s’est produite sur l’amélioration par l’IA de « %(content_title)s "
+"» sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
 #: pod/video_encode_transcript/utils.py
@@ -1351,6 +1352,11 @@ msgstr ""
 "Il y a un chevauchement avec la superposition {0}, veuillez changer son "
 "temps de début et/ou de fin."
 
+#: pod/completion/permissions/video.py
+#, python-brace-format
+msgid "{func.__name__}: Permission denied for user {current_user.pk}."
+msgstr "{func.__name__} : Permission refusée pour l’utilisateur {current_user.pk}."
+
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
@@ -1728,8 +1734,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format "
-"« .vtt »."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format « ."
+"vtt »."
 
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
@@ -2626,7 +2632,7 @@ msgid "User who create this recording"
 msgstr "Utilisateur qui a créé cet enregistrement"
 
 #: pod/import_video/models.py pod/meeting/models.py pod/playlist/models.py
-#: pod/video/models.py
+#: pod/video/models.py pod/video_encode_transcript/models.py
 msgid "Site"
 msgstr "Site"
 
@@ -6073,7 +6079,7 @@ msgstr "Exemple de format : %(url)s"
 
 #: pod/meeting/models.py
 msgid "Bearer token for the SIPMediaGW server."
-msgstr "Jeton Bearer pour le serveur SIPMediaGW."
+msgstr "Jeton porteur pour le serveur SIPMediaGW."
 
 #: pod/meeting/models.py
 msgid "Example format: 1234"
@@ -6402,8 +6408,7 @@ msgstr "La réunion n’a pas encore commencé."
 msgid ""
 "It is scheduled for <strong>%(start_date)s</strong> at <i>%(start_time)s</i>."
 msgstr ""
-"Elle est planifiée le <strong>%(start_date)s</strong> à <i>%(start_time)s</"
-"i>."
+"Elle est planifiée le <strong>%(start_date)s</strong> à <i>%(start_time)s</i>."
 
 #: pod/meeting/templates/meeting/join.html
 msgid "You will be redirected right after the meeting starts."
@@ -6578,6 +6583,7 @@ msgid "Has user joined?"
 msgstr "Utilisateurs connectés ?"
 
 #: pod/meeting/views.py pod/recorder/models.py
+#: pod/video_encode_transcript/models.py
 msgid "Recording"
 msgstr "Enregistrement"
 
@@ -6985,6 +6991,15 @@ msgid "Private"
 msgstr "Privé"
 
 #: pod/playlist/models.py
+#, python-brace-format
+msgid ""
+"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"characters."
+msgstr ""
+"Veuillez entrer un titre contenant entre 1 et "
+"{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
+
+#: pod/playlist/models.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
@@ -7381,10 +7396,6 @@ msgstr "Vous ne pouvez pas accéder à cette liste de lecture."
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
-
-#: pod/playlist/views.py
-msgid "Delete the playlist"
-msgstr "Supprimer la liste de lecture"
 
 #: pod/playlist/views.py
 #, python-format
@@ -7786,7 +7797,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py pod/quiz/tests/test_models.py
+#: pod/quiz/models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -8107,6 +8118,27 @@ msgid "Quiz edition for the video “%s”"
 msgstr "Modification du quiz pour la vidéo « %s »"
 
 #: pod/recorder/admin.py
+msgid "Encode selected recordings and create new video"
+msgstr "Encoder les enregistrements sélectionnés et créer une nouvelle vidéo"
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Studio recording {item.id} encoding started"
+msgstr "Encodage de l’enregistrement en studio {item.id} démarré"
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Recording {item.id} is not a studio recording and can’t be encoded"
+msgstr ""
+"L’enregistrement {item.id} n’est pas un enregistrement studio et ne peut pas "
+"être encodé."
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Error for {item}: {e}"
+msgstr "Erreur pour {item} : {e}"
+
+#: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
 msgstr ""
 "Supprimer les traitements de fichiers d’enregistrement sélectionnés + les "
@@ -8376,6 +8408,7 @@ msgstr "Taille du fichier"
 #: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/video_row_select.html
 #: pod/video/templates/videos/video_sort_select.html
+#: pod/video_encode_transcript/models.py
 msgid "Date added"
 msgstr "Date d’ajout"
 
@@ -10592,6 +10625,13 @@ msgstr "La vidéo est actuellement en attente du traitement par l’IA Aristote.
 msgid "The form does not contain a video."
 msgstr "La fiche ne contient pas de vidéo."
 
+#: pod/video/templates/videos/video_queue_runner_manager.html
+msgid "Queue rank:"
+msgstr "Rang dans la file d’attente :"
+
+msgid "Total number of videos in the queue:"
+msgstr "Nombre total de vidéos dans la file d’attente :"
+
 #: pod/video/templates/videos/video_row_select.html
 msgid "Selected"
 msgstr "Sélectionné"
@@ -10950,13 +10990,72 @@ msgstr "Erreur serveur lors de la récupération des vidéos de l’utilisateur.
 msgid "Server error while processing filter."
 msgstr "Erreur serveur lors du traitement du filtre."
 
+#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
+msgid "resolution"
+msgstr "résolution"
+
+#: pod/video_encode_transcript/admin.py
+msgid "Runner manager not found."
+msgstr "Runner manager non trouvé."
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid ""
+"Unable to reach runner manager '%(name)s' at %(url)s. Check the URL and "
+"network access. Error: %(error)s"
+msgstr ""
+"Impossible de joindre le runner manager « %(name)s » à l’adresse %(url)s. "
+"Vérifiez l’URL et l’accès au réseau. Erreur : %(error)s"
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid ""
+"Runner manager '%(name)s' responded but rejected authentication (HTTP "
+"%(status)s). Check the bearer token."
+msgstr ""
+"Le runner manager « %(name)s » a répondu mais a rejeté l’authentification (HTTP "
+"%(status)s). Vérifiez le jeton porteur."
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid "Connection to runner manager '%(name)s' succeeded (HTTP %(status)s)."
+msgstr "Connexion au runner manager « %(name)s » réussie (HTTP %(status)s)."
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid ""
+"Runner manager '%(name)s' is reachable but endpoint %(url)s was not found "
+"(HTTP 404). Check the configured URL."
+msgstr ""
+"Le runner manager « %(name)s » est accessible, mais le point de terminaison %(url)s est introuvable "
+"(HTTP 404). Vérifiez l’URL configurée."
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid ""
+"Runner manager '%(name)s' is reachable but returned an unexpected response "
+"(HTTP %(status)s)."
+msgstr ""
+"Le runner manager « %(name)s » est accessible, mais a renvoyé une réponse inattendue "
+"(HTTP %(status)s)."
+
+#: pod/video_encode_transcript/admin.py
+msgid "Restart selected tasks"
+msgstr "Redémarrer les tâches sélectionnées"
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid "%(count)s task(s) relaunched immediately."
+msgstr "%(count)s tâche(s) relancée(s) immédiatement."
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid "%(count)s task(s) skipped (duplicate or missing source)."
+msgstr "%(count)s tâche(s) ignorée(s) (duplicata ou source manquante)."
+
 #: pod/video_encode_transcript/apps.py
 msgid "Video encoding and transcription"
 msgstr "Encodage et transcription de vidéos"
-
-#: pod/video_encode_transcript/models.py
-msgid "resolution"
-msgstr "résolution"
 
 #: pod/video_encode_transcript/models.py
 msgid ""
@@ -11058,6 +11157,136 @@ msgstr "Liste de lecture"
 msgid "Video Playlists"
 msgstr "Listes de lecture"
 
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager name"
+msgstr "Nom du runner manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority"
+msgstr "Priorité"
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority of the runner manager. Lower values indicate higher priority."
+msgstr ""
+"Priorité du runner manager. Les valeurs les plus basses indiquent une "
+"priorité plus élevée."
+
+#: pod/video_encode_transcript/models.py
+msgid "URL of the runner manager"
+msgstr "URL du runner manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "Example format: https://manager.univ.fr:port/"
+msgstr "Exemple de format : https://manager.univ.fr:port/"
+
+#: pod/video_encode_transcript/models.py
+msgid "Bearer token for the runner manager."
+msgstr "Jeton porteur pour le runner manager."
+
+#: pod/video_encode_transcript/models.py
+msgid "Example format: 6YqG_73xt-9s8v5aBz"
+msgstr "Exemple de format : 6YqG_73xt-9s8v5aBz"
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager"
+msgstr "Runner manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner managers"
+msgstr "Runner managers"
+
+#: pod/video_encode_transcript/models.py
+msgid "Encoding task"
+msgstr "Tâche d’encodage"
+
+#: pod/video_encode_transcript/models.py
+msgid "Studio task"
+msgstr "Tâche Studio"
+
+#: pod/video_encode_transcript/models.py
+msgid "Transcription task"
+msgstr "Tâche de transcription"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task type"
+msgstr "Type de tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task pending"
+msgstr "Tâche en attente"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task in progress"
+msgstr "Tâche en cours"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task completed"
+msgstr "Tâche terminée"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task failed"
+msgstr "Tâche échouée"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task timeouted"
+msgstr "Tâche expirée"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task status"
+msgstr "Statut de la tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task identifier from runner manager"
+msgstr "Identifiant de tâche du runner manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "Identifier of the task provided by the runner manager"
+msgstr "Identifiant de la tâche fourni par le runner manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "Video associated to the task"
+msgstr "Vidéo associée à la tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Studio recording associated to the task"
+msgstr "Enregistrement studio associé à la tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager that manages this task"
+msgstr "Runner manager qui gère cette tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager that achieves this task"
+msgstr "Runner manager qui accomplit cette tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Queue rank"
+msgstr "Rang dans la file d’attente"
+
+#: pod/video_encode_transcript/models.py
+msgid "Rank of the task in the pending queue"
+msgstr "Rang de la tâche dans la file d’attente"
+
+#: pod/video_encode_transcript/models.py
+msgid "Script output"
+msgstr "Sortie du script"
+
+#: pod/video_encode_transcript/models.py
+msgid "Output from the runner manager script"
+msgstr "Sortie du script du runner manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "Task"
+msgstr "Tâche"
+
+#: pod/video_encode_transcript/models.py
+msgid "Tasks"
+msgstr "Tâches"
+
+#: pod/video_encode_transcript/templates/admin_test_connection.html
+msgid "Test connection"
+msgstr "Tester la connexion"
+
 #: pod/video_encode_transcript/utils.py
 msgid "Encoding"
 msgstr "Encodage"
@@ -11127,9 +11356,9 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
-#, fuzzy, python-format
-#~| msgid "%(counter)s video found"
-#~| msgid_plural "%(counter)s videos found"
+#~ msgid "Delete the playlist"
+#~ msgstr "Supprimer la liste de lecture"
+
 #~ msgid ""
 #~ "\n"
 #~ "        %(counter)s video found\n"
@@ -11146,13 +11375,6 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "Search by title"
 #~ msgstr "Rechercher par titre"
-
-#~ msgid ""
-#~ "Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-#~ "characters."
-#~ msgstr ""
-#~ "Veuillez entrer un titre contenant entre 1 et "
-#~ "{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
 
 #~ msgid "Clear selection"
 #~ msgstr "Effacer la sélection"

@@ -3436,15 +3436,56 @@
                 "video_encode_transcript": {
                     "description": {
                         "en": [
-                            ""
+                            "Application for video encoding and transcription.",
+                            "It is possible to encode locally or remotely.",
+                            "For remote encoding, it is preferable to use the encoding and transcription outsourcing system,",
+                            "Esup-Runner, with the use of runner managers. Otherwise, it is also possible to use Celery in this case."
                         ],
                         "fr": [
                             "Application pour l’encodage et la transcription de vidéo.",
                             "Il est possible d’encoder en local ou en distant.",
-                            "Attention, il faut configurer Celery pour l’envoi des instructions pour l’encodage distant."
+                            "Pour l’encodage distant, il est préférable d’utiliser le système d’externalisation des encodages et transcriptions, ",
+                            "Esup-Runner, avec utilisation de runner managers. Sinon, il est aussi possible d’utiliser Celery dans ce cas là."
                         ]
                     },
                     "settings": {
+                        "USE_RUNNER_MANAGER": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "If True, Pod uses an outsourcing system for encoding and transcription, ",
+									"Esup-Runner, with the use of runner managers. Encoding and transcription ",
+									"are entirely delegated to this system. See https://github.com/EsupPortail/esup-runner.",
+                                    "In this case, it is no longer necessary to configure Celery for remote encoding and transcription."
+
+                                ],
+                                "fr": [
+                                    "Si True, Pod utilise le système d’externalisation des encodages et transcriptions, ",
+									"Esup-Runner, avec utilisation de runner managers. Les encodages et transcriptions ",
+									"sont totalement délégués à ce système. Cf. https://github.com/EsupPortail/esup-runner.",
+                                    "Dans ce cas là, il n'est plus utile de configurer Celery pour l’encodage et la transcription à distance."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.2.0"
+                        },
+                        "RM_TASKS_DELETED_AFTER_DAYS": {
+                            "default_value": 0,
+                            "description": {
+                                "en": [
+                                    "Parameter used only when USE_RUNNER_MANAGER = True.",
+                                    "It corresponds to the number of days after which completed tasks are deleted ",
+									"from the database (0 means that completed tasks are kept indefinitely)."
+                                ],
+                                "fr": [
+                                    "Paramètre utilisé seulement quand USE_RUNNER_MANAGER = True.",
+									"Il correspond au nombre de jours après lesquels les tâches terminées sont supprimées ",
+									"dans la base de données (0 signifiant que les tâches terminées sont conservées indéfiniment)."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.2.0"
+                        },
                         "CAPTIONS_STRICT_ACCESSIBILITY": {
                             "default_value": false,
                             "description": {

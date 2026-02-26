@@ -1,19 +1,20 @@
 """Esup-Pod transcript video functions."""
 
+import importlib.util
+
 from django.conf import settings
 from django.core.files import File
 from pod.completion.models import Track
 from pod.main.tasks import task_start_transcript
 from webvtt import Caption, WebVTT
 
+from ..video.models import Video
 from .utils import (
+    add_encoding_log,
+    change_encoding_step,
     send_email,
     send_email_transcript,
-    change_encoding_step,
-    add_encoding_log,
 )
-from ..video.models import Video
-import importlib.util
 
 if (
     importlib.util.find_spec("vosk") is not None
@@ -26,15 +27,13 @@ else:
         raise NotImplementedError("No transcription engine available.")
 
 
-from .encoding_utils import sec_to_timestamp
-
+import logging
 import os
+import threading
 import time
-
 from tempfile import NamedTemporaryFile
 
-import threading
-import logging
+from .encoding_utils import sec_to_timestamp
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
@@ -65,29 +64,68 @@ CAPTIONS_STRICT_ACCESSIBILITY = getattr(
     "CAPTIONS_STRICT_ACCESSIBILITY",
     False,
 )
+USE_RUNNER_MANAGER = getattr(settings, "USE_RUNNER_MANAGER", False)
 
 log = logging.getLogger(__name__)
 
 
-# ##########################################################################
-# TRANSCRIPT VIDEO: THREAD TO LAUNCH TRANSCRIPT
-# ##########################################################################
+def resolve_transcription_language(video: Video, lang_code: str | None = None) -> str:
+    """Resolve transcription language with fallbacks.
+
+    Priority:
+    1. Explicit lang_code argument.
+    2. Video.transcript field.
+    3. Last existing subtitle track language for this video.
+    4. Video.main_lang.
+    5. DEFAULT_LANG_TRACK setting (fallback "fr").
+    """
+    if lang_code:
+        return lang_code
+
+    if getattr(video, "transcript", None):
+        return str(video.transcript)
+
+    track_lang = (
+        Track.objects.filter(video=video, kind="subtitles")
+        .exclude(lang__isnull=True)
+        .exclude(lang="")
+        .order_by("-id")
+        .values_list("lang", flat=True)
+        .first()
+    )
+    if track_lang:
+        return str(track_lang)
+
+    if getattr(video, "main_lang", None):
+        return str(video.main_lang)
+
+    return str(getattr(settings, "DEFAULT_LANG_TRACK", "fr"))
+
+
 def start_transcript(video_id, threaded=True) -> None:
     """
     Call to start transcript main function.
 
     Will launch transcript mode depending on configuration.
     """
-    if threaded:
-        if CELERY_TO_ENCODE:
-            task_start_transcript.delay(video_id)
-        else:
-            log.info("START TRANSCRIPT VIDEO %s" % video_id)
-            t = threading.Thread(target=main_threaded_transcript, args=[video_id])
-            t.daemon = True
-            t.start()
+    if USE_RUNNER_MANAGER:
+        log.info("Start transcription, with runner manager, for id: %s" % video_id)
+        # Load module here to prevent circular import
+        from .runner_manager import transcript_video
+
+        transcript_video(video_id)
     else:
-        main_threaded_transcript(video_id)
+        log.info("Start transcription, without runner manager, for id: %s" % video_id)
+        if threaded:
+            if CELERY_TO_ENCODE:
+                task_start_transcript.delay(video_id)
+            else:
+                log.info("START TRANSCRIPT VIDEO %s" % video_id)
+                t = threading.Thread(target=main_threaded_transcript, args=[video_id])
+                t.daemon = True
+                t.start()
+        else:
+            main_threaded_transcript(video_id)
 
 
 def main_threaded_transcript(video_to_encode_id) -> None:
@@ -145,10 +183,24 @@ def save_vtt_and_notify(video_to_encode, msg, webvtt) -> None:
     add_encoding_log(video_to_encode.id, msg)
 
 
+def save_vtt_and_notify_with_lang(
+    video_to_encode, msg, webvtt, lang_code: str = None
+) -> None:
+    """Call save vtt file function and notify by mail at the end."""
+    msg += save_vtt(video_to_encode, webvtt, lang_code)
+    change_encoding_step(video_to_encode.id, 0, "done")
+    video_to_encode.encoding_in_progress = False
+    video_to_encode.save()
+    # envois mail fin transcription
+    if EMAIL_ON_TRANSCRIPTING_COMPLETION:
+        send_email_transcript(video_to_encode)
+    add_encoding_log(video_to_encode.id, msg)
+
+
 def save_vtt(video: Video, webvtt: WebVTT, lang_code: str = None) -> str:
     """Save webvtt file with the video."""
     msg = "\nSAVE TRANSCRIPT WEBVTT : %s" % time.ctime()
-    lang = lang_code if lang_code else video.transcript
+    lang = resolve_transcription_language(video, lang_code)
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:

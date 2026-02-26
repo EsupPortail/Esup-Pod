@@ -1,0 +1,24 @@
+{% load i18n %}
+
+<div class="mt-2">
+  <div class="row g-2">
+    <div class="col-12 col-sm-6">
+      <div class="border rounded-3 bg-light px-3 py-2 h-100 text-body-emphasis">
+        <p class="mb-1 small">
+          <i class="bi bi-list-ol" aria-hidden="true"></i>
+          {% trans "Queue rank:" %}
+        </p>
+        <p class="mb-0 fw-bold fs-5">{{ video_task_queue_rank|default:"-" }}</p>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6">
+      <div class="border rounded-3 bg-light px-3 py-2 h-100 text-body-emphasis">
+        <p class="mb-1 small">
+          <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+          {% trans "Total number of videos in the queue:" %}
+        </p>
+        <p class="mb-0 fw-bold fs-5">{{ video_task_queue_total|default:"0" }}</p>
+      </div>
+    </div>
+  </div>
+</div>

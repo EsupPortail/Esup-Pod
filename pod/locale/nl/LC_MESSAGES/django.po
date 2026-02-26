@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-16 23:10+0000\n"
+"POT-Creation-Date: 2026-02-13 09:52+0100\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -391,7 +391,8 @@ msgstr ""
 #: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
 #: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
 #: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/utils.py
+#: pod/video/views.py pod/video_encode_transcript/runner_manager.py
+#: pod/video_encode_transcript/utils.py
 msgid "Home"
 msgstr ""
 
@@ -2514,7 +2515,7 @@ msgid "User who create this recording"
 msgstr ""
 
 #: pod/import_video/models.py pod/meeting/models.py pod/playlist/models.py
-#: pod/video/models.py
+#: pod/video/models.py pod/video_encode_transcript/models.py
 msgid "Site"
 msgstr ""
 
@@ -6212,6 +6213,7 @@ msgid "Has user joined?"
 msgstr ""
 
 #: pod/meeting/views.py pod/recorder/models.py
+#: pod/video_encode_transcript/models.py
 msgid "Recording"
 msgstr ""
 
@@ -6755,6 +6757,7 @@ msgstr ""
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/playlist/templates/playlist/playlist_content.html
 #: pod/video/templates/channel/channel.html
+#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/videos.html
 #: pod/video_search/templates/search/search.html
 #, python-format
@@ -7609,6 +7612,25 @@ msgid "Quiz edition for the video “%s”"
 msgstr ""
 
 #: pod/recorder/admin.py
+msgid "Encode selected recordings and create new video"
+msgstr ""
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Studio recording {item.id} encoding started"
+msgstr ""
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Recording {item.id} is not a studio recording and can't be encoded"
+msgstr ""
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Error for {item}: {e}"
+msgstr ""
+
+#: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
 msgstr ""
 
@@ -7856,6 +7878,7 @@ msgstr ""
 #: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/video_row_select.html
 #: pod/video/templates/videos/video_sort_select.html
+#: pod/video_encode_transcript/models.py
 msgid "Date added"
 msgstr ""
 
@@ -9195,7 +9218,7 @@ msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Filter by title"
-msgstr "Filter op titel"
+msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Select video(s) to edit"
@@ -9211,10 +9234,8 @@ msgid "Submit changes"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
-#, fuzzy
-#| msgid "Filter by title"
 msgid "Enter video title"
-msgstr "Filter op titel"
+msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Use the search field to find a video by its title in your dashboard"
@@ -9313,19 +9334,6 @@ msgstr ""
 #: pod/video/templates/videos/dashboard.html
 msgid "Sort videos"
 msgstr ""
-
-#: pod/video/templates/videos/dashboard.html
-#, python-format
-msgid ""
-"\n"
-"        %(counter)s video found\n"
-"      "
-msgid_plural ""
-"\n"
-"        %(counter)s videos found\n"
-"      "
-msgstr[0] ""
-msgstr[1] ""
 
 #: pod/video/templates/videos/filter_aside.html
 msgid ""
@@ -9912,6 +9920,14 @@ msgstr ""
 msgid "The form does not contain a video."
 msgstr ""
 
+#: pod/video/templates/videos/video_queue_runner_manager.html
+msgid "Queue rank:"
+msgstr ""
+
+#: pod/video/templates/videos/video_queue_runner_manager.html
+msgid "Total number of videos in the queue:"
+msgstr ""
+
 #: pod/video/templates/videos/video_row_select.html
 msgid "Selected"
 msgstr ""
@@ -10259,12 +10275,63 @@ msgstr ""
 msgid "Server error while processing filter."
 msgstr ""
 
-#: pod/video_encode_transcript/apps.py
-msgid "Video encoding and transcription"
+#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
+msgid "resolution"
 msgstr ""
 
-#: pod/video_encode_transcript/models.py
-msgid "resolution"
+#: pod/video_encode_transcript/admin.py
+msgid "Runner manager not found."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid ""
+"Unable to reach runner manager '%(name)s' at %(url)s. Check the URL and "
+"network access. Error: %(error)s"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid ""
+"Runner manager '%(name)s' responded but rejected authentication (HTTP "
+"%(status)s). Check the bearer token."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid "Connection to runner manager '%(name)s' succeeded (HTTP %(status)s)."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid ""
+"Runner manager '%(name)s' is reachable but endpoint %(url)s was not found "
+"(HTTP 404). Check the configured URL."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid ""
+"Runner manager '%(name)s' is reachable but returned an unexpected response "
+"(HTTP %(status)s)."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+msgid "Restart selected tasks"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid "%(count)s task(s) relaunched immediately."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid "%(count)s task(s) skipped (duplicate or missing source)."
+msgstr ""
+
+#: pod/video_encode_transcript/apps.py
+msgid "Video encoding and transcription"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
@@ -10361,6 +10428,134 @@ msgstr ""
 
 #: pod/video_encode_transcript/models.py
 msgid "Video Playlists"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager name"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority of the runner manager. Lower values indicate higher priority."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "URL of the runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Example format: https://manager.univ.fr:port/"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Bearer token for the runner manager."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Example format: 6YqG_73xt-9s8v5aBz"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner managers"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Encoding task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Studio task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Transcription task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task type"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task pending"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task in progress"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task completed"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task failed"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task timeouted"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task status"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task identifier from runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Identifier of the task provided by the runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Video associated to the task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Studio recording associated to the task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager that manages this task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager that achieves this task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Queue rank"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Rank of the task in the pending queue"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Script output"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Output from the runner manager script"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Tasks"
+msgstr ""
+
+#: pod/video_encode_transcript/templates/admin_test_connection.html
+msgid "Test connection"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py

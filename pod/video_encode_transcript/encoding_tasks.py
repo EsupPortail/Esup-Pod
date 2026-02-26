@@ -1,8 +1,9 @@
 """Esup-Pod encoding tasks."""
 
-from celery import Celery
 import logging
+
 import requests
+from celery import Celery
 
 # call local settings directly
 # no need to load pod application to send statement

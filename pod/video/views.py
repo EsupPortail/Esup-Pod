@@ -1,49 +1,74 @@
 """Esup-Pod videos views."""
 
-from concurrent import futures
+import json
 import logging
 import os
+import re
+import uuid
+from concurrent import futures
+from datetime import date
+from itertools import chain
 
-from django.core.exceptions import PermissionDenied, SuspiciousOperation
-from django.core.handlers.wsgi import WSGIRequest
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Count, F, Q, Case, When, Value, BooleanField
-from django.db.models.functions import Concat
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from django.http import HttpResponseNotFound
-from django.http import HttpResponseForbidden, HttpResponseBadRequest
-from django.http import QueryDict, Http404
-from django.views.decorators.csrf import csrf_protect
+import pandas
+from chunked_upload.models import ChunkedUpload
+from chunked_upload.views import ChunkedUploadCompleteView, ChunkedUploadView
+from dateutil.parser import parse
+from django.conf import settings
 from django.contrib import messages
-from django.utils.html import escape
-from django.utils.translation import ngettext
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.exceptions import (
+    ObjectDoesNotExist,
+    PermissionDenied,
+    SuspiciousOperation,
+)
+from django.core.handlers.wsgi import WSGIRequest
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db import IntegrityError, transaction
+from django.db.models import (
+    BooleanField,
+    Case,
+    Count,
+    F,
+    Min,
+    Q,
+    QuerySet,
+    Sum,
+    Value,
+    When,
+)
+from django.db.models.functions import Concat
+from django.http import (
+    Http404,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+    HttpResponseNotFound,
+    JsonResponse,
+    QueryDict,
+)
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
-from django.conf import settings
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.db.models import Sum, Min
+from django.utils.html import escape
+from django.utils.timezone import timedelta
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
-# from django.contrib.auth.hashers import check_password
-
-from dateutil.parser import parse
-from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
+from pod.authentication.utils import get_owners as auth_get_owners
 from pod.main.context_processors import WEBTV_MODE
+from pod.main.decorators import admin_required, ajax_login_required, ajax_required
 from pod.main.models import AdditionalChannelTab
+from pod.main.utils import dismiss_stored_messages, get_max_code_lvl_messages, is_ajax
 from pod.main.views import (
     MENUBAR_HIDE_INACTIVE_OWNERS,
     MENUBAR_SHOW_STAFF_OWNERS_ONLY,
     in_maintenance,
 )
-from pod.main.decorators import ajax_required, ajax_login_required, admin_required
-from pod.authentication.utils import get_owners as auth_get_owners
 from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
 from pod.playlist.models import Playlist, PlaylistContent
 from pod.playlist.utils import (
@@ -51,55 +76,53 @@ from pod.playlist.utils import (
     playlist_can_be_displayed,
     user_can_see_playlist_video,
 )
-from pod.video.utils import get_videos as video_get_videos
-from pod.video.models import Video
-from pod.video.models import Type
-from pod.video.models import Channel
-from pod.video.models import Theme
-from pod.video.models import Discipline
-from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
-from pod.video.models import ViewCount, VideoVersion
-from pod.video.models import Comment, Vote, Category
-from pod.video.models import get_transcription_choices
-from pod.video.models import UserMarkerTime, VideoAccessToken
-from pod.video.forms import VideoForm, VideoVersionForm
-from pod.video.forms import ChannelForm
-from pod.video.forms import FrontThemeForm
-from pod.video.forms import VideoPasswordForm
-from pod.video.forms import VideoDeleteForm
-from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
-from pod.video.rest_views import ChannelSerializer
-
-from .utils import (
-    pagination_data,
-    get_headband,
-    change_owner,
-    get_id_from_request,
-    get_filtered_categories_for_user,
-    get_filtered_types_for_videos,
-    get_filtered_disciplines_for_videos,
-    get_filtered_tags_for_videos,
-    get_filtered_owners_for_videos,
+from pod.video.forms import (
+    AdvancedNotesForm,
+    ChannelForm,
+    FrontThemeForm,
+    NoteCommentsForm,
+    VideoDeleteForm,
+    VideoForm,
+    VideoPasswordForm,
+    VideoVersionForm,
 )
+from pod.video.models import (
+    NOTES_STATUS,
+    AdvancedNotes,
+    Category,
+    Channel,
+    Comment,
+    Discipline,
+    NoteComments,
+    Theme,
+    Type,
+    UserMarkerTime,
+    Video,
+    VideoAccessToken,
+    VideoVersion,
+    ViewCount,
+    Vote,
+    get_transcription_choices,
+)
+from pod.video.rest_views import ChannelSerializer
+from pod.video.utils import get_videos as video_get_videos
+
 from .context_processors import get_available_videos
-from .utils import sort_videos_list
+from .utils import (
+    change_owner,
+    get_filtered_categories_for_user,
+    get_filtered_disciplines_for_videos,
+    get_filtered_owners_for_videos,
+    get_filtered_tags_for_videos,
+    get_filtered_types_for_videos,
+    get_headband,
+    get_id_from_request,
+    pagination_data,
+    sort_videos_list,
+)
 
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.core.exceptions import ObjectDoesNotExist
-import json
-import re
-import pandas
-import uuid
-from datetime import date
-from chunked_upload.models import ChunkedUpload
-from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
-from itertools import chain
+# from django.contrib.auth.hashers import check_password
 
-from django.db import IntegrityError
-from django.db.models import QuerySet
-from django.db import transaction
-
-from django.utils.timezone import timedelta
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -187,6 +210,7 @@ ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 HIDE_USER_FILTER = getattr(settings, "HIDE_USER_FILTER", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
+USE_RUNNER_MANAGER = getattr(settings, "USE_RUNNER_MANAGER", False)
 
 if USE_TRANSCRIPTION:
     from ..video_encode_transcript import transcript
@@ -1214,6 +1238,27 @@ def toggle_render_video_when_is_playlist_player(request):
         return Http404()
 
 
+def _get_video_queue_context(video: Video | None) -> dict:
+    """Return queue context for a video waiting for encoding."""
+    if not USE_RUNNER_MANAGER or not video or not video.id:
+        return {"video_task_queue_rank": None, "video_task_queue_total": None}
+
+    if not video.video or video.get_encoding_step != "":
+        return {"video_task_queue_rank": None, "video_task_queue_total": None}
+
+    from pod.video_encode_transcript.task_queue import (
+        get_video_pending_encoding_queue_info,
+        refresh_pending_task_ranks,
+    )
+
+    refresh_pending_task_ranks()
+    rank, total = get_video_pending_encoding_queue_info(video)
+    return {
+        "video_task_queue_rank": rank,
+        "video_task_queue_total": total,
+    }
+
+
 def render_video(
     request,
     id,
@@ -1271,6 +1316,8 @@ def render_video(
                 "listNotes": listNotes,
                 "owner_filter": owner_filter,
                 "playlist": playlist if request.GET.get("playlist") else None,
+                "USE_RUNNER_MANAGER": USE_RUNNER_MANAGER,
+                **_get_video_queue_context(video),
                 **more_data,
             },
         )
@@ -1303,6 +1350,8 @@ def render_video(
                     "form": form,
                     "listNotes": listNotes,
                     "owner_filter": owner_filter,
+                    "USE_RUNNER_MANAGER": USE_RUNNER_MANAGER,
+                    **_get_video_queue_context(video),
                     **more_data,
                 },
             )
@@ -1385,7 +1434,12 @@ def video_edit(request, slug=None):
     return render(
         request,
         "videos/video_edit.html",
-        {"form": form, "listTheme": json.dumps(get_list_theme_in_form(form))},
+        {
+            "form": form,
+            "listTheme": json.dumps(get_list_theme_in_form(form)),
+            "USE_RUNNER_MANAGER": USE_RUNNER_MANAGER,
+            **_get_video_queue_context(form.instance if form else None),
+        },
     )
 
 
@@ -1582,8 +1636,13 @@ def video_transcript(request, slug=None):
         )
         raise PermissionDenied
 
-    if request.user != video.owner and not (
-        request.user.is_superuser or request.user.has_perm("video.change_video")
+    if (
+        video
+        and request.user != video.owner
+        and (
+            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+        )
+        and (request.user not in video.additional_owners.all())
     ):
         messages.add_message(request, messages.ERROR, _("You cannot manage this video."))
         raise PermissionDenied
@@ -2561,7 +2620,9 @@ def get_all_views_count(v_id, date_filter=date.today()):
 
     # favorite addition in year
     count = PlaylistContent.objects.filter(
-        playlist__in=favorites_playlists, video_id=v_id, date_added__year=date_filter.year
+        playlist__in=favorites_playlists,
+        video_id=v_id,
+        date_added__year=date_filter.year,
     ).count()
     all_views["fav_year"] = count if count else 0
 

@@ -1,32 +1,33 @@
 """Esup-Pod module to handle video encoding with CPU."""
 
+import logging
+import threading
+import time
+
 from django.conf import settings
 from webpush.models import PushInformation
-
-from pod.video.models import Video
-from .Encoding_video_model import Encoding_video_model
-from .encoding_studio import start_encode_video_studio
-from .models import EncodingLog
 
 from pod.cut.models import CutVideo
 from pod.dressing.models import Dressing
 from pod.dressing.utils import get_dressing_input
 from pod.main.tasks import task_start_encode, task_start_encode_studio
 from pod.recorder.models import Recording
+from pod.video.models import Video
+
 from .encoding_settings import FFMPEG_DRESSING_INPUT
+from .encoding_studio import start_encode_video_studio
+from .Encoding_video_model import Encoding_video_model
+from .models import EncodingLog
 from .utils import (
+    add_encoding_log,
     change_encoding_step,
     check_file,
-    add_encoding_log,
     send_email,
     send_email_encoding,
     send_email_recording,
     send_notification_encoding,
     time_to_seconds,
 )
-import logging
-import time
-import threading
 
 __license__ = "LGPL v3"
 log = logging.getLogger(__name__)
@@ -45,51 +46,68 @@ USE_REMOTE_ENCODING_TRANSCODING = getattr(
     settings, "USE_REMOTE_ENCODING_TRANSCODING", False
 )
 if USE_REMOTE_ENCODING_TRANSCODING:
-    from .encoding_tasks import start_encoding_task
-    from .encoding_tasks import start_studio_task
+    from .encoding_tasks import start_encoding_task, start_studio_task
 
 FFMPEG_DRESSING_INPUT = getattr(settings, "FFMPEG_DRESSING_INPUT", FFMPEG_DRESSING_INPUT)
+
+USE_RUNNER_MANAGER = getattr(settings, "USE_RUNNER_MANAGER", False)
 
 # ##########################################################################
 # ENCODE VIDEO: THREAD TO LAUNCH ENCODE
 # ##########################################################################
 
-# Disable for the moment, will be reactivated in future version
-
 
 def start_encode(video_id: int, threaded=True) -> None:
     """Start video encoding."""
-    if threaded:
-        if CELERY_TO_ENCODE:
-            task_start_encode.delay(video_id)
-        else:
-            log.info("START ENCODE VIDEO ID %s" % video_id)
-            t = threading.Thread(target=encode_video, args=[video_id])
-            t.daemon = True
-            t.start()
+    # Special case for runner manager: delegate encoding to a remote service and return immediately without threading logic
+    if USE_RUNNER_MANAGER:
+        log.info("Start encode, with runner manager, for id: %s" % video_id)
+        # Load module here to prevent circular import
+        from .runner_manager import encode_video as runner_encode_video
+
+        runner_encode_video(video_id)
     else:
-        encode_video(video_id)
+        log.info("Start encode, without runner manager, for id: %s" % video_id)
+        if threaded:
+            if CELERY_TO_ENCODE:
+                task_start_encode.delay(video_id)
+            else:
+                log.info("START ENCODE VIDEO ID %s" % video_id)
+                t = threading.Thread(target=encode_video, args=[video_id])
+                t.daemon = True
+                t.start()
+        else:
+            encode_video(video_id)
 
 
 def start_encode_studio(
     recording_id, video_output, videos, subtime, presenter, threaded=True
 ) -> None:
     """Start studio encoding."""
-    if threaded:
-        if CELERY_TO_ENCODE:
-            task_start_encode_studio.delay(
-                recording_id, video_output, videos, subtime, presenter
-            )
-        else:
-            log.info("START ENCODE VIDEO ID %s" % recording_id)
-            t = threading.Thread(
-                target=encode_video_studio,
-                args=[recording_id, video_output, videos, subtime, presenter],
-            )
-            t.daemon = True
-            t.start()
+    # Special case for runner manager: delegate encoding to a remote service and return immediately without threading logic
+    if USE_RUNNER_MANAGER:
+        log.info("Start encode studio, with runner manager, for id: %s" % recording_id)
+        # Load module here to prevent circular import
+        from .runner_manager import encode_studio_recording
+
+        encode_studio_recording(recording_id)
     else:
-        encode_video_studio(recording_id, video_output, videos, subtime, presenter)
+        log.info("Start encode studio, without runner manager, for id: %s" % recording_id)
+        if threaded:
+            if CELERY_TO_ENCODE:
+                task_start_encode_studio.delay(
+                    recording_id, video_output, videos, subtime, presenter
+                )
+            else:
+                log.info("START ENCODE VIDEO ID %s" % recording_id)
+                t = threading.Thread(
+                    target=encode_video_studio,
+                    args=[recording_id, video_output, videos, subtime, presenter],
+                )
+                t.daemon = True
+                t.start()
+        else:
+            encode_video_studio(recording_id, video_output, videos, subtime, presenter)
 
 
 def encode_video_studio(recording_id, video_output, videos, subtime, presenter) -> None:

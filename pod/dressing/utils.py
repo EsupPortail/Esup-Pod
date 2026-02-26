@@ -3,7 +3,7 @@
 import os
 from .models import Dressing
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.core.handlers.wsgi import WSGIRequest
 
 
@@ -34,7 +34,7 @@ def get_dressing_input(dressing: Dressing, ffmpeg_dressing_input: str) -> str:
     return command
 
 
-def get_dressings(user, accessgroup_set) -> list:
+def get_dressings(user, accessgroup_set) -> QuerySet[Dressing]:
     """
     Return the list of dressings that the user can use.
 

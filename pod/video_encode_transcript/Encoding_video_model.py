@@ -1,31 +1,32 @@
 """Model for video encoding."""
 
+import json
 import logging
 import os
 import re
+import time
+
 from django.conf import settings
-from .models import EncodingVideo
-from .models import EncodingAudio
-from .models import VideoRendition
-from .models import PlaylistVideo
-from .models import EncodingLog
-from pod.video.models import Video
-from pod.completion.models import Track
 from django.core.files import File
+
+from pod.completion.models import Track
+from pod.video.models import LANG_CHOICES, Video
+
+from .encoding_utils import check_file, launch_cmd
 from .Encoding_video import (
-    Encoding_video,
-    FFMPEG_NB_THUMBNAIL,
-    FFMPEG_CREATE_THUMBNAIL,
     FFMPEG_CMD,
+    FFMPEG_CREATE_THUMBNAIL,
     FFMPEG_INPUT,
     FFMPEG_NB_THREADS,
+    FFMPEG_NB_THUMBNAIL,
+    Encoding_video,
 )
-from pod.video.models import LANG_CHOICES
-import json
-import time
-from .encoding_utils import (
-    launch_cmd,
-    check_file,
+from .models import (
+    EncodingAudio,
+    EncodingLog,
+    EncodingVideo,
+    PlaylistVideo,
+    VideoRendition,
 )
 
 DEBUG = getattr(settings, "DEBUG", True)
@@ -53,12 +54,10 @@ DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
-    from pod.podfile.models import CustomImageModel
-    from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import CustomFileModel, CustomImageModel
 else:
     __FILEPICKER__ = False
-    from pod.main.models import CustomImageModel
-    from pod.main.models import CustomFileModel
+    from pod.main.models import CustomFileModel, CustomImageModel
 
 
 class Encoding_video_model(Encoding_video):

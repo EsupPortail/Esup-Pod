@@ -1,20 +1,22 @@
 """Esup-Pod REST views."""
 
-from rest_framework import serializers, viewsets, renderers
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.decorators import action
+import json
 
+from django.db.models import Q
 from django.template.loader import render_to_string
+from rest_framework import renderers, serializers, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .models import Channel, Theme, Type, Discipline, Video, ViewCount
-from .context_processors import get_available_videos
 from pod.main.utils import remove_trailing_spaces
+
+from .context_processors import get_available_videos
+from .models import Channel, Discipline, Theme, Type, Video, ViewCount
 
 # commented for v3
 # from .remote_encode import start_store_remote_encoding_video
 
-import json
 
 # Serializers define the API representation.
 
@@ -210,8 +212,12 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def user_videos(self, request):
-        user_videos = self.filter_queryset(self.get_queryset()).filter(
-            owner__username=request.GET.get("username")
+        # Manage additional_owners filtering
+        username = request.GET.get("username")
+        user_videos = (
+            self.filter_queryset(self.get_queryset())
+            .filter(Q(owner__username=username) | Q(additional_owners__username=username))
+            .distinct()
         )
         if request.GET.get("encoded") and request.GET.get("encoded") == "true":
             user_videos = user_videos.exclude(

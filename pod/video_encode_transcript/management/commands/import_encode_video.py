@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
-from pod.video_encode_transcript.Encoding_video_model import Encoding_video_model
-from pod.video_encode_transcript.encode import store_encoding_info, end_of_encoding
+
 from pod.video.models import Video
+from pod.video_encode_transcript.encode import end_of_encoding, store_encoding_info
+from pod.video_encode_transcript.Encoding_video_model import Encoding_video_model
 
 
 class Command(BaseCommand):

@@ -1,22 +1,21 @@
-from django.conf import settings
-from .models import EncodingVideo, EncodingAudio, VideoRendition, PlaylistVideo
-from pod.video.models import Video
-from pod.recorder.models import Recording
-from pod.video.rest_views import VideoSerializer
-
-from rest_framework import serializers, viewsets
-from rest_framework.decorators import action
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
-from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
-from django.core.exceptions import SuspiciousOperation
-
 import json
 import logging
 import os
+
 import webvtt
+from django.conf import settings
+from django.core.exceptions import SuspiciousOperation
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import serializers, viewsets
+from rest_framework.decorators import action, api_view
+from rest_framework.response import Response
+
+from pod.recorder.models import Recording
+from pod.video.models import Video
+from pod.video.rest_views import VideoSerializer
+
+from .models import EncodingAudio, EncodingVideo, PlaylistVideo, VideoRendition
 
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
@@ -185,8 +184,8 @@ def launch_transcript_view(request):
 @api_view(["POST"])
 def store_remote_encoded_video(request):
     """View API for storing remote encoded videos."""
+    from .encode import end_of_encoding, store_encoding_info
     from .Encoding_video_model import Encoding_video_model
-    from .encode import store_encoding_info, end_of_encoding
 
     video_id = request.GET.get("id", 0)
     logger.info("Start importing encoding data for video: %s" % video_id)
