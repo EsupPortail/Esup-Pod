@@ -2,7 +2,7 @@
 Authentication defaults.
 Source of truth for default values for Authentication app.
 """
-
+from datetime import timedelta
 from config.env import env
 
 # Feature Flags
@@ -11,6 +11,41 @@ USE_CAS = False
 USE_LDAP = False
 USE_SHIB = False
 USE_OIDC = False
+
+SECRET_KEY = env("SECRET_KEY", default="ta-cle-secrete-par-defaut")
+
+# JWT Configuration
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+}
+
+# Authentication Backends
+AUTHENTICATION_BACKENDS = []
+
+if USE_LOCAL_AUTH:
+    AUTHENTICATION_BACKENDS.append("django.contrib.auth.backends.ModelBackend")
+
+if USE_CAS:
+    AUTHENTICATION_BACKENDS.append("django_cas_ng.backends.CASBackend")
+
+if USE_LDAP:
+    # Chemin classique si tu utilises django-auth-ldap
+    AUTHENTICATION_BACKENDS.append("django_auth_ldap.backend.LDAPBackend")
+
+if USE_OIDC:
+    # Chemin classique si tu utilises mozilla-django-oidc
+    AUTHENTICATION_BACKENDS.append("mozilla_django_oidc.auth.OIDCAuthenticationBackend")
+
+if USE_SHIB:
+    AUTHENTICATION_BACKENDS.append("django.contrib.auth.backends.RemoteUserBackend")
 
 # CAS Defaults
 CAS_SERVER_URL = env("CAS_SERVER_URL", default="https://cas.univ-lille.fr")
@@ -62,7 +97,6 @@ LDAP_MAPPING_ATTRIBUTES = {
     "establishment": "establishment",
 }
 
-OIDC_RP_CLIENT_SECRET = "mon-secret"
 OIDC_CLAIM_GIVEN_NAME = "given_name"
 OIDC_CLAIM_FAMILY_NAME = "family_name"
 OIDC_CLAIM_PREFERRED_USERNAME = "preferred_username"
