@@ -46,16 +46,20 @@
     {% include 'videos/video-element.html' %}
   {% endblock video-element %}
 
-  <div id="info-video-wrapper" class="pod-inner">
-    <div class="iframe-header bg-dark text-white">
-      <h2 class="video-title">{{ video.title }}</h2>
-      <button type="button" class="close" aria-label="{% trans 'Close' %}">
-        <span aria-hidden="true">&times;</span>
-      </button>
+  <div id="info-video-wrapper" class="modal pod-inner">
+    <!--div class="modal fade pod-inner" id="info-video-wrapper" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1"-->
+    <div class="modal-dialog modal-lg">
+      <div id="info-video" class="modal-content">
+        <div class="iframe-header modal-header">
+          <h2 class="video-title">{{ video.title }}</h2>
+          <button type="button" class="close btn-close" data-bs-dismiss="modal"
+            aria-label="{% trans 'Close' %}"></button>
+        </div>
+        <div class="pod-info-video modal-body">
+          {% include 'videos/video-info.html'%}
+        </div>
+      </div>
     </div>
-    <div id="info-video" class="pod-info-video">
-    {% include 'videos/video-info.html'%}
-  </div>
   </div>
 
 </div>
