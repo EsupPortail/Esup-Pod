@@ -289,6 +289,21 @@ class TestCategory(TestCase):
         self.assertEqual(all_categories_videos[self.cat_1.slug][0], self.video.slug)
         print(" --->  test_get_categories of TestCategory: OK!")
 
+    def test_get_categories_comma_separated(self) -> None:
+        """Dashboard must support comma-separated categories query values."""
+        self.client.force_login(self.owner_user)
+        self.cat_2.video.add(self.video_2)
+        self.cat_2.save()
+
+        url = reverse("video:dashboard")
+        categories_csv = f"{self.cat_1.slug},{self.cat_2.slug}"
+        response = self.client.get(url, {"categories": categories_csv})
+        response_data = response.context
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response_data["videos"].paginator.count, 2)
+        print(" --->  test_get_categories_comma_separated of TestCategory: OK!")
+
     def test_get_categories_aside(self) -> None:
         """Test get categories for filter aside elements."""
         self.client.force_login(self.owner_user)
