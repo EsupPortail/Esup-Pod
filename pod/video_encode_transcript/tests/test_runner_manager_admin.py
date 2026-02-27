@@ -60,6 +60,39 @@ class RunnerManagerAdminTests(TestCase):
         self.assertContains(response, "Test connection")
         self.assertContains(response, "test-connection-link")
         self.assertContains(response, self.test_connection_url)
+        self.assertContains(response, "runner-admin-link")
+        self.assertContains(response, "https://runner.example.com/admin")
+
+    def test_change_page_runner_admin_link_handles_url_without_trailing_slash(self):
+        """Build remote admin URL correctly when runner URL has no trailing slash."""
+        self.runner_manager.url = "https://runner-no-slash.example.com"
+        self.runner_manager.save(update_fields=["url"])
+
+        response = self.client.get(self.change_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "runner-admin-link")
+        self.assertContains(response, "https://runner-no-slash.example.com/admin")
+
+    def test_changelist_displays_activation_badge(self):
+        """Display activation badge in runner manager changelist."""
+        changelist_url = reverse(
+            "admin:video_encode_transcript_runnermanager_changelist"
+        )
+
+        response = self.client.get(changelist_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "bg-success")
+        self.assertContains(response, "Active")
+        self.assertContains(response, "runner-admin-list-link")
+        self.assertContains(response, "https://runner.example.com/admin")
+
+        self.runner_manager.is_active = False
+        self.runner_manager.save(update_fields=["is_active"])
+        response = self.client.get(changelist_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "bg-secondary")
+        self.assertContains(response, "Inactive")
 
     @patch("pod.video_encode_transcript.admin.requests.get")
     def test_test_connection_reports_unreachable_runner(self, mocked_get):
