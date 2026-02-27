@@ -82,8 +82,8 @@
         <option value="type">{% trans "Type" %}</option>
         {% if request.user.is_superuser %}
           <option value="owner">{% trans "Owner" %}</option>
-          <option value="additional_owners">{% trans "Additional owners" %}</option>
         {% endif %}
+        <option value="additional_owners">{% trans "Additional owners" %}</option>
         <option value="description">{% trans "Description" %}</option>
         {% if request.user.is_superuser %}
           <option value="date_added">{% trans "Date added" %}</option>
