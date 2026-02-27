@@ -464,7 +464,9 @@ def channel_edit(request, slug):
     if request.user not in channel.owners.all() and not (
         request.user.is_superuser or request.user.has_perm("video.change_channel")
     ):
-        messages.add_message(request, messages.ERROR, _("You cannot edit this channel."))
+        messages.add_message(
+            request, messages.ERROR, _("You cannot edit this channel.")
+        )
         raise PermissionDenied
     channel_form = ChannelForm(
         instance=channel,
@@ -511,7 +513,9 @@ def theme_edit(request, slug):
     if request.user not in channel.owners.all() and not (
         request.user.is_superuser or request.user.has_perm("video.change_theme")
     ):
-        messages.add_message(request, messages.ERROR, _("You cannot edit this channel."))
+        messages.add_message(
+            request, messages.ERROR, _("You cannot edit this channel.")
+        )
         raise PermissionDenied
 
     if is_ajax(request):
@@ -622,12 +626,17 @@ def dashboard(request):
     videos_list = get_videos_for_owner(request)
 
     if USER_VIDEO_CATEGORY:
-        categories = Category.objects.prefetch_related("video").filter(owner=request.user)
+        categories = Category.objects.prefetch_related("video").filter(
+            owner=request.user
+        )
         selected_categories = request.GET.getlist("categories")
 
         if selected_categories:
-            category_video_ids = categories.filter(
-                slug__in=selected_categories
+            category_video_ids = filter_queryset_by_ids_or_slugs(
+                categories,
+                selected_categories,
+                "id",
+                "slug",
             ).values_list("video", flat=True)
 
             videos_list = videos_list.filter(pk__in=category_video_ids)
@@ -955,6 +964,54 @@ def get_paginated_videos(paginator, page):
         return paginator.page(paginator.num_pages)
 
 
+def get_ids_and_slugs_from_query_values(selected_values):
+    """
+    Split selected GET values into IDs and slugs.
+
+    Values can be received either as repeated query params
+    (e.g. ``?type=1&type=webinar``) or as comma-separated values
+    (e.g. ``?type=1,webinar``).
+    """
+    ids = []
+    slugs = []
+
+    for raw_value in selected_values:
+        for value in str(raw_value).split(","):
+            value = value.strip()
+            if not value:
+                continue
+            if value.isdigit():
+                ids.append(int(value))
+            slugs.append(value)
+
+    return ids, slugs
+
+
+def filter_queryset_by_ids_or_slugs(
+    queryset: QuerySet, selected_values, id_lookup: str, slug_lookup: str
+) -> QuerySet:
+    """Filter a queryset from selected values that may contain IDs and/or slugs."""
+    selected_ids, selected_slugs = get_ids_and_slugs_from_query_values(selected_values)
+    lookup_filter = Q()
+
+    if selected_ids:
+        lookup_filter |= Q(**{f"{id_lookup}__in": selected_ids})
+    if selected_slugs:
+        lookup_filter |= Q(**{f"{slug_lookup}__in": selected_slugs})
+
+    if not lookup_filter.children:
+        return queryset
+
+    return queryset.filter(lookup_filter)
+
+
+def filter_queryset_by_all_tags(queryset: QuerySet, tags_selected) -> QuerySet:
+    """Apply AND filtering on tags: all selected tags must be present."""
+    for tag_slug in tags_selected:
+        queryset = queryset.filter(tags__slug=tag_slug)
+    return queryset
+
+
 def get_filtered_videos_list(request, videos_list):
     """Return filtered videos list by GET parameters using AND logic."""
     title_query = request.GET.get("title")
@@ -969,17 +1026,20 @@ def get_filtered_videos_list(request, videos_list):
             Q(title_en__icontains=title_query) | Q(title_fr__icontains=title_query)
         )
     if types_selected:
-        videos_list = videos_list.filter(type__slug__in=types_selected)
+        videos_list = filter_queryset_by_ids_or_slugs(
+            videos_list, types_selected, "type_id", "type__slug"
+        )
     if disciplines_selected:
-        videos_list = videos_list.filter(discipline__slug__in=disciplines_selected)
+        videos_list = filter_queryset_by_ids_or_slugs(
+            videos_list, disciplines_selected, "discipline__id", "discipline__slug"
+        )
     if request.user and owner_is_searchable(request.user) and owners_selected:
         videos_list = videos_list.filter(
             Q(owner__username__in=owners_selected)
             | Q(additional_owners__username__in=owners_selected)
         )
     if tags_selected:
-        for tag_slug in tags_selected:
-            videos_list = videos_list.filter(tags__slug=tag_slug)
+        videos_list = filter_queryset_by_all_tags(videos_list, tags_selected)
     if cursus_selected:
         videos_list = videos_list.filter(cursus__in=cursus_selected)
     return videos_list.distinct()
@@ -1097,7 +1157,9 @@ def get_video_access(request, video, slug_private):
         # or is_password_protected
     )
     if is_access_protected:
-        access_granted_for_private = slug_private and slug_private == video.get_hashkey()
+        access_granted_for_private = (
+            slug_private and slug_private == video.get_hashkey()
+        )
         access_granted_for_draft = request.user.is_authenticated and (
             request.user == video.owner
             or request.user.is_superuser
@@ -1180,7 +1242,9 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
             raise PermissionDenied(
                 _("You cannot access this playlist because it is private.")
             )
-    return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
+    return render_video(
+        request, id, slug_c, slug_t, slug_private, template_video, params
+    )
 
 
 def toggle_render_video_user_can_see_video(
@@ -1201,7 +1265,8 @@ def toggle_render_video_user_can_see_video(
                 slug_private == video.get_hashkey()
                 or slug_private
                 in [
-                    str(tok.token) for tok in VideoAccessToken.objects.filter(video=video)
+                    str(tok.token)
+                    for tok in VideoAccessToken.objects.filter(video=video)
                 ]
             )
         )
@@ -1388,7 +1453,9 @@ def video_edit(request, slug=None):
         video
         and request.user != video.owner
         and (
-            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+            not (
+                request.user.is_superuser or request.user.has_perm("video.change_video")
+            )
         )
         and (request.user not in video.additional_owners.all())
     ):
@@ -1529,7 +1596,9 @@ def video_is_deletable(request, video) -> bool:
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm("video.delete_video")
     ):
-        messages.add_message(request, messages.ERROR, _("You cannot delete this media."))
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete this media.")
+        )
         raise PermissionDenied
 
     if WEBTV_MODE:
@@ -1561,7 +1630,9 @@ def video_edit_access_tokens(request: WSGIRequest, slug: str = None):
         video
         and request.user != video.owner
         and (
-            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+            not (
+                request.user.is_superuser or request.user.has_perm("video.change_video")
+            )
         )
         and (request.user not in video.additional_owners.all())
     ):
@@ -1608,7 +1679,9 @@ def delete_token(request, video: Video, token: VideoAccessToken):
     try:
         uuid.UUID(str(token))
         VideoAccessToken.objects.get(video=video, token=token).delete()
-        messages.add_message(request, messages.SUCCESS, _("The token has been deleted."))
+        messages.add_message(
+            request, messages.SUCCESS, _("The token has been deleted.")
+        )
     except (ValueError, ObjectDoesNotExist):
         messages.add_message(request, messages.ERROR, _("Token not found."))
 
@@ -1619,7 +1692,9 @@ def update_token(request, video: Video, token: VideoAccessToken):
         Token = VideoAccessToken.objects.get(video=video, token=token)
         Token.name = request.POST.get("name")
         Token.save()
-        messages.add_message(request, messages.SUCCESS, _("The token has been updated."))
+        messages.add_message(
+            request, messages.SUCCESS, _("The token has been updated.")
+        )
     except (ValueError, ObjectDoesNotExist):
         messages.add_message(request, messages.ERROR, _("Token not found."))
 
@@ -1640,11 +1715,15 @@ def video_transcript(request, slug=None):
         video
         and request.user != video.owner
         and (
-            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+            not (
+                request.user.is_superuser or request.user.has_perm("video.change_video")
+            )
         )
         and (request.user not in video.additional_owners.all())
     ):
-        messages.add_message(request, messages.ERROR, _("You cannot manage this video."))
+        messages.add_message(
+            request, messages.ERROR, _("You cannot manage this video.")
+        )
         raise PermissionDenied
 
     if not video.encoded or video.encoding_in_progress is True:
@@ -1960,7 +2039,9 @@ def video_note_form_case(request, params):
         and idNote is not None
         and (
             (request.method == "POST" and request.POST.get("action") == "form_com_edit")
-            or (request.method == "GET" and request.GET.get("action") == "form_com_edit")
+            or (
+                request.method == "GET" and request.GET.get("action") == "form_com_edit"
+            )
         )
     ):
         can_edit_or_remove_note_or_com(request, com, "edit")
@@ -2054,7 +2135,9 @@ def video_note_save(request, slug):
         q.update({"video": video.id})
         form = AdvancedNotesForm(q)
         noteToEdit = note
-    elif request.method == "POST" and (request.POST.get("action").startswith("save_com")):
+    elif request.method == "POST" and (
+        request.POST.get("action").startswith("save_com")
+    ):
         form = NoteCommentsForm(request.POST)
         comToEdit = {
             "save_com": com,
@@ -2134,7 +2217,9 @@ def video_note_save_form_valid(request, video, params):
         com.status = request.POST.get("status")
         com.modified_on = timezone.now()
         com.save()
-        messages.add_message(request, messages.INFO, _("The comment has been modified."))
+        messages.add_message(
+            request, messages.INFO, _("The comment has been modified.")
+        )
         noteToDisplay, comToDisplay = note, get_com_tree(com)
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
@@ -2158,7 +2243,9 @@ def video_note_save_form_valid(request, video, params):
         dictComments = get_com_coms_dict(request, listNotesCom)
     # Saving a note after an edit
     elif (
-        idCom is None and idNote is not None and request.POST.get("action") == "save_note"
+        idCom is None
+        and idNote is not None
+        and request.POST.get("action") == "save_note"
     ):
         note.note = request.POST.get("note")
         note.status = request.POST.get("status")
@@ -2167,7 +2254,9 @@ def video_note_save_form_valid(request, video, params):
         messages.add_message(request, messages.INFO, _("Your note has been modified."))
     # Saving a new com for a note
     elif (
-        idCom is None and idNote is not None and request.POST.get("action") == "save_com"
+        idCom is None
+        and idNote is not None
+        and request.POST.get("action") == "save_com"
     ):
         com = NoteComments.objects.create(
             user=request.user,
@@ -2251,7 +2340,9 @@ def video_note_remove(request, slug):
         if idNote and request.POST.get("action") == "remove_note":
             can_edit_or_remove_note_or_com(request, note, "delete")
             note.delete()
-            messages.add_message(request, messages.INFO, _("The note has been deleted."))
+            messages.add_message(
+                request, messages.INFO, _("The note has been deleted.")
+            )
             listNotesCom, comToDisplay = None, None
         elif idNote and idCom and request.POST.get("action") == "remove_com":
             can_edit_or_remove_note_or_com(request, com, "delete")
@@ -2365,8 +2456,11 @@ def video_note_download(request, slug):
         str(_("Content")),
     ]
     response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = "attachment; \
-        filename=%s_notes_and_comments.csv" % slug
+    response["Content-Disposition"] = (
+        "attachment; \
+        filename=%s_notes_and_comments.csv"
+        % slug
+    )
     df.to_csv(
         path_or_buf=response,
         sep="|",
@@ -2573,7 +2667,9 @@ def get_all_views_count(v_id, date_filter=date.today()):
     all_views["year"] = count if count else 0
 
     # view count since video was created
-    count = ViewCount.objects.filter(video_id=v_id).aggregate(Sum("count"))["count__sum"]
+    count = ViewCount.objects.filter(video_id=v_id).aggregate(Sum("count"))[
+        "count__sum"
+    ]
     all_views["since_created"] = count if count else 0
 
     # playlist addition in day
@@ -2792,7 +2888,9 @@ def stats_view(request, slug=None, slug_t=None):
         )
 
         min_date = (
-            get_available_videos().aggregate(Min("date_added"))["date_added__min"].date()
+            get_available_videos()
+            .aggregate(Min("date_added"))["date_added__min"]
+            .date()
         )
         data.append({"min_date": min_date})
 
@@ -2990,7 +3088,9 @@ def get_children_comment(request, comment_id, video_slug):
         parent_comment = (
             Comment.objects.filter(video=v, id=comment_id)
             .annotate(
-                author_name=Concat("author__first_name", Value(" "), "author__last_name")
+                author_name=Concat(
+                    "author__first_name", Value(" "), "author__last_name"
+                )
             )
             .annotate(nbr_child=Count("children", distinct=True))
             .annotate(
@@ -3044,7 +3144,9 @@ def get_comments(request, video_slug):
             .order_by("added")
             .annotate(nbr_vote=Count("vote", distinct=True))
             .annotate(
-                author_name=Concat("author__first_name", Value(" "), "author__last_name")
+                author_name=Concat(
+                    "author__first_name", Value(" "), "author__last_name"
+                )
             )
             .annotate(nbr_child=Count("children", distinct=True))
             .annotate(
@@ -3097,7 +3199,9 @@ def delete_comment(request, video_slug, comment_id):
 
     if in_maintenance():
         return HttpResponseForbidden(
-            _("Sorry, you can’t delete a comment while the server is under maintenance.")
+            _(
+                "Sorry, you can’t delete a comment while the server is under maintenance."
+            )
         )
 
     if c.author == c_user or v.owner == c_user or c_user.is_superuser:
@@ -3307,7 +3411,9 @@ def add_category(request):
         data_context["videos"] = videos
 
         if request.GET.get("page"):
-            return render(request, "videos/category_modal_video_list.html", data_context)
+            return render(
+                request, "videos/category_modal_video_list.html", data_context
+            )
 
         data_context = {
             "modal_action": "add",
@@ -3490,7 +3596,9 @@ class PodChunkedUploadView(ChunkedUploadView):
     def check_permissions(self, request):
         if not request.user.is_authenticated:
             return False
-        elif RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
+        elif (
+            RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False
+        ):
             return False
         pass
 
@@ -3502,7 +3610,9 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
     def check_permissions(self, request):
         if not request.user.is_authenticated:
             return False
-        elif RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
+        elif (
+            RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False
+        ):
             return False
         pass
 
@@ -3605,7 +3715,9 @@ def filter_owners(request):
         return auth_get_owners(search, limit, offset)
 
     except Exception as err:
-        return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
+        return JsonResponse(
+            {"success": False, "detail": "Syntax error: {0}".format(err)}
+        )
 
 
 @login_required(redirect_field_name="referrer")
@@ -3619,7 +3731,9 @@ def filter_videos(request, user_id):
         return video_get_videos(title, user_id, search, limit, offset)
 
     except Exception as err:
-        return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
+        return JsonResponse(
+            {"success": False, "detail": "Syntax error: {0}".format(err)}
+        )
 
 
 def get_serialized_channels(request: WSGIRequest, channels: QueryDict) -> dict:
@@ -3714,7 +3828,9 @@ def get_channels_for_specific_channel_tab(request: WSGIRequest) -> JsonResponse:
     return JsonResponse(response, safe=False)
 
 
-def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> JsonResponse:
+def get_theme_list_for_specific_channel(
+    request: WSGIRequest, slug: str
+) -> JsonResponse:
     """
     Get the themes for a specific channel.
 
@@ -3732,7 +3848,9 @@ def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> Json
 def available_filters(request):
     """API endpoint to return all available video filters based on user's videos."""
     user_videos = get_videos_for_owner(request)
-    categories_qs = Category.objects.prefetch_related("video").filter(owner=request.user)
+    categories_qs = Category.objects.prefetch_related("video").filter(
+        owner=request.user
+    )
     categories = list(categories_qs.values("id", "title")[:20])
     types_qs = (
         Type.objects.filter(video__in=user_videos)
@@ -3801,7 +3919,9 @@ def available_filter_by_type(request, filter_name):
             uv, term, lim
         ),
         "tag": lambda req, uv, term, lim: get_filtered_tags_for_videos(uv, term, lim),
-        "owner": lambda req, uv, term, lim: get_filtered_owners_for_videos(uv, term, lim),
+        "owner": lambda req, uv, term, lim: get_filtered_owners_for_videos(
+            uv, term, lim
+        ),
     }
 
     try:
