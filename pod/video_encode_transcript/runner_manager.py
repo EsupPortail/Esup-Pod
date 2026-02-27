@@ -244,9 +244,11 @@ def _rotate_same_priority_runner_managers(
 
 
 def _get_runner_managers(site: Site) -> list[RunnerManager]:
-    """Return site runner managers ordered by priority with round-robin per priority."""
+    """Return active site runner managers ordered by priority with round-robin per priority."""
     ordered_runner_managers = list(
-        RunnerManager.objects.filter(site=site).order_by("priority", "id")
+        RunnerManager.objects.filter(site=site, is_active=True).order_by(
+            "priority", "id"
+        )
     )
     if len(ordered_runner_managers) <= 1:
         return ordered_runner_managers
@@ -438,17 +440,20 @@ def _send_task_to_runner_manager(
     """
 
     try:
+        # Keep a local pending row even when no runner is currently available.
+        # This allows process_tasks to retry submission later.
+        video_id, recording_id = _update_task_pending(source_type, source_id, task_type)
+
         site = Site.objects.get_current()
         runner_managers_list = _get_runner_managers(site)
         if not runner_managers_list:
-            log.error(
-                f"No runner manager defined for site {site.domain}. Cannot process {task_type} for {source_type} {source_id}."
+            log.warning(
+                f"No active runner manager defined for site {site.domain}. Cannot process {task_type} for {source_type} {source_id}."
             )
             return False
 
-        # Build payload and create/set pending task
+        # Build payload and try immediate submission
         data = _prepare_task_data(source_url, base_url, parameters, task_type)
-        video_id, recording_id = _update_task_pending(source_type, source_id, task_type)
 
         # Try each runner manager by priority and stop on the first healthy one.
         for rm in runner_managers_list:
@@ -502,7 +507,8 @@ def encode_video(video_id: int) -> None:
 
     except Exception as exc:
         log.error(
-            'Error to encode video "%(id)s": %(exc)s' % {"id": video_id, "exc": str(exc)}
+            'Error to encode video "%(id)s": %(exc)s'
+            % {"id": video_id, "exc": str(exc)}
         )
 
 
