@@ -81,7 +81,9 @@ def pagination_data(request_path, offset, limit, total_count):
     if offset + limit < total_count and limit <= total_count:
         next_url = "{}?limit={}&offset={}".format(request_path, limit, limit + offset)
     if offset - limit >= 0 and limit <= total_count:
-        previous_url = "{}?limit={}&offset={}".format(request_path, limit, offset - limit)
+        previous_url = "{}?limit={}&offset={}".format(
+            request_path, limit, offset - limit
+        )
 
     current_page = 1 if offset <= 0 else int((offset / limit)) + 1
     total = ceil(total_count / limit)
@@ -198,13 +200,20 @@ def get_videos(
     count = videos.count()
     results = list(
         map(
-            lambda v: {"id": v.id, "title": v.title, "thumbnail": v.get_thumbnail_url()},
+            lambda v: {
+                "id": v.id,
+                "title": v.title,
+                "thumbnail": v.get_thumbnail_url(),
+            },
             videos[offset : limit + offset],
         )
     )
 
     next_url, previous_url, page_infos = pagination_data(
-        reverse("video:filter_videos", kwargs={"user_id": user_id}), offset, limit, count
+        reverse("video:filter_videos", kwargs={"user_id": user_id}),
+        offset,
+        limit,
+        count,
     )
 
     response = {
@@ -305,7 +314,9 @@ def get_storage_path_video(instance, filename) -> str:
     Video.get_storage_path_video(instance, filename)
 
 
-def verify_field_length(field, field_name: str = "title", max_length: int = 100) -> list:
+def verify_field_length(
+    field, field_name: str = "title", max_length: int = 100
+) -> list:
     """Check field length, and return message."""
     msg = list()
     if not field or field == "":
@@ -380,13 +391,15 @@ def apply_search_order_limit_for_taxonomies(
 ):
     """
     Apply the search filter (on field_name), order, and limit
-    for taxonomies returning id, field_name, and video_count.
+    for taxonomies returning id, slug, field_name, and video_count.
     """
     if search_term:
         search_filter = {f"{field_name}__icontains": search_term}
         qs = qs.filter(**search_filter)
     return list(
-        qs.order_by(order_by_field).values("id", field_name, "video_count")[:limit]
+        qs.order_by(order_by_field).values("id", "slug", field_name, "video_count")[
+            :limit
+        ]
     )
 
 
@@ -397,7 +410,7 @@ def get_filtered_categories_for_user(user, search_term=None, limit=20):
     qs = Category.objects.filter(owner=user).prefetch_related("video")
     if search_term:
         qs = qs.filter(title__icontains=search_term)
-    return list(qs.order_by("title").values("id", "title")[:limit])
+    return list(qs.order_by("title").values("id", "slug", "title")[:limit])
 
 
 def get_filtered_types_for_videos(user_videos, search_term=None, limit=20):
@@ -459,7 +472,7 @@ def get_filtered_owners_for_videos(user_videos, search_term=None, limit=20):
         )
 
     return list(
-        users_qs.order_by("username").values("id", "username", "first_name", "last_name")[
-            :limit
-        ]
+        users_qs.order_by("username").values(
+            "id", "username", "first_name", "last_name"
+        )[:limit]
     )
