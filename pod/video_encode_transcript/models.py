@@ -136,7 +136,8 @@ class VideoRendition(models.Model):
             if not vb.isdigit():
                 msg = "Error in %s: " % _(name)
                 raise ValidationError(
-                    "%s %s" % (msg, VideoRendition._meta.get_field(field_name).help_text)
+                    "%s %s"
+                    % (msg, VideoRendition._meta.get_field(field_name).help_text)
                 )
 
     def clean_bitrate(self) -> None:
@@ -148,7 +149,9 @@ class VideoRendition(models.Model):
     def clean(self) -> None:
         """Clean the fields of the VideoRendition model."""
         if self.resolution and "x" not in self.resolution:
-            raise ValidationError(VideoRendition._meta.get_field("resolution").help_text)
+            raise ValidationError(
+                VideoRendition._meta.get_field("resolution").help_text
+            )
         else:
             res = self.resolution.replace("x", "")
             if not res.isdigit():
@@ -466,6 +469,15 @@ class RunnerManager(models.Model):
             "Priority of the runner manager. Lower values indicate higher priority."
         ),
         default=1,
+    )
+
+    # Activation status
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name=_("Active"),
+        help_text=_(
+            "If checked, this runner manager can be used to process tasks."
+        ),
     )
 
     # Runner manager URL
