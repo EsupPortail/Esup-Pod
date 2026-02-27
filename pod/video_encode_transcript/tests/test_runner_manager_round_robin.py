@@ -110,3 +110,26 @@ class RunnerManagerRoundRobinTests(TestCase):
         ordered_ids = [rm.id for rm in _get_runner_managers(self.site)]
 
         self.assertEqual(ordered_ids, [rm2.id, rm1.id, rm4.id, rm3.id])
+
+    def test_get_runner_managers_excludes_inactive_runner_managers(self):
+        """Exclude inactive runner managers from the returned candidates."""
+        active_rm = RunnerManager.objects.create(
+            name="rm-active",
+            priority=1,
+            url="https://rr-active.example.com/",
+            token="token-active",
+            site=self.site,
+            is_active=True,
+        )
+        RunnerManager.objects.create(
+            name="rm-inactive",
+            priority=1,
+            url="https://rr-inactive.example.com/",
+            token="token-inactive",
+            site=self.site,
+            is_active=False,
+        )
+
+        ordered_ids = [rm.id for rm in _get_runner_managers(self.site)]
+
+        self.assertEqual(ordered_ids, [active_rm.id])
