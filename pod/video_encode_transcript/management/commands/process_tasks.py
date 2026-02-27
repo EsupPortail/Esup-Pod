@@ -18,7 +18,7 @@ Execution flow:
      (non-students first), then by submission date.
    - `studio` tasks are processed by submission date.
    - Each type is capped by `--max-tasks`.
-5. Submit tasks to available runner managers (ordered by manager priority):
+5. Submit tasks to available active runner managers (ordered by manager priority):
    - Build payload (`source_url`, `notify_url`, parameters, metadata).
    - Try each runner until one accepts the task.
    - Persist `task_id`, `runner_manager`, and returned status in Pod.
@@ -26,7 +26,7 @@ Execution flow:
    `RM_TASKS_DELETED_AFTER_DAYS`.
 
 Important behavior:
-- If no runner manager exists for the site, submission is skipped.
+- If no active runner manager exists for the site, submission is skipped.
 - Network/API errors on one runner do not stop processing; the command tries
 the next configured runner.
 - Cleanup is skipped when `RM_TASKS_DELETED_AFTER_DAYS` is missing, invalid,
@@ -192,6 +192,14 @@ class Command(BaseCommand):
                 return None
         return Site.objects.get_current()
 
+    def _get_available_runner_managers(self, site: Site) -> list[RunnerManager]:
+        """Return active runner managers for a site, ordered by priority."""
+        return list(
+            RunnerManager.objects.filter(site=site, is_active=True).order_by(
+                "priority", "id"
+            )
+        )
+
     def _check_task_status(self, task: Task) -> str | None:
         """
         Check the status of a running task from the runner manager.
@@ -204,6 +212,13 @@ class Command(BaseCommand):
         """
         if not task.runner_manager or not task.task_id:
             log.warning(f"Task {task.id} has no runner_manager or task_id")
+            return None
+        if not task.runner_manager.is_active:
+            log.warning(
+                "Task %s is linked to inactive runner manager %s, status check skipped",
+                task.id,
+                task.runner_manager.name,
+            )
             return None
 
         try:
@@ -346,7 +361,9 @@ class Command(BaseCommand):
                 self.print_log(
                     f"Processing studio task {task.id} for recording {recording.id}"
                 )
-                result = self._submit_studio_task(recording, task, site, runner_managers)
+                result = self._submit_studio_task(
+                    recording, task, site, runner_managers
+                )
                 if result:
                     success_count += 1
                     self.print_success(
@@ -514,7 +531,9 @@ class Command(BaseCommand):
             return
 
         self.print_log(f"Found {all_pending_tasks.count()} pending encoding task(s)")
-        self.print_log(f"Found {all_pending_studio_tasks.count()} pending studio task(s)")
+        self.print_log(
+            f"Found {all_pending_studio_tasks.count()} pending studio task(s)"
+        )
         self.print_log(
             f"Found {all_pending_transcription_tasks.count()} pending transcription task(s)"
         )
@@ -526,21 +545,23 @@ class Command(BaseCommand):
             all_pending_transcription_tasks, max_tasks
         )
 
-        self.print_log(f"Processing {len(pending_tasks)} task(s) after priority sorting")
-
-        # Get available runner managers for this site
-        runner_managers = list(
-            RunnerManager.objects.filter(site=site).order_by("priority")
+        self.print_log(
+            f"Processing {len(pending_tasks)} task(s) after priority sorting"
         )
+
+        # Get available active runner managers for this site
+        runner_managers = self._get_available_runner_managers(site)
 
         if not runner_managers:
             self.print_warning(
-                f"No runner manager defined for site {site.domain}. Cannot process tasks."
+                f"No active runner manager defined for site {site.domain}. Cannot process tasks."
             )
             return
 
         # Process each pending task
-        success_count_encoding = self._process_tasks(pending_tasks, site, runner_managers)
+        success_count_encoding = self._process_tasks(
+            pending_tasks, site, runner_managers
+        )
         success_count_studio = self._process_studio_tasks(
             pending_studio_tasks, site, runner_managers
         )
