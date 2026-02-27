@@ -188,14 +188,17 @@ class RunnerManagerAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "name",
+        "active_badge",
         "priority",
         "url",
+        "runner_admin_link",
         "site",
     )
     list_display_links = ("id", "name")
     ordering = ("-id", "priority")
     readonly_fields = []
     search_fields = ["id", "name", "site"]
+    list_filter = ("is_active", "site")
 
     def get_urls(self):
         """Register the custom admin endpoint used to test runner connectivity."""
@@ -228,6 +231,30 @@ class RunnerManagerAdmin(admin.ModelAdmin):
         return reverse(
             "admin:video_encode_transcript_runnermanager_change",
             args=[runner_manager.pk],
+        )
+
+    def _runner_admin_url(self, runner_manager: RunnerManager) -> str:
+        """Build runner manager admin URL, handling optional trailing slash."""
+        return f"{runner_manager.url.rstrip('/')}/admin"
+
+    @admin.display(description=_("Status"), ordering="is_active")
+    def active_badge(self, obj):
+        """Render runner manager activation status with a colored badge."""
+        if obj.is_active:
+            return format_html('<span class="badge bg-success">{}</span>', _("Active"))
+        return format_html('<span class="badge bg-secondary">{}</span>', _("Inactive"))
+
+    @admin.display(description=_("Runner administration"))
+    def runner_admin_link(self, obj):
+        """Render link to the remote runner manager administration."""
+        return format_html(
+            '<a class="runner-admin-list-link" href="{}" target="_blank" rel="noopener noreferrer" title="{}">'
+            '<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>'
+            '<span class="visually-hidden">{}</span>'
+            "</a>",
+            self._runner_admin_url(obj),
+            _("Open runner administration"),
+            _("Open runner administration"),
         )
 
     def test_connection_view(self, request, object_id):
@@ -345,7 +372,15 @@ class TaskAdmin(admin.ModelAdmin):
         "runner_manager",
         "script_output",
     )
-    search_fields = ["id", "video__id", "runner_manager__name"]
+    search_fields = [
+        "id",
+        "task_id",
+        "video__id",
+        "video__title",
+        "recording__id",
+        "recording__title",
+        "runner_manager__name",
+    ]
     actions = ["relaunch_selected_tasks"]
 
     def get_readonly_fields(self, request, obj=None):
@@ -358,35 +393,35 @@ class TaskAdmin(admin.ModelAdmin):
         """Return a short label for list display."""
         return Truncator(label).chars(50)
 
-    @admin.display(description="Video ID", ordering="video__id")
+    @admin.display(description=_("Video ID"), ordering="video__id")
     def video_id_display(self, obj):
         """Display the related video identifier, or '-' when absent."""
         if not obj.video_id:
             return "-"
         return obj.video_id
 
-    @admin.display(description="Video", ordering="video__title")
+    @admin.display(description=_("Video"), ordering="video__title")
     def video_label(self, obj):
         """Display a truncated video title, or '-' when no video is linked."""
         if not obj.video_id:
             return "-"
         return self._truncate_label(obj.video.title)
 
-    @admin.display(description="Recording ID", ordering="recording__id")
+    @admin.display(description=_("Recording ID"), ordering="recording__id")
     def recording_id_display(self, obj):
         """Display the related recording identifier, or '-' when absent."""
         if not obj.recording_id:
             return "-"
         return obj.recording_id
 
-    @admin.display(description="Recording", ordering="recording__title")
+    @admin.display(description=_("Recording"), ordering="recording__title")
     def recording_label(self, obj):
         """Display a truncated recording title, or '-' when not linked."""
         if not obj.recording_id:
             return "-"
         return self._truncate_label(obj.recording.title)
 
-    @admin.display(description="Statut", ordering="status")
+    @admin.display(description=_("Status"), ordering="status")
     def status_badge(self, obj):
         """Render task status with a colored badge in list display."""
         badge_map = {
@@ -458,7 +493,8 @@ class TaskAdmin(admin.ModelAdmin):
         refresh_pending_task_ranks()
         self.message_user(
             request,
-            _("%(count)s task(s) relaunched immediately.") % {"count": relaunched_count},
+            _("%(count)s task(s) relaunched immediately.")
+            % {"count": relaunched_count},
             level=messages.SUCCESS,
         )
         if skipped_count:
