@@ -10,6 +10,12 @@
       --test-connection-link-fg: var(--pod-btn-text, #fff);
     }
 
+    .object-tools a.runner-admin-link {
+      --runner-admin-link-bg: var(--button-bg);
+      --runner-admin-link-bg-hover: var(--pod-primary-darken);
+      --runner-admin-link-fg: var(--button-fg, var(--pod-btn-text));
+    }
+
     .object-tools a.test-connection-link {
       display: inline-flex;
       align-items: center;
@@ -24,7 +30,26 @@
       color: var(--test-connection-link-fg);
     }
 
+    .object-tools a.runner-admin-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--runner-admin-link-bg);
+      color: var(--runner-admin-link-fg);
+    }
+
+    .object-tools a.runner-admin-link:hover,
+    .object-tools a.runner-admin-link:focus {
+      background: var(--runner-admin-link-bg-hover);
+      color: var(--runner-admin-link-fg);
+    }
+
     .object-tools a.test-connection-link .test-connection-icon {
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+
+    .object-tools a.runner-admin-link .runner-admin-icon {
       font-size: 0.95rem;
       line-height: 1;
     }
@@ -33,6 +58,17 @@
 
 {% block object-tools-items %}
   {{ block.super }}
+  {% if change and original %}
+    <li>
+      <a class="runner-admin-link"
+         href="{% if original.url|slice:'-1:' == '/' %}{{ original.url }}admin{% else %}{{ original.url }}/admin{% endif %}"
+         target="_blank"
+         rel="noopener noreferrer">
+        <i class="bi bi-box-arrow-up-right runner-admin-icon" aria-hidden="true"></i>
+        {% trans "Runner administration" %}
+      </a>
+    </li>
+  {% endif %}
   {% if change and original %}
     <li>
       <a class="test-connection-link" href="{% url 'admin:video_encode_transcript_runnermanager_test_connection' original.pk|admin_urlquote %}">
