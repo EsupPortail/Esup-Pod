@@ -72,6 +72,7 @@ class FilterManager {
   addFilter({ name, param, searchCallback, itemLabel, itemKey }) {
     try {
       this.filters[param] = {
+        param,
         name,
         searchCallback,
         itemLabel,
@@ -201,16 +202,7 @@ class FilterManager {
    */
   removeFilter(currentFilter, key) {
     if (currentFilter) {
-      const filterElement = document.getElementById(`${slugify(key)}-tag`);
-      const closeButton = document.getElementById(
-        `remove-filter-${slugify(key)}`,
-      );
-      if (closeButton) {
-        const tooltip = bootstrap.Tooltip.getInstance(closeButton);
-        if (tooltip) tooltip.dispose();
-      }
-      const data = currentFilter.selectedItems.get(key);
-      if (filterElement) filterElement.remove();
+      this._removeFilterTag(key);
       currentFilter.selectedItems.delete(key);
       sessionStorage.setItem(
         `filter-${currentFilter.param}`,
@@ -224,10 +216,29 @@ class FilterManager {
    * Initializes the filters from the session.
    */
   async initializeFilters() {
+    let shouldRefresh = false;
+
     for (const param of Object.keys(this.filters)) {
       const filter = this.filters[param];
+      const selectedKeysFromSession = (
+        JSON.parse(sessionStorage.getItem(`filter-${param}`)) || []
+      )
+        .map((value) => slugify(String(value)))
+        .filter((value) => value !== "");
+      const selectedKeysFromUrl = this.getFilterValuesFromUrl(param).map((value) =>
+        slugify(String(value)),
+      );
       const selectedKeys =
-        JSON.parse(sessionStorage.getItem(`filter-${param}`)) || [];
+        selectedKeysFromUrl.length > 0
+          ? selectedKeysFromUrl
+          : selectedKeysFromSession;
+
+      // Refresh only when we apply filters coming from sessionStorage
+      // that are not already present in the URL/server-rendered page.
+      if (selectedKeysFromUrl.length === 0 && selectedKeys.length > 0) {
+        shouldRefresh = true;
+      }
+
       let allItems = [];
       try {
         allItems = await filter.searchCallback("");
@@ -251,7 +262,135 @@ class FilterManager {
         }
       });
     }
-    this.update();
+    this.update({ refresh: shouldRefresh });
+  }
+
+  /**
+   * Returns selected values from URL for one filter key.
+   * Supports repeated and comma-separated values.
+   * @param {string} param - Parameter key.
+   * @returns {Array<string>}
+   */
+  getFilterValuesFromUrl(param) {
+    const searchParams = new URLSearchParams(window.location.search);
+    return searchParams
+      .getAll(param)
+      .flatMap((value) => value.split(","))
+      .map((value) => value.trim())
+      .filter((value) => value !== "");
+  }
+
+  /**
+   * Synchronize one filter with an explicit list of values.
+   * @param {string} param - Parameter key.
+   * @param {Array<string | {value: string, label: string}>} values - Values to set.
+   * @param {Object} [options]
+   * @param {boolean} [options.refresh=true] - Trigger videos refresh.
+   * @param {boolean} [options.emitEvent=true] - Emit dashboard filters event.
+   * @param {boolean} [options.updateUrl=true] - Update browser URL.
+   */
+  syncFilterSelection(
+    param,
+    values = [],
+    { refresh = true, emitEvent = true, updateUrl = true } = {},
+  ) {
+    const filter = this.filters[param];
+    if (!filter) return;
+
+    Array.from(filter.selectedItems.keys()).forEach((key) => {
+      this._removeFilterTag(key);
+    });
+    filter.selectedItems.clear();
+
+    const availableItems = this.currentResults[param] || [];
+    const uniqueEntries = [];
+    const seenKeys = new Set();
+
+    values.forEach((entry) => {
+      const rawValue =
+        typeof entry === "object" && entry !== null ? entry.value : entry;
+      if (!rawValue) return;
+
+      const value = String(rawValue).trim();
+      if (!value) return;
+
+      const key = slugify(value);
+      if (seenKeys.has(key)) return;
+      seenKeys.add(key);
+
+      const providedLabel =
+        typeof entry === "object" && entry !== null ? entry.label : null;
+      const matchedItem = availableItems.find(
+        (item) => slugify(filter.itemKey(item)) === key,
+      );
+      const label =
+        providedLabel ||
+        (matchedItem ? filter.itemLabel(matchedItem) : value);
+
+      uniqueEntries.push({ key, value, label });
+    });
+
+    uniqueEntries.forEach(({ key, value, label }) => {
+      filter.selectedItems.set(key, { value, label });
+      this.renderActiveFilter(filter, key);
+    });
+
+    const listContainer = document.getElementById(
+      `collapseFilter${capitalize(param)}`,
+    );
+    if (listContainer) {
+      this.createCheckboxesForFilter(param, this.currentResults[param] || []);
+    }
+
+    this.update({ refresh, emitEvent, updateUrl });
+  }
+
+  /**
+   * Synchronize one filter from URL query values.
+   * @param {string} param - Parameter key.
+   * @param {Object} [options]
+   * @param {boolean} [options.refresh=true] - Trigger videos refresh.
+   * @param {boolean} [options.emitEvent=true] - Emit dashboard filters event.
+   * @param {boolean} [options.updateUrl=true] - Update browser URL.
+   */
+  syncFilterSelectionFromUrl(
+    param,
+    { refresh = true, emitEvent = true, updateUrl = true } = {},
+  ) {
+    this.syncFilterSelection(param, this.getFilterValuesFromUrl(param), {
+      refresh,
+      emitEvent,
+      updateUrl,
+    });
+  }
+
+  /**
+   * Returns a snapshot of selected filters.
+   * @returns {Object<string, Array<string>>}
+   */
+  getSelectedFiltersSnapshot() {
+    const selectedFilters = {};
+    Object.keys(this.filters).forEach((param) => {
+      selectedFilters[param] = Array.from(this.filters[param].selectedItems.keys());
+    });
+    return selectedFilters;
+  }
+
+  /**
+   * Removes one filter tag from active filters UI.
+   * @param {string} key - Selected key.
+   */
+  _removeFilterTag(key) {
+    const normalizedKey = slugify(key);
+    const filterElement = document.getElementById(`${normalizedKey}-tag`);
+    const closeButton = document.getElementById(
+      `remove-filter-${normalizedKey}`,
+    );
+    if (closeButton) {
+      const tooltip = bootstrap.Tooltip.getInstance(closeButton);
+      if (tooltip) tooltip.dispose();
+    }
+    if (filterElement) filterElement.remove();
   }
 
   /**
@@ -401,8 +540,8 @@ class FilterManager {
   /**
    * Updates the sessionStorage and URL with the selected filters.
    */
-  update() {
-    const query = new URLSearchParams();
+  update({ refresh = true, emitEvent = true, updateUrl = true } = {}) {
+    const query = new URLSearchParams(window.location.search);
 
     Object.keys(this.filters).forEach((param) => {
       const filter = this.filters[param];
@@ -415,10 +554,27 @@ class FilterManager {
         sessionStorage.removeItem(`filter-${param}`);
       }
     });
-    const newUrl = `${window.location.pathname}?${query.toString()}`;
-    window.history.replaceState(null, "", newUrl);
+    query.delete("page");
+    if (updateUrl) {
+      const queryString = query.toString();
+      const newUrl = queryString
+        ? `${window.location.pathname}?${queryString}`
+        : window.location.pathname;
+      window.history.replaceState(null, "", newUrl);
+    }
     this._syncResetLink();
-    refreshVideosSearch();
+    if (emitEvent) {
+      document.dispatchEvent(
+        new CustomEvent("pod:dashboard-filters-updated", {
+          detail: {
+            selectedFilters: this.getSelectedFiltersSnapshot(),
+          },
+        }),
+      );
+    }
+    if (refresh) {
+      refreshVideosSearch();
+    }
   }
 
   /**
