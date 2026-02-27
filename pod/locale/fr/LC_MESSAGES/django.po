@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-13 09:52+0100\n"
+"POT-Creation-Date: 2026-02-27 14:05+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -193,7 +193,8 @@ msgstr "Enrichissements AI"
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz.html pod/recorder/models.py
 #: pod/video/models.py pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
+#: pod/video/templates/videos/videos.html pod/video_encode_transcript/admin.py
+#: pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr "Vidéo"
 
@@ -234,8 +235,8 @@ msgid "Enter the ID of the enhancement in Aristote"
 msgstr "Entrez l’identifiant de l’enrichissement dans Aristote"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
-#: pod/dressing/models.py pod/video/apps.py pod/video/models.py
-#: pod/video/templates/videos/video_breadcrumbs.html
+#: pod/dressing/models.py pod/video/admin.py pod/video/apps.py
+#: pod/video/models.py pod/video/templates/videos/video_breadcrumbs.html
 #: pod/video/templates/videos/videos.html
 msgid "Videos"
 msgstr "Vidéos"
@@ -433,9 +434,9 @@ msgid ""
 "Something went wrong with AI improvement on “%(content_title)s”. Suggestions "
 "for improvement can’t be available on %(site_title)s."
 msgstr ""
-"Une erreur s’est produite sur le traitement par l’IA de « %(content_title)s "
-"». Les suggestions d’amélioration ne peuvent pas être disponibles sur "
-"%(site_title)s."
+"Une erreur s’est produite sur le traitement par l’IA de "
+"« %(content_title)s ». Les suggestions d’amélioration ne peuvent pas être "
+"disponibles sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py
 #, python-format
@@ -457,8 +458,8 @@ msgid ""
 "Something went wrong with AI improvement on “%(content_title)s”  on "
 "%(site_title)s."
 msgstr ""
-"Une erreur s’est produite sur l’amélioration par l’IA de « %(content_title)s "
-"» sur %(site_title)s."
+"Une erreur s’est produite sur l’amélioration par l’IA de "
+"« %(content_title)s » sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
 #: pod/video_encode_transcript/utils.py
@@ -759,8 +760,8 @@ msgid "The file must be in VTT format."
 msgstr "Le fichier doit être au format VTT."
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
-#: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
-#: pod/video_encode_transcript/utils.py
+#: pod/playlist/templates/playlist/playlist_card.html pod/video/admin.py
+#: pod/video/models.py pod/video_encode_transcript/utils.py
 msgid "video"
 msgstr "vidéo"
 
@@ -1355,7 +1356,8 @@ msgstr ""
 #: pod/completion/permissions/video.py
 #, python-brace-format
 msgid "{func.__name__}: Permission denied for user {current_user.pk}."
-msgstr "{func.__name__} : Permission refusée pour l’utilisateur {current_user.pk}."
+msgstr ""
+"{func.__name__} : Permission refusée pour l’utilisateur {current_user.pk}."
 
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
@@ -6048,7 +6050,7 @@ msgstr "Journal des sessions des réunions"
 msgid "Meeting session logs"
 msgstr "Journaux des sessions des réunions"
 
-#: pod/meeting/models.py
+#: pod/meeting/models.py pod/video_encode_transcript/admin.py
 msgid "Recording ID"
 msgstr "Identifiant de l’enregistrement"
 
@@ -6191,6 +6193,7 @@ msgstr ""
 "Pour supprimer la réunion, veuillez cocher la case et cliquer sur supprimer."
 
 #: pod/meeting/templates/meeting/filter_aside.html pod/video/views.py
+#: pod/video_encode_transcript/admin.py
 msgid "Status"
 msgstr "Statut"
 
@@ -6408,7 +6411,8 @@ msgstr "La réunion n’a pas encore commencé."
 msgid ""
 "It is scheduled for <strong>%(start_date)s</strong> at <i>%(start_time)s</i>."
 msgstr ""
-"Elle est planifiée le <strong>%(start_date)s</strong> à <i>%(start_time)s</i>."
+"Elle est planifiée le <strong>%(start_date)s</strong> à <i>%(start_time)s</"
+"i>."
 
 #: pod/meeting/templates/meeting/join.html
 msgid "You will be redirected right after the meeting starts."
@@ -6583,7 +6587,7 @@ msgid "Has user joined?"
 msgstr "Utilisateurs connectés ?"
 
 #: pod/meeting/views.py pod/recorder/models.py
-#: pod/video_encode_transcript/models.py
+#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
 msgid "Recording"
 msgstr "Enregistrement"
 
@@ -9914,6 +9918,7 @@ msgid "Clear all filters"
 msgstr "Effacer tous les filtres"
 
 #: pod/video/templates/videos/dashboard.html
+#: pod/video/templates/videos/filter_aside_category.html
 msgid "Clear filters"
 msgstr "Effacer les filtres"
 
@@ -10629,6 +10634,7 @@ msgstr "La fiche ne contient pas de vidéo."
 msgid "Queue rank:"
 msgstr "Rang dans la file d’attente :"
 
+#: pod/video/templates/videos/video_queue_runner_manager.html
 msgid "Total number of videos in the queue:"
 msgstr "Nombre total de vidéos dans la file d’attente :"
 
@@ -10994,6 +11000,23 @@ msgstr "Erreur serveur lors du traitement du filtre."
 msgid "resolution"
 msgstr "résolution"
 
+#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
+msgid "Active"
+msgstr "Actif"
+
+#: pod/video_encode_transcript/admin.py
+msgid "Inactive"
+msgstr "Inactif"
+
+#: pod/video_encode_transcript/admin.py
+#: pod/video_encode_transcript/templates/admin_test_connection.html
+msgid "Runner administration"
+msgstr "Administration des runners"
+
+#: pod/video_encode_transcript/admin.py
+msgid "Open runner administration"
+msgstr "Ouvrir l’administration des runners"
+
 #: pod/video_encode_transcript/admin.py
 msgid "Runner manager not found."
 msgstr "Runner manager non trouvé."
@@ -11013,8 +11036,8 @@ msgid ""
 "Runner manager '%(name)s' responded but rejected authentication (HTTP "
 "%(status)s). Check the bearer token."
 msgstr ""
-"Le runner manager « %(name)s » a répondu mais a rejeté l’authentification (HTTP "
-"%(status)s). Vérifiez le jeton porteur."
+"Le runner manager « %(name)s » a répondu mais a rejeté l’authentification "
+"(HTTP %(status)s). Vérifiez le jeton porteur."
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
@@ -11027,8 +11050,8 @@ msgid ""
 "Runner manager '%(name)s' is reachable but endpoint %(url)s was not found "
 "(HTTP 404). Check the configured URL."
 msgstr ""
-"Le runner manager « %(name)s » est accessible, mais le point de terminaison %(url)s est introuvable "
-"(HTTP 404). Vérifiez l’URL configurée."
+"Le runner manager « %(name)s » est accessible, mais le point de terminaison "
+"%(url)s est introuvable (HTTP 404). Vérifiez l’URL configurée."
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
@@ -11036,8 +11059,12 @@ msgid ""
 "Runner manager '%(name)s' is reachable but returned an unexpected response "
 "(HTTP %(status)s)."
 msgstr ""
-"Le runner manager « %(name)s » est accessible, mais a renvoyé une réponse inattendue "
-"(HTTP %(status)s)."
+"Le runner manager « %(name)s » est accessible, mais a renvoyé une réponse "
+"inattendue (HTTP %(status)s)."
+
+#: pod/video_encode_transcript/admin.py
+msgid "Video ID"
+msgstr "Identifiant de la vidéo"
 
 #: pod/video_encode_transcript/admin.py
 msgid "Restart selected tasks"
@@ -11170,6 +11197,12 @@ msgid "Priority of the runner manager. Lower values indicate higher priority."
 msgstr ""
 "Priorité du runner manager. Les valeurs les plus basses indiquent une "
 "priorité plus élevée."
+
+#: pod/video_encode_transcript/models.py
+msgid "If checked, this runner manager can be used to process tasks."
+msgstr ""
+"Si cette option est cochée, ce runner manager peut être utilisé pour traiter "
+"des tâches."
 
 #: pod/video_encode_transcript/models.py
 msgid "URL of the runner manager"
