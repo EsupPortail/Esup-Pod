@@ -39,7 +39,7 @@ from .utils import (
 
 if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
-    from pod.podfile.models import CustomImageModel, UserFolder
+    from pod.podfile.models import CustomImageModel
 else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
@@ -232,7 +232,15 @@ def remote_audio_part(
         msg += import_remote_audio(
             info_video["encode_audio"], output_dir, video_to_encode
         )
-        if info_video["has_stream_thumbnail"] and info_video.get("encode_thumbnail"):
+        # Avoid importing the same thumbnail twice when both audio and video are present.
+        if (
+            info_video["has_stream_thumbnail"]
+            and info_video.get("encode_thumbnail")
+            and not (
+                info_video.get("has_stream_video", False)
+                and info_video.get("encode_video")
+            )
+        ):
             msg += import_remote_thumbnail(
                 info_video["encode_thumbnail"], output_dir, video_to_encode
             )
@@ -263,7 +271,9 @@ def remote_video_part(
                 )
                 video_to_encode.save()
                 msg += "\n- existing overview:\n%s" % overview_vtt
-                add_encoding_log(video_id, "attach existing overview: %s" % overview_vtt)
+                add_encoding_log(
+                    video_id, "attach existing overview: %s" % overview_vtt
+                )
             except Exception as err:
                 err_msg = f"Error attaching existing overview: {err}"
                 add_encoding_log(video_id, err_msg)
@@ -275,7 +285,9 @@ def remote_video_part(
                 info_video["encode_thumbnail"], output_dir, video_to_encode
             )
         else:
-            add_encoding_log(video_id, "No thumbnail info in json; skip thumbnail attach")
+            add_encoding_log(
+                video_id, "No thumbnail info in json; skip thumbnail attach"
+            )
     elif info_video["has_stream_video"] or info_video.get("encode_video"):
         msg += "\n- has stream video but not info video "
         add_encoding_log(video_to_encode.id, msg)
@@ -285,61 +297,118 @@ def remote_video_part(
     return msg
 
 
+def _get_ordered_thumbnail_entries(
+    info_encode_thumbnail: EncodedThumbnailInfo | list[EncodedThumbnailInfo],
+) -> list[EncodedThumbnailInfo]:
+    """Return thumbnail entries with the preferred (middle) candidate first."""
+    thumbnail_entries: list[EncodedThumbnailInfo]
+    if isinstance(info_encode_thumbnail, list):
+        thumbnail_entries = info_encode_thumbnail
+    else:
+        thumbnail_entries = [info_encode_thumbnail]
+
+    if not thumbnail_entries:
+        return []
+
+    # Try to normalize list order using the trailing index in filenames (e.g. xx_0.png).
+    indexed_entries: list[tuple[int | None, int, EncodedThumbnailInfo]] = []
+    for position, thumbnail_data in enumerate(thumbnail_entries):
+        filename = thumbnail_data.get("filename", "")
+        match = re.search(r"_(\d+)(?=\.[^.]+$)", os.path.basename(filename))
+        index = int(match.group(1)) if match else None
+        indexed_entries.append((index, position, thumbnail_data))
+
+    has_numeric_indexes = any(index is not None for index, _, _ in indexed_entries)
+    if has_numeric_indexes:
+        thumbnail_entries = [
+            thumbnail_data
+            for _, _, thumbnail_data in sorted(
+                indexed_entries,
+                key=lambda item: (
+                    item[0] is None,
+                    item[0] if item[0] is not None else item[1],
+                ),
+            )
+        ]
+
+    preferred_index = len(thumbnail_entries) // 2
+    ordered_entries = [thumbnail_entries[preferred_index]]
+    ordered_entries.extend(
+        thumbnail_data
+        for pos, thumbnail_data in enumerate(thumbnail_entries)
+        if pos != preferred_index
+    )
+    return ordered_entries
+
+
+def _save_thumbnail_for_video(
+    video_to_encode: Video,
+    thumbnailfilename: str,
+    thumbnail_name: str,
+) -> CustomImageModel:
+    """Persist one thumbnail file and return the stored image object."""
+    if FILEPICKER:
+        videodir = video_to_encode.get_or_create_video_folder()
+        thumbnail = CustomImageModel(folder=videodir, created_by=video_to_encode.owner)
+    else:
+        thumbnail = CustomImageModel()
+    with open(thumbnailfilename, "rb") as thumbnail_file:
+        thumbnail.file.save(
+            thumbnail_name,
+            File(thumbnail_file),
+            save=True,
+        )
+    thumbnail.save()
+    return thumbnail
+
+
 def import_remote_thumbnail(
     info_encode_thumbnail: EncodedThumbnailInfo | list[EncodedThumbnailInfo],
     output_dir: str,
     video_to_encode: Video,
 ) -> str:
-    """Import thumbnail data generated during remote encoding."""
+    """Import all generated thumbnails and associate one preferred thumbnail to the video."""
     msg = ""
-    thumbnail_data = info_encode_thumbnail
-    if isinstance(thumbnail_data, list):
-        # Keep backward compatibility with payloads that wrap a single thumbnail in a list.
-        if not thumbnail_data:
-            msg += "\nERROR THUMBNAILS missing data "
-            add_encoding_log(video_to_encode.id, msg)
-            change_encoding_step(video_to_encode.id, -1, msg)
-            send_email(msg, video_to_encode.id)
-            return msg
-        thumbnail_data = thumbnail_data[0]
-
-    thumbnailfilename = os.path.join(output_dir, thumbnail_data["filename"])
-    if check_file(thumbnailfilename):
-        if FILEPICKER:
-            homedir, created = UserFolder.objects.get_or_create(
-                name="home", owner=video_to_encode.owner
-            )
-            videodir, created = UserFolder.objects.get_or_create(
-                name="%s" % video_to_encode.slug, owner=video_to_encode.owner
-            )
-            thumbnail = CustomImageModel(
-                folder=videodir, created_by=video_to_encode.owner
-            )
-            thumbnail.file.save(
-                thumbnail_data["filename"],
-                File(open(thumbnailfilename, "rb")),
-                save=True,
-            )
-            thumbnail.save()
-            video_to_encode.thumbnail = thumbnail
-            video_to_encode.save()
-        else:
-            thumbnail = CustomImageModel()
-            thumbnail.file.save(
-                thumbnail_data["filename"],
-                File(open(thumbnailfilename, "rb")),
-                save=True,
-            )
-            thumbnail.save()
-            video_to_encode.thumbnail = thumbnail
-            video_to_encode.save()
-        msg += "\n- thumbnailfilename:\n%s" % thumbnailfilename
-    else:
-        msg += "\nERROR THUMBNAILS %s " % thumbnailfilename
-        msg += "Wrong file or path"
+    ordered_thumbnails = _get_ordered_thumbnail_entries(info_encode_thumbnail)
+    if not ordered_thumbnails:
+        msg += "\nERROR THUMBNAILS missing data "
         add_encoding_log(video_to_encode.id, msg)
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
+        return msg
+
+    checked_thumbnail_files: list[str] = []
+    selected_thumbnail: CustomImageModel | None = None
+    for thumbnail_data in ordered_thumbnails:
+        thumbnail_name = thumbnail_data.get("filename")
+        if not thumbnail_name:
+            continue
+
+        thumbnailfilename = os.path.join(output_dir, thumbnail_name)
+        checked_thumbnail_files.append(thumbnailfilename)
+        if not check_file(thumbnailfilename):
+            continue
+
+        stored_thumbnail = _save_thumbnail_for_video(
+            video_to_encode,
+            thumbnailfilename,
+            thumbnail_name,
+        )
+        if selected_thumbnail is None:
+            selected_thumbnail = stored_thumbnail
+        msg += "\n- thumbnailfilename:\n%s" % thumbnailfilename
+
+    if selected_thumbnail is not None:
+        video_to_encode.thumbnail = selected_thumbnail
+        video_to_encode.save()
+        return msg
+
+    missing_files = ", ".join(checked_thumbnail_files) or "missing data"
+    msg += "\nERROR THUMBNAILS %s " % missing_files
+    msg += "Wrong file or path"
+    add_encoding_log(video_to_encode.id, msg)
+    change_encoding_step(video_to_encode.id, -1, msg)
+    send_email(msg, video_to_encode.id)
     return msg
 
 
