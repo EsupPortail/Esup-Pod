@@ -16,6 +16,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      pod-network:
+        aliases:
+          - db
 
   api:
     build:
@@ -39,6 +43,10 @@ services:
       ALLOWED_HOSTS: "*"
       SERVICE_LABEL: api
     command: ["run-server"]
+    networks:
+      pod-network:
+        aliases:
+          - api
   redis:
     image: redis:7
     container_name: pod-v5-api-redis-${VERSION:-dev}
@@ -46,6 +54,10 @@ services:
       - "${REDIS_PORT:-6380}:6379"
     volumes:
       - pod_redis_data_dev:/data
+    networks:
+      pod-network:
+        aliases:
+          - redis
 
   celery:
     build:
@@ -70,6 +82,40 @@ services:
       CELERY_RESULT_BACKEND: redis://redis:6379/0
       SERVICE_LABEL: celery
     command: ["celery", "-A", "config", "worker", "-l", "info"]
+    networks:
+      pod-network:
+        aliases:
+          - celery
+
+  manager:
+    build:
+      context: ../../
+      dockerfile: deployment/dev/Dockerfile.esup-runner
+      target: manager
+    container_name: pod-v5-manager-${VERSION:-dev}
+    ports:
+      - "8081:8081"
+    networks:
+      pod-network:
+        aliases:
+          - manager
+
+  runner:
+    build:
+      context: ../../
+      dockerfile: deployment/dev/Dockerfile.esup-runner
+      target: runner
+    container_name: pod-v5-runner-${VERSION:-dev}
+    depends_on:
+      - manager
+    networks:
+      pod-network:
+        aliases:
+          - runner
+
+networks:
+  pod-network:
+    driver: bridge
 
 volumes:
   pod_db_data_dev:
