@@ -66,6 +66,14 @@ def _get_videos_dir() -> str:
     return str(getattr(settings, "VIDEOS_DIR", "videos"))
 
 
+def _format_video_directory(video_id: int | str) -> str:
+    """Return normalized video directory name using at least 4 digits."""
+    try:
+        return f"{int(video_id):04d}"
+    except (TypeError, ValueError):
+        return str(video_id)
+
+
 class NotifyTaskPayload(TypedDict, total=False):
     """Payload sent by Runner Manager to the notify endpoint."""
 
@@ -410,20 +418,22 @@ def _get_destination_directory(task: Task, dest_base: str | None = None) -> str:
     if dest_base is None:
         # Choose base directory based on task type (encoding, studio or transcription)
         if task.type == "transcription" and getattr(task, "video", None):
+            video_dir = _format_video_directory(task.video.id)
             dest_dir = os.path.join(
                 MEDIA_ROOT,
                 VIDEOS_DIR,
                 str(task.video.owner.owner.hashkey),
-                str(task.video.id),
+                video_dir,
             )
         elif task.type == "studio":
             dest_dir = os.path.join(MEDIA_ROOT, "tasks", str(task.id))
         else:
+            video_dir = _format_video_directory(task.video.id)
             dest_dir = os.path.join(
                 MEDIA_ROOT,
                 VIDEOS_DIR,
                 str(task.video.owner.owner.hashkey),
-                str(task.video.id),
+                video_dir,
             )
         log.info(f"Save result into {dest_dir}")
         os.makedirs(os.path.dirname(dest_dir), exist_ok=True)
@@ -773,7 +783,7 @@ def _create_video_from_studio_task(task: Task, extracted_dir: str | None = None)
     - Validate that the task references a recording (`task.recording_id`).
     - Expect `studio_base.mp4` under MEDIA_ROOT/tasks/<task.id> by default.
     - Create a new Video via `save_basic_video(recording, src_file)`.
-    - Move the task extraction directory to MEDIA_ROOT/VIDEOS_DIR/<hashkey>/<video_id>.
+    - Move the task extraction directory to MEDIA_ROOT/VIDEOS_DIR/<hashkey>/<%04d video_id>.
     - Return the created video's id.
 
     Args:
@@ -857,7 +867,7 @@ def _move_task_directory_to_video(
     """Move the task extraction directory into the final video directory.
 
     Source: MEDIA_ROOT/tasks/<task.id> by default.
-    Destination: MEDIA_ROOT/VIDEOS_DIR/<hashkey>/<video_id>
+    Destination: MEDIA_ROOT/VIDEOS_DIR/<hashkey>/<%04d video_id>
 
     Args:
         task: The `Task` instance (must contain `recording_id`).
@@ -885,8 +895,9 @@ def _move_task_directory_to_video(
             raise RuntimeError(f"Recording not found: {task.recording_id}")
 
     user_hashkey = _get_user_hashkey_from_recording(recording)
+    video_dir = _format_video_directory(video_id)
     dest_dir = os.path.join(
-        _get_media_root(), _get_videos_dir(), user_hashkey, str(video_id)
+        _get_media_root(), _get_videos_dir(), user_hashkey, video_dir
     )
 
     _merge_or_move_directory(source_dir, dest_dir)
