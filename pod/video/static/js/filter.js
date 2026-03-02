@@ -90,6 +90,7 @@ const filterManager = new FilterManager({
 
 // Inject filter configuration into the manager
 filtersConfig.forEach((cfg) => filterManager.addFilter(cfg));
+// Wait for async filter initialization before applying URL params to avoid a race condition
 filterManager.initializeFilters().then(() => {
   const searchParams = new URLSearchParams(window.location.search);
   if (searchParams.has("categories")) {

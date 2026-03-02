@@ -301,6 +301,7 @@ def _get_ordered_thumbnail_entries(
     info_encode_thumbnail: EncodedThumbnailInfo | list[EncodedThumbnailInfo],
 ) -> list[EncodedThumbnailInfo]:
     """Return thumbnail entries with the preferred (middle) candidate first."""
+    # Accept both a single thumbnail payload and a list from different callers.
     thumbnail_entries: list[EncodedThumbnailInfo]
     if isinstance(info_encode_thumbnail, list):
         thumbnail_entries = info_encode_thumbnail
@@ -310,7 +311,8 @@ def _get_ordered_thumbnail_entries(
     if not thumbnail_entries:
         return []
 
-    # Try to normalize list order using the trailing index in filenames (e.g. xx_0.png).
+    # Build sortable tuples: (numeric filename suffix, original position, payload).
+    # Example matched suffix: "thumb_2.png" -> 2.
     indexed_entries: list[tuple[int | None, int, EncodedThumbnailInfo]] = []
     for position, thumbnail_data in enumerate(thumbnail_entries):
         filename = thumbnail_data.get("filename", "")
@@ -318,11 +320,13 @@ def _get_ordered_thumbnail_entries(
         index = int(match.group(1)) if match else None
         indexed_entries.append((index, position, thumbnail_data))
 
-    has_numeric_indexes = any(index is not None for index, _, _ in indexed_entries)
+    has_numeric_indexes = any(entry[0] is not None for entry in indexed_entries)
     if has_numeric_indexes:
+        # Keep numerically indexed files first (ordered by index), then fallback entries
+        # without index in their original input order.
         thumbnail_entries = [
-            thumbnail_data
-            for _, _, thumbnail_data in sorted(
+            entry[2]
+            for entry in sorted(
                 indexed_entries,
                 key=lambda item: (
                     item[0] is None,
@@ -331,6 +335,7 @@ def _get_ordered_thumbnail_entries(
             )
         ]
 
+    # Move the middle candidate to the first position as the preferred thumbnail.
     preferred_index = len(thumbnail_entries) // 2
     ordered_entries = [thumbnail_entries[preferred_index]]
     ordered_entries.extend(
