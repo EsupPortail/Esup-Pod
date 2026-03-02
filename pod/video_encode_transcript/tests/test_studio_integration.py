@@ -65,7 +65,7 @@ class StudioFlowIntegrationTests(TestCase):
 
                 # Destination path must include user hash and video id
                 dest_dir = os.path.join(
-                    tmp_media_root, "videos", user_hash, str(fake_video.id)
+                    tmp_media_root, "videos", user_hash, f"{fake_video.id:04d}"
                 )
                 self.assertTrue(os.path.isdir(dest_dir))
                 # Source folder removed

@@ -16,6 +16,8 @@ import requests
 
 from pod.video_encode_transcript.views import (
     _download_and_store_manifest_member,
+    _format_video_directory,
+    _get_destination_directory,
     _get_user_hashkey_from_recording,
     _merge_or_move_directory,
 )
@@ -134,6 +136,44 @@ class ViewsHelpersTests(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             _get_user_hashkey_from_recording(BadRecording())
+
+    def test_format_video_directory_uses_minimum_four_digits(self):
+        """Format short numeric ids with leading zeros."""
+        self.assertEqual(_format_video_directory(1), "0001")
+        self.assertEqual(_format_video_directory("42"), "0042")
+        self.assertEqual(_format_video_directory(12345), "12345")
+
+    def test_get_destination_directory_uses_padded_video_id(self):
+        """Build destination path with a zero-padded video id for encoding tasks."""
+        task = SimpleNamespace(
+            type="encoding",
+            video=SimpleNamespace(
+                id=1,
+                owner=SimpleNamespace(owner=SimpleNamespace(hashkey="hash123")),
+            ),
+        )
+        with patch("pod.video_encode_transcript.views.MEDIA_ROOT", self.tmp_root):
+            with patch("pod.video_encode_transcript.views.VIDEOS_DIR", "videos"):
+                dest_dir = _get_destination_directory(task)
+
+        expected = os.path.join(self.tmp_root, "videos", "hash123", "0001")
+        self.assertEqual(dest_dir, expected)
+
+    def test_get_destination_directory_uses_padded_video_id_for_transcription(self):
+        """Build destination path with a zero-padded video id for transcription tasks."""
+        task = SimpleNamespace(
+            type="transcription",
+            video=SimpleNamespace(
+                id=9,
+                owner=SimpleNamespace(owner=SimpleNamespace(hashkey="hash123")),
+            ),
+        )
+        with patch("pod.video_encode_transcript.views.MEDIA_ROOT", self.tmp_root):
+            with patch("pod.video_encode_transcript.views.VIDEOS_DIR", "videos"):
+                dest_dir = _get_destination_directory(task)
+
+        expected = os.path.join(self.tmp_root, "videos", "hash123", "0009")
+        self.assertEqual(dest_dir, expected)
 
     def test_download_and_store_manifest_member_retries_chunked_transfer(self):
         """Retry streamed download on chunked transfer break and overwrite partial data."""
