@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block page_content %}
+    {% if exist  == True %}
+        {% trans "Your video has not been archived." %}
+    {% else %}
+        {% trans "Your video has been archived." %}
+    {% endif %}
+{% endblock page_content %}

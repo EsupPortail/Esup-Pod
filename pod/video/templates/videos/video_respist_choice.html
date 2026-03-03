@@ -1,0 +1,27 @@
+<style>
+    #id_action * {
+        padding: 3px;
+    }
+
+    #id_action {
+        padding-bottom: 13px;
+    }
+</style>
+{% extends 'base.html' %}
+{% load i18n %}
+{% block page_content %}
+    {% if ENABLE_PAGE_OBSO_MAIL  == True %}
+        <h1>{% trans "Your video id outdated, what do you want do ?" %}</h1>
+        <h6> <b>{% trans "Link to the video :" %}</b><a href="/video/{{ video.slug }}"> {{ video.title }}</a></h6>
+
+        <form action="/video/valid/form/respit/{{ video.slug }}/" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit">
+        </form>
+        <a href="/video/archive/and/download/{{ video.slug }}/">{% trans "Export this video." %}</a>
+    {% else %}
+        <h1>{% trans "This service is not available." %}</h1>
+    {% endif %}
+
+{% endblock page_content %}

@@ -18,6 +18,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import activate
 from django.utils.translation import gettext as _
 
+from pod.settings import BASE_DIR
 from pod.video.models import Video, Notes, AdvancedNotes, Comment, ViewCount
 from pod.chapter.models import Chapter
 from pod.completion.models import Contributor, Document, Overlay, Track
@@ -261,7 +262,7 @@ class Command(BaseCommand):
                 total_duration += vid.duration
                 total_processed += 1
                 if os.access(vid.video.path, os.F_OK):
-                    total_weight += os.path.getsize(vid.video.path)
+                    total_weight += os.path.getsize(vfid.video.path)
                 list_video.append(str(vid))
                 self.archive_pack(video_dir, csv_entry["User name"], vid)
             else:
@@ -331,3 +332,79 @@ class Command(BaseCommand):
             html_message=msg_html,
         )
         print("Summary sent by email to managers.")
+
+    def archive_download_isolate(self,slug):
+        print("################ GO ################")
+        """Handle a command call."""
+        activate(LANGUAGE_CODE)
+
+        vid = Video.objects.filter(slug=slug)
+        vid = vid[0]
+
+        # Recover original video slug
+        video_dir = vid.slug
+
+        # Create video folder
+        import os.path
+        STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR))
+        mediaPackage_dir = os.path.join(STATIC_ROOT+"/pod/media/video_package", "", video_dir)
+
+        # Create directory to store all the data
+        os.makedirs(mediaPackage_dir, exist_ok=True)
+
+        # Move video file
+        store_as_dublincore(vid, mediaPackage_dir, "")
+
+        # Store Video complements as json
+        for model in [
+            Chapter,
+            Contributor,
+            Overlay,
+            Enrichment,
+            Notes,
+            AdvancedNotes,
+            Comment,
+            ViewCount,
+        ]:
+            # nb: contributors are already exported in dublincore.xml
+            self.export_complement(
+                mediaPackage_dir, model.__name__, model.objects.filter(video=vid)
+            )
+        # Export also the video itself as json
+        self.export_complement(mediaPackage_dir, "Video", [vid])
+
+        # Store also files linked to Enrichments
+        for enrich in Enrichment.objects.filter(video=vid):
+            if enrich.document:
+                print("  * Copying %s..." % enrich.document.file.path)
+                shutil.copy(enrich.document.file.path, mediaPackage_dir)
+            if enrich.image:
+                print("  * Copying %s..." % enrich.image.file.path)
+                shutil.copy(enrich.image.file.path, mediaPackage_dir)
+
+        # Store file complements.
+        for file in Document.objects.filter(video=vid):
+            print("  * Copying %s..." % file.document.file.path)
+            shutil.copy(file.document.file.path, mediaPackage_dir)
+
+        # Store additional tracks (caption / subtitles)
+        for track in Track.objects.filter(video=vid):
+            print("  * Copying %s..." % track.src.file.path)
+            shutil.copy(track.src.file.path, mediaPackage_dir)
+
+        shutil.copy(
+            vid.video.path,
+            mediaPackage_dir,
+        )
+
+        zip_name = os.path.join(STATIC_ROOT+"/pod/media/video_package", "", "")+"/"+vid.slug
+        directory_name = mediaPackage_dir
+
+        # Create 'path\to\zip_file.zip'
+        shutil.make_archive(zip_name, 'zip', directory_name)
+
+        #remove old temp folder
+        path = os.path.join(mediaPackage_dir, "")
+        shutil.rmtree(path)
+
+        return "/media/video_package/"+vid.slug+".zip"
