@@ -11396,6 +11396,43 @@ msgstr "xAPI Esup-Pod"
 #~ msgid "Delete the playlist"
 #~ msgstr "Supprimer la liste de lecture"
 
+#: pod/video/templates/videos/well_archived.html
+msgid "Your video has not been archived."
+msgstr "Votre video n'a PAS été archivé."
+
+#: pod/video/templates/videos/well_archived.html
+msgid "Your video has been archived."
+msgstr "Votre video a bien été archivé."
+
+#: pod/video/templates/videos/well_respit_choice.html
+msgid "Your video id outdated, what do you want do ?"
+msgstr "Votre vidéo est obsolète, que voulez vous faire ?"
+
+msgid "Export this video."
+msgstr "Exporter cette video."
+
+msgid "This service is not available."
+msgstr "Ce service n'est pas accessible."
+
+msgid "Link to the video :"
+msgstr "Lien vers la vidéo :"
+
+#: pod/video/templates/videos/well_prolonged.html
+msgid "The video life span was extended to"
+msgstr "La vidéo est prolongé jusqu'au"
+
+#: pod/video/forms.py
+msgid "Extend (Automatically by one year)"
+msgstr "Prolonger (Automatiquement d'un An)"
+
+msgid "Archive"
+msgstr "Archiver"
+
+
+#, fuzzy, python-format
+#~| msgid "%(counter)s video found"
+#~| msgid_plural "%(counter)s videos found"
+
 #~ msgid ""
 #~ "Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
 #~ "characters."

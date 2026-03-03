@@ -33,6 +33,9 @@ import os
 import re
 
 __FILEPICKER__ = False
+
+from ..custom.settings_local import PROLONGATION_GRANTED
+
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
     from pod.podfile.widgets import CustomFileWidget
@@ -1398,3 +1401,26 @@ class NoteCommentsForm(forms.ModelForm):
 
         model = NoteComments
         fields = ["comment", "status"]
+
+class NameForm(forms.Form):
+    if (PROLONGATION_GRANTED):
+        action = forms.ChoiceField(choices=[
+            (
+                _(""),
+                [
+                    ("Prolonger", _("Extend (Automatically by one year)")),
+                    ("Archiver", _("Archive")),
+                    ("Supprimer", _("Delete")),
+                ]
+            ),
+        ],widget=forms.RadioSelect(attrs={'required': 'True','class':'choice_video'}), required=False, label=False)
+    else:
+        action = forms.ChoiceField(choices=[
+            (
+                _(""),
+                [
+                    ("Archiver", _("Archive")),
+                    ("Supprimer", _("Delete")),
+                ]
+            ),
+        ],widget=forms.RadioSelect(attrs={'required': 'True','class':'choice_video'}), required=False, label=False)

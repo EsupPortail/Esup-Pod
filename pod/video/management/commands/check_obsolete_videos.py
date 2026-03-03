@@ -2,7 +2,7 @@
 
 *  run with 'python manage.py check_obsolete_videos [--dry]'
 """
-
+from asgiref.local import Local
 from django.conf import settings
 from django.utils import translation
 from django.core.management.base import BaseCommand, CommandError
@@ -17,7 +17,8 @@ from django.contrib.sites.shortcuts import get_current_site
 import csv
 import os
 
-from pod.video.models import Video, VideoToDelete
+from pod.custom.settings_local import ENABLE_PAGE_OBSO_MAIL
+from pod.video.models import Video, VideoToDelete, VIDEOS_DIR
 
 from datetime import date, timedelta
 
@@ -114,7 +115,7 @@ class Command(BaseCommand):
         list_video_notified_by_establishment = {}
         list_video_notified_by_establishment.setdefault("other", {})
         for step_day in sorted(WARN_DEADLINES):
-            step_date = date.today() + timedelta(days=step_day)
+            step_date = date.today() + timedelta(days=800)#step_day)
             videos = Video.objects.filter(
                 date_delete=step_date, sites=get_current_site(settings.SITE_ID)
             )
@@ -159,28 +160,29 @@ class Command(BaseCommand):
 
             if vid.owner.owner.affiliation in POD_ARCHIVE_AFFILIATION:
                 if not self.dry_mode:
-                    self.write_in_csv(vid, "archived")
-                    archive_user, created = User.objects.get_or_create(
-                        username=ARCHIVE_OWNER_USERNAME,
-                    )
+                    self.archive_isolate(vid)
+ #                   self.write_in_csv(vid, "archived")
+ #                   archive_user, created = User.objects.get_or_create(
+ #                       username=ARCHIVE_OWNER_USERNAME,
+ #                   )
                     # Rename video and change owner.
-                    vid.owner = archive_user
-                    vid.is_draft = True
-                    vid.title = "%s %s %s" % (
-                        _("Archived"),
-                        date.today(),
-                        vid.title,
-                    )
+ #                   vid.owner = archive_user
+ #                   vid.is_draft = True
+ #                   vid.title = "%s %s %s" % (
+ #                       _("Archived"),
+ #                       date.today(),
+ #                       vid.title,
+ #                   )
                     # Trunc title to 250 chars max.
-                    vid.title = vid.title[:250]
-                    vid.save()
+ #                   vid.title = vid.title[:250]
+ #                   vid.save()
 
                     # add video to delete
-                    vid_delete, created = VideoToDelete.objects.get_or_create(
-                        date_deletion=vid.date_delete
-                    )
-                    vid_delete.video.add(vid)
-                    vid_delete.save()
+ #                   vid_delete, created = VideoToDelete.objects.get_or_create(
+ #                       date_deletion=vid.date_delete
+ #                   )
+ #                   vid_delete.video.add(vid)
+ #                   vid_delete.save()
                 nb_archived += 1
                 if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
                     list_video_archived_by_establishment.setdefault(estab, {})
@@ -216,6 +218,30 @@ class Command(BaseCommand):
             list_video_deleted_by_establishment,
             list_video_archived_by_establishment,
         )
+
+    def archive_isolate(self,vid):
+        self.write_in_csv(vid, "archived")
+        archive_user, created = User.objects.get_or_create(
+            username=ARCHIVE_OWNER_USERNAME,
+        )
+        # Rename video and change owner.
+        vid.owner = archive_user
+        vid.is_draft = True
+        vid.title = "%s %s %s" % (
+            _("Archived"),
+            date.today(),
+            vid.title,
+        )
+        # Trunc title to 250 chars max.
+        vid.title = vid.title[:250]
+        vid.save()
+
+        # add video to delete
+        vid_delete, created = VideoToDelete.objects.get_or_create(
+            date_deletion=vid.date_delete
+        )
+        vid_delete.video.add(vid)
+        vid_delete.save()
 
     def notify_user(self, video: Video, step_day: int) -> int:
         """Notify a user that his video will be deleted soon."""
@@ -270,6 +296,19 @@ class Command(BaseCommand):
             _("Sending mail to %(to_email)s for video %(title)s.")
             % {"to_email": to_email, "title": video.title}
         )
+
+        if (ENABLE_PAGE_OBSO_MAIL):
+            from django.conf import settings
+            scheme = "http"  # ou "https"
+            domain = settings.ALLOWED_HOSTS[0]  # attention si plusieurs
+            base_url = f"{scheme}://{domain}:8000"
+
+            msg_html += "<br>\n"
+            msg_html += "<p> Vous pouvez décidez de destin de votre vidéo ainsi que télécharger toute les données la concernant en clique ici :"
+            msg_html += "<a href='"+base_url+"/video/respit/"+video.slug+"'>Décidez du destin de ma vidéo.</a></p>"
+
+        print(msg_html)
+
         return send_mail(
             "[%s] %s" % (__TITLE_SITE__, _("Your video will be obsolete")),
             striptags(msg_html),
