@@ -3426,6 +3426,45 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "RESPIT_MODEL": {
+                          "default_value": false,
+                          "description": {
+                            "en": [
+                             ""
+                            ],
+                            "fr": [
+                              "Choix du Model pour le calcul du répris"
+                            ]
+                          },
+                          "pod_version_end": "",
+                          "pod_version_init": "4.1.0"
+                        },
+                        "ENABLE_PAGE_OBSO_MAIL": {
+                          "default_value": false,
+                          "description": {
+                            "en": [
+                              ""
+                            ],
+                            "fr": [
+                              "Détermine si l'on active l'envoie d'un lien pour décider du destin de la vidéo lors du rappel envoyé par check_obsolete_video"
+                          ]
+                          },
+                          "pod_version_end": "",
+                          "pod_version_init": "4.1.0"
+                        },
+                        "PROLONGATION_GRANTED": {
+                          "default_value": false,
+                          "description": {
+                            "en": [
+                             ""
+                           ],
+                            "fr": [
+                              "Détermine si oui ou non on autorise le user à prolonger lui même vidéo sur la plateforme lors de l'envoie du mail"
+                            ]
+                          },
+                          "pod_version_end": "",
+                          "pod_version_init": "4.1.0"
                         }
                     },
                     "title": {

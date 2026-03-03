@@ -12,7 +12,7 @@ from django.db.models import Count, F, Q, Case, When, Value, BooleanField
 from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponsePermanentRedirect
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.http import QueryDict, Http404
@@ -63,7 +63,7 @@ from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
 from pod.video.models import get_transcription_choices
 from pod.video.models import UserMarkerTime, VideoAccessToken
-from pod.video.forms import VideoForm, VideoVersionForm
+from pod.video.forms import VideoForm, VideoVersionForm, NameForm
 from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
@@ -101,6 +101,8 @@ from django.db.models import QuerySet
 from django.db import transaction
 
 from django.utils.timezone import timedelta
+
+from ..custom.settings_local import ENABLE_PAGE_OBSO_MAIL, RALLONGE_RESPIT_DAYS
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -3810,3 +3812,69 @@ def get_owners_for_videos_on_dashboard(request):
     users_list = list(users_qs.values(*VALUES).order_by("last_name")[:20])
 
     return HttpResponse(json.dumps(users_list), content_type="application/json")
+
+@login_required(redirect_field_name="referrer")
+def video_respit(request, slug):
+    form = NameForm(request.POST)
+
+    Video.objects.get(slug=slug)
+
+    return render(
+        request,
+        "videos/video_respist_choice.html",
+        {"form": form, "slug" : slug, "video" : Video.objects.get(slug=slug), "ENABLE_PAGE_OBSO_MAIL" : ENABLE_PAGE_OBSO_MAIL },
+    )
+
+def valid_form_respit(request, slug=None):
+    from pod.video.management.commands import check_obsolete_videos
+
+    user=request.user
+    if request.method == "POST":
+        if user.is_authenticated:
+            action = request.POST['action']
+            if (action =="Supprimer"): #Si l'utilisateur sélectionne l'action "supprimer" dans l'interface
+                return HttpResponsePermanentRedirect("/video/delete/"+slug)
+            if (action =="Prolonger"): #Si l'utilisateur sélectionne l'action "prolonger" dans l'interface
+                vivi = Video.objects.get(slug=slug)
+                vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
+                vivi.save()
+                return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)
+            if (action =="Archiver"):
+                cmd = check_obsolete_videos.Command()
+                cmd.archive_isolate(Video.objects.get(slug=slug))
+                return HttpResponsePermanentRedirect("/video/well/archived/or/not/"+slug)
+
+@login_required(redirect_field_name="referrer")
+def well_archived_or_not(request,slug):
+
+    try:
+        vid = Video.objects.get(slug=slug)
+        exist = True
+    except Video.DoesNotExist:
+        exist = False
+
+    return render(
+        request,
+        "videos/well_archived.html", {"exist" : exist}
+    )
+
+@login_required(redirect_field_name="referrer")
+def well_prolonged_or_not(request,slug):
+
+    vid = Video.objects.get(slug=slug)
+
+    return render(
+        request,
+        "videos/well_prolonged.html", {"new_date_delete" : vid.date_delete}
+    )
+
+@login_required(redirect_field_name="referrer")
+def archive_and_download(request,slug):
+    from pod.video.management.commands import create_archive_package
+    cmd = create_archive_package.Command()
+    url = cmd.archive_download_isolate(slug)
+
+    return render(
+        request,
+        "videos/archive_download.html", {"url" : url}
+    )
