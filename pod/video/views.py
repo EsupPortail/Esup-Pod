@@ -171,7 +171,7 @@ from .utils import (
 # from django.contrib.auth.hashers import check_password
 
 
-from ..custom.settings_local import ENABLE_PAGE_OBSO_MAIL, RALLONGE_RESPIT_DAYS
+from ..custom.settings_local import ENABLE_PAGE_OBSO_MAIL, RALLONGE_RESPIT_DAYS, WARN_DEADLINES
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -3975,14 +3975,13 @@ def get_owners_for_videos_on_dashboard(request):
 
 @login_required(redirect_field_name="referrer")
 def video_respit(request, slug):
+    display_or_not = able_or_not_respit(slug)
     form = NameForm(request.POST)
-
-    Video.objects.get(slug=slug)
 
     return render(
         request,
         "videos/video_respist_choice.html",
-        {"form": form, "slug" : slug, "video" : Video.objects.get(slug=slug), "ENABLE_PAGE_OBSO_MAIL" : ENABLE_PAGE_OBSO_MAIL },
+        {"form": form, "slug" : slug, "video" : Video.objects.get(slug=slug), "ENABLE_PAGE_OBSO_MAIL" : ENABLE_PAGE_OBSO_MAIL, "display_or_not" : display_or_not },
     )
 
 def valid_form_respit(request, slug=None):
@@ -3995,10 +3994,14 @@ def valid_form_respit(request, slug=None):
             if (action =="Supprimer"): #Si l'utilisateur sélectionne l'action "supprimer" dans l'interface
                 return HttpResponsePermanentRedirect("/video/delete/"+slug)
             if (action =="Prolonger"): #Si l'utilisateur sélectionne l'action "prolonger" dans l'interface
-                vivi = Video.objects.get(slug=slug)
-                vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
-                vivi.save()
-                return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)
+                if able_or_not_respit(slug) == True:
+                    vivi = Video.objects.get(slug=slug)
+                    vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
+                    vivi.save()
+                    return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)
+                else:
+                    raise Exception('Vous ne pouvez pas prolonger plus votre video')
+                    print ('')
             if (action =="Archiver"):
                 cmd = check_obsolete_videos.Command()
                 cmd.archive_isolate(Video.objects.get(slug=slug))
@@ -4038,3 +4041,23 @@ def archive_and_download(request,slug):
         request,
         "videos/archive_download.html", {"url" : url}
     )
+
+def able_or_not_respit(slug):
+    ###########################
+    # Calcul control access
+    ###########################
+    all_warn = WARN_DEADLINES
+    higher_warn=0
+
+    for aw in all_warn:
+        if higher_warn <= aw:
+            higher_warn = aw
+
+    vid = Video.objects.get(slug=slug)
+
+    step_date = vid.date_delete - timedelta(days=higher_warn)
+    display_or_not  = date.today() >= (step_date)
+    ###########################
+    ###########################
+
+    return display_or_not

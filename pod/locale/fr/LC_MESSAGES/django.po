@@ -11422,8 +11422,11 @@ msgid "The video life span was extended to"
 msgstr "La vidéo est prolongé jusqu'au"
 
 #: pod/video/forms.py
-msgid "Extend (Automatically by one year)"
-msgstr "Prolonger (Automatiquement d'un An)"
+msgid "Extend (Automatically by "
+msgstr "Prolonger (Automatiquement de "
+
+msgid " days)"
+msgstr " jours)"
 
 msgid "Archive"
 msgstr "Archiver"
