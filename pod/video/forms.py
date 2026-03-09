@@ -34,7 +34,7 @@ import re
 
 __FILEPICKER__ = False
 
-from ..custom.settings_local import PROLONGATION_GRANTED
+from ..custom.settings_local import PROLONGATION_GRANTED, RALLONGE_RESPIT_DAYS
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
@@ -1410,7 +1410,7 @@ class NameForm(forms.Form):
             (
                 _(""),
                 [
-                    ("Prolonger", _("Extend (Automatically by one year)")),
+                    ("Prolonger", _("Extend (Automatically by ")+str(RALLONGE_RESPIT_DAYS)+_(" days)")),
                     ("Archiver", _("Archive")),
                     ("Supprimer", _("Delete")),
                 ]

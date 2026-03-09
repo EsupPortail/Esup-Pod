@@ -49,4 +49,4 @@ def calcul(parameters) :
         score_fav = 0
 
 
-    return (vue_score + duration_score + score_commentaire + score_fav)
+    return (vue_score + duration_score + score_commentaire + score_fav)+10

@@ -116,7 +116,7 @@ class Command(BaseCommand):
         list_video_notified_by_establishment = {}
         list_video_notified_by_establishment.setdefault("other", {})
         for step_day in sorted(WARN_DEADLINES):
-            step_date = date.today() + timedelta(days=800)#step_day)
+            step_date = date.today() + timedelta(days=step_day)
             videos = Video.objects.filter(
                 date_delete=step_date, sites=get_current_site(settings.SITE_ID)
             )
