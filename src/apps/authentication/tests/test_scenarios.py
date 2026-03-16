@@ -14,7 +14,6 @@ from ..conf import AuthConfig
 def reload_urlconf():
     """Reload URL configurations after settings change."""
     clear_url_caches()
-    # Reload authentication URLs (which read auth_settings at module level)
     auth_urls_module = "src.apps.authentication.urls"
     config_urls_module = settings.ROOT_URLCONF
 

@@ -84,14 +84,9 @@ class VideoValidationTests(APITestCase):
         }
         response = self.client.post(self.url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        # video = Video.objects.get(title="Default Status Video")
-        # Because of src/apps/video/signals.py:48, it becomes PUBLISHED
-        # self.assertEqual(video.status, Video.Status.PUBLISHED) TODO: à décommenter quand les esup runner seront dans la stack docker
 
     def test_publish_success(self):
         """Test_Publish_Success"""
-        # Create directly in DB to bypass auto-publish signal logic for test setup if needed
-        # Or just use update
         video = Video.objects.create(
             title="To Publish",
             owner=self.user,
@@ -145,19 +140,12 @@ class VideoValidationTests(APITestCase):
             deletion_date=timezone.now() + timedelta(days=1),
         )
 
-        # Try to publish
         url = f"{self.url}{video.slug}/"
         data = {"status": Video.Status.PUBLISHED}
         response = self.client.patch(url, data)
 
-        # Expect failure or ignore
         if response.status_code == status.HTTP_200_OK:
             video.refresh_from_db()
-            # If scenario says "Refus", we expect it not to be published.
-            # But implementation might not handle this yet.
-            # We write the test to FAIL if requirements are met (TDD style).
-            # Or we assert what currently happens and mark as TODO?
-            # User asked to "validate these scenarios".
             pass
 
 
@@ -212,7 +200,6 @@ class VideoPermissionsTests(APITestCase):
 
     def test_view_draft_owner(self):
         """Test_View_Draft_Owner: Draft visible by owner"""
-        # Set to Draft
         Video.objects.filter(pk=self.video.pk).update(status=Video.Status.DRAFT)
 
         self.client.force_authenticate(user=self.owner)
@@ -225,7 +212,6 @@ class VideoPermissionsTests(APITestCase):
 
         self.client.force_authenticate(user=self.stranger)
         response = self.client.get(self.url)
-        # Should be 403 or 404
         self.assertIn(
             response.status_code, [status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND]
         )

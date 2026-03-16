@@ -39,7 +39,21 @@ class Command(BaseCommand):
         else:
             self.stdout.write(f"Superuser '{username}' already exists.")
 
-        owner, _ = Owner.objects.get_or_create(user=user)
+        # Ensure Owner exists, handle potential conflicts or existing records with same hashkey
+        owner = Owner.objects.filter(user=user).first()
+        if not owner:
+            # If no owner for this user, check if there's an orphaned owner with the same hashkey
+            # (can happen if user was deleted/recreated and constraint didn't clean up)
+            import hashlib
+            from src.apps.authentication.models.utils import SECRET_KEY
+
+            h = hashlib.sha256((SECRET_KEY + user.username).encode("utf-8")).hexdigest()
+            owner = Owner.objects.filter(hashkey=h).first()
+            if owner:
+                owner.user = user
+                owner.save()
+            else:
+                owner = Owner.objects.create(user=user)
 
         if Site.objects.exists():
             site = Site.objects.first()
