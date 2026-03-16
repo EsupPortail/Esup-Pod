@@ -41,7 +41,7 @@ class Owner(models.Model):
         choices=AFFILIATION,
         default=DEFAULT_AFFILIATION,
     )
-    commentaire = models.TextField(_("Comment"), blank=True, default="")
+    comment = models.TextField(_("Comment"), blank=True, default="")
     hashkey = models.CharField(
         max_length=64,
         unique=True,
