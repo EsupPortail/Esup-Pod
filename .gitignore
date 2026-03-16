@@ -24,6 +24,15 @@ src/apps/*/migrations/*_initial.py
 venv/
 env/
 
+# --- Outils de Linters / Formateurs ---
+.ruff_cache/
+.mypy_cache/
+
+# --- Divers ---
+*.bak
+*.tmp
+*.sql
+
 # --- IDE & OS ---
 .idea/
 .vscode/
