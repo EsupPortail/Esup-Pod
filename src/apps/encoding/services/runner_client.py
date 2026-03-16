@@ -58,6 +58,7 @@ class RunnerClient:
 def get_runner_client() -> RunnerClient:
     """Factory to get the configured runner client."""
     from config.env import env
+
     manager_url = env("ENCODING_MANAGER_URL", default="")
     manager_token = env("ENCODING_MANAGER_TOKEN", default="")
     return RunnerClient(url=manager_url, token=manager_token)
