@@ -1,0 +1,46 @@
+[flake8]
+exclude =
+    # Version Control & Environments
+    .git,
+    .venv,
+    venv,
+    __pycache__,
+
+    # Testing & Coverage
+    .pytest_cache,
+    htmlcov,
+
+    # Migrations
+    */migrations/*,
+
+    # Static & Media
+    src/static/*,
+    staticfiles,
+    media,
+    node_modules,
+
+    # Specific Custom ignores
+    *_settings.py,
+    src/custom/tenants/*/*,
+    docs
+
+max-complexity = 9
+max-line-length = 90
+
+# See https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#flake8
+ignore =
+    # Black
+    E501,
+    E203,
+    W503,
+
+    # Pydocstyle
+    D107,
+    D105,
+
+    # flake8-annotations
+    ANN002,
+    ANN003,
+    ANN101,
+    ANN102,
+    ANN204

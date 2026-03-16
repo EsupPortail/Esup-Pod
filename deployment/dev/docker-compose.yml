@@ -1,0 +1,44 @@
+services:
+  db:
+    image: mariadb:10.11
+    container_name: pod_mariadb_dev
+    env_file:
+      - ../../.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+    ports:
+      - "${MYSQL_PORT:-3307}:3306"
+    volumes:
+      - pod_db_data_dev:/var/lib/mysql
+      - ./init_test_db.sql:/docker-entrypoint-initdb.d/init_test_db.sql
+    healthcheck:
+      test: ["CMD", "scripts/healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ../../
+      dockerfile: deployment/dev/Dockerfile
+    container_name: "pod_api_dev${VERSION}"
+    volumes:
+      - ../../:/app
+      - pod_media_dev:/app/media
+    ports:
+      - "${EXPOSITION_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_started
+    env_file:
+      - ../../.env
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      DJANGO_SETTINGS_MODULE: config.django.dev.docker
+      ALLOWED_HOSTS: "*"
+    command: ["run-server"]
+
+volumes:
+  pod_db_data_dev:
+  pod_media_dev:
