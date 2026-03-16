@@ -60,7 +60,7 @@ class OwnerInline(admin.StackedInline):
             exclude_set.add("hashkey")
             exclude_set.add("auth_type")
             exclude_set.add("affiliation")
-            exclude_set.add("commentaire")
+            exclude_set.add("comment")
         if not request.user.is_superuser:
             exclude_set.add("sites")
         return [f for f in fields if f not in exclude_set]
