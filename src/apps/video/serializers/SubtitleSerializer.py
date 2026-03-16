@@ -9,4 +9,4 @@ class SubtitleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subtitle
-        fields = ["id", "language", "file", "is_default"]
+        fields = ["id", "video", "language", "file", "is_default"]
