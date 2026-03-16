@@ -3983,7 +3983,7 @@ def video_respit(request, slug):
     )
 
 def valid_form_respit(request, slug=None):
-    from pod.video.management.commands import check_obsolete_videos
+    #from pod.video.management.commands import check_obsolete_videos
 
     user=request.user
     if request.method == "POST":
@@ -3993,17 +3993,25 @@ def valid_form_respit(request, slug=None):
                 return HttpResponsePermanentRedirect("/video/delete/"+slug)
             if (action =="Prolonger"): #Si l'utilisateur sélectionne l'action "prolonger" dans l'interface
                 if able_or_not_respit(slug) == True:
-                    vivi = Video.objects.get(slug=slug)
-                    vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
-                    vivi.save()
-                    return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)
+                    #vivi = Video.objects.get(slug=slug)
+                    #vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
+                    #vivi.save()
+                    #return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)
+                    return render(
+                        request,
+                        "videos/prolong_or_not.html", {"slug" : slug, "RALLONGE_RESPIT_DAYS" : RALLONGE_RESPIT_DAYS}
+                    )
                 else:
                     raise Exception('Vous ne pouvez pas prolonger plus votre video')
                     print ('')
             if (action =="Archiver"):
-                cmd = check_obsolete_videos.Command()
-                cmd.archive_isolate(Video.objects.get(slug=slug))
-                return HttpResponsePermanentRedirect("/video/well/archived/or/not/"+slug)
+                #cmd = check_obsolete_videos.Command()
+                #cmd.archive_isolate(Video.objects.get(slug=slug))
+                #return HttpResponsePermanentRedirect("/video/well/archived/or/not/"+slug)
+                return render(
+                    request,
+                    "videos/archive_or_not.html", {"slug" : slug}
+                )
 
 @login_required(redirect_field_name="referrer")
 def well_archived_or_not(request,slug):
@@ -4037,7 +4045,7 @@ def archive_and_download(request,slug):
 
     return render(
         request,
-        "videos/archive_download.html", {"url" : url}
+        "videos/archive_download.html", {"url" : url, "slug" : slug}
     )
 
 def able_or_not_respit(slug):
@@ -4054,8 +4062,23 @@ def able_or_not_respit(slug):
     vid = Video.objects.get(slug=slug)
 
     step_date = vid.date_delete - timedelta(days=higher_warn)
-    display_or_not  = date.today() >= (step_date)
+    display_or_not  = date.today() >= step_date
     ###########################
     ###########################
 
     return display_or_not
+
+
+def go_archive(request, slug=None):
+    from pod.video.management.commands import check_obsolete_videos
+
+    cmd = check_obsolete_videos.Command()
+    cmd.archive_isolate(Video.objects.get(slug=slug))
+    return HttpResponsePermanentRedirect("/video/well/archived/or/not/"+slug)
+
+
+def go_prolong(request, slug):
+    vivi = Video.objects.get(slug=slug)
+    vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
+    vivi.save()
+    return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)

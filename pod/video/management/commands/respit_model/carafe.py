@@ -22,31 +22,4 @@ def calcul(parameters) :
     #category_list: categories of the video (array)
 
     print(parameters)
-
-    ########## code perso ##########
-    #score pour la vue
-    if (parameters['view_count'] > 10):
-        vue_score= parameters['view_count']/5
-    else:
-        vue_score=0
-
-    # score pour la durée
-    if (int(datetime.strptime(parameters['duration_video'], '%H:%M:%S').time().strftime('%S')) > 10):
-        duration_score = 0
-    else:
-        duration_score = 10
-
-    #score les commentaires
-    if (parameters['nb_comment'] >= 2):
-        score_commentaire=2
-    else :
-        score_commentaire=0
-
-    #score favoris
-    if (parameters['nb_fav'] >= 1):
-        score_fav = 1
-    else :
-        score_fav = 0
-
-
-    return (vue_score + duration_score + score_commentaire + score_fav)+10
+    return 1

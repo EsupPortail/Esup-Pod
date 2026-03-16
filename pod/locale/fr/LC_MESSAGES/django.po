@@ -11427,7 +11427,45 @@ msgstr " jours)"
 msgid "Archive"
 msgstr "Archiver"
 
+#: pod/video/templates/videos/prolong_or_not.html
+msgid "Are you to want to extend this video life span ?"
+msgstr "Êtes vous sur de vouloir prolonger cette vidéo ?"
 
+msgid "This will extend the video life span by "
+msgstr "Cela ralongera la durée de vie de la vidéo de "
+
+msgid " days."
+msgstr " jours."
+
+msgid "Extend"
+msgstr "Prolonger"
+
+msgid "Back to choices"
+msgstr "Retour aux choix"
+
+msgid "Video extension"
+msgstr "Prolongation Vidéo"
+
+msgid "Return to homepage."
+msgstr "Retour à l'accueil."
+
+msgid "Video Archiving"
+msgstr "Archivage Vidéo"
+
+msgid "Are you sure you want to archive this video ?"
+msgstr "Êtes-vous sur de vouloir archiver cette vidéo ?"
+
+msgid "The archiving is permanent."
+msgstr "L'archivage est définitif."
+
+msgid "Archive Download"
+msgstr "Téléchargement de l'archive"
+
+msgid "The download gonna start."
+msgstr "Le téléchargement de votre archive va se lancer."
+
+msgid "Please Wait."
+msgstr "Veuillez patienter."
 #, fuzzy, python-format
 #~| msgid "%(counter)s video found"
 #~| msgid_plural "%(counter)s videos found"
