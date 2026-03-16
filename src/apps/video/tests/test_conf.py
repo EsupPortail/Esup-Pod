@@ -16,8 +16,6 @@ class VideoSettingsTests(SimpleTestCase):
         the setting is defined in Django settings. We patch the source to
         isolate the env-reading behavior.
         """
-        # Case 1: Set to True — we bypass DjangoSettingsSource by patching it
-        # to return nothing, so only env_settings contributes.
         with mock.patch(
             "src.apps.utils.conf.DjangoSettingsSource.__call__",
             return_value={},
@@ -26,7 +24,6 @@ class VideoSettingsTests(SimpleTestCase):
                 config = VideoConfig()
                 self.assertTrue(config.use_stats_view)
 
-        # Case 2: Set to False
         with mock.patch(
             "src.apps.utils.conf.DjangoSettingsSource.__call__",
             return_value={},
@@ -37,11 +34,9 @@ class VideoSettingsTests(SimpleTestCase):
 
     def test_default_values(self):
         """Test default values when env vars are not set."""
-        # Ensure env var is NOT set
         with mock.patch.dict(os.environ):
             if "HIDE_USER_FILTER" in os.environ:
                 del os.environ["HIDE_USER_FILTER"]
 
             config = VideoConfig()
-            # Default value as per src/apps/video/conf.py is False
             self.assertFalse(config.hide_user_filter)

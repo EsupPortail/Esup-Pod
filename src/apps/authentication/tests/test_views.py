@@ -65,7 +65,6 @@ class ShibbolethLoginViewTests(APITestCase):
         headers = {
             "HTTP_REMOTE_USER": "shibuser",
         }
-        # The secure header (HTTP_X_SECURE) is missing in the request
         response = self.client.get(self.url, **headers)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -78,19 +77,16 @@ class OIDCLoginViewTests(APITestCase):
     @patch("requests.get")
     @patch(
         "src.apps.authentication.services.providers.oidc.auth_settings",
-        # FIX: Une seule lambda pour instancier l'objet directement
         new_callable=lambda: AuthConfig(
             use_oidc=True,
         ),
     )
     def test_oidc_success(self, mock_settings, mock_get, mock_post):
-        # Mock Token response
         mock_token_resp = MagicMock()
         mock_token_resp.json.return_value = {"access_token": "fake_access_token"}
         mock_token_resp.status_code = 200
         mock_post.return_value = mock_token_resp
 
-        # Mock UserInfo response
         mock_user_resp = MagicMock()
         mock_user_resp.json.return_value = {
             "preferred_username": "oidcuser",
