@@ -86,9 +86,11 @@ class VideoViewSet(viewsets.ModelViewSet):
             source_url = self.request.build_absolute_uri(video.video_file.url)
             trigger_runner_encoding_task.delay(video.pk, source_url)
 
-    @action(detail=True, methods=["get"])
+    @action(detail=True, methods=["get"], permission_classes=[permissions.AllowAny])
     def stream(self, request, slug=None):
-        video = self.get_object()
+        from django.shortcuts import get_object_or_404
+
+        video = get_object_or_404(Video, slug=slug)
         user = request.user
         is_owner_or_admin = user.is_authenticated and (
             user.is_superuser
@@ -115,9 +117,11 @@ class VideoViewSet(viewsets.ModelViewSet):
         response["Content-Type"] = "video/mp4"
         return response
 
-    @action(detail=True, methods=["post"])
+    @action(detail=True, methods=["post"], permission_classes=[permissions.AllowAny])
     def register_view(self, request, slug=None):
-        video = self.get_object()
+        from django.shortcuts import get_object_or_404
+
+        video = get_object_or_404(Video, slug=slug)
         video.view_count = F("view_count") + 1
         video.save(update_fields=["view_count"])
         video.refresh_from_db()
@@ -133,13 +137,14 @@ class VideoViewSet(viewsets.ModelViewSet):
         """
         Unlocks a RESTRICTED video with a password.
         """
-        video = self.get_object()
+        from django.shortcuts import get_object_or_404
+
+        video = get_object_or_404(Video, slug=slug)
         if video.status == Video.Status.RESTRICTED and video.is_auth_required:
             if not request.user.is_authenticated:
                 raise PermissionDenied("You must be logged in to access this video.")
         input_password = request.data.get("password")
         if video.password and check_password(input_password, video.password):
-            request = self.context.get("request")
             url = (
                 request.build_absolute_uri(video.video_file.url)
                 if video.video_file
