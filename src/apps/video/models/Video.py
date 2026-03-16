@@ -228,7 +228,9 @@ class Video(models.Model):
             ),
             "date": self.created_at.strftime("%Y-%m-%d") if self.created_at else "",
             "format": "video/mp4",
-            "rights": self.license if self.license else video_settings.default_dc_rights,
+            "rights": (
+                self.license if self.license else video_settings.default_dc_rights
+            ),
             "coverage": video_settings.default_dc_coverage,
         }
 

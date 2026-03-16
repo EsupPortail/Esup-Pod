@@ -19,7 +19,8 @@ def get_storage_path_video(instance, filename: str) -> str:
 def get_storage_path_image(instance, filename: str) -> str:
     ext = filename.split(".")[-1]
     return os.path.join(
-        encoding_settings.thumbnails_dir, f"{instance.slug}_{uuid.uuid4().hex[:6]}.{ext}"
+        encoding_settings.thumbnails_dir,
+        f"{instance.slug}_{uuid.uuid4().hex[:6]}.{ext}",
     )
 
 
