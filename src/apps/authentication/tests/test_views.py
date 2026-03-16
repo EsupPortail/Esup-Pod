@@ -14,7 +14,10 @@ User = get_user_model()
 class LoginViewTests(APITestCase):
     def setUp(self):
         self.username = "testuser"
-        self.password = "testpass123"
+        # ggignore-start
+        # gitguardian:ignore
+        self.password = "testpass123"  # nosec
+        # ggignore-end
         self.user = User.objects.create_user(
             username=self.username, password=self.password
         )
