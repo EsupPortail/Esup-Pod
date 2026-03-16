@@ -248,6 +248,7 @@ class Video(models.Model):
         self.set_password()
         if not self.id:
             from src.apps.video.services.metadata import calculate_expiration_date
+
             self.date_to_delete = calculate_expiration_date(self.owner)
         if self.pk:
             old_version = Video.objects.get(pk=self.pk)
@@ -255,6 +256,7 @@ class Video(models.Model):
                 from src.apps.encoding.services.storage import (
                     move_video_files_to_new_owner,
                 )
+
                 move_video_files_to_new_owner(self, old_version.owner, self.owner)
         super().save(*args, **kwargs)
 
