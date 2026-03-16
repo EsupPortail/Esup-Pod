@@ -83,7 +83,6 @@ class StorageServicesTests(TestCase):
     def test_move_video_files_to_new_owner(self, mock_makedirs, mock_exists, mock_move):
         mock_exists.return_value = True
 
-        # We need mock hashkeys for owners, assuming user.owner is created by signals
         self.video.video_file.name = f"videos/{self.user.owner.hashkey}/1/test.mp4"
         self.video.thumbnail.name = f"videos/{self.user.owner.hashkey}/1/thumb.jpg"
 

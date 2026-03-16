@@ -13,7 +13,6 @@ from src.apps.video.models import Video
 
 User = get_user_model()
 
-# Create a temporary directory for media files during tests
 TEMP_MEDIA_ROOT = tempfile.mkdtemp()
 
 
@@ -31,20 +30,16 @@ class VideoPermissionsTests(APITestCase):
         super().tearDownClass()
 
     def setUp(self):
-        # Users
         self.user_owner = User.objects.create_user(username="owner", password="password")
         self.user_other = User.objects.create_user(username="other", password="password")
         self.user_admin = User.objects.create_superuser(
             username="admin", password="password"
         )
 
-        # Mock file content
         self.video_content = SimpleUploadedFile(
             "test.mp4", b"file_content", content_type="video/mp4"
         )
 
-        # Videos with different statuses
-        # Videos with different statuses
         self.video_published = Video.objects.create(
             title="Published Video",
             owner=self.user_owner,
@@ -60,7 +55,6 @@ class VideoPermissionsTests(APITestCase):
             video_file=self.video_content,
             duration=120,
         )
-        # Force status to RESTRICTED and duration to 1 (to bypass signal override)
         Video.objects.filter(pk=self.video_restricted.pk).update(
             status=Video.Status.RESTRICTED, duration=1
         )
@@ -71,15 +65,11 @@ class VideoPermissionsTests(APITestCase):
             owner=self.user_owner,
             video_file=self.video_content,
         )
-        # Force status to DRAFT and duration to 1
         Video.objects.filter(pk=self.video_draft.pk).update(
             status=Video.Status.DRAFT, duration=1
         )
         self.video_draft.refresh_from_db()
 
-        # Endpoint URLs
-        # Assuming router uses 'videos' and lookup 'slug'
-        # Adjust if actual routing is different
         self.list_url = "/api/videos/"
         self.detail_url = lambda slug: f"/api/videos/{slug}/"
 
@@ -92,7 +82,6 @@ class VideoPermissionsTests(APITestCase):
         """
         self.client.logout()
 
-        # List
         response = self.client.get(self.list_url)
         results = (
             response.data["results"]
@@ -105,15 +94,12 @@ class VideoPermissionsTests(APITestCase):
         self.assertNotIn(self.video_restricted.id, ids)
         self.assertNotIn(self.video_draft.id, ids)
 
-        # Detail - Published -> OK
         response = self.client.get(self.detail_url(self.video_published.slug))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # Detail - Restricted -> 404 (filtered out by queryset)
         response = self.client.get(self.detail_url(self.video_restricted.slug))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-        # Detail - Draft -> 404
         response = self.client.get(self.detail_url(self.video_draft.slug))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -126,7 +112,6 @@ class VideoPermissionsTests(APITestCase):
         """
         self.client.force_authenticate(user=self.user_other)
 
-        # List
         response = self.client.get(self.list_url)
         results = (
             response.data["results"]
@@ -139,7 +124,6 @@ class VideoPermissionsTests(APITestCase):
         self.assertIn(self.video_restricted.id, ids)
         self.assertNotIn(self.video_draft.id, ids)
 
-        # Detail - Restricted -> OK
         response = self.client.get(self.detail_url(self.video_restricted.slug))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -152,7 +136,6 @@ class VideoPermissionsTests(APITestCase):
         """
         self.client.force_authenticate(user=self.user_owner)
 
-        # List - should see everything I own
         response = self.client.get(self.list_url)
         results = (
             response.data["results"]
@@ -163,14 +146,12 @@ class VideoPermissionsTests(APITestCase):
         ids = [v["id"] for v in results]
         self.assertIn(self.video_draft.id, ids)
 
-        # Update
         data = {"title": "Updated Title"}
         response = self.client.patch(self.detail_url(self.video_draft.slug), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.video_draft.refresh_from_db()
         self.assertEqual(self.video_draft.title, "Updated Title")
 
-        # Delete
         response = self.client.delete(self.detail_url(self.video_draft.slug))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Video.objects.filter(id=self.video_draft.id).exists())
@@ -180,7 +161,6 @@ class VideoPermissionsTests(APITestCase):
         """Test video creation."""
         self.client.force_authenticate(user=self.user_owner)
 
-        # New upload
         video_file = SimpleUploadedFile(
             "new.mp4", b"new_content", content_type="video/mp4"
         )
@@ -193,11 +173,8 @@ class VideoPermissionsTests(APITestCase):
         response = self.client.post(self.list_url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # Verify
         video = Video.objects.get(title="New Video")
         self.assertEqual(video.owner, self.user_owner)
-        # self.assertEqual(video.status, Video.Status.ENCODING)
-        # Note: Status might change due to signals/async tasks on file upload failure (mock file)
         self.assertTrue(
             video.status
             in [Video.Status.ENCODING, Video.Status.PUBLISHED, Video.Status.ERROR]

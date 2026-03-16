@@ -11,9 +11,9 @@ Usage:
 
 import os
 
-from config.django.test.init_env import *  # noqa: F401, F403
+from config.django.test.init_env import *
 
-from ..base import *  # noqa: F401, F403
+from ..base import *
 
 DATABASES = {
     "default": {

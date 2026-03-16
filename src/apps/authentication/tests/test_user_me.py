@@ -6,6 +6,7 @@ from ..models import Owner
 
 User = get_user_model()
 
+
 class UserMeViewTests(APITestCase):
     def setUp(self):
         self.username = "testuser"
@@ -13,7 +14,9 @@ class UserMeViewTests(APITestCase):
         self.user = User.objects.create_user(
             username=self.username, password=self.password
         )
-        Owner.objects.filter(user=self.user).update(affiliation="student", establishment="Etab_1")
+        Owner.objects.filter(user=self.user).update(
+            affiliation="student", establishment="Etab_1"
+        )
         self.client.force_authenticate(user=self.user)
         self.url = reverse("user_me")
 
@@ -30,8 +33,6 @@ class UserMeViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_user_detail_still_works(self):
-        # Ensure that moving the URL didn't break standard user detail access if needed
-        # Note: UserViewSet is registered with router, so 'user-detail' should exist.
         detail_url = reverse("user-detail", kwargs={"pk": self.user.pk})
         response = self.client.get(detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

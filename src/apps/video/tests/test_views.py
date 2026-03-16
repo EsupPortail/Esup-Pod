@@ -80,7 +80,7 @@ class VideoViewSetTests(APITestCase):
 
     @patch("src.apps.video.views.VideoViewSet.encoding_settings")
     def test_perform_create_quota_exceeded(self, mock_settings):
-        mock_settings.user_quota_size_gb = 0  # 0 GB quota
+        mock_settings.user_quota_size_gb = 0
 
         self.client.force_authenticate(user=self.user)
         url = reverse("video-list")
