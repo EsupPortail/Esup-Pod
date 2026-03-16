@@ -1,0 +1,107 @@
+name: Pod V5 CI/CD
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - dev_v5
+      - main
+
+jobs:
+  # 1. Code Quality
+  quality-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install flake8 black
+
+      - name: Format code with Black
+        run: |
+          black . -l 90
+
+      - name: Lint with flake8
+        run: flake8 src --count --show-source --statistics
+
+  # 2. Docker Integration, E2E & Security (The Authoritative Test)
+  test-docker-full:
+    needs: [quality-check]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Create .env file
+        run: cp .env.docker .env
+
+      - name: Build Stack
+        env:
+          VERSION: ${VERSION}
+          DJANGO_SETTINGS_MODULE: config.django.dev.docker
+        run: make build
+
+      - name: Start Stack
+        env:
+          VERSION: ${VERSION}
+          DJANGO_SETTINGS_MODULE: config.django.dev.docker
+        run: make start
+
+      - name: Wait for Services
+        run: |
+          set -e
+          echo "Waiting for API..."
+          # Retry loop to wait for API to be ready
+          count=0
+          until curl -sf http://127.0.0.1:8000/api/docs/ > /dev/null || [ $count -eq 60 ]; do
+             echo "Waiting for API... ($count/60)"
+             sleep 2
+             count=$((count+1))
+          done
+
+          if [ $count -eq 60 ]; then
+            echo "API failed to start"
+            make logs
+            exit 1
+          fi
+
+      - name: Run Tests with Coverage (Inside Docker)
+        run: make test
+
+      - name: Install E2E dependencies
+        run: |
+          pip install --upgrade pip
+          pip install requests
+
+      - name: Run Smoke & E2E Tests
+        # Runs against the running docker container from the host
+        run: python src/config/django/test/e2e_scenario.py
+
+      - name: Basic Load Test
+        run: |
+          fail=0
+          for i in {1..50}; do
+            curl -sf http://127.0.0.1:8000/api/docs/ > /dev/null || fail=1 &
+          done
+          wait
+          if [ "$fail" -ne 0 ]; then
+            echo "Load test failed"
+            exit 1
+          fi
+
+      - name: Teardown
+        if: always()
+        run: make clean

@@ -1,0 +1,49 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# --- Django ---
+*.log
+settings_local.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
+
+# --- Environnement & Secrets ---
+.env
+.env.prod
+
+.venv/
+venv/
+env/
+
+# --- IDE & OS ---
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# --- Docker ---
+mysql_data/
+
+# --- Custom files ---
+log/
+media/
+transcription/
+src/config/settings/*
+!src/config/settings/__init__.py
+!src/config/settings/README.md
+!src/config/settings/*.example
+
+
+# --- Tests & Coverage ---
+.pytest_cache/
+htmlcov/
+.coverage

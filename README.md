@@ -23,13 +23,24 @@ Le projet et la plateforme qui porte le même nom ont pour but de faciliter
 la mise à disposition de vidéos et de ce fait, d’encourager
 l’utilisation de celles-ci dans le cadre de l’enseignement et la recherche.
 
-#### Documentation technique
+**Esup-Pod V5** est l’API backend de la plateforme de gestion vidéo Pod.  
+Conçue pour l’Enseignement Supérieur et la Recherche, elle permet la publication, l’enrichissement et la diffusion de vidéos.
 
-* [Documentation générale (installation, paramétrage etc.)](https://www.esup-portail.org/wiki/display/ES/esup-pod)
-* [Conteneurisation (installation, paramétrage, lancement etc.)](./dockerfile-dev-with-volumes/README.adoc)
-* [Configuration (paramétrage, personnalisation etc.)](./CONFIGURATION_FR.md)
+> [!NOTE]
+> Ce dépôt contient le backend **V5 (Python/Django)**.  
+> Retrouvez la documentation ici [ESUP-POD V5 Documentation](./docs/README.md)
+> Pour la version V4 ou la documentation institutionnelle, voir le [ESUP-Portail Wiki](https://www.esup-portail.org/wiki/display/ES/esup-pod).
+
 
 ## [EN]
+
+**Esup-Pod V5** is the backend API for the Pod video management platform.
+Ideally suited for Higher Education and Research institutions, it facilitates video publishing, enrichment, and dissemination.
+
+> [!NOTE]
+> This repository contains the **V5 (Python/Django)** backend.
+> Find the documentation here [ESUP-POD V5 Documentation](./docs/README.md)
+> For the legacy V4 version or specific institutional documentation, please refer to the [ESUP-Portail Wiki](https://www.esup-portail.org/wiki/display/ES/esup-pod).
 
 ### Video file management platform
 
@@ -43,6 +54,19 @@ The project and the platform of the same name are aimed at users of our institut
 by allowing the publication of videos in the fields of research
 (promotion of platforms, etc.), training (tutorials, distance training, student reports, etc.),
 institutional life (video of events), offering several days of content.
+
+## Quick Start
+
+For developers, a **Makefile** is available to simplify common tasks.
+
+```bash
+make help          # List all available commands
+make start         # Start the project with Docker
+make test          # Run tests inside Docker
+```
+
+For detailed instructions, see:
+*   [Development Guide](docs/deployment/dev/dev.md)
 
 ### Technical documentation
 

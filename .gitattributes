@@ -1,0 +1,3 @@
+# Set the default behaviour, in case users have not set core.autocrlf.
+* text=auto
+Dockerfile text eol=lf
