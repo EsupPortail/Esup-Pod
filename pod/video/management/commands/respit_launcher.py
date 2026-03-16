@@ -13,7 +13,7 @@ import time
 
 from django.core.management.base import BaseCommand, CommandError
 
-USE_RESPIT = getattr(settings, "USE_RESPIT", True)
+USE_RESPIT = getattr(settings, "USE_RESPIT", False)
 
 class Command(BaseCommand):
     help = "Closes the specified poll for voting"
