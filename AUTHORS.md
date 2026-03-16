@@ -1,21 +1,29 @@
 Esup-Pod Authors
 ================
 
-Maintainer
-----------
+V5 Core Team
+------------
 
- [Esup Portail](https://www.esup-portail.org/)
+* Giorgio UTZERI, University of Lille, France ([@giorgio](https://www.linkedin.com/in/giorgio-utzeri-504b7b25a/))
+* Benjamin SERE, University of Lille, France ([@benjamin](https://www.linkedin.com/in/benjamin-sere-8578b2333/))
 
-Original Authors
-----------------
+
+Current Maintainer
+------------------
+
+[Esup Portail](https://www.esup-portail.org/)
+
+
+Project History
+---------------
+
+### Original Developer
 
 * Nicolas Can, University of Lille, France ([@ptitloup](https://github.com/ptitloup))
 
-Contributors for the V3
-----------------------------
+### V3 Contributors (Patches & Bug Reports)
 
-A list of much-appreciated contributors
-who have submitted patches and reported bugs for the V3:
+A list of much-appreciated contributors who have submitted patches and reported bugs for the V3:
 
 * Olivier Bado-Faustin, University Cote d'Azur (design and template)
 * Nicolas Lahoche, University of Lille (design and template) with all the PRI Team
@@ -24,22 +32,3 @@ who have submitted patches and reported bugs for the V3:
 * Farid Ait Karra, University of Lille (Docker part)
 * Maxime Taisne and Laurine Sajdak, University of Lille (Documentation and User part)
 * French Ministry of Education (who funded the development of some features)
-
-Partnership
-----------------------------
-
-* Elygames
-* OrionStudio
-
-Previous Author/Contributors
-----------------------------
-
-A list of much-appreciated contributors who have submitted patches and reported bugs:
-
-* Joël Obled, Esup-Portail Consortium, France ([@DrClockwork](https://github.com/DrClockwork))
-* Charlotte Benard (Logo and color of V2)
-* Frederic Sene, INSA Rennes
-* Frédéric Colau, Eliam Lotonga and Jeremie Grepilloux, University Grenoble Alpes
-* Loic Bonavent, University of Montpellier
-* Guillaume Condesse, University of Bordeaux
-* All participants of the October 2018 Pod Technical Workshop
