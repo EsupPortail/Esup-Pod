@@ -53,7 +53,11 @@ class EncodingWebhookViewTests(APITestCase):
     def test_webhook_error_status(self, mock_env):
         mock_env.return_value = "mysecret"
 
-        data = {"video_id": self.video.id, "status": "error", "error": "Encoding failed."}
+        data = {
+            "video_id": self.video.id,
+            "status": "error",
+            "error": "Encoding failed.",
+        }
 
         response = self.client.post(
             self.url, data, format="json", HTTP_X_WEBHOOK_SECRET="mysecret"
