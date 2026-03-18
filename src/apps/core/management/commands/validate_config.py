@@ -30,9 +30,7 @@ from pydantic_settings import BaseSettings
 
 
 class Command(BaseCommand):
-    help = (
-        "Validate config classes against configuration.json and generate CONFIGURATION.md"
-    )
+    help = "Validate config classes against configuration.json and generate CONFIGURATION.md"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -162,7 +160,11 @@ class Command(BaseCommand):
                                 val = translations[lang]
                                 if isinstance(val, list):
                                     val = " ".join(val)
-                                if not val or val.strip() == "" or "TODO" in val.upper():
+                                if (
+                                    not val
+                                    or val.strip() == ""
+                                    or "TODO" in val.upper()
+                                ):
                                     warnings.append(
                                         f"[{app_name}] Key '{key}' -> '{trans_field}' [{lang}] is empty or contains TODO."
                                     )

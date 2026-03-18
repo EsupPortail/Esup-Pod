@@ -63,7 +63,9 @@ class VideoViewSet(viewsets.ModelViewSet):
         ).distinct()
 
     def perform_create(self, serializer):
-        user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file="")
+        user_videos = Video.objects.filter(owner=self.request.user).exclude(
+            video_file=""
+        )
         total_bytes = sum(v.video_file.size for v in user_videos if v.video_file)
         incoming_file = self.request.FILES.get("video_file")
         incoming_size = incoming_file.size if incoming_file else 0
@@ -110,7 +112,9 @@ class VideoViewSet(viewsets.ModelViewSet):
         if not is_owner_or_admin:
             if video.status == Video.Status.RESTRICTED:
                 if video.is_auth_required and not user.is_authenticated:
-                    raise PermissionDenied("Authentication required to play this video.")
+                    raise PermissionDenied(
+                        "Authentication required to play this video."
+                    )
                 if video.password:
                     raise PermissionDenied(
                         "Direct stream access forbidden. Password required."

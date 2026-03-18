@@ -1,48 +1,33 @@
 import os
 import uuid
-import shutil
-from django.utils.text import slugify
-from src.apps.encoding.conf import encoding_settings
-from django.conf import settings
 
 
 def get_storage_path_video(instance, filename: str) -> str:
     """
-    Calculates the storage path: videos/<hash_user>/<slug>.<ext>
+    Generates an optimized, user-independent storage path.
+    Format: videos/<first_2_chars>/<next_2_chars>/<uuid>.<ext>
+    Example: videos/a1/b2/a1b2c3d4e5f6...mp4
     """
-    ext = filename.split(".")[-1]
-    user_partition = slugify(instance.owner.username)
-    filename = f"{instance.slug}.{ext}"
-    return os.path.join(encoding_settings.videos_dir, user_partition, filename)
+    ext = filename.split(".")[-1].lower()
+
+    file_uuid = uuid.uuid4().hex
+
+    folder_level_1 = file_uuid[:2]
+    folder_level_2 = file_uuid[2:4]
+    new_filename = f"{file_uuid}.{ext}"
+
+    return os.path.join("videos", folder_level_1, folder_level_2, new_filename)
 
 
 def get_storage_path_image(instance, filename: str) -> str:
-    ext = filename.split(".")[-1]
+    """
+    Generates an optimized, user-independent storage path.
+    Format: thumbnails/<first_2_chars>/<next_2_chars>/<uuid>.<ext>
+    Example: thumbnails/a1/b2/a1b2c3d4e5f6...mp4
+    """
+    ext = filename.split(".")[-1].lower()
+    file_uuid = uuid.uuid4().hex
+
     return os.path.join(
-        encoding_settings.thumbnails_dir,
-        f"{instance.slug}_{uuid.uuid4().hex[:6]}.{ext}",
+        "thumbnails", file_uuid[:2], file_uuid[2:4], f"{file_uuid}.{ext}"
     )
-
-
-def move_video_files_to_new_owner(video, old_owner, new_owner):
-    """
-    Physically moves the video folder and updates the paths in the database.
-    """
-    old_hash = old_owner.owner.hashkey
-    new_hash = new_owner.owner.hashkey
-    if old_hash == new_hash:
-        return
-    video_folder_name = f"{video.id:04d}"
-    old_base_path = os.path.join(
-        settings.MEDIA_ROOT, "videos", old_hash, video_folder_name
-    )
-    new_user_path = os.path.join(settings.MEDIA_ROOT, "videos", new_hash)
-    new_base_path = os.path.join(new_user_path, video_folder_name)
-    if os.path.exists(old_base_path):
-        os.makedirs(new_user_path, exist_ok=True)
-        shutil.move(old_base_path, new_base_path)
-    if video.video_file:
-        video.video_file.name = video.video_file.name.replace(old_hash, new_hash)
-    if video.thumbnail:
-        video.thumbnail.name = video.thumbnail.name.replace(old_hash, new_hash)
-    video.save(update_fields=["video_file", "thumbnail"])

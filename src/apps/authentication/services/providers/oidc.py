@@ -17,14 +17,18 @@ class OIDCService:
     def process_code(self, code: str, redirect_uri: str) -> Dict[str, Any]:
         """Exchange OIDC code for tokens and populate user."""
 
-        token_url = env("OIDC_OP_TOKEN_ENDPOINT", default=defaults.OIDC_OP_TOKEN_ENDPOINT)
+        token_url = env(
+            "OIDC_OP_TOKEN_ENDPOINT", default=defaults.OIDC_OP_TOKEN_ENDPOINT
+        )
         client_id = env("OIDC_RP_CLIENT_ID", default=defaults.OIDC_RP_CLIENT_ID)
         client_secret = env(
             "OIDC_RP_CLIENT_SECRET", default=defaults.OIDC_RP_CLIENT_SECRET
         )
 
         if not token_url:
-            raise EnvironmentError("OIDC not configured (missing OIDC_OP_TOKEN_ENDPOINT)")
+            raise EnvironmentError(
+                "OIDC not configured (missing OIDC_OP_TOKEN_ENDPOINT)"
+            )
 
         payload = {
             "grant_type": "authorization_code",

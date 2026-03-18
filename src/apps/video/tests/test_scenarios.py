@@ -103,7 +103,9 @@ class VideoValidationTests(APITestCase):
         video.refresh_from_db()
         self.assertEqual(video.status, Video.Status.PUBLISHED)
 
-    @patch("src.apps.video.serializers.VideoSerializer.video_settings.webtv_mode", False)
+    @patch(
+        "src.apps.video.serializers.VideoSerializer.video_settings.webtv_mode", False
+    )
     def test_publish_fail_no_source_when_webtv_disabled(self):
         """Test: Impossible to publish a video without a source file if WEBTV_MODE = False"""
         video = Video.objects.create(
@@ -162,7 +164,9 @@ class VideoPermissionsTests(APITestCase):
 
     def setUp(self):
         self.owner = User.objects.create_user(username="owner", password="password")
-        self.stranger = User.objects.create_user(username="stranger", password="password")
+        self.stranger = User.objects.create_user(
+            username="stranger", password="password"
+        )
         self.video_content = SimpleUploadedFile(
             "test.mp4", b"file_content", content_type="video/mp4"
         )
