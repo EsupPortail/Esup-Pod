@@ -9,6 +9,8 @@
   ![Open issues](https://img.shields.io/github/issues-raw/EsupPortail/Esup-Pod)
   ![last commit push](https://img.shields.io/github/last-commit/EsupPortail/Esup-Pod)
   [![Author](https://img.shields.io/badge/author-Ptitloup-blue)](https://www.linkedin.com/in/nicolas-can-a6bb7869/)
+  [![Developer V5](https://img.shields.io/badge/developer--v5-Giorgio_UTZERI-blue)](https://www.linkedin.com/in/giorgio-utzeri-504b7b25a/)
+  [![Developer V5](https://img.shields.io/badge/developer--v5-Benjamin_SERE-blue)](https://www.linkedin.com/in/benjamin-sere-8578b2333/)
 
 ## [FR]
 
@@ -22,6 +24,8 @@ et soutenu également par le [Ministère de l’Enseignement supérieur, de la R
 Le projet et la plateforme qui porte le même nom ont pour but de faciliter
 la mise à disposition de vidéos et de ce fait, d’encourager
 l’utilisation de celles-ci dans le cadre de l’enseignement et la recherche.
+
+**Développement V5 :** Cette nouvelle version a été intégralement développée par **Giorgio UTZERI** et **Benjamin SERE** (Université de Lille).
 
 **Esup-Pod V5** est l’API backend de la plateforme de gestion vidéo Pod.  
 Conçue pour l’Enseignement Supérieur et la Recherche, elle permet la publication, l’enrichissement et la diffusion de vidéos.
@@ -54,6 +58,8 @@ The project and the platform of the same name are aimed at users of our institut
 by allowing the publication of videos in the fields of research
 (promotion of platforms, etc.), training (tutorials, distance training, student reports, etc.),
 institutional life (video of events), offering several days of content.
+
+**V5 Development:** This new version was entirely developed by **Giorgio UTZERI** and **Benjamin SERE** (University of Lille).
 
 ## Quick Start
 

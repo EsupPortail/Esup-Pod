@@ -19,11 +19,12 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
+          python-version: "3.12"
+          cache: "pip"
 
       - name: Install dependencies
         run: |
+          pip install -r requirements.txt
           pip install flake8 black
 
       - name: Format code with Black
@@ -32,6 +33,9 @@ jobs:
 
       - name: Lint with flake8
         run: flake8 src --count --show-source --statistics
+
+      - name: Create .env file
+        run: cp .env.example .env
 
   # 2. Docker Integration, E2E & Security (The Authoritative Test)
   test-docker-full:
@@ -43,10 +47,10 @@ jobs:
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Create .env file
-        run: cp .env.docker .env
+        run: cp .env.example .env
 
       - name: Build Stack
         env:
@@ -79,7 +83,7 @@ jobs:
           fi
 
       - name: Run Tests with Coverage (Inside Docker)
-        run: make test
+        run: make test-cov
 
       - name: Install E2E dependencies
         run: |

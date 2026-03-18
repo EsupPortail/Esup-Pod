@@ -1,56 +1,29 @@
-from django.conf import settings
+"""
+Authentication model utilities.
+
+User display logic and model choices. Constants are imported from constants.py,
+configuration from conf.py.
+"""
+
 from django.contrib.auth.models import User
-from django.utils.translation import gettext_lazy as _
 
-if getattr(settings, "USE_PODFILE", False):
-    pass  # TODO : change import path when files will be implamented
-else:
-    pass
+from ..conf import auth_settings
+from ..constants import AFFILIATION, AUTH_TYPE, DEFAULT_AFFILIATION, ESTABLISHMENTS
 
-HIDE_USERNAME = getattr(settings, "HIDE_USERNAME", False)
-
-AUTH_TYPE = getattr(
-    settings,
+# Re-export for backward compatibility with existing imports
+__all__ = [
     "AUTH_TYPE",
-    (
-        ("local", _("local")),
-        ("CAS", "CAS"),
-        ("OIDC", "OIDC"),
-        ("Shibboleth", "Shibboleth"),
-    ),
-)
-AFFILIATION = getattr(
-    settings,
     "AFFILIATION",
-    (
-        ("student", _("student")),
-        ("faculty", _("faculty")),
-        ("staff", _("staff")),
-        ("employee", _("employee")),
-        ("member", _("member")),
-        ("affiliate", _("affiliate")),
-        ("alum", _("alum")),
-        ("library-walk-in", _("library-walk-in")),
-        ("researcher", _("researcher")),
-        ("retired", _("retired")),
-        ("emeritus", _("emeritus")),
-        ("teacher", _("teacher")),
-        ("registered-reader", _("registered-reader")),
-    ),
-)
-DEFAULT_AFFILIATION = AFFILIATION[0][0]
-AFFILIATION_STAFF = getattr(
-    settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
-)
-ESTABLISHMENTS = getattr(
-    settings,
+    "DEFAULT_AFFILIATION",
+    "AFFILIATION_STAFF",
     "ESTABLISHMENTS",
-    (
-        ("Etab_1", "Etab_1"),
-        ("Etab_2", "Etab_2"),
-    ),
-)
-SECRET_KEY = getattr(settings, "SECRET_KEY", "")
+    "HIDE_USERNAME",
+    "get_name",
+]
+
+HIDE_USERNAME = auth_settings.hide_username
+AFFILIATION_STAFF = auth_settings.affiliation_staff
+SECRET_KEY = ""  # Kept for backward compat, should not be used from here
 
 
 def get_name(self: User) -> str:

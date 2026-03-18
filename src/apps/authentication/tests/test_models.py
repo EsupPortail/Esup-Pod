@@ -14,7 +14,6 @@ class TestOwnerModel(TestCase):
     def test_hashkey_generation(self):
         user = self.User.objects.create(username="hashkeytest")
         owner = user.owner
-        # hashkey is generated on save if empty
         owner.save()
         self.assertTrue(len(owner.hashkey) > 0)
 
@@ -26,7 +25,10 @@ class TestOwnerModel(TestCase):
         user = self.User.objects.create(
             username="strtest", first_name="John", last_name="Doe"
         )
-        # Depending on HIDE_USERNAME settings, output changes.
-        # Default seems to be HIDE_USERNAME=False based on previous file read?
-        # Let's just check it contains the name
         self.assertIn("John Doe", str(user.owner))
+
+    def test_user_str(self):
+        user = self.User.objects.create(
+            username="userstr", first_name="Admin", last_name="User"
+        )
+        self.assertIn("Admin User (userstr)", str(user))

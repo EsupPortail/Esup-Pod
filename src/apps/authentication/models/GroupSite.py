@@ -1,5 +1,4 @@
 import logging
-import traceback
 
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
@@ -45,7 +44,6 @@ def create_groupsite_profile(sender, instance, created: bool, **kwargs) -> None:
         try:
             GroupSite.objects.get_or_create(group=instance)
         except Exception as e:
-            msg = "\n Create groupsite profile ***** Error:%r" % e
-            msg += "\n%s" % traceback.format_exc()
-            logger.error(msg)
-            print(msg)
+            logger.exception(
+                "Failed to create GroupSite profile for group %r: %s", instance, e
+            )
