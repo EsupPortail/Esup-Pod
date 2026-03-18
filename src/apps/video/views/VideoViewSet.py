@@ -45,7 +45,7 @@ class VideoViewSet(viewsets.ModelViewSet):
                 Q(status=Video.Status.RESTRICTED) & Q(is_auth_required=False)
             )
             if not video_settings.homepage_shows_passworded:
-                q_filter &= ~Q(password__isnull=False) & ~Q(password__exact="")
+                q_filter &= (Q(password__isnull=True) | Q(password__exact=""))
             return qs.filter(q_filter).distinct()
         if user.is_superuser:
             return qs
