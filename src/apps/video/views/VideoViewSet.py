@@ -1,4 +1,5 @@
 import os
+import logging
 
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, parsers, filters
@@ -14,6 +15,8 @@ from django.db.models import F
 from src.apps.video.conf import video_settings
 from src.apps.encoding.conf import encoding_settings
 from rest_framework.exceptions import ValidationError
+
+logger = logging.getLogger(__name__)
 
 
 class VideoViewSet(viewsets.ModelViewSet):
@@ -65,12 +68,14 @@ class VideoViewSet(viewsets.ModelViewSet):
         incoming_file = self.request.FILES.get("video_file")
         incoming_size = incoming_file.size if incoming_file else 0
         max_quota_bytes = encoding_settings.user_quota_size_gb * 1024 * 1024 * 1024
+
         if total_bytes + incoming_size > max_quota_bytes:
             raise ValidationError(
                 {
                     "video_file": f"Quota exceeded. You are limited to {encoding_settings.user_quota_size_gb} GB."
                 }
             )
+
         licence_fournie = self.request.data.get("license")
         video = serializer.save(
             owner=self.request.user,
@@ -82,8 +87,13 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         if video.video_file:
             from src.apps.encoding.tasks import trigger_runner_encoding_task
+            from django.conf import settings
 
-            source_url = self.request.build_absolute_uri(video.video_file.url)
+            site_url = getattr(settings, "SITE_URL", "http://api:8000").rstrip("/")
+            source_url = f"{site_url}{video.video_file.url}"
+
+            logger.debug("source_url: %s", source_url)
+
             trigger_runner_encoding_task.delay(video.pk, source_url)
 
     @action(detail=True, methods=["get"], permission_classes=[permissions.AllowAny])

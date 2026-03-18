@@ -91,7 +91,6 @@ class EncodingConfig(BaseSettings):
         """
         return (
             init_settings,
-            env_settings,
             DjangoSettingsSource(settings_cls),
             dotenv_settings,
             file_secret_settings,

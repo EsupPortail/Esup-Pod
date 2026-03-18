@@ -29,6 +29,7 @@ services:
     volumes:
       - ../../:/app
       - ../../media:/app/media
+      - esup-runner-storage:/tmp/esup-runner
     ports:
       - "${EXPOSITION_PORT:-8000}:8000"
     depends_on:
@@ -42,6 +43,10 @@ services:
       DJANGO_SETTINGS_MODULE: config.django.dev.docker
       ALLOWED_HOSTS: "*"
       SERVICE_LABEL: api
+      ENCODING_MANAGER_URL: ${ENCODING_MANAGER_URL}
+      ENCODING_MANAGER_TOKEN: ${ENCODING_MANAGER_TOKEN}
+      SITE_URL: "http://api:8000"
+      ENCODING_WEBHOOK_SECRET: ${ENCODING_WEBHOOK_SECRET}
     command: ["run-server"]
     networks:
       pod-network:
@@ -67,6 +72,7 @@ services:
     volumes:
       - ../../:/app
       - ../../media:/app/media
+      - esup-runner-storage:/tmp/esup-runner
     depends_on:
       db:
         condition: service_started
@@ -81,6 +87,10 @@ services:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0
       SERVICE_LABEL: celery
+      ENCODING_MANAGER_URL: ${ENCODING_MANAGER_URL}
+      ENCODING_MANAGER_TOKEN: ${ENCODING_MANAGER_TOKEN}
+      SITE_URL: "http://api:8000"
+      ENCODING_WEBHOOK_SECRET: ${ENCODING_WEBHOOK_SECRET}
     command: ["celery", "-A", "config", "worker", "-l", "info"]
     networks:
       pod-network:
@@ -117,6 +127,47 @@ networks:
   pod-network:
     driver: bridge
 
+  esup-runner-manager:
+    image: benjisere/esup-runner-manager:v1.0.0
+    container_name: "pod-v5-esup-manager-${VERSION:-dev}"
+    env_file:
+      - ../../.env
+    environment:
+      MANAGER_HOST: esup-runner-manager
+      RUNNERS_STORAGE_ENABLED: "true"
+      RUNNERS_STORAGE_PATH: /tmp/esup-runner
+      NOTIFY_URL_ALLOW_PRIVATE_NETWORKS: "true"
+      NOTIFY_URL_ALLOWED_HOSTS: ${NOTIFY_URL_ALLOWED_HOSTS}
+    ports:
+      - "8081:8081"
+    volumes:
+      - esup-runner-manager-logs:/var/log/esup-runner
+      - esup-runner-storage:/tmp/esup-runner
+      - esup-runner-manager-data:/app/data
+
+  esup-runner-runner:
+    image: benjisere/esup-runner-runner:v1.0.0
+    container_name: "pod-v5-esup-runner-${VERSION:-dev}"
+    env_file:
+      - ../../.env
+    environment:
+      RUNNER_HOST: esup-runner-runner
+      MANAGER_URL: http://esup-runner-manager:8081
+      STORAGE_DIR: /tmp/esup-runner
+    ports:
+      - "8082:8082"
+    volumes:
+      - esup-runner-runner-logs:/var/log/esup-runner
+      - esup-runner-storage:/tmp/esup-runner
+      - esup-runner-whisper-models:/home/esup-runner/.cache/esup-runner/whisper-models
+    depends_on:
+      - esup-runner-manager
+
 volumes:
   pod_db_data_dev:
   pod_redis_data_dev:
+  esup-runner-storage:
+  esup-runner-manager-data:
+  esup-runner-manager-logs:
+  esup-runner-runner-logs:
+  esup-runner-whisper-models:

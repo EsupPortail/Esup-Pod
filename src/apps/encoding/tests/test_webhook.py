@@ -23,8 +23,9 @@ class EncodingWebhookViewTests(APITestCase):
             video_file=video_content,
         )
         self.url = reverse("encoding:webhook")
+        self.url_with_secret = f"{self.url}?secret=mysecret"
 
-    @patch("config.env.env")
+    @patch("src.apps.encoding.views.webhook.env")
     def test_webhook_success(self, mock_env):
         mock_env.return_value = "mysecret"
 
@@ -38,9 +39,7 @@ class EncodingWebhookViewTests(APITestCase):
             },
         }
 
-        response = self.client.post(
-            self.url, data, format="json", HTTP_X_WEBHOOK_SECRET="mysecret"
-        )
+        response = self.client.post(self.url_with_secret, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.video.refresh_from_db()
@@ -49,7 +48,7 @@ class EncodingWebhookViewTests(APITestCase):
         self.assertEqual(self.video.thumbnail.name, "test_thumb.jpg")
         self.assertEqual(self.video.video_file.name, "test_video.mp4")
 
-    @patch("config.env.env")
+    @patch("src.apps.encoding.views.webhook.env")
     def test_webhook_error_status(self, mock_env):
         mock_env.return_value = "mysecret"
 
@@ -59,16 +58,14 @@ class EncodingWebhookViewTests(APITestCase):
             "error": "Encoding failed.",
         }
 
-        response = self.client.post(
-            self.url, data, format="json", HTTP_X_WEBHOOK_SECRET="mysecret"
-        )
+        response = self.client.post(self.url_with_secret, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["status"], "error_recorded")
         self.video.refresh_from_db()
         self.assertEqual(self.video.status, Video.Status.ERROR)
 
-    @patch("config.env.env")
+    @patch("src.apps.encoding.views.webhook.env")
     def test_webhook_missing_video_id(self, mock_env):
         mock_env.return_value = "mysecret"
 
@@ -76,13 +73,11 @@ class EncodingWebhookViewTests(APITestCase):
             "status": "success",
         }
 
-        response = self.client.post(
-            self.url, data, format="json", HTTP_X_WEBHOOK_SECRET="mysecret"
-        )
+        response = self.client.post(self.url_with_secret, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    @patch("config.env.env")
+    @patch("src.apps.encoding.views.webhook.env")
     def test_webhook_invalid_secret(self, mock_env):
         mock_env.return_value = "mysecret"
 
@@ -91,8 +86,6 @@ class EncodingWebhookViewTests(APITestCase):
             "status": "success",
         }
 
-        response = self.client.post(
-            self.url, data, format="json", HTTP_X_WEBHOOK_SECRET="wrongsecret"
-        )
+        response = self.client.post(self.url + "?secret=wrongsecret", data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
