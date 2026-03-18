@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-13 09:52+0100\n"
+"POT-Creation-Date: 2026-03-02 17:34+0100\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -185,7 +185,8 @@ msgstr ""
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz.html pod/recorder/models.py
 #: pod/video/models.py pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
+#: pod/video/templates/videos/videos.html pod/video_encode_transcript/admin.py
+#: pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr ""
 
@@ -226,8 +227,8 @@ msgid "Enter the ID of the enhancement in Aristote"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
-#: pod/dressing/models.py pod/video/apps.py pod/video/models.py
-#: pod/video/templates/videos/video_breadcrumbs.html
+#: pod/dressing/models.py pod/video/admin.py pod/video/apps.py
+#: pod/video/models.py pod/video/templates/videos/video_breadcrumbs.html
 #: pod/video/templates/videos/videos.html
 msgid "Videos"
 msgstr ""
@@ -731,8 +732,8 @@ msgid "The file must be in VTT format."
 msgstr ""
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
-#: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
-#: pod/video_encode_transcript/utils.py
+#: pod/playlist/templates/playlist/playlist_card.html pod/video/admin.py
+#: pod/video/models.py pod/video_encode_transcript/utils.py
 msgid "video"
 msgstr ""
 
@@ -1303,11 +1304,6 @@ msgstr ""
 msgid ""
 "There is an overlap with the overlay {0}, please change time start and/or "
 "time end values."
-msgstr ""
-
-#: pod/completion/permissions/video.py
-#, python-brace-format
-msgid "{func.__name__}: Permission denied for user {current_user.pk}."
 msgstr ""
 
 #: pod/completion/templates/contributor/form_contributor.html
@@ -5741,7 +5737,7 @@ msgstr ""
 msgid "Meeting session logs"
 msgstr ""
 
-#: pod/meeting/models.py
+#: pod/meeting/models.py pod/video_encode_transcript/admin.py
 msgid "Recording ID"
 msgstr ""
 
@@ -5875,6 +5871,7 @@ msgid "To delete the meeting, please check the box in and click delete."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside.html pod/video/views.py
+#: pod/video_encode_transcript/admin.py
 msgid "Status"
 msgstr ""
 
@@ -6213,7 +6210,7 @@ msgid "Has user joined?"
 msgstr ""
 
 #: pod/meeting/views.py pod/recorder/models.py
-#: pod/video_encode_transcript/models.py
+#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
 msgid "Recording"
 msgstr ""
 
@@ -6542,13 +6539,6 @@ msgstr ""
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
-msgstr ""
-
-#: pod/playlist/models.py
-#, python-brace-format
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
 msgstr ""
 
 #: pod/playlist/models.py
@@ -6926,6 +6916,10 @@ msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
+msgstr ""
+
+#: pod/playlist/views.py
+msgid "Delete the playlist"
 msgstr ""
 
 #: pod/playlist/views.py
@@ -7316,7 +7310,7 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr ""
 
@@ -7613,21 +7607,6 @@ msgstr ""
 
 #: pod/recorder/admin.py
 msgid "Encode selected recordings and create new video"
-msgstr ""
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Studio recording {item.id} encoding started"
-msgstr ""
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Recording {item.id} is not a studio recording and can't be encoded"
-msgstr ""
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Error for {item}: {e}"
 msgstr ""
 
 #: pod/recorder/admin.py
@@ -9250,6 +9229,7 @@ msgid "Clear all filters"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
+#: pod/video/templates/videos/filter_aside_category.html
 msgid "Clear filters"
 msgstr ""
 
@@ -9409,7 +9389,7 @@ msgid "Original version"
 msgstr ""
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
-msgid "Enhance the video with AI"
+msgid "Complete the video with AI"
 msgstr ""
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
@@ -10279,6 +10259,23 @@ msgstr ""
 msgid "resolution"
 msgstr ""
 
+#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
+msgid "Active"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+msgid "Inactive"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#: pod/video_encode_transcript/templates/admin_test_connection.html
+msgid "Runner administration"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+msgid "Open runner administration"
+msgstr ""
+
 #: pod/video_encode_transcript/admin.py
 msgid "Runner manager not found."
 msgstr ""
@@ -10314,6 +10311,10 @@ msgstr ""
 msgid ""
 "Runner manager '%(name)s' is reachable but returned an unexpected response "
 "(HTTP %(status)s)."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+msgid "Video ID"
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
@@ -10443,11 +10444,16 @@ msgid "Priority of the runner manager. Lower values indicate higher priority."
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
+msgid "If checked, this runner manager can be used to process tasks."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
 msgid "URL of the runner manager"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
-msgid "Example format: https://manager.univ.fr:port/"
+#, python-format
+msgid "Example format: %s"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py

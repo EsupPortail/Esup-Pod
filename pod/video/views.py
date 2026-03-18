@@ -2550,11 +2550,13 @@ def video_oembed(request):
             '<iframe src="%(provider)s%(video_url)s%(slug_private)s'
             + '?is_iframe=true" width="640" height="360" '
             + 'style="padding: 0; margin: 0; border:0" '
+            + 'title="%(title)s" '
             + "allowfullscreen loading='lazy'></iframe>"
         ) % {
             "provider": data["provider_url"],
             "video_url": video_url,
             "slug_private": "%s/" % slug_private if slug_private else "",
+            "title": video.title
         }
         data["thumbnail_url"] = "%s:%s" % (protocole, video.get_thumbnail_url())
         if hasattr(video.thumbnail, "file"):
