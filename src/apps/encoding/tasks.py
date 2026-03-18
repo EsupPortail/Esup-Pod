@@ -45,9 +45,7 @@ def trigger_runner_encoding_task(self, video_id: int, source_url: str):
             video_id=str(video.slug),
             source_url=source_url,
             notify_url=notify_url,
-            parameters={
-                "rendition": json.dumps(rendition_config)
-            },
+            parameters={"rendition": json.dumps(rendition_config)},
         )
 
         logger.info(
