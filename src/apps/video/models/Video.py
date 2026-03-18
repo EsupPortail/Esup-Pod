@@ -247,19 +247,14 @@ class Video(models.Model):
             base_slug = slugify(self.title)
             unique_id = str(uuid.uuid4())[:8]
             self.slug = f"{base_slug}-{unique_id}"
+
         self.set_password()
+
         if not self.id:
             from src.apps.video.services.metadata import calculate_expiration_date
 
             self.date_to_delete = calculate_expiration_date(self.owner)
-        if self.pk:
-            old_version = Video.objects.get(pk=self.pk)
-            if old_version.owner != self.owner:
-                from src.apps.encoding.services.storage import (
-                    move_video_files_to_new_owner,
-                )
 
-                move_video_files_to_new_owner(self, old_version.owner, self.owner)
         super().save(*args, **kwargs)
 
     def __str__(self):

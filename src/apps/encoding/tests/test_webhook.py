@@ -1,6 +1,8 @@
-from unittest.mock import patch
+import tempfile
+from unittest.mock import patch, MagicMock
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files import File
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -26,17 +28,31 @@ class EncodingWebhookViewTests(APITestCase):
         self.url_with_secret = f"{self.url}?secret=mysecret"
 
     @patch("src.apps.encoding.views.webhook.env")
-    def test_webhook_success(self, mock_env):
+    @patch("src.apps.encoding.views.webhook.get_runner_client")
+    def test_webhook_success(self, mock_get_client, mock_env):
         mock_env.return_value = "mysecret"
 
+        mock_client = MagicMock()
+        mock_get_client.return_value = mock_client
+        mock_client.get_task_manifest.return_value = {
+            "task_id": "test-task-123",
+            "files": ["720p_video.mp4", "overview.png", "task_metadata.json"],
+        }
+
+        def mock_download(task_id, file_path):
+            lf = tempfile.NamedTemporaryFile(delete=False)
+            lf.write(b"dummy content")
+            lf.flush()
+            lf.seek(0)
+            filename = file_path.split("/")[-1]
+            return File(lf, name=filename)
+
+        mock_client.download_task_file_to_temp.side_effect = mock_download
+
         data = {
+            "task_id": "test-task-123",
             "video_id": self.video.id,
-            "status": "success",
-            "results": {
-                "duration": 120,
-                "thumbnail_path": "test_thumb.jpg",
-                "video_path": "test_video.mp4",
-            },
+            "status": "completed",
         }
 
         response = self.client.post(self.url_with_secret, data, format="json")
@@ -44,15 +60,16 @@ class EncodingWebhookViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.video.refresh_from_db()
         self.assertEqual(self.video.status, Video.Status.PUBLISHED)
-        self.assertEqual(self.video.duration, 120)
-        self.assertEqual(self.video.thumbnail.name, "test_thumb.jpg")
-        self.assertEqual(self.video.video_file.name, "test_video.mp4")
+
+        self.assertTrue(self.video.video_file.name.endswith(".mp4"))
+        self.assertTrue(self.video.overview.name.endswith(".png"))
 
     @patch("src.apps.encoding.views.webhook.env")
     def test_webhook_error_status(self, mock_env):
         mock_env.return_value = "mysecret"
 
         data = {
+            "task_id": "test-task-123",
             "video_id": self.video.id,
             "status": "error",
             "error": "Encoding failed.",
@@ -70,6 +87,7 @@ class EncodingWebhookViewTests(APITestCase):
         mock_env.return_value = "mysecret"
 
         data = {
+            "task_id": "test-task-123",
             "status": "success",
         }
 
@@ -82,10 +100,13 @@ class EncodingWebhookViewTests(APITestCase):
         mock_env.return_value = "mysecret"
 
         data = {
+            "task_id": "test-task-123",
             "video_id": self.video.id,
             "status": "success",
         }
 
-        response = self.client.post(self.url + "?secret=wrongsecret", data, format="json")
+        response = self.client.post(
+            self.url + "?secret=wrongsecret", data, format="json"
+        )
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
