@@ -28,6 +28,4 @@ def get_storage_path_image(instance, filename: str) -> str:
     ext = filename.split(".")[-1].lower()
     file_uuid = uuid.uuid4().hex
 
-    return os.path.join(
-        "thumbnails", file_uuid[:2], file_uuid[2:4], f"{file_uuid}.{ext}"
-    )
+    return os.path.join("thumbnails", file_uuid[:2], file_uuid[2:4], f"{file_uuid}.{ext}")

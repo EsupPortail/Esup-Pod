@@ -85,9 +85,7 @@ class EncodingWebhookView(APIView):
             video_path = self._get_best_video_path(file_list)
             thumbnail_path = "overview.png" if "overview.png" in file_list else None
 
-            self._replace_video_files(
-                video, client, task_id, video_path, thumbnail_path
-            )
+            self._replace_video_files(video, client, task_id, video_path, thumbnail_path)
 
             video.status = Video.Status.PUBLISHED
             video.save()

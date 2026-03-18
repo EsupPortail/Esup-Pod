@@ -105,8 +105,6 @@ class EncodingWebhookViewTests(APITestCase):
             "status": "success",
         }
 
-        response = self.client.post(
-            self.url + "?secret=wrongsecret", data, format="json"
-        )
+        response = self.client.post(self.url + "?secret=wrongsecret", data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

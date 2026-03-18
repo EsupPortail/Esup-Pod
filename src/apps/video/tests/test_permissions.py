@@ -30,12 +30,8 @@ class VideoPermissionsTests(APITestCase):
         super().tearDownClass()
 
     def setUp(self):
-        self.user_owner = User.objects.create_user(
-            username="owner", password="password"
-        )
-        self.user_other = User.objects.create_user(
-            username="other", password="password"
-        )
+        self.user_owner = User.objects.create_user(username="owner", password="password")
+        self.user_other = User.objects.create_user(username="other", password="password")
         self.user_admin = User.objects.create_superuser(
             username="admin", password="password"
         )

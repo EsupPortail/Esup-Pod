@@ -130,9 +130,7 @@ class VideoSerializer(serializers.ModelSerializer):
         Global validation to handle WEBTV_MODE.
         """
         attrs = super().validate(attrs)
-        has_video_file_in_req = (
-            "video_file" in attrs and attrs["video_file"] is not None
-        )
+        has_video_file_in_req = "video_file" in attrs and attrs["video_file"] is not None
         already_has_file = bool(self.instance.video_file) if self.instance else False
         is_clearing_file = "video_file" in attrs and attrs["video_file"] is None
         has_file_after_update = (

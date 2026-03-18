@@ -20,9 +20,7 @@ class DjangoSettingsSource(PydanticBaseSettingsSource):
     in their Django settings files (e.g. src/config/settings/{app_name}.py).
     """
 
-    def get_field_value(
-        self, field: FieldInfo, field_name: str
-    ) -> Tuple[Any, str, bool]:
+    def get_field_value(self, field: FieldInfo, field_name: str) -> Tuple[Any, str, bool]:
         simple_setting_name = field_name.upper()
         if hasattr(settings, simple_setting_name):
             return getattr(settings, simple_setting_name), field_name, False

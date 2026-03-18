@@ -30,9 +30,7 @@ class VideoViewSetTests(APITestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(username="testuser", password="password")
-        self.other_user = User.objects.create_user(
-            username="other", password="password"
-        )
+        self.other_user = User.objects.create_user(username="other", password="password")
         self.superuser = User.objects.create_superuser(
             username="admin", password="password"
         )
@@ -142,9 +140,7 @@ class SubtitleViewSetTests(APITestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(username="testuser", password="password")
-        self.other_user = User.objects.create_user(
-            username="other", password="password"
-        )
+        self.other_user = User.objects.create_user(username="other", password="password")
 
         self.video = Video.objects.create(
             title="My Video",
