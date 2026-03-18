@@ -1,5 +1,9 @@
 # Encoding: Technical Details & Configuration
 
+> **Navigation:** [Back to Overview](README.md) | [Back to Index](../README.md)
+
+---
+
 ## Environment Variables
 
 Configure the encoding module via environment variables in `.env`:
@@ -8,20 +12,23 @@ Configure the encoding module via environment variables in `.env`:
 
 ```bash
 # URL of the Esup-Runner Manager API
-POD_ENCODING_MANAGER_URL=http://runner-manager:8080
+ENCODING_MANAGER_URL=http://runner-manager:8080
 
 # API token for authentication with Runner Manager
-POD_ENCODING_MANAGER_TOKEN=your-secret-token
+ENCODING_MANAGER_TOKEN=your-secret-token
+
+# Shared secret used to validate incoming webhook calls from Runner Manager
+ENCODING_WEBHOOK_SECRET=your-webhook-secret
 ```
 
 ### Storage Configuration
 
 ```bash
-# Default directory for video uploads
-POD_ENCODING_VIDEOS_DIR=/path/to/videos
+# Default directory for video uploads (relative to MEDIA_ROOT)
+POD_ENCODING_VIDEOS_DIR=videos
 
-# Default directory for video thumbnails
-POD_ENCODING_THUMBNAILS_DIR=/path/to/thumbnails
+# Default directory for video thumbnails (relative to MEDIA_ROOT)
+POD_ENCODING_THUMBNAILS_DIR=thumbnails
 ```
 
 ### FFmpeg / FFprobe Configuration
@@ -37,11 +44,14 @@ POD_ENCODING_FFPROBE_CMD=ffprobe
 # Default: 28 (recommended for balance between quality and speed)
 POD_ENCODING_FFMPEG_CRF=28
 
-# Number of threads for FFmpeg encoding (default: "auto")
+# Number of threads / encoding preset (default: "auto")
 POD_ENCODING_FFMPEG_NB_THREADS=auto
 
 # FFprobe info detail level (default: "default")
 POD_ENCODING_FFPROBE_GET_INFO=default
+
+# Chunk size for file operations in bytes (default: 1000000)
+POD_ENCODING_CHUNK_SIZE=1000000
 ```
 
 ### Upload Configuration
@@ -53,9 +63,6 @@ POD_ENCODING_MAX_UPLOAD_SIZE_GB=10
 # Allowed video file extensions (comma-separated)
 # Default: mp4,avi,mov,mkv,flv,webm,m4v,m2ts,mts,ts
 POD_ENCODING_ALLOWED_EXTENSIONS=mp4,avi,mov,mkv,flv,webm
-
-# Chunk size for file operations (default: 1000000 bytes)
-POD_ENCODING_CHUNK_SIZE=1000000
 ```
 
 ### Quota Configuration
@@ -172,6 +179,50 @@ The Celery task implements an exponential backoff retry strategy:
 | 4th     | 60s   | 180s       |
 
 After 3 failed retries (total time: ~3 minutes), the video status is set to `ERROR`.
+
+## Webhook: Encoding Completion Notification
+
+The Runner Manager notifies Pod when encoding is done via **POST** `/api/encoding/webhook/`.
+
+### Security
+
+The endpoint is public but guarded by a shared secret:
+
+```
+X-Webhook-Secret: <value of ENCODING_WEBHOOK_SECRET>
+```
+
+If `ENCODING_WEBHOOK_SECRET` is set and the header does not match, the request is rejected with `401 Unauthorized`.
+
+### Payload — Success
+
+```json
+{
+    "status": "success",
+    "video_id": "123",
+    "duration": "142.5",
+    "results": {
+        "thumbnail_path": "thumbnails/my-video-abc123.jpg",
+        "video_path": "videos/john/my-video-slug.mp4"
+    }
+}
+```
+
+→ Video status is set to `PUBLISHED`. Duration and file paths are updated.
+
+### Payload — Error
+
+```json
+{
+    "status": "error",
+    "video_id": "123",
+    "error": "FFmpeg process failed"
+}
+```
+
+→ Video status is set to `ERROR`.
+
+---
 
 ## Testing
 
