@@ -1,17 +1,17 @@
-# Project Overview & Architecture
+# Deployment & Architecture: Overview
 
 ## Introduction
 
-This documentation outlines the architecture, development workflow, and production deployment strategies for the Pod_V5_Back Django API. The project is designed for scalability and maintainability, utilizing Docker for containerization and a split-settings approach for environment management.
+This documentation outlines the architecture, environment setup, and deployment strategies for Pod V5. The project is designed for scalability and maintainability, utilizing Docker for containerization and a split-settings approach for environment management.
 
 ## System Architecture
 
 The application is built on a robust stack designed to ensure separation of concerns between the development and production environments.
 
-* **Backend Framework:** Django with Django Rest Framework (DRF).
-* **Database:** MySql (Containerized).
-    * **Local Dev (Lite):** SQLite (Auto-configured if no MySQL config found).
-* **Containerization:** Docker & Docker Compose.
+- **Backend Framework:** Django with Django Rest Framework (DRF).
+- **Database:** MySql (Containerized).
+  - **Local Dev (Lite):** SQLite (Auto-configured if no MySQL config found).
+- **Containerization:** Docker & Docker Compose.
 
 ## Directory Structure
 
@@ -24,8 +24,9 @@ Pod_V5_Back/
 │   └── prod/            # Production specific Docker setup
 ├── src/                 # Application Source Code
 │   ├── apps/            # Domain-specific Django apps
-│   └── config/          # Project configuration (settings, urls, wsgi)
-│       └── settings/    # Split settings (base.py, dev.py)
+│   └── config/          # Project configuration
+│       ├── django/      # Core Project Settings (base, dev, prod)
+│       └── settings/    # Functional Customization (features flags: video, auth...)
 ├── docs/                # Documentation
 ├── manage.py            # Django entry point
 ├── Makefile             # Command shortcuts
@@ -36,31 +37,26 @@ Pod_V5_Back/
 
 To ensure stability, the project maintains strict isolation between environments:
 
-| Feature         | Development (Docker)                      | Development (Local)           | Production                                  |
-|-----------------|-------------------------------------------|-------------------------------|---------------------------------------------|
-| Docker Compose  | deployment/dev/docker-compose.yml         | N/A                           | deployment/prod/docker-compose.yml          |
-| Settings File   | src.config.settings.dev                   | src.config.settings.dev       | src.config.settings.prod (ou base + env)    |
-| Database        | MariaDB (Service: db)                     | SQLite (db.sqlite3)           | TODO                                        |
-| Debug Mode      | True                                      | True                          | TODO                                        |
-| Web Server      | runserver                                 | runserver                     | TODO                                        |
-
+| Feature        | Development (Docker)              | Development (Local)     | Production                               |
+| -------------- | --------------------------------- | ----------------------- | ---------------------------------------- |
+| Docker Compose | deployment/dev/docker-compose.yml | N/A                     | deployment/prod/docker-compose.yml       |
+| Settings File  | src.config.settings.dev           | src.config.settings.dev | src.config.settings.prod (ou base + env) |
+| Database       | MariaDB (Service: db)             | SQLite (db.sqlite3)     | TODO                                     |
+| Debug Mode     | True                              | True                    | TODO                                     |
+| Web Server     | runserver                         | runserver               | TODO                                     |
 
 ### Environment Selection
 
 Make sure to **choose the correct `.env` file** depending on how you run the project:
 
-* **Using Docker → use the Docker `.env.docker` file** (MariaDB, container services)
-* **Using local setup → use the local `.env.local` file** (SQLite and local-only defaults)
+- **Using Docker → use the Docker `.env.example` file** (MariaDB, container services)
+- **Using local setup (SQLite and local-only defaults)**
 
 Selecting the wrong `.env` will load the wrong database configuration and cause the application to fail.
 
-
-
 ## Getting Started
 
-*   ➡️ **[Development Guide](dev/dev.md)**: Local setup instructions and development environment.
-*   ➡️ **[Production Guide (WIP)](prod/notes.md)**: Current notes on production deployment.
-*   ➡️ **[Help](help.md)**: Maintenance, troubleshooting, and operational support.
+- ➡️ **[Development Environment](dev/dev.md)**: Local setup instructions and Docker workflow.
+- ➡️ **[Production Deployment](prod/prod.md)**: Production setup and deployment strategies (WIP).
 
-*   ⬅️ **[Back to Index](../README.md)**
-
+- ⬅️ **[Back to Index](../README.md)**

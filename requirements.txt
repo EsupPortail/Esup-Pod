@@ -9,4 +9,7 @@ ldap3>=2.9.0
 mysqlclient==2.2.4
 Pillow>=10.0.0
 python-dotenv==1.0.1
+pydantic-settings>=2.0
 requests>=2.31.0
+celery>=5.3,<6.0
+redis>=5.0
