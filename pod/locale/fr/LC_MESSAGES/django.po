@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-02 17:34+0100\n"
+"POT-Creation-Date: 2026-03-18 15:53+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
@@ -6068,7 +6068,7 @@ msgstr "Diffuseur chargé de réaliser des directs."
 msgid "URL of the SIPMediaGW server"
 msgstr "Adresse URL du serveur SIPMediaGW"
 
-#: pod/meeting/models.py
+#: pod/meeting/models.py pod/video_encode_transcript/models.py
 #, python-format
 msgid "Example format: %(url)s"
 msgstr "Exemple de format : %(url)s"
@@ -11181,12 +11181,6 @@ msgid "URL of the runner manager"
 msgstr "URL du runner manager"
 
 #: pod/video_encode_transcript/models.py
-#, fuzzy, python-format
-#| msgid "Example format: %(url)s"
-msgid "Example format: %s"
-msgstr "Exemple de format : %(url)s"
-
-#: pod/video_encode_transcript/models.py
 msgid "Bearer token for the runner manager."
 msgstr "Jeton porteur pour le runner manager."
 
@@ -11363,14 +11357,6 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
-#~ msgid "Example format: https://manager.univ.fr:port/"
-#~ msgstr "Exemple de format : https://manager.univ.fr:port/"
-
-#, python-brace-format
-#~ msgid "{func.__name__}: Permission denied for user {current_user.pk}."
-#~ msgstr ""
-#~ "{func.__name__} : Permission refusée pour l’utilisateur {current_user.pk}."
-
 #, python-brace-format
 #~ msgid ""
 #~ "Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
@@ -11389,21 +11375,6 @@ msgstr "xAPI Esup-Pod"
 #~ "L’enregistrement {item.id} n’est pas un enregistrement studio et ne peut "
 #~ "pas être encodé."
 
-#, python-brace-format
-#~ msgid "Error for {item}: {e}"
-#~ msgstr "Erreur pour {item} : {e}"
-
-#~ msgid ""
-#~ "\n"
-#~ "        %(counter)s video found\n"
-#~ "      "
-#~ msgid_plural ""
-#~ "\n"
-#~ "        %(counter)s videos found\n"
-#~ "      "
-#~ msgstr[0] "%(counter)s vidéo trouvée"
-#~ msgstr[1] "%(counter)s vidéos trouvées"
-
 #~ msgid "Dashboard Filters"
 #~ msgstr "Filtres du tableau de bord"
 
@@ -11412,80 +11383,3 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "Clear selection"
 #~ msgstr "Effacer la sélection"
-
-#~ msgid ""
-#~ "You have not uploaded any videos yet, please use the ”Add a new video” "
-#~ "button to add one"
-#~ msgstr ""
-#~ "Vous n’avez pas encore mis en ligne de vidéos, veuillez utiliser le "
-#~ "bouton « Ajouter une nouvelle vidéo » pour en ajouter une"
-
-#~ msgid "editor"
-#~ msgstr "éditeur"
-
-#~ msgid "The event is scheduled from:"
-#~ msgstr "L’événement est programmé du :"
-
-#~ msgid "to"
-#~ msgstr "à"
-
-#, python-format
-#~ msgid ""
-#~ "you can change the removal date by editing your video:</p>\n"
-#~ "<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
-#~ "target=\"_blank\">%(scheme)s:%(url)s</a></p>"
-#~ msgstr ""
-#~ "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-#~ "<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
-#~ "target=\"_blank\">%(scheme)s:%(url)s</a></p>"
-
-#~ msgid "Summary"
-#~ msgstr "Description"
-
-#, python-format
-#~ msgid "tags_for_model tag was given an invalid model: %s"
-#~ msgstr "la balise tags_for_model a reçu un modèle invalide : %s"
-
-#, python-format
-#~ msgid "%s tag requires either three or five arguments"
-#~ msgstr "la balise %s requiert trois ou cinq arguments"
-
-#, python-format
-#~ msgid "second argument to %s tag must be “as”"
-#~ msgstr "le deuxième argument de la balise %s doit être « as »"
-
-#, python-format
-#~ msgid "if given, fourth argument to %s tag must be “with”"
-#~ msgstr ""
-#~ "s’il est donné, le quatrième argument de la balise %s doit être « with »"
-
-#, python-format
-#~ msgid "if given, fifth argument to %s tag must be “counts”"
-#~ msgstr "si donné, le 5e argument de la balise %s doit être « counts »"
-
-#, python-format
-#~ msgid "%s tag requires either three or between five and seven arguments"
-#~ msgstr "la balise %s requiert soit trois, soit entre cinq et sept arguments"
-
-#, python-format
-#~ msgid "%(tag)s tag was given an invalid option: “%(option)s”"
-#~ msgstr "l’option « %(option)s » est invalide pour la balise %(tag)s"
-
-#, python-format
-#~ msgid "%(tag)s tag was given a badly formatted option: “%(option)s”"
-#~ msgstr ""
-#~ "l’option « %(option)s » n’est pas au bon format pour la balise %(tag)s"
-
-#, python-format
-#~ msgid ""
-#~ "%(tag)s tag’s “%(option)s” option was not a valid integer: “%(value)s”"
-#~ msgstr ""
-#~ "l’option « %(option)s » de la balise %(tag)s n’est pas un entier valide : "
-#~ "’%(value)s’"
-
-#, python-format
-#~ msgid ""
-#~ "%(tag)s tag’s “%(option)s” option was not a valid choice: “%(value)s”"
-#~ msgstr ""
-#~ "l’option « %(option)s » de la balise %(tag)s n’est pas un choix valide : "
-#~ "’%(value)s’"

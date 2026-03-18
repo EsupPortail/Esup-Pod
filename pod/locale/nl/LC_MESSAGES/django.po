@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-02 17:34+0100\n"
+"POT-Creation-Date: 2026-03-18 15:53+0100\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -5761,7 +5761,7 @@ msgstr ""
 msgid "URL of the SIPMediaGW server"
 msgstr ""
 
-#: pod/meeting/models.py
+#: pod/meeting/models.py pod/video_encode_transcript/models.py
 #, python-format
 msgid "Example format: %(url)s"
 msgstr ""
@@ -10449,11 +10449,6 @@ msgstr ""
 
 #: pod/video_encode_transcript/models.py
 msgid "URL of the runner manager"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-#, python-format
-msgid "Example format: %s"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
