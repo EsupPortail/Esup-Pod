@@ -34,7 +34,9 @@ import re
 
 __FILEPICKER__ = False
 
-from ..custom.settings_local import PROLONGATION_GRANTED, RALLONGE_RESPIT_DAYS
+#from ..custom.settings_local import PROLONGATION_GRANTED, RALLONGE_RESPIT_DAYS
+PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
+RALLONGE_RESPIT_DAYS = getattr(settings, "RALLONGE_RESPIT_DAYS", 365)
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
