@@ -10,13 +10,14 @@ STACK_NAME ?= esup-pod-back
 DOCKER_COMPOSE_CMD := docker compose -p $(STACK_NAME) -f $(DOCKER_COMPOSE_FILE)
 LOG_PREFIX := \033[36m[make]\033[0m
 
-# Handle positional arguments for 'logs' (e.g., make logs celery)
-ifeq (logs,$(firstword $(MAKECMDGOALS)))
-  LOG_TARGET_SERVICE := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-  $(eval $(LOG_TARGET_SERVICE):;@:)
+
+CMD := $(firstword $(MAKECMDGOALS))
+DYNAMIC_CMDS := start stop clean logs shell enter
+ifneq ($(filter $(CMD),$(DYNAMIC_CMDS)),)
+  SERVICE_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(SERVICE_ARGS):;@:)
 endif
 
-# Helper: $(call info,Message)
 define info
 	@printf "$(LOG_PREFIX) %s\n" "$(1)"
 endef
@@ -29,9 +30,9 @@ help: ## List available make commands
 
 # Docker commands
 
-start: check-django-env ## Start the full project (detached, build if needed)
-	$(call info,Starting Docker environment (stack: $(STACK_NAME))...)
-	$(DOCKER_COMPOSE_CMD) up --build -d
+start: check-django-env ## Start the project/service (detached, build if needed). Usage: make start [service]
+	$(call info,Starting Docker environment (service(s): $(if $(SERVICE_ARGS),$(SERVICE_ARGS),all))...)
+	$(DOCKER_COMPOSE_CMD) up --build -d $(SERVICE_ARGS)
 	$(call info,Server running in background — use 'make logs' to follow output.)
 
 restart: ## Restart containers (stop then start)
@@ -44,23 +45,19 @@ full-restart: ## Full reset then start (clean + start)
 	$(MAKE) clean
 	$(MAKE) start
 
-logs: ## Follow logs (default: app service). Usage: make logs [service_name]
-	$(call info,Attaching to logs (service: $(if $(LOG_TARGET_SERVICE),$(LOG_TARGET_SERVICE),$(DOCKER_SERVICE_NAME)))...)
-	@$(DOCKER_COMPOSE_CMD) logs -f --tail=100 $(if $(LOG_TARGET_SERVICE),$(LOG_TARGET_SERVICE),$(DOCKER_SERVICE_NAME))
+logs: ## Follow logs. Usage: make logs [service]
+	$(call info,Attaching to logs (service(s): $(if $(SERVICE_ARGS),$(SERVICE_ARGS),all))...)
+	@$(DOCKER_COMPOSE_CMD) logs -f --tail=100 $(SERVICE_ARGS)
 
-logs-api: ## Show real-time logs for the API service only
-	$(DOCKER_COMPOSE_CMD) logs -f --tail=100 api
+shell: start ## Launch an isolated shell. Usage: make shell [service]
+	$(eval TARGET_SVC=$(if $(SERVICE_ARGS),$(SERVICE_ARGS),$(DOCKER_SERVICE_NAME)))
+	$(call info,Opening a new ephemeral shell in service '$(TARGET_SVC)'...)
+	$(DOCKER_COMPOSE_CMD) run --rm --service-ports $(TARGET_SVC) shell-mode
 
-logs-celery: ## Show real-time logs for the Celery worker only
-	$(DOCKER_COMPOSE_CMD) logs -f --tail=100 celery
-
-shell: start ## Launch an isolated shell in a new container
-	$(call info,Opening a new ephemeral shell in service '$(DOCKER_SERVICE_NAME)'...)
-	$(DOCKER_COMPOSE_CMD) run --rm --service-ports $(DOCKER_SERVICE_NAME) shell-mode
-
-enter: start ## Enter an already running container
-	$(call info,Entering running container for service '$(DOCKER_SERVICE_NAME)'...)
-	$(DOCKER_COMPOSE_CMD) exec $(DOCKER_SERVICE_NAME) /bin/bash
+enter: start ## Enter an already running container. Usage: make enter [service]
+	$(eval TARGET_SVC=$(if $(SERVICE_ARGS),$(SERVICE_ARGS),$(DOCKER_SERVICE_NAME)))
+	$(call info,Entering running container for service '$(TARGET_SVC)'...)
+	$(DOCKER_COMPOSE_CMD) exec $(TARGET_SVC) /bin/bash
 
 db-shell: start ## Enter the database shell
 	$(call info,Entering database shell as root...)
@@ -70,9 +67,9 @@ build: ## Force Docker image rebuild
 	$(call info,Building Docker images (stack: $(STACK_NAME))...)
 	$(DOCKER_COMPOSE_CMD) build
 
-stop: ## Stop running containers
-	$(call info,Stopping containers for stack '$(STACK_NAME)'...)
-	$(DOCKER_COMPOSE_CMD) stop
+stop: ## Stop running containers. Usage: make stop [service]
+	$(call info,Stopping containers (service(s): $(if $(SERVICE_ARGS),$(SERVICE_ARGS),all))...)
+	$(DOCKER_COMPOSE_CMD) stop $(SERVICE_ARGS)
 	$(call info,Containers stopped. Use 'make clean' to remove them entirely.)
 
 ci: build lint test-cov clean ## Local CI pipeline: build → lint → test → clean
@@ -84,9 +81,13 @@ lint: start ## Run linters (black, flake8) inside the API service
 	$(call info,Running flake8...)
 	$(DOCKER_COMPOSE_CMD) run --rm $(DOCKER_SERVICE_NAME) flake8 src --count --show-source --statistics
 
-clean: stop ## Full shutdown and cleanup (containers, volumes, orphans)
-	$(call info,Removing containers, volumes and orphans for stack '$(STACK_NAME)'...)
-	$(DOCKER_COMPOSE_CMD) down --remove-orphans --volumes
+clean: stop ## Full shutdown and cleanup. Usage: make clean [service]
+	$(call info,Cleaning (service(s): $(if $(SERVICE_ARGS),$(SERVICE_ARGS),all))...)
+	@if [ -z "$(SERVICE_ARGS)" ]; then \
+		$(DOCKER_COMPOSE_CMD) down --remove-orphans --volumes; \
+	else \
+		$(DOCKER_COMPOSE_CMD) rm -s -v -f $(SERVICE_ARGS); \
+	fi
 
 test: start ## Run tests inside the container (pytest)
 	$(call info,Running tests with DJANGO_SETTINGS_MODULE=config.django.test.docker...)

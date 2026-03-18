@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 
 from src.apps.video.models import Video
 from src.apps.encoding.tasks import trigger_runner_encoding_task
-from src.apps.encoding.constants import ENCODING_CHOICES
+import json
 
 User = get_user_model()
 
@@ -24,7 +24,6 @@ class EncodingTaskTestCase(TestCase):
     @patch("src.apps.encoding.tasks.get_runner_client")
     def test_trigger_runner_encoding_success(self, mock_get_client):
         mock_client = MagicMock()
-        mock_client.settings.renditions = ENCODING_CHOICES
         mock_client.execute_task.return_value = {"task_id": "123", "status": "accepted"}
         mock_get_client.return_value = mock_client
 
@@ -35,16 +34,22 @@ class EncodingTaskTestCase(TestCase):
             source_url=source_url,
         )
 
+        from config.env import env
+
+        webhook_secret = env("ENCODING_WEBHOOK_SECRET", default="")
+        expected_notify_url = f"http://api:8000/api/encoding/webhook/?secret={webhook_secret}&video_id={self.video.id}"
+
+        rendition_config = {
+            "360": {"resolution": "640x360", "encode_mp4": True},
+            "720": {"resolution": "1280x720", "encode_mp4": True},
+            "1080": {"resolution": "1920x1080", "encode_mp4": False},
+        }
+
         mock_client.execute_task.assert_called_once_with(
             video_id=str(self.video.slug),
             source_url=source_url,
-            notify_url="http://localhost:8000/api/encoding/webhook/",
-            parameters={
-                "video_id": str(self.video.id),
-                "slug": self.video.slug,
-                "title": self.video.title,
-                "encoding_choices": ENCODING_CHOICES,
-            },
+            notify_url=expected_notify_url,
+            parameters={"rendition": json.dumps(rendition_config)},
         )
         self.assertEqual(response, {"task_id": "123", "status": "accepted"})
 
