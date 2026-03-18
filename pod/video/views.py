@@ -171,7 +171,10 @@ from .utils import (
 # from django.contrib.auth.hashers import check_password
 
 
-from ..custom.settings_local import ENABLE_PAGE_OBSO_MAIL, RALLONGE_RESPIT_DAYS, WARN_DEADLINES
+#from ..custom.settings_local import ENABLE_PAGE_OBSO_MAIL, RALLONGE_RESPIT_DAYS, WARN_DEADLINES
+from ..custom.settings_local import WARN_DEADLINES
+RALLONGE_RESPIT_DAYS = getattr(settings, "RALLONGE_RESPIT_DAYS", 365)
+ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -4072,15 +4075,17 @@ def able_or_not_respit(slug):
 
 
 def go_archive(request, slug=None):
-    from pod.video.management.commands import check_obsolete_videos
+    if able_or_not_respit(slug) == True and ENABLE_PAGE_OBSO_MAIL:
+        from pod.video.management.commands import check_obsolete_videos
 
-    cmd = check_obsolete_videos.Command()
-    cmd.archive_isolate(Video.objects.get(slug=slug))
-    return HttpResponsePermanentRedirect("/video/well/archived/or/not/"+slug)
+        cmd = check_obsolete_videos.Command()
+        cmd.archive_isolate(Video.objects.get(slug=slug))
+        return HttpResponsePermanentRedirect("/video/well/archived/or/not/"+slug)
 
 
 def go_prolong(request, slug):
-    vivi = Video.objects.get(slug=slug)
-    vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
-    vivi.save()
-    return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)
+    if able_or_not_respit(slug) == True and ENABLE_PAGE_OBSO_MAIL:
+        vivi = Video.objects.get(slug=slug)
+        vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
+        vivi.save()
+        return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)
