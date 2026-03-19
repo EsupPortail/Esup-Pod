@@ -76,7 +76,7 @@
           {% if event.aside_iframe_url %}
             <div class="col">
               <iframe style="padding: 0; margin: 0; border:0; width: 100%;"
-                  title="{{ event.title }}" loading="lazy"
+                  title="{% trans 'Aside site' %}" loading="lazy"
                   height="100%"
                   src="{{ event.aside_iframe_url }}">
               </iframe>
@@ -117,7 +117,7 @@
 
       {% if event.iframe_url != "" and event.iframe_url != None %}
         <iframe style="padding: 0; margin: 0; border:0; width: 100%;"
-            title="{{ event.title }}" loading="lazy"
+            title="{% trans 'Additional site' %}" loading="lazy"
             height="{{ event.iframe_height }}"
             src="{{ event.iframe_url }}">
         </iframe>
@@ -129,11 +129,6 @@
 
       <div id="viewers-list"><ul id="viewers-ul"></ul></div>
 
-{#        {% else %}#}
-{#            <div id="divvideoonhold" style="display:none"></div>#}
-{#            <div id="divvideoplayer" style="display:none">#}
-{#                <video id="podvideoplayer"></video>#}
-{#            </div>#}
     {% endif %}
 
     {% if not request.GET.is_iframe %}

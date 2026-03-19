@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-18 15:53+0100\n"
+"POT-Creation-Date: 2026-03-19 10:00+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -3863,6 +3863,14 @@ msgstr "Mes évènements"
 #: pod/live/templates/live/event.html
 msgid "The event ended on:"
 msgstr "L’événement s’est terminé le :"
+
+#: pod/live/templates/live/event.html
+msgid "Aside site"
+msgstr "Site secondaire"
+
+#: pod/live/templates/live/event.html
+msgid "Additional site"
+msgstr "Site supplémentaire"
 
 #: pod/live/templates/live/event.html
 msgid "Report the event"
