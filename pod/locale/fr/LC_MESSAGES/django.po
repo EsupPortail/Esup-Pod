@@ -3469,7 +3469,7 @@ msgstr "Hauteur (en pixel) du site intégré sur la page du live"
 
 #: pod/live/models.py
 msgid "Embedded aside Site URL"
-msgstr "Lien du site intégré"
+msgstr "Lien du site intégré à côté du live"
 
 #: pod/live/models.py
 msgid "Url of the embedded site to display on aside"
