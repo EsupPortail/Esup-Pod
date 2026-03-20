@@ -13,7 +13,10 @@ class EnsureSuperuserTests(TestCase):
     def setUp(self):
         os.environ["DJANGO_SUPERUSER_USERNAME"] = "testadmin"
         os.environ["DJANGO_SUPERUSER_EMAIL"] = "testadmin@example.com"
-        os.environ["DJANGO_SUPERUSER_PASSWORD"] = "testpass"
+        # ggignore-start
+        # gitguardian:ignore
+        os.environ["DJANGO_SUPERUSER_PASSWORD"] = "testpass" # nosec
+        # ggignore-end
 
         Site.objects.get_or_create(domain="testserver", name="testserver")
 
