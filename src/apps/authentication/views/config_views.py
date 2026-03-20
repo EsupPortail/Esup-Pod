@@ -1,7 +1,7 @@
 """
 Authentication config API views.
 
-Exposes authentication configuration to the React frontend
+Exposes authentication configuration to the frontend
 so it knows which login buttons to display and logout URLs to use.
 """
 
