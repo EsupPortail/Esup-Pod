@@ -105,7 +105,7 @@ class LoginConfigView(APIView):
                 "use_cas": auth_settings.use_cas,
                 "use_shibboleth": auth_settings.use_shib,
                 "use_oidc": auth_settings.use_oidc,
-                "shibboleth_name": "Shibboleth",
-                "oidc_name": "OpenID Connect",
+                "shibboleth_name": auth_settings.shibboleth_name,
+                "oidc_name": auth_settings.oidc_name,
             }
         )

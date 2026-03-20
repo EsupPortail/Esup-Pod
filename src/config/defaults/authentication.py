@@ -71,6 +71,7 @@ OIDC_OP_USER_ENDPOINT = env(
 )
 OIDC_RP_CLIENT_ID = env("OIDC_RP_CLIENT_ID", default="mon-client-id")
 OIDC_RP_CLIENT_SECRET = env("OIDC_RP_CLIENT_SECRET", default="mon-secret")
+OIDC_NAME = env("OIDC_NAME", default="OpenID Connect")
 
 # UI
 HIDE_USERNAME = env.bool("HIDE_USERNAME", default=False)
@@ -114,6 +115,7 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
     "Shibboleth-primary-affiliation": (False, "affiliation"),
     "Shibboleth-unscoped-affiliation": (False, "affiliations"),
 }
+SHIB_NAME = env("SHIB_NAME", default="Identify Federation")
 
 USE_ESTABLISHMENT_FIELD = False
 REMOTE_USER_HEADER = "REMOTE_USER"

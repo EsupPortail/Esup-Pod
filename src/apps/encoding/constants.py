@@ -1,5 +1,5 @@
 """
-Encoding app constants.
+Esup-Pod - Encoding app constants.
 
 Static data (choices tuples) that are NOT configurable via environment variables.
 """
