@@ -4,143 +4,215 @@
       "description": {
         "authentication": {
           "description": {
-            "en": ["Authentication application configuration"],
-            "fr": ["Configuration de l’application authentification"]
+            "en": [
+              "Authentication application configuration"
+            ],
+            "fr": [
+              "Configuration de l’application authentification"
+            ]
           },
           "settings": {
             "USE_LOCAL_AUTH": {
               "default_value": true,
               "description": {
-                "en": ["Enable local authentication (username/password stored in database)."],
-                "fr": ["Activer l’authentification locale (nom d’utilisateur/mot de passe stockés dans la base de données)."]
+                "en": [
+                  "Enable local authentication (username/password stored in database)."
+                ],
+                "fr": [
+                  "Activer l’authentification locale (nom d’utilisateur/mot de passe stockés dans la base de données)."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "USE_CAS": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Activation de l’authentification CAS en plus de l’authentification locale."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Activation de l’authentification CAS en plus de l’authentification locale."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "USE_LDAP": {
               "default_value": false,
               "description": {
-                "en": ["Enable LDAP authentication."],
-                "fr": ["Activer l’authentification LDAP."]
+                "en": [
+                  "Enable LDAP authentication."
+                ],
+                "fr": [
+                  "Activer l’authentification LDAP."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "USE_SHIB": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Mettre à True pour utiliser l’authentification Shibboleth."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Mettre à True pour utiliser l’authentification Shibboleth."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "USE_OIDC": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Mettre à True pour utiliser l’authentification OpenID Connect."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Mettre à True pour utiliser l’authentification OpenID Connect."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "CAS_SERVER_URL": {
               "default_value": "https://cas.univ-lille.fr",
               "description": {
-                "en": ["Url of the institution’s CAS server."],
-                "fr": ["Url du serveur CAS de l’établissement."]
+                "en": [
+                  "Url of the institution’s CAS server."
+                ],
+                "fr": [
+                  "Url du serveur CAS de l’établissement."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "CAS_VERSION": {
               "default_value": "3",
               "description": {
-                "en": ["CAS protocol version."],
-                "fr": ["Version du protocole CAS utilisée."]
+                "en": [
+                  "CAS protocol version."
+                ],
+                "fr": [
+                  "Version du protocole CAS utilisée."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "CAS_FORCE_CHANGE_USERNAME_CASE": {
               "default_value": "lower",
               "description": {
-                "en": ["Force case (lower or upper case) of CAS username."],
-                "fr": ["Forcer la casse (minuscules ou majuscules) du nom d’utilisateur CAS."]
+                "en": [
+                  "Force case (lower or upper case) of CAS username."
+                ],
+                "fr": [
+                  "Forcer la casse (minuscules ou majuscules) du nom d’utilisateur CAS."
+                ]
               },
               "pod_version_init": "4.0"
             },
             "CAS_APPLY_ATTRIBUTES_TO_USER": {
               "default_value": true,
               "description": {
-                "en": ["Automatically apply attributes returned by CAS to the user profile."],
-                "fr": ["Appliquer automatiquement les attributs renvoyés par le CAS au profil de l’utilisateur."]
+                "en": [
+                  "Automatically apply attributes returned by CAS to the user profile."
+                ],
+                "fr": [
+                  "Appliquer automatiquement les attributs renvoyés par le CAS au profil de l’utilisateur."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "CAS_ADMIN_REDIRECT": {
               "default_value": false,
               "description": {
-                "en": ["Redirect to CAS login for admin interface."],
-                "fr": ["Rediriger vers la connexion CAS pour l’interface d’administration."]
+                "en": [
+                  "Redirect to CAS login for admin interface."
+                ],
+                "fr": [
+                  "Rediriger vers la connexion CAS pour l’interface d’administration."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "LDAP_SERVER_URL": {
               "default_value": "ldap://ldap.univ.fr",
               "description": {
-                "en": ["LDAP server URL."],
-                "fr": ["URL du serveur LDAP."]
+                "en": [
+                  "LDAP server URL."
+                ],
+                "fr": [
+                  "URL du serveur LDAP."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "LDAP_SERVER_PORT": {
               "default_value": 389,
               "description": {
-                "en": ["LDAP server port."],
-                "fr": ["Port du serveur LDAP."]
+                "en": [
+                  "LDAP server port."
+                ],
+                "fr": [
+                  "Port du serveur LDAP."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "LDAP_SERVER_USE_SSL": {
               "default_value": false,
               "description": {
-                "en": ["Use SSL for LDAP connection."],
-                "fr": ["Utiliser SSL pour la connexion LDAP."]
+                "en": [
+                  "Use SSL for LDAP connection."
+                ],
+                "fr": [
+                  "Utiliser SSL pour la connexion LDAP."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "LDAP_BIND_DN": {
               "default_value": "cn=pod,ou=app,dc=univ,dc=fr",
               "description": {
-                "en": ["Identifiant (DN) of the account to connect to the LDAP server."],
-                "fr": ["Identifiant (DN) du compte pour se connecter au serveur LDAP."]
+                "en": [
+                  "Identifiant (DN) of the account to connect to the LDAP server."
+                ],
+                "fr": [
+                  "Identifiant (DN) du compte pour se connecter au serveur LDAP."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "LDAP_BIND_PASSWORD": {
               "default_value": "",
               "description": {
-                "en": ["Password of the account to connect to the LDAP server."],
-                "fr": ["Mot de passe du compte pour se connecter au serveur LDAP."]
+                "en": [
+                  "Password of the account to connect to the LDAP server."
+                ],
+                "fr": [
+                  "Mot de passe du compte pour se connecter au serveur LDAP."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "LDAP_USER_SEARCH_BASE": {
               "default_value": "ou=people,dc=univ,dc=fr",
               "description": {
-                "en": ["LDAP search base for users."],
-                "fr": ["Base de recherche LDAP pour les utilisateurs."]
+                "en": [
+                  "LDAP search base for users."
+                ],
+                "fr": [
+                  "Base de recherche LDAP pour les utilisateurs."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "LDAP_USER_SEARCH_FILTER": {
               "default_value": "(uid=%(uid)s)",
               "description": {
-                "en": ["LDAP filter for searching the individual in the LDAP server."],
-                "fr": ["Filtre LDAP permettant la recherche de l’individu dans le serveur LDAP."]
+                "en": [
+                  "LDAP filter for searching the individual in the LDAP server."
+                ],
+                "fr": [
+                  "Filtre LDAP permettant la recherche de l’individu dans le serveur LDAP."
+                ]
               },
               "pod_version_init": "3.1"
             },
@@ -156,175 +228,286 @@
                 "establishment": "establishment"
               },
               "description": {
-                "en": ["Mapping between LDAP attributes and Pod account fields."],
-                "fr": ["Liste de correspondance entre les champs d’un compte de Pod et les champs renvoyés par le LDAP."]
+                "en": [
+                  "Mapping between LDAP attributes and Pod account fields."
+                ],
+                "fr": [
+                  "Liste de correspondance entre les champs d’un compte de Pod et les champs renvoyés par le LDAP."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "OIDC_OP_TOKEN_ENDPOINT": {
               "default_value": "https://auth.example.com/oidc/token",
               "description": {
-                "en": ["OIDC Provider Token endpoint."],
-                "fr": ["Endpoint de récupération du jeton (Token) OIDC."]
+                "en": [
+                  "OIDC Provider Token endpoint."
+                ],
+                "fr": [
+                  "Endpoint de récupération du jeton (Token) OIDC."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "OIDC_OP_USER_ENDPOINT": {
               "default_value": "https://auth.example.com/oidc/userinfo",
               "description": {
-                "en": ["OIDC Provider UserInfo endpoint."],
-                "fr": ["Endpoint d’informations utilisateur du fournisseur OIDC."]
+                "en": [
+                  "OIDC Provider UserInfo endpoint."
+                ],
+                "fr": [
+                  "Endpoint d’informations utilisateur du fournisseur OIDC."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "OIDC_RP_CLIENT_ID": {
               "default_value": "mon-client-id",
               "description": {
-                "en": ["OIDC Client ID."],
-                "fr": ["Identifiant client (Client ID) OIDC."]
+                "en": [
+                  "OIDC Client ID."
+                ],
+                "fr": [
+                  "Identifiant client (Client ID) OIDC."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "OIDC_RP_CLIENT_SECRET": {
               "default_value": "mon-secret",
               "description": {
-                "en": ["OIDC Client Secret."],
-                "fr": ["Secret client (Client Secret) OIDC."]
+                "en": [
+                  "OIDC Client Secret."
+                ],
+                "fr": [
+                  "Secret client (Client Secret) OIDC."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "OIDC_CLAIM_GIVEN_NAME": {
               "default_value": "given_name",
               "description": {
-                "en": ["Claim name for first name."],
-                "fr": ["Nom du Claim pour récupérer le prénom."]
+                "en": [
+                  "Claim name for first name."
+                ],
+                "fr": [
+                  "Nom du Claim pour récupérer le prénom."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "OIDC_CLAIM_FAMILY_NAME": {
               "default_value": "family_name",
               "description": {
-                "en": ["Claim name for family name."],
-                "fr": ["Nom du Claim pour récupérer le nom de famille."]
+                "en": [
+                  "Claim name for family name."
+                ],
+                "fr": [
+                  "Nom du Claim pour récupérer le nom de famille."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "OIDC_CLAIM_PREFERRED_USERNAME": {
               "default_value": "preferred_username",
               "description": {
-                "en": ["Claim name for username."],
-                "fr": ["Nom du Claim pour récupérer l’identifiant (login)."]
+                "en": [
+                  "Claim name for username."
+                ],
+                "fr": [
+                  "Nom du Claim pour récupérer l’identifiant (login)."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "OIDC_DEFAULT_AFFILIATION": {
               "default_value": "member",
               "description": {
-                "en": ["Default affiliation for OIDC users."],
-                "fr": ["Affiliation par défaut d’un utilisateur authentifié par OIDC."]
+                "en": [
+                  "Default affiliation for OIDC users."
+                ],
+                "fr": [
+                  "Affiliation par défaut d’un utilisateur authentifié par OIDC."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES": {
               "default_value": [],
               "description": {
-                "en": ["Default access groups assigned to OIDC users."],
-                "fr": ["Groupes d’accès attribués par défaut à un nouvel utilisateur OIDC."]
+                "en": [
+                  "Default access groups assigned to OIDC users."
+                ],
+                "fr": [
+                  "Groupes d’accès attribués par défaut à un nouvel utilisateur OIDC."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "HIDE_USERNAME": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Si valeur vaut `True`, le username de l’utilisateur ne sera pas visible sur la plate-forme Pod (RGPD)."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Si valeur vaut « True », le username de l’utilisateur ne sera pas visible sur la plate-forme Pod (RGPD)."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "ALLOWED_SUPERUSER_IPS": {
-              "default_value": ["127.0.0.1", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"],
+              "default_value": [
+                "127.0.0.1",
+                "10.0.0.0/8",
+                "172.16.0.0/12",
+                "192.168.0.0/16"
+              ],
               "description": {
-                "en": ["List of IPs and/or ranges from which ’superuser’ status is allowed."],
-                "fr": ["Liste d’IP et/ou de plages depuis lesquelles le statut ’superuser’ est autorisé."]
+                "en": [
+                  "List of IPs and/or ranges from which “superuser” status is allowed."
+                ],
+                "fr": [
+                  "Liste d’IP et/ou de plages depuis lesquelles le statut « superuser » est autorisé."
+                ]
               },
               "pod_version_init": "4.0.2"
             },
             "AFFILIATION_STAFF": {
-              "default_value": ["faculty", "employee", "staff"],
+              "default_value": [
+                "faculty",
+                "employee",
+                "staff"
+              ],
               "description": {
-                "en": [""],
-                "fr": ["Les personnes ayant pour affiliation ces valeurs ont automatiquement le statut staff à True."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Les personnes ayant pour affiliation ces valeurs ont automatiquement le statut staff à True."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "CREATE_GROUP_FROM_AFFILIATION": {
               "default_value": true,
               "description": {
-                "en": [""],
-                "fr": ["Si True, des groupes d’accès sont créés automatiquement à partir des affiliations."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Si True, des groupes d’accès sont créés automatiquement à partir des affiliations."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "CREATE_GROUP_FROM_GROUPS": {
               "default_value": true,
               "description": {
-                "en": [""],
-                "fr": ["Si True, des groupes sont créés automatiquement à partir des groupes distants (memberOf)."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Si True, des groupes sont créés automatiquement à partir des groupes distants (memberOf)."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "SHIBBOLETH_STAFF_ALLOWED_DOMAINS": {
               "default_value": [],
               "description": {
-                "en": [""],
-                "fr": ["Permettre à l’utilisateur d’un domaine d’être membre du personnel (Shibboleth)."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Permettre à l’utilisateur d’un domaine d’être membre du personnel (Shibboleth)."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "SHIB_SECURE_HEADER": {
               "default_value": null,
               "description": {
-                "en": ["Secure header for Shibboleth."],
-                "fr": ["En-tête sécurisé pour Shibboleth."]
+                "en": [
+                  "Secure header for Shibboleth."
+                ],
+                "fr": [
+                  "En-tête sécurisé pour Shibboleth."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "SHIB_SECURE_VALUE": {
               "default_value": "secure",
               "description": {
-                "en": ["Expected value for Shibboleth secure header."],
-                "fr": ["Valeur attendue pour l’en-tête sécurisé Shibboleth."]
+                "en": [
+                  "Expected value for Shibboleth secure header."
+                ],
+                "fr": [
+                  "Valeur attendue pour l’en-tête sécurisé Shibboleth."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "SHIBBOLETH_ATTRIBUTE_MAP": {
               "default_value": {
-                "REMOTE_USER": [true, "username"],
-                "Shibboleth-givenName": [true, "first_name"],
-                "Shibboleth-sn": [false, "last_name"],
-                "Shibboleth-mail": [false, "email"],
-                "Shibboleth-primary-affiliation": [false, "affiliation"],
-                "Shibboleth-unscoped-affiliation": [false, "affiliations"]
+                "REMOTE_USER": [
+                  true,
+                  "username"
+                ],
+                "Shibboleth-givenName": [
+                  true,
+                  "first_name"
+                ],
+                "Shibboleth-sn": [
+                  false,
+                  "last_name"
+                ],
+                "Shibboleth-mail": [
+                  false,
+                  "email"
+                ],
+                "Shibboleth-primary-affiliation": [
+                  false,
+                  "affiliation"
+                ],
+                "Shibboleth-unscoped-affiliation": [
+                  false,
+                  "affiliations"
+                ]
               },
               "description": {
-                "en": ["Mapping between Shibboleth attributes and user model."],
-                "fr": ["Mapping des attributs entre Shibboleth et la classe utilisateur."]
+                "en": [
+                  "Mapping between Shibboleth attributes and user model."
+                ],
+                "fr": [
+                  "Mapping des attributs entre Shibboleth et la classe utilisateur."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "USE_ESTABLISHMENT_FIELD": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Si valeur vaut ’True’, rajoute un attribut ’establishment’ à l’utilisateur Pod."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Si valeur vaut « True », rajoute un attribut « establishment » à l’utilisateur Pod."
+                ]
               },
               "pod_version_init": "3.1"
             },
             "REMOTE_USER_HEADER": {
               "default_value": "REMOTE_USER",
               "description": {
-                "en": [""],
-                "fr": ["Nom de l’attribut dans les headers qui sert à identifier l’utilisateur Shibboleth."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Nom de l’attribut dans les headers qui sert à identifier l’utilisateur Shibboleth."
+                ]
               },
               "pod_version_init": "3.1"
             }
@@ -336,271 +519,427 @@
         },
         "video": {
           "description": {
-            "en": ["Video application configuration"],
-            "fr": ["Configuration de l’application vidéo"]
+            "en": [
+              "Video application configuration"
+            ],
+            "fr": [
+              "Configuration de l’application vidéo"
+            ]
           },
           "settings": {
             "VIDEOS_DIR": {
               "default_value": "videos",
               "description": {
-                "en": [""],
-                "fr": ["Répertoire racine pour le stockage des vidéos."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Répertoire racine pour le stockage des vidéos."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "THUMBNAILS_DIR": {
               "default_value": "thumbnails",
               "description": {
-                "en": ["Directory for storing video thumbnails."],
-                "fr": ["Répertoire pour le stockage des vignettes (thumbnails)."]
+                "en": [
+                  "Directory for storing video thumbnails."
+                ],
+                "fr": [
+                  "Répertoire pour le stockage des vignettes (thumbnails)."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "MAX_UPLOAD_SIZE_GB": {
               "default_value": 1,
               "description": {
-                "en": [""],
-                "fr": ["Taille maximum en Go des fichiers téléversés sur la plateforme."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Taille maximum en Go des fichiers téléversés sur la plateforme."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "DEFAULT_LICENSE": {
               "default_value": "",
               "description": {
-                "en": ["Default license for new videos."],
-                "fr": ["Licence par défaut appliquée aux nouvelles vidéos."]
+                "en": [
+                  "Default license for new videos."
+                ],
+                "fr": [
+                  "Licence par défaut appliquée aux nouvelles vidéos."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "ALLOWED_EXTENSIONS": {
-              "default_value": ["3gp", "avi", "divx", "flv", "m2p", "m4v", "mkv", "mov", "mp4", "mpeg", "mpg", "mts", "wmv", "mp3", "ogg", "wav", "wma", "webm", "ts"],
+              "default_value": [
+                "3gp",
+                "avi",
+                "divx",
+                "flv",
+                "m2p",
+                "m4v",
+                "mkv",
+                "mov",
+                "mp4",
+                "mpeg",
+                "mpg",
+                "mts",
+                "wmv",
+                "mp3",
+                "ogg",
+                "wav",
+                "wma",
+                "webm",
+                "ts"
+              ],
               "description": {
-                "en": ["Allowed file extensions for upload."],
-                "fr": ["Extensions de fichiers autorisées pour le téléversement."]
+                "en": [
+                  "Allowed file extensions for upload."
+                ],
+                "fr": [
+                  "Extensions de fichiers autorisées pour le téléversement."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "VIDEO_REQUIRED_FIELDS": {
               "default_value": [],
               "description": {
-                "en": [""],
-                "fr": ["Permet de définir les champs obligatoires dans le formulaire d’édition d’une vidéo."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Permet de définir les champs obligatoires dans le formulaire d’édition d’une vidéo."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "FFMPEG_CMD": {
               "default_value": "ffmpeg",
               "description": {
-                "en": ["System command for FFmpeg."],
-                "fr": ["Commande système pour FFmpeg."]
+                "en": [
+                  "System command for FFmpeg."
+                ],
+                "fr": [
+                  "Commande système pour FFmpeg."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "FFPROBE_CMD": {
               "default_value": "ffprobe",
               "description": {
-                "en": ["System command for FFprobe."],
-                "fr": ["Commande système pour FFprobe."]
+                "en": [
+                  "System command for FFprobe."
+                ],
+                "fr": [
+                  "Commande système pour FFprobe."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "FFMPEG_CRF": {
               "default_value": 20,
               "description": {
-                "en": ["FFmpeg Constant Rate Factor (quality)."],
-                "fr": ["Valeur CRF pour l’encodage FFmpeg (Qualité)."]
+                "en": [
+                  "FFmpeg Constant Rate Factor (quality)."
+                ],
+                "fr": [
+                  "Valeur CRF pour l’encodage FFmpeg (Qualité)."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "FFMPEG_NB_THREADS": {
               "default_value": "slow",
               "description": {
-                "en": ["FFmpeg speed/quality preset."],
-                "fr": ["Preset de vitesse/qualité FFmpeg."]
+                "en": [
+                  "FFmpeg speed/quality preset."
+                ],
+                "fr": [
+                  "Preset de vitesse/qualité FFmpeg."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "FFPROBE_GET_INFO": {
               "default_value": "high",
               "description": {
-                "en": ["Detail level for metadata extraction."],
-                "fr": ["Niveau de détail pour l’extraction des métadonnées."]
+                "en": [
+                  "Detail level for metadata extraction."
+                ],
+                "fr": [
+                  "Niveau de détail pour l’extraction des métadonnées."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "CHUNK_SIZE": {
               "default_value": 100000,
               "description": {
-                "en": [""],
-                "fr": ["Taille d’un fragment lors de l’envoi d’une vidéo."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Taille d’un fragment lors de l’envoi d’une vidéo."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "USE_STATS_VIEW": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Permet d’activer la visualisation détaillée des statistiques de vue."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Permet d’activer la visualisation détaillée des statistiques de vue."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "VIEW_STATS_AUTH": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Réserve l’accès aux statistiques aux personnes authentifiées."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Réserve l’accès aux statistiques aux personnes authentifiées."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "USER_VIDEO_CATEGORY": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Permet d’activer la gestion de catégories par les utilisateurs."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Permet d’activer la gestion de catégories par les utilisateurs."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "WEBTV_MODE": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Mode webtv : bascule POD en application webtv (masque les boutons de connexion)."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Mode webtv : bascule POD en application webtv (masque les boutons de connexion)."
+                ]
               },
               "pod_version_init": "3.7.0"
             },
             "USE_DUPLICATE": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Permet aux utilisateurs de dupliquer une vidéo."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Permet aux utilisateurs de dupliquer une vidéo."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "USE_CUT": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Activation de l’application de découpage (Cut)."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Activation de l’application de découpage (Cut)."
+                ]
               },
               "pod_version_init": "3.5.2"
             },
             "ALLOW_AUTHENTICATED_UPLOAD": {
               "default_value": true,
               "description": {
-                "en": ["Allow all authenticated users to upload videos."],
-                "fr": ["Autoriser tous les utilisateurs authentifiés à téléverser des vidéos."]
+                "en": [
+                  "Allow all authenticated users to upload videos."
+                ],
+                "fr": [
+                  "Autoriser tous les utilisateurs authentifiés à téléverser des vidéos."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "CHANNEL_MODE": {
               "default_value": false,
               "description": {
-                "en": ["Enable channel display mode."],
-                "fr": ["Activer le mode d’affichage par chaînes."]
+                "en": [
+                  "Enable channel display mode."
+                ],
+                "fr": [
+                  "Activer le mode d’affichage par chaînes."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "USER_QUOTA_SIZE_GB": {
               "default_value": 5,
               "description": {
-                "en": ["Storage quota per user in GB."],
-                "fr": ["Quota de stockage par utilisateur en Go."]
+                "en": [
+                  "Storage quota per user in GB."
+                ],
+                "fr": [
+                  "Quota de stockage par utilisateur en Go."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "HIDE_USER_FILTER": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Si True, le filtre des vidéos par utilisateur ne sera plus visible (RGPD)."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Si True, le filtre des vidéos par utilisateur ne sera plus visible (RGPD)."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "HIDE_TAGS": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Si True, permet de ne pas afficher le nuage de mots clés."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Si True, permet de ne pas afficher le nuage de mots clés."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "FORCE_LOWERCASE_TAGS": {
               "default_value": true,
               "description": {
-                "en": [""],
-                "fr": ["Les mots clés sont convertis automatiquement en minuscule."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Les mots clés sont convertis automatiquement en minuscule."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "MAX_TAG_LENGTH": {
               "default_value": 50,
               "description": {
-                "en": [""],
-                "fr": ["Longueur maximale autorisée pour un mot-clé."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Longueur maximale autorisée pour un mot-clé."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "NUMBER_TAGS_CLOUD": {
               "default_value": 20,
               "description": {
-                "en": ["Number of tags displayed in the cloud."],
-                "fr": ["Nombre de mots-clés affichés dans le nuage."]
+                "en": [
+                  "Number of tags displayed in the cloud."
+                ],
+                "fr": [
+                  "Nombre de mots-clés affichés dans le nuage."
+                ]
               },
               "pod_version_init": "4.0.0"
             },
             "HIDE_SHARE": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Si True, masque les liens de partage sur les réseaux sociaux."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Si True, masque les liens de partage sur les réseaux sociaux."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "HIDE_DISCIPLINES": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Si True, masque les disciplines dans la colonne de droite."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Si True, masque les disciplines dans la colonne de droite."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "HIDE_CURSUS": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Si True, masque les cursus dans la colonne de droite."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Si True, masque les cursus dans la colonne de droite."
+                ]
               },
               "pod_version_init": "3.4.0"
             },
             "HIDE_TYPES": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Si True, masque les types de vidéos dans la colonne de droite."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Si True, masque les types de vidéos dans la colonne de droite."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "RESTRICT_EDIT_TO_STAFF": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Si True, seule les personnes ’Staff’ peuvent déposer des vidéos."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Si True, seule les personnes « Staff » peuvent déposer des vidéos."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "HOMEPAGE_SHOWS_PASSWORDED": {
               "default_value": false,
               "description": {
-                "en": [""],
-                "fr": ["Afficher les vidéos protégées par mot de passe sur la page d’accueil."]
+                "en": [
+                  ""
+                ],
+                "fr": [
+                  "Afficher les vidéos protégées par mot de passe sur la page d’accueil."
+                ]
               },
               "pod_version_init": "3.1.0"
             },
             "CACHE_TIMEOUT": {
               "default_value": 600,
               "description": {
-                "en": ["Time in seconds to cache video data."],
-                "fr": ["Temps en secondes de conservation des données en cache."]
+                "en": [
+                  "Time in seconds to cache video data."
+                ],
+                "fr": [
+                  "Temps en secondes de conservation des données en cache."
+                ]
               },
               "pod_version_init": "3.5.0"
             }
@@ -612,8 +951,12 @@
         },
         "api": {
           "description": {
-            "en": ["API documentation settings."],
-            "fr": ["Réglages de la documentation de l’API."]
+            "en": [
+              "API documentation settings."
+            ],
+            "fr": [
+              "Réglages de la documentation de l’API."
+            ]
           },
           "settings": {
             "SPECTACULAR_SETTINGS": {
@@ -624,8 +967,12 @@
                 "COMPONENT_SPLIT_REQUEST": true
               },
               "description": {
-                "en": ["Configuration for OpenAPI schema generation."],
-                "fr": ["Configuration pour la génération du schéma OpenAPI."]
+                "en": [
+                  "Configuration for OpenAPI schema generation."
+                ],
+                "fr": [
+                  "Configuration pour la génération du schéma OpenAPI."
+                ]
               },
               "pod_version_init": "5.0.0"
             }
@@ -637,39 +984,59 @@
         },
         "core": {
           "description": {
-            "en": ["Core application configuration"],
-            "fr": ["Configuration de l’application Core"]
+            "en": [
+              "Core application configuration"
+            ],
+            "fr": [
+              "Configuration de l’application Core"
+            ]
           },
           "settings": {
             "STATIC_URL": {
               "default_value": "/static/",
               "description": {
-                "en": ["URL to use when referring to static files located in STATIC_ROOT."],
-                "fr": ["URL à utiliser pour faire référence aux fichiers statiques situés dans STATIC_ROOT."]
+                "en": [
+                  "URL to use when referring to static files located in STATIC_ROOT."
+                ],
+                "fr": [
+                  "URL à utiliser pour faire référence aux fichiers statiques situés dans STATIC_ROOT."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "STATIC_ROOT": {
               "default_value": "staticfiles",
               "description": {
-                "en": ["The absolute path to the directory where collectstatic will collect static files for deployment."],
-                "fr": ["Le chemin absolu vers le répertoire où collectstatic rassemblera les fichiers statiques pour le déploiement."]
+                "en": [
+                  "The absolute path to the directory where collectstatic will collect static files for deployment."
+                ],
+                "fr": [
+                  "Le chemin absolu vers le répertoire où collectstatic rassemblera les fichiers statiques pour le déploiement."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "MEDIA_URL": {
               "default_value": "/media/",
               "description": {
-                "en": ["URL that handles the media served from MEDIA_ROOT."],
-                "fr": ["URL qui gère les médias servis depuis MEDIA_ROOT."]
+                "en": [
+                  "URL that handles the media served from MEDIA_ROOT."
+                ],
+                "fr": [
+                  "URL qui gère les médias servis depuis MEDIA_ROOT."
+                ]
               },
               "pod_version_init": "5.0.0"
             },
             "MEDIA_ROOT": {
               "default_value": "media",
               "description": {
-                "en": ["Absolute filesystem path to the directory that will hold user-uploaded files."],
-                "fr": ["Chemin absolu du système de fichiers vers le répertoire qui contiendra les fichiers téléchargés par les utilisateurs."]
+                "en": [
+                  "Absolute filesystem path to the directory that will hold user-uploaded files."
+                ],
+                "fr": [
+                  "Chemin absolu du système de fichiers vers le répertoire qui contiendra les fichiers téléchargés par les utilisateurs."
+                ]
               },
               "pod_version_init": "5.0.0"
             }
