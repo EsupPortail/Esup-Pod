@@ -78,7 +78,7 @@ The system uses **Pydantic** `BaseSettings` to ensure configuration integrity:
 We provide a `Makefile` to simplify Docker commands.
 
 ```shell
-benjaminsere@ul63122:/usr/local/django_projects/Pod_V5_Back$ make
+user@pod:/usr/local/django_projects/Pod_V5_Back$ make
 help                 List available make commands
 start                Start the full project (detached, build if needed)
 restart              Restart containers (stop then start)
