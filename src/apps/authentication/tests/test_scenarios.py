@@ -1,3 +1,10 @@
+"""
+Tests for authentication scenarios and configuration switching.
+
+This module contains tests that verify how different authentication settings 
+(CAS vs Local Auth) impact URL routing and available views.
+"""
+
 import sys
 from importlib import reload
 from unittest.mock import patch
@@ -12,7 +19,10 @@ from ..conf import AuthConfig
 
 
 def reload_urlconf():
-    """Reload URL configurations after settings change."""
+    """
+    Reloads URL configurations after a settings change to ensure that changes 
+    to conditional URL patterns are correctly applied during tests.
+    """
     clear_url_caches()
     auth_urls_module = "src.apps.authentication.urls"
     config_urls_module = settings.ROOT_URLCONF
@@ -23,8 +33,15 @@ def reload_urlconf():
 
 
 class AuthenticationScenariosTests(TestCase):
+    """
+    Test suite for verifying that URL routing adapts correctly to authentication 
+    configuration flags.
+    """
 
     def tearDown(self):
+        """
+        Cleans up URL caches and reloads the URL configuration after each test.
+        """
         clear_url_caches()
         reload_urlconf()
 

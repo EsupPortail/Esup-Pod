@@ -1,7 +1,7 @@
 # Configuration Guide
 
 This guide describes how to configure **Esup-Pod V5**.
-The project adheres to the Twelve-Factor App methodology, storing configuration in the **environment**.
+The project adheres to the [Twelve-Factor App](https://12factor.net/config) methodology, storing configuration in the **environment**.
 
 ## Configuration Hierarchy
 

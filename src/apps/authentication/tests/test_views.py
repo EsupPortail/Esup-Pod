@@ -1,3 +1,10 @@
+"""
+Tests for authentication views.
+
+This module validates the different authentication flows provided by the API,
+including standard JWT login, Shibboleth-based authentication, and OIDC flows.
+"""
+
 from unittest.mock import MagicMock, patch
 
 from django.contrib.auth import get_user_model
@@ -12,7 +19,14 @@ User = get_user_model()
 
 
 class LoginViewTests(APITestCase):
+    """
+    Test suite for standard JWT authentication (token obtain pair).
+    """
+
     def setUp(self):
+        """
+        Initializes a test user and their associated owner profile.
+        """
         self.username = "testuser"
         # ggignore-start
         # gitguardian:ignore
@@ -25,6 +39,9 @@ class LoginViewTests(APITestCase):
         self.url = reverse("token_obtain_pair")
 
     def test_login_success(self):
+        """
+        Tests that valid credentials return both access and refresh JWT tokens.
+        """
         data = {"username": self.username, "password": self.password}
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -32,17 +49,31 @@ class LoginViewTests(APITestCase):
         self.assertIn("refresh", response.data)
 
     def test_login_failure(self):
+        """
+        Tests that invalid credentials result in an unauthorized response.
+        """
         data = {"username": self.username, "password": "wrongpassword"}
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class ShibbolethLoginViewTests(APITestCase):
+    """
+    Test suite for Shibboleth-based single sign-on flows.
+    """
+
     def setUp(self):
+        """
+        Sets up the URL for the Shibboleth token obtain pair endpoint.
+        """
         self.url = reverse("token_obtain_pair_shibboleth")
         self.remote_user_header = "REMOTE_USER"
 
     def test_shibboleth_success(self):
+        """
+        Tests that providing the correct Shibboleth headers results in user creation (if needed)
+        and a successful JWT token issuance.
+        """
         headers = {
             "REMOTE_USER": "shibuser",
             "HTTP_SHIBBOLETH_MAIL": "shib@example.com",
@@ -52,6 +83,9 @@ class ShibbolethLoginViewTests(APITestCase):
         self.assertTrue(User.objects.filter(username="shibuser").exists())
 
     def test_shibboleth_missing_header(self):
+        """
+        Tests that authentication fails when the REMOTE_USER header is missing.
+        """
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -64,7 +98,10 @@ class ShibbolethLoginViewTests(APITestCase):
         ),
     )
     def test_shibboleth_security_check_fail(self, mock_settings):
-        """Test that missing security header returns 403."""
+        """
+        Tests that access is forbidden when optional security headers (like X-SECURE) 
+        do not match the expected values.
+        """
         headers = {
             "HTTP_REMOTE_USER": "shibuser",
         }
@@ -73,7 +110,14 @@ class ShibbolethLoginViewTests(APITestCase):
 
 
 class OIDCLoginViewTests(APITestCase):
+    """
+    Test suite for OpenID Connect (OIDC) authentication flows.
+    """
+
     def setUp(self):
+        """
+        Sets up the URL for the OIDC token exchange endpoint.
+        """
         self.url = reverse("token_obtain_pair_oidc")
 
     @patch("requests.post")
@@ -85,6 +129,12 @@ class OIDCLoginViewTests(APITestCase):
         ),
     )
     def test_oidc_success(self, mock_settings, mock_get, mock_post):
+        """
+        Mocks the full OIDC flow:
+        1. Trading an auth code for an access token via the provider's token endpoint.
+        2. Fetching user info from the provider's userinfo endpoint.
+        3. Issuing local JWTs for the identified user.
+        """
         mock_token_resp = MagicMock()
         mock_token_resp.json.return_value = {"access_token": "fake_access_token"}
         mock_token_resp.status_code = 200

@@ -1,3 +1,11 @@
+"""
+Tests for authentication services and providers.
+
+This module validates the user population logic across different authentication 
+providers (CAS, OIDC, LDAP, Shibboleth) and verifies that provider-specific 
+tasks, like ticket verification, are integrated correctly.
+"""
+
 from unittest.mock import MagicMock, patch
 
 from django.contrib.auth import get_user_model
@@ -11,17 +19,32 @@ User = get_user_model()
 
 
 class TestUserPopulator(TestCase):
+    """
+    Test suite for UserPopulator, which handles user attribute synchronization 
+    from external auth providers.
+    """
+
     def setUp(self):
+        """
+        Initializes a test user and a populator instance.
+        """
         self.user = User.objects.create(username="testuser", email="test@example.com")
         self.populator = UserPopulator(self.user)
 
     def test_init_creates_owner(self):
+        """
+        Verifies that initializing a populator for a user without an owner 
+        automatically triggers owner creation.
+        """
         user_no_owner = User.objects.create(username="noowner")
         UserPopulator(user_no_owner)
         self.assertTrue(hasattr(user_no_owner, "owner"))
         self.assertIsNotNone(user_no_owner.owner)
 
     def test_populate_from_cas_basic(self):
+        """
+        Tests user attribute synchronization from a basic CAS attribute dictionary.
+        """
         attributes = {
             "primaryAffiliation": "student",
             "affiliation": ["student"],
@@ -37,6 +60,9 @@ class TestUserPopulator(TestCase):
         self.assertTrue(AccessGroup.objects.filter(code_name="group1").exists())
 
     def test_populate_from_shibboleth(self):
+        """
+        Tests user attribute synchronization from Shibboleth environment variables.
+        """
         attributes = {
             "first_name": "Shib",
             "last_name": "User",
@@ -64,6 +90,9 @@ class TestUserPopulator(TestCase):
         ),
     )
     def test_populate_from_oidc(self, mock_settings):
+        """
+        Tests user attribute synchronization from an OIDC claim dictionary.
+        """
         attributes = {
             "given_name": "Oidc",
             "family_name": "User",
@@ -83,6 +112,9 @@ class TestUserPopulator(TestCase):
     @patch("src.apps.authentication.services.users.populator.get_ldap_entry")
     @patch("src.apps.authentication.services.users.populator.auth_settings")
     def test_populate_from_ldap(self, mock_settings, mock_get_entry, mock_get_conn):
+        """
+        Tests user attribute synchronization from LDAP directory entries.
+        """
         mock_settings.ldap_server = {"url": "ldap://localhost"}
         mock_settings.ldap_mapping_attributes = {
             "mail": "mail",
@@ -126,6 +158,10 @@ class TestUserPopulator(TestCase):
     )
     @patch("src.apps.authentication.services.users.populator.UserPopulator.run")
     def test_verify_cas_ticket_calls_populator(self, mock_run, mock_settings):
+        """
+        Tests the end-to-end flow of verifying a CAS ticket and then triggering 
+        user attribute synchronization.
+        """
         with patch(
             "src.apps.authentication.services.providers.cas.get_cas_client"
         ) as mock_client:

@@ -1,3 +1,10 @@
+"""
+Tests for access group management and owner linking.
+
+This module contains tests for the API endpoints that handle setting and removing
+users from access groups, either via the Owner model or the AccessGroup model directly.
+"""
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
@@ -8,7 +15,15 @@ User = get_user_model()
 
 
 class AccessGroupTests(APITestCase):
+    """
+    Test suite for AccessGroup and Owner-related group actions.
+    """
+
     def setUp(self):
+        """
+        Initializes test users, owners, and access groups for each test case.
+        Authenticates with a superuser by default.
+        """
         self.admin_user = User.objects.create_superuser(
             username="admin", password="password", email="admin@example.com"
         )
@@ -23,6 +38,9 @@ class AccessGroupTests(APITestCase):
         self.client.force_authenticate(user=self.admin_user)
 
     def test_set_user_accessgroup(self):
+        """
+        Test adding an access group to a specific user via the Owner endpoint.
+        """
         url = reverse("owner-set-user-accessgroup")
         data = {
             "username": self.test_user.username,
@@ -33,17 +51,26 @@ class AccessGroupTests(APITestCase):
         self.assertTrue(self.owner.accessgroups.filter(code_name="test_group").exists())
 
     def test_set_user_accessgroup_missing_data(self):
+        """
+        Test that setting a user's access group fails when required data is missing.
+        """
         url = reverse("owner-set-user-accessgroup")
         response = self.client.post(url, {"username": "testuser"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_set_user_accessgroup_user_not_found(self):
+        """
+        Test that setting a user's access group fails when the user does not exist.
+        """
         url = reverse("owner-set-user-accessgroup")
         data = {"username": "nonexistent", "groups": ["test_group"]}
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_remove_user_accessgroup(self):
+        """
+        Test removing an access group from a specific user via the Owner endpoint.
+        """
         self.owner.accessgroups.add(self.access_group)
         url = reverse("owner-remove-user-accessgroup")
         data = {
@@ -55,6 +82,9 @@ class AccessGroupTests(APITestCase):
         self.assertFalse(self.owner.accessgroups.filter(code_name="test_group").exists())
 
     def test_set_users_by_name(self):
+        """
+        Test adding users to an access group via the AccessGroup endpoint.
+        """
         url = reverse("accessgroup-set-users-by-name")
         data = {
             "code_name": self.access_group.code_name,
@@ -69,6 +99,9 @@ class AccessGroupTests(APITestCase):
         )
 
     def test_remove_users_by_name(self):
+        """
+        Test removing users from an access group via the AccessGroup endpoint.
+        """
         self.access_group.users.add(self.owner)
         url = reverse("accessgroup-remove-users-by-name")
         data = {
@@ -84,6 +117,9 @@ class AccessGroupTests(APITestCase):
         )
 
     def test_accessgroup_not_found_actions(self):
+        """
+        Test that group actions fail when the target access group is not found.
+        """
         url_set = reverse("accessgroup-set-users-by-name")
         url_remove = reverse("accessgroup-remove-users-by-name")
         data = {"code_name": "wrong_group", "users": ["testuser"]}
