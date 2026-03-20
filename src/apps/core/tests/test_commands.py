@@ -1,3 +1,9 @@
+"""
+Esup-Pod - Tests for management commands in the core app.
+
+This module validates the execution of common administration commands like
+ensure_superuser, validate_config, and createconfiguration.
+"""
 import os
 from io import StringIO
 from django.core.management import call_command
@@ -10,7 +16,14 @@ User = get_user_model()
 
 
 class EnsureSuperuserTests(TestCase):
+    """
+    Test suite for the ensure_superuser management command.
+    """
+
     def setUp(self):
+        """
+        Setup environment variables and testing site.
+        """
         os.environ["DJANGO_SUPERUSER_USERNAME"] = "testadmin"
         os.environ["DJANGO_SUPERUSER_EMAIL"] = "testadmin@example.com"
         # ggignore-start
@@ -21,6 +34,9 @@ class EnsureSuperuserTests(TestCase):
         Site.objects.get_or_create(domain="testserver", name="testserver")
 
     def test_ensure_superuser_creation(self):
+        """
+        Tests that a superuser is correctly created when valid environment variables are set.
+        """
         out = StringIO()
         call_command("ensure_superuser", stdout=out)
 
@@ -28,12 +44,15 @@ class EnsureSuperuserTests(TestCase):
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
 
-        owner = Owner.objects.get(user=user)
+        Owner.objects.get(user=user)
         self.assertIn("Superuser 'testadmin' created.", out.getvalue())
         owner = Owner.objects.get(user=user)
         self.assertTrue(owner.sites.exists())
 
     def test_ensure_superuser_exists(self):
+        """
+        Tests that the command does nothing when the superuser already exists.
+        """
         User.objects.create_superuser(
             username="testadmin", email="testadmin@example.com", password="testpass"
         )
@@ -43,6 +62,9 @@ class EnsureSuperuserTests(TestCase):
         self.assertIn("already exists", out.getvalue())
 
     def test_ensure_superuser_missing_env(self):
+        """
+        Tests that the command reports an error if environment variables are missing.
+        """
         del os.environ["DJANGO_SUPERUSER_USERNAME"]
         out = StringIO()
         err = StringIO()
@@ -51,7 +73,14 @@ class EnsureSuperuserTests(TestCase):
 
 
 class ValidateConfigTests(TestCase):
+    """
+    Test suite for the validate_config management command.
+    """
+
     def test_validate_config_dry_run(self):
+        """
+        Tests that validate_config can run in dry-run mode.
+        """
         out = StringIO()
         try:
             call_command("validate_config", "--dry-run", stdout=out)
@@ -61,7 +90,14 @@ class ValidateConfigTests(TestCase):
 
 
 class CreateConfigurationTests(TestCase):
+    """
+    Test suite for the createconfiguration management command.
+    """
+
     def test_create_configuration_dry_run(self):
+        """
+        Tests that createconfiguration can generate configuration documentation.
+        """
         out = StringIO()
         call_command("createconfiguration", "en", stdout=out)
         self.assertIn("configuration", out.getvalue().lower())

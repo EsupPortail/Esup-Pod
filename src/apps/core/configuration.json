@@ -12,7 +12,7 @@
               "default_value": true,
               "description": {
                 "en": ["Enable local authentication (username/password stored in database)."],
-                "fr": ["Activer l'authentification locale (nom d'utilisateur/mot de passe stockés dans la base de données)."]
+                "fr": ["Activer l’authentification locale (nom d’utilisateur/mot de passe stockés dans la base de données)."]
               },
               "pod_version_init": "5.0.0"
             },
@@ -28,7 +28,7 @@
               "default_value": false,
               "description": {
                 "en": ["Enable LDAP authentication."],
-                "fr": ["Activer l'authentification LDAP."]
+                "fr": ["Activer l’authentification LDAP."]
               },
               "pod_version_init": "5.0.0"
             },
@@ -76,7 +76,7 @@
               "default_value": true,
               "description": {
                 "en": ["Automatically apply attributes returned by CAS to the user profile."],
-                "fr": ["Appliquer automatiquement les attributs renvoyés par le CAS au profil de l'utilisateur."]
+                "fr": ["Appliquer automatiquement les attributs renvoyés par le CAS au profil de l’utilisateur."]
               },
               "pod_version_init": "5.0.0"
             },
@@ -84,7 +84,7 @@
               "default_value": false,
               "description": {
                 "en": ["Redirect to CAS login for admin interface."],
-                "fr": ["Rediriger vers la connexion CAS pour l'interface d'administration."]
+                "fr": ["Rediriger vers la connexion CAS pour l’interface d’administration."]
               },
               "pod_version_init": "5.0.0"
             },
@@ -173,7 +173,7 @@
               "default_value": "https://auth.example.com/oidc/userinfo",
               "description": {
                 "en": ["OIDC Provider UserInfo endpoint."],
-                "fr": ["Endpoint d'informations utilisateur du fournisseur OIDC."]
+                "fr": ["Endpoint d’informations utilisateur du fournisseur OIDC."]
               },
               "pod_version_init": "3.1"
             },
@@ -244,8 +244,8 @@
             "ALLOWED_SUPERUSER_IPS": {
               "default_value": ["127.0.0.1", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"],
               "description": {
-                "en": ["List of IPs and/or ranges from which 'superuser' status is allowed."],
-                "fr": ["Liste d’IP et/ou de plages depuis lesquelles le statut 'superuser' est autorisé."]
+                "en": ["List of IPs and/or ranges from which ’superuser’ status is allowed."],
+                "fr": ["Liste d’IP et/ou de plages depuis lesquelles le statut ’superuser’ est autorisé."]
               },
               "pod_version_init": "4.0.2"
             },
@@ -293,7 +293,7 @@
               "default_value": "secure",
               "description": {
                 "en": ["Expected value for Shibboleth secure header."],
-                "fr": ["Valeur attendue pour l'en-tête sécurisé Shibboleth."]
+                "fr": ["Valeur attendue pour l’en-tête sécurisé Shibboleth."]
               },
               "pod_version_init": "5.0.0"
             },
@@ -316,7 +316,7 @@
               "default_value": false,
               "description": {
                 "en": [""],
-                "fr": ["Si valeur vaut 'True', rajoute un attribut 'establishment' à l’utilisateur Pod."]
+                "fr": ["Si valeur vaut ’True’, rajoute un attribut ’establishment’ à l’utilisateur Pod."]
               },
               "pod_version_init": "3.1"
             },
@@ -408,7 +408,7 @@
               "default_value": 20,
               "description": {
                 "en": ["FFmpeg Constant Rate Factor (quality)."],
-                "fr": ["Valeur CRF pour l'encodage FFmpeg (Qualité)."]
+                "fr": ["Valeur CRF pour l’encodage FFmpeg (Qualité)."]
               },
               "pod_version_init": "3.1.0"
             },
@@ -424,7 +424,7 @@
               "default_value": "high",
               "description": {
                 "en": ["Detail level for metadata extraction."],
-                "fr": ["Niveau de détail pour l'extraction des métadonnées."]
+                "fr": ["Niveau de détail pour l’extraction des métadonnées."]
               },
               "pod_version_init": "3.1.0"
             },
@@ -496,7 +496,7 @@
               "default_value": false,
               "description": {
                 "en": ["Enable channel display mode."],
-                "fr": ["Activer le mode d'affichage par chaînes."]
+                "fr": ["Activer le mode d’affichage par chaînes."]
               },
               "pod_version_init": "5.0.0"
             },
@@ -584,7 +584,7 @@
               "default_value": false,
               "description": {
                 "en": [""],
-                "fr": ["Si True, seule les personnes 'Staff' peuvent déposer des vidéos."]
+                "fr": ["Si True, seule les personnes ’Staff’ peuvent déposer des vidéos."]
               },
               "pod_version_init": "3.1.0"
             },
@@ -613,7 +613,7 @@
         "api": {
           "description": {
             "en": ["API documentation settings."],
-            "fr": ["Réglages de la documentation de l'API."]
+            "fr": ["Réglages de la documentation de l’API."]
           },
           "settings": {
             "SPECTACULAR_SETTINGS": {
