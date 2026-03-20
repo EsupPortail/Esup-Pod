@@ -1,5 +1,5 @@
 """
-Encoding configuration.
+Esup-Pod - Encoding application configuration.
 
 Typed and validated configuration for the encoding app using pydantic-settings.
 """

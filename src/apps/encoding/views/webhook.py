@@ -1,3 +1,9 @@
+"""
+Esup-Pod - Webhook handler for the encoding process.
+
+This module provides the view to receive and process encoding task results 
+from the runner manager.
+"""
 import logging
 import os
 from rest_framework.views import APIView

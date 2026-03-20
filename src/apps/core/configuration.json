@@ -510,6 +510,30 @@
                 ]
               },
               "pod_version_init": "3.1"
+            },
+            "SHIB_NAME": {
+              "default_value": "Identify Federation",
+              "description": {
+                "en": [
+                  "Display name for Shibboleth authentication."
+                ],
+                "fr": [
+                  "Nom d’affichage pour l’authentification Shibboleth."
+                ]
+              },
+              "pod_version_init": "4.0"
+            },
+            "OIDC_NAME": {
+              "default_value": "OpenID Connect",
+              "description": {
+                "en": [
+                  "Display name for OpenID Connect authentication."
+                ],
+                "fr": [
+                  "Nom d’affichage pour l’authentification OpenID Connect."
+                ]
+              },
+              "pod_version_init": "5.0.0"
             }
           },
           "title": {

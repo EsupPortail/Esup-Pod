@@ -104,11 +104,21 @@ class AuthConfig(BaseSettings):
         default=defaults.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES,
         description="Default access groups for OIDC-authenticated users.",
     )
+    oidc_name: str = Field(
+        default=defaults.OIDC_NAME,
+        description="Display name for OIDC login.",
+        json_schema_extra={"public": True},
+    )
 
     # --- Shibboleth Configuration ---
     shibboleth_staff_allowed_domains: Optional[List[str]] = Field(
         default=defaults.SHIBBOLETH_STAFF_ALLOWED_DOMAINS,
         description="Domains allowed for Shibboleth staff users.",
+    )
+    shibboleth_name: str = Field(
+        default=defaults.SHIB_NAME,
+        description="Display name for Shibboleth login.",
+        json_schema_extra={"public": True},
     )
     shib_secure_header: Optional[str] = Field(
         default=defaults.SHIB_SECURE_HEADER,
