@@ -1,3 +1,9 @@
+"""
+Esup-Pod - Tests for encoding webhooks.
+
+This module validates the processing of callbacks from the runner manager, 
+ensuring that video status and files are correctly updated upon task completion.
+"""
 import tempfile
 from unittest.mock import patch, MagicMock
 from django.contrib.auth import get_user_model
@@ -13,7 +19,14 @@ User = get_user_model()
 
 
 class EncodingWebhookViewTests(APITestCase):
+    """
+    Test suite for the runner manager webhook endpoint.
+    """
+
     def setUp(self):
+        """
+        Setup a video in ENCODING status and expected webhook URLs.
+        """
         self.user = User.objects.create_user(username="testuser", password="password")
         video_content = SimpleUploadedFile(
             "test.mp4", b"file_content", content_type="video/mp4"

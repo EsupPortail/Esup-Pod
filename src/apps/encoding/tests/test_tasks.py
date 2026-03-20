@@ -1,3 +1,9 @@
+"""
+Esup-Pod - Tests for encoding tasks.
+
+This module validates the Celery tasks responsible for triggering encoding 
+jobs on the remote runner manager.
+"""
 from unittest.mock import patch, MagicMock
 from requests.exceptions import ConnectionError
 
@@ -12,8 +18,18 @@ User = get_user_model()
 
 
 class EncodingTaskTestCase(TestCase):
+    """
+    Test suite for encoded-related Celery tasks.
+    """
+
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password")
+        """
+        Setup a user and a video in ENCODING status.
+        """
+        # ggignore-start
+        # gitguardian:ignore
+        self.user = User.objects.create_user(username="testuser", password="password") # nosec
+        # ggignore-end
         self.video = Video.objects.create(
             title="Test Video",
             description="Testing the encoding task",

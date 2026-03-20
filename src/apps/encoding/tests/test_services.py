@@ -1,3 +1,9 @@
+"""
+Esup-Pod - Tests for encoding services.
+
+This module validates the RunnerClient communication and the storage path 
+generation logic.
+"""
 from unittest.mock import patch, MagicMock
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -15,7 +21,14 @@ User = get_user_model()
 
 
 class RunnerClientTests(TestCase):
+    """
+    Test suite for the RunnerClient service.
+    """
+
     def setUp(self):
+        """
+        Sets up a RunnerClient instance for testing.
+        """
         self.client = RunnerClient("http://runner.local", "secret_token")
 
     @patch("src.apps.encoding.services.runner_client.requests.post")
@@ -65,8 +78,18 @@ class RunnerClientTests(TestCase):
 
 
 class StorageServicesTests(TestCase):
+    """
+    Test suite for storage utility functions.
+    """
+
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password")
+        """
+        Setup a user and a video for storage testing.
+        """
+        # ggignore-start
+        # gitguardian:ignore
+        self.user = User.objects.create_user(username="testuser", password="password") # nosec
+        # ggignore-end
 
         video_content = SimpleUploadedFile(
             "test.mp4", b"file_content", content_type="video/mp4"
