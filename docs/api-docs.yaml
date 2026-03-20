@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Pod REST API
-  version: 5.0.0-DEV
+  version: 5.0.0
   description: Video management API (Local Authentication)
 paths:
   /api/auth/access-groups/:

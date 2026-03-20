@@ -1,7 +1,7 @@
 services:
   db:
     image: mariadb:10.11
-    container_name: pod-v5-api-db-${VERSION:-dev}
+    container_name: pod-db
     env_file:
       - ../../.env
     environment:
@@ -23,7 +23,7 @@ services:
     build:
       context: ../../
       dockerfile: deployment/dev/Dockerfile
-    container_name: pod-v5-api-${VERSION:-dev}
+    container_name: pod-api
     volumes:
       - ../../:/app
       - ../../media:/app/media
@@ -53,7 +53,7 @@ services:
 
   redis:
     image: redis:7
-    container_name: pod-v5-api-redis-${VERSION:-dev}
+    container_name: pod-redis
     ports:
       - "${REDIS_PORT:-6380}:6379"
     volumes:
@@ -65,7 +65,7 @@ services:
     build:
       context: ../../
       dockerfile: deployment/dev/Dockerfile
-    container_name: pod-v5-api-celery-${VERSION:-dev}
+    container_name: pod-celery
     volumes:
       - ../../:/app
       - ../../media:/app/media
@@ -94,7 +94,7 @@ services:
 
   esup-runner-manager:
     image: benjisere/esup-runner-manager:v1.0.0
-    container_name: pod-v5-esup-manager-${VERSION:-dev}
+    container_name: pod-esup-manager
     env_file:
       - ../../.env
     environment:
@@ -114,7 +114,7 @@ services:
 
   esup-runner-runner:
     image: benjisere/esup-runner-runner:v1.0.0
-    container_name: pod-v5-esup-runner-${VERSION:-dev}
+    container_name: pod-esup-runner
     env_file:
       - ../../.env
     environment:
