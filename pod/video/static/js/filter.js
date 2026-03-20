@@ -52,6 +52,7 @@ const filtersConfig = [
     itemKey: (categories) => categories.value,
   },
 ];
+globalThis.filtersConfig = filtersConfig;
 
 /**
  * Retrieves the list of video owners based on a search term.
@@ -89,7 +90,29 @@ const filterManager = new FilterManager({
 
 // Inject filter configuration into the manager
 filtersConfig.forEach((cfg) => filterManager.addFilter(cfg));
-filterManager.initializeFilters();
+// Wait for async filter initialization before applying URL params to avoid a race condition
+filterManager.initializeFilters().then(() => {
+  const searchParams = new URLSearchParams(window.location.search);
+  if (searchParams.has("categories")) {
+    filterManager.syncFilterSelectionFromUrl("categories", {
+      refresh: false,
+      emitEvent: false,
+      updateUrl: false,
+    });
+  }
+});
+
+document.addEventListener("pod:aside-category-filter-updated", (event) => {
+  filterManager.syncFilterSelection(
+    "categories",
+    event.detail?.categories || [],
+    {
+      refresh: false,
+      emitEvent: false,
+      updateUrl: false,
+    },
+  );
+});
 
 /**
  * Initializes filters by fetching data from the statistics API and preparing
@@ -152,7 +175,7 @@ async function fetchSingleFilter(filterName, searchTerm = "") {
     // Map the received data to the { label, value } format expected by FilterManager
     return data[key].map((item) => ({
       label: item.title || item.name || item.label || "unknown",
-      value: item.id || item.slug || item.value || "unknown",
+      value: item.slug || item.id || item.value || "unknown",
     }));
   } catch (error) {
     console.error(

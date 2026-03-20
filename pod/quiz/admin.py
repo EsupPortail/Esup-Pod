@@ -9,7 +9,6 @@ from pod.quiz.models import (
     SingleChoiceQuestion,
 )
 
-
 # Questions types
 
 

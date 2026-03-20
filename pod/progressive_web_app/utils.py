@@ -3,7 +3,6 @@
 from webpush import send_user_notification
 from django.templatetags.static import static
 
-
 DEFAULT_ICON = static("img/icon_x1024.png")
 
 

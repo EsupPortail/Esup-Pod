@@ -34,7 +34,9 @@ import re
 
 __FILEPICKER__ = False
 
-from ..custom.settings_local import PROLONGATION_GRANTED, RALLONGE_RESPIT_DAYS
+#from ..custom.settings_local import PROLONGATION_GRANTED, RALLONGE_RESPIT_DAYS
+PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
+RALLONGE_RESPIT_DAYS = getattr(settings, "RALLONGE_RESPIT_DAYS", 365)
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
@@ -1387,9 +1389,7 @@ class NoteCommentsForm(forms.ModelForm):
         super(NoteCommentsForm, self).__init__(*args, **kwargs)
         # self.fields["user"].widget = forms.HiddenInput()
         # self.fields["note"].widget = forms.HiddenInput()
-        self.fields["comment"].widget.attrs[
-            "class"
-        ] = "form-control \
+        self.fields["comment"].widget.attrs["class"] = "form-control \
             input_comment"
         self.fields["comment"].widget.attrs["autocomplete"] = "off"
         self.fields["comment"].widget.attrs["rows"] = 3

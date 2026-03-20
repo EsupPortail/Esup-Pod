@@ -2,14 +2,17 @@
 
 import os
 
-from django.db import models
 from django.conf import settings
-from django.utils.translation import gettext_lazy as _
+from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
-from django.contrib.sites.models import Site
+from django.db import models
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+
+from pod.recorder.models import Recording
 from pod.video.models import Video, get_storage_path_video
 
 ENCODING_CHOICES = getattr(
@@ -37,6 +40,8 @@ FORMAT_CHOICES = getattr(
         ("application/x-mpegURL", "application/x-mpegURL"),
     ),
 )
+
+SITE_ID = getattr(settings, "SITE_ID", 1)
 
 
 class VideoRendition(models.Model):
@@ -80,7 +85,9 @@ class VideoRendition(models.Model):
         ),
     )
     encoding_resolution_threshold = models.PositiveIntegerField(
-        _("encoding resolution threshold"), default=0, validators=[MaxValueValidator(100)]
+        _("encoding resolution threshold"),
+        default=0,
+        validators=[MaxValueValidator(100)],
     )
     audio_bitrate = models.CharField(
         _("bitrate audio"),
@@ -440,3 +447,197 @@ class PlaylistVideo(models.Model):
             if os.path.isfile(self.source_file.path):
                 os.remove(self.source_file.path)
         super(PlaylistVideo, self).delete()
+
+
+class RunnerManager(models.Model):
+    """Hold information about runner manager."""
+
+    # Runner manager name
+    name = models.CharField(
+        max_length=250,
+        verbose_name=_("Runner manager name"),
+        help_text=_("Runner manager name"),
+    )
+
+    # Priority
+    priority = models.IntegerField(
+        verbose_name=_("Priority"),
+        help_text=_(
+            "Priority of the runner manager. Lower values indicate higher priority."
+        ),
+        default=1,
+    )
+
+    # Activation status
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name=_("Active"),
+        help_text=_("If checked, this runner manager can be used to process tasks."),
+    )
+
+    # Runner manager URL
+    # Format: https://manager.univ.fr:port/
+    url = models.CharField(
+        max_length=250,
+        verbose_name=_("URL of the runner manager"),
+        help_text=_("Example format: https://manager.univ.fr:port/"),
+    )
+
+    # Bearer token for the runner manager server (e.g. `6YqG_73xt-9s8v5aBz`)
+    token = models.CharField(
+        max_length=50,
+        verbose_name=_("Bearer token for the runner manager."),
+        help_text=_("Example format: 6YqG_73xt-9s8v5aBz"),
+    )
+
+    # Site
+    site = models.ForeignKey(
+        Site,
+        verbose_name=_("Site"),
+        on_delete=models.CASCADE,
+        default=1,
+    )
+
+    def __unicode__(self):
+        return "%s (%s)" % (self.name, self.site.id)
+
+    def __str__(self):
+        return "%s (%s)" % (self.name, self.site.id)
+
+    def save(self, *args, **kwargs):
+        super(RunnerManager, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = "runner_manager"
+        verbose_name = _("Runner manager")
+        verbose_name_plural = _("Runner managers")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["url", "site"],
+                name="runner_manager_unique_url_site",
+            ),
+        ]
+
+
+@receiver(pre_save, sender=RunnerManager)
+def default_site_runner_manager(sender, instance, **kwargs):
+    """Save default site for this runner manager."""
+    if not hasattr(instance, "site"):
+        instance.site = Site.objects.get_current()
+
+
+class Task(models.Model):
+    """Hold information about tasks managed by the runner managers."""
+
+    # Task type
+    TYPE = (
+        ("encoding", _("Encoding task")),
+        ("studio", _("Studio task")),
+        ("transcription", _("Transcription task")),
+    )
+    type = models.CharField(
+        max_length=30,
+        verbose_name=_("Task type"),
+        choices=TYPE,
+        default=TYPE[0][0],
+    )
+
+    # Task status
+    STATUS = (
+        ("pending", _("Task pending")),
+        ("running", _("Task in progress")),
+        ("completed", _("Task completed")),
+        ("failed", _("Task failed")),
+        ("timeout", _("Task timeouted")),
+    )
+    status = models.CharField(
+        max_length=30,
+        verbose_name=_("Task status"),
+        choices=STATUS,
+        default=STATUS[0][0],
+    )
+    # Task identifier from runner manager
+    task_id = models.CharField(
+        max_length=100,
+        verbose_name=_("Task identifier from runner manager"),
+        help_text=_("Identifier of the task provided by the runner manager"),
+        null=True,
+        blank=True,
+    )
+
+    # Video associated to the task
+    video = models.ForeignKey(
+        Video,
+        on_delete=models.CASCADE,
+        verbose_name=_("Video"),
+        help_text=_("Video associated to the task"),
+        null=True,
+        blank=True,
+    )
+
+    # Recording associated to the task (for Studio tasks)
+    recording = models.ForeignKey(
+        Recording,
+        on_delete=models.CASCADE,
+        verbose_name=_("Recording"),
+        help_text=_("Studio recording associated to the task"),
+        null=True,
+        blank=True,
+    )
+
+    # Runner manager that manages this task
+    runner_manager = models.ForeignKey(
+        RunnerManager,
+        on_delete=models.CASCADE,
+        verbose_name=_("Runner manager that manages this task"),
+        help_text=_("Runner manager that achieves this task"),
+        null=True,
+        blank=True,
+    )
+
+    # Date task added
+    date_added = models.DateTimeField(
+        verbose_name=_("Date added"), default=timezone.now, editable=False
+    )
+
+    # Queue rank for pending tasks
+    rank = models.IntegerField(
+        verbose_name=_("Queue rank"),
+        help_text=_("Rank of the task in the pending queue"),
+        null=True,
+        blank=True,
+        default=None,
+    )
+
+    # Script output
+    script_output = models.TextField(
+        verbose_name=_("Script output"),
+        help_text=_("Output from the runner manager script"),
+        null=True,
+        blank=True,
+    )
+
+    def __unicode__(self):
+        ref = (
+            self.video.id
+            if self.video_id
+            else (self.recording.id if self.recording_id else "-")
+        )
+        return "%s - %s - %s" % (ref, self.type, self.status)
+
+    def __str__(self):
+        ref = (
+            self.video.id
+            if self.video_id
+            else (self.recording.id if self.recording_id else "-")
+        )
+        return "%s - %s - %s" % (ref, self.type, self.status)
+
+    def save(self, *args, **kwargs):
+        super(Task, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = "runner_manager_task"
+        verbose_name = _("Task")
+        verbose_name_plural = _("Tasks")
+        ordering = ["id"]

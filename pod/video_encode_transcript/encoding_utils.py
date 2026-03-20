@@ -1,11 +1,10 @@
-from collections import OrderedDict
-from timeit import default_timer as timer
-
 import json
+import logging
 import os
 import shlex
 import subprocess
-import logging
+from collections import OrderedDict
+from timeit import default_timer as timer
 
 try:
     from .encoding_settings import VIDEO_RENDITIONS
@@ -55,12 +54,14 @@ def get_dressing_position_value(position: str, height: str) -> str:
         return "overlay=main_w-overlay_w-" + height + ":main_h-overlay_h-" + height
     elif position == "bottom_left":
         return "overlay=" + height + ":main_h-overlay_h-" + height
+    return ""
 
 
 def get_renditions():
     try:
-        from .models import VideoRendition
         from django.core import serializers
+
+        from .models import VideoRendition
 
         renditions = json.loads(
             serializers.serialize("json", VideoRendition.objects.all())

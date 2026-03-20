@@ -14,7 +14,6 @@ from pod.main.models import LinkFooter, Configuration
 from pod.main.models import AdditionalChannelTab
 from pod.main.models import Block
 
-
 SITE_ID = getattr(settings, "SITE_ID", 1)
 content_widget = {}
 for key, value in settings.LANGUAGES:

@@ -1,21 +1,23 @@
 """Esup-Pod video encoding and transcripting utilities."""
 
-import bleach
 import logging
 import os
 import time
 
-from django.urls import reverse
+import bleach
 from django.conf import settings
+from django.core.mail import (
+    EmailMultiAlternatives,
+    mail_admins,
+    mail_managers,
+    send_mail,
+)
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.core.mail import mail_admins
-from django.core.mail import send_mail
-from django.core.mail import mail_managers
-from django.core.mail import EmailMultiAlternatives
-from pod.video.models import Video
 from pod.progressive_web_app.utils import notify_user
-from .models import EncodingStep
-from .models import EncodingLog
+from pod.video.models import Video
+
+from .models import EncodingLog, EncodingStep
 
 DEBUG = getattr(settings, "DEBUG", True)
 logger = logging.getLogger(__name__)

@@ -6,7 +6,6 @@ from django import template
 from pod.speaker.utils import get_video_speakers, get_video_speakers_grouped
 from pod.video.models import Video
 
-
 register = template.Library()
 
 

@@ -642,7 +642,7 @@ class VideoToDeleteAdmin(admin.ModelAdmin):
     list_filter = ["date_deletion"]
     autocomplete_fields = ["video"]
 
-    @admin.display(description="video")
+    @admin.display(description=_("video"))
     def get_videos(self, obj):
         return obj.video.count()
 
@@ -667,7 +667,7 @@ class CategoryAdmin(admin.ModelAdmin):
     readonly_fields = ("slug",)
     # list_filter = ["owner"]
 
-    @admin.display(description="Videos")
+    @admin.display(description=_("Videos"))
     def videos_count(self, obj) -> int:
         return obj.video.all().count()
 

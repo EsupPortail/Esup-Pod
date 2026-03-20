@@ -1,8 +1,20 @@
 """Esup-Pod videos views."""
 
-from concurrent import futures
+import json
 import logging
 import os
+import re
+import uuid
+from concurrent import futures
+from datetime import date
+from itertools import chain
+
+
+import pandas
+from chunked_upload.models import ChunkedUpload
+from chunked_upload.views import ChunkedUploadCompleteView, ChunkedUploadView
+from dateutil.parser import parse
+from django.conf import settings
 
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
@@ -17,40 +29,79 @@ from django.http import HttpResponseNotFound
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.http import QueryDict, Http404
 from django.views.decorators.csrf import csrf_protect
+
 from django.contrib import messages
-from django.utils.html import escape
-from django.utils.translation import ngettext
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.exceptions import (
+    ObjectDoesNotExist,
+    PermissionDenied,
+    SuspiciousOperation,
+)
+from django.core.handlers.wsgi import WSGIRequest
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db import IntegrityError, transaction
+from django.db.models import (
+    BooleanField,
+    Case,
+    Count,
+    F,
+    Min,
+    Q,
+    QuerySet,
+    Sum,
+    Value,
+    When,
+)
+from django.db.models.functions import Concat
+from django.http import (
+    Http404,
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+    HttpResponseNotFound,
+    JsonResponse,
+    QueryDict,
+)
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
-from django.conf import settings
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.db.models import Sum, Min
+from django.utils.html import escape
+from django.utils.timezone import timedelta
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
-
-# from django.contrib.auth.hashers import check_password
-
-from dateutil.parser import parse
-from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
+from pod.authentication.utils import get_owners as auth_get_owners
 from pod.main.context_processors import WEBTV_MODE
+from pod.main.decorators import admin_required, ajax_login_required, ajax_required
 from pod.main.models import AdditionalChannelTab
+from pod.main.utils import dismiss_stored_messages, get_max_code_lvl_messages, is_ajax
 from pod.main.views import (
     MENUBAR_HIDE_INACTIVE_OWNERS,
     MENUBAR_SHOW_STAFF_OWNERS_ONLY,
     in_maintenance,
 )
-from pod.main.decorators import ajax_required, ajax_login_required, admin_required
-from pod.authentication.utils import get_owners as auth_get_owners
 from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
 from pod.playlist.models import Playlist, PlaylistContent
 from pod.playlist.utils import (
     get_video_list_for_playlist,
     playlist_can_be_displayed,
     user_can_see_playlist_video,
+)
+
+from pod.video.forms import (
+    AdvancedNotesForm,
+    ChannelForm,
+    FrontThemeForm,
+    NoteCommentsForm,
+    VideoDeleteForm,
+    VideoForm,
+    VideoPasswordForm,
+    VideoVersionForm,
 )
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
@@ -82,27 +133,48 @@ from .utils import (
     get_filtered_tags_for_videos,
     get_filtered_owners_for_videos,
 )
+from pod.video.models import (
+    NOTES_STATUS,
+    AdvancedNotes,
+    Category,
+    Channel,
+    Comment,
+    Discipline,
+    NoteComments,
+    Theme,
+    Type,
+    UserMarkerTime,
+    Video,
+    VideoAccessToken,
+    VideoVersion,
+    ViewCount,
+    Vote,
+    get_transcription_choices,
+)
+from pod.video.rest_views import ChannelSerializer
+from pod.video.utils import get_videos as video_get_videos
+
 from .context_processors import get_available_videos
-from .utils import sort_videos_list
+from .utils import (
+    change_owner,
+    get_filtered_categories_for_user,
+    get_filtered_disciplines_for_videos,
+    get_filtered_owners_for_videos,
+    get_filtered_tags_for_videos,
+    get_filtered_types_for_videos,
+    get_headband,
+    get_id_from_request,
+    pagination_data,
+    sort_videos_list,
+)
 
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.core.exceptions import ObjectDoesNotExist
-import json
-import re
-import pandas
-import uuid
-from datetime import date
-from chunked_upload.models import ChunkedUpload
-from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
-from itertools import chain
+# from django.contrib.auth.hashers import check_password
 
-from django.db import IntegrityError
-from django.db.models import QuerySet
-from django.db import transaction
 
-from django.utils.timezone import timedelta
-
-from ..custom.settings_local import ENABLE_PAGE_OBSO_MAIL, RALLONGE_RESPIT_DAYS, WARN_DEADLINES
+#from ..custom.settings_local import ENABLE_PAGE_OBSO_MAIL, RALLONGE_RESPIT_DAYS, WARN_DEADLINES
+from ..custom.settings_local import WARN_DEADLINES
+RALLONGE_RESPIT_DAYS = getattr(settings, "RALLONGE_RESPIT_DAYS", 365)
+ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -190,6 +262,7 @@ ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 HIDE_USER_FILTER = getattr(settings, "HIDE_USER_FILTER", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
+USE_RUNNER_MANAGER = getattr(settings, "USE_RUNNER_MANAGER", False)
 
 if USE_TRANSCRIPTION:
     from ..video_encode_transcript import transcript
@@ -605,8 +678,11 @@ def dashboard(request):
         selected_categories = request.GET.getlist("categories")
 
         if selected_categories:
-            category_video_ids = categories.filter(
-                slug__in=selected_categories
+            category_video_ids = filter_queryset_by_ids_or_slugs(
+                categories,
+                selected_categories,
+                "id",
+                "slug",
             ).values_list("video", flat=True)
 
             videos_list = videos_list.filter(pk__in=category_video_ids)
@@ -757,7 +833,7 @@ def bulk_update(request):
             if update_action == "fields":
                 # Bulk update fields
                 update_fields = json.loads(request.POST.get("update_fields"))
-                (result["updated_videos"], fields_errors, status) = bulk_update_fields(
+                result["updated_videos"], fields_errors, status = bulk_update_fields(
                     request, videos_list, update_fields
                 )
                 result["fields_errors"] = fields_errors
@@ -934,6 +1010,54 @@ def get_paginated_videos(paginator, page):
         return paginator.page(paginator.num_pages)
 
 
+def get_ids_and_slugs_from_query_values(selected_values):
+    """
+    Split selected GET values into IDs and slugs.
+
+    Values can be received either as repeated query params
+    (e.g. ``?type=1&type=webinar``) or as comma-separated values
+    (e.g. ``?type=1,webinar``).
+    """
+    ids = []
+    slugs = []
+
+    for raw_value in selected_values:
+        for value in str(raw_value).split(","):
+            value = value.strip()
+            if not value:
+                continue
+            if value.isdigit():
+                ids.append(int(value))
+            slugs.append(value)
+
+    return ids, slugs
+
+
+def filter_queryset_by_ids_or_slugs(
+    queryset: QuerySet, selected_values, id_lookup: str, slug_lookup: str
+) -> QuerySet:
+    """Filter a queryset from selected values that may contain IDs and/or slugs."""
+    selected_ids, selected_slugs = get_ids_and_slugs_from_query_values(selected_values)
+    lookup_filter = Q()
+
+    if selected_ids:
+        lookup_filter |= Q(**{f"{id_lookup}__in": selected_ids})
+    if selected_slugs:
+        lookup_filter |= Q(**{f"{slug_lookup}__in": selected_slugs})
+
+    if not lookup_filter.children:
+        return queryset
+
+    return queryset.filter(lookup_filter)
+
+
+def filter_queryset_by_all_tags(queryset: QuerySet, tags_selected) -> QuerySet:
+    """Apply AND filtering on tags: all selected tags must be present."""
+    for tag_slug in tags_selected:
+        queryset = queryset.filter(tags__slug=tag_slug)
+    return queryset
+
+
 def get_filtered_videos_list(request, videos_list):
     """Return filtered videos list by GET parameters using AND logic."""
     title_query = request.GET.get("title")
@@ -948,17 +1072,20 @@ def get_filtered_videos_list(request, videos_list):
             Q(title_en__icontains=title_query) | Q(title_fr__icontains=title_query)
         )
     if types_selected:
-        videos_list = videos_list.filter(type__slug__in=types_selected)
+        videos_list = filter_queryset_by_ids_or_slugs(
+            videos_list, types_selected, "type_id", "type__slug"
+        )
     if disciplines_selected:
-        videos_list = videos_list.filter(discipline__slug__in=disciplines_selected)
+        videos_list = filter_queryset_by_ids_or_slugs(
+            videos_list, disciplines_selected, "discipline__id", "discipline__slug"
+        )
     if request.user and owner_is_searchable(request.user) and owners_selected:
         videos_list = videos_list.filter(
             Q(owner__username__in=owners_selected)
             | Q(additional_owners__username__in=owners_selected)
         )
     if tags_selected:
-        for tag_slug in tags_selected:
-            videos_list = videos_list.filter(tags__slug=tag_slug)
+        videos_list = filter_queryset_by_all_tags(videos_list, tags_selected)
     if cursus_selected:
         videos_list = videos_list.filter(cursus__in=cursus_selected)
     return videos_list.distinct()
@@ -1217,6 +1344,27 @@ def toggle_render_video_when_is_playlist_player(request):
         return Http404()
 
 
+def _get_video_queue_context(video: Video | None) -> dict:
+    """Return queue context for a video waiting for encoding."""
+    if not USE_RUNNER_MANAGER or not video or not video.id:
+        return {"video_task_queue_rank": None, "video_task_queue_total": None}
+
+    if not video.video or video.get_encoding_step != "":
+        return {"video_task_queue_rank": None, "video_task_queue_total": None}
+
+    from pod.video_encode_transcript.task_queue import (
+        get_video_pending_encoding_queue_info,
+        refresh_pending_task_ranks,
+    )
+
+    refresh_pending_task_ranks()
+    rank, total = get_video_pending_encoding_queue_info(video)
+    return {
+        "video_task_queue_rank": rank,
+        "video_task_queue_total": total,
+    }
+
+
 def render_video(
     request,
     id,
@@ -1274,6 +1422,8 @@ def render_video(
                 "listNotes": listNotes,
                 "owner_filter": owner_filter,
                 "playlist": playlist if request.GET.get("playlist") else None,
+                "USE_RUNNER_MANAGER": USE_RUNNER_MANAGER,
+                **_get_video_queue_context(video),
                 **more_data,
             },
         )
@@ -1306,6 +1456,8 @@ def render_video(
                     "form": form,
                     "listNotes": listNotes,
                     "owner_filter": owner_filter,
+                    "USE_RUNNER_MANAGER": USE_RUNNER_MANAGER,
+                    **_get_video_queue_context(video),
                     **more_data,
                 },
             )
@@ -1388,7 +1540,12 @@ def video_edit(request, slug=None):
     return render(
         request,
         "videos/video_edit.html",
-        {"form": form, "listTheme": json.dumps(get_list_theme_in_form(form))},
+        {
+            "form": form,
+            "listTheme": json.dumps(get_list_theme_in_form(form)),
+            "USE_RUNNER_MANAGER": USE_RUNNER_MANAGER,
+            **_get_video_queue_context(form.instance if form else None),
+        },
     )
 
 
@@ -1585,8 +1742,13 @@ def video_transcript(request, slug=None):
         )
         raise PermissionDenied
 
-    if request.user != video.owner and not (
-        request.user.is_superuser or request.user.has_perm("video.change_video")
+    if (
+        video
+        and request.user != video.owner
+        and (
+            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+        )
+        and (request.user not in video.additional_owners.all())
     ):
         messages.add_message(request, messages.ERROR, _("You cannot manage this video."))
         raise PermissionDenied
@@ -1894,7 +2056,7 @@ def video_note_form(request, slug):
 
 def video_note_form_case(request, params):
     """Editing/creating a note."""
-    (idNote, idCom, note, com) = params
+    idNote, idCom, note, com = params
     noteToDisplay, comToDisplay = None, None
     listNotesCom, dictComments = None, None
     comToEdit, noteToEdit = None, None
@@ -2309,11 +2471,8 @@ def video_note_download(request, slug):
         str(_("Content")),
     ]
     response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = (
-        "attachment; \
-        filename=%s_notes_and_comments.csv"
-        % slug
-    )
+    response["Content-Disposition"] = "attachment; \
+        filename=%s_notes_and_comments.csv" % slug
     df.to_csv(
         path_or_buf=response,
         sep="|",
@@ -2567,7 +2726,9 @@ def get_all_views_count(v_id, date_filter=date.today()):
 
     # favorite addition in year
     count = PlaylistContent.objects.filter(
-        playlist__in=favorites_playlists, video_id=v_id, date_added__year=date_filter.year
+        playlist__in=favorites_playlists,
+        video_id=v_id,
+        date_added__year=date_filter.year,
     ).count()
     all_views["fav_year"] = count if count else 0
 
@@ -3825,7 +3986,7 @@ def video_respit(request, slug):
     )
 
 def valid_form_respit(request, slug=None):
-    from pod.video.management.commands import check_obsolete_videos
+    #from pod.video.management.commands import check_obsolete_videos
 
     user=request.user
     if request.method == "POST":
@@ -3835,17 +3996,25 @@ def valid_form_respit(request, slug=None):
                 return HttpResponsePermanentRedirect("/video/delete/"+slug)
             if (action =="Prolonger"): #Si l'utilisateur sélectionne l'action "prolonger" dans l'interface
                 if able_or_not_respit(slug) == True:
-                    vivi = Video.objects.get(slug=slug)
-                    vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
-                    vivi.save()
-                    return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)
+                    #vivi = Video.objects.get(slug=slug)
+                    #vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
+                    #vivi.save()
+                    #return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)
+                    return render(
+                        request,
+                        "videos/prolong_or_not.html", {"slug" : slug, "RALLONGE_RESPIT_DAYS" : RALLONGE_RESPIT_DAYS}
+                    )
                 else:
                     raise Exception('Vous ne pouvez pas prolonger plus votre video')
                     print ('')
             if (action =="Archiver"):
-                cmd = check_obsolete_videos.Command()
-                cmd.archive_isolate(Video.objects.get(slug=slug))
-                return HttpResponsePermanentRedirect("/video/well/archived/or/not/"+slug)
+                #cmd = check_obsolete_videos.Command()
+                #cmd.archive_isolate(Video.objects.get(slug=slug))
+                #return HttpResponsePermanentRedirect("/video/well/archived/or/not/"+slug)
+                return render(
+                    request,
+                    "videos/archive_or_not.html", {"slug" : slug}
+                )
 
 @login_required(redirect_field_name="referrer")
 def well_archived_or_not(request,slug):
@@ -3879,7 +4048,7 @@ def archive_and_download(request,slug):
 
     return render(
         request,
-        "videos/archive_download.html", {"url" : url}
+        "videos/archive_download.html", {"url" : url, "slug" : slug}
     )
 
 def able_or_not_respit(slug):
@@ -3896,8 +4065,25 @@ def able_or_not_respit(slug):
     vid = Video.objects.get(slug=slug)
 
     step_date = vid.date_delete - timedelta(days=higher_warn)
-    display_or_not  = date.today() >= (step_date)
+    display_or_not  = date.today() >= step_date
     ###########################
     ###########################
 
     return display_or_not
+
+
+def go_archive(request, slug=None):
+    if able_or_not_respit(slug) == True and ENABLE_PAGE_OBSO_MAIL:
+        from pod.video.management.commands import check_obsolete_videos
+
+        cmd = check_obsolete_videos.Command()
+        cmd.archive_isolate(Video.objects.get(slug=slug))
+        return HttpResponsePermanentRedirect("/video/well/archived/or/not/"+slug)
+
+
+def go_prolong(request, slug):
+    if able_or_not_respit(slug) == True and ENABLE_PAGE_OBSO_MAIL:
+        vivi = Video.objects.get(slug=slug)
+        vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
+        vivi.save()
+        return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)

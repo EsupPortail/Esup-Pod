@@ -14,7 +14,6 @@ from pod.main.models import get_nextautoincrement
 from pod.video.models import Video
 from pod.video.utils import sort_videos_list
 
-
 SITE_ID = getattr(settings, "SITE_ID")
 
 __MAX_LENGTH_FOR_PLAYLIST_NAME__ = 200

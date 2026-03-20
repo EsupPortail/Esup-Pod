@@ -1,24 +1,25 @@
 """
-Video & Audio encoding test cases.
+Video and audio encoding test cases.
 
-*  run with `python manage.py test pod.video_encode_transcript.tests.test_encode`
+Run with `python manage.py test pod.video_encode_transcript.tests.test_encode`
 """
 
-from django.conf import settings
-from django.test import TestCase
-from django.core.files.temp import NamedTemporaryFile
-from django.contrib.auth.models import User
-
-
-from pod.video.models import Video, Type
-from pod.video_encode_transcript import encode
-from pod.video_encode_transcript.models import EncodingVideo
-from pod.video_encode_transcript.models import EncodingAudio
-from pod.video_encode_transcript.models import EncodingLog
-from pod.video_encode_transcript.models import PlaylistVideo
-
-import shutil
 import os
+import shutil
+
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.files.temp import NamedTemporaryFile
+from django.test import TestCase
+
+from pod.video.models import Type, Video
+from pod.video_encode_transcript import encode
+from pod.video_encode_transcript.models import (
+    EncodingAudio,
+    EncodingLog,
+    EncodingVideo,
+    PlaylistVideo,
+)
 
 VIDEO_TEST = getattr(settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp4")
 
@@ -26,7 +27,7 @@ AUDIO_TEST = getattr(settings, "AUDIO_TEST", "pod/main/static/video_test/pod.mp3
 
 
 class EncodeTestCase(TestCase):
-    """Video and audio encoding tests."""
+    """Coverage for local video/audio encoding and cleanup behavior."""
 
     fixtures = [
         "initial_data.json",
@@ -35,7 +36,7 @@ class EncodeTestCase(TestCase):
     _one_time_setup_complete = False
 
     def setUp(self):
-        """Set up video and audio encoding tests."""
+        """Run one-time encode setup, then execute per-test setup hook."""
         if not self._one_time_setup_complete:
             self.before_running_all_tests()
             self._one_time_setup_complete = True
@@ -43,9 +44,8 @@ class EncodeTestCase(TestCase):
         self.before_running_each_test()
 
     def before_running_all_tests(self):
-        """Set up that must be run just once before all tests."""
+        """Create and encode one sample video and one sample audio file."""
         user = User.objects.create(username="pod", password="pod1234pod")
-        # owner1 = Owner.objects.get(user__username="pod")
         video = Video.objects.create(
             title="Video1",
             owner=user,
@@ -77,11 +77,11 @@ class EncodeTestCase(TestCase):
         print(" --->  SetUp of EncodeTestCase: OK!")
 
     def before_running_each_test(self):
-        """Set up what must be run before each test."""
+        """Hook for per-test setup (kept for future extension)."""
         pass
 
     def test_encoding_wrong_file(self):
-        """Test if a try to encode a wrong file ends well."""
+        """Log an explicit error when trying to encode an unsupported file type."""
         video = Video.objects.create(
             title="Video2",
             owner=User.objects.get(id=1),
@@ -94,8 +94,8 @@ class EncodeTestCase(TestCase):
         self.assertTrue("Wrong file or path:" in el.log)
 
     def test_result_encoding_video(self) -> None:
-        """Test if video encoding worked properly."""
-        # video id=1 et audio id=2
+        """Generate expected video artifacts and metadata after encoding."""
+        # In this fixture setup, video id=1 and audio id=2.
         video_to_encode = Video.objects.get(id=1)
         self.assertEqual("Video1", video_to_encode.title)
         list_mp2t = EncodingVideo.objects.filter(
@@ -123,7 +123,7 @@ class EncodeTestCase(TestCase):
         print(" --->  test_encode_video of EncodeTestCase: OK!")
 
     def test_result_encoding_audio(self):
-        """Test if audio encoding worked properly."""
+        """Generate expected audio artifacts while skipping image extraction."""
         # video id=1 & audio id=2
         audio = Video.objects.get(id=2)
         self.assertEqual("Audio1", audio.title)
@@ -138,7 +138,7 @@ class EncodeTestCase(TestCase):
         print(" --->  test_result_encoding_audio of EncodeTestCase: OK!")
 
     def test_delete_video(self):
-        """Test video deletion and cascade deleting."""
+        """Delete encoded media and ensure related files/models are removed."""
         video_to_encode = Video.objects.get(id=1)
         self.assertEqual("Video1", video_to_encode.title)
         video = video_to_encode.video.path
@@ -181,7 +181,7 @@ class EncodeTestCase(TestCase):
         self.assertEqual(list_mp4.count(), 0)
 
         self.assertEqual(EncodingLog.objects.filter(video__id=1).count(), 0)
-        # check video folder remove
+        # Ensure the generated folder for encoded assets is removed.
         self.assertFalse(os.path.isdir(video_dir))
 
         audio = Video.objects.get(id=2)
@@ -192,7 +192,7 @@ class EncodeTestCase(TestCase):
         audio.delete()
         self.assertTrue(not os.path.exists(audio_video_path))
         self.assertTrue(not os.path.exists(audio_log_file))
-        # check audio folder remove
+        # Ensure the generated folder for encoded assets is removed.
         self.assertFalse(os.path.isdir(audio_dir))
 
         print("   --->  test_delete_video of EncodeTestCase: OK!")

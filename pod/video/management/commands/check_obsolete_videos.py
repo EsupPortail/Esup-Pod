@@ -17,13 +17,15 @@ from django.contrib.sites.shortcuts import get_current_site
 import csv
 import os
 
-from pod.custom.settings_local import ENABLE_PAGE_OBSO_MAIL
+#from pod.custom.settings_local import ENABLE_PAGE_OBSO_MAIL
+ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
+PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
+
 from pod.video.models import Video, VideoToDelete, VIDEOS_DIR
 
 from datetime import date, timedelta
 
-
-USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", True)
+USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
 USE_ESTABLISHMENT = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 MANAGERS = getattr(settings, "MANAGERS", [])
 CONTACT_US_EMAIL = getattr(
@@ -305,8 +307,13 @@ class Command(BaseCommand):
             base_url = f"{scheme}://{domain}:8000"
 
             msg_html += "<br>\n"
-            msg_html += "<p> Vous pouvez décidez de destin de votre vidéo ainsi que télécharger toute les données la concernant en clique ici :"
-            msg_html += "<a href='"+base_url+"/video/respit/"+video.slug+"'>Décidez du destin de ma vidéo.</a></p>"
+            if (PROLONGATION_GRANTED):
+                msg_html += "<p> Vous pouvez décidez de prolonger votre vidéo, de l'archiver (ne sera plus accessible)"
+            else:
+                msg_html += "<p> Vous pouvez décidez d'archiver votre vidéo (ne sera plus accessible)"
+
+            msg_html += ", de la supprimer, ainsi que de la télécharger avec toutes les données la concernant en cliquant ici :"
+            msg_html += "<a href='"+base_url+"/video/respit/"+video.slug+"'>Appliquez mon choix.</a></p>"
 
         print(msg_html)
 

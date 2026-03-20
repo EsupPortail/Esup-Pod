@@ -24,43 +24,17 @@ body {
   margin-right: auto;
 }
 
-#info-video-wrapper {
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 30px;
-  width: 100%;
-  border-radius: 0;
-  padding: 0;
-  margin: 0;
-  background-color: rgb(250 250 250 / 90%);
-  z-index: 10;
-}
-
-#info-video {
-  padding: 1em;
-  box-sizing: border-box;
-  overflow: auto;
-  position: absolute;
-
-  /* top: 3em; */
-  width: 100%;
-  bottom: 0;
-  z-index: 1000;
-  border-radius: 0;
-  margin: 0;
+.video-info_duration-view-share {
+  font-size: 90%;
+  gap: 0.75rem;
+  justify-content: flex-start;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.75rem;
 }
 
 .tab-title {
   font-size: 1.5em;
 }
-
-/*
-.meta-title {
-  font-size: 1.2rem;
-}
-*/
 
 .list-group-item {
   background-color: rgb(250 250 250 / 90%) !important;
@@ -77,31 +51,6 @@ body {
   display: inline-block;
   font-size: 1.25em;
   padding: 0.25em 5em 0 0;
-}
-
-.iframe-header .close {
-  /*
-  position: absolute;
-  top: .5em;
-  right: .5em;
-  margin: .395em 0 0 .75em;
-  padding: 0 .25em .15em;
-  overflow: hidden;
-  opacity: 1;
-  font-size: 1.1em;
-  */
-  float: right;
-  border: 1px solid var(--bs-light);
-  color: var(--bs-light);
-  background-color: var(--bs-dark);
-  border-radius: 2px;
-}
-
-.iframe-header .close:hover {
-  background-color: var(--bs-light);
-  color: var(--bs-dark);
-
-  /* opacity: 1; */
 }
 
 #div-video-wrapper #overlay-footer {
@@ -156,24 +105,6 @@ body {
   padding: 0;
   position: absolute;
   width: 1px;
-}
-
-/*
-#overlay-footer .vjs-info-button::before,
-.video-js .vjs-info-button::before {
-  content: '';
-  display: block;width: 100%;height: 100%;
-  background-color: #FFF;
-  mask-size: 20px;
-  -webkit-mask-size: 20px;
-}
-*/
-
-/*
-%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"%3E%3Cpath d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/%3E  %3Cpath d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/%3E%3C/svg%3E
-*/
-#div-video-wrapper #info-video-wrapper {
-  display: none;
 }
 
 #div-video-wrapper.overlay.info #info-video-wrapper,

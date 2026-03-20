@@ -1,17 +1,21 @@
-import numpy as np
+"""Transcription helpers for Esup-Pod video encoding workflows.
+
+This module prepares audio, runs Vosk or Whisper inference, and builds WebVTT captions.
+"""
+
+import datetime as dt
+import json
+import logging
+import os
 import shlex
 import subprocess
-import json
-
-import os
-from timeit import default_timer as timer
-import datetime as dt
 from datetime import timedelta
-import webvtt
-from webvtt import WebVTT, Caption
 from shlex import quote
+from timeit import default_timer as timer
 
-import logging
+import numpy as np
+import webvtt
+from webvtt import Caption, WebVTT
 
 try:
     from ..custom import settings_local
@@ -27,7 +31,7 @@ USE_TRANSCRIPTION = getattr(settings_local, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
     TRANSCRIPTION_TYPE = getattr(settings_local, "TRANSCRIPTION_TYPE", "WHISPER")
     if TRANSCRIPTION_TYPE == "VOSK":
-        from vosk import Model, KaldiRecognizer
+        from vosk import KaldiRecognizer, Model
     elif TRANSCRIPTION_TYPE == "WHISPER":
         import whisper
         from whisper.utils import get_writer

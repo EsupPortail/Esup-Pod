@@ -198,13 +198,20 @@ def get_videos(
     count = videos.count()
     results = list(
         map(
-            lambda v: {"id": v.id, "title": v.title, "thumbnail": v.get_thumbnail_url()},
+            lambda v: {
+                "id": v.id,
+                "title": v.title,
+                "thumbnail": v.get_thumbnail_url(),
+            },
             videos[offset : limit + offset],
         )
     )
 
     next_url, previous_url, page_infos = pagination_data(
-        reverse("video:filter_videos", kwargs={"user_id": user_id}), offset, limit, count
+        reverse("video:filter_videos", kwargs={"user_id": user_id}),
+        offset,
+        limit,
+        count,
     )
 
     response = {
@@ -380,13 +387,15 @@ def apply_search_order_limit_for_taxonomies(
 ):
     """
     Apply the search filter (on field_name), order, and limit
-    for taxonomies returning id, field_name, and video_count.
+    for taxonomies returning id, slug, field_name, and video_count.
     """
     if search_term:
         search_filter = {f"{field_name}__icontains": search_term}
         qs = qs.filter(**search_filter)
     return list(
-        qs.order_by(order_by_field).values("id", field_name, "video_count")[:limit]
+        qs.order_by(order_by_field).values("id", "slug", field_name, "video_count")[
+            :limit
+        ]
     )
 
 
@@ -397,7 +406,7 @@ def get_filtered_categories_for_user(user, search_term=None, limit=20):
     qs = Category.objects.filter(owner=user).prefetch_related("video")
     if search_term:
         qs = qs.filter(title__icontains=search_term)
-    return list(qs.order_by("title").values("id", "title")[:limit])
+    return list(qs.order_by("title").values("id", "slug", "title")[:limit])
 
 
 def get_filtered_types_for_videos(user_videos, search_term=None, limit=20):

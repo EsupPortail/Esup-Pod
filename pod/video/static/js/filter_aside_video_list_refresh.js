@@ -20,17 +20,25 @@ var infinite;
 let infiniteLoading = document.querySelector(".infinite-loading");
 
 function onBeforePageLoad() {
-  infiniteLoading.style.display = "block";
+  if (infiniteLoading) {
+    infiniteLoading.style.display = "block";
+  }
 }
 function onAfterPageLoad() {
   if (
+    typeof urlVideos !== "undefined" &&
     urlVideos === "/video/dashboard/" &&
+    typeof selectedVideos !== "undefined" &&
+    typeof videosListContainerId !== "undefined" &&
+    typeof setSelectedVideos === "function" &&
     selectedVideos[videosListContainerId] &&
     selectedVideos[videosListContainerId].length !== 0
   ) {
     setSelectedVideos(videosListContainerId);
   }
-  infiniteLoading.style.display = "none";
+  if (infiniteLoading) {
+    infiniteLoading.style.display = "none";
+  }
   let footer = document.querySelector("footer.static-pod");
   if (!footer) return;
   footer.classList.add("small");
@@ -43,12 +51,12 @@ function onAfterPageLoad() {
     document.scrollHeight,
     document.offsetHeight,
   );
-  document.querySelector("footer.static-pod .hidden-pod").style.display =
-    "none";
+  const hiddenFooter = document.querySelector("footer.static-pod .hidden-pod");
+  if (!hiddenFooter) return;
+  hiddenFooter.style.display = "none";
   window.addEventListener("scroll", function () {
-    if (window.innerHeight + window.scrollTop() === docHeight) {
-      document.querySelector("footer.static-pod .hidden-pod").style.display =
-        "block";
+    if (window.innerHeight + window.scrollY >= docHeight) {
+      hiddenFooter.style.display = "block";
       footer.setAttribute("style", "height:auto;");
       footer.classList.remove("fixed-bottom");
     }
@@ -61,6 +69,7 @@ function onAfterPageLoad() {
  * @param nextPage
  */
 function refreshInfiniteLoader(url, nextPage) {
+  if (typeof InfiniteLoader !== "function") return;
   if (infinite !== undefined) {
     infinite.removeLoader();
   }
@@ -84,8 +93,13 @@ function replaceCountVideos(newCount) {
     newCount,
   );
   videoFoundStr = interpolate(videoFoundStr, { count: newCount }, true);
-  document.getElementById("video_count").textContent = videoFoundStr;
-  resetDashboardElements();
+  const videoCount = document.getElementById("video_count");
+  if (videoCount) {
+    videoCount.textContent = videoFoundStr;
+  }
+  if (typeof resetDashboardElements === "function") {
+    resetDashboardElements();
+  }
 }
 
 /**
@@ -110,7 +124,7 @@ function handleSearch(e) {
   refreshVideosSearch();
 }
 
-document.getElementById("searchForm").addEventListener("submit", handleSearch);
+document.getElementById("searchForm")?.addEventListener("submit", handleSearch);
 
 document
   .getElementById("titleSearchBtn")
@@ -167,7 +181,11 @@ function refreshVideosSearch() {
         refreshInfiniteLoader(url, pageNext);
       }
       if (
+        typeof urlVideos !== "undefined" &&
         urlVideos === "/video/dashboard/" &&
+        typeof selectedVideos !== "undefined" &&
+        typeof videosListContainerId !== "undefined" &&
+        typeof setSelectedVideos === "function" &&
         selectedVideos[videosListContainerId] &&
         selectedVideos[videosListContainerId].length !== 0
       ) {
@@ -210,8 +228,11 @@ function getUrlForRefresh() {
   let urlParams = new URLSearchParams(window.location.search);
 
   // Normalize multi-value parameters
+  const safeFiltersConfig = Array.isArray(globalThis.filtersConfig)
+    ? globalThis.filtersConfig
+    : [];
   const multiFilters = [
-    ...new Set(filtersConfig.map((filter) => filter.param)),
+    ...new Set(safeFiltersConfig.map((filter) => filter.param)),
   ];
   urlParams = normalizeMultiValues(urlParams, multiFilters);
 
@@ -274,17 +295,23 @@ function disabledInputs(value) {
 }
 
 // First launch of the infinite scroll
-infinite = new InfiniteLoader(
-  getUrlForRefresh(),
-  onBeforePageLoad,
-  onAfterPageLoad,
-  nextPage,
-  (page = 2),
-);
+if (typeof InfiniteLoader === "function") {
+  infinite = new InfiniteLoader(
+    getUrlForRefresh(),
+    onBeforePageLoad,
+    onAfterPageLoad,
+    typeof nextPage !== "undefined" ? nextPage : true,
+    2,
+  );
+}
 
 // Check and clean url to avoid owner parameter if not authorized
 var urlParams = new URLSearchParams(window.location.search);
-if (urlParams.has("owner") && !ownerFilter) {
+if (
+  urlParams.has("owner") &&
+  typeof ownerFilter !== "undefined" &&
+  !ownerFilter
+) {
   urlParams.delete("owner");
   window.history.pushState(
     null,

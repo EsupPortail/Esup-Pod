@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Esup-pod recorder views."""
+
 import hashlib
 import logging
 import os

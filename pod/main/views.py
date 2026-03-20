@@ -45,7 +45,6 @@ from .models import Configuration
 from .utils import is_ajax
 from honeypot.decorators import check_honeypot
 
-
 ##
 # Settings exposed in templates
 #

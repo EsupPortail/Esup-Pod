@@ -1336,10 +1336,8 @@ main {
 }
 
 .video-info_duration-view-share {
-  display: flex;
   font-size: 90%;
   gap: 0.75rem;
-  align-items: center;
   justify-content: flex-start;
   border-bottom: 1px solid var(--pod-background-neutre1-bloc);
   padding-bottom: 0.75rem;
@@ -1380,10 +1378,6 @@ main {
 /* ------ */
 
 .video-info_duration-view-share button {
-  margin-left: auto;
-}
-
-.pod-info-video__buttons {
   margin-left: auto;
 }
 

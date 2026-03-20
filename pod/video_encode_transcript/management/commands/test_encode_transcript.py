@@ -1,19 +1,18 @@
-from django.core.management.base import BaseCommand, CommandError
-
-from django.conf import settings
-from django.core.files.temp import NamedTemporaryFile
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
-from pod.video.models import Video, Type
-from pod.video_encode_transcript import encode
-from pod.video_encode_transcript.models import EncodingVideo
-from pod.video_encode_transcript.models import PlaylistVideo
-from pod.completion.models import Track
-
-import shutil
 import os
+import shutil
 import time
+
 import coverage
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.files.temp import NamedTemporaryFile
+from django.core.management.base import BaseCommand, CommandError
+from rest_framework.authtoken.models import Token
+
+from pod.completion.models import Track
+from pod.video.models import Type, Video
+from pod.video_encode_transcript import encode
+from pod.video_encode_transcript.models import EncodingVideo, PlaylistVideo
 
 VIDEO_TEST = "pod/main/static/video_test/video_test_encodage_transcription.webm"
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")

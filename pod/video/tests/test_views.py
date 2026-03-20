@@ -568,6 +568,17 @@ class VideosTestView(TestCase):
         response = self.client.get(url + "?type=type2&type=type1")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 4)
+        type1_id = Type.objects.get(slug="type1").id
+        type2_id = Type.objects.get(slug="type2").id
+        response = self.client.get(url + f"?type={type1_id}")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["videos"].paginator.count, 3)
+        response = self.client.get(url + f"?type={type2_id}&type={type1_id}")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["videos"].paginator.count, 4)
+        response = self.client.get(url + f"?type={type2_id},{type1_id}")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["videos"].paginator.count, 4)
         # discipline
         response = self.client.get(url + "?discipline=discipline1")
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -576,6 +587,19 @@ class VideosTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 2)
         response = self.client.get(url + "?discipline=discipline1&discipline=discipline2")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["videos"].paginator.count, 3)
+        discipline1_id = Discipline.objects.get(slug="discipline1").id
+        discipline2_id = Discipline.objects.get(slug="discipline2").id
+        response = self.client.get(url + f"?discipline={discipline1_id}")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["videos"].paginator.count, 2)
+        response = self.client.get(
+            url + f"?discipline={discipline1_id}&discipline={discipline2_id}"
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["videos"].paginator.count, 3)
+        response = self.client.get(url + f"?discipline={discipline1_id},{discipline2_id}")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 3)
         # owner

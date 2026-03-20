@@ -1,11 +1,12 @@
 # video type process
-import threading
-import logging
 import datetime
+import logging
 import os
 import shutil
+import threading
 
 from django.conf import settings
+
 from pod.video.models import Video, get_storage_path_video
 from pod.video_encode_transcript import encode
 
@@ -15,7 +16,7 @@ log = logging.getLogger(__name__)
 
 
 def process(recording):
-    log.info("START PROCESS OF RECORDING %s" % recording)
+    log.info("START PROCESS OF RECORDING (type_video) %s" % recording)
     t = threading.Thread(target=encode_recording, args=[recording])
     t.daemon = True
     t.start()

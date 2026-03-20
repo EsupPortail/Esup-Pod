@@ -21,6 +21,8 @@
   <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
 
   <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'bootstrap-icons/font/bootstrap-icons.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+
   <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
   <script id="jsi18n" src="{% url 'javascript-catalog' %}?ver={{VERSION}}"></script>
 
@@ -44,16 +46,19 @@
     {% include 'videos/video-element.html' %}
   {% endblock video-element %}
 
-  <div id="info-video-wrapper" class="pod-inner">
-    <div class="iframe-header bg-dark text-white">
-      <h2 class="video-title">{{ video.title }}</h2>
-      <button type="button" class="close" aria-label="{% trans 'Close' %}">
-        <span aria-hidden="true">&times;</span>
-      </button>
+  <div id="info-video-wrapper" class="modal pod-inner">
+    <div class="modal-dialog modal-lg">
+      <div id="info-video" class="modal-content">
+        <div class="iframe-header modal-header">
+          <h2 class="video-title">{{ video.title }}</h2>
+          <button type="button" class="close btn-close" data-bs-dismiss="modal"
+            aria-label="{% trans 'Close' %}"></button>
+        </div>
+        <div class="pod-info-video modal-body">
+          {% include 'videos/video-info.html'%}
+        </div>
+      </div>
     </div>
-    <div id="info-video" class="pod-info-video">
-    {% include 'videos/video-info.html'%}
-  </div>
   </div>
 
 </div>

@@ -2,7 +2,7 @@
 {% load video_tags playlist_stats favorites_playlist %}
 {% load speaker_template_tags %}
 
-<div class="video-info_duration-view-share">
+<div class="video-info_duration-view-share d-flex align-items-center">
   <div class="video-info__duration">
     <i class="bi bi-clock" aria-hidden="true"></i>
     <span class="visually-hidden">{% trans 'Duration:' %}</span>
@@ -36,7 +36,7 @@
       {% endif %}
     </div>
   {% endif %}
-  <div class="pod-info-video__buttons">
+  <div class="pod-info-video__buttons ms-auto">
     {% if USE_PLAYLIST and user.is_authenticated and not video.is_draft %}
       <button type="button" class="btn btn-link btn-lg pod-btn-share" title="{% trans 'Add the video to a playlist'%}" data-bs-toggle="modal" data-bs-target="#playlist-modal">
         <i class="bi bi-list-ul" aria-hidden="true"></i>
@@ -58,15 +58,19 @@
 
       {% endif %}
     {% endif %}
-    {% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all %}
-      <button type="button" class="btn btn-link btn-lg pod-btn-share" title="{% trans 'Embed/Share' %}" data-bs-toggle="modal" data-bs-target="#share">
-        <i class="bi bi-share" aria-hidden="true"></i>
-      </button>
-    {% endif %}
-    {% if video.allow_downloading or video.document_set.all %}
-      <button type="button" class="btn btn-link btn-lg pod-btn-share" title="{% trans 'Downloads' %}" data-bs-toggle="modal" data-bs-target="#downloads">
-        <i class="bi bi-download" aria-hidden="true"></i>
-      </button>
+    {% if not request.GET.is_iframe %}
+      {% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all %}
+        <button type="button" class="btn btn-link btn-lg pod-btn-share" title="{% trans 'Embed/Share' %}"
+        data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#share">
+          <i class="bi bi-share" aria-hidden="true"></i>
+        </button>
+      {% endif %}
+      {% if video.allow_downloading or video.document_set.all %}
+        <button type="button" class="btn btn-link btn-lg pod-btn-share" title="{% trans 'Downloads' %}"
+          data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#downloads">
+          <i class="bi bi-download" aria-hidden="true"></i>
+        </button>
+      {% endif %}
     {% endif %}
   </div>
 </div>
@@ -100,12 +104,15 @@
 
 <div id="video-meta">
   <div id="info" class="pod-info-video__info">
-    <h2 class="tab-title visually-hidden"><i class=" bi bi-info-circle"></i>&nbsp;{% trans 'Infos' %}</h2>
+    <h2 class="tab-title">{% trans 'Infos' %}</h2>
     <ul class="list-inline d-flex flex-wrap">
-      <li class="col-6 col-md-4">
-        <span class="pod-meta-title">{% trans 'Added by:' %}</span>
+      <li class="col-6 col-lg-4 p-1">
+        <span class="pod-meta-title">
+          <i class="bi bi-person-circle" aria-hidden="true"></i>
+          {% trans 'Added by:' %}
+        </span>
         {% if owner_filter %}
-          <a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ video.owner.get_username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %} title="{% blocktrans with video_user_name=video.owner.get_username %}Show video list of user “{{ video_user_name }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+          <a href="{% url 'videos:videos' %}?owner={{ video.owner.get_username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %} title="{% blocktrans with video_user_name=video.owner.get_username %}Show video list of user “{{ video_user_name }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
         {% endif %}
           {% if video.owner.owner.userpicture.file %}
             {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
@@ -118,86 +125,97 @@
         {% endif %}
       </li>
       {% if video.additional_owners.all %}
-      <li class="col-6 col-md-4">
-        <span class="pod-meta-title pod-meta-title-additional-owners">{% trans 'Additional owner(s):' %}</span>
-        <ul class="list-unstyled">
-          {% for additionalOwner in video.additional_owners.all %}
-            <li>
-            {% if owner_filter %}
-              <a href="{% url 'videos:videos' %}?owner={{ additionalOwner.get_username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
-            {% endif %}
-            {% if additionalOwner.owner.userpicture.file %}
-              {% thumbnail additionalOwner.owner.userpicture.file "x50" as im %}
-                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}" loading="lazy">
-              {% endthumbnail %}
-            {% endif %}
-            {{ additionalOwner }}
-            {% if owner_filter %}
-              </a>
-            {% endif %}
-            </li>
-          {% endfor %}
-        </ul>
-      </li>
+        <li class="col-6 col-lg-4 p-1">
+          <span class="pod-meta-title pod-meta-title-additional-owners">{% trans 'Additional owner(s):' %}</span>
+          <ul class="list-unstyled">
+            {% for additionalOwner in video.additional_owners.all %}
+              <li>
+              {% if owner_filter %}
+                <a href="{% url 'videos:videos' %}?owner={{ additionalOwner.get_username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+              {% endif %}
+              {% if additionalOwner.owner.userpicture.file %}
+                {% thumbnail additionalOwner.owner.userpicture.file "x50" as im %}
+                  <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}" loading="lazy">
+                {% endthumbnail %}
+              {% endif %}
+              {{ additionalOwner }}
+              {% if owner_filter %}
+                </a>
+              {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
       {% endif %}
 
       {% if video.contributor_set.all %}
-      <li class="col-6 col-md-4">
-        <span class="pod-meta-title">{% trans 'Contributor(s):' %}</span>
-        <div>
-          <ul>
-            {% for contrib in video.contributor_set.all %}
-              <li>
-                {{ contrib.name }} ({{ contrib.get_role_display }})
-                {% if contrib.email_address %}
-                  <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" title="{% blocktrans with contributor_name=contrib.name %}Send an email to “{{ contributor_name }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right">
-                    <i class="bi bi-envelope" aria-hidden="true"></i>
-                  </a>
-                {% endif %}
-                {% if contrib.weblink %}
-                  <a href="{{ contrib.weblink }}" target="_blank" rel="nofollow" title="{% trans 'Contributor web link' %}" data-bs-toggle="tooltip" data-bs-placement="right">
-                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
-                  </a>
-                {% endif %}
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </li>
+        <li class="col-6 col-lg-4 p-1">
+          <span class="pod-meta-title">
+            <i class="bi bi-people" aria-hidden="true"></i>
+            {% trans 'Contributor(s):' %}
+          </span>
+          <div>
+            <ul>
+              {% for contrib in video.contributor_set.all %}
+                <li>
+                  {{ contrib.name }} ({{ contrib.get_role_display }})
+                  {% if contrib.email_address %}
+                    <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" title="{% blocktrans with contributor_name=contrib.name %}Send an email to “{{ contributor_name }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right">
+                      <i class="bi bi-envelope" aria-hidden="true"></i>
+                    </a>
+                  {% endif %}
+                  {% if contrib.weblink %}
+                    <a href="{{ contrib.weblink }}" target="_blank" rel="nofollow" title="{% trans 'Contributor web link' %}" data-bs-toggle="tooltip" data-bs-placement="right">
+                      <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                    </a>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </li>
       {% endif %}
       {% if USE_SPEAKER %}
-      <li class="col-6 col-md-4">
-        <span class="pod-meta-title">{% trans 'Speaker(s):' %}</span>
-        <div>
-          <ul>
-            {% get_video_speaker_grouped video as grouped_speakers %}
-            {% for speaker, jobs in grouped_speakers.items %}
-              <li>
-                <strong>{{ speaker.firstname }} {{ speaker.lastname }} </strong>
-                {% for job in jobs %}
-                  <em>{{ job }}</em>{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </li>
+        <li class="col-6 col-lg-4 p-1">
+          <span class="pod-meta-title">
+            <i class="bi bi-headset" aria-hidden="true"></i>
+            {% trans 'Speaker(s):' %}
+          </span>
+          <div>
+            <ul>
+              {% get_video_speaker_grouped video as grouped_speakers %}
+              {% for speaker, jobs in grouped_speakers.items %}
+                <li>
+                  <strong>{{ speaker.firstname }} {{ speaker.lastname }} </strong>
+                  {% for job in jobs %}
+                    <em>{{ job }}</em>{% if not forloop.last %}, {% endif %}
+                  {% endfor %}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </li>
       {% endif %}
 
-      <li class="col-6 col-md-4">
-        <span class="pod-meta-title">{% trans 'Added on:' %}</span>
+      <li class="col-6 col-lg-4 p-1">
+        <span class="pod-meta-title">
+          <i class="bi bi-calendar-event" aria-hidden="true"></i>
+          {% trans 'Added on:' %}
+        </span>
         {{ video.date_added }}
       </li>
 
       {% if video.channel.all %}
-        <li class="col-6 col-md-4">
-          <span class="pod-meta-title">{% blocktrans count counter=video.channel.all|length %}Channel:{% plural %} Channels:{% endblocktrans %}</span>
+        <li class="col-6 col-lg-4 p-1">
+          <span class="pod-meta-title">
+            <i class="bi bi-play-btn" aria-hidden="true"></i>
+            {% blocktrans count counter=video.channel.all|length %}Channel:{% plural %} Channels:{% endblocktrans %}
+          </span>
           <ul class="list-unstyled">
             {% for channel in video.channel.all %}
               <li>
                 <a href="{% url 'channel-video:channel' slug_c=channel.slug%}"
                   {% if request.GET.is_iframe %}target="_blank" {% endif %}
-                  class="btn btn-link btn-sm px-0">
                   {{ channel.title }}
                 </a>
               </li>
@@ -206,42 +224,47 @@
         </li>
       {% endif %}
 
-      <li class="col-6 col-md-4">
-        <span class="pod-meta-title">{% trans 'Type:' %}</span>
+      <li class="col-6 col-lg-4 p-1">
+        <span class="pod-meta-title">
+          <i class="bi bi-file-earmark" aria-hidden="true"></i>
+          {% trans 'Type:' %}
+        </span>
         <a href="{% url 'videos:videos' %}?type={{ video.type.slug }}"
           {% if request.GET.is_iframe %}target="_blank" {% endif %}
-          class="btn btn-link btn-sm px-0"
           title="{% blocktrans with type_title=video.type.title %}Show video list of type “{{ type_title }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
           {{ video.type.title }}
         </a>
       </li>
 
-      <li class="col-6 col-md-4">
-        <span class="pod-meta-title">{% trans 'Main language:' %}</span>
+      <li class="col-6 col-lg-4 p-1">
+        <span class="pod-meta-title">
+          <i class="bi bi-translate" aria-hidden="true"></i>
+          {% trans 'Main language:' %}
+        </span>
         {{video.get_main_lang}}
       </li>
 
       {% if USE_HYPERLINKS and video.video_hyperlinks.exists %}
-      <li class="col-6 col-md-4">
-        <span class="pod-meta-title">{% trans 'Hyperlinks:' %}</span>
-        <ul style="display: inline-grid;">
-            {% for video_hyperlink in video.video_hyperlinks.all %}
-          <li><a href="{{ video_hyperlink.hyperlink.url }}">{{ video_hyperlink.hyperlink.description }}</a></li>
-            {% endfor %}
-        </ul>
-      </li>
+        <li class="col-6 col-lg-4 p-1">
+          <span class="pod-meta-title">{% trans 'Hyperlinks:' %}</span>
+          <ul style="display: inline-grid;">
+              {% for video_hyperlink in video.video_hyperlinks.all %}
+            <li><a href="{{ video_hyperlink.hyperlink.url }}">{{ video_hyperlink.hyperlink.description }}</a></li>
+              {% endfor %}
+          </ul>
+        </li>
       {% endif %}
 
 
       {% if video.cursus and video.cursus != '0' %}
-        <li class="col-6 col-md-4">
+        <li class="col-6 col-lg-4 p-1">
           <span class="pod-meta-title">{% trans 'Audience:' %}</span>
           {{video.get_cursus}}
         </li>
       {% endif %}
 
       {% if video.discipline.all %}
-        <li class="col-6 col-md-4">
+        <li class="col-6 col-lg-4 p-1">
           <span class="pod-meta-title">{% trans 'Discipline(s):' %}</span>
           <div>
             <ul>
@@ -254,19 +277,25 @@
       {% endif %}
 
       {% if request.GET.is_iframe and video.licence %}
-        <li class="col-6 col-md-4">
+        <li class="col-6 col-lg-4 p-1">
           <span class="pod-meta-title">{% trans 'Licence:' %}</span>
           {% include "videos/video_licencebox.html" %}
         </li>
       {% endif %}
     </ul>
   </div>
+</div>
 
+{% if not request.GET.is_iframe %}
+  <!-- Downloads modal-->
   <div class="modal fade" id="downloads" tabindex="-1" aria-labelledby="downloadsLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h2 class="modal-title h3" id="downloadsLabel"><i class="bi bi-download" aria-hidden="true"></i>&nbsp;{% trans 'Downloads' %}</h2>
+          <h2 class="modal-title h3" id="downloadsLabel">
+            <i class="bi bi-download" aria-hidden="true"></i>
+            {% trans 'Downloads' %}
+          </h2>
           <button type="button" class="btn-close text-reset" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
         </div>
 
@@ -292,7 +321,10 @@
             </ul>
 
             {% if video.get_video_mp3 and video.get_video_mp3.source_file|file_exists %}
-              <span class="meta-title pod-meta-title pod-download-title"><i class="bi bi-soundwave" aria-hidden="true"></i>{% trans 'Audio file:' %}</span>
+              <span class="meta-title pod-meta-title pod-download-title">
+                <i class="bi bi-soundwave" aria-hidden="true"></i>
+                {% trans 'Audio file:' %}
+              </span>
               <ul>
                 <li>
                   <form method="post" action="{% url 'download_file' %}">
@@ -307,7 +339,8 @@
 
           {% if video.document_set.all %}
             <h3 class="h4">
-              <i class="bi bi-files" aria-hidden="true"></i>&nbsp;{% trans 'Document:' %}
+              <i class="bi bi-files" aria-hidden="true"></i>
+              {% trans 'Document:' %}
             </h3>
             <ul>
               {% for doc in video.document_set.all %}
@@ -334,151 +367,164 @@
       </div>
     </div>
   </div>
-</div>
 
-<!-- Share modal -->
-{% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all%}
-  <div class="modal fade" id="share" tabindex="-1" aria-labelledby="shareLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title h3" id="shareLabel">
-            <i class="bi bi-share" aria-hidden="true"></i>&nbsp;{% if video.is_draft %}{% trans 'Embed/Share (Draft Mode)' %}{% else %}{% trans 'Embed/Share' %}{% endif %}
-          </h2>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
-        </div>
+  <!-- Share modal -->
+  {% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all%}
+    <div class="modal fade" id="share" tabindex="-1" aria-labelledby="shareLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title h3" id="shareLabel">
+              <i class="bi bi-share" aria-hidden="true"></i>
+              {% if video.is_draft %}{% trans 'Embed/Share (Draft Mode)' %}{% else %}{% trans 'Embed/Share' %}{% endif %}
+            </h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+          </div>
 
-        <div class="modal-body">
-          <div>
-            {% if not video.is_draft and not video.is_restricted and video.password != '' %}
-              <dl class="row">
-                <dt class="col-sm-3 text-right visually-hidden">{% trans 'Social Networks' %}</dt>
-                <dd class="col-sm-9 mb-0">
-                  <ul class="list-inline mb-0 social_links">
-                    <li class="list-inline-item">
-                      <a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Facebook" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                        <i class="bi bi-facebook" aria-hidden="true"></i>
-                      </a>
-                    </li>
-                    <li class="list-inline-item">
-                      <a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} X (Twitter)" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                        <i class="bi bi-twitter-x" aria-hidden="true"></i>
-                      </a>
-                    </li>
-                    <li class="list-inline-item">
-                      <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} LinkedIn" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                        <i class="bi bi-linkedin" aria-hidden="true"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </dd>
-              </dl>
-              <hr>
-            {% endif %}
-
-            {% if video.is_draft %}
-              <div class="alert alert-warning d-flex align-items-center gap-4" role="alert">
-                <i class="bi bi-incognito pod-share-draft-icon" aria-hidden="true"></i>
-                <div>
-                  <p class="mb-0">{% trans "Please note that your video is in draft mode." %}</p>
-                  <p class="mb-0">{% trans "The following links contain a key allowing access. Anyone with this links can access it." %}</p>
-                </div>
-              </div>
-            {% endif %}
-
+          <div class="modal-body">
             <div>
-              <fieldset class="pod-share-fieldset">
-                <legend><i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans 'Options' %}</legend>
-                <div class="form-check mb-2">
-                  <input type="checkbox" id="autoplay" class="form-check-input"><label for="autoplay" class="form-check-label">{% trans 'Autoplay' %}</label>
-                  <div id="autoplayHelp" class="form-text">{% trans 'Check the box to autoplay the video.' %}</div>
-                </div>
-                <div class="form-check mb-2">
-                  <input type="checkbox" id="loop" class="form-check-input"><label for="loop" class="form-check-label">{% trans 'Loop' %}</label>
-                  <div id="loopHelp" class="form-text">{% trans 'Check the box to loop the video.' %}</div>
-                </div>
-                <div class="form-check mb-2">
-                  <input name="displaytime" class="form-check-input" id="displaytime" type="checkbox">
-                  <label for="displaytime" class="form-check-label">{% trans 'Customize start of the video' %}</label>
-                  <label for="txtposition" class="visually-hidden">{% trans 'Start at' %}</label>
-                  <input type="text" class="form-control start-at input-sm" name="txtposition" id="txtposition" readonly>
-                  <div id="displaytimeHelp" class="form-text">{% trans 'Check the box to indicate the beginning of playing desired.' %}</div>
-                </div>
-              </fieldset>
+              {% if not video.is_draft and not video.is_restricted and video.password != '' %}
+                <dl class="row">
+                  <dt class="col-sm-3 text-right visually-hidden">{% trans 'Social Networks' %}</dt>
+                  <dd class="col-sm-9 mb-0">
+                    <ul class="list-inline mb-0 social_links">
+                      <li class="list-inline-item">
+                        <a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Facebook" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                          <i class="bi bi-facebook" aria-hidden="true"></i>
+                        </a>
+                      </li>
+                      <li class="list-inline-item">
+                        <a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} X (Twitter)" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                          <i class="bi bi-twitter-x" aria-hidden="true"></i>
+                        </a>
+                      </li>
+                      <li class="list-inline-item">
+                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} LinkedIn" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                          <i class="bi bi-linkedin" aria-hidden="true"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </dd>
+                </dl>
+                <hr>
+              {% endif %}
 
-              <fieldset class="pod-share-fieldset">
-                <legend><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
-                <p>
-                  {% trans "Use an embed code to display the video in a web page." %}
-                </p>
-                <div class="form-group">
-                  {% if video.is_draft == True %}
-                    <a href="{% url 'video:video_edit_access_tokens' video.slug %}" class="btn btn-primary my-2">
-                      {% trans 'Manage integration code in access tokens page' %}
-                    </a>
-                  {% else %}
-                    <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
-                    <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4" readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen title="{{ video.title }}" &gt;&lt;/iframe&gt;</textarea>
-                  {% endif %}
+              {% if video.is_draft %}
+                <div class="alert alert-warning d-flex align-items-center gap-4" role="alert">
+                  <i class="bi bi-incognito pod-share-draft-icon" aria-hidden="true"></i>
+                  <div>
+                    <p class="mb-0">{% trans "Please note that your video is in draft mode." %}</p>
+                    <p class="mb-0">{% trans "The following links contain a key allowing access. Anyone with this links can access it." %}</p>
+                  </div>
                 </div>
-              </fieldset>
+              {% endif %}
 
-              {% if request.user == video.owner or request.user in video.additional_owners.all%}
+              <div>
                 <fieldset class="pod-share-fieldset">
-                  <legend><i class="bi bi-cloud-upload" aria-hidden="true"></i>&nbsp;{% trans 'BigBlueButton/H5P Integration' %}</legend>
-                  <p>{% trans 'Use these links in a BigBlueButton meeting or an interactive H5P video activity:' %}</p>
+                  <legend>
+                    <i class="bi bi-gear" aria-hidden="true"></i>
+                    {% trans 'Options' %}
+                  </legend>
+                  <div class="form-check mb-2">
+                    <input type="checkbox" id="autoplay" class="form-check-input"><label for="autoplay" class="form-check-label">{% trans 'Autoplay' %}</label>
+                    <div id="autoplayHelp" class="form-text">{% trans 'Check the box to autoplay the video.' %}</div>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input type="checkbox" id="loop" class="form-check-input"><label for="loop" class="form-check-label">{% trans 'Loop' %}</label>
+                    <div id="loopHelp" class="form-text">{% trans 'Check the box to loop the video.' %}</div>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input name="displaytime" class="form-check-input" id="displaytime" type="checkbox">
+                    <label for="displaytime" class="form-check-label">{% trans 'Customize start of the video' %}</label>
+                    <label for="txtposition" class="visually-hidden">{% trans 'Start at' %}</label>
+                    <input type="text" class="form-control start-at input-sm" name="txtposition" id="txtposition" readonly>
+                    <div id="displaytimeHelp" class="form-text">{% trans 'Check the box to indicate the beginning of playing desired.' %}</div>
+                  </div>
+                </fieldset>
+
+                <fieldset class="pod-share-fieldset">
+                  <legend>
+                    <i class="bi bi-code" aria-hidden="true"></i>
+                    {% trans 'Embed in a web page' %}
+                  </legend>
+                  <p>
+                    {% trans "Use an embed code to display the video in a web page." %}
+                  </p>
                   <div class="form-group">
-                    {% for vid in video.get_video_mp4 %}
-                      <div class="input-group mb-1">
-                        <label class="input-group-text" for="vid_url_{{vid.name}}">{{vid.name}}</label><input id="vid_url_{{vid.name}}" class="form-control" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly>
-                      </div>
-                    {% endfor %}
-                    {% if video.is_video == False and video.get_video_mp3 %}
-                      <div class="input-group mb-1">
-                        <label class="input-group-text" for="vid_url_{{video.get_video_mp3.name}}">{{video.get_video_mp3.name}}</label>
-                        <input class="form-control" id="vid_url_{{video.get_video_mp3.name}}" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly>
-                      </div>
+                    {% if video.is_draft == True %}
+                      <a href="{% url 'video:video_edit_access_tokens' video.slug %}" class="btn btn-primary my-2">
+                        {% trans 'Manage integration code in access tokens page' %}
+                      </a>
+                    {% else %}
+                      <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
+                      <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4" readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen title="{{ video.title }}" &gt;&lt;/iframe&gt;</textarea>
                     {% endif %}
                   </div>
                 </fieldset>
-              {% endif %}
 
-              <fieldset class="pod-share-fieldset">
-                <legend><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share the link' %}</legend>
-                <p>
-                  {% trans 'By sharing a link, you allow others to view the video.' %}
-                </p>
+                {% if request.user == video.owner or request.user in video.additional_owners.all%}
+                  <fieldset class="pod-share-fieldset">
+                    <legend>
+                      <i class="bi bi-cloud-upload" aria-hidden="true"></i>
+                      {% trans 'BigBlueButton/H5P Integration' %}
+                    </legend>
+                    <p>{% trans 'Use these links in a BigBlueButton meeting or an interactive H5P video activity:' %}</p>
+                    <div class="form-group">
+                      {% for vid in video.get_video_mp4 %}
+                        <div class="input-group mb-1">
+                          <label class="input-group-text" for="vid_url_{{vid.name}}">{{vid.name}}</label><input id="vid_url_{{vid.name}}" class="form-control" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly>
+                        </div>
+                      {% endfor %}
+                      {% if video.is_video == False and video.get_video_mp3 %}
+                        <div class="input-group mb-1">
+                          <label class="input-group-text" for="vid_url_{{video.get_video_mp3.name}}">{{video.get_video_mp3.name}}</label>
+                          <input class="form-control" id="vid_url_{{video.get_video_mp3.name}}" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </fieldset>
+                {% endif %}
 
-                {% if video.is_draft == True %}
-                  <div class="form-group">
-                    <a href="{% url 'video:video_edit_access_tokens' video.slug %}" class="btn btn-primary my-2">
-                      {% trans 'Manage sharing link in access tokens page' %}
-                    </a>
-                  </div>
-                {% else %}
-                  <div class="form-group">
-                    <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
-                    <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment %}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}" readonly>
-                  </div>
+                <fieldset class="pod-share-fieldset">
+                  <legend>
+                    <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                    {% trans 'Share the link' %}
+                  </legend>
+                  <p>
+                    {% trans 'By sharing a link, you allow others to view the video.' %}
+                  </p>
 
-                  <div class="form-group m-2">
-                    {% get_video_qrcode video.slug enrichment as qrcode %}
-                    <label>{% trans 'QR code for this link:' %}&nbsp;</label>
-                    <span class="d-block">
-                      {{ qrcode }}
-                    </span>
-                    <button id="btn-download-qr-code" type="submit" data-slug="{{ video.slug }}"
-                      class="btn btn-primary my-2" title="{% trans 'Download this QR code' %}"
-                      data-bs-toggle="tooltip" data-bs-placement="bottom">
-                      {% trans 'Download' %}
-                    </button>
-                  </div>
-                </fieldset>
-              {% endif %}
+                  {% if video.is_draft == True %}
+                    <div class="form-group">
+                      <a href="{% url 'video:video_edit_access_tokens' video.slug %}" class="btn btn-primary my-2">
+                        {% trans 'Manage sharing link in access tokens page' %}
+                      </a>
+                    </div>
+                  {% else %}
+                    <div class="form-group">
+                      <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
+                      <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment %}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}" readonly>
+                    </div>
+
+                    <div class="form-group m-2">
+                      {% get_video_qrcode video.slug enrichment as qrcode %}
+                      <label>{% trans 'QR code for this link:' %}&nbsp;</label>
+                      <span class="d-block">
+                        {{ qrcode }}
+                      </span>
+                      <button id="btn-download-qr-code" type="submit" data-slug="{{ video.slug }}"
+                        class="btn btn-primary my-2" title="{% trans 'Download this QR code' %}"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        {% trans 'Download' %}
+                      </button>
+                    </div>
+                  </fieldset>
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  {% endif %}
 {% endif %}

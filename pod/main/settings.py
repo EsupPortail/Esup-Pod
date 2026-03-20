@@ -321,7 +321,7 @@ PWA_APP_DEBUG_MODE = locals().get("DEBUG", False)
 SOCIAL_SHARE = ["X", "FACEBOOK", "LINKEDIN", "BLUESKY", "MASTODON"]
 
 # Disable TinyMCE relative_urls to avoid auto replace self domain urls
-# i.e : http://pod.localhost:8000/video/0001-podmp4/ become ../../0001-podmp4/
+# i.e : http://pod.localhost/video/0001-podmp4/ become ../../0001-podmp4/
 TINYMCE_DEFAULT_CONFIG = {
     "theme": "silver",
     "height": 500,

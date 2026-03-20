@@ -85,12 +85,10 @@ class AIEnhancementChoice(forms.ModelForm):
     )
 
     tags = TagField(
-        help_text=_(
-            """
+        help_text=_("""
             Please choose tags for your video.
             Separate tags with spaces, enclose the tags consist of several words in quotation marks.
-        """
-        ),
+        """),
         verbose_name=_("Tags"),
     )
 
