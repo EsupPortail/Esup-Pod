@@ -15,6 +15,7 @@ class VideoSerializer(serializers.ModelSerializer):
     """
 
     owner = serializers.ReadOnlyField(source="owner.username")
+    owner_id = serializers.ReadOnlyField(source="owner.id")
     video_url = serializers.SerializerMethodField()
     status_label = serializers.CharField(source="get_status_display", read_only=True)
     has_password = serializers.BooleanField(source="password", read_only=True)
@@ -43,6 +44,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "is_360",
             "is_video",
             "owner",
+            "owner_id",
             "co_owners",
             "status",
             "status_label",
@@ -70,6 +72,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "updated_at",
             "duration",
             "owner",
+            "owner_id",
             "status_label",
             "subtitles",
         ]

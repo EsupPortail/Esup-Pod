@@ -15,6 +15,7 @@ from django.db.models import F
 from src.apps.video.conf import video_settings
 from src.apps.encoding.conf import encoding_settings
 from rest_framework.exceptions import ValidationError
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 
 logger = logging.getLogger(__name__)
 
@@ -162,3 +163,24 @@ class VideoViewSet(viewsets.ModelViewSet):
             )
             return Response({"video_url": url})
         return Response({"error": "Incorrect password"}, status=403)
+
+    @extend_schema(
+        summary="List my videos",
+        description="Returns only videos owned or co-owned by the current user.",
+        responses={200: VideoSerializer(many=True)},
+    )
+    @action(detail=False, methods=["get"], permission_classes=[permissions.IsAuthenticated])
+    def me(self, request):
+        """
+        Retrieves a filtered list of videos where the current user is either the owner or a co-owner.
+        """
+        user = request.user
+        queryset = self.get_queryset().filter(Q(owner=user) | Q(co_owners=user)).distinct()
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
