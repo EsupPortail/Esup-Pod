@@ -1,5 +1,5 @@
 """
-Tests for authentication models and signals.
+Esup-Pod - Tests for authentication models and signals.
 
 This module ensures that the Owner model and related signals (like automatic 
 creation of an Owner upon User creation) work correctly.

@@ -1,3 +1,11 @@
+"""
+Esup-Pod - URL configuration for the authentication app.
+
+This module defines the API endpoints for user authentication, profile management,
+and configuration retrieval. It supports multiple authentication methods including
+standard JWT, CAS, Shibboleth, and OIDC based on settings.
+"""
+
 import django_cas_ng.views
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter

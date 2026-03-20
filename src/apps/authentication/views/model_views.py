@@ -1,3 +1,9 @@
+"""
+Esup-Pod - Model viewsets for the authentication app.
+
+This module provides standard ViewSets for User, Group, Site, Owner, 
+and AccessGroup models.
+"""
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site

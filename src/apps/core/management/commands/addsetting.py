@@ -1,5 +1,5 @@
 """
-Django management command to add or update a setting inside a specific
+Esup-Pod - Django management command to add or update a setting inside a specific
 application configuration stored in `configuration.json`.
 
 Launch with `python3 manage.py addsetting <app_name> <setting_name>`
@@ -13,9 +13,16 @@ from django.conf import settings as django_settings
 
 
 class Command(BaseCommand):
+    """
+    Management command to interactively add or update settings in the global 
+    configuration.json file.
+    """
     help = "Add setting to specific app configuration"
 
     def add_arguments(self, parser):
+        """
+        Defines the required arguments: app_name and setting_name.
+        """
         parser.add_argument(
             "app_name", type=str, help="Name of the app (e.g., authentication, core)"
         )
@@ -24,6 +31,9 @@ class Command(BaseCommand):
         )
 
     def get_setting(self, options):
+        """
+        Retrieves the current value of a setting from configuration.json if it exists.
+        """
         filename = os.path.join(
             django_settings.BASE_DIR, "src", "apps", "core", "configuration.json"
         )
@@ -60,6 +70,9 @@ class Command(BaseCommand):
             return {}
 
     def save_setting(self, options, setting):
+        """
+        Writes the updated setting back to the configuration.json file.
+        """
         filename = os.path.join(
             django_settings.BASE_DIR, "src", "apps", "core", "configuration.json"
         )
@@ -78,6 +91,10 @@ class Command(BaseCommand):
             json.dump(data, f, sort_keys=True, indent=2, ensure_ascii=False)
 
     def fix_default_value(self, default_value):
+        """
+        Interactively prompts the user for a default value and performs basic 
+        type conversion (bool, int).
+        """
         msg = "Default value (leave blank to keep previous value: %s): " % default_value
         if default_value == "":
             msg = "Default value: "
@@ -93,6 +110,9 @@ class Command(BaseCommand):
         return default_value
 
     def get_description(self, previous_description):
+        """
+        Prompts the user for a multi-line description.
+        """
         if previous_description != [""]:
             print("(--> Type enter directly to keep previous value!)")
         description = [""]
@@ -107,6 +127,9 @@ class Command(BaseCommand):
         return description
 
     def handle(self, *args, **options):
+        """
+        Main execution logic for the command. Collects data and saves it.
+        """
         self.stdout.write(
             self.style.SUCCESS('Setting name "%s"' % options["setting_name"])
         )

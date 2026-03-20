@@ -1,3 +1,8 @@
+"""
+Esup-Pod - GroupSite model and signals for the authentication app.
+
+Links Django Groups to specific Sites.
+"""
 import logging
 
 from django.contrib.auth.models import Group

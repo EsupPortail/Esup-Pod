@@ -1,5 +1,5 @@
 """
-Tests for authentication scenarios and configuration switching.
+Esup-Pod - Tests for authentication scenarios and configuration switching.
 
 This module contains tests that verify how different authentication settings 
 (CAS vs Local Auth) impact URL routing and available views.

@@ -1,5 +1,5 @@
 """
-Tests for the 'me' user information endpoint.
+Esup-Pod - Tests for the 'me' user information endpoint.
 
 This module ensures that the /api/auth/users/me/ endpoint returns the correct
 information for the currently authenticated user, including profile details

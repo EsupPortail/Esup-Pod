@@ -1,5 +1,5 @@
 """
-Tests for IP Restriction Middleware.
+Esup-Pod - Tests for IP Restriction Middleware.
 
 This module validates the behavior of the IPRestrictionMiddleware, ensuring that
 superuser access is only granted from allowed IP ranges and that restricted

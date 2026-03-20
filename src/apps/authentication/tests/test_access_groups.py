@@ -1,5 +1,5 @@
 """
-Tests for access group management and owner linking.
+Esup-Pod - Tests for access group management and owner linking.
 
 This module contains tests for the API endpoints that handle setting and removing
 users from access groups, either via the Owner model or the AccessGroup model directly.

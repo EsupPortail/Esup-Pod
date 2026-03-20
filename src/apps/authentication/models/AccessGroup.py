@@ -1,3 +1,8 @@
+"""
+Esup-Pod - AccessGroup model for the authentication app.
+
+This model defines groups of users managed internally or via external auth.
+"""
 from django.contrib.sites.models import Site
 from django.db import models
 from django.utils.translation import gettext_lazy as _

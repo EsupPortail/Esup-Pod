@@ -1,5 +1,5 @@
 """
-Tests for authentication views.
+Esup-Pod - Tests for authentication views.
 
 This module validates the different authentication flows provided by the API,
 including standard JWT login, Shibboleth-based authentication, and OIDC flows.

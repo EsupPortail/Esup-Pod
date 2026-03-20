@@ -55,7 +55,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Successfully export configuration"))
 
     def get_configuration(self, app) -> str:
-        """Get the "configuration_$app section from configuration.json."""
+        """Get the "configuration_$app" section from configuration.json."""
         config_key = "configuration_%s" % app
         if config_key not in self.data[0]:
             return ""

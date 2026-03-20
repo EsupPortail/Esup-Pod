@@ -1,5 +1,5 @@
 """
-Tests for authentication services and providers.
+Esup-Pod - Tests for authentication services and providers.
 
 This module validates the user population logic across different authentication 
 providers (CAS, OIDC, LDAP, Shibboleth) and verifies that provider-specific 

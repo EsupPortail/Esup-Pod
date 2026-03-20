@@ -1,3 +1,10 @@
+"""
+Esup-Pod - Admin configuration for the authentication app.
+
+This module customizes the Django admin interface for User, Group, Owner, 
+and AccessGroup models, integrating site-specific filtering and profile extension.
+"""
+
 from django.contrib import admin
 from django.contrib.admin import widgets
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -14,12 +21,18 @@ from .conf import auth_settings
 
 
 class GroupSiteInline(admin.StackedInline):
+    """
+    Inline admin for GroupSite model, linking Groups to specific Sites.
+    """
     model = GroupSite
     form = GroupSiteAdminForm
     can_delete = False
     verbose_name_plural = "groupssite"
 
     def get_fields(self, request, obj=None):
+        """
+        Dynamically filters visible fields based on user permissions.
+        """
         if not request.user.is_superuser:
             exclude = ()
             exclude += ("sites",)
@@ -42,6 +55,9 @@ class GroupSiteInline(admin.StackedInline):
 
 
 class OwnerInline(admin.StackedInline):
+    """
+    Inline admin for the Owner model, displayed within the User admin page.
+    """
     model = Owner
     form = OwnerAdminForm
     can_delete = False
@@ -49,6 +65,9 @@ class OwnerInline(admin.StackedInline):
     readonly_fields = ("hashkey",)
 
     def get_fields(self, request, obj=None):
+        """
+        Excludes sensitive or irrelevant fields based on the request context.
+        """
         fields = list(super(OwnerInline, self).get_fields(request, obj))
         exclude_set = set()
         # obj will be None on the add page, and something on change pages
@@ -77,8 +96,14 @@ class OwnerInline(admin.StackedInline):
 
 
 class UserAdmin(BaseUserAdmin):
+    """
+    Custom UserAdmin that incorporates the Owner profile and site filtering.
+    """
     @admin.display(description=_("Email"))
     def clickable_email(self, obj):
+        """
+        Returns an HTML mailto link for the user's email.
+        """
         email = obj.email
         return format_html('<a href="mailto:{}">{}</a>', email, email)
 
@@ -106,15 +131,24 @@ class UserAdmin(BaseUserAdmin):
 
     # readonly_fields=('is_superuser',)
     def get_readonly_fields(self, request, obj=None):
+        """
+        Ensures is_superuser is read-only for non-superusers.
+        """
         if request.user.is_superuser:
             return []
         self.readonly_fields += ("is_superuser",)
         return self.readonly_fields
 
     def owner_hashkey(self, obj) -> str:
+        """
+        Utility method to display the owner's hashkey in the user list.
+        """
         return "%s" % Owner.objects.get(user=obj).hashkey
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """
+        Customizes the group selection widget and filters groups by site.
+        """
         if (db_field.name) == "groups":
             kwargs["queryset"] = Group.objects.filter(
                 groupsite__sites=Site.objects.get_current()
@@ -124,6 +158,9 @@ class UserAdmin(BaseUserAdmin):
 
     @admin.display(description=_("Establishment"))
     def owner_establishment(self, obj) -> str:
+        """
+        Utility method to display the owner's establishment in the user list.
+        """
         return "%s" % Owner.objects.get(user=obj).establishment
 
     ordering = (
@@ -132,18 +169,27 @@ class UserAdmin(BaseUserAdmin):
     )
 
     def get_queryset(self, request):
+        """
+        Filters the user list by the current site for non-superusers.
+        """
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
             qs = qs.filter(owner__sites=get_current_site(request))
         return qs
 
     def save_model(self, request, obj, form, change) -> None:
+        """
+        Automatically links new users to the current site on save.
+        """
         super().save_model(request, obj, form, change)
         if not change:
             obj.owner.sites.add(get_current_site(request))
             obj.owner.save()
 
     def get_inline_instances(self, request, obj=None):
+        """
+        Adds the Owner inline to the User admin page.
+        """
         _inlines = super().get_inline_instances(request, obj=None)
         if obj is not None:
             custom_inline = OwnerInline(self.model, self.admin_site)
@@ -151,8 +197,10 @@ class UserAdmin(BaseUserAdmin):
         return _inlines
 
 
-# Create a new Group admin.
 class GroupAdmin(admin.ModelAdmin):
+    """
+    Custom Group admin incorporating site-specific logic and GroupSite relations.
+    """
     # Use our custom form.
     form = GroupAdminForm
     # Filter permissions horizontal as well.
@@ -160,18 +208,27 @@ class GroupAdmin(admin.ModelAdmin):
     search_fields = ["name"]
 
     def get_queryset(self, request):
+        """
+        Filters groups by the current site for non-superusers.
+        """
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
             qs = qs.filter(groupsite__sites=get_current_site(request))
         return qs
 
     def save_model(self, request, obj, form, change) -> None:
+        """
+        Ensures new groups are linked to the current site.
+        """
         super().save_model(request, obj, form, change)
         if not change:
             obj.groupsite.sites.add(get_current_site(request))
             obj.save()
 
     def get_inline_instances(self, request, obj=None):
+        """
+        Adds the GroupSite inline to the Group admin page.
+        """
         _inlines = super().get_inline_instances(request, obj=None)
         if obj is not None:
             custom_inline = GroupSiteInline(self.model, self.admin_site)
@@ -181,8 +238,9 @@ class GroupAdmin(admin.ModelAdmin):
 
 @admin.register(AccessGroup)
 class AccessGroupAdmin(admin.ModelAdmin):
-    # form = AccessGroupAdminForm
-    # search_fields = ["user__username__icontains", "user__email__icontains"]
+    """
+    Admin configuration for managing AccessGroups.
+    """
     autocomplete_fields = ["users"]
     search_fields = ["id", "code_name", "display_name"]
     list_display = (
@@ -194,17 +252,25 @@ class AccessGroupAdmin(admin.ModelAdmin):
 
 @admin.register(Owner)
 class OwnerAdmin(admin.ModelAdmin):
-    # form = AdminOwnerForm
+    """
+    Admin configuration for the Owner model (usually hidden in module list).
+    """
     autocomplete_fields = ["user", "accessgroups"]
     search_fields = ["user__username__icontains", "user__email__icontains"]
 
     def get_queryset(self, request):
+        """
+        Filters owners by the current site for non-superusers.
+        """
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
             qs = qs.filter(groupsite__sites=get_current_site(request))
         return qs
 
     def has_module_permission(self, request):
+        """
+        Hides the Owner model from the admin index module list.
+        """
         return False
 
     class Meta:
