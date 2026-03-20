@@ -1,5 +1,5 @@
 """
-Django management command to validate Pydantic configuration classes against
+Esup-Pod - Django management command to validate Pydantic configuration classes against
 `configuration.json` and automatically generate `CONFIGURATION.md`.
 
 Usage:
@@ -30,11 +30,18 @@ from pydantic_settings import BaseSettings
 
 
 class Command(BaseCommand):
+    """
+    Management command to validate the synchronization between 
+    configuration.json and Pydantic settings classes.
+    """
     help = (
         "Validate config classes against configuration.json and generate CONFIGURATION.md"
     )
 
     def add_arguments(self, parser):
+        """
+        Defines the --dry-run argument.
+        """
         parser.add_argument(
             "--dry-run",
             action="store_true",
@@ -42,6 +49,9 @@ class Command(BaseCommand):
         )
 
     def _load_json(self, conf_path):
+        """
+        Loads and basic-validates the configuration.json file.
+        """
         if not os.path.exists(conf_path):
             self.stdout.write(self.style.ERROR(f"File not found: {conf_path}"))
             sys.exit(1)
@@ -55,6 +65,9 @@ class Command(BaseCommand):
         return data[0]["configuration_apps"].get("description", {})
 
     def _discover_pydantic_apps(self):
+        """
+        Crawls the apps directory to find all Pydantic BaseSettings classes.
+        """
         apps_dir = os.path.join(settings.BASE_DIR, "src", "apps")
         pydantic_apps = {}
         errors = []
@@ -84,6 +97,9 @@ class Command(BaseCommand):
         return pydantic_apps, errors
 
     def _validate_keys(self, pydantic_apps, apps_json):
+        """
+        Ensures that all keys in JSON exist in code and vice-versa.
+        """
         errors = []
         warnings = []
         for app_name, config_class in pydantic_apps.items():
@@ -110,8 +126,18 @@ class Command(BaseCommand):
                 )
         return errors, warnings
 
-    def _validate_types(self, pydantic_apps, apps_json):  # noqa: C901
+    def _validate_types(self, pydantic_apps, apps_json):
+        """
+        Checks for type mismatches between JSON default values and Pydantic annotations.
+        """
         warnings = []
+        # Mapping of Python types to strings expected in Pydantic annotations
+        type_mapping = {
+            bool: "bool",
+            int: "int",
+            str: "str",
+        }
+
         for app_name, config_class in pydantic_apps.items():
             if app_name not in apps_json:
                 continue
@@ -123,29 +149,24 @@ class Command(BaseCommand):
             for key in json_keys.intersection(code_keys):
                 code_field = config_class.model_fields[key.lower()]
                 json_val = json_settings[key].get("default_value")
-                json_type = type(json_val)
 
                 if json_val is None:
                     continue
 
-                if json_type is bool:
-                    if "bool" not in str(code_field.annotation).lower():
-                        warnings.append(
-                            f"[{app_name}] Key '{key}' type mismatch: JSON is bool, Code is {code_field.annotation}"
-                        )
-                elif json_type is int:
-                    if "int" not in str(code_field.annotation).lower():
-                        warnings.append(
-                            f"[{app_name}] Key '{key}' type mismatch: JSON is int, Code is {code_field.annotation}"
-                        )
-                elif json_type is str:
-                    if "str" not in str(code_field.annotation).lower():
-                        warnings.append(
-                            f"[{app_name}] Key '{key}' type mismatch: JSON is str, Code is {code_field.annotation}"
-                        )
+                json_type = type(json_val)
+                expected_type_name = type_mapping.get(json_type)
+
+                if expected_type_name and expected_type_name not in str(code_field.annotation).lower():
+                    warnings.append(
+                        f"[{app_name}] Key '{key}' type mismatch: "
+                        f"JSON is {json_type.__name__}, Code is {code_field.annotation}"
+                    )
         return warnings
 
     def _validate_translations(self, apps_json):
+        """
+        Ensures translations (en/fr) are present and not empty/TODO.
+        """
         warnings = []
         for app_name, app_data in apps_json.items():
             settings_data = app_data.get("settings", {})
@@ -169,6 +190,9 @@ class Command(BaseCommand):
         return warnings
 
     def _generate_markdown(self, apps_json):
+        """
+        Generates the content for CONFIGURATION.md based on apps_json.
+        """
         md_lines = []
         md_lines.append("# Configuration\n")
         md_lines.append(
@@ -208,6 +232,9 @@ class Command(BaseCommand):
         return "\n".join(md_lines)
 
     def handle(self, *args, **options):
+        """
+        Main execution point for the validation command.
+        """
         dry_run = options["dry_run"]
         conf_path = os.path.join(
             settings.BASE_DIR, "src", "apps", "core", "configuration.json"
