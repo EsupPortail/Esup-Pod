@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Video subtitle model.
+"""
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from .Video import Video
@@ -5,7 +9,7 @@ from .Video import Video
 
 class Subtitle(models.Model):
     """
-    Model representing a subtitle for a video.
+    Esup-Pod - Model representing a subtitle for a video.
     """
 
     class Language(models.TextChoices):

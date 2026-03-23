@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Video model.
+"""
+
 from datetime import date
 import uuid
 from django.db import models
@@ -15,7 +19,7 @@ from src.apps.video.conf import video_settings
 
 class Video(models.Model):
     """
-    Model representing a video.
+    Esup-Pod - Model representing a video.
     """
 
     # 1.CHOICES

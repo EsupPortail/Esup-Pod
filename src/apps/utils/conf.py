@@ -1,5 +1,5 @@
 """
-Utilities for configuration management.
+Esup-Pod - Utilities for configuration management.
 Provides a Pydantic settings source that reads from Django settings.
 """
 

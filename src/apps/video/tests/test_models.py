@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Video models tests.
+"""
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from src.apps.video.models import Video, ViewCount
@@ -7,6 +11,9 @@ User = get_user_model()
 
 
 class VideoModelTests(TestCase):
+    """
+    Esup-Pod - Tests for the Video application models.
+    """
     def setUp(self):
         self.user = User.objects.create_user(username="owner", password="password")
         self.video = Video.objects.create(

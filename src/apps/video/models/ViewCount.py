@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Video view count model.
+"""
+
 from datetime import date
 from django.db import models
 from src.apps.video.models import Video
@@ -6,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 class ViewCount(models.Model):
     """
-    Model representing the view count for a video on a specific date.
+    Esup-Pod - Model representing the view count for a video on a specific date.
     """
 
     video = models.ForeignKey(Video, related_name="view_counts", on_delete=models.CASCADE)
