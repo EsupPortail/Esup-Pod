@@ -22,7 +22,7 @@ TEMP_MEDIA_ROOT = tempfile.mkdtemp()
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class VideoValidationTests(APITestCase):
     """
-    Esup-Pod - Implementation of ValidationDataIntegrity scenarios from unit_test_sénarios.yml
+    Esup-Pod - Implementation of ValidationDataIntegrity scenarios from unit_test_scenarios.yml
     """
 
     @classmethod
@@ -156,7 +156,7 @@ class VideoValidationTests(APITestCase):
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class VideoPermissionsTests(APITestCase):
     """
-    Esup-Pod - Implementation of PermissionsACL scenarios from unit_test_sénarios.yml
+    Esup-Pod - Implementation of PermissionsACL scenarios from unit_test_scenarios.yml
     """
 
     @classmethod
