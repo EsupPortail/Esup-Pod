@@ -38,7 +38,7 @@ class SystemInfoView(APIView):
     def get(self, request):
         return Response(
             {
-                "project": "POD V5",
+                "project": settings.POD_PROJECT_NAME,
                 "version": settings.POD_VERSION,
             }
         )

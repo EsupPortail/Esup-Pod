@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 # Core settings
 POD_VERSION = env("VERSION", default="5.0.0-DEV")
+POD_PROJECT_NAME = f"POD V{POD_VERSION.split('.')[0]}"
 SECRET_KEY = env("SECRET_KEY")
 SITE_URL = env("SITE_URL", default="http://localhost:8000")
 
