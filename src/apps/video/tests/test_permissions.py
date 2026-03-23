@@ -39,9 +39,7 @@ class VideoPermissionsTests(APITestCase):
     def setUp(self):
         self.user_owner = User.objects.create_user(username="owner", password=PWD)
         self.user_other = User.objects.create_user(username="other", password=PWD)
-        self.user_admin = User.objects.create_superuser(
-            username="admin", password=PWD
-        )
+        self.user_admin = User.objects.create_superuser(username="admin", password=PWD)
 
         self.video_content = SimpleUploadedFile(
             "test.mp4", b"file_content", content_type="video/mp4"

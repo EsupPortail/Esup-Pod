@@ -30,6 +30,7 @@ class VideoViewSetTests(APITestCase):
     """
     Esup-Pod - Tests for the VideoViewSet.
     """
+
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
@@ -38,17 +39,21 @@ class VideoViewSetTests(APITestCase):
     def setUp(self):
         # ggignore-start
         # gitguardian:ignore
-        self.user = User.objects.create_user(username="testuser", password="password") # nosec
+        self.user = User.objects.create_user(
+            username="testuser", password="password"
+        )  # nosec
         # ggignore-end
         # ggignore-start
         # gitguardian:ignore
-        self.other_user = User.objects.create_user(username="other", password="password") # nosec
+        self.other_user = User.objects.create_user(
+            username="other", password="password"
+        )  # nosec
         # ggignore-end
         # ggignore-start
         # gitguardian:ignore
         self.superuser = User.objects.create_superuser(
             username="admin", password="password"
-        ) # nosec
+        )  # nosec
         # ggignore-end
 
         self.video_content = SimpleUploadedFile(
@@ -152,6 +157,7 @@ class SubtitleViewSetTests(APITestCase):
     """
     Esup-Pod - Tests for the SubtitleViewSet.
     """
+
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
@@ -160,11 +166,15 @@ class SubtitleViewSetTests(APITestCase):
     def setUp(self):
         # ggignore-start
         # gitguardian:ignore
-        self.user = User.objects.create_user(username="testuser", password="password") # nosec
+        self.user = User.objects.create_user(
+            username="testuser", password="password"
+        )  # nosec
         # ggignore-end
         # ggignore-start
         # gitguardian:ignore
-        self.other_user = User.objects.create_user(username="other", password="password") # nosec
+        self.other_user = User.objects.create_user(
+            username="other", password="password"
+        )  # nosec
         # ggignore-end
 
         self.video = Video.objects.create(

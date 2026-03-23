@@ -3,6 +3,7 @@ Esup-Pod - Owner model for the authentication app.
 
 Custom profile extending the Django User model.
 """
+
 import hashlib
 import logging
 

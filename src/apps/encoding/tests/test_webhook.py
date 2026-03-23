@@ -1,9 +1,10 @@
 """
 Esup-Pod - Tests for encoding webhooks.
 
-This module validates the processing of callbacks from the runner manager, 
+This module validates the processing of callbacks from the runner manager,
 ensuring that video status and files are correctly updated upon task completion.
 """
+
 import tempfile
 from unittest.mock import patch, MagicMock
 from django.contrib.auth import get_user_model

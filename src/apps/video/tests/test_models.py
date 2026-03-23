@@ -14,6 +14,7 @@ class VideoModelTests(TestCase):
     """
     Esup-Pod - Tests for the Video application models.
     """
+
     def setUp(self):
         self.user = User.objects.create_user(username="owner", password="password")
         self.video = Video.objects.create(

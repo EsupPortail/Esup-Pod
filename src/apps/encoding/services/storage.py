@@ -4,6 +4,7 @@ Esup-Pod - Utility functions for storage path generation.
 This module defines naming conventions for video and image files stored on disk,
 using an optimized nested directory structure.
 """
+
 import os
 import uuid
 

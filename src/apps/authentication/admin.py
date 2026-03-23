@@ -1,7 +1,7 @@
 """
 Esup-Pod - Admin configuration for the authentication app.
 
-This module customizes the Django admin interface for User, Group, Owner, 
+This module customizes the Django admin interface for User, Group, Owner,
 and AccessGroup models, integrating site-specific filtering and profile extension.
 """
 
@@ -24,6 +24,7 @@ class GroupSiteInline(admin.StackedInline):
     """
     Inline admin for GroupSite model, linking Groups to specific Sites.
     """
+
     model = GroupSite
     form = GroupSiteAdminForm
     can_delete = False
@@ -58,6 +59,7 @@ class OwnerInline(admin.StackedInline):
     """
     Inline admin for the Owner model, displayed within the User admin page.
     """
+
     model = Owner
     form = OwnerAdminForm
     can_delete = False
@@ -99,6 +101,7 @@ class UserAdmin(BaseUserAdmin):
     """
     Custom UserAdmin that incorporates the Owner profile and site filtering.
     """
+
     @admin.display(description=_("Email"))
     def clickable_email(self, obj):
         """
@@ -201,6 +204,7 @@ class GroupAdmin(admin.ModelAdmin):
     """
     Custom Group admin incorporating site-specific logic and GroupSite relations.
     """
+
     # Use our custom form.
     form = GroupAdminForm
     # Filter permissions horizontal as well.
@@ -241,6 +245,7 @@ class AccessGroupAdmin(admin.ModelAdmin):
     """
     Admin configuration for managing AccessGroups.
     """
+
     autocomplete_fields = ["users"]
     search_fields = ["id", "code_name", "display_name"]
     list_display = (
@@ -255,6 +260,7 @@ class OwnerAdmin(admin.ModelAdmin):
     """
     Admin configuration for the Owner model (usually hidden in module list).
     """
+
     autocomplete_fields = ["user", "accessgroups"]
     search_fields = ["user__username__icontains", "user__email__icontains"]
 

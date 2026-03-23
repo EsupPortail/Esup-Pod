@@ -1,9 +1,10 @@
 """
 Esup-Pod - Client for interacting with the Esup-Runner Manager API.
 
-This module provides the RunnerClient class for executing encoding tasks 
+This module provides the RunnerClient class for executing encoding tasks
 and downloading results from the runner manager.
 """
+
 import logging
 import tempfile
 import requests

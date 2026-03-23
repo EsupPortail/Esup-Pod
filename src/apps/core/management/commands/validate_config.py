@@ -31,9 +31,10 @@ from pydantic_settings import BaseSettings
 
 class Command(BaseCommand):
     """
-    Management command to validate the synchronization between 
+    Management command to validate the synchronization between
     configuration.json and Pydantic settings classes.
     """
+
     help = (
         "Validate config classes against configuration.json and generate CONFIGURATION.md"
     )
@@ -156,7 +157,10 @@ class Command(BaseCommand):
                 json_type = type(json_val)
                 expected_type_name = type_mapping.get(json_type)
 
-                if expected_type_name and expected_type_name not in str(code_field.annotation).lower():
+                if (
+                    expected_type_name
+                    and expected_type_name not in str(code_field.annotation).lower()
+                ):
                     warnings.append(
                         f"[{app_name}] Key '{key}' type mismatch: "
                         f"JSON is {json_type.__name__}, Code is {code_field.annotation}"

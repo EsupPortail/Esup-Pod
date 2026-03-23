@@ -19,7 +19,7 @@ from django.db.models import F
 from src.apps.video.conf import video_settings
 from src.apps.encoding.conf import encoding_settings
 from rest_framework.exceptions import ValidationError
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema
 
 logger = logging.getLogger(__name__)
 
@@ -173,13 +173,17 @@ class VideoViewSet(viewsets.ModelViewSet):
         description="Returns only videos owned or co-owned by the current user.",
         responses={200: VideoSerializer(many=True)},
     )
-    @action(detail=False, methods=["get"], permission_classes=[permissions.IsAuthenticated])
+    @action(
+        detail=False, methods=["get"], permission_classes=[permissions.IsAuthenticated]
+    )
     def me(self, request):
         """
         Retrieves a filtered list of videos where the current user is either the owner or a co-owner.
         """
         user = request.user
-        queryset = self.get_queryset().filter(Q(owner=user) | Q(co_owners=user)).distinct()
+        queryset = (
+            self.get_queryset().filter(Q(owner=user) | Q(co_owners=user)).distinct()
+        )
 
         page = self.paginate_queryset(queryset)
         if page is not None:
