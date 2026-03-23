@@ -136,9 +136,11 @@ def main_threaded_transcript(video_to_encode_id) -> None:
     """
     change_encoding_step(video_to_encode_id, 5, "transcripting audio")
 
-    video_to_encode = Video.objects.get(id=video_to_encode_id)
+    # Set encoding in progress to avoid multiple transcript at the same time for the same video
     Video.objects.filter(id=video_to_encode_id).update(encoding_in_progress=True)
-    video_to_encode.encoding_in_progress = True
+
+    video_to_encode = Video.objects.get(id=video_to_encode_id)
+
     msg = ""
     lang = video_to_encode.transcript
     # check if TRANSCRIPTION_MODEL_PARAM [lang] exist
