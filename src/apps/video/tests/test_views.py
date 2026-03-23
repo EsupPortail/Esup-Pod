@@ -36,11 +36,20 @@ class VideoViewSetTests(APITestCase):
         super().tearDownClass()
 
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.other_user = User.objects.create_user(username="other", password="password")
+        # ggignore-start
+        # gitguardian:ignore
+        self.user = User.objects.create_user(username="testuser", password="password") # nosec
+        # ggignore-end
+        # ggignore-start
+        # gitguardian:ignore
+        self.other_user = User.objects.create_user(username="other", password="password") # nosec
+        # ggignore-end
+        # ggignore-start
+        # gitguardian:ignore
         self.superuser = User.objects.create_superuser(
             username="admin", password="password"
-        )
+        ) # nosec
+        # ggignore-end
 
         self.video_content = SimpleUploadedFile(
             "test.mp4", b"file_content", content_type="video/mp4"
@@ -149,8 +158,14 @@ class SubtitleViewSetTests(APITestCase):
         super().tearDownClass()
 
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.other_user = User.objects.create_user(username="other", password="password")
+        # ggignore-start
+        # gitguardian:ignore
+        self.user = User.objects.create_user(username="testuser", password="password") # nosec
+        # ggignore-end
+        # ggignore-start
+        # gitguardian:ignore
+        self.other_user = User.objects.create_user(username="other", password="password") # nosec
+        # ggignore-end
 
         self.video = Video.objects.create(
             title="My Video",
