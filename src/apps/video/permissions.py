@@ -1,10 +1,14 @@
+"""
+Esup-Pod - Video permissions.
+"""
+
 from rest_framework import permissions
 from .conf import video_settings
 
 
 class IsOwnerOrCoOwnerOrReadOnly(permissions.BasePermission):
     """
-    Custom permission:
+    Esup-Pod - Custom permission:
     - Read (GET, HEAD, OPTIONS) allowed for everyone (depending on the view).
     - Write (PUT, PATCH, DELETE) allowed only for the owner.
     """

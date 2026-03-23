@@ -1,5 +1,5 @@
 """
-Authentication defaults.
+Esup-Pod - Authentication defaults.
 Source of truth for default values for Authentication app.
 """
 

@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Video application URL configuration.
+"""
+
 from rest_framework.routers import SimpleRouter
 from src.apps.video.views import VideoViewSet, SubtitleViewSet
 
