@@ -1,9 +1,10 @@
 """
 Esup-Pod - Tests for encoding services.
 
-This module validates the RunnerClient communication and the storage path 
+This module validates the RunnerClient communication and the storage path
 generation logic.
 """
+
 from unittest.mock import patch, MagicMock
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -88,7 +89,9 @@ class StorageServicesTests(TestCase):
         """
         # ggignore-start
         # gitguardian:ignore
-        self.user = User.objects.create_user(username="testuser", password="password") # nosec
+        self.user = User.objects.create_user(
+            username="testuser", password="password"
+        )  # nosec
         # ggignore-end
 
         video_content = SimpleUploadedFile(

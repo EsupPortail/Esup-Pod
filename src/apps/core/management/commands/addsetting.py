@@ -14,9 +14,10 @@ from django.conf import settings as django_settings
 
 class Command(BaseCommand):
     """
-    Management command to interactively add or update settings in the global 
+    Management command to interactively add or update settings in the global
     configuration.json file.
     """
+
     help = "Add setting to specific app configuration"
 
     def add_arguments(self, parser):
@@ -92,7 +93,7 @@ class Command(BaseCommand):
 
     def fix_default_value(self, default_value):
         """
-        Interactively prompts the user for a default value and performs basic 
+        Interactively prompts the user for a default value and performs basic
         type conversion (bool, int).
         """
         msg = "Default value (leave blank to keep previous value: %s): " % default_value

@@ -1,7 +1,7 @@
 """
 Esup-Pod - Tests for authentication scenarios and configuration switching.
 
-This module contains tests that verify how different authentication settings 
+This module contains tests that verify how different authentication settings
 (CAS vs Local Auth) impact URL routing and available views.
 """
 
@@ -20,7 +20,7 @@ from ..conf import AuthConfig
 
 def reload_urlconf():
     """
-    Reloads URL configurations after a settings change to ensure that changes 
+    Reloads URL configurations after a settings change to ensure that changes
     to conditional URL patterns are correctly applied during tests.
     """
     clear_url_caches()
@@ -34,7 +34,7 @@ def reload_urlconf():
 
 class AuthenticationScenariosTests(TestCase):
     """
-    Test suite for verifying that URL routing adapts correctly to authentication 
+    Test suite for verifying that URL routing adapts correctly to authentication
     configuration flags.
     """
 

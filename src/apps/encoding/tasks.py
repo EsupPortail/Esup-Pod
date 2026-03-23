@@ -3,6 +3,7 @@ Esup-Pod - Celery tasks for the encoding app.
 
 This module contains tasks for triggering and retrying encoding jobs.
 """
+
 import logging
 import json
 import requests.exceptions

@@ -1,9 +1,10 @@
 """
 Esup-Pod - Authentication views for the authentication app.
 
-This module provides views for standard login, CAS, Shibboleth, and OIDC 
+This module provides views for standard login, CAS, Shibboleth, and OIDC
 authentication methods.
 """
+
 import logging
 
 from drf_spectacular.utils import extend_schema

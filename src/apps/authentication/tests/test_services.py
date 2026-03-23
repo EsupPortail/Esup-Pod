@@ -1,8 +1,8 @@
 """
 Esup-Pod - Tests for authentication services and providers.
 
-This module validates the user population logic across different authentication 
-providers (CAS, OIDC, LDAP, Shibboleth) and verifies that provider-specific 
+This module validates the user population logic across different authentication
+providers (CAS, OIDC, LDAP, Shibboleth) and verifies that provider-specific
 tasks, like ticket verification, are integrated correctly.
 """
 
@@ -20,7 +20,7 @@ User = get_user_model()
 
 class TestUserPopulator(TestCase):
     """
-    Test suite for UserPopulator, which handles user attribute synchronization 
+    Test suite for UserPopulator, which handles user attribute synchronization
     from external auth providers.
     """
 
@@ -33,7 +33,7 @@ class TestUserPopulator(TestCase):
 
     def test_init_creates_owner(self):
         """
-        Verifies that initializing a populator for a user without an owner 
+        Verifies that initializing a populator for a user without an owner
         automatically triggers owner creation.
         """
         user_no_owner = User.objects.create(username="noowner")
@@ -159,7 +159,7 @@ class TestUserPopulator(TestCase):
     @patch("src.apps.authentication.services.users.populator.UserPopulator.run")
     def test_verify_cas_ticket_calls_populator(self, mock_run, mock_settings):
         """
-        Tests the end-to-end flow of verifying a CAS ticket and then triggering 
+        Tests the end-to-end flow of verifying a CAS ticket and then triggering
         user attribute synchronization.
         """
         with patch(

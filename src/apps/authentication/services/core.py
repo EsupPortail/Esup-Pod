@@ -4,6 +4,7 @@ Esup-Pod - Core authentication services and shared constants.
 This module contains configuration settings and utility functions used by
 the different authentication providers.
 """
+
 from django.conf import settings
 
 from ..models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION

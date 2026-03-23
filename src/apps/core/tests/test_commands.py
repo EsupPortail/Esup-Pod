@@ -4,6 +4,7 @@ Esup-Pod - Tests for management commands in the core app.
 This module validates the execution of common administration commands like
 ensure_superuser, validate_config, and createconfiguration.
 """
+
 import os
 from io import StringIO
 from django.core.management import call_command
@@ -28,7 +29,7 @@ class EnsureSuperuserTests(TestCase):
         os.environ["DJANGO_SUPERUSER_EMAIL"] = "testadmin@example.com"
         # ggignore-start
         # gitguardian:ignore
-        os.environ["DJANGO_SUPERUSER_PASSWORD"] = "testpass" # nosec
+        os.environ["DJANGO_SUPERUSER_PASSWORD"] = "testpass"  # nosec
         # ggignore-end
 
         Site.objects.get_or_create(domain="testserver", name="testserver")

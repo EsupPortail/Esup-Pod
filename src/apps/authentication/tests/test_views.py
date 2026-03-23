@@ -99,7 +99,7 @@ class ShibbolethLoginViewTests(APITestCase):
     )
     def test_shibboleth_security_check_fail(self, mock_settings):
         """
-        Tests that access is forbidden when optional security headers (like X-SECURE) 
+        Tests that access is forbidden when optional security headers (like X-SECURE)
         do not match the expected values.
         """
         headers = {
