@@ -17,6 +17,9 @@ from src.apps.video.models import Video
 
 User = get_user_model()
 
+# noscan
+PWD = "password"
+
 TEMP_MEDIA_ROOT = tempfile.mkdtemp()
 
 
@@ -34,10 +37,10 @@ class VideoPermissionsTests(APITestCase):
         super().tearDownClass()
 
     def setUp(self):
-        self.user_owner = User.objects.create_user(username="owner", password="password")
-        self.user_other = User.objects.create_user(username="other", password="password")
+        self.user_owner = User.objects.create_user(username="owner", password=PWD)
+        self.user_other = User.objects.create_user(username="other", password=PWD)
         self.user_admin = User.objects.create_superuser(
-            username="admin", password="password"
+            username="admin", password=PWD
         )
 
         self.video_content = SimpleUploadedFile(
