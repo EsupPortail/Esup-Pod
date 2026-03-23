@@ -1,5 +1,5 @@
 """
-Video configuration.
+Esup-Pod - Video configuration.
 
 Typed and validated configuration for the video app using pydantic-settings.
 """
@@ -16,7 +16,7 @@ from src.config.defaults import video as defaults
 
 
 class VideoConfig(BaseSettings):
-    """Video app configuration with typed fields and validation."""
+    """Esup-Pod - Video app configuration with typed fields and validation."""
 
     # --- Feature Flags ---
     use_stats_view: bool = Field(

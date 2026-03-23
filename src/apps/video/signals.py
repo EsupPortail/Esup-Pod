@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Video application signals.
+"""
+
 import logging
 import os
 
@@ -12,7 +16,7 @@ logger = logging.getLogger(__name__)
 @receiver(post_delete, sender=Video)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
-    Deletes physical files from the disk when the Video object is deleted.
+    Esup-Pod - Deletes physical files from the disk when the Video object is deleted.
     """
     if instance.video_file:
         if os.path.isfile(instance.video_file.path):
@@ -28,7 +32,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 @receiver(pre_save, sender=Video)
 def auto_delete_file_on_change(sender, instance, **kwargs):
     """
-    Deletes the old file if a new version is uploaded for the same video.
+    Esup-Pod - Deletes the old file if a new version is uploaded for the same video.
     """
     if not instance.pk:
         return False
@@ -47,8 +51,7 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 @receiver(post_save, sender=Video)
 def video_post_save(sender, instance, created, **kwargs):
     """
-    At the time of creation (upload finished), calculate the duration
-    and set the video to PUBLISHED (since we don't do complex encoding for now).
+    Esup-Pod - At the time of creation (upload finished), calculate the duration.
     """
     logger.debug(
         "video_post_save triggered. created=%s, file=%s",

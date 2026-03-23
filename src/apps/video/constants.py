@@ -1,5 +1,5 @@
 """
-Video app constants.
+Esup-Pod - Video app constants.
 
 Static data (choices tuples, language codes, social networks) that are NOT
 configurable via environment variables. These are domain constants.
