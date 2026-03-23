@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Info app URL configuration.
+"""
+
 from django.urls import path
 
 from .views import ConfigInfoView, SystemInfoView

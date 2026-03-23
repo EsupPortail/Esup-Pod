@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Info app API views.
+"""
+
 import importlib
 import logging
 import pkgutil
