@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Info app unit tests.
+"""
+
 from django.conf import settings
 from django.urls import reverse
 from rest_framework import status
