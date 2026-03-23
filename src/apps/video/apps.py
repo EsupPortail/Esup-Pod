@@ -1,9 +1,13 @@
+"""
+Esup-Pod - Video application configuration.
+"""
+
 from django.apps import AppConfig
 
 
 class VideoConfig(AppConfig):
     """
-    Configuration for the video app.
+    Esup-Pod - Configuration for the video app.
     """
 
     name = "src.apps.video"
