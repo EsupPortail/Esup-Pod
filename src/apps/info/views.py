@@ -39,6 +39,9 @@ class SystemInfoView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        """
+        Return the project name and current version.
+        """
         return Response(
             {
                 "project": settings.POD_PROJECT_NAME,
@@ -111,6 +114,9 @@ class ConfigInfoView(APIView):
         return {}
 
     def get(self, request):
+        """
+        Aggregate and return public configuration flags for all applications.
+        """
         configurations = {}
 
         for _loader, module_name, _is_pkg in pkgutil.iter_modules(apps.__path__):

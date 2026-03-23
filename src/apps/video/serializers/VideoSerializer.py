@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Video serializer.
+"""
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from src.apps.video.models import Video
@@ -11,7 +15,7 @@ User = get_user_model()
 
 class VideoSerializer(serializers.ModelSerializer):
     """
-    Serializer for the Video model.
+    Esup-Pod - Serializer for the Video model.
     """
 
     owner = serializers.ReadOnlyField(source="owner.username")

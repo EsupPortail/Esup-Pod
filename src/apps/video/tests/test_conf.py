@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Video configuration tests.
+"""
+
 import os
 from unittest import mock
 
@@ -7,6 +11,9 @@ from src.apps.video.conf import VideoConfig
 
 
 class VideoSettingsTests(SimpleTestCase):
+    """
+    Esup-Pod - Tests for the Video application configuration.
+    """
     def test_load_from_env(self):
         """
         Test that VideoConfig reads env vars correctly when Django settings

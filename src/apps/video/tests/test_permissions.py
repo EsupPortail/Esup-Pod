@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Video permissions tests.
+"""
+
 import tempfile
 import shutil
 
@@ -19,7 +23,7 @@ TEMP_MEDIA_ROOT = tempfile.mkdtemp()
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class VideoPermissionsTests(APITestCase):
     """
-    Tests based on the provided Access Control Matrices.
+    Esup-Pod - Tests based on the provided Access Control Matrices.
     Matrix 1: Role-based permissions (default config).
     Matrix 2: Video status-based permissions.
     """

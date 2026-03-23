@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Video scenarios tests.
+"""
+
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
@@ -18,7 +22,7 @@ TEMP_MEDIA_ROOT = tempfile.mkdtemp()
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class VideoValidationTests(APITestCase):
     """
-    Implementation of ValidationDataIntegrity scenarios from unit_test_sénarios.yml
+    Esup-Pod - Implementation of ValidationDataIntegrity scenarios from unit_test_sénarios.yml
     """
 
     @classmethod
@@ -152,7 +156,7 @@ class VideoValidationTests(APITestCase):
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class VideoPermissionsTests(APITestCase):
     """
-    Implementation of PermissionsACL scenarios from unit_test_sénarios.yml
+    Esup-Pod - Implementation of PermissionsACL scenarios from unit_test_sénarios.yml
     """
 
     @classmethod
