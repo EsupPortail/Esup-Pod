@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Video application views tests.
+"""
+
 from unittest.mock import patch
 import tempfile
 import shutil
@@ -23,6 +27,9 @@ TEMP_MEDIA_ROOT = tempfile.mkdtemp()
     ],
 )
 class VideoViewSetTests(APITestCase):
+    """
+    Esup-Pod - Tests for the VideoViewSet.
+    """
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
@@ -133,6 +140,9 @@ class VideoViewSetTests(APITestCase):
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class SubtitleViewSetTests(APITestCase):
+    """
+    Esup-Pod - Tests for the SubtitleViewSet.
+    """
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)

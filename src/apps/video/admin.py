@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Video administrator interface.
+"""
+
 from django.contrib import admin
 from src.apps.video.models import Video
 
@@ -5,7 +9,7 @@ from src.apps.video.models import Video
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
     """
-    Admin interface for the Video model.
+    Esup-Pod - Admin interface for the Video model.
     """
 
     list_display = ("title", "owner", "status", "created_at", "file_size_mb")
