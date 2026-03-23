@@ -1,5 +1,5 @@
 """
-Django management command to compare runtime settings defined in code
+Esup-Pod - Django management command to compare runtime settings defined in code
 against those documented in `configuration.json`.
 
 Launch with `python3 manage.py comparesettings`
