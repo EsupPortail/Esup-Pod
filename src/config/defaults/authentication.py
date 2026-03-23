@@ -13,7 +13,10 @@ USE_LDAP = False
 USE_SHIB = False
 USE_OIDC = False
 
-SECRET_KEY = env("SECRET_KEY", default="ta-cle-secrete-par-defaut")
+# ggignore-start
+# gitguardian:ignore
+SECRET_KEY = env("SECRET_KEY", default="ta-cle-secrete-par-defaut")  # nosec
+# ggignore-end
 
 # JWT Configuration
 SIMPLE_JWT = {
