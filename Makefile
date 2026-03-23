@@ -22,7 +22,7 @@ define info
 	@printf "$(LOG_PREFIX) %s\n" "$(1)"
 endef
 
-.PHONY: help start restart full-restart logs shell enter build stop clean ci lint test test-cov check-django-env
+.PHONY: help start restart full-restart logs shell enter build stop clean ci lint test test-cov check-django-env clean-migrations
 
 help: ## List available make commands
 	@grep -h -E '^[a-zA-Z0-9_.-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -88,6 +88,12 @@ clean: stop ## Full shutdown and cleanup. Usage: make clean [service]
 	else \
 		$(DOCKER_COMPOSE_CMD) rm -s -v -f $(SERVICE_ARGS); \
 	fi
+
+clean-migrations: ## Delete all migration files (except __init__.py) and .pyc files
+	$(call info,Deleting migration files and .pyc files...)
+	find . -path "*/migrations/*.py" ! -name "__init__.py" -delete
+	find . -path "*/migrations/*.pyc" -delete
+	$(call info,Migrations cleaned.)
 
 test: start ## Run tests inside the container (pytest)
 	$(call info,Running tests with DJANGO_SETTINGS_MODULE=config.django.test.docker...)
