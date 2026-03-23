@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 
 @extend_schema(
     summary="System Information",
-    description="Returns the project name and current version",
     responses={
         200: {
             "type": "object",
@@ -50,12 +49,6 @@ class SystemInfoView(APIView):
 
 @extend_schema(
     summary="App Configuration Flags",
-    description=(
-        "Returns only the public configuration fields for each application. "
-        "Fields are explicitly whitelisted using json_schema_extra={'public': True} "
-        "in each app's conf.py. Sensitive parameters (API keys, LDAP settings, "
-        "internal paths, etc.) are never exposed."
-    ),
     responses={
         200: {
             "type": "object",
