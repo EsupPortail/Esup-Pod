@@ -187,12 +187,12 @@ class Video(models.Model):
         blank=True,
         help_text=_("Language of the available audio transcription."),
     )
-    # Relations Placeholder (À décommenter quand les modèles seront créés)
-    # type = models.ForeignKey("video.Type", on_delete=models.SET_NULL, null=True, default=DEFAULT_TYPE_ID)
-    # channels = models.ManyToManyField("video.Channel", blank=True)
-    # themes = models.ManyToManyField("video.Theme", blank=True)
-    # disciplines = models.ManyToManyField("video.Discipline", blank=True)
-    # tags = models.ManyToManyField("core.Tag", blank=True)
+    # [TODO] Relations Placeholder (À décommenter quand les modèles seront créés)
+    # [TODO] type = models.ForeignKey("video.Type", on_delete=models.SET_NULL, null=True, default=DEFAULT_TYPE_ID)
+    # [TODO] channels = models.ManyToManyField("video.Channel", blank=True)
+    # [TODO] themes = models.ManyToManyField("video.Theme", blank=True)
+    # [TODO] disciplines = models.ManyToManyField("video.Discipline", blank=True)
+    # [TODO] tags = models.ManyToManyField("core.Tag", blank=True)
 
     # 7. TIMESTAMPS
     created_at = models.DateTimeField(_("Created At"), default=timezone.now)
