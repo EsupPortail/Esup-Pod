@@ -18,6 +18,11 @@ from src.apps.video.models import Video, Subtitle
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp()
 
+# ggignore-start
+# gitguardian:ignore
+PWD = "password"
+# ggignore-end
+
 
 @override_settings(
     MEDIA_ROOT=TEMP_MEDIA_ROOT,
@@ -37,24 +42,13 @@ class VideoViewSetTests(APITestCase):
         super().tearDownClass()
 
     def setUp(self):
-        # ggignore-start
-        # gitguardian:ignore
-        self.user = User.objects.create_user(
-            username="testuser", password="password"
-        )  # nosec
-        # ggignore-end
-        # ggignore-start
-        # gitguardian:ignore
+        self.user = User.objects.create_user(username="testuser", password=PWD)  # nosec
         self.other_user = User.objects.create_user(
-            username="other", password="password"
+            username="other", password=PWD
         )  # nosec
-        # ggignore-end
-        # ggignore-start
-        # gitguardian:ignore
         self.superuser = User.objects.create_superuser(
-            username="admin", password="password"
+            username="admin", password=PWD
         )  # nosec
-        # ggignore-end
 
         self.video_content = SimpleUploadedFile(
             "test.mp4", b"file_content", content_type="video/mp4"
@@ -72,7 +66,7 @@ class VideoViewSetTests(APITestCase):
             video_file=self.video_content,
             status=Video.Status.RESTRICTED,
             is_auth_required=True,
-            password="secretpassword",
+            password=PWD,
         )
 
     def test_get_queryset_unauthenticated(self):
@@ -139,7 +133,7 @@ class VideoViewSetTests(APITestCase):
     def test_unlock_restricted_video_success(self):
         self.client.force_authenticate(user=self.other_user)
         url = reverse("video-unlock", kwargs={"slug": self.restricted_video.slug})
-        data = {"password": "secretpassword"}
+        data = {"password": PWD}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("video_url", response.data)
@@ -164,18 +158,10 @@ class SubtitleViewSetTests(APITestCase):
         super().tearDownClass()
 
     def setUp(self):
-        # ggignore-start
-        # gitguardian:ignore
-        self.user = User.objects.create_user(
-            username="testuser", password="password"
-        )  # nosec
-        # ggignore-end
-        # ggignore-start
-        # gitguardian:ignore
+        self.user = User.objects.create_user(username="testuser", password=PWD)  # nosec
         self.other_user = User.objects.create_user(
-            username="other", password="password"
+            username="other", password=PWD
         )  # nosec
-        # ggignore-end
 
         self.video = Video.objects.create(
             title="My Video",
