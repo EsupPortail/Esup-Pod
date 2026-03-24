@@ -15,6 +15,11 @@ from src.apps.authentication.models import Owner
 
 User = get_user_model()
 
+# ggignore-start
+# gitguardian:ignore
+PWD = "testpass"  # nosec
+# ggignore-end
+
 
 class EnsureSuperuserTests(TestCase):
     """
@@ -27,10 +32,7 @@ class EnsureSuperuserTests(TestCase):
         """
         os.environ["DJANGO_SUPERUSER_USERNAME"] = "testadmin"
         os.environ["DJANGO_SUPERUSER_EMAIL"] = "testadmin@example.com"
-        # ggignore-start
-        # gitguardian:ignore
-        os.environ["DJANGO_SUPERUSER_PASSWORD"] = "testpass"  # nosec
-        # ggignore-end
+        os.environ["DJANGO_SUPERUSER_PASSWORD"] = PWD
 
         Site.objects.get_or_create(domain="testserver", name="testserver")
 
@@ -55,7 +57,7 @@ class EnsureSuperuserTests(TestCase):
         Tests that the command does nothing when the superuser already exists.
         """
         User.objects.create_superuser(
-            username="testadmin", email="testadmin@example.com", password="testpass"
+            username="testadmin", email="testadmin@example.com", password=PWD
         )
 
         out = StringIO()
