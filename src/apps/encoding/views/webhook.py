@@ -28,6 +28,7 @@ class EncodingWebhookView(APIView):
     authentication_classes = []
 
     def post(self, request, *args, **kwargs):
+        """Handle incoming webhook payload from the encoding runner."""
         if not self._is_secret_valid(request):
             return Response(
                 {"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED
