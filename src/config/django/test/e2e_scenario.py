@@ -1,5 +1,6 @@
 """
-End-to-End (E2E) Test Scenario Script.
+Esup-Pod - End-to-End (E2E) Test Scenario Script.
+
 This script performs a series of automated checks to validate the availability
 and basic security configuration of the deployed application. It is used
 in the CI/CD pipeline to ensure the service is up and running correctly

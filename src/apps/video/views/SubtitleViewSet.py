@@ -16,6 +16,7 @@ class IsSubtitleVideoOwnerOrReadOnly(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
+        """Check if the requesting user is the owner of the video linked to the subtitle."""
         if request.method in permissions.SAFE_METHODS:
             return True
         return obj.video.owner == request.user

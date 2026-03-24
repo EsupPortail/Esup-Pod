@@ -24,6 +24,7 @@ class Video(models.Model):
 
     # 1.CHOICES
     class Status(models.TextChoices):
+        """Possible lifecycle statuses for a video."""
         DRAFT = "DR", _("Draft (Private)")
         PUBLISHED = "PU", _("Published (Public)")
         RESTRICTED = "RE", _("Restricted (Access Controlled)")
@@ -31,6 +32,7 @@ class Video(models.Model):
         ERROR = "ER", _("Encoding Error")
 
     class License(models.TextChoices):
+        """Available content licenses for legal protection."""
         CC_BY = "CC-BY", _("Creative Commons BY")
         CC_BY_SA = "CC-BY-SA", _("Creative Commons BY-SA")
         CC_BY_NC = "CC-BY-NC", _("Creative Commons BY-NC")
@@ -38,6 +40,7 @@ class Video(models.Model):
         COPYRIGHT = "COPYRIGHT", _("All rights reserved")
 
     class Cursus(models.TextChoices):
+        """Educational levels/cursus categories."""
         L1 = "L1", _("Licence 1")
         L2 = "L2", _("Licence 2")
         L3 = "L3", _("Licence 3")
@@ -205,6 +208,7 @@ class Video(models.Model):
     )
 
     class Meta:
+        """Video model metadata and database indexing."""
         ordering = ["-created_at"]
         verbose_name = _("Video")
         verbose_name_plural = _("Videos")
@@ -247,6 +251,7 @@ class Video(models.Model):
             self.password = make_password(self.password, hasher="pbkdf2_sha256")
 
     def save(self, *args, **kwargs):
+        """Overridden save method to handle slug generation, password encryption, and expiration logic."""
         if not self.slug:
             base_slug = slugify(self.title)
             unique_id = str(uuid.uuid4())[:8]

@@ -44,6 +44,7 @@ class LogoutInfoView(APIView):
         )
     )
     def get(self, request):
+        """Retrieves external logout URLs for OIDC, Shibboleth, and CAS."""
         data = {"local": None, "cas": None, "shibboleth": None, "oidc": None}
 
         if auth_settings.use_cas and get_cas_client:
@@ -99,6 +100,7 @@ class LoginConfigView(APIView):
         }
     )
     def get(self, request):
+        """Retrieves authentication options and active providers."""
         return Response(
             {
                 "use_local": auth_settings.use_local_auth,

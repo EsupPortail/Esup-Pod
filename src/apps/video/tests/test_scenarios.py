@@ -1,6 +1,4 @@
-"""
-Esup-Pod - Video scenarios tests.
-"""
+"""Esup-Pod - Video integration scenario tests."""
 
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -16,6 +14,10 @@ from unittest.mock import patch
 import unittest
 
 User = get_user_model()
+# ggignore-start
+# gitguardian:ignore
+PASSWORD = "password"  # nosec
+# ggignore-end
 TEMP_MEDIA_ROOT = tempfile.mkdtemp()
 
 
@@ -27,11 +29,13 @@ class VideoValidationTests(APITestCase):
 
     @classmethod
     def tearDownClass(cls):
+        """Cleans up temporary media directory after tests."""
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
         super().tearDownClass()
 
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password")
+        """Sets up an authenticated user and video content for validation scenarios."""
+        self.user = User.objects.create_user(username="testuser", password=PASSWORD)
         self.client.force_authenticate(user=self.user)
         self.video_content = SimpleUploadedFile(
             "test.mp4", b"file_content", content_type="video/mp4"
@@ -155,18 +159,18 @@ class VideoValidationTests(APITestCase):
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class VideoPermissionsTests(APITestCase):
-    """
-    Esup-Pod - Implementation of PermissionsACL scenarios from unit_test_scenarios.yml
-    """
+    """Esup-Pod - Integration tests for permissions and ACL."""
 
     @classmethod
     def tearDownClass(cls):
+        """Cleans up temporary media directory after tests."""
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
         super().tearDownClass()
 
     def setUp(self):
-        self.owner = User.objects.create_user(username="owner", password="password")
-        self.stranger = User.objects.create_user(username="stranger", password="password")
+        """Sets up owner and stranger users for integration permission testing."""
+        self.owner = User.objects.create_user(username="owner", password=PASSWORD)
+        self.stranger = User.objects.create_user(username="stranger", password=PASSWORD)
         self.video_content = SimpleUploadedFile(
             "test.mp4", b"file_content", content_type="video/mp4"
         )

@@ -33,10 +33,12 @@ class VideoPermissionsTests(APITestCase):
 
     @classmethod
     def tearDownClass(cls):
+        """Cleans up temporary media directory after tests."""
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
         super().tearDownClass()
 
     def setUp(self):
+        """Sets up various users and videos with different statuses for permission testing."""
         self.user_owner = User.objects.create_user(username="owner", password=PWD)
         self.user_other = User.objects.create_user(username="other", password=PWD)
         self.user_admin = User.objects.create_superuser(username="admin", password=PWD)

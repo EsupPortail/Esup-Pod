@@ -41,6 +41,7 @@ class GroupSiteInline(admin.StackedInline):
         return list(super(GroupSiteInline, self).get_fields(request, obj))
 
     class Media:
+        """Media."""
         css = {
             "all": (
                 # "bootstrap/dist/css/bootstrap.min.css",
@@ -83,6 +84,7 @@ class OwnerInline(admin.StackedInline):
         return [f for f in fields if f not in exclude_set]
 
     class Media:
+        """Media."""
         css = {
             "all": (
                 # "bootstrap/dist/css/bootstrap.min.css",
@@ -280,6 +282,7 @@ class OwnerAdmin(admin.ModelAdmin):
         return False
 
     class Meta:
+        """Meta."""
         verbose_name = "Access group owner"
 
 

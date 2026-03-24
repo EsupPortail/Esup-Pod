@@ -1,5 +1,5 @@
 """
-Video defaults.
+Esup-Pod - Video defaults.
 Source of truth for default values for Video app.
 """
 

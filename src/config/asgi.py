@@ -1,5 +1,5 @@
 """
-ASGI configuration.
+Esup-Pod - ASGI configuration.
 
 Exposes the ASGI callable as a module-level variable named ``application``.
 Validates that `DJANGO_SETTINGS_MODULE` is correctly set before initializing

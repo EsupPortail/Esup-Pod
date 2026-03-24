@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Detailed user serializer.
+"""
+
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
@@ -15,6 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
     userpicture = serializers.SerializerMethodField(method_name="get_userpicture")
 
     class Meta:
+        """User serializer metadata."""
         model = User
         fields = [
             "id",
@@ -43,6 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
         return None
 
     def get_userpicture(self, obj) -> str | None:
+        """Retrieves the relative URL of the user's profile picture."""
         if hasattr(obj, "owner") and obj.owner.userpicture:
             return obj.owner.userpicture.image.url
         return None

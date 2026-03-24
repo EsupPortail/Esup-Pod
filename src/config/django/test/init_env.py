@@ -1,5 +1,5 @@
 """
-Test environment initialization.
+Esup-Pod - Test environment initialization.
 
 Sets up environment variables required for running tests.
 Enables all authentication providers (CAS, LDAP, Shibboleth, OIDC) to ensure

@@ -19,6 +19,7 @@ class RunnerClient:
     """Client for the Esup-Runner Manager API."""
 
     def __init__(self, url: str, token: str):
+        """Initializes the runner client with base URL and API token."""
         self.url = url.rstrip("/")
         self.token = token
         self.headers = {"X-API-Token": self.token}

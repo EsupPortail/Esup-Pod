@@ -18,6 +18,7 @@ class ViewCount(models.Model):
     count = models.PositiveIntegerField(_("View Count"), default=0)
 
     class Meta:
+        """ViewCount model metadata for reporting and uniques."""
         unique_together = ("video", "date")
         ordering = ["-date"]
 

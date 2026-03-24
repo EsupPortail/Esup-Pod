@@ -1,5 +1,5 @@
 """
-Environment configuration module.
+Esup-Pod - Environment configuration module.
 
 Initializes the `django-environ` environment to handle configuration variables.
 Defines the project's base directory (`BASE_DIR`) and loads settings from the

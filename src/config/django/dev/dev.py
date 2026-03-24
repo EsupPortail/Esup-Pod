@@ -1,3 +1,9 @@
+"""
+Esup-Pod - Development settings.
+
+Configures the environment for local development, including debug mode and enhanced logging.
+"""
+
 import logging
 import os
 import re
@@ -16,6 +22,9 @@ SERVICE_LABEL = os.environ.get("SERVICE_LABEL", "app").upper()
 
 
 class ColoredFormatter(logging.Formatter):
+    """
+    Logging formatter with ANSI colors for service-based prefixes and log levels.
+    """
     grey = "\x1b[38;20m"
     blue = "\x1b[34;20m"
     cyan = "\x1b[36;1m"
@@ -41,6 +50,7 @@ class ColoredFormatter(logging.Formatter):
     }
 
     def format(self, record):
+        """Processes and colors the log message based on service label and level."""
         color = self.LEVEL_COLORS.get(record.levelno, self.grey)
         record.levelname = f"{color}{record.levelname:<8}{self.reset}"
 
@@ -87,9 +97,12 @@ class ColoredFormatter(logging.Formatter):
 
 # --- FILTRES ---
 class SkipIgnorableRequests(logging.Filter):
-    """Filtre pour ignorer les bruits de fond du dev server."""
+    """
+    Logging filter to skip noisy requests (static files, favicon, etc.).
+    """
 
     def filter(self, record):
+        """Determines if a log record should be kept based on ignorable patterns."""
         msg = record.getMessage()
         if "/static/" in msg or "/media/" in msg:
             return False

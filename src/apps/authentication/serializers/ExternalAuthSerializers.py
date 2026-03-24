@@ -1,3 +1,7 @@
+"""
+Esup-Pod - External authentication (OIDC/Shibboleth) serializers.
+"""
+
 from rest_framework import serializers
 
 

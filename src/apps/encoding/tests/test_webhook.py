@@ -44,6 +44,7 @@ class EncodingWebhookViewTests(APITestCase):
     @patch("src.apps.encoding.views.webhook.env")
     @patch("src.apps.encoding.views.webhook.get_runner_client")
     def test_webhook_success(self, mock_get_client, mock_env):
+        """Verifies successful processing of a 'completed' status webhook."""
         mock_env.return_value = "mysecret"
 
         mock_client = MagicMock()
@@ -54,6 +55,7 @@ class EncodingWebhookViewTests(APITestCase):
         }
 
         def mock_download(task_id, file_path):
+            """Internal helper to mock media downloads during encoded video processing."""
             lf = tempfile.NamedTemporaryFile(delete=False)
             lf.write(b"dummy content")
             lf.flush()
@@ -80,6 +82,7 @@ class EncodingWebhookViewTests(APITestCase):
 
     @patch("src.apps.encoding.views.webhook.env")
     def test_webhook_error_status(self, mock_env):
+        """Verifies that an 'error' status in the webhook updates the video status accordingly."""
         mock_env.return_value = "mysecret"
 
         data = {
@@ -98,6 +101,7 @@ class EncodingWebhookViewTests(APITestCase):
 
     @patch("src.apps.encoding.views.webhook.env")
     def test_webhook_missing_video_id(self, mock_env):
+        """Verifies that a 400 error is returned when video_id is missing."""
         mock_env.return_value = "mysecret"
 
         data = {
@@ -111,6 +115,7 @@ class EncodingWebhookViewTests(APITestCase):
 
     @patch("src.apps.encoding.views.webhook.env")
     def test_webhook_invalid_secret(self, mock_env):
+        """Verifies that a 401 error is returned when the secret is invalid."""
         mock_env.return_value = "mysecret"
 
         data = {

@@ -1,5 +1,5 @@
 """
-Base Django configuration.
+Esup-Pod - Base Django configuration.
 
 Core settings shared across all environments (dev, test, prod).
 Defines installed apps, middleware, template engines, DRF configuration,

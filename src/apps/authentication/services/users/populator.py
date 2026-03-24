@@ -1,3 +1,7 @@
+"""
+Esup-Pod - User and Owner data populator from external sources.
+"""
+
 from typing import Any, Dict, List, Optional
 import logging
 from ...conf import auth_settings
@@ -16,6 +20,7 @@ class UserPopulator:
     """
 
     def __init__(self, user: Any):
+        """Initializes the populator and ensures an Owner exists for the user."""
         self.user = user
         # Ensure owner exists
         if not hasattr(self.user, "owner"):
@@ -123,6 +128,7 @@ class UserPopulator:
             self._apply_ldap_entry(entry)
 
     def _apply_ldap_entry(self, entry: Any) -> None:
+        """Maps LDAP attributes to the user and owner models."""
         self.user.email = self._get_ldap_value(entry, "mail", "")
         self.user.first_name = self._get_ldap_value(entry, "first_name", "")
         self.user.last_name = self._get_ldap_value(entry, "last_name", "")
@@ -201,6 +207,7 @@ class UserPopulator:
                     )
 
     def _get_ldap_value(self, entry: Any, attribute: str, default: Any) -> Any:
+        """Safely retrieves a value from an LDAP entry using configured mapping."""
         mapping = auth_settings.ldap_mapping_attributes.get(attribute)
         if mapping and entry[mapping]:
             if attribute == "last_name" and isinstance(entry[mapping].value, list):
@@ -211,8 +218,8 @@ class UserPopulator:
                 return entry[mapping].value
         return default
 
-    @staticmethod
-    def _is_ldap_configured() -> bool:
+    def _is_ldap_configured(self) -> bool:
+        """Checks if LDAP settings are present in the configuration."""
 
         ldap_config = auth_settings.ldap_server
         return bool(ldap_config.get("url"))

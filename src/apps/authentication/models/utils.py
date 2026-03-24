@@ -1,5 +1,5 @@
 """
-Authentication model utilities.
+Esup-Pod - Authentication model utilities.
 
 User display logic and model choices. Constants are imported from constants.py,
 configuration from conf.py.

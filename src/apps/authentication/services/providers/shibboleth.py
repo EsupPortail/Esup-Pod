@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Shibboleth authentication provider service.
+"""
+
 from typing import Any, Dict
 from ...conf import auth_settings
 from django.contrib.auth import get_user_model
@@ -8,6 +12,10 @@ UserModel = get_user_model()
 
 
 class ShibbolethService:
+    """
+    Handles Shibboleth authentication flow by extracting user attributes
+    from HTTP headers provided by the Service Provider (SP).
+    """
     def check_security(self, request) -> bool:
         """Verify request comes from a trusted source (SP) if configured."""
         secure_header = auth_settings.shib_secure_header
@@ -16,6 +24,7 @@ class ShibbolethService:
         return True
 
     def get_header_value(self, request, header_name):
+        """Safely retrieves a value from request.META headers."""
         return request.META.get(header_name, "")
 
     def process_request(self, request) -> Dict[str, Any]:

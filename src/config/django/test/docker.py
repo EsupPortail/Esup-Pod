@@ -1,5 +1,5 @@
 """
-Docker-based testing configuration.
+Esup-Pod - Docker-based testing configuration.
 
 Optimized settings for running tests within a Docker container.
 Enhances execution speed by using MD5 password hashing and synchronous Celery tasks.

@@ -42,6 +42,7 @@ class EncodingTaskTestCase(TestCase):
 
     @patch("src.apps.encoding.tasks.get_runner_client")
     def test_trigger_runner_encoding_success(self, mock_get_client):
+        """Verifies that the encoding task is correctly triggered on the runner."""
         mock_client = MagicMock()
         mock_client.execute_task.return_value = {"task_id": "123", "status": "accepted"}
         mock_get_client.return_value = mock_client
@@ -77,6 +78,7 @@ class EncodingTaskTestCase(TestCase):
     def test_trigger_runner_encoding_retry_on_connection_error(
         self, mock_retry, mock_get_client
     ):
+        """Verifies that the task retries when a connection error occurs."""
         mock_client = MagicMock()
         mock_client.execute_task.side_effect = ConnectionError("Connection refused")
         mock_get_client.return_value = mock_client

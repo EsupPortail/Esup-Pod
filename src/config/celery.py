@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Celery configuration.
+"""
+
 import logging
 import os
 
@@ -22,4 +26,5 @@ app.autodiscover_tasks()
 
 @app.task(bind=True, ignore_result=True)
 def debug_task(self):
+    """Simple task used to verify Celery connectivity and worker status."""
     logger.debug("Debug task received: %r", self.request)

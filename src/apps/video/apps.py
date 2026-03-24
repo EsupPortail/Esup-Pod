@@ -16,4 +16,5 @@ class VideoConfig(AppConfig):
     default_auto_field = "django.db.models.AutoField"
 
     def ready(self):
+        """Connects signals and performs initialization on app startup."""
         import src.apps.video.signals  # noqa

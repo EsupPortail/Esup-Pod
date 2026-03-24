@@ -1,3 +1,7 @@
+"""
+Esup-Pod - API router configuration.
+"""
+
 from rest_framework import routers
 from src.apps.video.views import VideoViewSet, SubtitleViewSet
 

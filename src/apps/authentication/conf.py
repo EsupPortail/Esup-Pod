@@ -1,5 +1,5 @@
 """
-Authentication configuration.
+Esup-Pod - Authentication configuration.
 
 Typed and validated configuration for the authentication app using pydantic-settings.
 """

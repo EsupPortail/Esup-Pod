@@ -1,5 +1,5 @@
 """
-Authentication constants.
+Esup-Pod - Authentication constants.
 
 Static data (choices tuples, default mappings) that are NOT configurable
 via environment variables. These are domain constants, not deployment settings.

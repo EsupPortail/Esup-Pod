@@ -1,3 +1,7 @@
+"""
+Esup-Pod - CAS authentication provider service.
+"""
+
 import logging
 from typing import Any, Optional
 

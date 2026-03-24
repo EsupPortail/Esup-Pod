@@ -34,6 +34,7 @@ class RunnerClientTests(TestCase):
 
     @patch("src.apps.encoding.services.runner_client.requests.post")
     def test_execute_task_success(self, mock_post):
+        """Verifies successful task execution through the runner client."""
         mock_resp = MagicMock()
         mock_resp.json.return_value = {"status": "ok"}
         mock_resp.raise_for_status.return_value = None
@@ -48,6 +49,7 @@ class RunnerClientTests(TestCase):
 
     @patch("src.apps.encoding.services.runner_client.requests.post")
     def test_execute_task_failure(self, mock_post):
+        """Verifies handling of request exceptions during task execution."""
         mock_post.side_effect = requests.exceptions.RequestException("API Error")
 
         with self.assertRaises(ConnectionError):
@@ -57,6 +59,7 @@ class RunnerClientTests(TestCase):
 
     @patch("src.apps.encoding.services.runner_client.requests.get")
     def test_get_task_manifest_success(self, mock_get):
+        """Verifies successful retrieval of task manifest."""
         mock_resp = MagicMock()
         mock_resp.json.return_value = {"task_id": "123", "files": ["test.mp4"]}
         mock_resp.raise_for_status.return_value = None
@@ -69,6 +72,7 @@ class RunnerClientTests(TestCase):
 
     @patch("config.env.env")
     def test_get_runner_client(self, mock_env):
+        """Verifies the factory function returns a configured RunnerClient."""
         mock_env.side_effect = lambda k, default: (
             "http://test" if k == "ENCODING_MANAGER_URL" else "test_token"
         )
@@ -104,6 +108,7 @@ class StorageServicesTests(TestCase):
         )
 
     def test_get_storage_path_video(self):
+        """Verifies the generation of hashed storage paths for videos."""
         path = get_storage_path_video(self.video, "test.mp4")
         self.assertTrue(path.endswith(".mp4"))
         self.assertTrue(path.startswith("videos/"))
@@ -115,6 +120,7 @@ class StorageServicesTests(TestCase):
         self.assertEqual(len(parts[2]), 2)
 
     def test_get_storage_path_image(self):
+        """Verifies the generation of hashed storage paths for images."""
         path = get_storage_path_image(self.video, "test.jpg")
         self.assertTrue(path.endswith(".jpg"))
         self.assertTrue(path.startswith("thumbnails/"))

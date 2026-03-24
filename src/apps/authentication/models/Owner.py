@@ -85,6 +85,7 @@ class Owner(models.Model):
     )
 
     class Meta:
+        """Owner model metadata."""
         verbose_name = _("Owner")
         verbose_name_plural = _("Owners")
         ordering = ["user"]
@@ -123,6 +124,7 @@ class Owner(models.Model):
 
     @property
     def email(self) -> str:
+        """Returns the linked user's email address."""
         return self.user.email
 
 

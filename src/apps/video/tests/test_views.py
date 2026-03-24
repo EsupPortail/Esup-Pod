@@ -38,10 +38,12 @@ class VideoViewSetTests(APITestCase):
 
     @classmethod
     def tearDownClass(cls):
+        """Cleans up temporary media directory after tests."""
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
         super().tearDownClass()
 
     def setUp(self):
+        """Sets up test users and various video types for API verification."""
         self.user = User.objects.create_user(username="testuser", password=PWD)  # nosec
         self.other_user = User.objects.create_user(
             username="other", password=PWD
@@ -70,6 +72,7 @@ class VideoViewSetTests(APITestCase):
         )
 
     def test_get_queryset_unauthenticated(self):
+        """Verifies that unauthenticated users only see published videos."""
         url = reverse("video-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -82,6 +85,7 @@ class VideoViewSetTests(APITestCase):
         self.assertEqual(response_list[0]["title"], "My Video")
 
     def test_get_queryset_superuser(self):
+        """Verifies that superusers see all videos regardless of status."""
         self.client.force_authenticate(user=self.superuser)
         url = reverse("video-list")
         response = self.client.get(url)
@@ -95,6 +99,7 @@ class VideoViewSetTests(APITestCase):
 
     @patch("src.apps.video.views.VideoViewSet.encoding_settings")
     def test_perform_create_quota_exceeded(self, mock_settings):
+        """Verifies that exceeding the user quota returns a 400 error."""
         mock_settings.user_quota_size_gb = 0
 
         self.client.force_authenticate(user=self.user)
@@ -110,6 +115,7 @@ class VideoViewSetTests(APITestCase):
         self.assertIn("video_file", response.data)
 
     def test_stream_video_owner(self):
+        """Verifies that the owner can successfully stream their video."""
         self.client.force_authenticate(user=self.user)
         url = reverse("video-stream", kwargs={"slug": self.video.slug})
         response = self.client.get(url)
@@ -117,11 +123,13 @@ class VideoViewSetTests(APITestCase):
         self.assertEqual(response["Content-Type"], "video/mp4")
 
     def test_stream_video_unauthenticated_restricted(self):
+        """Verifies that unauthenticated users cannot stream restricted videos."""
         url = reverse("video-stream", kwargs={"slug": self.restricted_video.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_register_view(self):
+        """Verifies that the register-view endpoint correctly increments view counts."""
         url = reverse("video-register-view", kwargs={"slug": self.video.slug})
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -131,6 +139,7 @@ class VideoViewSetTests(APITestCase):
         self.assertEqual(self.video.view_count, 1)
 
     def test_unlock_restricted_video_success(self):
+        """Verifies that a correct password unlocks a restricted video for a visitor."""
         self.client.force_authenticate(user=self.other_user)
         url = reverse("video-unlock", kwargs={"slug": self.restricted_video.slug})
         data = {"password": PWD}
@@ -139,6 +148,7 @@ class VideoViewSetTests(APITestCase):
         self.assertIn("video_url", response.data)
 
     def test_unlock_restricted_video_wrong_password(self):
+        """Verifies that a wrong password fails to unlock a restricted video."""
         self.client.force_authenticate(user=self.other_user)
         url = reverse("video-unlock", kwargs={"slug": self.restricted_video.slug})
         data = {"password": "wrongpassword"}
@@ -154,10 +164,12 @@ class SubtitleViewSetTests(APITestCase):
 
     @classmethod
     def tearDownClass(cls):
+        """Cleans up temporary media directory after tests."""
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
         super().tearDownClass()
 
     def setUp(self):
+        """Sets up a video and a subtitle for serialization testing."""
         self.user = User.objects.create_user(username="testuser", password=PWD)  # nosec
         self.other_user = User.objects.create_user(
             username="other", password=PWD
@@ -179,6 +191,7 @@ class SubtitleViewSetTests(APITestCase):
         )
 
     def test_get_queryset_filter_by_video(self):
+        """Verifies that subtitles can be filtered by video ID in the API."""
         url = f"{reverse('subtitle-list')}?video_id={self.video.id}"
         response = self.client.get(url)
         response_list = (
@@ -189,6 +202,7 @@ class SubtitleViewSetTests(APITestCase):
         self.assertEqual(len(response_list), 1)
 
     def test_create_subtitle_owner(self):
+        """Verifies that the video owner can upload new subtitles."""
         self.client.force_authenticate(user=self.user)
         url = reverse("subtitle-list")
         data = {
@@ -202,6 +216,7 @@ class SubtitleViewSetTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_subtitle_not_owner(self):
+        """Verifies that a non-owner cannot upload subtitles to someone else's video."""
         self.client.force_authenticate(user=self.other_user)
         url = reverse("subtitle-list")
         data = {

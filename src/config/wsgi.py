@@ -1,5 +1,5 @@
 """
-WSGI configuration.
+Esup-Pod - WSGI configuration.
 
 Exposes the WSGI callable as a module-level variable named ``application``.
 Validates that `DJANGO_SETTINGS_MODULE` is correctly set before initializing

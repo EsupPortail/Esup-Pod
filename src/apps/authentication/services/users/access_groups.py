@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Access group management services.
+"""
+
 import logging
 from typing import Any, List
 
@@ -8,8 +12,12 @@ logger = logging.getLogger(__name__)
 
 
 class AccessGroupService:
+    """
+    Service class to handle membership logic for AccessGroups and Owners.
+    """
     @staticmethod
     def set_user_accessgroup(username: str, groups: List[str]) -> Any:
+        """Assigns a list of AccessGroups (by code_name) to a user's Owner profile."""
         owner = Owner.objects.get(user__username=username)  # Will raise DoesNotExist
 
         for group_code in groups:
@@ -25,6 +33,7 @@ class AccessGroupService:
 
     @staticmethod
     def remove_user_accessgroup(username: str, groups: List[str]) -> Any:
+        """Removes a list of AccessGroups from a user's Owner profile."""
         owner = Owner.objects.get(user__username=username)
 
         for group_code in groups:
@@ -41,6 +50,7 @@ class AccessGroupService:
 
     @staticmethod
     def set_users_by_name(code_name: str, users: List[str]) -> Any:
+        """Adds a list of users (by username) to a specific AccessGroup."""
         accessgroup = AccessGroup.objects.get(code_name=code_name)
 
         for username in users:
@@ -56,6 +66,7 @@ class AccessGroupService:
 
     @staticmethod
     def remove_users_by_name(code_name: str, users: List[str]) -> Any:
+        """Removes a list of users (by username) from a specific AccessGroup."""
         accessgroup = AccessGroup.objects.get(code_name=code_name)
 
         for username in users:

@@ -1,5 +1,5 @@
 """
-Local testing configuration.
+Esup-Pod - Local testing configuration.
 
 Lightweight setup for running tests locally without Docker.
 Uses an in-memory SQLite database by default for speed and allows all hosts.

@@ -26,6 +26,7 @@ class GroupSite(models.Model):
     sites = models.ManyToManyField(Site)
 
     class Meta:
+        """GroupSite model metadata."""
         verbose_name = _("Group site")
         verbose_name_plural = _("Groups site")
         ordering = ["group"]

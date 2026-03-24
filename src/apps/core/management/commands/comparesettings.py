@@ -19,6 +19,9 @@ from django.conf import settings
 
 
 class Command(BaseCommand):
+    """
+    Management command to audit and compare code settings against JSON documentation.
+    """
     help = "Compare settings in code vs configuration.json"
 
     IGNORED_PREFIXES = (
@@ -74,6 +77,7 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
+        """Executes the comparison logic between runtime settings and configuration.json."""
         all_live_settings = dir(settings)
         local_settings_list = [
             item

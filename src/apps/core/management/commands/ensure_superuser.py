@@ -12,9 +12,13 @@ from src.apps.authentication.models import Owner
 
 
 class Command(BaseCommand):
+    """
+    Management command to ensure a superuser exists and is correctly configured.
+    """
     help = "Create or update the Django superuser and ensure it is linked to the default Site."
 
     def handle(self, *args, **options):
+        """Creates the superuser from environment variables if it doesn't exist."""
         User = get_user_model()
 
         username = os.environ.get("DJANGO_SUPERUSER_USERNAME")

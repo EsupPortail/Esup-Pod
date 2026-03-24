@@ -13,6 +13,7 @@ class Subtitle(models.Model):
     """
 
     class Language(models.TextChoices):
+        """Supported languages for video subtitles."""
         FRENCH = "fr", _("French")
         ENGLISH = "en", _("English")
         SPANISH = "es", _("Spanish")

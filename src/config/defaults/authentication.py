@@ -41,11 +41,9 @@ if USE_CAS:
     AUTHENTICATION_BACKENDS.append("django_cas_ng.backends.CASBackend")
 
 if USE_LDAP:
-    # Chemin classique si tu utilises django-auth-ldap
     AUTHENTICATION_BACKENDS.append("django_auth_ldap.backend.LDAPBackend")
 
 if USE_OIDC:
-    # Chemin classique si tu utilises mozilla-django-oidc
     AUTHENTICATION_BACKENDS.append("mozilla_django_oidc.auth.OIDCAuthenticationBackend")
 
 if USE_SHIB:

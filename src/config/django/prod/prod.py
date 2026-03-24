@@ -1,5 +1,5 @@
 """
-Production configuration.
+Esup-Pod - Production configuration.
 
 Secure settings for deployment: disables debug mode, enforces strict CORS policies,
 and retrieves allowed hosts from environment variables.

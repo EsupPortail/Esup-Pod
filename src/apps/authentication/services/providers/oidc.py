@@ -1,3 +1,7 @@
+"""
+Esup-Pod - OIDC authentication provider service.
+"""
+
 import logging
 import requests
 
@@ -14,6 +18,10 @@ logger = logging.getLogger(__name__)
 
 
 class OIDCService:
+    """
+    Handles OpenID Connect (OIDC) authentication flow, including code exchange
+    and user profile population.
+    """
     def process_code(self, code: str, redirect_uri: str) -> Dict[str, Any]:
         """Exchange OIDC code for tokens and populate user."""
 

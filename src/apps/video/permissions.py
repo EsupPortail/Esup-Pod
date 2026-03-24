@@ -14,6 +14,7 @@ class IsOwnerOrCoOwnerOrReadOnly(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
+        """Object-level permission check for ownership or staff status."""
         if request.method in permissions.SAFE_METHODS:
             return True
         if video_settings.restrict_edit_to_staff:

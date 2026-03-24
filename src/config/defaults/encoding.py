@@ -1,5 +1,5 @@
 """
-Encoding defaults.
+Esup-Pod - Encoding defaults.
 Source of truth for default values for Encoding app.
 """
 

@@ -35,6 +35,7 @@ class VideoSerializer(serializers.ModelSerializer):
     thumbnail_url = serializers.ReadOnlyField()
 
     class Meta:
+        """Video serializer metadata."""
         model = Video
         fields = [
             "id",
@@ -88,6 +89,7 @@ class VideoSerializer(serializers.ModelSerializer):
         return value
 
     def get_video_url(self, obj):
+        """Calculates the absolute URL of the video file based on access rights."""
         request = self.context.get("request")
         user = request.user if request else None
         is_privileged = (
@@ -111,6 +113,7 @@ class VideoSerializer(serializers.ModelSerializer):
         return self._get_absolute_url(obj.video_file, request)
 
     def _get_absolute_url(self, file_field, request):
+        """Helper to build an absolute URI for a file field."""
         if file_field and hasattr(file_field, "url"):
             if request:
                 return request.build_absolute_uri(file_field.url)
@@ -118,6 +121,7 @@ class VideoSerializer(serializers.ModelSerializer):
         return None
 
     def validate_video_file(self, value):
+        """Ensures the uploaded file has a valid extension and size."""
         if value:
             ext = value.name.split(".")[-1].lower()
             allowed_exts = [e.lstrip(".") for e in encoding_settings.allowed_extensions]

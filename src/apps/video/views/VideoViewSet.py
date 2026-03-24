@@ -43,6 +43,7 @@ class VideoViewSet(viewsets.ModelViewSet):
     ordering = ["-created_at"]
 
     def get_queryset(self):
+        """Filters videos based on authentication, ownership, and status."""
         user = self.request.user
         qs = Video.objects.all()
         if not user.is_authenticated:
@@ -68,6 +69,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         ).distinct()
 
     def perform_create(self, serializer):
+        """Creates a new video, checking user quota and triggering encoding."""
         user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file="")
         total_bytes = sum(v.video_file.size for v in user_videos if v.video_file)
         incoming_file = self.request.FILES.get("video_file")
@@ -81,12 +83,12 @@ class VideoViewSet(viewsets.ModelViewSet):
                 }
             )
 
-        licence_fournie = self.request.data.get("license")
+        provided_license = self.request.data.get("license")
         video = serializer.save(
             owner=self.request.user,
             status=Video.Status.ENCODING,
             license=(
-                licence_fournie if licence_fournie else video_settings.default_license
+                provided_license if provided_license else video_settings.default_license
             ),
         )
 
@@ -103,6 +105,7 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"], permission_classes=[permissions.AllowAny])
     def stream(self, request, slug=None):
+        """Serves the video file as a stream."""
         from django.shortcuts import get_object_or_404
 
         video = get_object_or_404(Video, slug=slug)
@@ -134,6 +137,7 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"], permission_classes=[permissions.AllowAny])
     def register_view(self, request, slug=None):
+        """Increments the view count for the video and daily statistics."""
         from django.shortcuts import get_object_or_404
 
         video = get_object_or_404(Video, slug=slug)

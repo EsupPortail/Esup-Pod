@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Authentication forms.
+"""
+
 from django import forms
 from django.conf import settings
 from django.contrib.admin.widgets import FilteredSelectMultiple
@@ -18,36 +22,55 @@ if getattr(settings, "USE_PODFILE", False):
 
 
 class OwnerAdminForm(forms.ModelForm):
+    """
+    Form for managing Owner profiles in the administrative interface.
+    """
     def __init__(self, *args, **kwargs) -> None:
+        """Initializes the form and configures image widgets."""
         super(OwnerAdminForm, self).__init__(*args, **kwargs)
         if __FILEPICKER__:
             self.fields["userpicture"].widget = CustomFileWidget(type="image")
 
     class Meta(object):
+        """Owner form metadata."""
         model = Owner
         fields = "__all__"
 
 
 class GroupSiteAdminForm(forms.ModelForm):
+    """
+    Form for linking groups to specific sites.
+    """
     def __init__(self, *args, **kwargs) -> None:
+        """Standard form initialization."""
         super(GroupSiteAdminForm, self).__init__(*args, **kwargs)
 
     class Meta(object):
+        """Meta."""
         model = GroupSite
         fields = "__all__"
 
 
 class FrontOwnerForm(OwnerAdminForm):
+    """
+    User-facing form for updating basic profile information.
+    """
     class Meta(object):
+        """Meta."""
         model = Owner
         fields = ("userpicture",)
 
 
 class AdminOwnerForm(forms.ModelForm):
+    """
+    Administrative form for Owner model with restricted fields.
+    """
     def __init__(self, *args, **kwargs) -> None:
+        """Init."""
         super(AdminOwnerForm, self).__init__(*args, **kwargs)
 
     class Meta(object):
+        """Meta."""
         model = Owner
         fields = []
 
@@ -56,9 +79,11 @@ class SetNotificationForm(forms.ModelForm):
     """Push notification preferences form."""
 
     def __init__(self, *args, **kwargs) -> None:
+        """Init."""
         super(SetNotificationForm, self).__init__(*args, **kwargs)
 
     class Meta(object):
+        """Meta."""
         model = Owner
         fields = ["accepts_notifications"]
 
@@ -68,6 +93,9 @@ User = get_user_model()
 
 # Create ModelForm based on the Group model.
 class GroupAdminForm(forms.ModelForm):
+    """
+    Form for managing standard Django groups with site-aware user filtering.
+    """
     # Add the users field.
     users = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(),
@@ -78,11 +106,13 @@ class GroupAdminForm(forms.ModelForm):
     )
 
     class Meta:
+        """Meta."""
         model = Group
         fields = "__all__"
         exclude = []
 
     def __init__(self, *args, **kwargs) -> None:
+        """Initializes the form and filters user choices by the current site."""
         # Do the normal form initialisation.
         super(GroupAdminForm, self).__init__(*args, **kwargs)
         # If it is an existing group (saved objects have a pk).
@@ -94,10 +124,12 @@ class GroupAdminForm(forms.ModelForm):
         )
 
     def save_m2m(self) -> None:
+        """Saves many-to-many relationship for users."""
         # Add the users to the Group.
         self.instance.user_set.set(self.cleaned_data["users"])
 
     def save(self, *args, **kwargs):
+        """Saves the group and its linked users."""
         # Default save
         instance = super(GroupAdminForm, self).save()
         # Save many-to-many data

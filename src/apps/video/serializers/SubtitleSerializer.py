@@ -12,5 +12,6 @@ class SubtitleSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
+        """Subtitle serializer metadata."""
         model = Subtitle
         fields = ["id", "video", "language", "file", "is_default"]

@@ -1,5 +1,5 @@
 """
-Local development configuration (Non-Docker).
+Esup-Pod - Local development configuration (Non-Docker).
 
 Lightweight setup to run directly on the host machine without containers.
 Replaces MySQL with SQLite, Redis with local memory, and outputs emails to the console.

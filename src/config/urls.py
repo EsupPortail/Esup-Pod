@@ -1,5 +1,5 @@
 """
-Main URL configuration.
+Esup-Pod - Main URL configuration.
 
 Defines the root routing for the project, including Admin, API endpoints,
 and Swagger/Redoc documentation. Dynamically configures authentication routes
