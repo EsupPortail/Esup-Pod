@@ -30,7 +30,7 @@ class Command(BaseCommand):
                     higher_warn = aw
 
             notif_list = []
-            for p in Video.objects.raw('SELECT * FROM video_video WHERE SUBSTRING (title, 1, 7) != "Archivé"' and 'SELECT * FROM video_video WHERE SUBSTRING (title, 1, 8) != "Archived"'):
+            for p in Video.objects.raw('SELECT * FROM video_video WHERE SUBSTRING (title, 1, 7) != "Archivé" AND SUBSTRING (title, 1, 8) != "Archived"'):
 
                 if ((p.date_delete - timedelta(days=higher_warn+1)) <= (date.today())):
                     data_to_add = {}

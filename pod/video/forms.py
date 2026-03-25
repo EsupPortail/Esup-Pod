@@ -1410,7 +1410,7 @@ class NameForm(forms.Form):
             (
                 _(""),
                 [
-                    ("Prolonger", _("Extend (Automatically by ")+str(RALLONGE_RESPIT_DAYS)+_(" days)")),
+                    ("Prolonger", (_("Extend (Automatically by %(rrd)s days)") % {"rrd": RALLONGE_RESPIT_DAYS})),
                     ("Archiver", _("Archive")),
                     ("Supprimer", _("Delete")),
                 ]

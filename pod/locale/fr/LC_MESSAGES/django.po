@@ -11398,45 +11398,43 @@ msgstr "xAPI Esup-Pod"
 
 #: pod/video/templates/videos/well_archived.html
 msgid "Your video has not been archived."
-msgstr "Votre video n'a PAS été archivé."
+msgstr "Votre video n’a pas été archivé."
 
 #: pod/video/templates/videos/well_archived.html
 msgid "Your video has been archived."
-msgstr "Votre video a bien été archivé."
+msgstr "Votre video a bien été archivée."
 
 #: pod/video/templates/videos/well_respit_choice.html
-msgid "Your video id outdated, what do you want do ?"
-msgstr "Votre vidéo est obsolète, que voulez vous faire ?"
+msgid "Your video id outdated, what do you want do?"
+msgstr "Votre vidéo est obsolète, que voulez-vous faire ?"
 
 msgid "Export this video."
 msgstr "Exporter cette video."
 
 msgid "This service is not available."
-msgstr "Ce service n'est pas accessible."
+msgstr "Ce service n’est pas disponible."
 
 msgid "Link to the video :"
-msgstr "Lien vers la vidéo :"
+msgstr "Lien vers la vidéo :"
 
 #: pod/video/templates/videos/well_prolonged.html
 msgid "The video life span was extended to"
 msgstr "La vidéo est prolongé jusqu'au"
 
 #: pod/video/forms.py
-msgid "Extend (Automatically by "
-msgstr "Prolonger (Automatiquement de "
 
-msgid " days)"
-msgstr " jours)"
+msgid "Extend (Automatically by %(rrd)s days)"
+msgstr "Prolonger (Automatiquement de %(rrd)s jours)"
 
 msgid "Archive"
 msgstr "Archiver"
 
 #: pod/video/templates/videos/prolong_or_not.html
-msgid "Are you to want to extend this video life span ?"
-msgstr "Êtes vous sur de vouloir prolonger cette vidéo ?"
+msgid "Are you sure to want to extend this video life span?"
+msgstr "Êtes vous sûr·e de vouloir prolonger cette vidéo ?"
 
-msgid "This will extend the video life span by "
-msgstr "Cela ralongera la durée de vie de la vidéo de "
+msgid "This will extend the video life span by %(rrd)s days"
+msgstr "Cela ralongera la durée de vie de la vidéo de %(rrd)s jours"
 
 msgid " days."
 msgstr " jours."
@@ -11457,7 +11455,7 @@ msgid "Video Archiving"
 msgstr "Archivage Vidéo"
 
 msgid "Are you sure you want to archive this video ?"
-msgstr "Êtes-vous sur de vouloir archiver cette vidéo ?"
+msgstr "Êtes-vous sûr·e de vouloir archiver cette vidéo ?"
 
 msgid "The archiving is permanent."
 msgstr "L'archivage est définitif."
@@ -11465,7 +11463,7 @@ msgstr "L'archivage est définitif."
 msgid "Archive Download"
 msgstr "Téléchargement de l'archive"
 
-msgid "The download gonna start."
+msgid "Your archive download gonna start."
 msgstr "Le téléchargement de votre archive va se lancer."
 
 msgid "Please Wait."

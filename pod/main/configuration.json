@@ -3434,7 +3434,7 @@
                              ""
                             ],
                             "fr": [
-                              "Choix du Model pour le calcul du répris"
+                              "Choix du modèle pour le calcul du répis. C'est le script qui sera éxécuté par la commande 'respit_launcher' dans le but de rallonger la durée de vie des vidéos selon un modèle personnalisé."
                             ]
                           },
                           "pod_version_end": "",
@@ -3460,7 +3460,7 @@
                              ""
                            ],
                             "fr": [
-                              "Détermine si oui ou non on autorise le user à prolonger lui même vidéo sur la plateforme lors de l'envoie du mail"
+                              "Détermine si oui ou non on autorise l'utilisateur à prolonger lui même sa vidéo sur la plateforme lors de l’envoi du mail."
                             ]
                           },
                           "pod_version_end": "",

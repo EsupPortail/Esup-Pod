@@ -7,8 +7,10 @@
             <legend>{% trans "Agreement required" %}</legend>
             <div class="list-group-item">
                 <div class="form-group form-group-required ">
-                    <div>{% trans "Are you to want to extend this video life span ?" %}</div>
-                    <small id="id_agreeHelp" class="form-text">{% trans "This will extend the video life span by " %}{{ RALLONGE_RESPIT_DAYS }}{% trans " days." %}</small>
+                    <div>{% trans "Are you sure to want to extend this video life span?" %}</div>
+                    <small id="id_agreeHelp" class="form-text">
+                        {% blocktrans with rrd=RALLONGE_RESPIT_DAYS %}This will extend the video life span by {{ rrd }} days{% endblocktrans %}
+                    </small>
                 </div>
             </div>
         </fieldset>
