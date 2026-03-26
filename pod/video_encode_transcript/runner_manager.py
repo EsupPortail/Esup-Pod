@@ -579,9 +579,7 @@ def transcript_video(video_id: int) -> None:
         parameters = _prepare_transcription_parameters(video=video)
 
         # Mark video as encoding in progress
-        video_to_encode = Video.objects.get(id=video_id)
-        video_to_encode.encoding_in_progress = True
-        video_to_encode.save()
+        Video.objects.filter(id=video_id).update(encoding_in_progress=True)
 
         # Update encoding step to transcripting audio
         change_encoding_step(video_id, 5, "transcripting audio")

@@ -6929,6 +6929,10 @@ msgid "The playlist has been deleted."
 msgstr ""
 
 #: pod/playlist/views.py
+msgid "Delete the playlist"
+msgstr ""
+
+#: pod/playlist/views.py
 #, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr ""
@@ -9409,7 +9413,7 @@ msgid "Original version"
 msgstr ""
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
-msgid "Enhance the video with AI"
+msgid "Complete the video with AI"
 msgstr ""
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
@@ -10317,6 +10321,10 @@ msgid ""
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
+msgid "Video ID"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
 msgid "Restart selected tasks"
 msgstr ""
 
@@ -10440,6 +10448,10 @@ msgstr ""
 
 #: pod/video_encode_transcript/models.py
 msgid "Priority of the runner manager. Lower values indicate higher priority."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "If checked, this runner manager can be used to process tasks."
 msgstr ""
 
 #: pod/video_encode_transcript/models.py

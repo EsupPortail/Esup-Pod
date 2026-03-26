@@ -7402,6 +7402,10 @@ msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
+msgid "Delete the playlist"
+msgstr "Supprimer la liste de lecture"
+
+#: pod/playlist/views.py
 #, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr "Modifier la liste de lecture « %(pname)s »"
@@ -9081,11 +9085,11 @@ msgstr "Bonjour %(name)s,"
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid ""
-"Your video entitled <a href=\"//%(url)s\">“%(title)s”</a> will soon arrive "
-"at the deletion deadline."
+"Your video entitled <a href=\"%(scheme)s:%(url)s\">“%(title)s”</a> will soon "
+"arrive at the deletion deadline."
 msgstr ""
-"Votre vidéo intitulée « <a href=\"//%(url)s\">%(title)s</a> » arrive bientôt "
-"à la date limite de suppression."
+"Votre vidéo intitulée « <a href=\"%(scheme)s:%(url)s\">%(title)s</a> » "
+"arrive bientôt à la date limite de suppression."
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
@@ -11389,8 +11393,6 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
-#~ msgid "Delete the playlist"
-#~ msgstr "Supprimer la liste de lecture"
 
 #~ msgid ""
 #~ "\n"
