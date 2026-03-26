@@ -10460,6 +10460,10 @@ msgid "URL of the runner manager"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
+msgid "URL of the runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
 msgid "Bearer token for the runner manager."
 msgstr ""
 

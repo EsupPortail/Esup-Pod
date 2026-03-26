@@ -179,24 +179,37 @@ def store_after_remote_encoding_video(video_id: int) -> None:
     with open(output_dir + "/info_video.json", encoding="utf-8") as json_file:
         info_video = cast(RemoteEncodingInfo, json.load(json_file))
 
+    # Update only required fields to avoid overwriting unrelated values
+    # (e.g., thumbnail assigned later in the workflow).
+    Video.objects.filter(id=video_id).update(
+        duration=info_video["duration"],
+        encoding_in_progress=True,
+    )
     video_to_encode.duration = info_video["duration"]
     video_to_encode.encoding_in_progress = True
-    video_to_encode.save()
 
     msg += remote_video_part(video_to_encode, info_video, output_dir)
     msg += remote_audio_part(video_to_encode, info_video, output_dir)
 
-    video_encoding = Video.objects.get(id=video_id)
+    if (
+        info_video.get("has_stream_thumbnail")
+        and info_video.get("encode_thumbnail")
+        and Video.objects.filter(id=video_id, thumbnail__isnull=True).exists()
+    ):
+        warning_msg = (
+            "WARNING thumbnail still missing after import_remote_thumbnail execution"
+        )
+        add_encoding_log(video_id, warning_msg)
+        msg += "\n- %s" % warning_msg
 
     if not info_video["has_stream_video"]:
-        video_encoding.is_video = False
-        video_encoding.save()
+        Video.objects.filter(id=video_id).update(is_video=False)
 
     add_encoding_log(video_id, msg)
     change_encoding_step(video_id, 0, "done")
 
-    video_encoding.encoding_in_progress = False
-    video_encoding.save()
+    Video.objects.filter(id=video_id).update(encoding_in_progress=False)
+    video_encoding = Video.objects.get(id=video_id)
 
     add_encoding_log(video_id, "End: %s" % time.ctime())
     with open(output_dir + "/encoding.log", "a") as f:
@@ -380,6 +393,7 @@ def import_remote_thumbnail(
 
     checked_thumbnail_files: list[str] = []
     selected_thumbnail: CustomImageModel | None = None
+    stored_thumbnail_ids: list[int] = []
     for thumbnail_data in ordered_thumbnails:
         thumbnail_name = thumbnail_data.get("filename")
         if not thumbnail_name:
@@ -395,13 +409,37 @@ def import_remote_thumbnail(
             thumbnailfilename,
             thumbnail_name,
         )
+        stored_thumbnail_ids.append(stored_thumbnail.id)
         if selected_thumbnail is None:
             selected_thumbnail = stored_thumbnail
         msg += "\n- thumbnailfilename:\n%s" % thumbnailfilename
 
     if selected_thumbnail is not None:
+        # Persist only the thumbnail relation to avoid clobbering other fields.
+        Video.objects.filter(id=video_to_encode.id).update(thumbnail=selected_thumbnail)
         video_to_encode.thumbnail = selected_thumbnail
-        video_to_encode.save()
+        msg += "\n- selected_thumbnail_id:\n%s" % selected_thumbnail.id
+        persisted_thumbnail_id = (
+            Video.objects.filter(id=video_to_encode.id)
+            .values_list("thumbnail_id", flat=True)
+            .first()
+        )
+        msg += "\n- persisted_thumbnail_id:\n%s" % persisted_thumbnail_id
+        add_encoding_log(
+            video_to_encode.id,
+            "- selected_thumbnail_id:\n%s\n- persisted_thumbnail_id:\n%s"
+            % (selected_thumbnail.id, persisted_thumbnail_id),
+        )
+        if persisted_thumbnail_id is None and stored_thumbnail_ids:
+            fallback_thumbnail = stored_thumbnail_ids[0]
+            Video.objects.filter(id=video_to_encode.id).update(
+                thumbnail_id=fallback_thumbnail
+            )
+            msg += "\n- thumbnail_fallback_id:\n%s" % fallback_thumbnail
+            add_encoding_log(
+                video_to_encode.id,
+                "- thumbnail_fallback_id:\n%s" % fallback_thumbnail,
+            )
         return msg
 
     missing_files = ", ".join(checked_thumbnail_files) or "missing data"

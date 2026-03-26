@@ -9061,11 +9061,11 @@ msgstr "Bonjour %(name)s,"
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid ""
-"Your video entitled <a href=\"//%(url)s\">“%(title)s”</a> will soon arrive "
-"at the deletion deadline."
+"Your video entitled <a href=\"%(scheme)s:%(url)s\">“%(title)s”</a> will soon "
+"arrive at the deletion deadline."
 msgstr ""
-"Votre vidéo intitulée « <a href=\"//%(url)s\">%(title)s</a> » arrive bientôt "
-"à la date limite de suppression."
+"Votre vidéo intitulée « <a href=\"%(scheme)s:%(url)s\">%(title)s</a> » "
+"arrive bientôt à la date limite de suppression."
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
