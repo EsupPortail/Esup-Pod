@@ -308,6 +308,42 @@ def _try_send_to_rm(
         return None
 
 
+def _parse_runner_response(
+    rm: RunnerManager, response: requests.Response
+) -> Optional[RunnerManagerResponse]:
+    """Parse and validate a runner manager HTTP response.
+
+    Returns None when the response body is not a valid JSON payload expected from
+    the runner manager (for example an HTML error page returned by a reverse proxy
+    with HTTP 200).
+    """
+    if not response.content:
+        return {}
+
+    try:
+        payload = response.json()
+    except ValueError:
+        content_type = response.headers.get("Content-Type", "")
+        log.warning(
+            "Runner manager %s returned HTTP 200 with non-JSON body "
+            "(Content-Type=%s). Trying next one.",
+            rm.name,
+            content_type or "unknown",
+        )
+        return None
+
+    if not isinstance(payload, dict):
+        log.warning(
+            "Runner manager %s returned an unexpected JSON payload type (%s). "
+            "Trying next one.",
+            rm.name,
+            type(payload).__name__,
+        )
+        return None
+
+    return cast(RunnerManagerResponse, payload)
+
+
 def _prestore_encoding_if_needed(
     *,
     task_type: TaskType,
@@ -360,8 +396,10 @@ def _submit_to_runner_manager(
     log.info(
         f"Runner manager {rm.name} is available to process {task_type} for {source_type} {video_id or recording_id}."
     )
-    # Runner may reply with no body; keep an empty payload in that case.
-    payload = cast(RunnerManagerResponse, response.json() if response.content else {})
+    payload = _parse_runner_response(rm, response)
+    if payload is None:
+        return False
+
     _update_task_from_response(video_id, recording_id, task_type, rm, payload)
     _prestore_encoding_if_needed(
         task_type=task_type,
