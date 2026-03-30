@@ -16,19 +16,7 @@ from chunked_upload.views import ChunkedUploadCompleteView, ChunkedUploadView
 from dateutil.parser import parse
 from django.conf import settings
 
-from django.core.exceptions import PermissionDenied, SuspiciousOperation
-from django.core.handlers.wsgi import WSGIRequest
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Count, F, Q, Case, When, Value, BooleanField
-from django.db.models.functions import Concat
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse, HttpResponsePermanentRedirect
-from django.http import HttpResponseNotFound
-from django.http import HttpResponseForbidden, HttpResponseBadRequest
-from django.http import QueryDict, Http404
-from django.views.decorators.csrf import csrf_protect
+from django.http import HttpResponsePermanentRedirect
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -93,46 +81,15 @@ from pod.playlist.utils import (
     user_can_see_playlist_video,
 )
 
-from pod.video.forms import (
-    AdvancedNotesForm,
-    ChannelForm,
-    FrontThemeForm,
-    NoteCommentsForm,
-    VideoDeleteForm,
-    VideoForm,
-    VideoPasswordForm,
-    VideoVersionForm,
-)
-from pod.video.utils import get_videos as video_get_videos
-from pod.video.models import Video
-from pod.video.models import Type
-from pod.video.models import Channel
-from pod.video.models import Theme
-from pod.video.models import Discipline
-from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
-from pod.video.models import ViewCount, VideoVersion
-from pod.video.models import Comment, Vote, Category
-from pod.video.models import get_transcription_choices
-from pod.video.models import UserMarkerTime, VideoAccessToken
+
 from pod.video.forms import VideoForm, VideoVersionForm, NameForm
 from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
-from pod.video.rest_views import ChannelSerializer
 
-from .utils import (
-    pagination_data,
-    get_headband,
-    change_owner,
-    get_id_from_request,
-    get_filtered_categories_for_user,
-    get_filtered_types_for_videos,
-    get_filtered_disciplines_for_videos,
-    get_filtered_tags_for_videos,
-    get_filtered_owners_for_videos,
-)
+
 from pod.video.models import (
     NOTES_STATUS,
     AdvancedNotes,
@@ -168,11 +125,8 @@ from .utils import (
     sort_videos_list,
 )
 
-# from django.contrib.auth.hashers import check_password
-
-
-#from ..custom.settings_local import ENABLE_PAGE_OBSO_MAIL, RALLONGE_RESPIT_DAYS, WARN_DEADLINES
 from ..custom.settings_local import WARN_DEADLINES
+
 RALLONGE_RESPIT_DAYS = getattr(settings, "RALLONGE_RESPIT_DAYS", 365)
 ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 
@@ -3976,89 +3930,105 @@ def get_owners_for_videos_on_dashboard(request):
 
     return HttpResponse(json.dumps(users_list), content_type="application/json")
 
+
 @login_required(redirect_field_name="referrer")
 def video_respit(request, slug):
+    """
+    This function will render the interface which is reachable by the user from the reminder email with the concerned link.
+    The interface allows to extend, archive or delete a video in the appropriated context.
+    """
     display_or_not = able_or_not_respit(slug)
     form = NameForm(request.POST)
 
     return render(
         request,
         "videos/video_respist_choice.html",
-        {"form": form, "slug" : slug, "video" : Video.objects.get(slug=slug), "ENABLE_PAGE_OBSO_MAIL" : ENABLE_PAGE_OBSO_MAIL, "display_or_not" : display_or_not },
+        {
+            "form": form,
+            "slug": slug,
+            "video": Video.objects.get(slug=slug),
+            "ENABLE_PAGE_OBSO_MAIL": ENABLE_PAGE_OBSO_MAIL,
+            "display_or_not": display_or_not,
+        },
     )
 
-def valid_form_respit(request, slug=None):
-    #from pod.video.management.commands import check_obsolete_videos
 
-    user=request.user
+def valid_form_respit(request, slug=None):
+    """
+    This function will launch the appropriate code and render the appropriate interface after the submission of the video respit form.
+    """
+    user = request.user
     if request.method == "POST":
         if user.is_authenticated:
-            action = request.POST['action']
-            if (action =="Supprimer"): #Si l'utilisateur sélectionne l'action "supprimer" dans l'interface
-                return HttpResponsePermanentRedirect("/video/delete/"+slug)
-            if (action =="Prolonger"): #Si l'utilisateur sélectionne l'action "prolonger" dans l'interface
-                if able_or_not_respit(slug) == True:
-                    #vivi = Video.objects.get(slug=slug)
-                    #vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
-                    #vivi.save()
-                    #return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)
+            action = request.POST["action"]
+            if (
+                action == "Delete"
+            ):  # Si l'utilisateur sélectionne l'action "supprimer" dans l'interface
+                return HttpResponsePermanentRedirect("/video/delete/" + slug)
+            if (
+                action == "Extend"
+            ):  # Si l'utilisateur sélectionne l'action "prolonger" dans l'interface
+                if able_or_not_respit(slug) is True:
                     return render(
                         request,
-                        "videos/prolong_or_not.html", {"slug" : slug, "RALLONGE_RESPIT_DAYS" : RALLONGE_RESPIT_DAYS}
+                        "videos/prolong_or_not.html",
+                        {"slug": slug, "RALLONGE_RESPIT_DAYS": RALLONGE_RESPIT_DAYS},
                     )
                 else:
-                    raise Exception('Vous ne pouvez pas prolonger plus votre video')
-                    print ('')
-            if (action =="Archiver"):
-                #cmd = check_obsolete_videos.Command()
-                #cmd.archive_isolate(Video.objects.get(slug=slug))
-                #return HttpResponsePermanentRedirect("/video/well/archived/or/not/"+slug)
-                return render(
-                    request,
-                    "videos/archive_or_not.html", {"slug" : slug}
-                )
+                    raise Exception("Vous ne pouvez pas prolonger plus votre video")
+                    print("")
+            if action == "Archive":
+                return render(request, "videos/archive_or_not.html", {"slug": slug})
+
 
 @login_required(redirect_field_name="referrer")
-def well_archived_or_not(request,slug):
-
+def well_archived_or_not(request, slug):
+    """
+    This function will say if the archive action has succeed or not and display this message in an interface.
+    """
     try:
-        vid = Video.objects.get(slug=slug)
+        Video.objects.get(slug=slug)
         exist = True
     except Video.DoesNotExist:
         exist = False
 
-    return render(
-        request,
-        "videos/well_archived.html", {"exist" : exist}
-    )
+    return render(request, "videos/well_archived.html", {"exist": exist})
+
 
 @login_required(redirect_field_name="referrer")
-def well_prolonged_or_not(request,slug):
-
+def well_prolonged_or_not(request, slug):
+    """
+    This function will say if the extend action has succeed or not and display this message in an interface.
+    """
     vid = Video.objects.get(slug=slug)
 
     return render(
-        request,
-        "videos/well_prolonged.html", {"new_date_delete" : vid.date_delete}
+        request, "videos/well_prolonged.html", {"new_date_delete": vid.date_delete}
     )
 
+
 @login_required(redirect_field_name="referrer")
-def archive_and_download(request,slug):
+def archive_and_download(request, slug):
+    """
+    This function will create a zip archive package and launch a download of it in the user browser.
+    """
     from pod.video.management.commands import create_archive_package
+
     cmd = create_archive_package.Command()
     url = cmd.archive_download_isolate(slug)
 
-    return render(
-        request,
-        "videos/archive_download.html", {"url" : url, "slug" : slug}
-    )
+    return render(request, "videos/archive_download.html", {"url": url, "slug": slug})
+
 
 def able_or_not_respit(slug):
+    """
+    This function will say if we have the right conditions to display the respit form or not.
+    """
     ###########################
     # Calcul control access
     ###########################
     all_warn = WARN_DEADLINES
-    higher_warn=0
+    higher_warn = 0
 
     for aw in all_warn:
         if higher_warn <= aw:
@@ -4067,7 +4037,7 @@ def able_or_not_respit(slug):
     vid = Video.objects.get(slug=slug)
 
     step_date = vid.date_delete - timedelta(days=higher_warn)
-    display_or_not  = date.today() >= step_date
+    display_or_not = date.today() >= step_date
     ###########################
     ###########################
 
@@ -4075,17 +4045,23 @@ def able_or_not_respit(slug):
 
 
 def go_archive(request, slug=None):
-    if able_or_not_respit(slug) == True and ENABLE_PAGE_OBSO_MAIL:
+    """
+    This function will launch a archive process and say if it has worked or not on an interface.
+    """
+    if able_or_not_respit(slug) is True and ENABLE_PAGE_OBSO_MAIL:
         from pod.video.management.commands import check_obsolete_videos
 
         cmd = check_obsolete_videos.Command()
         cmd.archive_isolate(Video.objects.get(slug=slug))
-        return HttpResponsePermanentRedirect("/video/well/archived/or/not/"+slug)
+        return HttpResponsePermanentRedirect("/video/well/archived/or/not/" + slug)
 
 
 def go_prolong(request, slug):
-    if able_or_not_respit(slug) == True and ENABLE_PAGE_OBSO_MAIL:
+    """
+    This function will extend a video about RALLONGE_RESPIT_DAYS days and display the new delete_date.
+    """
+    if able_or_not_respit(slug) is True and ENABLE_PAGE_OBSO_MAIL:
         vivi = Video.objects.get(slug=slug)
-        vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)#step_day)
+        vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)
         vivi.save()
-        return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/"+slug)
+        return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/" + slug)

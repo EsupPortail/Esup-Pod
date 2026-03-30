@@ -11468,6 +11468,19 @@ msgstr "Le téléchargement de votre archive va se lancer."
 
 msgid "Please Wait."
 msgstr "Veuillez patienter."
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "You can decide to extend your video, to archive it (won't be available anymore)"
+msgstr "Vous pouvez décidez de prolonger votre vidéo, de l'archiver (ne sera plus accessible)"
+
+msgid "You can decide to archive your video (won't be available anymore)"
+msgstr "Vous pouvez décidez d'archiver votre vidéo (ne sera plus accessible)"
+
+msgid ", to remove it, and to download it with the concerned datas, by clicking here :"
+msgstr ", de la supprimer, ainsi que de la télécharger avec toutes les données la concernant en cliquant ici :"
+
+msgid "Apply my choice."
+msgstr "Appliquez mon choix."
 #, fuzzy, python-format
 #~| msgid "%(counter)s video found"
 #~| msgid_plural "%(counter)s videos found"

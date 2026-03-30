@@ -3434,11 +3434,11 @@
                              ""
                             ],
                             "fr": [
-                              "Choix du modèle pour le calcul du répis. C'est le script qui sera éxécuté par la commande 'respit_launcher' dans le but de rallonger la durée de vie des vidéos selon un modèle personnalisé."
+                              "Choice of the calculation model for the video respit. That's the script that will be executed by the command 'respit_launcher' in the purpose of extand the video life span with a custom calculation process."
                             ]
                           },
                           "pod_version_end": "",
-                          "pod_version_init": "4.1.0"
+                          "pod_version_init": "4.3.0"
                         },
                         "ENABLE_PAGE_OBSO_MAIL": {
                           "default_value": false,
@@ -3447,11 +3447,11 @@
                               ""
                             ],
                             "fr": [
-                              "Détermine si l'on active l'envoie d'un lien pour décider du destin de la vidéo lors du rappel envoyé par check_obsolete_video"
+                              "Détermines if we enable a link send to take a decision about the futur of the concerned video during the reminder campaign sent by check_obsolete_video"
                           ]
                           },
                           "pod_version_end": "",
-                          "pod_version_init": "4.1.0"
+                          "pod_version_init": "4.3.0"
                         },
                         "PROLONGATION_GRANTED": {
                           "default_value": false,
@@ -3460,11 +3460,11 @@
                              ""
                            ],
                             "fr": [
-                              "Détermine si oui ou non on autorise l'utilisateur à prolonger lui même sa vidéo sur la plateforme lors de l’envoi du mail."
+                              "Détermines if we grant or not the user to extend himself his video on the plaform plateforme across the reminder mail."
                             ]
                           },
                           "pod_version_end": "",
-                          "pod_version_init": "4.1.0"
+                          "pod_version_init": "4.3.0"
                         }
                     },
                     "title": {

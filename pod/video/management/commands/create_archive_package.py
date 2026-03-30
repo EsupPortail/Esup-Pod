@@ -262,7 +262,7 @@ class Command(BaseCommand):
                 total_duration += vid.duration
                 total_processed += 1
                 if os.access(vid.video.path, os.F_OK):
-                    total_weight += os.path.getsize(vfid.video.path)
+                    total_weight += os.path.getsize(vid.video.path)
                 list_video.append(str(vid))
                 self.archive_pack(video_dir, csv_entry["User name"], vid)
             else:
@@ -333,7 +333,7 @@ class Command(BaseCommand):
         )
         print("Summary sent by email to managers.")
 
-    def archive_download_isolate(self,slug):
+    def archive_download_isolate(self, slug):
         print("################ GO ################")
         """Handle a command call."""
         activate(LANGUAGE_CODE)
@@ -346,8 +346,11 @@ class Command(BaseCommand):
 
         # Create video folder
         import os.path
+
         STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR))
-        mediaPackage_dir = os.path.join(STATIC_ROOT+"/pod/media/video_package", "", video_dir)
+        mediaPackage_dir = os.path.join(
+            STATIC_ROOT + "/pod/media/video_package", "", video_dir
+        )
 
         # Create directory to store all the data
         os.makedirs(mediaPackage_dir, exist_ok=True)
@@ -397,14 +400,18 @@ class Command(BaseCommand):
             mediaPackage_dir,
         )
 
-        zip_name = os.path.join(STATIC_ROOT+"/pod/media/video_package", "", "")+"/"+vid.slug
+        zip_name = (
+            os.path.join(STATIC_ROOT + "/pod/media/video_package", "", "")
+            + "/"
+            + vid.slug
+        )
         directory_name = mediaPackage_dir
 
         # Create 'path\to\zip_file.zip'
-        shutil.make_archive(zip_name, 'zip', directory_name)
+        shutil.make_archive(zip_name, "zip", directory_name)
 
-        #remove old temp folder
+        # remove old temp folder
         path = os.path.join(mediaPackage_dir, "")
         shutil.rmtree(path)
 
-        return "/media/video_package/"+vid.slug+".zip"
+        return "/media/video_package/" + vid.slug + ".zip"
