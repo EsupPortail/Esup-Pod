@@ -173,6 +173,21 @@ def _attach_dressing_info(parameters: ParametersDict, video: Video) -> None:
         log.error(f"Error obtaining dressing for video {video.id}: {str(exc)}")
 
 
+def _attach_video_metadata(parameters: ParametersDict, video: Video) -> None:
+    """Attach lightweight video metadata when available."""
+    video_id = getattr(video, "id", None)
+    if video_id is not None:
+        parameters["video_id"] = int(video_id)
+
+    video_slug = getattr(video, "slug", None)
+    if video_slug:
+        parameters["video_slug"] = str(video_slug)
+
+    video_title = getattr(video, "title", None)
+    if video_title:
+        parameters["video_title"] = str(video_title)
+
+
 def _prepare_encoding_parameters(
     video: Optional[Video] = None,
 ) -> ParametersDict:
@@ -180,16 +195,20 @@ def _prepare_encoding_parameters(
 
     Args:
         video: Video object (for video encoding).
-               For studio recordings, pass None as cut info doesn't apply.
+               For studio recordings, pass None as video-specific metadata,
+               cut and dressing info do not apply.
 
     Returns:
-        Dictionary with rendition and optionally cut information
+        Dictionary with rendition and, when a video is provided, optional
+        cut info, optional dressing info, and video metadata
+        (video_id, video_slug, video_title).
     """
     parameters = _build_rendition_parameters()
 
     if video:
         _attach_cut_info(parameters, video)
         _attach_dressing_info(parameters, video)
+        _attach_video_metadata(parameters, video)
 
     return parameters
 
@@ -665,6 +684,7 @@ def _prepare_transcription_parameters(video: Video) -> ParametersDict:
             # Text normalization (punctuation/casing) on runner side if supported
             "normalize": normalize,
         }
+        _attach_video_metadata(params, video)
         # If needed in future, we can add model size or other options here
         if transcription_type:
             params["model_type"] = transcription_type
@@ -674,7 +694,9 @@ def _prepare_transcription_parameters(video: Video) -> ParametersDict:
         return params
     except Exception:
         # Keep legacy key name for backward compatibility with older runners.
-        return {"lang": getattr(video, "transcript", "") or ""}
+        params: ParametersDict = {"lang": getattr(video, "transcript", "") or ""}
+        _attach_video_metadata(params, video)
+        return params
 
 
 def _edit_task(
