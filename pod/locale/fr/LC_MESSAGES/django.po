@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-27 14:05+0100\n"
+"POT-Creation-Date: 2026-03-30 12:16+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -7402,10 +7402,6 @@ msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
-msgid "Delete the playlist"
-msgstr "Supprimer la liste de lecture"
-
-#: pod/playlist/views.py
 #, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr "Modifier la liste de lecture « %(pname)s »"
@@ -9836,6 +9832,12 @@ msgstr "Ce contenu est en accès restreint."
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
+#: pod/video/templates/videos/video_row_select.html
+msgid "This content has an encoding error."
+msgstr "Ce contenu présente une erreur d’encodage."
+
+#: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
 #: pod/video/templatetags/video_tags.py
 msgid "This content is chaptered."
 msgstr "Ce contenu est chapitré."
@@ -10481,6 +10483,32 @@ msgstr "Ajouter une nouvelle vidéo"
 #: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently waiting for encoding."
 msgstr "La vidéo est actuellement en attente d’encodage."
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"The source file does not appear to be a valid video file. Please re-upload a "
+"valid video file."
+msgstr ""
+"Le fichier source ne semble pas être un fichier vidéo valide. "
+"Veuillez mettre en ligne à nouveau un fichier vidéo valide."
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"The input video duration is 0 seconds. Please re-upload a valid video file."
+msgstr ""
+"La durée de la vidéo source est de 0 seconde. "
+"Veuillez mettre en ligne à nouveau un fichier vidéo valide."
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"An error occurred while processing this video. Our administrators have "
+"already been notified."
+msgstr ""
+"Une erreur s’est produite lors du traitement de cette vidéo. Nos administrateurs en ont "
+"déjà été informés."
 
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
@@ -11393,6 +11421,8 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#~ msgid "Delete the playlist"
+#~ msgstr "Supprimer la liste de lecture"
 
 #~ msgid ""
 #~ "\n"
