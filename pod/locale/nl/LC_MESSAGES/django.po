@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-13 09:52+0100\n"
+"POT-Creation-Date: 2026-03-30 12:16+0200\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -185,7 +185,8 @@ msgstr ""
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz.html pod/recorder/models.py
 #: pod/video/models.py pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
+#: pod/video/templates/videos/videos.html pod/video_encode_transcript/admin.py
+#: pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr ""
 
@@ -226,8 +227,8 @@ msgid "Enter the ID of the enhancement in Aristote"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
-#: pod/dressing/models.py pod/video/apps.py pod/video/models.py
-#: pod/video/templates/videos/video_breadcrumbs.html
+#: pod/dressing/models.py pod/video/admin.py pod/video/apps.py
+#: pod/video/models.py pod/video/templates/videos/video_breadcrumbs.html
 #: pod/video/templates/videos/videos.html
 msgid "Videos"
 msgstr ""
@@ -731,8 +732,8 @@ msgid "The file must be in VTT format."
 msgstr ""
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
-#: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
-#: pod/video_encode_transcript/utils.py
+#: pod/playlist/templates/playlist/playlist_card.html pod/video/admin.py
+#: pod/video/models.py pod/video_encode_transcript/utils.py
 msgid "video"
 msgstr ""
 
@@ -5741,7 +5742,7 @@ msgstr ""
 msgid "Meeting session logs"
 msgstr ""
 
-#: pod/meeting/models.py
+#: pod/meeting/models.py pod/video_encode_transcript/admin.py
 msgid "Recording ID"
 msgstr ""
 
@@ -5875,6 +5876,7 @@ msgid "To delete the meeting, please check the box in and click delete."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside.html pod/video/views.py
+#: pod/video_encode_transcript/admin.py
 msgid "Status"
 msgstr ""
 
@@ -6213,7 +6215,7 @@ msgid "Has user joined?"
 msgstr ""
 
 #: pod/meeting/views.py pod/recorder/models.py
-#: pod/video_encode_transcript/models.py
+#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
 msgid "Recording"
 msgstr ""
 
@@ -6929,10 +6931,6 @@ msgid "The playlist has been deleted."
 msgstr ""
 
 #: pod/playlist/views.py
-msgid "Delete the playlist"
-msgstr ""
-
-#: pod/playlist/views.py
 #, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr ""
@@ -7626,7 +7624,7 @@ msgstr ""
 
 #: pod/recorder/admin.py
 #, python-brace-format
-msgid "Recording {item.id} is not a studio recording and can't be encoded"
+msgid "Recording {item.id} is not a studio recording and can’t be encoded"
 msgstr ""
 
 #: pod/recorder/admin.py
@@ -8478,8 +8476,8 @@ msgstr ""
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid ""
-"Your video entitled <a href=\"//%(url)s\">“%(title)s”</a> will soon arrive "
-"at the deletion deadline."
+"Your video entitled <a href=\"%(scheme)s:%(url)s\">“%(title)s”</a> will soon "
+"arrive at the deletion deadline."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -9170,6 +9168,12 @@ msgstr ""
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
+#: pod/video/templates/videos/video_row_select.html
+msgid "This content has an encoding error."
+msgstr ""
+
+#: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
 #: pod/video/templatetags/video_tags.py
 msgid "This content is chaptered."
 msgstr ""
@@ -9254,6 +9258,7 @@ msgid "Clear all filters"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
+#: pod/video/templates/videos/filter_aside_category.html
 msgid "Clear filters"
 msgstr ""
 
@@ -9776,6 +9781,26 @@ msgstr ""
 
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
+msgid ""
+"The source file does not appear to be a valid video file. Please re-upload a "
+"valid video file."
+msgstr ""
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"The input video duration is 0 seconds. Please re-upload a valid video file."
+msgstr ""
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"An error occurred while processing this video. Our administrators have "
+"already been notified."
+msgstr ""
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently being transcripted."
 msgstr ""
 
@@ -10281,6 +10306,23 @@ msgstr ""
 
 #: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
 msgid "resolution"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
+msgid "Active"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+msgid "Inactive"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#: pod/video_encode_transcript/templates/admin_test_connection.html
+msgid "Runner administration"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+msgid "Open runner administration"
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
