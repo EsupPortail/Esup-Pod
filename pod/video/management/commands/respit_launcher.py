@@ -6,12 +6,17 @@ from django.template.defaultfilters import striptags
 
 from pod import settings
 from pod.custom.settings_local import RESPIT_MODEL, WARN_DEADLINES
-from pod.video.models import Video
+from pod.video.models import Video, Channel, Comment, Type, Theme, Category
+
+from pod.playlist.models import Playlist
 
 # https://docs.djangoproject.com/fr/6.0/howto/custom-management-commands/   python3 manage.py respit_launcher
 import time
 
 from django.core.management.base import BaseCommand, CommandError
+
+from django.db.models import Q
+
 
 USE_RESPIT = getattr(settings, "USE_RESPIT", False)
 
@@ -32,9 +37,12 @@ class Command(BaseCommand):
                     higher_warn = aw
 
             notif_list = []
-            for p in Video.objects.raw(
-                'SELECT * FROM video_video WHERE SUBSTRING (title, 1, 7) != "Archivé" AND SUBSTRING (title, 1, 8) != "Archived"'
-            ):
+
+            videos = Video.objects.exclude(
+                Q(title__startswith="Archivé") |
+                Q(title__startswith="Archived")
+            )
+            for p in videos:
 
                 if (p.date_delete - timedelta(days=higher_warn + 1)) <= (date.today()):
                     data_to_add = {}
@@ -70,27 +78,25 @@ class Command(BaseCommand):
 
                     # Nombre de chaines
                     nb_chaine = 0
-                    for vvc in Video.objects.raw(
-                        "SELECT * FROM video_video_channel Where video_id =" + str(p.id)
-                    ):
+
+                    for vvc in Channel.objects.filter(video=p):
                         nb_chaine = nb_chaine + 1
+
                     data_to_add["channel_count"] = nb_chaine
 
                     # Nombre de fois en favoris
                     cfav = 0
-                    for fav in Video.objects.raw(
-                        "SELECT ppone.id FROM video_video vv INNER JOIN playlist_playlistcontent pp ON vv.id = pp.video_id INNER JOIN playlist_playlist ppone ON ppone.id = pp.playlist_id WHERE ppone.name='Favorites' AND vv.id="
-                        + str(p.id)
-                    ):
+
+                    favorites = Playlist.objects.filter(name__exact='Favorites')
+                    favoritesWthP = favorites.filter(playlistcontent__video=p).distinct()
+                    for fw in favoritesWthP:
                         cfav = cfav + 1
 
                     data_to_add["nb_fav"] = cfav
 
                     # nb comment
                     nb_comment = 0
-                    for fav in Video.objects.raw(
-                        "SELECT * FROM video_comment WHERE video_id =" + str(p.id)
-                    ):
+                    for fav in Comment.objects.filter(video=p):
                         nb_comment = nb_comment + 1
 
                     data_to_add["nb_comment"] = nb_comment
@@ -102,49 +108,32 @@ class Command(BaseCommand):
 
                     # video type
                     type = ""
-                    for tv in Video.objects.raw(
-                        "SELECT vv.id, vt.title AS title_type FROM video_video vv LEFT JOIN video_type vt ON vv.type_id = vt.id WHERE vv.id = "
-                        + str(p.id)
-                    ):
-                        type = tv.title_type
+                    for tv in Type.objects.filter(video=p):
+                        type = tv.title
 
                     data_to_add["type_video"] = type
 
                     # Video Theme
-                    sqltheme = (
-                        "SELECT vv.id, vv.title, vt.id AS theme_id, vt.title AS theme_name FROM video_video_channel vvc INNER JOIN video_video vv ON vv.id = vvc.video_id INNER JOIN video_theme vt "
-                        + "ON vt.channel_id = vvc.id WHERE vv.id = "
-                        + str(p.id)
-                    )
                     theme_list = []
-                    for vthe in Video.objects.raw(sqltheme):
-                        theme_list.append(vthe.theme_name)
+                    for vthe in Theme.objects.filter(video=p):
+                        theme_list.append(vthe.title)
 
                     data_to_add["themes_video"] = theme_list
 
                     # Video Owner
-                    for ow in Video.objects.raw(
-                        "SELECT v.id, au.username, au.email FROM video_video v INNER JOIN auth_user au ON v.owner_id = au.id  Where v.id ="
-                        + str(p.id)
-                    ):
-                        data_to_add["owner_video"] = ow.username
+                    for ow in Video.objects.filter(id=p.id):
+                        data_to_add["owner_video"] = ow.owner.username
 
                     # Video Owner Additionnal
                     additionnal_owner_list = []
-                    for owc in Video.objects.raw(
-                        "SELECT au.id, au.username, au.email FROM video_video_additional_owners vvao LEFT JOIN auth_user au ON au.id = vvao.user_id  WHERE vvao.video_id = "
-                        + str(p.id)
-                    ):
+                    for owc in p.additional_owners.all():
                         additionnal_owner_list.append(owc.username)
 
                     data_to_add["owner_video_additional"] = additionnal_owner_list
 
                     # Categorie
                     category_list = []
-                    for cat in Video.objects.raw(
-                        "SELECT vc.id, vc.slug FROM video_category_video vcv INNER JOIN video_category vc ON vc.id = vcv.category_id WHERE video_id="
-                        + str(p.id)
-                    ):
+                    for cat in Category.objects.filter(video=p):
                         category_list.append(cat.slug)
 
                     data_to_add["category_list"] = category_list
