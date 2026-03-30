@@ -34,7 +34,7 @@ from pod.video_encode_transcript.runner_manager_utils import (
 )
 from pod.video_encode_transcript.task_queue import refresh_pending_task_ranks
 from pod.video_encode_transcript.transcript import save_vtt_and_notify
-from pod.video_encode_transcript.utils import send_email_item
+from pod.video_encode_transcript.utils import change_encoding_step, send_email_item
 
 log = logging.getLogger(__name__)
 
@@ -267,6 +267,17 @@ def _apply_notify_payload_to_task(task: Task, data: NotifyTaskPayload) -> None:
 
     task.script_output = script_output
     task.save()
+
+    if task.video_id and task.status in {"failed", "timeout"}:
+        detail = (
+            data.get("error_message")
+            or data.get("script_output")
+            or f"Runner manager task {task.status}"
+        )
+        # Keep video state aligned with task state for admin visibility.
+        change_encoding_step(task.video_id, -1, str(detail))
+        Video.objects.filter(id=task.video_id).update(encoding_in_progress=False)
+
     refresh_pending_task_ranks()
 
 
