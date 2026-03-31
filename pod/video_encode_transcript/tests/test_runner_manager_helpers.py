@@ -1,4 +1,4 @@
-"""Focused unit tests to maximize coverage of runner_manager helpers."""
+"""Focused unit tests for Esup-Pod to maximize coverage of runner_manager helpers."""
 
 import json
 import sys
