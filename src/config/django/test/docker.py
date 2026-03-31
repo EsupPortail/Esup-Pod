@@ -1,5 +1,5 @@
 """
-Docker-based testing configuration.
+Esup-Pod - Docker-based testing configuration.
 
 Optimized settings for running tests within a Docker container.
 Enhances execution speed by using MD5 password hashing and synchronous Celery tasks.
@@ -9,6 +9,7 @@ Usage:
     export DJANGO_SETTINGS_MODULE=config.django.test.docker
     python manage.py test
 """
+
 from config.django.test.init_env import *  # noqa: F401, F403 # isort:skip
 from config.django.dev.docker import *  # noqa: F401, F403
 from config.env import env

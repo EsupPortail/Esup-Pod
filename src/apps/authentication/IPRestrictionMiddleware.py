@@ -8,10 +8,11 @@ import ipaddress
 
 from django.utils.translation import gettext_lazy as _
 
+from django.conf import settings
+
 
 def ip_in_allowed_range(ip) -> bool:
-    """Make sure the IP is one of the authorized ones."""
-    from django.conf import settings
+    """Check if the provided IP is within the allowed ranges for superusers."""
 
     ALLOWED_SUPERUSER_IPS = getattr(settings, "ALLOWED_SUPERUSER_IPS", [])
 
@@ -34,7 +35,7 @@ def ip_in_allowed_range(ip) -> bool:
 
 
 def is_allowed(ip_obj, allowed):
-    """Check if ip object is included in allowed list."""
+    """Determine if an IP object matches a specific allowed entry (IP or CIDR)."""
     if "/" in allowed:
         net = ipaddress.ip_network(allowed, strict=False)
         if ip_obj in net:
@@ -46,10 +47,14 @@ def is_allowed(ip_obj, allowed):
 
 
 class IPRestrictionMiddleware:
+    """Middleware to enforce IP-based restrictions for Django superusers."""
+
     def __init__(self, get_response) -> None:
+        """Initialize the middleware."""
         self.get_response = get_response
 
     def __call__(self, request):
+        """Process the request and enforce IP restrictions for superusers."""
         ip = request.META.get("REMOTE_ADDR")
         user = request.user
 

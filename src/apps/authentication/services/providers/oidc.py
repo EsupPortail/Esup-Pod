@@ -1,29 +1,38 @@
+"""
+Esup-Pod - OIDC authentication provider service.
+"""
+
 import logging
-from typing import Any, Dict
-
 import requests
-from django.conf import settings
-from django.contrib.auth import get_user_model
 
-from ..core import OIDC_CLAIM_PREFERRED_USERNAME
+from ...conf import auth_settings
+from config.env import env
+from src.config.defaults import authentication as defaults
 from ..tokens import get_tokens_for_user
 from ..users import UserPopulator
+from django.contrib.auth import get_user_model
+from typing import Any, Dict
 
 UserModel = get_user_model()
 logger = logging.getLogger(__name__)
 
 
 class OIDCService:
+    """
+    Handles OpenID Connect (OIDC) authentication flow, including code exchange
+    and user profile population.
+    """
     def process_code(self, code: str, redirect_uri: str) -> Dict[str, Any]:
         """Exchange OIDC code for tokens and populate user."""
-        token_url = getattr(settings, "OIDC_OP_TOKEN_ENDPOINT", "")
-        client_id = getattr(settings, "OIDC_RP_CLIENT_ID", "")
-        client_secret = getattr(settings, "OIDC_RP_CLIENT_SECRET", "")
+
+        token_url = env("OIDC_OP_TOKEN_ENDPOINT", default=defaults.OIDC_OP_TOKEN_ENDPOINT)
+        client_id = env("OIDC_RP_CLIENT_ID", default=defaults.OIDC_RP_CLIENT_ID)
+        client_secret = env(
+            "OIDC_RP_CLIENT_SECRET", default=defaults.OIDC_RP_CLIENT_SECRET
+        )
 
         if not token_url:
-            raise EnvironmentError(
-                "OIDC not configured (missing OIDC_OP_TOKEN_ENDPOINT)"
-            )
+            raise EnvironmentError("OIDC not configured (missing OIDC_OP_TOKEN_ENDPOINT)")
 
         payload = {
             "grant_type": "authorization_code",
@@ -38,25 +47,28 @@ class OIDCService:
             r_token.raise_for_status()
             tokens_oidc = r_token.json()
             access_token = tokens_oidc.get("access_token")
-        except Exception as e:
-            logger.error(f"OIDC Token Exchange failed: {e}")
+        except requests.exceptions.RequestException as e:
+            logger.error("OIDC token exchange failed: %s", e, exc_info=True)
             raise ConnectionError("Failed to exchange OIDC code")
 
-        userinfo_url = getattr(settings, "OIDC_OP_USER_ENDPOINT", "")
+        userinfo_url = env(
+            "OIDC_OP_USER_ENDPOINT", default=defaults.OIDC_OP_USER_ENDPOINT
+        )
         try:
             headers = {"Authorization": f"Bearer {access_token}"}
             r_user = requests.get(userinfo_url, headers=headers)
             r_user.raise_for_status()
             claims = r_user.json()
-        except Exception as e:
-            logger.error(f"OIDC UserInfo failed: {e}")
-
-            # Additional logging for debugging
-            logger.error(f"OIDC UserInfo Endpoint: {userinfo_url}")
-
+        except requests.exceptions.RequestException as e:
+            logger.error(
+                "OIDC UserInfo request failed (endpoint: %s): %s",
+                userinfo_url,
+                e,
+                exc_info=True,
+            )
             raise ConnectionError("Failed to fetch OIDC user info")
 
-        username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME)
+        username = claims.get(auth_settings.oidc_claim_preferred_username)
         if not username:
             raise ValueError("Missing username in OIDC claims")
 

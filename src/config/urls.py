@@ -1,12 +1,12 @@
 """
-Main URL configuration.
+Esup-Pod - Main URL configuration.
 
 Defines the root routing for the project, including Admin, API endpoints,
 and Swagger/Redoc documentation. Dynamically configures authentication routes
-(CAS vs. standard login) based on project settings.
+(CAS vs. standard login) based on AuthConfig.
 """
+
 import django_cas_ng.views
-from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
@@ -18,6 +18,10 @@ from drf_spectacular.views import (
 )
 
 from config.router import router
+from src.apps.authentication.conf import auth_settings
+
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     # Redirection to Swagger
@@ -26,6 +30,7 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("api/info/", include("src.apps.info.urls")),
     path("api/auth/", include("src.apps.authentication.urls")),
+    path("api/encoding/", include("src.apps.encoding.urls")),
     # SWAGGER
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
@@ -36,7 +41,7 @@ urlpatterns = [
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]
 
-if getattr(settings, "USE_CAS", False):
+if auth_settings.use_cas:
     urlpatterns += [
         path(
             "accounts/login",
@@ -58,3 +63,6 @@ else:
         ),
         path("accounts/logout", auth_views.LogoutView.as_view(), name="cas_ng_logout"),
     ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

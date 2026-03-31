@@ -1,3 +1,5 @@
 pytest>=7,<9
 pytest-django>=4,<5
 pytest-cov>=4,<6
+flake8
+black

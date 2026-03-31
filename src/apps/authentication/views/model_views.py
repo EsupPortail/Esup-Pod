@@ -1,3 +1,10 @@
+"""
+Esup-Pod - Model viewsets for the authentication app.
+
+This module provides standard ViewSets for User, Group, Site, Owner,
+and AccessGroup models.
+"""
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
@@ -30,6 +37,7 @@ class UserMeView(APIView):
 
     @extend_schema(responses=UserSerializer)
     def get(self, request):
+        """Returns the profile of the current authenticated user."""
         serializer = UserSerializer(request.user)
         data = serializer.data
         if hasattr(request.user, "owner"):
@@ -71,9 +79,7 @@ class OwnerViewSet(viewsets.ModelViewSet):
             )
             return Response(serializer.data)
         except Owner.DoesNotExist:
-            return Response(
-                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=False, methods=["post"], url_path="remove-user-accessgroup")
     def remove_user_accessgroup(self, request):
@@ -97,9 +103,7 @@ class OwnerViewSet(viewsets.ModelViewSet):
             )
             return Response(serializer.data)
         except Owner.DoesNotExist:
-            return Response(
-                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class UserViewSet(viewsets.ModelViewSet):

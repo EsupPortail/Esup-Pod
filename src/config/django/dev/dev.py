@@ -1,4 +1,11 @@
+"""
+Esup-Pod - Development settings.
+
+Configures the environment for local development, including debug mode and enhanced logging.
+"""
+
 import logging
+import os
 import re
 
 import sqlparse
@@ -10,15 +17,29 @@ SHOW_SQL_QUERIES = False
 CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = ["*"]
 
+# Label identifiant le service dans les logs (injecté par docker-compose)
+SERVICE_LABEL = os.environ.get("SERVICE_LABEL", "app").upper()
+
 
 class ColoredFormatter(logging.Formatter):
+    """
+    Logging formatter with ANSI colors for service-based prefixes and log levels.
+    """
     grey = "\x1b[38;20m"
     blue = "\x1b[34;20m"
+    cyan = "\x1b[36;1m"
+    magenta = "\x1b[35;1m"
     green = "\x1b[32;20m"
     yellow = "\x1b[33;20m"
     red = "\x1b[31;20m"
     bold_red = "\x1b[31;1m"
     reset = "\x1b[0m"
+
+    # Couleur par service pour le préfixe
+    SERVICE_COLORS = {
+        "API": "\x1b[36;1m",  # Cyan gras
+        "CELERY": "\x1b[35;1m",  # Magenta gras
+    }
 
     LEVEL_COLORS = {
         logging.DEBUG: blue,
@@ -29,6 +50,7 @@ class ColoredFormatter(logging.Formatter):
     }
 
     def format(self, record):
+        """Processes and colors the log message based on service label and level."""
         color = self.LEVEL_COLORS.get(record.levelno, self.grey)
         record.levelname = f"{color}{record.levelname:<8}{self.reset}"
 
@@ -45,14 +67,22 @@ class ColoredFormatter(logging.Formatter):
                     str(code), f"{code_color}{code}{self.reset}"
                 )
 
+        # Remplace les noms de logger verbeux par des préfixes courts
         if record.name == "django.db.backends":
             record.name = "[DB]"
         elif record.name == "django.server":
             record.name = "[HTTP]"
+        elif record.name.startswith("celery"):
+            record.name = "[CELERY]"
         elif record.name.startswith("django"):
             record.name = "[DJANGO]"
-        if record.name == "[DB]" and sqlparse and hasattr(record, "sql"):
-            pass
+        elif record.name.startswith("src") or record.name.startswith("pod"):
+            record.name = "[APP]"
+
+        # Préfixe de service coloré
+        service = SERVICE_LABEL
+        service_color = self.SERVICE_COLORS.get(service, self.grey)
+        record.service = f"{service_color}[{service}]{self.reset}"
 
         formatted_msg = super().format(record)
 
@@ -67,9 +97,12 @@ class ColoredFormatter(logging.Formatter):
 
 # --- FILTRES ---
 class SkipIgnorableRequests(logging.Filter):
-    """Filtre pour ignorer les bruits de fond du dev server."""
+    """
+    Logging filter to skip noisy requests (static files, favicon, etc.).
+    """
 
     def filter(self, record):
+        """Determines if a log record should be kept based on ignorable patterns."""
         msg = record.getMessage()
         if "/static/" in msg or "/media/" in msg:
             return False
@@ -93,7 +126,7 @@ LOGGING = {
     "formatters": {
         "colored": {
             "()": ColoredFormatter,
-            "format": "%(levelname)s %(asctime)s %(name)-10s %(message)s",
+            "format": "%(service)s %(levelname)s %(asctime)s %(name)-10s %(message)s",
             "datefmt": "%H:%M:%S",
         },
     },
@@ -111,6 +144,7 @@ LOGGING = {
         },
     },
     "loggers": {
+        # --- Django ---
         "django": {
             "handlers": ["console"],
             "level": "INFO",
@@ -126,7 +160,29 @@ LOGGING = {
             "level": "WARNING",
             "propagate": False,
         },
+        # --- Celery ---
+        "celery": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "celery.task": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "celery.app.trace": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        # --- Application ---
         "pod": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "src": {
             "handlers": ["console"],
             "level": "DEBUG",
             "propagate": False,

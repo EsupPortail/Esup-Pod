@@ -1,21 +1,30 @@
 """
-Base Django configuration.
+Esup-Pod - Base Django configuration.
 
 Core settings shared across all environments (dev, test, prod).
 Defines installed apps, middleware, template engines, DRF configuration,
-and static/media file paths. Loads environment variables and imports
-specialized component settings (authentication, swagger).
+and static/media file paths.
+
+REFACTOR NOTE:
+Configuration is now modular. Feature flags and app-specific settings
+should be placed in `src/config/settings/{app_name}.py`.
 """
-import os
+
+import logging
+
 
 from config.env import BASE_DIR, env
 
-# Read .env file
-env.read_env(os.path.join(BASE_DIR, ".env"))
+logger = logging.getLogger(__name__)
+
+# Read .env file (Secrets only) - already handled in config.env
+# env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # Core settings
-POD_VERSION = env("VERSION")
+POD_VERSION = env("VERSION", default="5.0.0-DEV")
+POD_PROJECT_NAME = f"POD V{POD_VERSION.split('.')[0]}"
 SECRET_KEY = env("SECRET_KEY")
+SITE_URL = env("SITE_URL", default="http://localhost:8000")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -34,6 +43,8 @@ INSTALLED_APPS = [
     "src.apps.authentication",
     "src.apps.info",
     "src.apps.core",
+    "src.apps.video",
+    "src.apps.encoding",
 ]
 
 MIDDLEWARE = [
@@ -77,6 +88,14 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Pod REST API",
+    "DESCRIPTION": "Video management API (Local Authentication)",
+    "VERSION": POD_VERSION,
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+}
+
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -91,5 +110,38 @@ SITE_ID = 1
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-from config.settings.authentication import *  # noqa: E402, F401, F403
-from config.settings.swagger import *  # noqa: E402, F401, F403
+# ==============================================================================
+# CELERY CONFIGURATION
+# ==============================================================================
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://redis:6379/0")
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default="redis://redis:6379/0")
+
+# ==============================================================================
+# MODULAR SETTINGS LOADING
+# ==============================================================================
+# 1. Load Defaults: src/config/defaults/{app}.py
+# 2. Load Overrides: src/config/settings/{app}.py (local customization)
+
+APPS_WITH_CUSTOM_SETTINGS = [
+    "authentication",
+    "video",
+    "swagger",
+    "core",
+    "encoding",
+]
+
+
+def _load_settings_from_module(module_path):
+    """Load uppercase settings from a module into globals."""
+    try:
+        mod = __import__(module_path, fromlist=["*"])
+        for setting_name in dir(mod):
+            if setting_name.isupper():
+                globals()[setting_name] = getattr(mod, setting_name)
+    except ImportError:
+        logger.debug("Optional settings module not found, skipping: %s", module_path)
+
+
+for app_config_name in APPS_WITH_CUSTOM_SETTINGS:
+    _load_settings_from_module(f"src.config.defaults.{app_config_name}")
+    _load_settings_from_module(f"src.config.settings.{app_config_name}")

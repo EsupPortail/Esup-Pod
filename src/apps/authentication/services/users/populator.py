@@ -1,13 +1,17 @@
-from typing import Any, Dict, List, Optional
+"""
+Esup-Pod - User and Owner data populator from external sources.
+"""
 
-from django.conf import settings
+from typing import Any, Dict, List, Optional
+import logging
+from ...conf import auth_settings
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
-
 from ...models import AccessGroup, Owner
 from ...models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION
-from ..core import USER_LDAP_MAPPING_ATTRIBUTES
 from ..ldap_client import get_ldap_conn, get_ldap_entry
+
+logger = logging.getLogger(__name__)
 
 
 class UserPopulator:
@@ -16,6 +20,7 @@ class UserPopulator:
     """
 
     def __init__(self, user: Any):
+        """Initializes the populator and ensures an Owner exists for the user."""
         self.user = user
         # Ensure owner exists
         if not hasattr(self.user, "owner"):
@@ -51,9 +56,7 @@ class UserPopulator:
 
     def _populate_from_cas(self, attributes: Dict[str, Any]) -> None:
         """Map CAS attributes to User/Owner."""
-        self.owner.affiliation = attributes.get(
-            "primaryAffiliation", DEFAULT_AFFILIATION
-        )
+        self.owner.affiliation = attributes.get("primaryAffiliation", DEFAULT_AFFILIATION)
 
         # Handle affiliations list for group creation/staff status
         affiliations = attributes.get("affiliation", [])
@@ -93,19 +96,18 @@ class UserPopulator:
 
     def _populate_from_oidc(self, attributes: Dict[str, Any]) -> None:
         """Map OIDC claims to User/Owner."""
-        given_name_claim = getattr(settings, "OIDC_CLAIM_GIVEN_NAME", "given_name")
-        family_name_claim = getattr(settings, "OIDC_CLAIM_FAMILY_NAME", "family_name")
+
+        given_name_claim = auth_settings.oidc_claim_given_name
+        family_name_claim = auth_settings.oidc_claim_family_name
 
         self.user.first_name = attributes.get(given_name_claim, self.user.first_name)
         self.user.last_name = attributes.get(family_name_claim, self.user.last_name)
         self.user.email = attributes.get("email", self.user.email)
 
-        self.owner.affiliation = getattr(
-            settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION
-        )
+        self.owner.affiliation = auth_settings.oidc_default_affiliation
 
         # OIDC default access groups
-        oidc_groups = getattr(settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", [])
+        oidc_groups = auth_settings.oidc_default_access_group_code_names
         self._assign_access_groups(oidc_groups)
 
         # Is user staff?
@@ -126,6 +128,7 @@ class UserPopulator:
             self._apply_ldap_entry(entry)
 
     def _apply_ldap_entry(self, entry: Any) -> None:
+        """Maps LDAP attributes to the user and owner models."""
         self.user.email = self._get_ldap_value(entry, "mail", "")
         self.user.first_name = self._get_ldap_value(entry, "first_name", "")
         self.user.last_name = self._get_ldap_value(entry, "last_name", "")
@@ -143,7 +146,7 @@ class UserPopulator:
         self._process_affiliations(affiliations)
 
         # Groups from LDAP
-        ldap_group_attr = USER_LDAP_MAPPING_ATTRIBUTES.get("groups")
+        ldap_group_attr = auth_settings.ldap_mapping_attributes.get("groups")
         groups_element = []
         if ldap_group_attr and entry[ldap_group_attr]:
             groups_element = entry[ldap_group_attr].values
@@ -152,9 +155,8 @@ class UserPopulator:
 
     def _process_affiliations(self, affiliations: List[str]) -> None:
         """Process list of affiliations to set staff status and create AccessGroups."""
-        create_group_from_aff = getattr(
-            settings, "CREATE_GROUP_FROM_AFFILIATION", False
-        )
+
+        create_group_from_aff = auth_settings.create_group_from_affiliation
         current_site = Site.objects.get_current()
 
         for affiliation in affiliations:
@@ -175,7 +177,8 @@ class UserPopulator:
 
     def _assign_access_groups(self, groups: List[str]) -> None:
         """Assign AccessGroups based on group codes."""
-        create_group_from_groups = getattr(settings, "CREATE_GROUP_FROM_GROUPS", False)
+
+        create_group_from_groups = auth_settings.create_group_from_groups
         current_site = Site.objects.get_current()
 
         for group_code in groups:
@@ -198,10 +201,14 @@ class UserPopulator:
                     accessgroup = AccessGroup.objects.get(code_name=group_code)
                     self.owner.accessgroups.add(accessgroup)
                 except ObjectDoesNotExist:
-                    pass
+                    logger.debug(
+                        "AccessGroup with code_name %r not found in database, skipping.",
+                        group_code,
+                    )
 
     def _get_ldap_value(self, entry: Any, attribute: str, default: Any) -> Any:
-        mapping = USER_LDAP_MAPPING_ATTRIBUTES.get(attribute)
+        """Safely retrieves a value from an LDAP entry using configured mapping."""
+        mapping = auth_settings.ldap_mapping_attributes.get(attribute)
         if mapping and entry[mapping]:
             if attribute == "last_name" and isinstance(entry[mapping].value, list):
                 return entry[mapping].value[0]
@@ -211,7 +218,8 @@ class UserPopulator:
                 return entry[mapping].value
         return default
 
-    @staticmethod
-    def _is_ldap_configured() -> bool:
-        ldap_config = getattr(settings, "LDAP_SERVER", {})
+    def _is_ldap_configured(self) -> bool:
+        """Checks if LDAP settings are present in the configuration."""
+
+        ldap_config = auth_settings.ldap_server
         return bool(ldap_config.get("url"))

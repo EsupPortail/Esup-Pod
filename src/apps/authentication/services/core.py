@@ -1,12 +1,17 @@
+"""
+Esup-Pod - Core authentication services and shared constants.
+
+This module contains configuration settings and utility functions used by
+the different authentication providers.
+"""
+
 from django.conf import settings
 
 from ..models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION
 
 GROUP_STAFF = AFFILIATION_STAFF
 
-CREATE_GROUP_FROM_AFFILIATION = getattr(
-    settings, "CREATE_GROUP_FROM_AFFILIATION", False
-)
+CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
 
 REMOTE_USER_HEADER = getattr(settings, "REMOTE_USER_HEADER", "REMOTE_USER")
 SHIBBOLETH_ATTRIBUTE_MAP = getattr(

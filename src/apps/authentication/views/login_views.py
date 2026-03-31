@@ -1,3 +1,10 @@
+"""
+Esup-Pod - Authentication views for the authentication app.
+
+This module provides views for standard login, CAS, Shibboleth, and OIDC
+authentication methods.
+"""
+
 import logging
 
 from drf_spectacular.utils import extend_schema
@@ -42,6 +49,7 @@ class CASLoginView(APIView):
         request=CASTokenObtainPairSerializer, responses=CASTokenObtainPairSerializer
     )
     def post(self, request, *args, **kwargs):
+        """Processes a CAS ticket exchange for JWT tokens."""
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             return Response(serializer.validated_data, status=status.HTTP_200_OK)
@@ -64,6 +72,7 @@ class ShibbolethLoginView(APIView):
 
     @extend_schema(request=ShibbolethTokenObtainSerializer)
     def get(self, request, *args, **kwargs):
+        """Retrieves tokens for an authenticated Shibboleth user through headers."""
         try:
             tokens = self.service.process_request(request)
             return Response(tokens, status=status.HTTP_200_OK)
@@ -97,6 +106,7 @@ class OIDCLoginView(APIView):
 
     @extend_schema(request=OIDCTokenObtainSerializer)
     def post(self, request, *args, **kwargs):
+        """Exchanges an OIDC auth code for JWT tokens."""
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

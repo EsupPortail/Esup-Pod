@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Swagger/Spectacular configuration.
+"""
+
 from ..django.base import POD_VERSION
 
 SPECTACULAR_SETTINGS = {

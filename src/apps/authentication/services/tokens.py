@@ -1,7 +1,12 @@
+"""
+Esup-Pod - Authentication tokens service.
+"""
+
 from typing import Any, Dict
 
 
 def get_tokens_for_user(user) -> Dict[str, Any]:
+    """Generates a pair of JWT tokens for a given user."""
     from rest_framework_simplejwt.tokens import RefreshToken
 
     refresh = RefreshToken.for_user(user)

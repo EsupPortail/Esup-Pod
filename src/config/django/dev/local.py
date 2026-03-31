@@ -1,5 +1,5 @@
 """
-Local development configuration (Non-Docker).
+Esup-Pod - Local development configuration (Non-Docker).
 
 Lightweight setup to run directly on the host machine without containers.
 Replaces MySQL with SQLite, Redis with local memory, and outputs emails to the console.
@@ -8,6 +8,7 @@ Usage:
     export DJANGO_SETTINGS_MODULE=config.django.dev.local
     python manage.py runserver
 """
+
 from config.env import BASE_DIR
 
 from .dev import *  # noqa: F401, F403

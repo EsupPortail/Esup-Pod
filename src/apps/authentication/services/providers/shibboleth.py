@@ -1,9 +1,10 @@
+"""
+Esup-Pod - Shibboleth authentication provider service.
+"""
+
 from typing import Any, Dict
-
-from django.conf import settings
+from ...conf import auth_settings
 from django.contrib.auth import get_user_model
-
-from ..core import REMOTE_USER_HEADER, SHIBBOLETH_ATTRIBUTE_MAP
 from ..tokens import get_tokens_for_user
 from ..users import UserPopulator
 
@@ -11,16 +12,19 @@ UserModel = get_user_model()
 
 
 class ShibbolethService:
+    """
+    Handles Shibboleth authentication flow by extracting user attributes
+    from HTTP headers provided by the Service Provider (SP).
+    """
     def check_security(self, request) -> bool:
         """Verify request comes from a trusted source (SP) if configured."""
-        secure_header = getattr(settings, "SHIB_SECURE_HEADER", None)
+        secure_header = auth_settings.shib_secure_header
         if secure_header:
-            return request.META.get(secure_header) == getattr(
-                settings, "SHIB_SECURE_VALUE", "secure"
-            )
+            return request.META.get(secure_header) == auth_settings.shib_secure_value
         return True
 
     def get_header_value(self, request, header_name):
+        """Safely retrieves a value from request.META headers."""
         return request.META.get(header_name, "")
 
     def process_request(self, request) -> Dict[str, Any]:
@@ -28,15 +32,15 @@ class ShibbolethService:
         if not self.check_security(request):
             raise PermissionError("Insecure request. Missing security header.")
 
-        username = self.get_header_value(request, REMOTE_USER_HEADER)
+        username = self.get_header_value(request, auth_settings.remote_user_header)
         if not username:
-            raise ValueError(f"Missing {REMOTE_USER_HEADER} header.")
+            raise ValueError(f"Missing {auth_settings.remote_user_header} header.")
 
         user, created = UserModel.objects.get_or_create(username=username)
 
         # Extract attributes
         shib_meta = {}
-        for header, (required, field) in SHIBBOLETH_ATTRIBUTE_MAP.items():
+        for header, (required, field) in auth_settings.shibboleth_attribute_map.items():
             value = self.get_header_value(request, header)
             if value:
                 shib_meta[field] = value

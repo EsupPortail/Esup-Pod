@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Custom token obtain pair serializer.
+"""
+
 from typing import Any, Dict
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -13,6 +17,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     @classmethod
     def get_token(cls, user) -> Any:
+        """Injects custom claims (username, affiliation) into the JWT token."""
         token = super().get_token(user)
         token["username"] = user.username
         token["is_staff"] = user.is_staff

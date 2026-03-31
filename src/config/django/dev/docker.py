@@ -1,3 +1,7 @@
+"""
+Esup-Pod - Docker development configuration.
+"""
+
 from config.env import env
 
 from .dev import *  # noqa: F401, F403

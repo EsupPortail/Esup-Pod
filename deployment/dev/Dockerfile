@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     netcat-openbsd \
     git \
+    ffmpeg \
     dos2unix \
     tree \
     && rm -rf /var/lib/apt/lists/*

@@ -33,8 +33,7 @@ def main() -> None:
             sys.exit(0)
         except OperationalError:
             print(
-                f"[Python] Database not ready "
-                f"(attempt {attempt}/{MAX_TRIES})...",
+                f"[Python] Database not ready (attempt {attempt}/{MAX_TRIES})...",
                 file=sys.stderr,
             )
             time.sleep(SLEEP_SECONDS)

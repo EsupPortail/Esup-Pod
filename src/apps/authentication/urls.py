@@ -1,5 +1,12 @@
+"""
+Esup-Pod - URL configuration for the authentication app.
+
+This module defines the API endpoints for user authentication, profile management,
+and configuration retrieval. It supports multiple authentication methods including
+standard JWT, CAS, Shibboleth, and OIDC based on settings.
+"""
+
 import django_cas_ng.views
-from django.conf import settings
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
@@ -7,6 +14,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
+from .conf import auth_settings
 from .views import (
     AccessGroupViewSet,
     CASLoginView,
@@ -30,18 +38,18 @@ router.register(r"sites", SiteViewSet)
 router.register(r"access-groups", AccessGroupViewSet)
 
 urlpatterns = [
+    path("users/me/", UserMeView.as_view(), name="user_me"),
     path("", include(router.urls)),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("token/verify/", TokenVerifyView.as_view(), name="token_verify"),
-    path("users/me/", UserMeView.as_view(), name="user_me"),
     path("logout-info/", LogoutInfoView.as_view(), name="api_logout_info"),
     path("config/", LoginConfigView.as_view(), name="api_login_config"),
 ]
 
-if settings.USE_LOCAL_AUTH:
+if auth_settings.use_local_auth:
     urlpatterns.append(path("token/", LoginView.as_view(), name="token_obtain_pair"))
 
-if settings.USE_CAS:
+if auth_settings.use_cas:
     urlpatterns.append(
         path("token/cas/", CASLoginView.as_view(), name="token_obtain_pair_cas")
     )
@@ -60,7 +68,7 @@ if settings.USE_CAS:
         )
     )
 
-if settings.USE_SHIB:
+if auth_settings.use_shib:
     urlpatterns.append(
         path(
             "token/shibboleth/",
@@ -69,7 +77,7 @@ if settings.USE_SHIB:
         )
     )
 
-if settings.USE_OIDC:
+if auth_settings.use_oidc:
     urlpatterns.append(
         path("token/oidc/", OIDCLoginView.as_view(), name="token_obtain_pair_oidc")
     )
