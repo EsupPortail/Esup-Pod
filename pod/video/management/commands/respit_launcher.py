@@ -1,3 +1,7 @@
+"""Esup-Pod - Launch custom calculation model for each video of the platform
+
+*  run with 'python manage.py create_archive_package [--dry]'
+"""
 import importlib
 from datetime import datetime, timedelta, date
 
@@ -27,6 +31,7 @@ class Command(BaseCommand):
 
     # flake8: noqa: C901
     def handle(self, *args, **options):
+        """Get all concerned datas for each video and launch the custom calculation model"""
         if USE_RESPIT:
 
             all_warn = WARN_DEADLINES
@@ -143,7 +148,7 @@ class Command(BaseCommand):
                         "pod.video.management.commands.respit_model." + RESPIT_MODEL
                     )
 
-                    # Insert répis in BDD
+                    # Insert repist in BDD
                     daysmore = mod.calcul(data_to_add)
 
                     if self.dry_mode is False:
@@ -175,24 +180,24 @@ class Command(BaseCommand):
                     self.stdout.write(
                         "Video '"
                         + p.title
-                        + "' a une date delete le "
+                        + "' has a date delete the "
                         + str(p.date_delete)
-                        + ". C'est dans plus de "
+                        + ". It's in more than "
                         + str(int(higher_warn + 1))
-                        + " jours. Rien à faire."
+                        + " days. Nothing to do."
                     )
 
             if self.dry_mode is False:
                 if not notif_list:
                     self.stdout.write("\n")
                     self.stdout.write(
-                        "** Au répis calculé. Pas d'envoie de mail aux managers **"
+                        "** No calculated respit. Don't send the mail to the managers. **"
                     )
                 else:
                     self.stdout.write("\n")
-                    self.stdout.write("** Envoie de mail aux managers. **")
+                    self.stdout.write("** Send the mail to the managers. **")
                     msg_html = (
-                        "Hello ! La deadline des vidéos suviantes a été reporté le selon les consignes du modèle "
+                        "Hello ! The deadline for the following videos has been postponed according to the model's guidelines : "
                         + RESPIT_MODEL
                         + " : \n"
                     )
@@ -200,11 +205,11 @@ class Command(BaseCommand):
                     for nl in notif_list:
                         msg_html += "-" + nl + "\n"
 
-                    msg_html += "\nBonne journée"
+                    msg_html += "\nHave a good day."
 
                     # print(msg_html)
                     mail_managers(
-                        "Deadline Reporté",
+                        "Deadline Postponed",
                         striptags(msg_html),
                         fail_silently=False,
                         html_message=msg_html,
@@ -213,4 +218,4 @@ class Command(BaseCommand):
         else:
             raise CommandError("USE_RESPIT is FALSE")
 
-        self.stdout.write("Fin")
+        self.stdout.write("End")

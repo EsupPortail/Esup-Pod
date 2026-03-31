@@ -11398,7 +11398,7 @@ msgstr "xAPI Esup-Pod"
 
 #: pod/video/templates/videos/well_archived.html
 msgid "Your video has not been archived."
-msgstr "Votre video n’a pas été archivé."
+msgstr "Votre video n’a pas été archivée."
 
 #: pod/video/templates/videos/well_archived.html
 msgid "Your video has been archived."
@@ -11414,7 +11414,7 @@ msgstr "Exporter cette video."
 msgid "This service is not available."
 msgstr "Ce service n’est pas disponible."
 
-msgid "Link to the video :"
+msgid "Link to the video:"
 msgstr "Lien vers la vidéo :"
 
 #: pod/video/templates/videos/well_prolonged.html
@@ -11436,9 +11436,6 @@ msgstr "Êtes vous sûr·e de vouloir prolonger cette vidéo ?"
 msgid "This will extend the video life span by %(rrd)s days"
 msgstr "Cela ralongera la durée de vie de la vidéo de %(rrd)s jours"
 
-msgid " days."
-msgstr " jours."
-
 msgid "Extend"
 msgstr "Prolonger"
 
@@ -11454,14 +11451,14 @@ msgstr "Retour à l'accueil."
 msgid "Video Archiving"
 msgstr "Archivage Vidéo"
 
-msgid "Are you sure you want to archive this video ?"
+msgid "Are you sure you want to archive this video?"
 msgstr "Êtes-vous sûr·e de vouloir archiver cette vidéo ?"
 
 msgid "The archiving is permanent."
-msgstr "L'archivage est définitif."
+msgstr "L’archivage est définitif."
 
 msgid "Archive Download"
-msgstr "Téléchargement de l'archive"
+msgstr "Téléchargement de l’archive"
 
 msgid "Your archive download gonna start."
 msgstr "Le téléchargement de votre archive va se lancer."
@@ -11470,14 +11467,11 @@ msgid "Please Wait."
 msgstr "Veuillez patienter."
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "You can decide to extend your video, to archive it (won't be available anymore)"
-msgstr "Vous pouvez décidez de prolonger votre vidéo, de l'archiver (ne sera plus accessible)"
+msgid "You can decide to extend your video, to archive it (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here :"
+msgstr "Vous pouvez décidez de prolonger votre vidéo, de l'archiver (ne sera plus accessible), de la supprimer, ainsi que de la télécharger avec toutes les données la concernant en cliquant ici :"
 
-msgid "You can decide to archive your video (won't be available anymore)"
-msgstr "Vous pouvez décidez d'archiver votre vidéo (ne sera plus accessible)"
-
-msgid ", to remove it, and to download it with the concerned datas, by clicking here :"
-msgstr ", de la supprimer, ainsi que de la télécharger avec toutes les données la concernant en cliquant ici :"
+msgid "You can decide to archive your video (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here :"
+msgstr "Vous pouvez décidez d'archiver votre vidéo (ne sera plus accessible), de la supprimer, ainsi que de la télécharger avec toutes les données la concernant en cliquant ici :"
 
 msgid "Apply my choice."
 msgstr "Appliquez mon choix."

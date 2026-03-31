@@ -4,6 +4,7 @@
 """
 
 from django.conf import settings
+from django.http import request
 from django.utils import translation
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import gettext as _
@@ -223,6 +224,9 @@ class Command(BaseCommand):
         )
 
     def archive_isolate(self, vid):
+        """
+        It Allows the archive process without launching 'get_video archived deleted treatment' in the purpose to be used in other functions
+        """
         self.write_in_csv(vid, "archived")
         archive_user, created = User.objects.get_or_create(
             username=ARCHIVE_OWNER_USERNAME,
@@ -301,25 +305,19 @@ class Command(BaseCommand):
         )
 
         if ENABLE_PAGE_OBSO_MAIL:
-            from django.conf import settings
-
-            scheme = "http"  # ou "https"
-            domain = settings.ALLOWED_HOSTS[0]  # attention si plusieurs
-            base_url = f"{scheme}://{domain}:8000"
+            domain = get_current_site(request).domain
+            base_url = f"{URL_SCHEME}://{domain}"
 
             msg_html += "<br>\n"
             if PROLONGATION_GRANTED:
                 msg_html += "<p> " + _(
-                    "You can decide to extend your video, to archive it (won't be available anymore)"
+                    "You can decide to extend your video, to archive it (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here :"
                 )
             else:
                 msg_html += "<p> " + _(
-                    "You can decide to archive your video (won't be available anymore)"
+                    "You can decide to archive your video (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here :"
                 )
 
-            msg_html += _(
-                ", to remove it, and to download it with the concerned datas, by clicking here :"
-            )
             msg_html += (
                 "<a href='"
                 + base_url

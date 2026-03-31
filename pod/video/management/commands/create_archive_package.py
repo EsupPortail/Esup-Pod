@@ -334,6 +334,7 @@ class Command(BaseCommand):
         print("Summary sent by email to managers.")
 
     def archive_download_isolate(self, slug):
+        """Generate a zip archive of the video and metadata"""
         print("################ GO ################")
         """Handle a command call."""
         activate(LANGUAGE_CODE)
