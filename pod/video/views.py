@@ -125,7 +125,7 @@ from .utils import (
     sort_videos_list,
 )
 
-from ..custom.settings_local import WARN_DEADLINES
+WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [60, 30, 7])
 
 RALLONGE_RESPIT_DAYS = getattr(settings, "RALLONGE_RESPIT_DAYS", 365)
 ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
