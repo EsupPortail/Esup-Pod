@@ -14,7 +14,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
-from src.apps.utils.models.CustomImageModel import CustomImageModel
+from src.apps.encoding.services.storage import get_storage_path_user_picture
 
 from .utils import (
     AFFILIATION,
@@ -55,11 +55,10 @@ class Owner(models.Model):
         default="",
         help_text=_("Unique hash generated from username and secret key."),
     )
-    userpicture = models.ForeignKey(
-        CustomImageModel,
+    userpicture = models.ImageField(
+        upload_to=get_storage_path_user_picture,
         blank=True,
         null=True,
-        on_delete=models.CASCADE,
         verbose_name=_("Picture"),
     )
     establishment = models.CharField(

@@ -3,7 +3,6 @@ Esup-Pod - Authentication forms.
 """
 
 from django import forms
-from django.conf import settings
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -12,14 +11,6 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import GroupSite, Owner
 
-__FILEPICKER__ = False
-if getattr(settings, "USE_PODFILE", False):
-    from pod.podfile.widgets import (  # TODO : enregistrer userpicture dans notre file système car on abandone l'app PodFile
-        CustomFileWidget,
-    )
-
-    __FILEPICKER__ = True
-
 
 class OwnerAdminForm(forms.ModelForm):
     """
@@ -27,10 +18,8 @@ class OwnerAdminForm(forms.ModelForm):
     """
 
     def __init__(self, *args, **kwargs) -> None:
-        """Initializes the form and configures image widgets."""
+        """Initializes the form."""
         super(OwnerAdminForm, self).__init__(*args, **kwargs)
-        if __FILEPICKER__:
-            self.fields["userpicture"].widget = CustomFileWidget(type="image")
 
     class Meta(object):
         """Owner form metadata."""
@@ -100,17 +89,14 @@ class SetNotificationForm(forms.ModelForm):
 User = get_user_model()
 
 
-# Create ModelForm based on the Group model.
 class GroupAdminForm(forms.ModelForm):
     """
     Form for managing standard Django groups with site-aware user filtering.
     """
 
-    # Add the users field.
     users = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(),
         required=False,
-        # Use the pretty 'filter_horizontal widget'.
         widget=FilteredSelectMultiple(_("Users"), False),
         label=_("Users"),
     )
@@ -124,11 +110,8 @@ class GroupAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs) -> None:
         """Initializes the form and filters user choices by the current site."""
-        # Do the normal form initialisation.
         super(GroupAdminForm, self).__init__(*args, **kwargs)
-        # If it is an existing group (saved objects have a pk).
         if self.instance.pk:
-            # Populate the users field with the current Group users.
             self.fields["users"].initial = self.instance.user_set.all()
         self.fields["users"].queryset = self.fields["users"].queryset.filter(
             owner__sites=Site.objects.get_current()
@@ -136,13 +119,10 @@ class GroupAdminForm(forms.ModelForm):
 
     def save_m2m(self) -> None:
         """Saves many-to-many relationship for users."""
-        # Add the users to the Group.
         self.instance.user_set.set(self.cleaned_data["users"])
 
     def save(self, *args, **kwargs):
         """Saves the group and its linked users."""
-        # Default save
         instance = super(GroupAdminForm, self).save()
-        # Save many-to-many data
         self.save_m2m()
         return instance

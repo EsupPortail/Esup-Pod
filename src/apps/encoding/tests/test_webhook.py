@@ -79,11 +79,9 @@ class EncodingWebhookViewTests(APITestCase):
         self.video.refresh_from_db()
         self.assertEqual(self.video.status, Video.Status.PUBLISHED)
 
-        # The source file should not be modified
         self.assertEqual(self.video.video_file.name, original_file_name)
         self.assertTrue(self.video.overview.name.endswith(".png"))
 
-        # Verify that an EncodingVideo was created for the mp4 file
         from src.apps.encoding.models import EncodingVideo
 
         encodings = EncodingVideo.objects.filter(video=self.video)

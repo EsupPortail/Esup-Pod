@@ -28,6 +28,10 @@ class EncodingVideo(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        """
+        Esup-Pod - Meta class for EncodingVideo.
+        """
+
         verbose_name = _("Encoded Video")
         verbose_name_plural = _("Encoded Videos")
         unique_together = ("video", "resolution")
