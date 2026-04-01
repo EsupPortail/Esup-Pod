@@ -115,6 +115,7 @@ class ConfigInfoView(APIView):
         Aggregate and return public configuration flags for all applications.
         """
         from django.apps import apps as django_apps
+
         configurations = {}
 
         for app_config in django_apps.get_app_configs():
