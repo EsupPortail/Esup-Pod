@@ -74,4 +74,3 @@ class LogoutInfoView(APIView):
                 data["oidc"] = oidc_logout
 
         return Response(data)
-

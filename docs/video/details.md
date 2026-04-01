@@ -32,6 +32,12 @@ The central model of the application (`src/apps/video/models/Video.py`).
 | `cursus`            | CharField         | Academic level (L1–M2, Doctorate, Other).                        |
 | `language`          | CharField         | Main spoken language (e.g. `fr`, `en`).                          |
 | `date_to_delete`    | DateField         | Auto-computed expiration date based on owner's affiliation.      |
+| `type`              | FK → Type         | Essential categorization of the video.                           |
+| `disciplines`       | M2M → Discipline  | Associated academic disciplines.                                 |
+| `tags`              | TaggableManager   | Custom tags (using tagulous).                                    |
+| `sites`             | M2M → Site        | Links the video to specific portals for multi-tenancy.           |
+| `restricted_groups` | M2M → AccessGroup | Limits access to specific user groups (when RESTRICTED).         |
+| `view_count`        | IntegerField      | Total number of views across all dates.                          |
 
 **Status choices:**
 
@@ -82,6 +88,16 @@ Unique constraint on `(video, date)`. Ordered by `-date`.
 
 ---
 
+### Additional Models
+
+- **Type (`src/apps/video/models/Type.py`)**: General categories for videos, filterable by `Site`.
+- **Discipline (`src/apps/video/models/Discipline.py`)**: Formal academic categories.
+- **Comment (`src/apps/video/models/Comment.py`)**: User remarks tied to a specific video with timestamp and user.
+- **Vote (`src/apps/video/models/Vote.py`)**: Tracks Up/Down votes on `Comment` items to calculate the net score.
+- **Tag**: Handled dynamically by the `django-tagulous` extension.
+
+---
+
 ## 2. Access Control & Permissions
 
 ### Visibility Logic (VideoViewSet.get_queryset)
@@ -90,8 +106,8 @@ The list of accessible videos depends on the user's authentication state:
 
 | User type        | Accessible videos                                             |
 | :--------------- | :------------------------------------------------------------ |
-| **Anonymous**    | Published + Restricted (if `is_auth_required=False`). Password-protected videos may be hidden depending on `HOMEPAGE_SHOWS_PASSWORDED`. |
-| **Authenticated**| Published + Restricted + own videos (all statuses) + co-owned. |
+| **Anonymous**    | Published + Restricted (if `is_auth_required=False` and no `restricted_groups`). Password-protected videos may be hidden depending on `HOMEPAGE_SHOWS_PASSWORDED`. |
+| **Authenticated**| Published + Restricted + own videos (all statuses) + co-owned. Additionally, restricted videos that are limited to specific AccessGroups where the user is a member. |
 | **Superuser**    | All videos without restriction.                              |
 
 ### Permission Classes
@@ -155,8 +171,13 @@ Located in `src/apps/video/signals.py`. Three signals are registered on the `Vid
 
 Streams the raw video file. Access rules:
 - Owner, co-owner, superuser: always allowed.
-- Restricted + password: direct stream blocked (use `/unlock/` first).
+- Restricted + Group: Access limited to users in the assigned groups.
+- Restricted + Password: direct stream blocked (use `/unlock/` first or supply valid legacy hash).
 - Draft: blocked for non-owners.
+
+### Legacy V4 Download Redirection
+
+Requests matching the legacy V4 format `/video/telecharger/{resolution}/{slug}.mp4` are automatically intercepted and redirected `301 Permanent` to the new stream endpoint `/api/videos/{slug}/stream/`.
 
 ### `POST /api/videos/{slug}/register_view/`
 
@@ -166,8 +187,8 @@ Atomically increments `view_count` on the video AND the daily `ViewCount` record
 
 Unlocks a password-protected restricted video.
 - If `is_auth_required = True`: user must be authenticated.
-- Validates the provided `password` against the stored hash.
-- Returns the `video_url` on success.
+- Validates the provided `password` against the stored hash. (Alternatively accepts a legacy `hash` parameter for backward compatibility).
+- Returns the `video_url` on success and registers access in the session state.
 
 ---
 

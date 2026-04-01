@@ -1,5 +1,6 @@
 import sys
-sys.path.insert(0, '/usr/local/django_projects/Pod_V5_Back')
+
+sys.path.insert(0, "/usr/local/django_projects/Pod_V5_Back")
 
 from pydantic_settings import BaseSettings
 import src.apps.encoding.conf as encoding_conf

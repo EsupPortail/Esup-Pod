@@ -4,7 +4,6 @@ Esup-Pod - Info app API views.
 
 import importlib
 import logging
-import pkgutil
 
 from django.conf import settings
 from drf_spectacular.utils import extend_schema
@@ -12,8 +11,6 @@ from pydantic_settings import BaseSettings
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from src import apps
 
 logger = logging.getLogger(__name__)
 
