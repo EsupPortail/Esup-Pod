@@ -35,13 +35,6 @@ ALLOWED_EXTENSIONS = (
 )
 VIDEO_REQUIRED_FIELDS = []
 
-# Encoding / FFmpeg
-FFMPEG_CMD = "ffmpeg"
-FFPROBE_CMD = "ffprobe"
-FFMPEG_CRF = 20
-FFMPEG_NB_THREADS = "slow"
-FFPROBE_GET_INFO = "high"
-CHUNK_SIZE = 100000
 
 # Webhook behavior
 KEEP_SOURCE_FILE = True

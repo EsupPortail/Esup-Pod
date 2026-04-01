@@ -117,11 +117,14 @@ class ConfigInfoView(APIView):
         """
         Aggregate and return public configuration flags for all applications.
         """
+        from django.apps import apps as django_apps
         configurations = {}
 
-        for _loader, module_name, _is_pkg in pkgutil.iter_modules(apps.__path__):
-            public_config = self._load_app_conf(module_name)
-            if public_config:
-                configurations[module_name] = public_config
+        for app_config in django_apps.get_app_configs():
+            if app_config.name.startswith("src.apps."):
+                module_name = app_config.name.split(".")[-1]
+                public_config = self._load_app_conf(module_name)
+                if public_config:
+                    configurations[module_name] = public_config
 
         return Response(configurations)
