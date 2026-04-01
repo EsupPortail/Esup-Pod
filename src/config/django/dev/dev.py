@@ -17,7 +17,7 @@ SHOW_SQL_QUERIES = False
 CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = ["*"]
 
-# Label identifiant le service dans les logs (injecté par docker-compose)
+# Service identifier label in logs (injected by docker-compose)
 SERVICE_LABEL = os.environ.get("SERVICE_LABEL", "app").upper()
 
 
@@ -25,6 +25,7 @@ class ColoredFormatter(logging.Formatter):
     """
     Logging formatter with ANSI colors for service-based prefixes and log levels.
     """
+
     grey = "\x1b[38;20m"
     blue = "\x1b[34;20m"
     cyan = "\x1b[36;1m"
@@ -35,10 +36,10 @@ class ColoredFormatter(logging.Formatter):
     bold_red = "\x1b[31;1m"
     reset = "\x1b[0m"
 
-    # Couleur par service pour le préfixe
+    # Per-service colors for prefix
     SERVICE_COLORS = {
-        "API": "\x1b[36;1m",  # Cyan gras
-        "CELERY": "\x1b[35;1m",  # Magenta gras
+        "API": "\x1b[36;1m",  # Bold Cyan
+        "CELERY": "\x1b[35;1m",  # Bold Magenta
     }
 
     LEVEL_COLORS = {
@@ -67,7 +68,7 @@ class ColoredFormatter(logging.Formatter):
                     str(code), f"{code_color}{code}{self.reset}"
                 )
 
-        # Remplace les noms de logger verbeux par des préfixes courts
+        # Replace verbose logger names with short prefixes
         if record.name == "django.db.backends":
             record.name = "[DB]"
         elif record.name == "django.server":
@@ -79,7 +80,7 @@ class ColoredFormatter(logging.Formatter):
         elif record.name.startswith("src") or record.name.startswith("pod"):
             record.name = "[APP]"
 
-        # Préfixe de service coloré
+        # Colored service prefix
         service = SERVICE_LABEL
         service_color = self.SERVICE_COLORS.get(service, self.grey)
         record.service = f"{service_color}[{service}]{self.reset}"
@@ -95,7 +96,7 @@ class ColoredFormatter(logging.Formatter):
         return formatted_msg
 
 
-# --- FILTRES ---
+# --- FILTERS ---
 class SkipIgnorableRequests(logging.Filter):
     """
     Logging filter to skip noisy requests (static files, favicon, etc.).

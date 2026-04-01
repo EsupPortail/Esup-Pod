@@ -22,6 +22,7 @@ class Command(BaseCommand):
     """
     Management command to audit and compare code settings against JSON documentation.
     """
+
     help = "Compare settings in code vs configuration.json"
 
     IGNORED_PREFIXES = (

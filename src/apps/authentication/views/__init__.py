@@ -1,4 +1,4 @@
-from .config_views import LoginConfigView, LogoutInfoView
+from .config_views import LogoutInfoView
 from .login_views import CASLoginView, LoginView, OIDCLoginView, ShibbolethLoginView
 from .model_views import (
     AccessGroupViewSet,
@@ -21,5 +21,4 @@ __all__ = [
     "SiteViewSet",
     "AccessGroupViewSet",
     "LogoutInfoView",
-    "LoginConfigView",
 ]

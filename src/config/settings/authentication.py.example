@@ -1,9 +1,9 @@
 """
-Esup-Pod - Authentication Feature Flags & Configuration.
+Authentication Feature Flags & Configuration.
 
-Utilisez ce fichier pour personnaliser le comportement de l'authentification
-de votre instance Pod. Les valeurs définies ici surchargent les valeurs par défaut.
+Use this file to customize the authentication behavior
+of your Pod instance. Values defined here override the default values.
 
-Pour activer une option, décommentez la ligne et changez la valeur.
-Le préfixe (ex: POD_ ou AUTHENTICATION_), précédemment requis dans les versions antérieures, n'est plus nécessaire.
+To enable an option, uncomment the line and change the value.
+The prefix, previously required, is no longer necessary.
 """

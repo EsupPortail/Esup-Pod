@@ -202,13 +202,15 @@ If `ENCODING_WEBHOOK_SECRET` is set and the header does not match, the request i
     "video_id": "123",
     "duration": "142.5",
     "results": {
-        "thumbnail_path": "thumbnails/my-video-abc123.jpg",
-        "video_path": "videos/john/my-video-slug.mp4"
+        "overview_path": "video/thumbnails/2026/03/18/abc123.jpg",
+        "output_video_360p": "video/encoded/2026/03/18/360.mp4",
+        "output_video_720p": "video/encoded/2026/03/18/720.mp4"
     }
 }
 ```
 
-→ Video status is set to `PUBLISHED`. Duration and file paths are updated.
+→ Video status is set to `PUBLISHED`. Duration and `overview` paths are updated on the `Video` model. 
+→ For every output video resolution returned (e.g. `output_video_360p`), an `EncodingVideo` record is created to store the resolution name and file path for the multi-format streaming player.
 
 ### Payload — Error
 

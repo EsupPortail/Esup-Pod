@@ -12,6 +12,7 @@ class InfoViewsTests(APITestCase):
     """
     Test suite for public information and configuration views.
     """
+
     def test_system_info_view(self):
         """Verifies the system info endpoint returns basic project metadata."""
         url = reverse("system_info")

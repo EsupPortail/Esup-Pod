@@ -27,6 +27,7 @@ class GroupSite(models.Model):
 
     class Meta:
         """GroupSite model metadata."""
+
         verbose_name = _("Group site")
         verbose_name_plural = _("Groups site")
         ordering = ["group"]

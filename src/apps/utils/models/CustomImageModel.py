@@ -7,8 +7,8 @@ import os
 
 from django.conf import settings
 from django.db import models
-from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from src.apps.encoding.services.storage import get_storage_path_user_picture
 
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
@@ -16,29 +16,10 @@ FILES_DIR = getattr(settings, "FILES_DIR", "files")
 class CustomImageModel(models.Model):
     """Esup-Pod custom image Model."""
 
-    @staticmethod
-    def get_upload_path_files(instance, filename) -> str:
-        """
-        Generate the upload path for image files by slugifying the filename
-        to ensure local filesystem compatibility.
-        """
-        fname, dot, extension = filename.rpartition(".")
-        if "/" in fname:
-            return os.path.join(
-                FILES_DIR,
-                "%s/%s.%s"
-                % (
-                    os.path.dirname(fname),
-                    slugify(os.path.basename(fname)),
-                    extension,
-                ),
-            )
-        return os.path.join(FILES_DIR, "%s.%s" % (slugify(fname), extension))
-
     file = models.ImageField(
         _("Image"),
         null=True,
-        upload_to="get_upload_path_files",
+        upload_to=get_storage_path_user_picture,
         blank=True,
         max_length=255,
     )

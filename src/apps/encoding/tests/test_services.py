@@ -6,6 +6,7 @@ generation logic.
 """
 
 from unittest.mock import patch, MagicMock
+from datetime import datetime
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
@@ -91,12 +92,8 @@ class StorageServicesTests(TestCase):
         """
         Setup a user and a video for storage testing.
         """
-        # ggignore-start
         # gitguardian:ignore
-        self.user = User.objects.create_user(
-            username="testuser", password="password"
-        )  # nosec
-        # ggignore-end
+        self.user = User.objects.create_user(username="testuser", password="password")
 
         video_content = SimpleUploadedFile(
             "test.mp4", b"file_content", content_type="video/mp4"
@@ -107,26 +104,27 @@ class StorageServicesTests(TestCase):
             video_file=video_content,
         )
 
-    def test_get_storage_path_video(self):
+    @patch("django.utils.timezone.now")
+    def test_get_storage_path_video(self, mock_now):
         """Verifies the generation of hashed storage paths for videos."""
-        path = get_storage_path_video(self.video, "test.mp4")
-        self.assertTrue(path.endswith(".mp4"))
-        self.assertTrue(path.startswith("videos/"))
+        mock_now.return_value = datetime(2023, 5, 10)
+        filename = "ma_video_vacances.mp4"
+        path = get_storage_path_video(self.video, filename)
 
-        # Verify the new hashed structure: videos/xx/yy/uuid.mp4
-        parts = path.split("/")
-        self.assertEqual(len(parts), 4)
-        self.assertEqual(len(parts[1]), 2)
-        self.assertEqual(len(parts[2]), 2)
+        self.assertTrue(path.startswith("video/source/2023/05/10/"))
 
-    def test_get_storage_path_image(self):
+        name_on_disk = path.split("/")[-1]
+        self.assertNotIn("ma_video_vacances", name_on_disk)
+        self.assertEqual(len(name_on_disk), 44)
+
+    @patch("django.utils.timezone.now")
+    def test_get_storage_path_image(self, mock_now):
         """Verifies the generation of hashed storage paths for images."""
+        mock_now.return_value = datetime(2023, 5, 10)
         path = get_storage_path_image(self.video, "test.jpg")
-        self.assertTrue(path.endswith(".jpg"))
-        self.assertTrue(path.startswith("thumbnails/"))
 
-        # Verify the new hashed structure: thumbnails/xx/yy/uuid.jpg
-        parts = path.split("/")
-        self.assertEqual(len(parts), 4)
-        self.assertEqual(len(parts[1]), 2)
-        self.assertEqual(len(parts[2]), 2)
+        self.assertTrue(path.startswith("video/thumbnails/2023/05/10/"))
+        self.assertTrue(path.endswith(".jpg"))
+
+        filename_part = path.split("/")[-1].split(".")[0]
+        self.assertEqual(len(filename_part), 40)

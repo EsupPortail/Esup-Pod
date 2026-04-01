@@ -37,6 +37,7 @@ class AccessGroup(models.Model):
 
     class Meta:
         """AccessGroup model metadata."""
+
         verbose_name = _("Access Group")
         verbose_name_plural = _("Access Groups")
         ordering = ["display_name"]

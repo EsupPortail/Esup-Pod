@@ -19,6 +19,7 @@ class ViewCount(models.Model):
 
     class Meta:
         """ViewCount model metadata for reporting and uniques."""
+
         unique_together = ("video", "date")
         ordering = ["-date"]
 

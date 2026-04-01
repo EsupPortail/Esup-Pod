@@ -13,6 +13,7 @@ class CASTokenObtainPairSerializer(serializers.Serializer):
     """
     Serializer to exchange a CAS ticket for a JWT access/refresh token pair.
     """
+
     ticket = serializers.CharField()
     service = serializers.CharField()
 

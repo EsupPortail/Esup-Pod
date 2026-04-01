@@ -10,7 +10,9 @@ class GroupSerializer(serializers.ModelSerializer):
     """
     Serializer for standard Django groups.
     """
+
     class Meta:
         """Group serializer metadata."""
+
         model = Group
         fields = ("id", "name")

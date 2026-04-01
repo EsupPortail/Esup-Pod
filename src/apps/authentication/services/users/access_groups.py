@@ -15,6 +15,7 @@ class AccessGroupService:
     """
     Service class to handle membership logic for AccessGroups and Owners.
     """
+
     @staticmethod
     def set_user_accessgroup(username: str, groups: List[str]) -> Any:
         """Assigns a list of AccessGroups (by code_name) to a user's Owner profile."""

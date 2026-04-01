@@ -51,18 +51,22 @@ Pod can encode videos into the following outputs:
 
 ## File Storage
 
-Video files are organized on disk by owner:
+Video-related files are organized on disk using a hash-based directory strategy to obscure physical files and avoid predictable names.
 
 ```
 MEDIA_ROOT/
-├── videos/
-│   └── <owner-username>/
-│       └── <slug>.<ext>
-└── thumbnails/
-    └── <slug>_<random>.jpg
+├── video/
+│   ├── source/
+│   │   └── %Y/%m/%d/<hash>.mp4
+│   ├── encoded/
+│   │   └── %Y/%m/%d/<hash>.mp4
+│   ├── thumbnails/
+│   │   └── %Y/%m/%d/<hash>.jpg
+│   └── transcripts/
+│       └── %Y/%m/%d/<hash>.vtt
+└── userpicture/
+    └── %Y/%m/%d/<hash>.jpg
 ```
-
-When a video's owner changes, all associated files are automatically moved to the new owner's directory.
 
 ## Further Reading
 

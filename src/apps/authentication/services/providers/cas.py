@@ -45,7 +45,6 @@ def verify_cas_ticket(ticket: str, service_url: str) -> Optional[Any]:
     elif populate_strategy == "LDAP":
         populator.run("LDAP")
     else:
-        # Minimal init if no external source strategy selected
         pass
 
     return user

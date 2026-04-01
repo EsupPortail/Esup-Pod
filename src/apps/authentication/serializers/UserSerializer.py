@@ -20,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         """User serializer metadata."""
+
         model = User
         fields = [
             "id",
@@ -50,5 +51,5 @@ class UserSerializer(serializers.ModelSerializer):
     def get_userpicture(self, obj) -> str | None:
         """Retrieves the relative URL of the user's profile picture."""
         if hasattr(obj, "owner") and obj.owner.userpicture:
-            return obj.owner.userpicture.image.url
+            return obj.owner.userpicture.url
         return None

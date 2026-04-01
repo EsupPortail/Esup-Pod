@@ -4,7 +4,7 @@ Esup-Pod - Video models tests.
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from src.apps.video.models import Video, ViewCount
+from src.apps.video.models import Video, ViewCount, Comment
 import datetime
 
 User = get_user_model()
@@ -47,3 +47,22 @@ class VideoModelTests(TestCase):
     def test_video_str(self):
         """Verifies the video's string representation."""
         self.assertEqual(str(self.video), "Model Test Video (Published (Public))")
+
+
+class CommentBasicTests(TestCase):
+    """Esup-Pod - Tests for the Comment model."""
+
+    def setUp(self):
+        """Sets up a video and a user for comment testing."""
+        self.user = User.objects.create_user(username="commenter2", password="password")
+        self.video = Video.objects.create(
+            title="A Video", owner=self.user, status=Video.Status.PUBLISHED
+        )
+
+    def test_create_comment(self):
+        """Verifies the creation of a comment."""
+        comment = Comment.objects.create(
+            author=self.user, video=self.video, content="Small test comment"
+        )
+        self.assertEqual(str(comment), "Small test comment")
+        self.assertEqual(comment.number_vote, 0)

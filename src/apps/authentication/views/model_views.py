@@ -105,6 +105,35 @@ class OwnerViewSet(viewsets.ModelViewSet):
         except Owner.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    @action(detail=True, methods=["post", "patch"], url_path="picture")
+    def update_picture(self, request, pk=None):
+        """
+        Uploads and assigns an image as the user's profile picture.
+        """
+        owner = self.get_object()
+        file = request.FILES.get("picture")
+
+        if not file:
+            return Response(
+                {"error": "No picture file provided in the request."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if owner.userpicture:
+            owner.userpicture.delete(save=False)
+
+        owner.userpicture = file
+        owner.save()
+
+        return Response(
+            {
+                "status": "success",
+                "message": "Profile picture updated.",
+                "userpicture": request.build_absolute_uri(owner.userpicture.url),
+            },
+            status=status.HTTP_200_OK,
+        )
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -115,7 +144,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     filterset_fields = ["id", "username", "email"]
     permission_classes = [IsAuthenticated]
-    filter_backends = [filters.SearchFilter]  # Ajout du backend de recherche
+    filter_backends = [filters.SearchFilter]
     search_fields = ["username", "first_name", "last_name", "email"]
 
 

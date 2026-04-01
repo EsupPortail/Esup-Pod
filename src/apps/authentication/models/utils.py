@@ -10,7 +10,6 @@ from django.contrib.auth.models import User
 from ..conf import auth_settings
 from ..constants import AFFILIATION, AUTH_TYPE, DEFAULT_AFFILIATION, ESTABLISHMENTS
 
-# Re-export for backward compatibility with existing imports
 __all__ = [
     "AUTH_TYPE",
     "AFFILIATION",
@@ -23,7 +22,7 @@ __all__ = [
 
 HIDE_USERNAME = auth_settings.hide_username
 AFFILIATION_STAFF = auth_settings.affiliation_staff
-SECRET_KEY = ""  # Kept for backward compat, should not be used from here
+SECRET_KEY = ""
 
 
 def get_name(self: User) -> str:

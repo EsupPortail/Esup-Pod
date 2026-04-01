@@ -53,7 +53,6 @@ def get_ldap_conn():
 
 def get_ldap_entry(conn: Connection, username: str) -> Optional[Any]:
     """Get LDAP entry for a specific username."""
-    # Build list of attributes to fetch
     attributes_to_fetch = list(auth_settings.ldap_mapping_attributes.values())
 
     try:

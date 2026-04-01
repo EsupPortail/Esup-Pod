@@ -42,6 +42,7 @@ class GroupSiteInline(admin.StackedInline):
 
     class Media:
         """Media."""
+
         css = {
             "all": (
                 # "bootstrap/dist/css/bootstrap.min.css",
@@ -85,6 +86,7 @@ class OwnerInline(admin.StackedInline):
 
     class Media:
         """Media."""
+
         css = {
             "all": (
                 # "bootstrap/dist/css/bootstrap.min.css",
@@ -283,6 +285,7 @@ class OwnerAdmin(admin.ModelAdmin):
 
     class Meta:
         """Meta."""
+
         verbose_name = "Access group owner"
 
 
