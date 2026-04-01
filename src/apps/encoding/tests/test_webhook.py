@@ -71,14 +71,24 @@ class EncodingWebhookViewTests(APITestCase):
             "status": "completed",
         }
 
+        original_file_name = self.video.video_file.name
+
         response = self.client.post(self.url_with_secret, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.video.refresh_from_db()
         self.assertEqual(self.video.status, Video.Status.PUBLISHED)
 
-        self.assertTrue(self.video.video_file.name.endswith(".mp4"))
+        # The source file should not be modified
+        self.assertEqual(self.video.video_file.name, original_file_name)
         self.assertTrue(self.video.overview.name.endswith(".png"))
+
+        # Verify that an EncodingVideo was created for the mp4 file
+        from src.apps.encoding.models import EncodingVideo
+
+        encodings = EncodingVideo.objects.filter(video=self.video)
+        self.assertEqual(encodings.count(), 1)
+        self.assertEqual(encodings.first().resolution, "720p")
 
     @patch("src.apps.encoding.views.webhook.env")
     def test_webhook_error_status(self, mock_env):

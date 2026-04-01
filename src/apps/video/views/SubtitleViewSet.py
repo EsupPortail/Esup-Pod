@@ -4,6 +4,7 @@ Esup-Pod - Subtitle viewset.
 
 from rest_framework import viewsets, permissions, parsers
 from rest_framework.exceptions import PermissionDenied
+from django.contrib.sites.shortcuts import get_current_site
 from src.apps.video.models import Subtitle
 from src.apps.video.serializers import SubtitleSerializer
 
@@ -37,14 +38,15 @@ class SubtitleViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-        Allows filtering subtitles by video.
-        Usage: /api/subtitles/?video_id=12
+        Allows filtering subtitles by video, while ensuring isolation by current site.
         """
-        queryset = super().get_queryset()
+        current_site = get_current_site(self.request)
+        queryset = Subtitle.objects.filter(video__sites=current_site)
+
         video_id = self.request.query_params.get("video_id")
         if video_id:
             queryset = queryset.filter(video_id=video_id)
-        return queryset
+        return queryset.distinct()
 
     def perform_create(self, serializer):
         """

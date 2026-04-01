@@ -16,6 +16,7 @@ class ShibbolethService:
     Handles Shibboleth authentication flow by extracting user attributes
     from HTTP headers provided by the Service Provider (SP).
     """
+
     def check_security(self, request) -> bool:
         """Verify request comes from a trusted source (SP) if configured."""
         secure_header = auth_settings.shib_secure_header

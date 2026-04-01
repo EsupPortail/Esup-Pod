@@ -15,7 +15,7 @@ USE_OIDC = False
 
 # ggignore-start
 # gitguardian:ignore
-SECRET_KEY = env("SECRET_KEY", default="ta-cle-secrete-par-defaut")  # nosec
+SECRET_KEY = env("SECRET_KEY", default="your-default-secret-key")  # nosec
 # ggignore-end
 
 # JWT Configuration

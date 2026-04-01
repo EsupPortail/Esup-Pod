@@ -3,13 +3,14 @@ Esup-Pod - Video model.
 """
 
 from datetime import date
-import uuid
+from django.contrib.sites.models import Site
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
+import tagulous.models
 from src.apps.encoding.services.storage import (
     get_storage_path_video,
     get_storage_path_image,
@@ -25,6 +26,7 @@ class Video(models.Model):
     # 1.CHOICES
     class Status(models.TextChoices):
         """Possible lifecycle statuses for a video."""
+
         DRAFT = "DR", _("Draft (Private)")
         PUBLISHED = "PU", _("Published (Public)")
         RESTRICTED = "RE", _("Restricted (Access Controlled)")
@@ -33,6 +35,7 @@ class Video(models.Model):
 
     class License(models.TextChoices):
         """Available content licenses for legal protection."""
+
         CC_BY = "CC-BY", _("Creative Commons BY")
         CC_BY_SA = "CC-BY-SA", _("Creative Commons BY-SA")
         CC_BY_NC = "CC-BY-NC", _("Creative Commons BY-NC")
@@ -41,6 +44,7 @@ class Video(models.Model):
 
     class Cursus(models.TextChoices):
         """Educational levels/cursus categories."""
+
         L1 = "L1", _("Licence 1")
         L2 = "L2", _("Licence 2")
         L3 = "L3", _("Licence 3")
@@ -130,6 +134,14 @@ class Video(models.Model):
             "If checked, users must be logged in to access this video (even if they have the password)."
         ),
     )
+    # 4. ACCESS CONTROL
+    sites = models.ManyToManyField(
+        Site,
+        blank=True,
+        related_name="videos",
+        verbose_name=_("Sites"),
+        help_text=_("Portals where this video will be published."),
+    )
     password = models.CharField(
         _("Password"),
         max_length=128,
@@ -137,9 +149,6 @@ class Video(models.Model):
         null=True,
         help_text=_("Optional password for access protection."),
     )
-    # Relations vers les sites et groupes (Strings pour éviter les imports circulaires)
-    # sites = models.ManyToManyField("core.Site", blank=True)
-    # restricted_groups = models.ManyToManyField("authentication.AccessGroup", blank=True)
 
     # 5. SETTINGS
     allow_downloading = models.BooleanField(
@@ -190,12 +199,27 @@ class Video(models.Model):
         blank=True,
         help_text=_("Language of the available audio transcription."),
     )
-    # [TODO] Relations Placeholder (À décommenter quand les modèles seront créés)
-    # [TODO] type = models.ForeignKey("video.Type", on_delete=models.SET_NULL, null=True, default=DEFAULT_TYPE_ID)
-    # [TODO] channels = models.ManyToManyField("video.Channel", blank=True)
+    restricted_groups = models.ManyToManyField(
+        "authentication.AccessGroup",
+        blank=True,
+        related_name="videos",
+        verbose_name=_("Restricted Groups"),
+        help_text=_("One or more groups who can access this video."),
+    )
+    type = models.ForeignKey(
+        "video.Type",
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name=_("Type"),
+        help_text=_("The general format of the video."),
+    )
     # [TODO] themes = models.ManyToManyField("video.Theme", blank=True)
-    # [TODO] disciplines = models.ManyToManyField("video.Discipline", blank=True)
-    # [TODO] tags = models.ManyToManyField("core.Tag", blank=True)
+    disciplines = models.ManyToManyField(
+        "video.Discipline", blank=True, verbose_name=_("Disciplines")
+    )
+    tags = tagulous.models.TagField(
+        blank=True, help_text=_("A comma-separated list of tags.")
+    )
 
     # 7. TIMESTAMPS
     created_at = models.DateTimeField(_("Created At"), default=timezone.now)
@@ -209,6 +233,7 @@ class Video(models.Model):
 
     class Meta:
         """Video model metadata and database indexing."""
+
         ordering = ["-created_at"]
         verbose_name = _("Video")
         verbose_name_plural = _("Videos")
@@ -225,6 +250,18 @@ class Video(models.Model):
             return self.thumbnail.url
         return video_settings.default_thumbnail
 
+    def get_tag_list(self):
+        """Returns the tags as a comma-separated string."""
+        if not self.id:
+            return ""
+        return ", ".join([t.name for t in self.tags.all()])
+
+    def get_json_to_index(self):
+        """Returns the tags as a list of dictionaries for indexing."""
+        if not self.id:
+            return []
+        return list(self.tags.all().values("name", "slug"))
+
     def get_dublin_core(self):
         """Generates Dublin Core metadata in dictionary format."""
         return {
@@ -240,6 +277,7 @@ class Video(models.Model):
                 self.license if self.license else video_settings.default_dc_rights
             ),
             "coverage": video_settings.default_dc_coverage,
+            "subject": ", ".join([d.title for d in self.disciplines.all()]),
         }
 
     def set_password(self) -> None:
@@ -254,8 +292,12 @@ class Video(models.Model):
         """Overridden save method to handle slug generation, password encryption, and expiration logic."""
         if not self.slug:
             base_slug = slugify(self.title)
-            unique_id = str(uuid.uuid4())[:8]
-            self.slug = f"{base_slug}-{unique_id}"
+            slug = base_slug
+            counter = 1
+            while Video.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
 
         self.set_password()
 
@@ -268,3 +310,10 @@ class Video(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.get_status_display()})"
+
+    def get_absolute_url(self):
+        """
+        Remodels the V4 path structure for the frontend permalink.
+        Format: /video/<ID>-<titre-slugifie>/
+        """
+        return f"/video/{self.pk}-{self.slug}/"

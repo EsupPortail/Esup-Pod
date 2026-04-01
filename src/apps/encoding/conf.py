@@ -76,6 +76,10 @@ class EncodingConfig(BaseSettings):
         default=defaults.CHUNK_SIZE,
         description="Chunk size for file operations.",
     )
+    keep_source_file: bool = Field(
+        default=defaults.KEEP_SOURCE_FILE,
+        description="If True, the encoding webhook will not delete the original source video upon success.",
+    )
 
     @classmethod
     def settings_customise_sources(

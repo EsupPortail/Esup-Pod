@@ -17,4 +17,4 @@ class VideoConfig(AppConfig):
 
     def ready(self):
         """Connects signals and performs initialization on app startup."""
-        import src.apps.video.signals  # noqa: F401
+        import src.apps.video.signals  # noqa

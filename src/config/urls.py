@@ -16,10 +16,8 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-
-from config.router import router
 from src.apps.authentication.conf import auth_settings
-
+from src.apps.video.views.legacy_views import redirect_v4_download
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -27,10 +25,16 @@ urlpatterns = [
     # Redirection to Swagger
     path("", RedirectView.as_view(url="api/docs/", permanent=False)),
     path("admin/", admin.site.urls),
-    path("api/", include(router.urls)),
+    path("api/", include("src.apps.video.urls")),
     path("api/info/", include("src.apps.info.urls")),
     path("api/auth/", include("src.apps.authentication.urls")),
     path("api/encoding/", include("src.apps.encoding.urls")),
+    # V4 Compatibility
+    path(
+        "video/telecharger/<str:res>/<str:slug_with_ext>",
+        redirect_v4_download,
+        name="video_redirect_download_v4",
+    ),
     # SWAGGER
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(

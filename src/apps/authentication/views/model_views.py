@@ -105,6 +105,39 @@ class OwnerViewSet(viewsets.ModelViewSet):
         except Owner.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    @action(detail=True, methods=["post", "patch"], url_path="picture")
+    def update_picture(self, request, pk=None):
+        """
+        Uploads and creates a CustomImageModel, and assigning it as the user's profile picture.
+        """
+        owner = self.get_object()
+        file = request.FILES.get("picture")
+
+        if not file:
+            return Response(
+                {"error": "No picture file provided in the request."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        from src.apps.utils.models import CustomImageModel
+
+        custom_image = CustomImageModel.objects.create(file=file)
+
+        if owner.userpicture:
+            owner.userpicture.delete()
+
+        owner.userpicture = custom_image
+        owner.save()
+
+        return Response(
+            {
+                "status": "success",
+                "message": "Profile picture updated.",
+                "userpicture": request.build_absolute_uri(custom_image.file.url),
+            },
+            status=status.HTTP_200_OK,
+        )
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
