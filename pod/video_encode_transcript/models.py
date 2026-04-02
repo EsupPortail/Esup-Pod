@@ -480,7 +480,7 @@ class RunnerManager(models.Model):
     url = models.CharField(
         max_length=250,
         verbose_name=_("URL of the runner manager"),
-        help_text=_("Example format: https://manager.univ.fr:port/"),
+        help_text=_("Example format: %(url)s") % {"url": "https://manager.univ.fr:port/"},
     )
 
     # Bearer token for the runner manager server (e.g. `6YqG_73xt-9s8v5aBz`)

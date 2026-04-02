@@ -1306,11 +1306,6 @@ msgid ""
 "time end values."
 msgstr ""
 
-#: pod/completion/permissions/video.py
-#, python-brace-format
-msgid "{func.__name__}: Permission denied for user {current_user.pk}."
-msgstr ""
-
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
@@ -3636,6 +3631,14 @@ msgid "The event ended on:"
 msgstr ""
 
 #: pod/live/templates/live/event.html
+msgid "Aside site"
+msgstr ""
+
+#: pod/live/templates/live/event.html
+msgid "Additional site"
+msgstr ""
+
+#: pod/live/templates/live/event.html
 msgid "Report the event"
 msgstr ""
 
@@ -5766,7 +5769,7 @@ msgstr ""
 msgid "URL of the SIPMediaGW server"
 msgstr ""
 
-#: pod/meeting/models.py
+#: pod/meeting/models.py pod/video_encode_transcript/models.py
 #, python-format
 msgid "Example format: %(url)s"
 msgstr ""
@@ -6547,13 +6550,6 @@ msgid "Private"
 msgstr ""
 
 #: pod/playlist/models.py
-#, python-brace-format
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
-msgstr ""
-
-#: pod/playlist/models.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
@@ -7318,7 +7314,7 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr ""
 
@@ -10501,7 +10497,7 @@ msgid "URL of the runner manager"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
-msgid "Example format: https://manager.univ.fr:port/"
+msgid "URL of the runner manager"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
