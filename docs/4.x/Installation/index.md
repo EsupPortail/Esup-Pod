@@ -83,7 +83,7 @@ lang: fr
 ## Mise à jour
 
 * [Mise à jour standard](upgrade_standalone_fr)
-* [Mise à jour via Docker](upgrade_docker)
+* [Mise à jour via Docker](upgrade_docker_fr)
 
 ## Migration
 
@@ -95,5 +95,5 @@ lang: fr
 
 ## Documentations d’installation par les établissements
 
-* [Université de Montpellier](install-by-etabs/university-montpellier_fr.md)
-* [Université Grenoble Alpes](install-by-etabs/university-uga_fr.md)
+* [Université de Montpellier](install-by-etabs/university-montpellier_fr)
+* [Université Grenoble Alpes](install-by-etabs/university-uga_fr)
