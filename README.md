@@ -44,7 +44,6 @@ Ideally suited for Higher Education and Research institutions, it facilitates vi
 >
 > [!NOTE]
 > This repository contains the **V5 (Python/Django)** backend.
->
 > Find the documentation here [ESUP-POD V5 Documentation](./docs/README.md)
 > For the legacy V4 version or specific institutional documentation, please refer to the [ESUP-Portail Wiki](https://www.esup-portail.org/wiki/display/ES/esup-pod).
 

@@ -18,6 +18,7 @@ Use your best judgment, and feel free to propose changes to this document in a p
   * [Suggesting Enhancements](#suggesting-enhancements)
 
   * [Pull Requests](#pull-requests)
+  * [Release Process](docs/RELEASE_PROCESS.md)
 
 * [Styleguides](#styleguides)
 
