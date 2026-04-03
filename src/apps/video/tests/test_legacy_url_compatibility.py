@@ -22,22 +22,52 @@ class MigrationURLTest(TestCase):
             username="migrationuser", password="password"
         )
 
-    def test_legacy_url_compatibility(self):
+    def test_slug_format_matches_v4(self):
         """
-        Esup-Pod - Ensure legacy V4 URLs are handled.
+        Esup-Pod - Slug must follow the V4 format: "%04d-<slugified-title>".
+
+        V4 reference (models2.py L.924-925):
+            newid = "%04d" % newid          # e.g. 42 → "0042"
+            self.slug = "%s-%s" % (newid, slugify(self.title))
         """
         video = Video.objects.create(
             title="Washington Landlord",
-            id=46859,
             owner=self.user,
             status=Video.Status.PUBLISHED,
         )
+        id_padded = "%04d" % video.pk
+        expected_slug = f"{id_padded}-washington-landlord"
+        video.refresh_from_db()
+        self.assertEqual(video.slug, expected_slug)
 
-        expected_absolute_url = f"/video/{video.pk}-{video.slug}/"
+    def test_get_absolute_url_v4_format(self):
+        """
+        Esup-Pod - get_absolute_url() must return /video/<slug>/.
+        The slug already contains the zero-padded ID, so no double-ID.
+        """
+        video = Video.objects.create(
+            title="Washington Landlord",
+            owner=self.user,
+            status=Video.Status.PUBLISHED,
+        )
+        video.refresh_from_db()
+        id_padded = "%04d" % video.pk
+        expected_slug = f"{id_padded}-washington-landlord"
+        expected_url = f"/video/{expected_slug}/"
+        self.assertEqual(video.get_absolute_url(), expected_url)
+        # Ensure pk does NOT appear twice (old bug: /video/42-0042-titre/)
+        self.assertEqual(video.get_absolute_url().count(str(video.pk)), 1)
 
-        self.assertEqual(video.get_absolute_url(), expected_absolute_url)
-        self.assertIn("46859", video.get_absolute_url())
-        legacy_api_url = f"/api/videos/{video.pk}-washingtonlandlordtenantlawmp4/"
-        response = self.client.get(legacy_api_url)
-
+    def test_api_video_detail_accessible_by_slug(self):
+        """
+        Esup-Pod - The V5 API endpoint /api/videos/<slug>/ must return 200
+        when called with the V4-format slug.
+        """
+        video = Video.objects.create(
+            title="Washington Landlord",
+            owner=self.user,
+            status=Video.Status.PUBLISHED,
+        )
+        video.refresh_from_db()
+        response = self.client.get(f"/api/videos/{video.slug}/")
         self.assertEqual(response.status_code, 200)

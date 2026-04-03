@@ -55,7 +55,11 @@ class VideoViewSet(viewsets.ModelViewSet):
         if lookup_value and "-" in lookup_value:
             potential_id = lookup_value.split("-")[0]
             if potential_id.isdigit():
-                obj = Video.objects.filter(pk=potential_id).first()
+                obj = (
+                    self.filter_queryset(self.get_queryset())
+                    .filter(pk=potential_id)
+                    .first()
+                )
                 if obj:
                     self.check_object_permissions(self.request, obj)
                     return obj
@@ -241,6 +245,8 @@ class VideoViewSet(viewsets.ModelViewSet):
         self._check_stream_permissions(request, video)
 
         resolution = request.query_params.get("resolution")
+        if resolution and not resolution.endswith("p"):
+            resolution = f"{resolution}p"
         video_file_to_stream = self._get_video_file_to_stream(video, resolution)
 
         if not video_file_to_stream:

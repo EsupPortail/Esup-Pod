@@ -2,7 +2,7 @@
 Esup-Pod - Tests for migration compatibility.
 """
 
-from django.test import TestCase, override_settings
+from django.test import override_settings
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -12,27 +12,6 @@ from src.apps.video.models import Video
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
-
-
-class MigrationCompatTest(TestCase):
-    """
-    Esup-Pod - Tests for migrating features.
-    """
-
-    def setUp(self):
-        """
-        Esup-Pod - Setup test dependencies.
-        """
-        self.user = User.objects.create_user(username="testuser_mig", password="password")
-
-    def test_legacy_download_redirect(self):
-        """
-        Esup-Pod - Test legacy download redirection.
-        """
-        Video.objects.create(title="Legacy", slug="legacy-video", owner=self.user)
-        response = self.client.get("/video/telecharger/1080p/legacy-video.mp4")
-        self.assertEqual(response.status_code, 301)
-        self.assertIn("/api/videos/legacy-video/stream/?resolution=1080p", response.url)
 
 
 @override_settings(PASSWORD_HASHERS=["django.contrib.auth.hashers.PBKDF2PasswordHasher"])

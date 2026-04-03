@@ -7,7 +7,6 @@ from django.contrib.sites.models import Site
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-from django.utils.text import slugify
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
 import tagulous.models
@@ -289,16 +288,12 @@ class Video(models.Model):
             self.password = make_password(self.password, hasher="pbkdf2_sha256")
 
     def save(self, *args, **kwargs):
-        """Overridden save method to handle slug generation, password encryption, and expiration logic."""
-        if not self.slug:
-            base_slug = slugify(self.title)
-            slug = base_slug
-            counter = 1
-            while Video.objects.filter(slug=slug).exists():
-                slug = f"{base_slug}-{counter}"
-                counter += 1
-            self.slug = slug
-
+        """
+        # Overridden save().
+        # NOTE: Slug not generated here: depends on PK (available after INSERT).
+        # Handled in post_save signal (set_video_slug).
+        # Slug is created once and remains immutable (V5, unlike V4).
+        """
         self.set_password()
 
         if not self.id:
@@ -313,7 +308,11 @@ class Video(models.Model):
 
     def get_absolute_url(self):
         """
-        Remodels the V4 path structure for the frontend permalink.
-        Format: /video/<ID>-<titre-slugifie>/
+        Returns the V4-compatible permalink.
+        Format: /video/<slug>/ where slug is already "0042-mon-titre-de-video".
+
+        NOTE: previously this returned f"/video/{self.pk}-{self.slug}/" which
+        produced a double-ID like /video/42-0042-titre/. The slug already embeds
+        the zero-padded ID, so only the slug is needed here.
         """
-        return f"/video/{self.pk}-{self.slug}/"
+        return f"/video/{self.slug}/"

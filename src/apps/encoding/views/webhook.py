@@ -139,6 +139,12 @@ class EncodingWebhookView(APIView):
                     if "_" in file_name
                     else file_name.split(".")[0]
                 )
+                # NOTE: Normalise resolution to always end with "p" (e.g. "360" → "360p").
+                # This ensures EncodingVideo.resolution is stored as "360p", which is
+                # the format expected by VideoViewSet._get_video_file_to_stream() after
+                # the V4-compatibility normalisation applied in the stream action.
+                if not res.endswith("p"):
+                    res = f"{res}p"
                 encoded_video_file = client.download_task_file_to_temp(task_id, file_name)
 
                 encoding_obj, created = EncodingVideo.objects.get_or_create(

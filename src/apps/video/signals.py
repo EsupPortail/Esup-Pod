@@ -8,10 +8,30 @@ import os
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
+from django.utils.text import slugify
 from src.apps.video.models import Video, Type
 from src.apps.video.services.metadata import extract_video_duration
 
 logger = logging.getLogger(__name__)
+
+
+@receiver(post_save, sender=Video)
+def set_video_slug(sender, instance, created, **kwargs):
+    """
+    Esup-Pod - Generates the V4-compatible slug after the first INSERT.
+
+    Format: "%04d-<slugified-title>" (e.g. "0042-mon-titre-de-video")
+    This mirrors V4's models2.py L.924-925 behaviour exactly.
+
+    NOTE: unlike V4 which recomputed the slug on every save(),
+    V5 intentionally freezes the slug at creation time.
+    If the title changes, the slug (and therefore the permalink) does not change.
+    """
+    if created and not instance.slug:
+        id_padded = "%04d" % instance.pk
+        new_slug = f"{id_padded}-{slugify(instance.title)}"
+        Video.objects.filter(pk=instance.pk).update(slug=new_slug)
+        instance.slug = new_slug
 
 
 @receiver(post_delete, sender=Video)
