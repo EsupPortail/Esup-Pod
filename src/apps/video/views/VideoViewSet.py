@@ -46,8 +46,8 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     def get_object(self):
         """
-        Surcharge pour accepter les slugs au format V4 (ex: 46859-titre-video).
-        Si on détecte le format ID-slug, on tente de récupérer par ID (pk).
+        Override to accept slugs in V4 format (ex: 46859-titre-video).
+        If the ID-slug format is detected, it attempts to retrieve by ID (pk).
         """
         lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
         lookup_value = self.kwargs.get(lookup_url_kwarg)

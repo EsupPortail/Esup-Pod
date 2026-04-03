@@ -16,18 +16,18 @@ User = get_user_model()
 
 class MigrationCompatTest(TestCase):
     """
-    Esup-Pod - Tests for migrating features.
+    Tests for migrating features.
     """
 
     def setUp(self):
         """
-        Esup-Pod - Setup test dependencies.
+        Setup test dependencies.
         """
         self.user = User.objects.create_user(username="testuser_mig", password="password")
 
     def test_legacy_download_redirect(self):
         """
-        Esup-Pod - Test legacy download redirection.
+        Test legacy download redirection.
         """
         Video.objects.create(title="Legacy", slug="legacy-video", owner=self.user)
         response = self.client.get("/video/telecharger/1080p/legacy-video.mp4")
@@ -38,12 +38,12 @@ class MigrationCompatTest(TestCase):
 @override_settings(PASSWORD_HASHERS=["django.contrib.auth.hashers.PBKDF2PasswordHasher"])
 class LegacyHashUnlockTest(APITestCase):
     """
-    Esup-Pod - Test the legacy format hash unlocking.
+    Test the legacy format hash unlocking.
     """
 
     def setUp(self):
         """
-        Esup-Pod - Setup test objects.
+        Setup test objects.
         """
         self.user = User.objects.create_user(username="testuser", password="password")
         self.video = Video.objects.create(
@@ -59,7 +59,7 @@ class LegacyHashUnlockTest(APITestCase):
 
     def test_unlock_with_legacy_hash(self):
         """
-        Esup-Pod - Test unlock is successful using legacy v4 hash.
+        Test unlock is successful using legacy v4 hash.
         """
         url = reverse("video-unlock", kwargs={"slug": self.video.slug})
         response = self.client.post(f"{url}?hash={self.valid_hash}")
