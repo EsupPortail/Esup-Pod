@@ -3,29 +3,29 @@
 
 ### Authentication Configuration
 
-Authentication application configuration<br>
+Authentication application configuration
 
 * `AFFILIATION_STAFF`
   > default value: `['faculty', 'employee', 'staff']`
   >>
 * `ALLOWED_SUPERUSER_IPS`
   > default value: `['127.0.0.1', '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16']`
-  >> List of IPs and/or ranges from which “superuser” status is allowed.<br>
+  >> List of IPs and/or ranges from which “superuser” status is allowed.
 * `CAS_ADMIN_REDIRECT`
   > default value: `False`
-  >> Redirect to CAS login for admin interface.<br>
+  >> Redirect to CAS login for admin interface.
 * `CAS_APPLY_ATTRIBUTES_TO_USER`
   > default value: `True`
-  >> Automatically apply attributes returned by CAS to the user profile.<br>
+  >> Automatically apply attributes returned by CAS to the user profile.
 * `CAS_FORCE_CHANGE_USERNAME_CASE`
   > default value: `lower`
-  >> Force case (lower or upper case) of CAS username.<br>
+  >> Force case (lower or upper case) of CAS username.
 * `CAS_SERVER_URL`
   > default value: `https://cas.univ-lille.fr`
-  >> Url of the institution’s CAS server.<br>
+  >> Url of the institution’s CAS server.
 * `CAS_VERSION`
   > default value: `3`
-  >> CAS protocol version.<br>
+  >> CAS protocol version.
 * `CREATE_GROUP_FROM_AFFILIATION`
   > default value: `True`
   >>
@@ -37,76 +37,76 @@ Authentication application configuration<br>
   >>
 * `LDAP_BIND_DN`
   > default value: `cn=pod,ou=app,dc=univ,dc=fr`
-  >> Identifiant (DN) of the account to connect to the LDAP server.<br>
+  >> Identifiant (DN) of the account to connect to the LDAP server.
 * `LDAP_BIND_PASSWORD`
   > default value: ``
-  >> Password of the account to connect to the LDAP server.<br>
+  >> Password of the account to connect to the LDAP server.
 * `LDAP_MAPPING_ATTRIBUTES`
   > default value: `{'uid': 'uid', 'mail': 'mail', 'last_name': 'sn', 'first_name': 'givenname', 'primaryAffiliation': 'eduPersonPrimaryAffiliation', 'affiliations': 'eduPersonAffiliation', 'groups': 'memberOf', 'establishment': 'establishment'}`
-  >> Mapping between LDAP attributes and Pod account fields.<br>
+  >> Mapping between LDAP attributes and Pod account fields.
 * `LDAP_SERVER_PORT`
   > default value: `389`
-  >> LDAP server port.<br>
+  >> LDAP server port.
 * `LDAP_SERVER_URL`
   > default value: `ldap://ldap.univ.fr`
-  >> LDAP server URL.<br>
+  >> LDAP server URL.
 * `LDAP_SERVER_USE_SSL`
   > default value: `False`
-  >> Use SSL for LDAP connection.<br>
+  >> Use SSL for LDAP connection.
 * `LDAP_USER_SEARCH_BASE`
   > default value: `ou=people,dc=univ,dc=fr`
-  >> LDAP search base for users.<br>
+  >> LDAP search base for users.
 * `LDAP_USER_SEARCH_FILTER`
   > default value: `(uid=%(uid)s)`
-  >> LDAP filter for searching the individual in the LDAP server.<br>
+  >> LDAP filter for searching the individual in the LDAP server.
 * `OIDC_CLAIM_FAMILY_NAME`
   > default value: `family_name`
-  >> Claim name for family name.<br>
+  >> Claim name for family name.
 * `OIDC_CLAIM_GIVEN_NAME`
   > default value: `given_name`
-  >> Claim name for first name.<br>
+  >> Claim name for first name.
 * `OIDC_CLAIM_PREFERRED_USERNAME`
   > default value: `preferred_username`
-  >> Claim name for username.<br>
+  >> Claim name for username.
 * `OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES`
   > default value: `[]`
-  >> Default access groups assigned to OIDC users.<br>
+  >> Default access groups assigned to OIDC users.
 * `OIDC_DEFAULT_AFFILIATION`
   > default value: `member`
-  >> Default affiliation for OIDC users.<br>
+  >> Default affiliation for OIDC users.
 * `OIDC_NAME`
   > default value: `OpenID Connect`
-  >> Display name for OpenID Connect authentication.<br>
+  >> Display name for OpenID Connect authentication.
 * `OIDC_OP_TOKEN_ENDPOINT`
   > default value: `https://auth.example.com/oidc/token`
-  >> OIDC Provider Token endpoint.<br>
+  >> OIDC Provider Token endpoint.
 * `OIDC_OP_USER_ENDPOINT`
   > default value: `https://auth.example.com/oidc/userinfo`
-  >> OIDC Provider UserInfo endpoint.<br>
+  >> OIDC Provider UserInfo endpoint.
 * `OIDC_RP_CLIENT_ID`
   > default value: `mon-client-id`
-  >> OIDC Client ID.<br>
+  >> OIDC Client ID.
 * `OIDC_RP_CLIENT_SECRET`
   > default value: `mon-secret`
-  >> OIDC Client Secret.<br>
+  >> OIDC Client Secret.
 * `REMOTE_USER_HEADER`
   > default value: `REMOTE_USER`
   >>
 * `SHIBBOLETH_ATTRIBUTE_MAP`
   > default value: `{'REMOTE_USER': [True, 'username'], 'Shibboleth-givenName': [True, 'first_name'], 'Shibboleth-sn': [False, 'last_name'], 'Shibboleth-mail': [False, 'email'], 'Shibboleth-primary-affiliation': [False, 'affiliation'], 'Shibboleth-unscoped-affiliation': [False, 'affiliations']}`
-  >> Mapping between Shibboleth attributes and user model.<br>
+  >> Mapping between Shibboleth attributes and user model.
 * `SHIBBOLETH_STAFF_ALLOWED_DOMAINS`
   > default value: `[]`
   >>
 * `SHIB_NAME`
   > default value: `Identify Federation`
-  >> Display name for Shibboleth authentication.<br>
+  >> Display name for Shibboleth authentication.
 * `SHIB_SECURE_HEADER`
   > default value: `None`
-  >> Secure header for Shibboleth.<br>
+  >> Secure header for Shibboleth.
 * `SHIB_SECURE_VALUE`
   > default value: `secure`
-  >> Expected value for Shibboleth secure header.<br>
+  >> Expected value for Shibboleth secure header.
 * `USE_CAS`
   > default value: `False`
   >>
@@ -115,10 +115,10 @@ Authentication application configuration<br>
   >>
 * `USE_LDAP`
   > default value: `False`
-  >> Enable LDAP authentication.<br>
+  >> Enable LDAP authentication.
 * `USE_LOCAL_AUTH`
   > default value: `True`
-  >> Enable local authentication (username/password stored in database).<br>
+  >> Enable local authentication (username/password stored in database).
 * `USE_OIDC`
   > default value: `False`
   >>
@@ -128,41 +128,41 @@ Authentication application configuration<br>
 
 ### Video Configuration
 
-Video application configuration<br>
+Video application configuration
 
 * `ALLOWED_EXTENSIONS`
   > default value: `['3gp', 'avi', 'divx', 'flv', 'm2p', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'mts', 'wmv', 'mp3', 'ogg', 'wav', 'wma', 'webm', 'ts']`
-  >> Allowed file extensions for upload.<br>
+  >> Allowed file extensions for upload.
 * `ALLOW_AUTHENTICATED_UPLOAD`
   > default value: `True`
-  >> Allow all authenticated users to upload videos.<br>
+  >> Allow all authenticated users to upload videos.
 * `CACHE_TIMEOUT`
   > default value: `600`
-  >> Time in seconds to cache video data.<br>
+  >> Time in seconds to cache video data.
 * `CHANNEL_MODE`
   > default value: `False`
-  >> Enable channel display mode.<br>
+  >> Enable channel display mode.
 * `CHUNK_SIZE`
   > default value: `100000`
   >>
 * `DEFAULT_LICENSE`
   > default value: ``
-  >> Default license for new videos.<br>
+  >> Default license for new videos.
 * `FFMPEG_CMD`
   > default value: `ffmpeg`
-  >> System command for FFmpeg.<br>
+  >> System command for FFmpeg.
 * `FFMPEG_CRF`
   > default value: `20`
-  >> FFmpeg Constant Rate Factor (quality).<br>
+  >> FFmpeg Constant Rate Factor (quality).
 * `FFMPEG_NB_THREADS`
   > default value: `slow`
-  >> FFmpeg speed/quality preset.<br>
+  >> FFmpeg speed/quality preset.
 * `FFPROBE_CMD`
   > default value: `ffprobe`
-  >> System command for FFprobe.<br>
+  >> System command for FFprobe.
 * `FFPROBE_GET_INFO`
   > default value: `high`
-  >> Detail level for metadata extraction.<br>
+  >> Detail level for metadata extraction.
 * `FORCE_LOWERCASE_TAGS`
   > default value: `True`
   >>
@@ -195,16 +195,16 @@ Video application configuration<br>
   >>
 * `NUMBER_TAGS_CLOUD`
   > default value: `20`
-  >> Number of tags displayed in the cloud.<br>
+  >> Number of tags displayed in the cloud.
 * `RESTRICT_EDIT_TO_STAFF`
   > default value: `False`
   >>
 * `THUMBNAILS_DIR`
   > default value: `thumbnails`
-  >> Directory for storing video thumbnails.<br>
+  >> Directory for storing video thumbnails.
 * `USER_QUOTA_SIZE_GB`
   > default value: `5`
-  >> Storage quota per user in GB.<br>
+  >> Storage quota per user in GB.
 * `USER_VIDEO_CATEGORY`
   > default value: `False`
   >>
@@ -232,25 +232,25 @@ Video application configuration<br>
 
 ### API Configuration
 
-API documentation settings.<br>
+API documentation settings.
 
 * `SPECTACULAR_SETTINGS`
   > default value: `{'TITLE': 'Pod REST API', 'DESCRIPTION': 'Video management API (Local Authentication)', 'SERVE_INCLUDE_SCHEMA': False, 'COMPONENT_SPLIT_REQUEST': True}`
-  >> Configuration for OpenAPI schema generation.<br>
+  >> Configuration for OpenAPI schema generation.
 
 ### Core Configuration
 
-Core application configuration<br>
+Core application configuration
 
 * `MEDIA_ROOT`
   > default value: `media`
-  >> Absolute filesystem path to the directory that will hold user-uploaded files.<br>
+  >> Absolute filesystem path to the directory that will hold user-uploaded files.
 * `MEDIA_URL`
   > default value: `/media/`
-  >> URL that handles the media served from MEDIA_ROOT.<br>
+  >> URL that handles the media served from MEDIA_ROOT.
 * `STATIC_ROOT`
   > default value: `staticfiles`
-  >> The absolute path to the directory where collectstatic will collect static files for deployment.<br>
+  >> The absolute path to the directory where collectstatic will collect static files for deployment.
 * `STATIC_URL`
   > default value: `/static/`
-  >> URL to use when referring to static files located in STATIC_ROOT.<br>
+  >> URL to use when referring to static files located in STATIC_ROOT.

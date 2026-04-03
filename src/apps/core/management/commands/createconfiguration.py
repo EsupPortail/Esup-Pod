@@ -78,7 +78,7 @@ class Command(BaseCommand):
             desc_list = desc.get("description", {}).get(self.language, [])
             for line in desc_list:
                 if line != "":
-                    msg += "%s<br>\n" % line
+                    msg += "%s\n" % line
                 else:
                     msg += "\n"
 
@@ -131,7 +131,7 @@ class Command(BaseCommand):
                 if code:
                     endline = "\n"
                 else:
-                    endline = "<br>\n"
+                    endline = "\n"
                     line = line.strip()
                 msg += "  >> %s%s" % (line, endline)
         return msg
