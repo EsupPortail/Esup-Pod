@@ -15,19 +15,13 @@ We use **Docker** to replicate production services while providing a flexible de
 ### 🪟 Windows
 
 - Install **Docker Desktop**.
-
 - (Recommended) Enable **WSL2** backend for Docker.
-
 - Install **Chocolatey** (required to use `choco`): <https://chocolatey.org/install>
-
 - Install **Make**:
 
   ```powershell
   choco install make
-
   ```
-
-yaml
 
 - **Note**: Run commands from PowerShell or Git Bash.
 
@@ -43,10 +37,7 @@ cd Pod_V5_Back
 cp .env.example .env   # Copy template
 make start            # Start project
 make logs             # Watch logs
-
   ```
-
-python
 
 The app will be available at `http://localhost:8000`.
 
@@ -71,10 +62,7 @@ Customization is handled via modular Python files instead of a single large envi
 
 ```python
   MAX_UPLOAD_SIZE_GB = 10
-
 ```
-
-python
 
 - **Benefits**: You get full IDE auto-completion and type checking.
 
@@ -109,23 +97,16 @@ clean                Full shutdown and cleanup (containers, volumes, orphans)
 test                 Run tests inside the container (pytest)
 test-cov             Run tests with coverage report
 check-django-env     Environment checks (DJANGO_SETTINGS_MODULE must end with .docker)
-
   ```
-
-text
 
 ### Running Tests
 
 Tests are executed **inside the Docker container** against a dedicated ephemeral database (`test_pod_db`).
-
 This ensures your development data (`pod_db`) remains untouched and the environment matches CI.
 
 ```bash
 make test
-
 ```
-
-bash
 
 ### Running CI
 
@@ -133,10 +114,7 @@ You can run the exact same sequence as the CI on your machine to ensure your PR 
 
 ```shell
 make ci
-
 ```
-
-text
 
 This command chains: build ➔ lint ➔ test-cov ➔ clean.
 
@@ -146,11 +124,9 @@ You can access the database in two ways:
 
 ```shell
 make db-shell
-
 ```
 
 ## Further Reading
 
 - ⬅️ **[Back to Deployment Overview](../README.md)**
-
 - ⬅️ **[Back to Index](../../README.md)**

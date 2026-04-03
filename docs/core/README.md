@@ -12,11 +12,10 @@ The Core app ensures that:
 
 ## Key Components
 
-| Component         | Role                                                                            |
-| :---------------- | :------------------------------------------------------------------------------ |
-
-| **configuration.json** | Single source of truth containing metadata for all configurable settings.   |
-| **Management Commands** | CLI tools for auditing, documenting, and maintaining the platform.          |
+| Component              | Role                                                                            |
+| :--------------------- | :------------------------------------------------------------------------------ |
+| **configuration.json** | Single source of truth containing metadata for all configurable settings.       |
+| **Management Commands**| CLI tools for auditing, documenting, and maintaining the platform.              |
 
 ## Supported Commands
 
@@ -27,15 +26,11 @@ The Core app ensures that:
 ## Workflow
 
 1. Developers define settings in Python.
-
 2. `comparesettings` verifies they're documented.
-
 3. `addsetting` helps add missing settings.
-
 4. `createconfiguration` generates end-user documentation.
 
 ## Further Reading
 
 - ➡️ **[Technical Details & Commands](details.md)**: Detailed usage of each management command.
-
 - ⬅️ **[Back to Index](../README.md)**

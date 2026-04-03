@@ -8,13 +8,10 @@ The choice of authentication method is configured via the project settings (`set
 
 | Method         | Type       | Description                                                                                    |
 | :------------- | :--------- | :--------------------------------------------------------------------------------------------- |
-
 | **Local**      | Internal   | Uses the standard Django database. Ideal for superusers and development.                       |
 | **CAS**        | External   | **Central Authentication Service**. Commonly used in universities (e.g., University of Lille). |
-
 | **LDAP**       | Directory  | Direct connection to an LDAP directory to retrieve user attributes.                            |
 | **Shibboleth** | Federation | Authentication based on HTTP headers (REMOTE_USER), managed by the web server (Apache/Nginx).  |
-
 | **OIDC**       | Federation | **OpenID Connect**. The modern standard for delegated authentication.                          |
 
 ## How it Works
@@ -28,5 +25,4 @@ Regardless of the method used to log in, the backend always eventually:
 ## Further Reading
 
 - ➡️ **[Technical Details & Configuration](details.md)**: Environment variables, detailed flows, and attribute mapping.
-
 - ⬅️ **[Back to Index](../README.md)**
