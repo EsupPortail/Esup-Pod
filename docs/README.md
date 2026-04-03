@@ -37,7 +37,8 @@ To maintain project quality, please refer to the following guides (single source
 
 ## Project Structure
 
-```
+```python
+
 Pod_V5_Back/
 ├── src/
 │   ├── apps/           # Django Apps (Business Logic)
@@ -57,4 +58,5 @@ Pod_V5_Back/
 │   ├── core/
 │   └── deployment/
 └── manage.py           # Django CLI
+
 ```

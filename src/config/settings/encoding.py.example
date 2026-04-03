@@ -1,9 +1,9 @@
 """
-Encoding Feature Flags & Configuration.
+Esup-Pod - Encoding Feature Flags & Configuration.
 
 Use this file to customize the encoding behavior
 of your Pod instance. Values defined here override the default values.
 
 To enable an option, uncomment the line and change the value.
-The prefix, previously required, is no longer necessary.
+The configuration prefix (e.g., POD_ or ENCODING_), previously required in older versions, is no longer necessary.
 """

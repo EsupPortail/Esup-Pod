@@ -1,6 +1,9 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
-# Esup-Pod - API Curl Test Suite (CI-READY & DYNAMIC)
+# Esup-Pod - API Curl Test Suite
+# This script performs a full end to end integration test: authentication,
+# video upload, metadata management, security (passwords),
+# and complete resource lifecycle (CRUD).
 # -----------------------------------------------------------------------------
 set -e
 

@@ -6,10 +6,12 @@ The Pod application encoding module handles asynchronous video transcoding and p
 
 The encoding system is built on three key components:
 
-| Component            | Role                                                                                   |
-| :------------------- | :-------------------------------------------------------------------------------------- |
+| Component            | Role                                                                                |
+| :------------------- | :---------------------------------------------------------------------------------- |
+
 | **Pod Backend**       | Triggers encoding tasks via Celery and stores metadata in the database.                 |
 | **Celery + Redis**    | Manages the asynchronous task queue and handles retries for failed encoding jobs.       |
+
 | **Runner Manager API** | External microservice that performs the actual video transcoding and processing.        |
 
 ## How It Works
@@ -27,10 +29,13 @@ Pod can encode videos into the following outputs:
 
 | Format       | Description                          |
 | :----------- | :----------------------------------- |
+
 | **audio**    | MP3 audio file                       |
 | **360p**     | 360p video resolution (low quality)  |
+
 | **480p**     | 480p video resolution (standard)     |
 | **720p**     | 720p video resolution (HD)           |
+
 | **1080p**    | 1080p video resolution (Full HD)     |
 | **playlist** | HLS playlist for adaptive streaming   |
 
@@ -43,17 +48,19 @@ Pod can encode videos into the following outputs:
 
 ## API Endpoints
 
-| Method   | Endpoint                  | Description                                                          |
+| Method   | Endpoint                  | Description                                                        |
 | :------- | :------------------------ | :----------------------------------------------------------------- |
-| **POST** | `/api/encoding/webhook/`  | Receives encoding completion notification from Runner Manager.      |
 
+| **POST** | `/api/encoding/webhook/`  | Receives encoding completion notification from Runner Manager.      |
+>
 > The webhook endpoint is public but secured by the `ENCODING_WEBHOOK_SECRET` environment variable via the `X-Webhook-Secret` header.
 
 ## File Storage
 
 Video-related files are organized on disk using a hash-based directory strategy to obscure physical files and avoid predictable names.
 
-```
+```text
+
 MEDIA_ROOT/
 ├── video/
 │   ├── source/
@@ -66,9 +73,11 @@ MEDIA_ROOT/
 │       └── %Y/%m/%d/<hash>.vtt
 └── userpicture/
     └── %Y/%m/%d/<hash>.jpg
+
 ```
 
 ## Further Reading
 
 - ➡️ **[Technical Details & Configuration](details.md)**: Environment variables, API integration, webhook payload, and advanced setup.
+
 - ⬅️ **[Back to Index](../README.md)**

@@ -92,8 +92,11 @@ class StorageServicesTests(TestCase):
         """
         Setup a user and a video for storage testing.
         """
-        # gitguardian:ignore
-        self.user = User.objects.create_user(username="testuser", password="password")
+        # gitguardian:start-ignore
+        self.user = User.objects.create_user(
+            username="testuser", password="password"
+        )  # nosec
+        # gitguardian:end-ignore
 
         video_content = SimpleUploadedFile(
             "test.mp4", b"file_content", content_type="video/mp4"

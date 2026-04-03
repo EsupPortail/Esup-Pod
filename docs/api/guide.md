@@ -3,6 +3,7 @@
 How to document your code so it appears in Swagger.
 
 ## Principle
+
 Documentation lives in the code. By using `drf-spectacular` decorators, you keep the documentation synchronized with the implementation.
 
 ## Documenting a View
@@ -15,10 +16,10 @@ Add this above the ViewSet class to group its methods.
 
 ```python
 from drf_spectacular.utils import extend_schema
-
 @extend_schema(tags=['Video Management'])  # Creates a "Video Management" group
 class VideoViewSet(viewsets.ModelViewSet):
     ...
+
 ```
 
 ### 2. Detailing a Method
@@ -42,4 +43,5 @@ Add this to the specific method (create, list, etc.).
 )
 def create(self, request):
     ...
+
 ```

@@ -27,20 +27,21 @@ l’utilisation de celles-ci dans le cadre de l’enseignement et la recherche.
 
 **Développement V5 :** Cette nouvelle version a été intégralement développée par **Giorgio UTZERI** et **Benjamin SERE** (Université de Lille).
 
-**Esup-Pod V5** est l’API backend de la plateforme de gestion vidéo Pod.  
-Conçue pour l’Enseignement Supérieur et la Recherche, elle permet la publication, l’enrichissement et la diffusion de vidéos.
+**Esup-Pod V5** est l’API backend de la plateforme de gestion vidéo Pod.
 
+Conçue pour l’Enseignement Supérieur et la Recherche, elle permet la publication, l’enrichissement et la diffusion de vidéos.
+>
 > [!NOTE]
-> Ce dépôt contient le backend **V5 (Python/Django)**.  
+> Ce dépôt contient le backend **V5 (Python/Django)**.
 > Retrouvez la documentation ici [ESUP-POD V5 Documentation](./docs/README.md)
 > Pour la version V4 ou la documentation institutionnelle, voir le [ESUP-Portail Wiki](https://www.esup-portail.org/wiki/display/ES/esup-pod).
-
 
 ## [EN]
 
 **Esup-Pod V5** is the backend API for the Pod video management platform.
-Ideally suited for Higher Education and Research institutions, it facilitates video publishing, enrichment, and dissemination.
 
+Ideally suited for Higher Education and Research institutions, it facilitates video publishing, enrichment, and dissemination.
+>
 > [!NOTE]
 > This repository contains the **V5 (Python/Django)** backend.
 > Find the documentation here [ESUP-POD V5 Documentation](./docs/README.md)
@@ -69,15 +70,18 @@ For developers, a **Makefile** is available to simplify common tasks.
 make help          # List all available commands
 make start         # Start the project with Docker
 make test          # Run tests inside Docker
+
 ```
 
 For detailed instructions, see:
-*   [Development Guide](docs/deployment/dev/dev.md)
+
+* [Development Guide](docs/deployment/dev/dev.md)
 
 ### Technical documentation
 
 * The documentation (to install, customize, etc…) is on the
+
   [ESUP Wiki](https://www.esup-portail.org/wiki/display/ES/esup-pod "Documentation")
 
-<img src="https://www.univ-lille.fr/typo3conf/ext/ul2fpfb/Resources/Public/assets/img/UL-ROSE-dark-2014.svg" height="50" alt="Université de Lille"> | <img src="https://www.esup-portail.org/sites/default/files/logo-esupportail_1.png" height="50" alt="Esup Portail"> | <img src="https://upload.wikimedia.org/wikipedia/fr/5/50/Bloc_Marianne.svg" height="30" alt=""> Ministère de lʼEnseignement supérieur et de la Recherche
-:-----:|:-----:|:----:
+| <img src="https://www.univ-lille.fr/typo3conf/ext/ul2fpfb/Resources/Public/assets/img/UL-ROSE-dark-2014.svg" height="50" alt="Université de Lille"> | <img src="https://www.esup-portail.org/sites/default/files/logo-esupportail_1.png" height="50" alt="Esup Portail"> | <img src="https://upload.wikimedia.org/wikipedia/fr/5/50/Bloc_Marianne.svg" height="30" alt=""> Ministère de lʼEnseignement supérieur et de la Recherche |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------: |

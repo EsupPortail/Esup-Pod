@@ -19,23 +19,37 @@ accueillante, diversifiée, inclusive et saine.
 Exemples de comportements qui contribuent à créer un environnement positif :
 
 * Faire preuve d'empathie et de bienveillance envers les autres
+
 * Être respectueux des opinions, points de vue et expériences divergents
+
 * Donner et recevoir avec grâce les critiques constructives
+
 * Assumer ses responsabilités et s'excuser auprès des personnes
+
   affectées par nos erreurs et apprendre de ces expériences
+
 * Se concentrer sur ce qui est le meilleur non pas uniquement pour nous
+
   en tant qu'individu, mais aussi pour l'ensemble de la communauté
 
 Exemples de comportements inacceptables :
 
 * L'utilisation de langage ou d'images sexualisés et d'attentions
+
   ou d'avances sexuelles de toute nature
+
 * Le *trolling*, les commentaires insultants ou désobligeants et les attaques
+
   personnelles ou d'ordre politique
+
 * Le harcèlement en public ou en privé
+
 * La publication d'informations privées d'autrui, telle qu'une
+
   adresse postale ou une adresse électronique, sans leur autorisation explicite
+
 * Toute autre conduite qui pourrait raisonnablement
+
   être considérée comme inappropriée dans un cadre professionnel
 
 ## Responsabilités d'application
@@ -84,9 +98,11 @@ qu'ils jugent contraire au présent code de conduite :
 ### 1. Correction
 
 **Impact communautaire** : utilisation d'un langage inapproprié ou
+
 tout autre comportement jugé non professionnel ou indésirable dans la communauté.
 
 **Conséquence** : un avertissement écrit et privé de la part des
+
 dirigeant·e·s de la communauté, clarifiant la nature du non-respect et expliquant pourquoi
 le comportement était inapproprié. Des excuses publiques peuvent être demandées.
 
@@ -95,6 +111,7 @@ le comportement était inapproprié. Des excuses publiques peuvent être demand�
 **Impact communautaire** : un non-respect par un seul incident ou une série d'actions.
 
 **Conséquence** : un avertissement avec des conséquences dû à la poursuite du comportement.
+
 Aucune interaction avec les personnes concernées,
 y compris l'interaction non sollicitée avec celles et ceux qui sont
 chargé·e·s de l'application de ce code de conduite, pendant une période déterminée.
@@ -105,9 +122,11 @@ Le non-respect de ces conditions peut entraîner un bannissement temporaire ou p
 ### 3. Bannissement temporaire
 
 **Impact communautaire** : un non-respect grave des normes communautaires,
+
 notamment un comportement inapproprié soutenu.
 
 **Conséquence** : un bannissement temporaire de toutes formes d'interactions
+
 ou de communications avec la communauté pendant une période déterminée.
 Aucune interaction publique ou privée avec les personnes concernées,
 y compris les interactions non sollicitées avec celles et ceux qui appliquent
@@ -117,10 +136,12 @@ Le non-respect de ces conditions peut entraîner un bannissement permanent.
 ### 4. Bannissement permanent
 
 **Impact communautaire** : démontrer un schéma récurrent de non-respect
+
 des normes de la communauté y compris un comportement inapproprié soutenu,
 le harcèlement d'un individu ainsi que l'agression ou le dénigrement de catégories d'individus.
 
 **Conséquence** : un bannissement permanent
+
 de toutes formes d'interactions publiques au sein de la communauté.
 
 ## Attributions

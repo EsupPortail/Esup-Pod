@@ -13,16 +13,15 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
 @override_settings(PASSWORD_HASHERS=["django.contrib.auth.hashers.PBKDF2PasswordHasher"])
 class LegacyHashUnlockTest(APITestCase):
     """
-    Esup-Pod - Test the legacy format hash unlocking.
+    Test the legacy format hash unlocking.
     """
 
     def setUp(self):
         """
-        Esup-Pod - Setup test objects.
+        Setup test objects.
         """
         self.user = User.objects.create_user(username="testuser", password="password")
         self.video = Video.objects.create(
@@ -38,7 +37,7 @@ class LegacyHashUnlockTest(APITestCase):
 
     def test_unlock_with_legacy_hash(self):
         """
-        Esup-Pod - Test unlock is successful using legacy v4 hash.
+        Test unlock is successful using legacy v4 hash.
         """
         url = reverse("video-unlock", kwargs={"slug": self.video.slug})
         response = self.client.post(f"{url}?hash={self.valid_hash}")
