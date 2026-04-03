@@ -574,6 +574,15 @@ function generateWEBVTT() {
 }
 
 /**
+ * Count displayed caption characters without line breaks.
+ * @param {string} captionText - Caption content
+ * @return {number} character count without carriage returns/new lines
+ */
+function getCaptionVisibleLength(captionText) {
+  return captionText.replace(/[\r\n]/g, "").length;
+}
+
+/**
  * Check validity of every form and fires an invalid event on invalid elements.
  *
  * @return {bool} true if everything's fine
@@ -965,7 +974,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
       const nbCharsMsg = gettext("%s/%s characters");
       // Update numberCharactersDiv content
       const updateCharacterCount = () => {
-        let nbCharacters = this.captionTextInput.value.length;
+        let nbCharacters = getCaptionVisibleLength(this.captionTextInput.value);
         this.numberCharactersDiv.textContent = interpolate(nbCharsMsg, [
           nbCharacters,
           80,
