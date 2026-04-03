@@ -16,11 +16,11 @@ Add this decorator above the ViewSet class to organize its methods into logical 
 
 ```python
 from drf_spectacular.utils import extend_schema
-
 @extend_schema(tags=['Video Management'])  # Creates a "Video Management" group
 class VideoViewSet(viewsets.ModelViewSet):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+
 ```
 
 ### 2. Detailing a Specific Method
@@ -45,6 +45,7 @@ Add this decorator to the specific method (create, list, retrieve, etc.) to docu
 def create(self, request):
     # Implementation...
     pass
+
 ```
 
 ### 3. Parameters & Query Strings
@@ -54,7 +55,6 @@ Document request parameters with `@extend_schema` and `OpenApiParameter`:
 ```python
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
-
 @extend_schema(
     parameters=[
         OpenApiParameter(
@@ -74,6 +74,7 @@ from drf_spectacular.types import OpenApiTypes
 def list(self, request):
     # Implementation...
     pass
+
 ```
 
 ## Viewing Documentation
@@ -96,7 +97,9 @@ The API documentation is auto-generated and available at:
 ## Further Reading
 
 - [drf-spectacular Documentation](https://drf-spectacular.readthedocs.io/)
+
 - [OpenAPI 3.0 Specification](https://spec.openapis.org/oas/v3.0.3)
 
 - ⬅️ **[Back to Overview](README.md)**
+
 - ⬅️ **[Back to Index](../README.md)**
