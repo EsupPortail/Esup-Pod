@@ -29,32 +29,14 @@ POD_ENCODING_VIDEOS_DIR=videos
 POD_ENCODING_THUMBNAILS_DIR=thumbnails
 ```
 
-### FFmpeg / FFprobe Configuration
-
-```bash
-# Path to ffmpeg binary (default: "ffmpeg")
-POD_ENCODING_FFMPEG_CMD=ffmpeg
-# Path to ffprobe binary (default: "ffprobe")
-POD_ENCODING_FFPROBE_CMD=ffprobe
-# FFmpeg CRF value: 0-51 (lower = better quality, slower encoding)
-# Default: 28 (recommended for balance between quality and speed)
-POD_ENCODING_FFMPEG_CRF=28
-# Number of threads / encoding preset (default: "auto")
-POD_ENCODING_FFMPEG_NB_THREADS=auto
-# FFprobe info detail level (default: "default")
-POD_ENCODING_FFPROBE_GET_INFO=default
-# Chunk size for file operations in bytes (default: 1000000)
-POD_ENCODING_CHUNK_SIZE=1000000
-```
-
 ### Upload Configuration
 
 ```bash
 # Maximum video upload size in GB (default: 10)
 POD_ENCODING_MAX_UPLOAD_SIZE_GB=10
 # Allowed video file extensions (comma-separated)
-# Default: mp4,avi,mov,mkv,flv,webm,m4v,m2ts,mts,ts
-POD_ENCODING_ALLOWED_EXTENSIONS=mp4,avi,mov,mkv,flv,webm
+# Default: mp4,avi,mov,mkv,flv,webm,m4v,m2ts,mts,ts,mpg,ogg,mp3
+POD_ENCODING_ALLOWED_EXTENSIONS=mp4,avi,mov,mkv,flv,webm,m4v,m2ts,mts,ts,mpg,ogg,mp3
 ```
 
 ### Quota Configuration

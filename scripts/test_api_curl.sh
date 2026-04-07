@@ -11,7 +11,7 @@ set -e
 BASE_URL="http://localhost:8000"
 VIDEO_MP4="https://cdn.pixabay.com/video/2021/06/06/76681-559745365_large.mp4"
 THUMB_PNG="https://cdn.pixabay.com/photo/2026/03/18/08/02/eclipsechasers-aoraki-10180083_1280.jpg"
-VTT_FILE="/app/scripts/test.vtt"
+VTT_FILE="/app/src/apps/video/tests/fixtures/test.vtt"
 
 # Formatting
 GREEN='\033[0;32m'
