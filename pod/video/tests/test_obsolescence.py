@@ -1,21 +1,23 @@
 """Test the Obsolete videos."""
-import unittest
-from unittest.mock import patch
 
-from django.test import TestCase, override_settings
-from django.contrib.auth.models import User
+import unittest
+
+from django.test import override_settings
 from django.conf import settings
-from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from ..models import Video, Type, VideoToDelete
 from pod.authentication.models import Owner
 
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta
 import os
 from django.contrib.sites.models import Site
 
 from ..views import valid_form_respit, ENABLE_PAGE_OBSO_MAIL
+
+from django.test import RequestFactory
+from django.contrib.auth.models import User
+from django.test import TestCase
 
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
@@ -245,11 +247,11 @@ class ObsolescenceTestCase(TestCase):
         except FileNotFoundError:
             pass
 
-from django.test import TestCase, RequestFactory
-from django.contrib.auth.models import User
-from django.test import TestCase, Client
 
-@unittest.skipUnless(ENABLE_PAGE_OBSO_MAIL, "Set ENABLE_PAGE_OBSO_MAIL to True before testing ValidFormRespitTest.")
+@unittest.skipUnless(
+    ENABLE_PAGE_OBSO_MAIL,
+    "Set ENABLE_PAGE_OBSO_MAIL to True before testing ValidFormRespitTest.",
+)
 class ValidFormRespitTest(TestCase):
 
     fixtures = [
@@ -268,7 +270,9 @@ class ValidFormRespitTest(TestCase):
         )
 
     def test_delete_action(self):
-        request = self.factory.post(f"/video/respit/{self.video1.slug}/", {"action": "Delete"})
+        request = self.factory.post(
+            f"/video/respit/{self.video1.slug}/", {"action": "Delete"}
+        )
         request.user = self.user
         response = valid_form_respit(request, self.video1.slug)
         self.assertEqual(response.status_code, 301)
@@ -279,10 +283,11 @@ class ValidFormRespitTest(TestCase):
         self.client.force_login(self.user)
 
         # Simule l'envoi du formulaire avec action Archive
-        response = self.client.post(f"/video/respit/{self.video1.slug}/", {"action": "Archive"})
+        response = self.client.post(
+            f"/video/respit/{self.video1.slug}/", {"action": "Archive"}
+        )
         # Vérifie que le code HTTP est 200
         self.assertEqual(response.status_code, 200)
-
 
     @override_settings(PROLONGATION_GRANTED=True)
     def test_extend_action(self):
@@ -291,10 +296,11 @@ class ValidFormRespitTest(TestCase):
         self.client.force_login(self.user)
 
         # Simule l'envoi du formulaire avec action Archive
-        response = self.client.post(f"/video/respit/{self.video1.slug}/", {"action": "Extend"})
+        response = self.client.post(
+            f"/video/respit/{self.video1.slug}/", {"action": "Extend"}
+        )
         # Vérifie que le code HTTP est 200
         self.assertEqual(response.status_code, 200)
-
 
     def test_go_prolong_action(self):
         """Test l'action Archive avec le Test Client"""

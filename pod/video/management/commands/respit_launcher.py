@@ -2,6 +2,7 @@
 
 *  run with 'python manage.py create_archive_package [--dry]'
 """
+
 import importlib
 from datetime import datetime, timedelta, date
 
@@ -20,7 +21,6 @@ import time
 from django.core.management.base import BaseCommand, CommandError
 
 from django.db.models import Q
-
 
 USE_RESPIT = getattr(settings, "USE_RESPIT", False)
 
@@ -44,8 +44,7 @@ class Command(BaseCommand):
             notif_list = []
 
             videos = Video.objects.exclude(
-                Q(title__startswith="Archivé") |
-                Q(title__startswith="Archived")
+                Q(title__startswith="Archivé") | Q(title__startswith="Archived")
             )
             for p in videos:
 
@@ -92,7 +91,7 @@ class Command(BaseCommand):
                     # Nombre de fois en favoris
                     cfav = 0
 
-                    favorites = Playlist.objects.filter(name__exact='Favorites')
+                    favorites = Playlist.objects.filter(name__exact="Favorites")
                     favoritesWthP = favorites.filter(playlistcontent__video=p).distinct()
                     for fw in favoritesWthP:
                         cfav = cfav + 1

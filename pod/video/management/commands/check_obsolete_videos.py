@@ -328,8 +328,6 @@ class Command(BaseCommand):
                 + "</a></p>"
             )
 
-        print(msg_html)
-
         return send_mail(
             "[%s] %s" % (__TITLE_SITE__, _("Your video will be obsolete")),
             striptags(msg_html),
