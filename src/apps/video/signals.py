@@ -20,8 +20,7 @@ def set_video_slug(sender, instance, created, **kwargs):
     """
     Esup-Pod - Generates the V4-compatible slug after the first INSERT.
 
-    Format: "%04d-<slugified-title>" (e.g. "0042-mon-titre-de-video")
-    This mirrors V4's models2.py L.924-925 behaviour exactly.
+    Format: "%04d-<slugified-title>" (e.g. "0042-video-title")
 
     NOTE: unlike V4 which recomputed the slug on every save(),
     V5 intentionally freezes the slug at creation time.

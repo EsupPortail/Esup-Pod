@@ -289,10 +289,11 @@ class Video(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        # Overridden save().
-        # NOTE: Slug not generated here: depends on PK (available after INSERT).
-        # Handled in post_save signal (set_video_slug).
-        # Slug is created once and remains immutable (V5, unlike V4).
+        Overridden save method.
+
+        NOTE: Slug is not generated here because it depends on the PK
+        (available only after INSERT). It is handled in the post_save signal (set_video_slug).
+        The slug is created once and remains immutable in V5, unlike V4.
         """
         self.set_password()
 
