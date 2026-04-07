@@ -13,9 +13,7 @@ This document details the maintenance tools developed for the **core** applicati
 To keep technical documentation always up to date, Pod V5 uses a `configuration.json` file as the **single source of truth**. This file contains metadata for each setting:
 
 - Supported versions
-
 - Bilingual descriptions (FR/EN)
-
 - Default values
 
 The commands below automate the synchronization between this file and the rest of the system.
@@ -36,7 +34,6 @@ The commands below automate the synchronization between this file and the rest o
 
 ```bash
 python manage.py comparesettings
-
 ```
 
 **Result:** Returns success if everything is synchronized, or an error listing missing settings with a non-zero exit code (ideal for CI).
@@ -57,7 +54,6 @@ python manage.py comparesettings
 
 ```bash
 python manage.py addsetting <app_name> <setting_name>
-
 ```
 
 ---
@@ -75,12 +71,10 @@ python manage.py addsetting <app_name> <setting_name>
 ### Usage (createconfiguration)
 
 ```bash
-
 # Generate documentation in French (CONFIGURATION_FR.md)
 python manage.py createconfiguration fr
 # Generate documentation in English (CONFIGURATION_EN.md)
 python manage.py createconfiguration en
-
 ```
 
 ---
@@ -90,14 +84,12 @@ python manage.py createconfiguration en
 The `comparesettings` script is integrated into the **GitHub Actions** quality pipeline. It ensures that no new code can be merged if its settings are not documented.
 
 ```yaml
-
 - name: Settings Audit
   run: python manage.py comparesettings
   env:
     VERSION: "5.0.0"
     SECRET_KEY: "ci-key"
     DJANGO_SETTINGS_MODULE: "config.django.base"
-
 ```
 
 ---
@@ -107,5 +99,4 @@ The `comparesettings` script is integrated into the **GitHub Actions** quality p
 ## Further Reading
 
 - ⬅️ **[Back to Overview](README.md)**
-
 - ⬅️ **[Back to Index](../README.md)**

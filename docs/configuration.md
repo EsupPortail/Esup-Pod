@@ -9,9 +9,7 @@ The project adheres to the [Twelve-Factor App](https://12factor.net/config) meth
 2. **`src/config/env.py`**: Loads the `.env` file using the `django-environ` library.
 3. **Django Settings (`src/config/django/`)**:
     - `base.py`: Core settings shared by all environments.
-
     - `dev/docker.py`: Development overrides (consumes `.env` defaults).
-
     - `test/docker.py`: Test-specific overrides (forces feature flags).
 
 ## 1. Configuration Hierarchy

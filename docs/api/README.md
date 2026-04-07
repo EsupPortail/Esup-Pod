@@ -14,11 +14,9 @@ We provide two interfaces to explore the API:
 For automation needs (API client generation, etc.), the raw schema is available:
 
 - YAML format: `/api/schema/`
-
 - JSON format: `/api/schema/?format=json`
 
 ## Further Reading
 
 - ➡️ **[Technical Details & Configuration](details.md)**: How to document your code so it appears in Swagger.
-
 - ⬅️ **[Back to Index](../README.md)**

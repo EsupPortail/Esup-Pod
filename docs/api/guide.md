@@ -19,7 +19,6 @@ from drf_spectacular.utils import extend_schema
 @extend_schema(tags=['Video Management'])  # Creates a "Video Management" group
 class VideoViewSet(viewsets.ModelViewSet):
     ...
-
 ```
 
 ### 2. Detailing a Method
@@ -43,5 +42,4 @@ Add this to the specific method (create, list, etc.).
 )
 def create(self, request):
     ...
-
 ```

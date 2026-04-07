@@ -18,7 +18,6 @@ The application is built on a robust stack designed to ensure separation of conc
 The project follows a modular structure to separate configuration, source code, and deployment logic:
 
 ```python
-
 Pod_V5_Back/
 ├── deployment/          # Docker configurations
 │   ├── dev/             # Development specific Docker setup
@@ -32,7 +31,6 @@ Pod_V5_Back/
 ├── manage.py            # Django entry point
 ├── Makefile             # Command shortcuts
 └── requirements.txt     # Python dependencies
-
 ```
 
 ## Environment Strategy
@@ -41,10 +39,8 @@ To ensure stability, the project maintains strict isolation between environments
 
 | Feature        | Development (Docker)              | Development (Local)     | Production                               |
 | -------------- | --------------------------------- | ----------------------- | ---------------------------------------- |
-
 | Docker Compose | deployment/dev/docker-compose.yml | N/A                     | deployment/prod/docker-compose.yml       |
 | Settings File  | src.config.settings.dev           | src.config.settings.dev | src.config.settings.prod (ou base + env) |
-
 | Database       | MariaDB (Service: db)             | SQLite (db.sqlite3)     | TODO                                     |
 | Debug Mode     | True                              | True                    | TODO                                     |
 | Web Server     | runserver                         | runserver               | TODO                                     |
@@ -61,7 +57,5 @@ Selecting the wrong `.env` will load the wrong database configuration and cause 
 ## Getting Started
 
 - ➡️ **[Development Environment](dev/dev.md)**: Local setup instructions and Docker workflow.
-
 - ➡️ **[Production Deployment](prod/prod.md)**: Production setup and deployment strategies (WIP).
-
 - ⬅️ **[Back to Index](../README.md)**
