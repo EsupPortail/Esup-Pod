@@ -1,8 +1,5 @@
 """Test the Obsolete videos."""
 
-import unittest
-
-from django.core.files.storage import default_storage
 from django.test import override_settings
 from django.conf import settings
 from django.utils.translation import gettext as _
@@ -14,7 +11,7 @@ from datetime import date, timedelta
 import os
 from django.contrib.sites.models import Site
 
-from ..views import valid_form_respit, ENABLE_PAGE_OBSO_MAIL
+from ..views import valid_form_respit
 
 from django.test import RequestFactory
 from django.contrib.auth.models import User
@@ -247,6 +244,7 @@ class ObsolescenceTestCase(TestCase):
             os.remove("%s/%s.csv" % (settings.LOG_DIRECTORY, "archived"))
         except FileNotFoundError:
             pass
+
 
 class ValidFormRespitTest(TestCase):
 
