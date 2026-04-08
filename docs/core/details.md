@@ -93,7 +93,7 @@ The `comparesettings` script is integrated into the **GitHub Actions** quality p
 ```
 
 ---
->
+
 > **Pod V5 Team** | [Documentation Index](../README.md)
 
 ## Further Reading

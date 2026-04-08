@@ -31,6 +31,6 @@ To modify behavior (upload limits, colors, module activation):
     - You can take inspiration from the `.example` files present in this folder.
 
 3. **Add your variables** in UPPERCASE. They will overwrite the default values when the application starts.
->
+
 > [!TIP]
 > To see the complete list of available variables for an application, consult the corresponding `src/config/defaults/{app_name}.py` file.

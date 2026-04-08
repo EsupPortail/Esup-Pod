@@ -19,9 +19,9 @@ We use **Docker** to replicate production services while providing a flexible de
 - Install **Chocolatey** (required to use `choco`): <https://chocolatey.org/install>
 - Install **Make**:
 
-  ```powershell
-  choco install make
-  ```
+```powershell
+choco install make
+```
 
 - **Note**: Run commands from PowerShell or Git Bash.
 
@@ -31,13 +31,13 @@ We use **Docker** to replicate production services while providing a flexible de
 
 If you are familiar with Docker:
 
-  ```bash
+```bash
 git clone <your-forked-repo-url>
 cd Pod_V5_Back
 cp .env.example .env   # Copy template
 make start            # Start project
 make logs             # Watch logs
-  ```
+```
 
 The app will be available at `http://localhost:8000`.
 
@@ -79,7 +79,7 @@ The system uses **Pydantic** `BaseSettings` to ensure configuration integrity:
 
 We provide a `Makefile` to simplify Docker commands.
 
-  ```shell
+```shell
 user@pod:/usr/local/django_projects/Pod_V5_Back$ make
 help                 List available make commands
 start                Start the full project (detached, build if needed)
@@ -97,7 +97,7 @@ clean                Full shutdown and cleanup (containers, volumes, orphans)
 test                 Run tests inside the container (pytest)
 test-cov             Run tests with coverage report
 check-django-env     Environment checks (DJANGO_SETTINGS_MODULE must end with .docker)
-  ```
+```
 
 ### Running Tests
 

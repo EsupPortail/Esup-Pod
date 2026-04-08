@@ -10,14 +10,14 @@ The application is built on a robust stack designed to ensure separation of conc
 
 - **Backend Framework:** Django with Django Rest Framework (DRF).
 - **Database:** MySql (Containerized).
-  - **Local Dev (Lite):** SQLite (Auto-configured if no MySQL config found).
+- **Local Dev (Lite):** SQLite (Auto-configured if no MySQL config found).
 - **Containerization:** Docker & Docker Compose.
 
 ## Directory Structure
 
 The project follows a modular structure to separate configuration, source code, and deployment logic:
 
-```python
+```text
 Pod_V5_Back/
 ├── deployment/          # Docker configurations
 │   ├── dev/             # Development specific Docker setup

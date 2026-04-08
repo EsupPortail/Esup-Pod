@@ -163,7 +163,7 @@ Located in `src/apps/video/signals.py`. Three signals are registered on the `Vid
 | `auto_delete_file_on_delete` | `post_delete`     | Removes the physical files (video, thumbnail, overview) from disk.            |
 | `auto_delete_file_on_change` | `pre_save`        | Deletes the old file when a new video file is uploaded.                       |
 | `video_post_save`            | `post_save`       | On creation: extracts duration via `ffprobe`, leaves status as-is (ENCODING). |
->
+
 > **Note:** The status transition to `PUBLISHED` is done by the Encoding webhook, not the signal.
 
 ---
@@ -249,7 +249,7 @@ Key test files:
 - `test_signals.py`: Tests for file cleanup signals.
 
 ---
->
+
 > **Pod V5 Team** | [Documentation Index](../README.md)
 
 ## Further Reading
