@@ -1,3 +1,4 @@
+<!-- markdownlint-disable-file MD029 -->
 # EsupPod V5 Release Process
 
 This document describes the consensus procedure for publishing a new version of the **Pod_V5_Back** application to the GitHub Container Registry (GHCR).
@@ -7,7 +8,7 @@ This document describes the consensus procedure for publishing a new version of 
 To ensure stability and follow the project consensus, follow these steps in order:
 
 1. **PR Acceptance**: Wait for your Pull Request from `origin/dev_v5` (your fork) to `upstream/dev_v5` (main repository) to be reviewed and merged.
-1. **Local Sync**: Update your local `dev_v5` branch with the latest changes from the `upstream` repository.
+2. **Local Sync**: Update your local `dev_v5` branch with the latest changes from the `upstream` repository.
 
 ```bash
    git fetch upstream
@@ -15,13 +16,13 @@ To ensure stability and follow the project consensus, follow these steps in orde
    git merge upstream/dev_v5
 ```
 
-1. **Tagging**: Once the code is merged, create a Git tag following the `vX.Y.Z` convention.
+3. **Tagging**: Once the code is merged, create a Git tag following the `vX.Y.Z` convention.
 
 ```bash
    git tag v5.0.0
 ```
 
-1. **Pushing the Tag**: Push the tag to the `upstream` repository (or your fork if you have write access).
+4. **Pushing the Tag**: Push the tag to the `upstream` repository (or your fork if you have write access).
 
 ```bash
    git push upstream v5.0.0

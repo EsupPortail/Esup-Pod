@@ -116,7 +116,7 @@ The process described here has several goals:
 Please follow these steps to have your contribution considered by the maintainers:
 
 0. Follow the [styleguides](#styleguides) below.
-1. Make sure that your pull request targets the `dev_v4` branch.
+1. Make sure that your pull request targets the `dev_v5` branch.
 2. Your PR status is in `draft` while it’s still a work in progress.
 3. After you submit your pull request, verify that
 all [status checks](https://help.github.com/articles/about-status-checks/) are passing
