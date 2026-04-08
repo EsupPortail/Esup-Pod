@@ -63,7 +63,7 @@ class Command(BaseCommand):
         root_config = self.data[0][config_key]
 
         # Title of main section
-        msg = "\n## %s\n" % (
+        msg = "# %s\n" % (
             root_config.get("title", {}).get(self.language, "Configuration")
         )
 
@@ -71,7 +71,7 @@ class Command(BaseCommand):
 
         # Iterate over subsections (apps: authentication, core, etc.)
         for _key, desc in descs.items():
-            msg += "\n### %s\n\n" % desc.get("title", {}).get(
+            msg += "\n## %s\n\n" % desc.get("title", {}).get(
                 self.language, _key.capitalize()
             )
 
