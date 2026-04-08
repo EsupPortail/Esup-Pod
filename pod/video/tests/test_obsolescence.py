@@ -2,6 +2,7 @@
 
 import unittest
 
+from django.core.files.storage import default_storage
 from django.test import override_settings
 from django.conf import settings
 from django.utils.translation import gettext as _
@@ -247,8 +248,6 @@ class ObsolescenceTestCase(TestCase):
         except FileNotFoundError:
             pass
 
-
-@unittest.skipUnless(ENABLE_PAGE_OBSO_MAIL, "Set ENABLE_PAGE_OBSO_MAIL to True before testing ValidFormRespitTest.")
 class ValidFormRespitTest(TestCase):
 
     fixtures = [
@@ -299,6 +298,9 @@ class ValidFormRespitTest(TestCase):
         # Vérifie que le code HTTP est 200
         self.assertEqual(response.status_code, 200)
 
+    from unittest.mock import patch
+
+    @patch("pod.video.views.ENABLE_PAGE_OBSO_MAIL", True)
     def test_go_prolong_action(self):
         self.video1.date_delete = date.today() + timedelta(days=50)
         self.video1.save()
@@ -310,4 +312,4 @@ class ValidFormRespitTest(TestCase):
         # Simule l'envoi du formulaire avec action Archive
         response = self.client.post(f"/video/go/prolong/{self.video1.slug}/")
         # Vérifie que le code HTTP est 301
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 301)
