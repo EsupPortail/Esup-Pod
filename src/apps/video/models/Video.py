@@ -312,7 +312,7 @@ class Video(models.Model):
         Returns the V4-compatible permalink.
         Format: /video/<slug>/ where slug is already "0042-mon-titre-de-video".
 
-        NOTE: previously this returned f"/video/{self.pk}-{self.slug}/" which
+        previously this returned f"/video/{self.pk}-{self.slug}/" which
         produced a double-ID like /video/42-0042-titre/. The slug already embeds
         the zero-padded ID, so only the slug is needed here.
         """
