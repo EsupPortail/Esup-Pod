@@ -11,6 +11,7 @@ from rest_framework import viewsets, permissions, parsers, filters
 from django.db.models import Q, F
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
+from django.utils.translation import gettext_lazy as _
 from django.http import FileResponse, Http404
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -134,7 +135,8 @@ class VideoViewSet(viewsets.ModelViewSet):
         if total_bytes + incoming_size > max_quota_bytes:
             raise ValidationError(
                 {
-                    "video_file": f"Quota exceeded. You are limited to {encoding_settings.user_quota_size_gb} GB."
+                    "video_file": _("Quota exceeded. You are limited to %(quota)s GB.")
+                    % {"quota": encoding_settings.user_quota_size_gb}
                 }
             )
 
@@ -185,19 +187,19 @@ class VideoViewSet(viewsets.ModelViewSet):
         """Checks if the user belongs to the allowed groups for the video."""
         if not user.is_authenticated:
             raise PermissionDenied(
-                "Authentication required to watch this group-restricted video."
+                _("Authentication required to watch this group-restricted video.")
             )
 
         user_groups = user.owner.accessgroups.all() if hasattr(user, "owner") else []
         if not video.restricted_groups.filter(id__in=user_groups).exists():
             raise PermissionDenied(
-                "You do not belong to the allowed groups for this video."
+                _("You do not belong to the allowed groups for this video.")
             )
 
     def _check_restricted_access(self, request, video):
         """Checks if the user can access a restricted video."""
         if video.is_auth_required and not request.user.is_authenticated:
-            raise PermissionDenied("Authentication required to play this video.")
+            raise PermissionDenied(_("Authentication required to play this video."))
         if not video.password:
             return
 
@@ -213,7 +215,7 @@ class VideoViewSet(viewsets.ModelViewSet):
                 request.session[f"video_unlocked_{video.id}"] = True
                 return
 
-        raise PermissionDenied("Direct stream access forbidden. Password required.")
+        raise PermissionDenied(_("Direct stream access forbidden. Password required."))
 
     def _check_stream_permissions(self, request, video):
         """Helper to check permissions for video streaming."""
@@ -225,7 +227,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         elif video.status == Video.Status.RESTRICTED:
             self._check_restricted_access(request, video)
         elif video.status == Video.Status.DRAFT:
-            raise PermissionDenied("This video is private.")
+            raise PermissionDenied(_("This video is private."))
 
     def _get_video_file_to_stream(self, video, resolution=None):
         """Helper to find the appropriate video file for streaming."""
@@ -250,11 +252,11 @@ class VideoViewSet(viewsets.ModelViewSet):
         video_file_to_stream = self._get_video_file_to_stream(video, resolution)
 
         if not video_file_to_stream:
-            raise Http404("Video file not found")
+            raise Http404(_("Video file not found"))
 
         path = video_file_to_stream.path
         if not os.path.exists(path):
-            raise Http404("Video file not found on disk")
+            raise Http404(_("Video file not found on disk"))
 
         file = open(path, "rb")
         response = FileResponse(file)
@@ -286,7 +288,7 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         if video.status == Video.Status.RESTRICTED and video.is_auth_required:
             if not request.user.is_authenticated:
-                raise PermissionDenied("You must be logged in to access this video.")
+                raise PermissionDenied(_("You must be logged in to access this video."))
         v4_hash = request.query_params.get("hash") or request.data.get("hash")
         if v4_hash:
             legacy_hash = hashlib.sha1(
@@ -310,7 +312,7 @@ class VideoViewSet(viewsets.ModelViewSet):
                 else None
             )
             return Response({"video_url": url})
-        return Response({"error": "Incorrect password or hash"}, status=403)
+        return Response({"error": _("Incorrect password or hash")}, status=403)
 
     @extend_schema(
         summary="List my videos",
