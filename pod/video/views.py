@@ -82,7 +82,7 @@ from pod.playlist.utils import (
 )
 
 
-from pod.video.forms import VideoForm, VideoVersionForm, NameForm
+from pod.video.forms import VideoForm, VideoVersionForm, ArchiveChoiceForm
 from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
@@ -3938,7 +3938,7 @@ def video_respit(request, slug):
     The interface allows to extend, archive or delete a video in the appropriated context.
     """
     display_or_not = able_or_not_respit(slug)
-    form = NameForm(request.POST)
+    form = ArchiveChoiceForm(request.POST)
 
     return render(
         request,

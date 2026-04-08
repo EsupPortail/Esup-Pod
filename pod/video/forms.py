@@ -1405,7 +1405,7 @@ class NoteCommentsForm(forms.ModelForm):
         fields = ["comment", "status"]
 
 
-class NameForm(forms.Form):
+class ArchiveChoiceForm(forms.Form):
     if PROLONGATION_GRANTED:
         action = forms.ChoiceField(
             choices=[

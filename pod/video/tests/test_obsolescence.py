@@ -311,3 +311,17 @@ class ValidFormRespitTest(TestCase):
         response = self.client.post(f"/video/go/prolong/{self.video1.slug}/")
         # Vérifie que le code HTTP est 301
         self.assertEqual(response.status_code, 301)
+
+    @patch("pod.video.views.ENABLE_PAGE_OBSO_MAIL", True)
+    def test_go_archive_action(self):
+        self.video1.date_delete = date.today() + timedelta(days=50)
+        self.video1.save()
+
+        """Test l'action Archive avec le Test Client"""
+        # Connecte l'utilisateur
+        self.client.force_login(self.user)
+
+        # Simule l'envoi du formulaire avec action Archive
+        response = self.client.post(f"/video/go/archive/{self.video1.slug}/")
+        # Vérifie que le code HTTP est 301
+        self.assertEqual(response.status_code, 301)

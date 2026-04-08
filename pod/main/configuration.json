@@ -3434,7 +3434,7 @@
                              "Choice of the calculation model for the video respit. That's the script that will be executed by the command 'respit_launcher' in the purpose of extand the video life span with a custom calculation process."
                             ],
                             "fr": [
-                              "Choix du model de calcul pour video respit. C'est le script qui va être excecuté par la commande 'respit_launcher' dans le but d'étendre le durée de vie de la vidéo avec un model de calcul personnalisé."
+                              "Choix du mode de calcul pour le répit des vidéos obsolètes. C'est le script qui va être exécuté par la commande respit_launcher dans le but d’étendre la durée de vie de la vidéo avec un mode de calcul personnalisé."
                             ]
                           },
                           "pod_version_end": "",
@@ -3444,10 +3444,10 @@
                           "default_value": false,
                           "description": {
                             "en": [
-                              "Détermines if we enable a link send to take a decision about the futur of the concerned video during the reminder campaign sent by check_obsolete_video."
+                              "Enables sending a link to make a decision on the future of the video during the recall campaign instantiated by check_obsolete_video."
                             ],
                             "fr": [
-                              "Détermines si on active l'envoie d'un lien pour prendre une décision sur le futur la vidéo durant la campagne de rappel instancié par check_obsolete_video."
+                              "Active l’envoi d’un lien pour prendre une décision sur le futur de la vidéo durant la campagne de rappel instanciée par check_obsolete_video."
                           ]
                           },
                           "pod_version_end": "",
@@ -3457,10 +3457,10 @@
                           "default_value": false,
                           "description": {
                             "en": [
-                             "Détermines si on autorise l'utilisateur à étendre lui même la durée de vie de vidéo à travers le mail de rappel."
+                             "Allows the user to extend the lifespan of their videos themselves via the reminder email."
                            ],
                             "fr": [
-                              "Determines if we grant or not the user to extend himself his video on the plaform across the reminder mail."
+                              "Autorise l’utilisateur à étendre lui même la durée de vie de ses vidéos à travers le courriel de rappel."
                             ]
                           },
                           "pod_version_end": "",

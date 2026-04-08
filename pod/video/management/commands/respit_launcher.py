@@ -1,9 +1,10 @@
 """Esup-Pod - Launch custom calculation model for each video of the platform
 
-*  run with 'python manage.py create_archive_package [--dry]'
+*  run with 'python manage.py respit_launcher [--dry]'
 """
 
 import importlib
+from argparse import _
 from datetime import datetime, timedelta, date
 
 from django.core.mail import mail_managers
@@ -15,23 +16,35 @@ from pod.video.models import Video, Channel, Comment, Type, Theme, Category
 
 from pod.playlist.models import Playlist
 
-# https://docs.djangoproject.com/fr/6.0/howto/custom-management-commands/   python3 manage.py respit_launcher
 import time
 
 from django.core.management.base import BaseCommand, CommandError
 
 from django.db.models import Q
 
+from pod.video.tests.test_obsolescence import ARCHIVE_OWNER_USERNAME
+
 USE_RESPIT = getattr(settings, "USE_RESPIT", False)
 
 
 class Command(BaseCommand):
-    help = "Closes the specified poll for voting"
     dry_mode = False
+
+    def add_arguments(self, parser) -> None:
+        """Add possible args to the command."""
+        parser.add_argument(
+            "--dry",
+            help="Simulate what would be done.",
+            action="store_true",
+            default=False,
+        )
 
     # flake8: noqa: C901
     def handle(self, *args, **options):
         """Get all concerned datas for each video and launch the custom calculation model"""
+        if options["dry"]:
+            self.dry_mode = True
+
         if USE_RESPIT:
 
             all_warn = WARN_DEADLINES
@@ -44,8 +57,9 @@ class Command(BaseCommand):
             notif_list = []
 
             videos = Video.objects.exclude(
-                Q(title__startswith="Archivé") | Q(title__startswith="Archived")
+                owner__username=ARCHIVE_OWNER_USERNAME
             )
+
             for p in videos:
 
                 if (p.date_delete - timedelta(days=higher_warn + 1)) <= (date.today()):
@@ -111,11 +125,14 @@ class Command(BaseCommand):
                     )
 
                     # video type
-                    type = ""
+                    type_name = ""
+                    type_id = ""
                     for tv in Type.objects.filter(video=p):
-                        type = tv.title
+                        type_name = tv.title
+                        type_id = tv.id
 
-                    data_to_add["type_video"] = type
+                    data_to_add["type_name_video"] = type_name
+                    data_to_add["type_id_video"] = type_id
 
                     # Video Theme
                     theme_list = []
@@ -142,10 +159,15 @@ class Command(BaseCommand):
 
                     data_to_add["category_list"] = category_list
 
-                    # laucnh the calcul model
-                    mod = importlib.import_module(
-                        "pod.video.management.commands.respit_model." + RESPIT_MODEL
-                    )
+                    # launch the calcul model
+                    try:
+                        mod = importlib.import_module("pod.video.management.commands.respit_model." + RESPIT_MODEL)
+                    except ModuleNotFoundError as e:
+                        self.stderr.write(self.style.ERROR(_("An Error occurred while processing.")))
+                        raise CommandError(_("Respit model not found: %(error)s") % {"error": e}) from e
+                    except ImportError as e:
+                        self.stderr.write(self.style.ERROR(_("An Error occurred while processing.")))
+                        raise CommandError(_("Respit model import error: %(error)s") % {"error": e}) from e
 
                     # Insert repist in BDD
                     daysmore = mod.calcul(data_to_add)
