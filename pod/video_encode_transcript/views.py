@@ -34,7 +34,7 @@ from pod.video_encode_transcript.runner_manager_utils import (
 )
 from pod.video_encode_transcript.task_queue import refresh_pending_task_ranks
 from pod.video_encode_transcript.transcript import save_vtt_and_notify
-from pod.video_encode_transcript.utils import send_email_item
+from pod.video_encode_transcript.utils import change_encoding_step, send_email_item
 
 log = logging.getLogger(__name__)
 
@@ -267,6 +267,17 @@ def _apply_notify_payload_to_task(task: Task, data: NotifyTaskPayload) -> None:
 
     task.script_output = script_output
     task.save()
+
+    if task.video_id and task.status in {"failed", "timeout"}:
+        detail = (
+            data.get("error_message")
+            or data.get("script_output")
+            or f"Runner manager task {task.status}"
+        )
+        # Keep video state aligned with task state for admin visibility.
+        change_encoding_step(task.video_id, -1, str(detail))
+        Video.objects.filter(id=task.video_id).update(encoding_in_progress=False)
+
     refresh_pending_task_ranks()
 
 
@@ -534,6 +545,7 @@ def _store_manifest_member(
         actual_sha256 = _stream_manifest_member_to_tempfile(response, temp_path)
         _validate_manifest_member_checksum(file_path, expected_sha256, actual_sha256)
         os.replace(temp_path, dest_path)
+        _apply_manifest_member_permissions(dest_path)
     except Exception:
         _remove_file_if_exists(temp_path)
         raise
@@ -589,6 +601,87 @@ def _remove_file_if_exists(path: str) -> None:
         pass
     except OSError:
         pass
+
+
+def _parse_octal_permission_string(value: str) -> int | None:
+    """Parse common octal-like permission string formats."""
+    normalized_value = value.strip()
+    if not normalized_value:
+        return None
+
+    if normalized_value.lower().startswith("0o"):
+        try:
+            return int(normalized_value, 8) & 0o777
+        except ValueError:
+            return None
+
+    if normalized_value.isdigit() and len(normalized_value) <= 4:
+        if all(char in "01234567" for char in normalized_value):
+            return int(normalized_value, 8) & 0o777
+
+    return None
+
+
+def _parse_permission_setting(raw_mode: object) -> int | None:
+    """Return parsed file mode or None when value cannot be interpreted."""
+    if isinstance(raw_mode, int):
+        return raw_mode & 0o777
+
+    if not isinstance(raw_mode, str):
+        return None
+
+    octal_mode = _parse_octal_permission_string(raw_mode)
+    if octal_mode is not None:
+        return octal_mode
+
+    normalized_mode = raw_mode.strip()
+    if not normalized_mode:
+        return None
+
+    if normalized_mode.isdigit():
+        return int(normalized_mode, 10) & 0o777
+
+    try:
+        return int(normalized_mode, 0) & 0o777
+    except ValueError:
+        return None
+
+
+def _resolve_manifest_member_permissions() -> int:
+    """Return file mode for downloaded manifest files.
+
+    Uses Django FILE_UPLOAD_PERMISSIONS when defined and valid, otherwise 0644.
+    """
+    default_mode = 0o644
+    raw_mode = getattr(settings, "FILE_UPLOAD_PERMISSIONS", None)
+
+    if raw_mode is None:
+        return default_mode
+
+    parsed_mode = _parse_permission_setting(raw_mode)
+    if parsed_mode is not None:
+        return parsed_mode
+
+    log.warning(
+        "Invalid FILE_UPLOAD_PERMISSIONS value %r, fallback to %s",
+        raw_mode,
+        oct(default_mode),
+    )
+    return default_mode
+
+
+def _apply_manifest_member_permissions(path: str) -> None:
+    """Apply expected permissions to a downloaded manifest file."""
+    target_mode = _resolve_manifest_member_permissions()
+    try:
+        os.chmod(path, target_mode)
+    except OSError as exc:
+        log.warning(
+            "Failed to apply permissions %s on %s: %s",
+            oct(target_mode),
+            path,
+            exc,
+        )
 
 
 def _parse_manifest_member_entry(

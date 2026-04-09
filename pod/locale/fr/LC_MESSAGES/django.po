@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-27 14:05+0100\n"
+"POT-Creation-Date: 2026-03-30 12:16+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
@@ -1353,12 +1353,6 @@ msgstr ""
 "Il y a un chevauchement avec la superposition {0}, veuillez changer son "
 "temps de début et/ou de fin."
 
-#: pod/completion/permissions/video.py
-#, python-brace-format
-msgid "{func.__name__}: Permission denied for user {current_user.pk}."
-msgstr ""
-"{func.__name__} : Permission refusée pour l’utilisateur {current_user.pk}."
-
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
@@ -1736,8 +1730,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format « ."
-"vtt »."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format "
+"« .vtt »."
 
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
@@ -3475,7 +3469,7 @@ msgstr "Hauteur (en pixel) du site intégré sur la page du live"
 
 #: pod/live/models.py
 msgid "Embedded aside Site URL"
-msgstr "Lien du site intégré"
+msgstr "Lien du site intégré à côté du live"
 
 #: pod/live/models.py
 msgid "Url of the embedded site to display on aside"
@@ -3869,6 +3863,14 @@ msgstr "Mes évènements"
 #: pod/live/templates/live/event.html
 msgid "The event ended on:"
 msgstr "L’événement s’est terminé le :"
+
+#: pod/live/templates/live/event.html
+msgid "Aside site"
+msgstr "Site secondaire"
+
+#: pod/live/templates/live/event.html
+msgid "Additional site"
+msgstr "Site supplémentaire"
 
 #: pod/live/templates/live/event.html
 msgid "Report the event"
@@ -6074,7 +6076,7 @@ msgstr "Diffuseur chargé de réaliser des directs."
 msgid "URL of the SIPMediaGW server"
 msgstr "Adresse URL du serveur SIPMediaGW"
 
-#: pod/meeting/models.py
+#: pod/meeting/models.py pod/video_encode_transcript/models.py
 #, python-format
 msgid "Example format: %(url)s"
 msgstr "Exemple de format : %(url)s"
@@ -6995,15 +6997,6 @@ msgid "Private"
 msgstr "Privé"
 
 #: pod/playlist/models.py
-#, python-brace-format
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
-msgstr ""
-"Veuillez entrer un titre contenant entre 1 et "
-"{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
-
-#: pod/playlist/models.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
@@ -7801,7 +7794,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -8124,23 +8117,6 @@ msgstr "Modification du quiz pour la vidéo « %s »"
 #: pod/recorder/admin.py
 msgid "Encode selected recordings and create new video"
 msgstr "Encoder les enregistrements sélectionnés et créer une nouvelle vidéo"
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Studio recording {item.id} encoding started"
-msgstr "Encodage de l’enregistrement en studio {item.id} démarré"
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Recording {item.id} is not a studio recording and can’t be encoded"
-msgstr ""
-"L’enregistrement {item.id} n’est pas un enregistrement studio et ne peut pas "
-"être encodé."
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Error for {item}: {e}"
-msgstr "Erreur pour {item} : {e}"
 
 #: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
@@ -9081,11 +9057,11 @@ msgstr "Bonjour %(name)s,"
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid ""
-"Your video entitled <a href=\"//%(url)s\">“%(title)s”</a> will soon arrive "
-"at the deletion deadline."
+"Your video entitled <a href=\"%(scheme)s:%(url)s\">“%(title)s”</a> will soon "
+"arrive at the deletion deadline."
 msgstr ""
-"Votre vidéo intitulée « <a href=\"//%(url)s\">%(title)s</a> » arrive bientôt "
-"à la date limite de suppression."
+"Votre vidéo intitulée « <a href=\"%(scheme)s:%(url)s\">%(title)s</a> » "
+"arrive bientôt à la date limite de suppression."
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
@@ -9832,6 +9808,12 @@ msgstr "Ce contenu est en accès restreint."
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
+#: pod/video/templates/videos/video_row_select.html
+msgid "This content has an encoding error."
+msgstr "Ce contenu présente une erreur d’encodage."
+
+#: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
 #: pod/video/templatetags/video_tags.py
 msgid "This content is chaptered."
 msgstr "Ce contenu est chapitré."
@@ -10477,6 +10459,32 @@ msgstr "Ajouter une nouvelle vidéo"
 #: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently waiting for encoding."
 msgstr "La vidéo est actuellement en attente d’encodage."
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"The source file does not appear to be a valid video file. Please re-upload a "
+"valid video file."
+msgstr ""
+"Le fichier source ne semble pas être un fichier vidéo valide. "
+"Veuillez mettre en ligne à nouveau un fichier vidéo valide."
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"The input video duration is 0 seconds. Please re-upload a valid video file."
+msgstr ""
+"La durée de la vidéo source est de 0 seconde. "
+"Veuillez mettre en ligne à nouveau un fichier vidéo valide."
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"An error occurred while processing this video. Our administrators have "
+"already been notified."
+msgstr ""
+"Une erreur s’est produite lors du traitement de cette vidéo. Nos administrateurs en ont "
+"déjà été informés."
 
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
@@ -11209,10 +11217,6 @@ msgid "URL of the runner manager"
 msgstr "URL du runner manager"
 
 #: pod/video_encode_transcript/models.py
-msgid "Example format: https://manager.univ.fr:port/"
-msgstr "Exemple de format : https://manager.univ.fr:port/"
-
-#: pod/video_encode_transcript/models.py
 msgid "Bearer token for the runner manager."
 msgstr "Jeton porteur pour le runner manager."
 
@@ -11393,15 +11397,21 @@ msgstr "xAPI Esup-Pod"
 #~ msgstr "Supprimer la liste de lecture"
 
 #~ msgid ""
-#~ "\n"
-#~ "        %(counter)s video found\n"
-#~ "      "
-#~ msgid_plural ""
-#~ "\n"
-#~ "        %(counter)s videos found\n"
-#~ "      "
-#~ msgstr[0] "%(counter)s vidéo trouvée"
-#~ msgstr[1] "%(counter)s vidéos trouvées"
+#~ "Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+#~ "characters."
+#~ msgstr ""
+#~ "Veuillez entrer un titre contenant entre 1 et "
+#~ "{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
+
+#, python-brace-format
+#~ msgid "Studio recording {item.id} encoding started"
+#~ msgstr "Encodage de l’enregistrement en studio {item.id} démarré"
+
+#, python-brace-format
+#~ msgid "Recording {item.id} is not a studio recording and can’t be encoded"
+#~ msgstr ""
+#~ "L’enregistrement {item.id} n’est pas un enregistrement studio et ne peut "
+#~ "pas être encodé."
 
 #~ msgid "Dashboard Filters"
 #~ msgstr "Filtres du tableau de bord"
@@ -11411,80 +11421,3 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "Clear selection"
 #~ msgstr "Effacer la sélection"
-
-#~ msgid ""
-#~ "You have not uploaded any videos yet, please use the ”Add a new video” "
-#~ "button to add one"
-#~ msgstr ""
-#~ "Vous n’avez pas encore mis en ligne de vidéos, veuillez utiliser le "
-#~ "bouton « Ajouter une nouvelle vidéo » pour en ajouter une"
-
-#~ msgid "editor"
-#~ msgstr "éditeur"
-
-#~ msgid "The event is scheduled from:"
-#~ msgstr "L’événement est programmé du :"
-
-#~ msgid "to"
-#~ msgstr "à"
-
-#, python-format
-#~ msgid ""
-#~ "you can change the removal date by editing your video:</p>\n"
-#~ "<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
-#~ "target=\"_blank\">%(scheme)s:%(url)s</a></p>"
-#~ msgstr ""
-#~ "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-#~ "<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
-#~ "target=\"_blank\">%(scheme)s:%(url)s</a></p>"
-
-#~ msgid "Summary"
-#~ msgstr "Description"
-
-#, python-format
-#~ msgid "tags_for_model tag was given an invalid model: %s"
-#~ msgstr "la balise tags_for_model a reçu un modèle invalide : %s"
-
-#, python-format
-#~ msgid "%s tag requires either three or five arguments"
-#~ msgstr "la balise %s requiert trois ou cinq arguments"
-
-#, python-format
-#~ msgid "second argument to %s tag must be “as”"
-#~ msgstr "le deuxième argument de la balise %s doit être « as »"
-
-#, python-format
-#~ msgid "if given, fourth argument to %s tag must be “with”"
-#~ msgstr ""
-#~ "s’il est donné, le quatrième argument de la balise %s doit être « with »"
-
-#, python-format
-#~ msgid "if given, fifth argument to %s tag must be “counts”"
-#~ msgstr "si donné, le 5e argument de la balise %s doit être « counts »"
-
-#, python-format
-#~ msgid "%s tag requires either three or between five and seven arguments"
-#~ msgstr "la balise %s requiert soit trois, soit entre cinq et sept arguments"
-
-#, python-format
-#~ msgid "%(tag)s tag was given an invalid option: “%(option)s”"
-#~ msgstr "l’option « %(option)s » est invalide pour la balise %(tag)s"
-
-#, python-format
-#~ msgid "%(tag)s tag was given a badly formatted option: “%(option)s”"
-#~ msgstr ""
-#~ "l’option « %(option)s » n’est pas au bon format pour la balise %(tag)s"
-
-#, python-format
-#~ msgid ""
-#~ "%(tag)s tag’s “%(option)s” option was not a valid integer: “%(value)s”"
-#~ msgstr ""
-#~ "l’option « %(option)s » de la balise %(tag)s n’est pas un entier valide : "
-#~ "’%(value)s’"
-
-#, python-format
-#~ msgid ""
-#~ "%(tag)s tag’s “%(option)s” option was not a valid choice: “%(value)s”"
-#~ msgstr ""
-#~ "l’option « %(option)s » de la balise %(tag)s n’est pas un choix valide : "
-#~ "’%(value)s’"

@@ -66,6 +66,14 @@
         aria-hidden="true"></i>
     </span>
 
+    {% if video.get_encoding_step|slice:":2" == "-1" %}
+      <span title="{% trans 'This content has an encoding error.' %}"
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom">
+        <i class="bi bi-exclamation-triangle-fill text-danger" aria-hidden="true"></i>
+      </span>
+    {% endif %}
+
     <span title="{{ video_infos.chaptered.translation }}"
         data-bs-toggle="tooltip"
         data-bs-placement="bottom">

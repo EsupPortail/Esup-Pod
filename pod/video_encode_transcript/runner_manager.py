@@ -173,6 +173,21 @@ def _attach_dressing_info(parameters: ParametersDict, video: Video) -> None:
         log.error(f"Error obtaining dressing for video {video.id}: {str(exc)}")
 
 
+def _attach_video_metadata(parameters: ParametersDict, video: Video) -> None:
+    """Attach lightweight video metadata when available."""
+    video_id = getattr(video, "id", None)
+    if video_id is not None:
+        parameters["video_id"] = int(video_id)
+
+    video_slug = getattr(video, "slug", None)
+    if video_slug:
+        parameters["video_slug"] = str(video_slug)
+
+    video_title = getattr(video, "title", None)
+    if video_title:
+        parameters["video_title"] = str(video_title)
+
+
 def _prepare_encoding_parameters(
     video: Optional[Video] = None,
 ) -> ParametersDict:
@@ -180,16 +195,20 @@ def _prepare_encoding_parameters(
 
     Args:
         video: Video object (for video encoding).
-               For studio recordings, pass None as cut info doesn't apply.
+               For studio recordings, pass None as video-specific metadata,
+               cut and dressing info do not apply.
 
     Returns:
-        Dictionary with rendition and optionally cut information
+        Dictionary with rendition and, when a video is provided, optional
+        cut info, optional dressing info, and video metadata
+        (video_id, video_slug, video_title).
     """
     parameters = _build_rendition_parameters()
 
     if video:
         _attach_cut_info(parameters, video)
         _attach_dressing_info(parameters, video)
+        _attach_video_metadata(parameters, video)
 
     return parameters
 
@@ -308,6 +327,42 @@ def _try_send_to_rm(
         return None
 
 
+def _parse_runner_response(
+    rm: RunnerManager, response: requests.Response
+) -> Optional[RunnerManagerResponse]:
+    """Parse and validate a runner manager HTTP response.
+
+    Returns None when the response body is not a valid JSON payload expected from
+    the runner manager (for example an HTML error page returned by a reverse proxy
+    with HTTP 200).
+    """
+    if not response.content:
+        return {}
+
+    try:
+        payload = response.json()
+    except ValueError:
+        content_type = response.headers.get("Content-Type", "")
+        log.warning(
+            "Runner manager %s returned HTTP 200 with non-JSON body "
+            "(Content-Type=%s). Trying next one.",
+            rm.name,
+            content_type or "unknown",
+        )
+        return None
+
+    if not isinstance(payload, dict):
+        log.warning(
+            "Runner manager %s returned an unexpected JSON payload type (%s). "
+            "Trying next one.",
+            rm.name,
+            type(payload).__name__,
+        )
+        return None
+
+    return cast(RunnerManagerResponse, payload)
+
+
 def _prestore_encoding_if_needed(
     *,
     task_type: TaskType,
@@ -360,8 +415,10 @@ def _submit_to_runner_manager(
     log.info(
         f"Runner manager {rm.name} is available to process {task_type} for {source_type} {video_id or recording_id}."
     )
-    # Runner may reply with no body; keep an empty payload in that case.
-    payload = cast(RunnerManagerResponse, response.json() if response.content else {})
+    payload = _parse_runner_response(rm, response)
+    if payload is None:
+        return False
+
     _update_task_from_response(video_id, recording_id, task_type, rm, payload)
     _prestore_encoding_if_needed(
         task_type=task_type,
@@ -579,9 +636,7 @@ def transcript_video(video_id: int) -> None:
         parameters = _prepare_transcription_parameters(video=video)
 
         # Mark video as encoding in progress
-        video_to_encode = Video.objects.get(id=video_id)
-        video_to_encode.encoding_in_progress = True
-        video_to_encode.save()
+        Video.objects.filter(id=video_id).update(encoding_in_progress=True)
 
         # Update encoding step to transcripting audio
         change_encoding_step(video_id, 5, "transcripting audio")
@@ -629,6 +684,7 @@ def _prepare_transcription_parameters(video: Video) -> ParametersDict:
             # Text normalization (punctuation/casing) on runner side if supported
             "normalize": normalize,
         }
+        _attach_video_metadata(params, video)
         # If needed in future, we can add model size or other options here
         if transcription_type:
             params["model_type"] = transcription_type
@@ -638,7 +694,9 @@ def _prepare_transcription_parameters(video: Video) -> ParametersDict:
         return params
     except Exception:
         # Keep legacy key name for backward compatibility with older runners.
-        return {"lang": getattr(video, "transcript", "") or ""}
+        params: ParametersDict = {"lang": getattr(video, "transcript", "") or ""}
+        _attach_video_metadata(params, video)
+        return params
 
 
 def _edit_task(
