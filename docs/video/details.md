@@ -181,7 +181,14 @@ Streams the raw video file. Access rules:
 
 ### Legacy V4 Download Redirection
 
-Requests matching the legacy V4 format `/video/telechargement/{resolution}/{slug}.mp4` are automatically intercepted and redirected `301 Permanent` to the new stream endpoint `/api/videos/{slug}/stream/`.
+In V4, encoded MP4 files were served directly by Nginx at paths like `/media/videos/<sha1_owner_hash>/<id_padded>/<id_padded>_<res>.mp4`. Django never handled those download requests.
+To intercept and redirect old V4 media links to the new stream endpoint (`/api/videos/{slug}/stream/`), you must configure an Nginx rewrite instead:
+
+```nginx
+location ~ ^/media/videos/[^/]+/(\d{4})/\1_(\d+)\.mp4$ {
+    return 301 /api/videos/$1/stream/?resolution=$2;
+}
+```
 
 ### `POST /api/videos/{slug}/register_view/`
 
