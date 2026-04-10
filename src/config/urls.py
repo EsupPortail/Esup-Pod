@@ -16,10 +16,7 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-
-from config.router import router
 from src.apps.authentication.conf import auth_settings
-
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -27,10 +24,19 @@ urlpatterns = [
     # Redirection to Swagger
     path("", RedirectView.as_view(url="api/docs/", permanent=False)),
     path("admin/", admin.site.urls),
-    path("api/", include(router.urls)),
+    path("api/", include("src.apps.video.urls")),
     path("api/info/", include("src.apps.info.urls")),
     path("api/auth/", include("src.apps.authentication.urls")),
     path("api/encoding/", include("src.apps.encoding.urls")),
+    # NOTE: V4 Compatibility
+    # In V4, encoded MP4 files were served directly by Nginx at paths like:
+    #   /media/videos/<sha1_owner_hash>/<id_padded>/<id_padded>_<res>.mp4
+    # Django never handled those download requests, they went straight to Nginx.
+    # To redirect old V4 media links in V5, configure Nginx rewrites instead:
+    #
+    #   location ~ ^/media/videos/[^/]+/(\d{4})/\1_(\d+)\.mp4$ {
+    #       return 301 /api/videos/$1/stream/?resolution=$2;
+    #   }
     # SWAGGER
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(

@@ -4,11 +4,13 @@ Esup-Pod - Video serializer.
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from src.apps.video.models import Video
+from src.apps.video.models import Video, Type, Discipline
 from .SubtitleSerializer import SubtitleSerializer
 from django.contrib.auth.hashers import make_password
 from src.apps.encoding.conf import encoding_settings
 from src.apps.video.conf import video_settings
+from src.apps.authentication.models import AccessGroup
+from .DisciplineSerializer import DisciplineSerializer
 
 User = get_user_model()
 
@@ -24,18 +26,34 @@ class VideoSerializer(serializers.ModelSerializer):
     status_label = serializers.CharField(source="get_status_display", read_only=True)
     has_password = serializers.BooleanField(source="password", read_only=True)
     password = serializers.CharField(write_only=True, required=False)
+    tags = serializers.StringRelatedField(many=True, required=False)
     subtitles = SubtitleSerializer(many=True, read_only=True)
+    encodings = serializers.SerializerMethodField()
     co_owners = serializers.PrimaryKeyRelatedField(
         many=True, queryset=User.objects.all(), required=False
+    )
+    restricted_groups = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=AccessGroup.objects.all(), required=False
     )
     date_of_event = serializers.DateField(required=False, allow_null=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     date_to_delete = serializers.DateField(required=False, allow_null=True)
     thumbnail_url = serializers.ReadOnlyField()
+    type_id = serializers.PrimaryKeyRelatedField(
+        queryset=Type.objects.all(), source="type", write_only=True, required=False
+    )
+    type_name = serializers.CharField(source="type.title", read_only=True)
+    disciplines = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Discipline.objects.all(), required=False
+    )
+    discipline_details = DisciplineSerializer(
+        source="disciplines", many=True, read_only=True
+    )
 
     class Meta:
         """Video serializer metadata."""
+
         model = Video
         fields = [
             "id",
@@ -58,6 +76,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "thumbnail_url",
             "has_password",
             "subtitles",
+            "encodings",
             "allow_downloading",
             "disable_comment",
             "date_of_event",
@@ -67,6 +86,12 @@ class VideoSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "date_to_delete",
+            "restricted_groups",
+            "type_id",
+            "type_name",
+            "disciplines",
+            "discipline_details",
+            "tags",
         ]
         extra_kwargs = {
             "video_file": {"write_only": True},
@@ -80,7 +105,12 @@ class VideoSerializer(serializers.ModelSerializer):
             "owner_id",
             "status_label",
             "subtitles",
+            "encodings",
         ]
+
+    def get_encodings(self, obj):
+        """Returns a list of available encoded resolutions (e.g., ['1080p', '720p'])."""
+        return [enc.resolution for enc in obj.encodings.all()]
 
     def validate_password(self, value):
         """Hashes the password if it is provided."""

@@ -10,7 +10,9 @@ class SiteSerializer(serializers.ModelSerializer):
     """
     Serializer for the Django Site model.
     """
+
     class Meta:
         """Meta."""
+
         model = Site
         fields = ("id", "name", "domain")

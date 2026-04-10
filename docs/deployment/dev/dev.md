@@ -16,11 +16,13 @@ We use **Docker** to replicate production services while providing a flexible de
 
 - Install **Docker Desktop**.
 - (Recommended) Enable **WSL2** backend for Docker.
-- Install **Chocolatey** (required to use `choco`): https://chocolatey.org/install
+- Install **Chocolatey** (required to use `choco`): <https://chocolatey.org/install>
 - Install **Make**:
-  ```powershell
-  choco install make
-  ```
+
+```powershell
+choco install make
+```
+
 - **Note**: Run commands from PowerShell or Git Bash.
 
 ---
@@ -32,14 +34,12 @@ If you are familiar with Docker:
 ```bash
 git clone <your-forked-repo-url>
 cd Pod_V5_Back
-
 cp .env.example .env   # Copy template
 make start            # Start project
 make logs             # Watch logs
 ```
 
 The app will be available at `http://localhost:8000`.
-
 
 ## 3. Configuration Guide
 
@@ -59,19 +59,21 @@ Customization is handled via modular Python files instead of a single large envi
 - **Modular approach**: Each application (e.g., `video`, `authentication`) has its own configuration schema.
 - **Customization**: To override default settings, create or modify a Python file in `src/config/settings/{app_name}.py`.
 - **Example**: To change the upload limit, edit `src/config/settings/video.py`:
-  ```python
+
+```python
   MAX_UPLOAD_SIZE_GB = 10
-  ```
+```
+
 - **Benefits**: You get full IDE auto-completion and type checking.
 
 ### How it works (Pydantic Validation)
 
 The system uses **Pydantic** `BaseSettings` to ensure configuration integrity:
+
 1. **Defaults**: Pydantic loads hardcoded default values.
 2. **Secrets**: Sensitive values are injected from the `.env` file.
 3. **Overrides**: Specific settings are loaded from `src/config/settings/{app_name}.py`.
 4. **Validation**: If a type mismatch occurs (e.g., a string instead of a boolean), the application will fail to start with a clear error message.
-
 
 ### Managing the App (Make Commands)
 

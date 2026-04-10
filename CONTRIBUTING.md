@@ -15,7 +15,6 @@ Use your best judgment, and feel free to propose changes to this document in a p
   * [Reporting Bugs](#reporting-bugs)
   * [Suggesting Enhancements](#suggesting-enhancements)
   * [Pull Requests](#pull-requests)
-  * [Release Process](docs/RELEASE_PROCESS.md)
 
 * [Styleguides](#styleguides)
   * [Git Commit Messages](#git-commit-messages)
@@ -122,15 +121,15 @@ Please follow these steps to have your contribution considered by the maintainer
 3. After you submit your pull request, verify that
 all [status checks](https://help.github.com/articles/about-status-checks/) are passing
 
-<details>
-<summary>What if the status checks are failing?</summary>
+**What if the status checks are failing?**
+
 If a status check is failing,
 and you believe that the failure is unrelated to your change,
 please leave a comment on the pull request explaining
 why you believe the failure is unrelated.
 A maintainer will re-run the status check for you.
 If we conclude that the failure was a false positive,
-then we will open an issue to track that problem with our status check suite.</details>
+then we will open an issue to track that problem with our status check suite.
 
 While the prerequisites above must be satisfied prior to having your pull request reviewed,
 the reviewer(s) may ask you to complete additional design work, tests,

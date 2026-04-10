@@ -6,16 +6,16 @@ This document details the configuration and internal workings of the authenticat
 
 ### A. CAS (SSO)
 
-1.  The Frontend redirects the user to the CAS server (e.g., `https://cas.univ-lille.fr`).
-2.  Once authenticated, the user returns with a `ticket`.
-3.  The Frontend sends this ticket to the Backend via **POST** `/api/auth/token/cas/`.
-4.  The Backend validates the ticket, retrieves attributes (and optionally completes via LDAP), updates the local user, and returns a JWT.
+1. The Frontend redirects the user to the CAS server (e.g., `https://cas.univ-lille.fr`).
+2. Once authenticated, the user returns with a `ticket`.
+3. The Frontend sends this ticket to the Backend via **POST** `/api/auth/token/cas/`.
+4. The Backend validates the ticket, retrieves attributes (and optionally completes via LDAP), updates the local user, and returns a JWT.
 
 ### B. Local
 
-1.  The Frontend sends `username` and `password` via **POST** `/api/auth/token/`.
-2.  Django verifies the password hash.
-3.  If valid, a JWT is returned.
+1. The Frontend sends `username` and `password` via **POST** `/api/auth/token/`.
+2. Django verifies the password hash.
+3. If valid, a JWT is returned.
 
 ## 2. Configuration (`settings.py`)
 

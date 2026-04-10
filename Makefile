@@ -72,7 +72,7 @@ stop: ## Stop running containers. Usage: make stop [service]
 	$(DOCKER_COMPOSE_CMD) stop $(SERVICE_ARGS)
 	$(call info,Containers stopped. Use 'make clean' to remove them entirely.)
 
-ci: build lint test-cov clean ## Local CI pipeline: build → lint → test → clean
+ci: build lint test-cov test-api-curl clean ## Local CI pipeline: build → lint → test → test-api → clean
 	$(call info,CI sequence completed.)
 
 lint: start ## Run linters (black, flake8) inside the API service
@@ -102,6 +102,10 @@ test: start ## Run tests inside the container (pytest)
 test-cov: start ## Run tests with coverage report
 	$(call info,Running tests with coverage...)
 	$(DOCKER_COMPOSE_CMD) exec -T -e DJANGO_SETTINGS_MODULE=config.django.test.docker $(DOCKER_SERVICE_NAME) bash -c "python3 deployment/dev/scripts/wait_for_db.py && pytest --cov=src --cov-report=term-missing --cov-fail-under=70"
+
+test-api-curl: start ## Run curl-based API tests inside the container
+	$(call info,Running curl-based API tests...)
+	@$(DOCKER_COMPOSE_CMD) exec -T $(DOCKER_SERVICE_NAME) bash /app/scripts/test_api_curl.sh
 
 check-django-env: ## Environment checks (DJANGO_SETTINGS_MODULE must end with .docker)
 	$(call info,Checking DJANGO_SETTINGS_MODULE...)

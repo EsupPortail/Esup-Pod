@@ -6,11 +6,11 @@ The Pod application encoding module handles asynchronous video transcoding and p
 
 The encoding system is built on three key components:
 
-| Component            | Role                                                                                   |
-| :------------------- | :-------------------------------------------------------------------------------------- |
-| **Pod Backend**       | Triggers encoding tasks via Celery and stores metadata in the database.                 |
-| **Celery + Redis**    | Manages the asynchronous task queue and handles retries for failed encoding jobs.       |
-| **Runner Manager API** | External microservice that performs the actual video transcoding and processing.        |
+| Component              | Role                                                                              |
+| :--------------------- | :-------------------------------------------------------------------------------- |
+| **Pod Backend**        | Triggers encoding tasks via Celery and stores metadata in the database.           |
+| **Celery + Redis**     | Manages the asynchronous task queue and handles retries for failed encoding jobs. |
+| **Runner Manager API** | External microservice that performs the actual video transcoding and processing.  |
 
 ## How It Works
 
@@ -25,14 +25,14 @@ The encoding system is built on three key components:
 
 Pod can encode videos into the following outputs:
 
-| Format       | Description                          |
-| :----------- | :----------------------------------- |
-| **audio**    | MP3 audio file                       |
-| **360p**     | 360p video resolution (low quality)  |
-| **480p**     | 480p video resolution (standard)     |
-| **720p**     | 720p video resolution (HD)           |
-| **1080p**    | 1080p video resolution (Full HD)     |
-| **playlist** | HLS playlist for adaptive streaming   |
+| Format       | Description                         |
+| :----------- | :---------------------------------- |
+| **audio**    | MP3 audio file                      |
+| **360p**     | 360p video resolution (low quality) |
+| **480p**     | 480p video resolution (standard)    |
+| **720p**     | 720p video resolution (HD)          |
+| **1080p**    | 1080p video resolution (Full HD)    |
+| **playlist** | HLS playlist for adaptive streaming |
 
 ## Key Technologies
 
@@ -43,26 +43,30 @@ Pod can encode videos into the following outputs:
 
 ## API Endpoints
 
-| Method   | Endpoint                  | Description                                                          |
-| :------- | :------------------------ | :----------------------------------------------------------------- |
-| **POST** | `/api/encoding/webhook/`  | Receives encoding completion notification from Runner Manager.      |
-
+| Method   | Endpoint                 | Description                                                   |
+| :------- | :----------------------- | :------------------------------------------------------------ |
+| **POST** | `/api/encoding/webhook/` | Receives encoding completion notification from Runner Manager.|
+>
 > The webhook endpoint is public but secured by the `ENCODING_WEBHOOK_SECRET` environment variable via the `X-Webhook-Secret` header.
 
 ## File Storage
 
-Video files are organized on disk by owner:
+Video-related files are organized on disk using a hash-based directory strategy to obscure physical files and avoid predictable names.
 
-```
+```text
 MEDIA_ROOT/
-├── videos/
-│   └── <owner-username>/
-│       └── <slug>.<ext>
-└── thumbnails/
-    └── <slug>_<random>.jpg
+├── video/
+│   ├── source/
+│   │   └── %Y/%m/%d/<hash>.mp4
+│   ├── encoded/
+│   │   └── %Y/%m/%d/<hash>.mp4
+│   ├── thumbnails/
+│   │   └── %Y/%m/%d/<hash>.jpg
+│   └── transcripts/
+│       └── %Y/%m/%d/<hash>.vtt
+└── userpicture/
+    └── %Y/%m/%d/<hash>.jpg
 ```
-
-When a video's owner changes, all associated files are automatically moved to the new owner's directory.
 
 ## Further Reading
 

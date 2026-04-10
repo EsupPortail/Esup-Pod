@@ -16,7 +16,6 @@ Add this decorator above the ViewSet class to organize its methods into logical 
 
 ```python
 from drf_spectacular.utils import extend_schema
-
 @extend_schema(tags=['Video Management'])  # Creates a "Video Management" group
 class VideoViewSet(viewsets.ModelViewSet):
     queryset = Video.objects.all()
@@ -54,7 +53,6 @@ Document request parameters with `@extend_schema` and `OpenApiParameter`:
 ```python
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from drf_spectacular.types import OpenApiTypes
-
 @extend_schema(
     parameters=[
         OpenApiParameter(
@@ -97,6 +95,5 @@ The API documentation is auto-generated and available at:
 
 - [drf-spectacular Documentation](https://drf-spectacular.readthedocs.io/)
 - [OpenAPI 3.0 Specification](https://spec.openapis.org/oas/v3.0.3)
-
 - ⬅️ **[Back to Overview](README.md)**
 - ⬅️ **[Back to Index](../README.md)**

@@ -53,28 +53,9 @@ class EncodingConfig(BaseSettings):
         json_schema_extra={"public": True},
     )
 
-    # --- Encoding / FFmpeg ---
-    ffmpeg_cmd: str = Field(
-        default=defaults.FFMPEG_CMD, description="Path to ffmpeg binary."
-    )
-    ffprobe_cmd: str = Field(
-        default=defaults.FFPROBE_CMD, description="Path to ffprobe binary."
-    )
-    ffmpeg_crf: int = Field(
-        default=defaults.FFMPEG_CRF,
-        description="FFmpeg CRF value (Constant Rate Factor). Lower = better quality.",
-    )
-    ffmpeg_nb_threads: str = Field(
-        default=defaults.FFMPEG_NB_THREADS,
-        description="FFmpeg encoding preset.",
-    )
-    ffprobe_get_info: str = Field(
-        default=defaults.FFPROBE_GET_INFO,
-        description="FFprobe info detail level.",
-    )
-    chunk_size: int = Field(
-        default=defaults.CHUNK_SIZE,
-        description="Chunk size for file operations.",
+    keep_source_file: bool = Field(
+        default=defaults.KEEP_SOURCE_FILE,
+        description="If True, the encoding webhook will not delete the original source video upon success.",
     )
 
     @classmethod

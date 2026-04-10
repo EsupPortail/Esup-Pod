@@ -14,10 +14,12 @@ class OwnerSerializer(serializers.ModelSerializer):
     """
     Basic serializer for the Owner profile.
     """
+
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         """Owner serializer metadata."""
+
         model = Owner
         fields = (
             "id",
@@ -41,6 +43,7 @@ class OwnerWithGroupsSerializer(serializers.ModelSerializer):
 
     class Meta:
         """Owner with groups serializer metadata."""
+
         model = Owner
         fields = (
             "id",

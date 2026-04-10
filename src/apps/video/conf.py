@@ -54,6 +54,11 @@ class VideoConfig(BaseSettings):
         description="Allow authenticated users to upload videos.",
         json_schema_extra={"public": True},
     )
+    active_video_comment: bool = Field(
+        default=defaults.ACTIVE_VIDEO_COMMENT,
+        description="Enable video commenting system.",
+        json_schema_extra={"public": True},
+    )
 
     # --- Licensing ---
     default_license: str = Field(

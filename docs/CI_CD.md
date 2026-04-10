@@ -17,9 +17,9 @@ This workflow runs on every `push` and `pull_request`.
 
 - **`quality-check`**: Checks code style using `flake8` and formatting with `black`.
 - **`test-docker-full`**: Equivalent to make test-cov.
-    - Builds the stack.
-    - Runs the full Python test suite.
-    - Coverage Enforced: The job fails if test coverage is below than is descided.
+  - Builds the stack.
+  - Runs the full Python test suite.
+  - Coverage Enforced: The job fails if test coverage is below than is descided.
 
 ## Running Pipelines Locally
 
@@ -36,6 +36,7 @@ This command chains: build ➔ lint ➔ test-cov ➔ clean.
 ### Using Make (Recommended)
 
 Simply run:
+
 ```bash
 make test
 ```

@@ -19,7 +19,6 @@ from .views import (
     AccessGroupViewSet,
     CASLoginView,
     GroupViewSet,
-    LoginConfigView,
     LoginView,
     LogoutInfoView,
     OIDCLoginView,
@@ -43,7 +42,6 @@ urlpatterns = [
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("logout-info/", LogoutInfoView.as_view(), name="api_logout_info"),
-    path("config/", LoginConfigView.as_view(), name="api_login_config"),
 ]
 
 if auth_settings.use_local_auth:

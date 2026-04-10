@@ -13,7 +13,8 @@ class VideoAdmin(admin.ModelAdmin):
     """
 
     list_display = ("title", "owner", "status", "created_at", "file_size_mb")
-    list_filter = ("status", "created_at")
+    list_filter = ("status", "created_at", "sites")
+    filter_horizontal = ("sites",)
     search_fields = ("title", "description", "owner__username", "owner__email")
     readonly_fields = ("slug", "duration", "created_at", "updated_at")
 

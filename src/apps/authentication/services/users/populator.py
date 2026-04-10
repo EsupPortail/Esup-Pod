@@ -73,8 +73,6 @@ class UserPopulator:
 
     def _populate_from_shibboleth(self, attributes: Dict[str, Any]) -> None:
         """Map Shibboleth attributes to User/Owner."""
-        # attributes keys are our internal field names (e.g. 'affiliation', 'first_name')
-        # because the view maps headers to these names before calling this.
 
         if "first_name" in attributes:
             self.user.first_name = attributes["first_name"]

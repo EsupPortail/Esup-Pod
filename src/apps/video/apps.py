@@ -7,7 +7,7 @@ from django.apps import AppConfig
 
 class VideoConfig(AppConfig):
     """
-    Esup-Pod - Configuration for the video app.
+    Configuration for the video app.
     """
 
     name = "src.apps.video"

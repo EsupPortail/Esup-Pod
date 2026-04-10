@@ -1,5 +1,6 @@
 # Encoding: Technical Details & Configuration
 
+>
 > **Navigation:** [Back to Overview](README.md) | [Back to Index](../README.md)
 
 ---
@@ -13,10 +14,8 @@ Configure the encoding module via environment variables in `.env`:
 ```bash
 # URL of the Esup-Runner Manager API
 ENCODING_MANAGER_URL=http://runner-manager:8080
-
 # API token for authentication with Runner Manager
 ENCODING_MANAGER_TOKEN=your-secret-token
-
 # Shared secret used to validate incoming webhook calls from Runner Manager
 ENCODING_WEBHOOK_SECRET=your-webhook-secret
 ```
@@ -26,32 +25,8 @@ ENCODING_WEBHOOK_SECRET=your-webhook-secret
 ```bash
 # Default directory for video uploads (relative to MEDIA_ROOT)
 POD_ENCODING_VIDEOS_DIR=videos
-
 # Default directory for video thumbnails (relative to MEDIA_ROOT)
 POD_ENCODING_THUMBNAILS_DIR=thumbnails
-```
-
-### FFmpeg / FFprobe Configuration
-
-```bash
-# Path to ffmpeg binary (default: "ffmpeg")
-POD_ENCODING_FFMPEG_CMD=ffmpeg
-
-# Path to ffprobe binary (default: "ffprobe")
-POD_ENCODING_FFPROBE_CMD=ffprobe
-
-# FFmpeg CRF value: 0-51 (lower = better quality, slower encoding)
-# Default: 28 (recommended for balance between quality and speed)
-POD_ENCODING_FFMPEG_CRF=28
-
-# Number of threads / encoding preset (default: "auto")
-POD_ENCODING_FFMPEG_NB_THREADS=auto
-
-# FFprobe info detail level (default: "default")
-POD_ENCODING_FFPROBE_GET_INFO=default
-
-# Chunk size for file operations in bytes (default: 1000000)
-POD_ENCODING_CHUNK_SIZE=1000000
 ```
 
 ### Upload Configuration
@@ -59,10 +34,9 @@ POD_ENCODING_CHUNK_SIZE=1000000
 ```bash
 # Maximum video upload size in GB (default: 10)
 POD_ENCODING_MAX_UPLOAD_SIZE_GB=10
-
 # Allowed video file extensions (comma-separated)
-# Default: mp4,avi,mov,mkv,flv,webm,m4v,m2ts,mts,ts
-POD_ENCODING_ALLOWED_EXTENSIONS=mp4,avi,mov,mkv,flv,webm
+# Default: mp4,avi,mov,mkv,flv,webm,m4v,m2ts,mts,ts,mpg,ogg,mp3
+POD_ENCODING_ALLOWED_EXTENSIONS=mp4,avi,mov,mkv,flv,webm,m4v,m2ts,mts,ts,mpg,ogg,mp3
 ```
 
 ### Quota Configuration
@@ -104,7 +78,6 @@ These use **Redis database 0** for task queuing. Other Redis databases are used 
 
 ```python
 from src.apps.encoding.tasks import trigger_runner_encoding_task
-
 # Asynchronously trigger encoding for a video
 trigger_runner_encoding_task.delay(
     video_id=123,
@@ -121,7 +94,6 @@ The encoding task is defined in `src/apps/encoding/tasks.py`:
 def trigger_runner_encoding_task(self, video_id: int, source_url: str):
     """
     Triggers an encoding task on the runner manager for a given video.
-    
     - Retries up to 3 times on failure
     - 60-second delay between retries
     - Marks video as ERROR if all retries fail
@@ -134,7 +106,6 @@ Pod communicates with the Runner Manager via the `RunnerClient` class:
 
 ```python
 from src.apps.encoding.services.runner_client import get_runner_client
-
 client = get_runner_client()
 response = client.execute_task(
     video_id="video-slug",
@@ -188,7 +159,7 @@ The Runner Manager notifies Pod when encoding is done via **POST** `/api/encodin
 
 The endpoint is public but guarded by a shared secret:
 
-```
+```text
 X-Webhook-Secret: <value of ENCODING_WEBHOOK_SECRET>
 ```
 
@@ -202,13 +173,15 @@ If `ENCODING_WEBHOOK_SECRET` is set and the header does not match, the request i
     "video_id": "123",
     "duration": "142.5",
     "results": {
-        "thumbnail_path": "thumbnails/my-video-abc123.jpg",
-        "video_path": "videos/john/my-video-slug.mp4"
+        "overview_path": "video/thumbnails/2026/03/18/abc123.jpg",
+        "output_video_360p": "video/encoded/2026/03/18/360.mp4",
+        "output_video_720p": "video/encoded/2026/03/18/720.mp4"
     }
 }
 ```
 
-→ Video status is set to `PUBLISHED`. Duration and file paths are updated.
+→ Video status is set to `PUBLISHED`. Duration and `overview` paths are updated on the `Video` model.
+→ For every output video resolution returned (e.g. `output_video_360p`), an `EncodingVideo` record is created to store the resolution name and file path for the multi-format streaming player.
 
 ### Payload — Error
 
@@ -246,10 +219,8 @@ Monitor active and pending tasks:
 ```bash
 # Connect to Celery worker
 celery -A src.main inspect active
-
 # View pending tasks
 celery -A src.main inspect reserved
-
 # Monitor in real-time
 celery -A src.main events
 ```
@@ -274,7 +245,7 @@ Encoding logs are written to:
 
 Common log messages:
 
-```
+```text
 INFO: Triggering encoding task for video 123
 INFO: Runner manager accepted task for video 123. Response: {...}
 ERROR: Failed to trigger encoding for video 123: ConnectionError
@@ -292,7 +263,6 @@ services:
     image: redis:7-alpine
     ports:
       - "6379:6379"
-
   celery:
     image: pod:latest
     command: celery -A src.main worker --loglevel=info
@@ -301,7 +271,6 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
     depends_on:
       - redis
-
   pod:
     image: pod:latest
     environment:
@@ -319,6 +288,7 @@ services:
 **Symptom**: `ConnectionError: Cannot connect to redis://redis:6379/0`
 
 **Solution**:
+
 - Verify Redis is running: `redis-cli ping` should return `PONG`
 - Check `CELERY_BROKER_URL` environment variable
 - Ensure Redis container network is accessible
@@ -328,6 +298,7 @@ services:
 **Symptom**: Tasks remain in queue indefinitely
 
 **Solution**:
+
 - Check if Celery worker is running: `celery -A src.main inspect active`
 - Review Celery logs for errors
 - Restart Celery worker: `celery -A src.main worker --loglevel=info`
@@ -337,6 +308,7 @@ services:
 **Symptom**: `ConnectionError: Runner manager API error`
 
 **Solution**:
+
 - Verify `POD_ENCODING_MANAGER_URL` is correct
 - Check network connectivity to Runner Manager
 - Verify API token in `POD_ENCODING_MANAGER_TOKEN`

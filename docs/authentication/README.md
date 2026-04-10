@@ -18,9 +18,9 @@ The choice of authentication method is configured via the project settings (`set
 
 Regardless of the method used to log in, the backend always eventually:
 
-1.  **Validates** credentials with the source (Local DB, CAS, LDAP...).
-2.  **Synchronizes** user information (First Name, Last Name, Affiliation) in the local `Owner` table.
-3.  **Issues** a pair of **JWT** tokens (Access + Refresh) that the frontend will use for its requests.
+1. **Validates** credentials with the source (Local DB, CAS, LDAP...).
+2. **Synchronizes** user information (First Name, Last Name, Affiliation) in the local `Owner` table.
+3. **Issues** a pair of **JWT** tokens (Access + Refresh) that the frontend will use for its requests.
 
 ## Further Reading
 

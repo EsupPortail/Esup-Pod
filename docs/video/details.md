@@ -1,5 +1,6 @@
 # Video: Technical Details
 
+>
 > **Navigation:** [Back to Overview](README.md) | [Back to Index](../README.md)
 
 ---
@@ -12,26 +13,32 @@ The central model of the application (`src/apps/video/models/Video.py`).
 
 **Key fields:**
 
-| Field               | Type              | Description                                                       |
-| :------------------ | :---------------- | :---------------------------------------------------------------- |
-| `title`             | CharField         | Video title (max 250 chars).                                      |
-| `slug`              | SlugField         | Auto-generated unique identifier used in URLs (`{title}-{uuid}`). |
-| `description`       | TextField         | Full description of the content.                                  |
-| `video_file`        | FileField         | Stored under `videos/<username>/<slug>.<ext>`.                   |
-| `thumbnail`         | ImageField        | Custom cover image. Falls back to default if absent.             |
-| `overview`          | ImageField        | Auto-generated preview image (non-editable).                     |
-| `duration`          | IntegerField      | Duration in seconds (set by `ffprobe` post-upload).              |
-| `owner`             | FK → User         | Primary owner of the video.                                       |
-| `co_owners`         | M2M → User        | Users with edit rights (cannot delete).                          |
-| `status`            | CharField         | Current video state (see Status choices below).                  |
-| `is_auth_required`  | BooleanField      | Requires login to view, even on restricted videos.               |
-| `password`          | CharField         | Optional password hash (PBKDF2-SHA256).                          |
-| `allow_downloading` | BooleanField      | Exposes the source file URL in the API response.                 |
-| `date_of_event`     | DateField         | Date of the recorded event.                                       |
-| `license`           | CharField         | Content license (CC-BY, COPYRIGHT, etc.).                        |
-| `cursus`            | CharField         | Academic level (L1–M2, Doctorate, Other).                        |
-| `language`          | CharField         | Main spoken language (e.g. `fr`, `en`).                          |
-| `date_to_delete`    | DateField         | Auto-computed expiration date based on owner's affiliation.      |
+| Field               | Type               | Description                                                       |
+| :------------------ | :----------------- | :---------------------------------------------------------------- |
+| `title`             | CharField          | Video title (max 250 chars).                                      |
+| `slug`              | SlugField          | Auto-generated unique identifier used in URLs (`{title}-{uuid}`). |
+| `description`       | TextField          | Full description of the content.                                  |
+| `video_file`        | FileField          | Stored under `videos/<username>/<slug>.<ext>`.                    |
+| `thumbnail`         | ImageField         | Custom cover image. Falls back to default if absent.              |
+| `overview`          | ImageField         | Auto-generated preview image (non-editable).                      |
+| `duration`          | IntegerField       | Duration in seconds (set by `ffprobe` post-upload).               |
+| `owner`             | FK → User          | Primary owner of the video.                                       |
+| `co_owners`         | M2M → User         | Users with edit rights (cannot delete).                           |
+| `status`            | CharField          | Current video state (see Status choices below).                   |
+| `is_auth_required`  | BooleanField       | Requires login to view, even on restricted videos.                |
+| `password`          | CharField          | Optional password hash (PBKDF2-SHA256).                           |
+| `allow_downloading` | BooleanField       | Exposes the source file URL in the API response.                  |
+| `date_of_event`     | DateField          | Date of the recorded event.                                       |
+| `license`           | CharField          | Content license (CC-BY, COPYRIGHT, etc.).                         |
+| `cursus`            | CharField          | Academic level (L1–M2, Doctorate, Other).                         |
+| `language`          | CharField          | Main spoken language (e.g. `fr`, `en`).                           |
+| `date_to_delete`    | DateField          | Auto-computed expiration date based on owner's affiliation.       |
+| `type`              | FK → Type          | Essential categorization of the video.                            |
+| `disciplines`       | M2M → Discipline   | Associated academic disciplines.                                  |
+| `tags`              | TaggableManager    | Custom tags (using tagulous).                                     |
+| `sites`             | M2M → Site         | Links the video to specific portals for multi-tenancy.            |
+| `restricted_groups` | M2M → AccessGroup  | Limits access to specific user groups (when RESTRICTED).          |
+| `view_count`        | IntegerField       | Total number of views across all dates.                           |
 
 **Status choices:**
 
@@ -59,12 +66,12 @@ class Status(models.TextChoices):
 
 A subtitle file attached to a video (`src/apps/video/models/Subtitle.py`).
 
-| Field        | Type       | Description                                     |
-| :----------- | :--------- | :---------------------------------------------- |
-| `video`      | FK → Video | Parent video.                                   |
-| `language`   | CharField  | Language code: `fr`, `en`, or `es`.             |
-| `file`       | FileField  | Subtitle file (expected VTT/SRT). Path: `subtitles/`. |
-| `is_default` | BooleanField | Marks this subtitle as the default track.      |
+| Field        | Type         | Description                                            |
+| :----------- | :----------- | :----------------------------------------------------- |
+| `video`      | FK → Video   | Parent video.                                          |
+| `language`   | CharField    | Language code: `fr`, `en`, or `es`.                    |
+| `file`       | FileField    | Subtitle file (expected VTT/SRT). Path: `subtitles/`.  |
+| `is_default` | BooleanField | Marks this subtitle as the default track.              |
 
 ---
 
@@ -72,13 +79,23 @@ A subtitle file attached to a video (`src/apps/video/models/Subtitle.py`).
 
 Stores daily view statistics per video (`src/apps/video/models/ViewCount.py`).
 
-| Field   | Type       | Description                            |
-| :------ | :--------- | :------------------------------------- |
-| `video` | FK → Video | Linked video.                          |
-| `date`  | DateField  | Date of the views (unique per video).  |
-| `count` | PositiveIntegerField | Number of views on that date. |
+| Field   | Type                 | Description                           |
+| :------ | :------------------- | :------------------------------------ |
+| `video` | FK → Video           | Linked video.                         |
+| `date`  | DateField            | Date of the views (unique per video). |
+| `count` | PositiveIntegerField | Number of views on that date.         |
 
 Unique constraint on `(video, date)`. Ordered by `-date`.
+
+---
+
+### Additional Models
+
+- **Type (`src/apps/video/models/Type.py`)**: General categories for videos, filterable by `Site`.
+- **Discipline (`src/apps/video/models/Discipline.py`)**: Formal academic categories.
+- **Comment (`src/apps/video/models/Comment.py`)**: User remarks tied to a specific video with timestamp and user.
+- **Vote (`src/apps/video/models/Vote.py`)**: Tracks Up/Down votes on `Comment` items to calculate the net score.
+- **Tag**: Handled dynamically by the `django-tagulous` extension.
 
 ---
 
@@ -88,11 +105,11 @@ Unique constraint on `(video, date)`. Ordered by `-date`.
 
 The list of accessible videos depends on the user's authentication state:
 
-| User type        | Accessible videos                                             |
-| :--------------- | :------------------------------------------------------------ |
-| **Anonymous**    | Published + Restricted (if `is_auth_required=False`). Password-protected videos may be hidden depending on `HOMEPAGE_SHOWS_PASSWORDED`. |
-| **Authenticated**| Published + Restricted + own videos (all statuses) + co-owned. |
-| **Superuser**    | All videos without restriction.                              |
+| User type         | Accessible videos                                                                                                                                                    |
+| :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Anonymous**     | Published + Restricted (if `is_auth_required=False` and no `restricted_groups`). Password-protected videos may be hidden depending on `HOMEPAGE_SHOWS_PASSWORDED`.   |
+| **Authenticated** | Published + Restricted + own videos (all statuses) + co-owned. Additionally, restricted videos that are limited to specific AccessGroups where the user is a member. |
+| **Superuser**     | All videos without restriction.                                                                                                                                      |
 
 ### Permission Classes
 
@@ -116,21 +133,23 @@ Located in `src/apps/video/serializers/VideoSerializer.py`.
 
 **Key behaviors:**
 
-| Field          | Behavior                                                                           |
-| :------------- | :--------------------------------------------------------------------------------- |
-| `owner`        | Read-only — automatically set to `request.user` on create.                       |
-| `slug`         | Read-only — auto-generated by the model.                                          |
-| `video_file`   | Write-only — not exposed in GET responses.                                        |
+| Field          | Behavior                                                                            |
+| :------------- | :---------------------------------------------------------------------------------- |
+| `owner`        | Read-only — automatically set to `request.user` on create.                          |
+| `slug`         | Read-only — auto-generated by the model.                                            |
+| `video_file`   | Write-only — not exposed in GET responses.                                          |
 | `video_url`    | Computed field — exposes the file URL based on permissions and `allow_downloading`. |
-| `has_password` | Read-only boolean — indicates if the video is password-protected.                 |
-| `password`     | Write-only — hashed via `validate_password` before save.                         |
-| `subtitles`    | Nested read-only list of attached subtitles.                                      |
+| `has_password` | Read-only boolean — indicates if the video is password-protected.                   |
+| `password`     | Write-only — hashed via `validate_password` before save.                            |
+| `subtitles`    | Nested read-only list of attached subtitles.                                        |
 
 **File validations (`validate_video_file`):**
+
 - Extension must be in `encoding_settings.allowed_extensions`.
 - File size must not exceed `encoding_settings.max_upload_size_gb`.
 
 **WEBTV Mode (`validate`):**
+
 - If `WEBTV_MODE = False`: a video file is **mandatory**. A published video without a file is also rejected.
 
 ---
@@ -139,11 +158,11 @@ Located in `src/apps/video/serializers/VideoSerializer.py`.
 
 Located in `src/apps/video/signals.py`. Three signals are registered on the `Video` model:
 
-| Signal                     | Trigger           | Action                                                               |
-| :------------------------- | :---------------- | :------------------------------------------------------------------- |
-| `auto_delete_file_on_delete` | `post_delete`   | Removes the physical files (video, thumbnail, overview) from disk.  |
-| `auto_delete_file_on_change` | `pre_save`      | Deletes the old file when a new video file is uploaded.              |
-| `video_post_save`           | `post_save`      | On creation: extracts duration via `ffprobe`, leaves status as-is (ENCODING). |
+| Signal                       | Trigger           | Action                                                                        |
+| :--------------------------- | :---------------- | :---------------------------------------------------------------------------- |
+| `auto_delete_file_on_delete` | `post_delete`     | Removes the physical files (video, thumbnail, overview) from disk.            |
+| `auto_delete_file_on_change` | `pre_save`        | Deletes the old file when a new video file is uploaded.                       |
+| `video_post_save`            | `post_save`       | On creation: extracts duration via `ffprobe`, leaves status as-is (ENCODING). |
 
 > **Note:** The status transition to `PUBLISHED` is done by the Encoding webhook, not the signal.
 
@@ -154,9 +173,22 @@ Located in `src/apps/video/signals.py`. Three signals are registered on the `Vid
 ### `GET /api/videos/{slug}/stream/`
 
 Streams the raw video file. Access rules:
+
 - Owner, co-owner, superuser: always allowed.
-- Restricted + password: direct stream blocked (use `/unlock/` first).
+- Restricted + Group: Access limited to users in the assigned groups.
+- Restricted + Password: direct stream blocked (use `/unlock/` first or supply valid legacy hash).
 - Draft: blocked for non-owners.
+
+### Legacy V4 Download Redirection
+
+In V4, encoded MP4 files were served directly by Nginx at paths like `/media/videos/<sha1_owner_hash>/<id_padded>/<id_padded>_<res>.mp4`. Django never handled those download requests.
+To intercept and redirect old V4 media links to the new stream endpoint (`/api/videos/{slug}/stream/`), you must configure an Nginx rewrite instead:
+
+```nginx
+location ~ ^/media/videos/[^/]+/(\d{4})/\1_(\d+)\.mp4$ {
+    return 301 /api/videos/$1/stream/?resolution=$2;
+}
+```
 
 ### `POST /api/videos/{slug}/register_view/`
 
@@ -165,15 +197,16 @@ Atomically increments `view_count` on the video AND the daily `ViewCount` record
 ### `POST /api/videos/{slug}/unlock/`
 
 Unlocks a password-protected restricted video.
+
 - If `is_auth_required = True`: user must be authenticated.
-- Validates the provided `password` against the stored hash.
-- Returns the `video_url` on success.
+- Validates the provided `password` against the stored hash. (Alternatively accepts a legacy `hash` parameter for backward compatibility).
+- Returns the `video_url` on success and registers access in the session state.
 
 ---
 
 ## 6. Upload & Encoding Flow
 
-```
+```text
 1. POST /api/videos/       (multipart/form-data)
 2. VideoViewSet.perform_create()
    ├── Quota check: current usage + file size vs. user_quota_size_gb
@@ -191,19 +224,19 @@ Unlocks a password-protected restricted video.
 
 Managed via `VideoConfig` (pydantic-settings in `src/apps/video/conf.py`). Settings are read from Django settings or environment variables with the prefix `POD_VIDEO_`.
 
-| Setting                   | Default             | Description                                                  |
-| :------------------------ | :------------------ | :----------------------------------------------------------- |
-| `WEBTV_MODE`              | `False`             | If `True`, video file is optional (WebTV / channel mode).   |
-| `ALLOW_AUTHENTICATED_UPLOAD` | `True`           | Allow authenticated non-staff users to upload.              |
-| `RESTRICT_EDIT_TO_STAFF`  | `False`             | Locks write access to staff and admins only.                |
-| `HOMEPAGE_SHOWS_PASSWORDED` | `True`            | Show password-protected videos in public listing.           |
-| `DEFAULT_LICENSE`         | `"COPYRIGHT"`       | Default license applied to newly created videos.            |
-| `DEFAULT_THUMBNAIL`       | (path)              | Path to the fallback thumbnail image.                       |
-| `DEFAULT_YEAR_DATE_DELETE` | `2`               | Default years before expiration (if no affiliation match).  |
-| `ACCOMMODATION_YEARS`     | `{}`                | Dict mapping affiliation → nb years before deletion.        |
-| `CACHE_TIMEOUT`           | `600`               | Cache TTL in seconds for video data.                        |
-| `DEFAULT_DC_COVERAGE`     | (string)            | Dublin Core `coverage` metadata default.                    |
-| `DEFAULT_DC_RIGHTS`       | (string)            | Dublin Core `rights` metadata default.                      |
+| Setting                      | Default       | Description                                                 |
+| :--------------------------- | :------------ | :---------------------------------------------------------- |
+| `WEBTV_MODE`                 | `False`       | If `True`, video file is optional (WebTV / channel mode).   |
+| `ALLOW_AUTHENTICATED_UPLOAD` | `True`        | Allow authenticated non-staff users to upload.              |
+| `RESTRICT_EDIT_TO_STAFF`     | `False`       | Locks write access to staff and admins only.                |
+| `HOMEPAGE_SHOWS_PASSWORDED`  | `True`        | Show password-protected videos in public listing.           |
+| `DEFAULT_LICENSE`            | `"COPYRIGHT"` | Default license applied to newly created videos.            |
+| `DEFAULT_THUMBNAIL`          | (path)        | Path to the fallback thumbnail image.                       |
+| `DEFAULT_YEAR_DATE_DELETE`   | `2`           | Default years before expiration (if no affiliation match).  |
+| `ACCOMMODATION_YEARS`        | `{}`          | Dict mapping affiliation → nb years before deletion.        |
+| `CACHE_TIMEOUT`              | `600`         | Cache TTL in seconds for video data.                        |
+| `DEFAULT_DC_COVERAGE`        | (string)      | Dublin Core `coverage` metadata default.                    |
+| `DEFAULT_DC_RIGHTS`          | (string)      | Dublin Core `rights` metadata default.                      |
 
 ---
 

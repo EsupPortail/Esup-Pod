@@ -5,12 +5,32 @@ Esup-Pod - Video application signals.
 import logging
 import os
 
+from django.contrib.sites.models import Site
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
-from src.apps.video.models import Video
+from django.utils.text import slugify
+from src.apps.video.models import Video, Type
 from src.apps.video.services.metadata import extract_video_duration
 
 logger = logging.getLogger(__name__)
+
+
+@receiver(post_save, sender=Video)
+def set_video_slug(sender, instance, created, **kwargs):
+    """
+    Esup-Pod - Generates the V4-compatible slug after the first INSERT.
+
+    Format: "%04d-<slugified-title>" (e.g. "0042-video-title")
+
+    NOTE: unlike V4 which recomputed the slug on every save(),
+    V5 intentionally freezes the slug at creation time.
+    If the title changes, the slug (and therefore the permalink) does not change.
+    """
+    if created and not instance.slug:
+        id_padded = "%04d" % instance.pk
+        new_slug = f"{id_padded}-{slugify(instance.title)}"
+        Video.objects.filter(pk=instance.pk).update(slug=new_slug)
+        instance.slug = new_slug
 
 
 @receiver(post_delete, sender=Video)
@@ -43,8 +63,8 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
         return False
 
     new_file = instance.video_file
-    if not old_file == new_file:
-        if os.path.isfile(old_file.path):
+    if old_file and not old_file == new_file:
+        if old_file.name and os.path.isfile(old_file.path):
             os.remove(old_file.path)
 
 
@@ -75,3 +95,33 @@ def video_post_save(sender, instance, created, **kwargs):
                 logger.info(
                     "Video pk=%s published with duration=%ss.", instance.pk, duration
                 )
+
+
+@receiver(post_save, sender=Video)
+def auto_assign_site_to_video(sender, instance, created, **kwargs):
+    """
+    Esup-Pod - Fallback signal: Ensures the video is linked to the current site
+    if created via admin or other means.
+    """
+    if created:
+        try:
+            current_site = Site.objects.get_current()
+            if not instance.sites.filter(pk=current_site.pk).exists():
+                instance.sites.add(current_site)
+        except Exception as e:
+            logger.warning("Could not auto-assign site to video %s: %s", instance.pk, e)
+
+
+@receiver(post_save, sender=Type)
+def auto_assign_site_to_type(sender, instance, created, **kwargs):
+    """
+    Esup-Pod - Fallback signal: Ensures the type is linked to the current site
+    if created via admin or other means.
+    """
+    if created:
+        try:
+            current_site = Site.objects.get_current()
+            if not instance.sites.filter(pk=current_site.pk).exists():
+                instance.sites.add(current_site)
+        except Exception as e:
+            logger.warning("Could not auto-assign site to type %s: %s", instance.pk, e)

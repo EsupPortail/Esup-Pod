@@ -13,7 +13,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from src.apps.video.models import Video, Subtitle
+from src.apps.video.models import Video, Subtitle, Type, Discipline
+from src.apps.authentication.models import AccessGroup
 
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp()
@@ -42,6 +43,12 @@ class VideoViewSetTests(APITestCase):
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
         super().tearDownClass()
 
+    def _get_results(self, response):
+        """Helper to get results from paginated or non-paginated response."""
+        if isinstance(response.data, dict) and "results" in response.data:
+            return response.data["results"]
+        return response.data
+
     def setUp(self):
         """Sets up test users and various video types for API verification."""
         self.user = User.objects.create_user(username="testuser", password=PWD)  # nosec
@@ -55,13 +62,21 @@ class VideoViewSetTests(APITestCase):
         self.video_content = SimpleUploadedFile(
             "test.mp4", b"file_content", content_type="video/mp4"
         )
+        self.type_tut = Type.objects.create(title="Tutorial", slug="tutorial")
+        self.discipline_math = Discipline.objects.create(title="Math", slug="math")
+
         self.video = Video.objects.create(
             title="My Video",
             owner=self.user,
             video_file=self.video_content,
             status=Video.Status.PUBLISHED,
+            type=self.type_tut,
         )
+        self.video.disciplines.add(self.discipline_math)
+        self.video.tags = "django, python"
+        self.video.save()
 
+        self.group_vip = AccessGroup.objects.create(display_name="VIP", code_name="vip")
         self.restricted_video = Video.objects.create(
             title="Restricted Video",
             owner=self.user,
@@ -113,6 +128,61 @@ class VideoViewSetTests(APITestCase):
         response = self.client.post(url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("video_file", response.data)
+
+    def test_filter_by_type(self):
+        """Verifies that videos can be filtered by type slug."""
+        url = f"{reverse('video-list')}?type__slug=tutorial"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = self._get_results(response)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], self.video.id)
+
+    def test_filter_by_discipline(self):
+        """Verifies that videos can be filtered by discipline ID."""
+        url = f"{reverse('video-list')}?discipline={self.discipline_math.id}"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = self._get_results(response)
+        self.assertEqual(len(results), 1)
+
+    def test_filter_by_tags_slug(self):
+        """Verifies that videos can be filtered by tag slug."""
+        url = f"{reverse('video-list')}?tags__slug=django"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = self._get_results(response)
+        self.assertEqual(len(results), 1)
+
+    def test_filter_by_tags_name(self):
+        """Verifies that videos can be filtered by tag name."""
+        url = f"{reverse('video-list')}?tags__name=python"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = self._get_results(response)
+        self.assertEqual(len(results), 1)
+
+    def test_access_restricted_group(self):
+        """Verifies that user in restricted group can access video."""
+        vip_user = User.objects.create_user(username="vip", password="password")
+        owner = vip_user.owner
+        owner.accessgroups.add(self.group_vip)
+
+        vid_group = Video.objects.create(
+            title="VIP Video",
+            owner=self.superuser,
+            status=Video.Status.PUBLISHED,
+            video_file=self.video_content,
+        )
+        vid_group.restricted_groups.add(self.group_vip)
+
+        self.client.force_authenticate(user=vip_user)
+        url = reverse("video-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = self._get_results(response)
+        titles = [v["title"] for v in results]
+        self.assertIn("VIP Video", titles)
 
     def test_stream_video_owner(self):
         """Verifies that the owner can successfully stream their video."""
@@ -228,3 +298,73 @@ class SubtitleViewSetTests(APITestCase):
         }
         response = self.client.post(url, data, format="multipart")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
+class CommentBasicViewTests(APITestCase):
+    """Esup-Pod - Tests for the CommentViewSet."""
+
+    def setUp(self):
+        """Sets up user and video for comment API testing."""
+        self.user = User.objects.create_user(
+            username="testuser_comments", password="password"
+        )
+        self.video = Video.objects.create(
+            title="My Video", owner=self.user, status=Video.Status.PUBLISHED
+        )
+        self.client.force_authenticate(user=self.user)
+
+    def test_add_and_list_comment(self):
+        """Verifies that a comment can be added and listed successfully."""
+        # 1. Add comment
+        url_add = reverse("comment-add-root", kwargs={"video_slug": self.video.slug})
+        response = self.client.post(url_add, {"content": "Hello API test"}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # 2. List comment
+        url_list = reverse("comment-list", kwargs={"video_slug": self.video.slug})
+        response_list = self.client.get(url_list)
+        self.assertEqual(len(response_list.data), 1)
+        self.assertEqual(response_list.data[0]["content"], "Hello API test")
+
+
+class TagViewSetTests(APITestCase):
+    """
+    Esup-Pod - Tests for the TagViewSet.
+    """
+
+    def _get_results(self, response):
+        """Helper to get results from paginated or non-paginated response."""
+        if isinstance(response.data, dict) and "results" in response.data:
+            return response.data["results"]
+        return response.data
+
+    def setUp(self):
+        """Sets up tags via a video."""
+        self.user = User.objects.create_user(username="taguser", password=PWD)
+        self.video = Video.objects.create(
+            title="Tagged Video",
+            owner=self.user,
+            status=Video.Status.PUBLISHED,
+        )
+        self.video.tags = "mytag1, mytag2"
+        self.video.save()
+
+    def test_list_tags(self):
+        """Verifies that tags are listed correctly."""
+        url = reverse("tag-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = self._get_results(response)
+        self.assertEqual(len(results), 2)
+        tag_names = [t["name"] for t in results]
+        self.assertIn("mytag1", tag_names)
+        self.assertIn("mytag2", tag_names)
+
+    def test_search_tags(self):
+        """Verifies searching tags."""
+        url = f"{reverse('tag-list')}?search=mytag1"
+        response = self.client.get(url)
+        results = self._get_results(response)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["name"], "mytag1")

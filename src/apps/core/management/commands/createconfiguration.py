@@ -63,7 +63,7 @@ class Command(BaseCommand):
         root_config = self.data[0][config_key]
 
         # Title of main section
-        msg = "\n## %s\n" % (
+        msg = "# %s\n" % (
             root_config.get("title", {}).get(self.language, "Configuration")
         )
 
@@ -71,14 +71,14 @@ class Command(BaseCommand):
 
         # Iterate over subsections (apps: authentication, core, etc.)
         for _key, desc in descs.items():
-            msg += "\n### %s\n\n" % desc.get("title", {}).get(
+            msg += "\n## %s\n\n" % desc.get("title", {}).get(
                 self.language, _key.capitalize()
             )
 
             desc_list = desc.get("description", {}).get(self.language, [])
             for line in desc_list:
                 if line != "":
-                    msg += "%s<br>\n" % line
+                    msg += "%s\n" % line
                 else:
                     msg += "\n"
 
@@ -131,7 +131,7 @@ class Command(BaseCommand):
                 if code:
                     endline = "\n"
                 else:
-                    endline = "<br>\n"
+                    endline = "\n"
                     line = line.strip()
                 msg += "  >> %s%s" % (line, endline)
         return msg
