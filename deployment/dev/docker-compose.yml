@@ -93,7 +93,7 @@ services:
       - pod-network
 
   esup-runner-manager:
-    image: benjisere/esup-runner-manager:v1.0.0
+    image: ghcr.io/esupportail/esup-runner-manager:latest
     container_name: pod-esup-manager
     env_file:
       - ../../.env
@@ -113,7 +113,7 @@ services:
       - pod-network
 
   esup-runner-runner:
-    image: benjisere/esup-runner-runner:v1.0.0
+    image: ghcr.io/esupportail/esup-runner-runner:latest
     container_name: pod-esup-runner
     env_file:
       - ../../.env
