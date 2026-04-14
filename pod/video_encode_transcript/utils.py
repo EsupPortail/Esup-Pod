@@ -137,7 +137,7 @@ def _admin_failure_emails_are_enabled() -> bool:
 def send_email_item(msg, item, item_id) -> None:
     """Send email notification when encoding fails for a specific item."""
     if not _admin_failure_emails_are_enabled():
-        logger.info(
+        logger.warning(
             "Skipping admin alert email for %s %s because SMTP/admin email settings are not configured.",
             item,
             item_id,
