@@ -7,15 +7,19 @@ Run with `python manage.py test pod.video_encode_transcript.tests.test_notify_ta
 import json
 from unittest.mock import patch
 
+from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.test import RequestFactory, TestCase
 
+from pod.video.models import Type, Video
 from pod.video_encode_transcript.models import RunnerManager, Task
 from pod.video_encode_transcript.views import notify_task_end
 
 
 class NotifyTaskEndAuthTests(TestCase):
     """Authentication coverage for the notify_task_end endpoint."""
+
+    fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
         """Create a runner manager and a pending task used in all test cases."""
@@ -31,10 +35,20 @@ class NotifyTaskEndAuthTests(TestCase):
             token="runner-token",
             site=site,
         )
+
+        user = User.objects.create(username="notify-owner")
+        self.video = Video.objects.create(
+            title="notify-video",
+            owner=user,
+            video="notify.mp4",
+            type=Type.objects.get(id=1),
+        )
+
         self.task = Task.objects.create(
             task_id="task-123",
             runner_manager=self.runner_manager,
             status="pending",
+            video=self.video,
         )
 
     def _post_notify(self, authorization: str | None = None, status: str = "running"):
@@ -86,3 +100,43 @@ class NotifyTaskEndAuthTests(TestCase):
         mock_send_email_item.assert_called_once_with(
             f"Task {self.task.id} failed", "Task", self.task.task_id
         )
+
+    @patch("pod.video_encode_transcript.views.change_encoding_step")
+    def test_notify_task_end_updates_video_encoding_step_on_failed_status(
+        self, mock_change_encoding_step
+    ):
+        """Mark video encoding step as error when runner notifies a failed task."""
+        self.video.encoding_in_progress = True
+        self.video.save(update_fields=["encoding_in_progress"])
+
+        response = self._post_notify("Bearer runner-token", status="failed")
+        self.assertEqual(response.status_code, 200)
+
+        self.video.refresh_from_db()
+        self.assertFalse(self.video.encoding_in_progress)
+
+        mock_change_encoding_step.assert_called_once()
+        called_video_id, called_step, called_desc = mock_change_encoding_step.call_args[0]
+        self.assertEqual(called_video_id, self.video.id)
+        self.assertEqual(called_step, -1)
+        self.assertEqual(called_desc, "Runner manager task failed")
+
+    @patch("pod.video_encode_transcript.views.change_encoding_step")
+    def test_notify_task_end_updates_video_encoding_step_on_timeout_status(
+        self, mock_change_encoding_step
+    ):
+        """Mark video encoding step as error when runner notifies a timeout task."""
+        self.video.encoding_in_progress = True
+        self.video.save(update_fields=["encoding_in_progress"])
+
+        response = self._post_notify("Bearer runner-token", status="timeout")
+        self.assertEqual(response.status_code, 200)
+
+        self.video.refresh_from_db()
+        self.assertFalse(self.video.encoding_in_progress)
+
+        mock_change_encoding_step.assert_called_once()
+        called_video_id, called_step, called_desc = mock_change_encoding_step.call_args[0]
+        self.assertEqual(called_video_id, self.video.id)
+        self.assertEqual(called_step, -1)
+        self.assertEqual(called_desc, "Runner manager task timeout")

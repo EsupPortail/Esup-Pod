@@ -24,7 +24,7 @@ jobs:
             - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
             - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
             - run: echo "🚀 Run test for Python ${{ matrix.python-version }}"
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - name: Configure sysctl limits (for ES)
               run: |
                 sudo swapoff -a
@@ -33,7 +33,7 @@ jobs:
                 sudo sysctl -w vm.max_map_count=262144
 
             - name: Set up Python ${{ matrix.python-version }}
-              uses: actions/setup-python@v5
+              uses: actions/setup-python@v6
               with:
                 python-version: ${{ matrix.python-version }}
 

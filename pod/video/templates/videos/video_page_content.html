@@ -113,6 +113,21 @@
     </div>
   {% endif %}
 
+  {% if video.get_encoding_step|slice:":2" == "-1" %}
+    <div class="alert alert-danger" role="alert">
+      {% if 'source file does not appear to be a valid video file' in video.get_encoding_step|lower %}
+        <i class="bi bi-file-earmark-x" aria-hidden="true"></i>
+        <strong>{% trans 'The source file does not appear to be a valid video file. Please re-upload a valid video file.' %}</strong>
+      {% elif 'input video duration is 0 seconds' in video.get_encoding_step|lower %}
+        <i class="bi bi-clock-history" aria-hidden="true"></i>
+        <strong>{% trans 'The input video duration is 0 seconds. Please re-upload a valid video file.' %}</strong>
+      {% else %}
+        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+        <strong>{% trans 'An error occurred while processing this video. Our administrators have already been notified.' %}</strong>
+      {% endif %}
+    </div>
+  {% endif %}
+
   {% if video.get_encoding_step == "5 : transcripting audio" %}
     <p class="text-info-emphasis">
       <i class="bi bi-cpu" aria-hidden="true"></i>

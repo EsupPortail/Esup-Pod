@@ -335,7 +335,10 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         .then((data) => {
           if (data.list_data || data.form) {
             if (data.errors) {
-              document.getElementById("formalertdiv").remove();
+              const formAlert = document.getElementById("formalertdiv");
+              if (formAlert) {
+                formAlert.remove();
+              }
               show_form(data.form, form);
             } else {
               refresh_list(data, form, list);
