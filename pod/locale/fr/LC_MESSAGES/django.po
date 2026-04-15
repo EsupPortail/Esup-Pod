@@ -11405,7 +11405,7 @@ msgid "Your video has been archived."
 msgstr "Votre video a bien été archivée."
 
 #: pod/video/templates/videos/well_respit_choice.html
-msgid "Your video id outdated, what do you want do?"
+msgid "Your video is outdated, what do you want do?"
 msgstr "Votre vidéo est obsolète, que voulez-vous faire ?"
 
 msgid "Export this video."
@@ -11419,7 +11419,7 @@ msgstr "Lien vers la vidéo :"
 
 #: pod/video/templates/videos/well_prolonged.html
 msgid "The video life span was extended to"
-msgstr "La vidéo est prolongé jusqu'au"
+msgstr "La vidéo est prolongée jusqu'au"
 
 #: pod/video/forms.py
 
@@ -11445,9 +11445,6 @@ msgstr "Retour aux choix"
 msgid "Video extension"
 msgstr "Prolongation Vidéo"
 
-msgid "Return to homepage."
-msgstr "Retour à l'accueil."
-
 msgid "Video Archiving"
 msgstr "Archivage Vidéo"
 
@@ -11467,10 +11464,10 @@ msgid "Please Wait."
 msgstr "Veuillez patienter."
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "You can decide to extend your video, to archive it (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here :"
+msgid "You can decide to extend your video, to archive it (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here:"
 msgstr "Vous pouvez décidez de prolonger votre vidéo, de l'archiver (ne sera plus accessible), de la supprimer, ainsi que de la télécharger avec toutes les données la concernant en cliquant ici :"
 
-msgid "You can decide to archive your video (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here :"
+msgid "You can decide to archive your video (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here:"
 msgstr "Vous pouvez décidez d'archiver votre vidéo (ne sera plus accessible), de la supprimer, ainsi que de la télécharger avec toutes les données la concernant en cliquant ici :"
 
 msgid "Apply my choice."

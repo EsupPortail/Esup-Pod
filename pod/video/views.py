@@ -4014,9 +4014,7 @@ def archive_and_download(request, slug):
     """
     from pod.video.management.commands import create_archive_package
 
-    cmd = create_archive_package.Command()
-    url = cmd.archive_download_isolate(slug)
-
+    url = create_archive_package.archive_download_archive(slug)
     return render(request, "videos/archive_download.html", {"url": url, "slug": slug})
 
 
@@ -4024,9 +4022,7 @@ def able_or_not_respit(slug):
     """
     This function will say if we have the right conditions to display the respit form or not.
     """
-    ###########################
-    # Calcul control access
-    ###########################
+
     all_warn = WARN_DEADLINES
     higher_warn = 0
 
@@ -4036,10 +4032,9 @@ def able_or_not_respit(slug):
 
     vid = Video.objects.get(slug=slug)
 
+    # If we have more than the maximum DeadLine days before the date_delete
     step_date = vid.date_delete - timedelta(days=higher_warn)
     display_or_not = date.today() >= step_date
-    ###########################
-    ###########################
 
     return display_or_not
 
@@ -4050,10 +4045,10 @@ def go_archive(request, slug=None):
     """
     if able_or_not_respit(slug) is True and ENABLE_PAGE_OBSO_MAIL:
         from pod.video.management.commands import check_obsolete_videos
-
-        cmd = check_obsolete_videos.Command()
-        cmd.archive_isolate(Video.objects.get(slug=slug))
+        check_obsolete_videos.archive_isolate(Video.objects.get(slug=slug))
         return HttpResponsePermanentRedirect("/video/well/archived/or/not/" + slug)
+    else :
+        return HttpResponseBadRequest("Impossible to archive. This service is not available.")
 
 
 def go_prolong(request, slug):
@@ -4065,3 +4060,5 @@ def go_prolong(request, slug):
         vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)
         vivi.save()
         return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/" + slug)
+    else :
+        return HttpResponseBadRequest("Impossible to extend. This service is not available.")

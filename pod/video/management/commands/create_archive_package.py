@@ -106,6 +106,31 @@ def read_archived_csv() -> dict:
     return csv_data
 
 
+def archive_download_archive(slug):
+    """Generate a zip archive of the video and metadata from the concerned folder"""
+    path = os.path.join(os.path.dirname(BASE_DIR)) + "/pod/media/video_package"
+
+    cmd = Command()
+    cmd.archive_pack(slug , "", Video.objects.filter(slug=slug).first(), path, False)
+
+    zip_name = (path + "/" + slug)
+
+    mediaPackage_dir = os.path.join(
+        path, "", slug
+    )
+
+    directory_name = mediaPackage_dir
+
+    # Create 'path\to\zip_file.zip'
+    shutil.make_archive(zip_name, "zip", directory_name)
+
+    # remove old temp folder
+    path = os.path.join(mediaPackage_dir, "")
+    shutil.rmtree(path)
+
+    return "/media/video_package/" + slug + ".zip"
+
+
 class Command(BaseCommand):
     """Move old archived videos from disk to ARCHIVE_ROOT."""
 
@@ -133,6 +158,16 @@ class Command(BaseCommand):
                     content = serialize("json", export_objects)
                     out.write(content)
 
+    def copy_archive_to(self, mediaPackage_dir: str, vid: Video) -> None:
+        """Move video source file to mediaPackage_dir."""
+        if os.access(vid.video.path, os.F_OK):
+            shutil.copy(
+                vid.video.path,
+                os.path.join(mediaPackage_dir, os.path.basename(vid.video.name)),
+            )
+        else:
+            print("ERROR: Cannot access to file '%s'." % vid.video.path)
+
     def move_video_to_archive(self, mediaPackage_dir: str, vid: Video) -> None:
         """Move video source file to mediaPackage_dir."""
         if os.access(vid.video.path, os.F_OK):
@@ -149,7 +184,7 @@ class Command(BaseCommand):
         else:
             print("ERROR: Cannot access to file '%s'." % vid.video.path)
 
-    def archive_pack(self, video_dir: str, user_name: str, vid: Video) -> None:
+    def archive_pack(self, video_dir: str, user_name: str, vid: Video, path_custom: str = "", move_else_copy: bool = True) -> None:
         """Create a archive package for Video vid."""
         # Get username from CSV
         user_name = user_name.split("(")
@@ -157,7 +192,10 @@ class Command(BaseCommand):
         user_name = user_name[-1][:-1]
 
         # Create video folder
-        mediaPackage_dir = os.path.join(ARCHIVE_ROOT, user_name, video_dir)
+        if (path_custom == ""):
+            mediaPackage_dir = os.path.join(ARCHIVE_ROOT, user_name, video_dir)
+        else:
+            mediaPackage_dir = os.path.join(path_custom, user_name, video_dir)
 
         # Create directory to store all the data
         os.makedirs(mediaPackage_dir, exist_ok=True)
@@ -206,7 +244,11 @@ class Command(BaseCommand):
         # - Que faire du fichier CSV ? il faudrait y retirer toutes les
         # lignes supprimées, quitte à faire un nouveau CSV
 
-        self.move_video_to_archive(mediaPackage_dir, vid)
+        # You can decide if you simply copy the video or if you move it to the archive.
+        if move_else_copy:
+            self.move_video_to_archive(mediaPackage_dir, vid)
+        else:
+            self.copy_archive_to(mediaPackage_dir, vid)
 
     def get_list_video_html(self, list_video: list) -> str:
         """Generate an html version of list_video."""
@@ -332,87 +374,3 @@ class Command(BaseCommand):
             html_message=msg_html,
         )
         print("Summary sent by email to managers.")
-
-    def archive_download_isolate(self, slug):
-        """Generate a zip archive of the video and metadata"""
-        print("################ GO ################")
-        """Handle a command call."""
-        activate(LANGUAGE_CODE)
-
-        vid = Video.objects.filter(slug=slug)
-        vid = vid[0]
-
-        # Recover original video slug
-        video_dir = vid.slug
-
-        # Create video folder
-        import os.path
-
-        STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR))
-        mediaPackage_dir = os.path.join(
-            STATIC_ROOT + "/pod/media/video_package", "", video_dir
-        )
-
-        # Create directory to store all the data
-        os.makedirs(mediaPackage_dir, exist_ok=True)
-
-        # Move video file
-        store_as_dublincore(vid, mediaPackage_dir, "")
-
-        # Store Video complements as json
-        for model in [
-            Chapter,
-            Contributor,
-            Overlay,
-            Enrichment,
-            Notes,
-            AdvancedNotes,
-            Comment,
-            ViewCount,
-        ]:
-            # nb: contributors are already exported in dublincore.xml
-            self.export_complement(
-                mediaPackage_dir, model.__name__, model.objects.filter(video=vid)
-            )
-        # Export also the video itself as json
-        self.export_complement(mediaPackage_dir, "Video", [vid])
-
-        # Store also files linked to Enrichments
-        for enrich in Enrichment.objects.filter(video=vid):
-            if enrich.document:
-                print("  * Copying %s..." % enrich.document.file.path)
-                shutil.copy(enrich.document.file.path, mediaPackage_dir)
-            if enrich.image:
-                print("  * Copying %s..." % enrich.image.file.path)
-                shutil.copy(enrich.image.file.path, mediaPackage_dir)
-
-        # Store file complements.
-        for file in Document.objects.filter(video=vid):
-            print("  * Copying %s..." % file.document.file.path)
-            shutil.copy(file.document.file.path, mediaPackage_dir)
-
-        # Store additional tracks (caption / subtitles)
-        for track in Track.objects.filter(video=vid):
-            print("  * Copying %s..." % track.src.file.path)
-            shutil.copy(track.src.file.path, mediaPackage_dir)
-
-        shutil.copy(
-            vid.video.path,
-            mediaPackage_dir,
-        )
-
-        zip_name = (
-            os.path.join(STATIC_ROOT + "/pod/media/video_package", "", "")
-            + "/"
-            + vid.slug
-        )
-        directory_name = mediaPackage_dir
-
-        # Create 'path\to\zip_file.zip'
-        shutil.make_archive(zip_name, "zip", directory_name)
-
-        # remove old temp folder
-        path = os.path.join(mediaPackage_dir, "")
-        shutil.rmtree(path)
-
-        return "/media/video_package/" + vid.slug + ".zip"

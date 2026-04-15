@@ -11,13 +11,13 @@
 {% load i18n %}
 {% block page_content %}
     {% if ENABLE_PAGE_OBSO_MAIL  == True and display_or_not == True %}
-        <h1>{% trans "Your video id outdated, what do you want do ?" %}</h1>
-        <h6> <b>{% trans "Link to the video:" %}</b><a href="/video/{{ video.slug }}"> {{ video.title }}</a></h6>
+        <h1>{% trans "Your video is outdated, what do you want do?" %}</h1>
+        <p> <b>{% trans "Link to the video:" %}</b><a href="/video/{{ video.slug }}"> {{ video.title }}</a></p>
 
         <form action="/video/valid/form/respit/{{ video.slug }}/" method="post">
             {% csrf_token %}
             {{ form }}
-            <input type="submit" value="Submit">
+            <input type="submit" value="{% trans "Submit" %}">
         </form>
         <a href="/video/archive/and/download/{{ video.slug }}/">{% trans "Export this video." %}</a>
     {% else %}
