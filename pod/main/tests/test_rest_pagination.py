@@ -1,6 +1,6 @@
 """Esup-Pod custom PageNumberPagination test cases."""
 
-from django.test import TestCase, RequestFactory, Client
+from django.test import TestCase
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.test import APIRequestFactory
 from rest_framework.request import Request
@@ -72,7 +72,7 @@ class CustomPaginationTestCase(TestCase):
             request
         )
 
-        self.assertEqual(len(paginated), 50)  # Tous nos utilisateurs
+        self.assertEqual(len(paginated), 50)  # All users
 
     def test_pagination_response_structure(self):
         """Paginated response format test"""
@@ -128,7 +128,6 @@ class CustomPaginationTestCase(TestCase):
             request
         )
 
-        # Devrait utiliser la taille par défaut
         self.assertGreater(len(paginated), 0)
 
     def test_negative_page_size(self):
@@ -141,7 +140,6 @@ class CustomPaginationTestCase(TestCase):
             request
         )
 
-        # Devrait utiliser la taille par défaut
         self.assertEqual(len(paginated), 12)
 
 
@@ -152,7 +150,6 @@ class CustomPaginationIntegrationTestCase(APITestCase):
         """Initializing test data"""
         self.client = APIClient()
 
-        # Créer des utilisateurs de test
         for i in range(30):
             User.objects.create_user(
                 username=f'user{i}',
@@ -172,7 +169,7 @@ class CustomPaginationIntegrationTestCase(APITestCase):
     def test_api_pagination_default(self):
         """Pagination test via the real API"""
 
-        response = self.client.get('/rest/users/')  # Ajustez l'URL
+        response = self.client.get('/rest/users/') 
 
         self.assertEqual(response.status_code, 200)
         self.assertIn('count', response.json())
