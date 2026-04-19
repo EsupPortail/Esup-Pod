@@ -51,6 +51,8 @@ __TITLE_SITE__ = (
 )
 
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
+DEFAULT_PLACEHOLDER_EMAIL_HOST = "smtp.univ.fr"
+DEFAULT_PLACEHOLDER_ADMINS = (("Name", "adminmail@univ.fr"),)
 
 USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 
@@ -110,8 +112,38 @@ def create_outputdir(video_id, video_path):
 ###############################################################
 
 
+def _admin_failure_emails_are_enabled() -> bool:
+    """Return True when admin alert emails should be sent.
+
+    The project ships with placeholder SMTP/admin settings. When those defaults
+    are still in place, trying to send a failure email only triggers an
+    unnecessary SMTP connection attempt.
+    """
+    admins = tuple(getattr(settings, "ADMINS", ()) or ())
+    if not admins:
+        return False
+    if admins == DEFAULT_PLACEHOLDER_ADMINS:
+        return False
+
+    email_host = str(getattr(settings, "EMAIL_HOST", "") or "").strip()
+    if not email_host:
+        return False
+    if email_host == DEFAULT_PLACEHOLDER_EMAIL_HOST:
+        return False
+
+    return True
+
+
 def send_email_item(msg, item, item_id) -> None:
     """Send email notification when encoding fails for a specific item."""
+    if not _admin_failure_emails_are_enabled():
+        logger.warning(
+            "Skipping admin alert email for %s %s because SMTP/admin email settings are not configured.",
+            item,
+            item_id,
+        )
+        return
+
     subject = "[" + __TITLE_SITE__ + "] Error Encoding %s id: %s" % (item, item_id)
     message = "Error Encoding %s id: %s\n%s" % (item, item_id, msg)
     html_message = "<p>Error Encoding %s id: %s</p><p>%s</p>" % (
