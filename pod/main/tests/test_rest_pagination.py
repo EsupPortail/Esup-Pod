@@ -65,7 +65,7 @@ class CustomPaginationTestCase(TestCase):
         request = self.factory.get("/rest/users/")
         request = Request(request)
 
-        paginated = self.pagination.paginate_queryset(self.queryset, request)
+        self.pagination.paginate_queryset(self.queryset, request)
 
         response = self.pagination.get_paginated_response([])
 
