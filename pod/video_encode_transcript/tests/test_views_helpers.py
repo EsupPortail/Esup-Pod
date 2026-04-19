@@ -15,11 +15,15 @@ from unittest.mock import patch
 import requests
 
 from pod.video_encode_transcript.views import (
+    _apply_manifest_member_permissions,
     _download_and_store_manifest_member,
     _format_video_directory,
     _get_destination_directory,
     _get_user_hashkey_from_recording,
     _merge_or_move_directory,
+    _remove_file_if_exists,
+    _resolve_manifest_member_permissions,
+    _store_manifest_member,
 )
 
 
@@ -365,6 +369,129 @@ class ViewsHelpersTests(unittest.TestCase):
         self.assertTrue(failing_response.closed)
         with open(existing_path, "rb") as f:
             self.assertEqual(f.read(), b"stable-data")
+
+    def test_resolve_manifest_member_permissions_default(self):
+        """Fallback to 0644 when FILE_UPLOAD_PERMISSIONS is undefined."""
+        with patch(
+            "pod.video_encode_transcript.views.settings.FILE_UPLOAD_PERMISSIONS",
+            None,
+            create=True,
+        ):
+            self.assertEqual(_resolve_manifest_member_permissions(), 0o644)
+
+    def test_resolve_manifest_member_permissions_accepts_common_formats(self):
+        """Support int and string notations for FILE_UPLOAD_PERMISSIONS."""
+        test_cases = [
+            (0o640, 0o640),
+            ("644", 0o644),
+            ("0640", 0o640),
+            ("0o600", 0o600),
+            ("420", 0o420),
+        ]
+
+        for raw_value, expected_mode in test_cases:
+            with self.subTest(raw_value=raw_value):
+                with patch(
+                    "pod.video_encode_transcript.views.settings.FILE_UPLOAD_PERMISSIONS",
+                    raw_value,
+                    create=True,
+                ):
+                    self.assertEqual(
+                        _resolve_manifest_member_permissions(), expected_mode
+                    )
+
+    def test_resolve_manifest_member_permissions_invalid_value(self):
+        """Fallback to 0644 when setting value cannot be parsed."""
+        with patch(
+            "pod.video_encode_transcript.views.settings.FILE_UPLOAD_PERMISSIONS",
+            "invalid",
+            create=True,
+        ):
+            self.assertEqual(_resolve_manifest_member_permissions(), 0o644)
+
+    def test_resolve_manifest_member_permissions_empty_string(self):
+        """Fallback to 0644 when setting is an empty string."""
+        with patch(
+            "pod.video_encode_transcript.views.settings.FILE_UPLOAD_PERMISSIONS",
+            "   ",
+            create=True,
+        ):
+            self.assertEqual(_resolve_manifest_member_permissions(), 0o644)
+
+    def test_resolve_manifest_member_permissions_invalid_type(self):
+        """Fallback to 0644 when setting is neither int nor str."""
+        with patch(
+            "pod.video_encode_transcript.views.settings.FILE_UPLOAD_PERMISSIONS",
+            object(),
+            create=True,
+        ):
+            self.assertEqual(_resolve_manifest_member_permissions(), 0o644)
+
+    def test_resolve_manifest_member_permissions_invalid_explicit_octal(self):
+        """Fallback to 0644 for malformed explicit octal notation."""
+        with patch(
+            "pod.video_encode_transcript.views.settings.FILE_UPLOAD_PERMISSIONS",
+            "0o89",
+            create=True,
+        ):
+            self.assertEqual(_resolve_manifest_member_permissions(), 0o644)
+
+    def test_resolve_manifest_member_permissions_decimal_digits(self):
+        """Parse non-octal digits as decimal integer permissions."""
+        with patch(
+            "pod.video_encode_transcript.views.settings.FILE_UPLOAD_PERMISSIONS",
+            "999",
+            create=True,
+        ):
+            self.assertEqual(_resolve_manifest_member_permissions(), 999 & 0o777)
+
+    def test_store_manifest_member_applies_permissions_from_settings(self):
+        """Apply configured chmod to downloaded file after atomic replace."""
+
+        class FakeResponse:
+            def iter_content(self, chunk_size: int = 0):
+                del chunk_size
+                yield b"manifest-content"
+
+        with patch(
+            "pod.video_encode_transcript.views.settings.FILE_UPLOAD_PERMISSIONS",
+            "640",
+            create=True,
+        ):
+            dest_path = _store_manifest_member(
+                FakeResponse(),
+                self.tmp_root,
+                "perms/output.bin",
+            )
+
+        self.assertTrue(os.path.exists(dest_path))
+        file_mode = os.stat(dest_path).st_mode & 0o777
+        self.assertEqual(file_mode, 0o640)
+
+    def test_apply_manifest_member_permissions_chmod_failure_is_non_fatal(self):
+        """Do not raise when chmod fails while applying expected permissions."""
+        target_file = os.path.join(self.tmp_root, "chmod_failure.bin")
+        with open(target_file, "wb") as f:
+            f.write(b"x")
+
+        with patch(
+            "pod.video_encode_transcript.views.os.chmod",
+            side_effect=OSError("permission denied"),
+        ):
+            _apply_manifest_member_permissions(target_file)
+
+    def test_remove_file_if_exists_ignores_file_not_found(self):
+        """Silently ignore FileNotFoundError during cleanup."""
+        missing_path = os.path.join(self.tmp_root, "missing.bin")
+        _remove_file_if_exists(missing_path)
+
+    def test_remove_file_if_exists_ignores_os_error(self):
+        """Silently ignore generic OSError during cleanup."""
+        with patch(
+            "pod.video_encode_transcript.views.os.remove",
+            side_effect=OSError("busy"),
+        ):
+            _remove_file_if_exists("/tmp/does-not-matter")
 
 
 if __name__ == "__main__":

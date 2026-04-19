@@ -106,6 +106,31 @@ def read_archived_csv() -> dict:
     return csv_data
 
 
+def archive_download_archive(slug):
+    """Generate a zip archive of the video and metadata from the concerned folder"""
+    path = os.path.join(os.path.dirname(BASE_DIR)) + "/pod/media/video_package"
+
+    cmd = Command()
+    cmd.archive_pack(slug , "", Video.objects.filter(slug=slug).first(), path, False)
+
+    zip_name = (path + "/" + slug)
+
+    mediaPackage_dir = os.path.join(
+        path, "", slug
+    )
+
+    directory_name = mediaPackage_dir
+
+    # Create 'path\to\zip_file.zip'
+    shutil.make_archive(zip_name, "zip", directory_name)
+
+    # remove old temp folder
+    path = os.path.join(mediaPackage_dir, "")
+    shutil.rmtree(path)
+
+    return "/media/video_package/" + slug + ".zip"
+
+
 class Command(BaseCommand):
     """Move old archived videos from disk to ARCHIVE_ROOT."""
 
@@ -133,6 +158,16 @@ class Command(BaseCommand):
                     content = serialize("json", export_objects)
                     out.write(content)
 
+    def copy_archive_to(self, mediaPackage_dir: str, vid: Video) -> None:
+        """Move video source file to mediaPackage_dir."""
+        if os.access(vid.video.path, os.F_OK):
+            shutil.copy(
+                vid.video.path,
+                os.path.join(mediaPackage_dir, os.path.basename(vid.video.name)),
+            )
+        else:
+            print("ERROR: Cannot access to file '%s'." % vid.video.path)
+
     def move_video_to_archive(self, mediaPackage_dir: str, vid: Video) -> None:
         """Move video source file to mediaPackage_dir."""
         if os.access(vid.video.path, os.F_OK):
@@ -149,7 +184,7 @@ class Command(BaseCommand):
         else:
             print("ERROR: Cannot access to file '%s'." % vid.video.path)
 
-    def archive_pack(self, video_dir: str, user_name: str, vid: Video) -> None:
+    def archive_pack(self, video_dir: str, user_name: str, vid: Video, path_custom: str = "", move_else_copy: bool = True) -> None:
         """Create a archive package for Video vid."""
         # Get username from CSV
         user_name = user_name.split("(")
@@ -157,7 +192,10 @@ class Command(BaseCommand):
         user_name = user_name[-1][:-1]
 
         # Create video folder
-        mediaPackage_dir = os.path.join(ARCHIVE_ROOT, user_name, video_dir)
+        if (path_custom == ""):
+            mediaPackage_dir = os.path.join(ARCHIVE_ROOT, user_name, video_dir)
+        else:
+            mediaPackage_dir = os.path.join(path_custom, user_name, video_dir)
 
         # Create directory to store all the data
         os.makedirs(mediaPackage_dir, exist_ok=True)
@@ -206,7 +244,11 @@ class Command(BaseCommand):
         # - Que faire du fichier CSV ? il faudrait y retirer toutes les
         # lignes supprimées, quitte à faire un nouveau CSV
 
-        self.move_video_to_archive(mediaPackage_dir, vid)
+        # You can decide if you simply copy the video or if you move it to the archive.
+        if move_else_copy:
+            self.move_video_to_archive(mediaPackage_dir, vid)
+        else:
+            self.copy_archive_to(mediaPackage_dir, vid)
 
     def get_list_video_html(self, list_video: list) -> str:
         """Generate an html version of list_video."""

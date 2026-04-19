@@ -34,7 +34,7 @@ import re
 
 __FILEPICKER__ = False
 
-#from ..custom.settings_local import PROLONGATION_GRANTED, RALLONGE_RESPIT_DAYS
+# from ..custom.settings_local import PROLONGATION_GRANTED, RALLONGE_RESPIT_DAYS
 PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
 RALLONGE_RESPIT_DAYS = getattr(settings, "RALLONGE_RESPIT_DAYS", 365)
 
@@ -1404,25 +1404,42 @@ class NoteCommentsForm(forms.ModelForm):
         model = NoteComments
         fields = ["comment", "status"]
 
-class NameForm(forms.Form):
-    if (PROLONGATION_GRANTED):
-        action = forms.ChoiceField(choices=[
-            (
-                _(""),
-                [
-                    ("Prolonger", _("Extend (Automatically by ")+str(RALLONGE_RESPIT_DAYS)+_(" days)")),
-                    ("Archiver", _("Archive")),
-                    ("Supprimer", _("Delete")),
-                ]
-            ),
-        ],widget=forms.RadioSelect(attrs={'required': 'True','class':'choice_video'}), required=False, label=False)
+
+class ArchiveChoiceForm(forms.Form):
+    if PROLONGATION_GRANTED:
+        action = forms.ChoiceField(
+            choices=[
+                (
+                    _(""),
+                    [
+                        (
+                            "Extend",
+                            (
+                                _("Extend (Automatically by %(rrd)s days)")
+                                % {"rrd": RALLONGE_RESPIT_DAYS}
+                            ),
+                        ),
+                        ("Archive", _("Archive")),
+                        ("Delete", _("Delete")),
+                    ],
+                ),
+            ],
+            widget=forms.RadioSelect(attrs={"required": "True", "class": "choice_video"}),
+            required=False,
+            label=False,
+        )
     else:
-        action = forms.ChoiceField(choices=[
-            (
-                _(""),
-                [
-                    ("Archiver", _("Archive")),
-                    ("Supprimer", _("Delete")),
-                ]
-            ),
-        ],widget=forms.RadioSelect(attrs={'required': 'True','class':'choice_video'}), required=False, label=False)
+        action = forms.ChoiceField(
+            choices=[
+                (
+                    _(""),
+                    [
+                        ("Archive", _("Archive")),
+                        ("Delete", _("Delete")),
+                    ],
+                ),
+            ],
+            widget=forms.RadioSelect(attrs={"required": "True", "class": "choice_video"}),
+            required=False,
+            label=False,
+        )

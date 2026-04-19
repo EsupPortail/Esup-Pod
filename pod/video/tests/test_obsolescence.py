@@ -1,7 +1,6 @@
 """Test the Obsolete videos."""
 
-from django.test import TestCase
-from django.contrib.auth.models import User
+from django.test import override_settings
 from django.conf import settings
 from django.utils.translation import gettext as _
 
@@ -11,6 +10,12 @@ from pod.authentication.models import Owner
 from datetime import date, timedelta
 import os
 from django.contrib.sites.models import Site
+
+from ..views import valid_form_respit
+
+from django.test import RequestFactory
+from django.contrib.auth.models import User
+from django.test import TestCase
 
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
@@ -239,3 +244,84 @@ class ObsolescenceTestCase(TestCase):
             os.remove("%s/%s.csv" % (settings.LOG_DIRECTORY, "archived"))
         except FileNotFoundError:
             pass
+
+
+class ValidFormRespitTest(TestCase):
+
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(username="testuser", password="password123")
+
+        self.video1 = Video.objects.create(
+            title="Video_to_delete",
+            owner=self.user,
+            video="test.mp4",
+            type=Type.objects.get(id=1),
+        )
+
+    def test_delete_action(self):
+        request = self.factory.post(
+            f"/video/respit/{self.video1.slug}/", {"action": "Delete"}
+        )
+        request.user = self.user
+        response = valid_form_respit(request, self.video1.slug)
+        self.assertEqual(response.status_code, 301)
+
+    def test_archive_action(self):
+        """Test l'action Archive avec le Test Client"""
+        # Connecte l'utilisateur
+        self.client.force_login(self.user)
+
+        # Simule l'envoi du formulaire avec action Archive
+        response = self.client.post(
+            f"/video/respit/{self.video1.slug}/", {"action": "Archive"}
+        )
+        # Vérifie que le code HTTP est 200
+        self.assertEqual(response.status_code, 200)
+
+    @override_settings(PROLONGATION_GRANTED=True)
+    def test_extend_action(self):
+        """Test l'action Archive avec le Test Client"""
+        # Connecte l'utilisateur
+        self.client.force_login(self.user)
+
+        # Simule l'envoi du formulaire avec action Archive
+        response = self.client.post(
+            f"/video/respit/{self.video1.slug}/", {"action": "Extend"}
+        )
+        # Vérifie que le code HTTP est 200
+        self.assertEqual(response.status_code, 200)
+
+    from unittest.mock import patch
+
+    @patch("pod.video.views.ENABLE_PAGE_OBSO_MAIL", True)
+    def test_go_prolong_action(self):
+        self.video1.date_delete = date.today() + timedelta(days=50)
+        self.video1.save()
+
+        """Test l'action Archive avec le Test Client"""
+        # Connecte l'utilisateur
+        self.client.force_login(self.user)
+
+        # Simule l'envoi du formulaire avec action Archive
+        response = self.client.post(f"/video/go/prolong/{self.video1.slug}/")
+        # Vérifie que le code HTTP est 301
+        self.assertEqual(response.status_code, 301)
+
+    @patch("pod.video.views.ENABLE_PAGE_OBSO_MAIL", True)
+    def test_go_archive_action(self):
+        self.video1.date_delete = date.today() + timedelta(days=50)
+        self.video1.save()
+
+        """Test l'action Archive avec le Test Client"""
+        # Connecte l'utilisateur
+        self.client.force_login(self.user)
+
+        # Simule l'envoi du formulaire avec action Archive
+        response = self.client.post(f"/video/go/archive/{self.video1.slug}/")
+        # Vérifie que le code HTTP est 301
+        self.assertEqual(response.status_code, 301)

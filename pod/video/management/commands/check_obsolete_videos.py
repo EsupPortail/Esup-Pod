@@ -2,8 +2,9 @@
 
 *  run with 'python manage.py check_obsolete_videos [--dry]'
 """
-from asgiref.local import Local
+
 from django.conf import settings
+from django.http import request
 from django.utils import translation
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import gettext as _
@@ -17,13 +18,13 @@ from django.contrib.sites.shortcuts import get_current_site
 import csv
 import os
 
-#from pod.custom.settings_local import ENABLE_PAGE_OBSO_MAIL
+from pod.video.models import Video, VideoToDelete
+from datetime import date, timedelta
+
+# from pod.custom.settings_local import ENABLE_PAGE_OBSO_MAIL
 ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
 
-from pod.video.models import Video, VideoToDelete, VIDEOS_DIR
-
-from datetime import date, timedelta
 
 USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
 USE_ESTABLISHMENT = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
@@ -163,29 +164,29 @@ class Command(BaseCommand):
 
             if vid.owner.owner.affiliation in POD_ARCHIVE_AFFILIATION:
                 if not self.dry_mode:
-                    self.archive_isolate(vid)
- #                   self.write_in_csv(vid, "archived")
- #                   archive_user, created = User.objects.get_or_create(
- #                       username=ARCHIVE_OWNER_USERNAME,
- #                   )
-                    # Rename video and change owner.
- #                   vid.owner = archive_user
- #                   vid.is_draft = True
- #                   vid.title = "%s %s %s" % (
- #                       _("Archived"),
- #                       date.today(),
- #                       vid.title,
- #                   )
-                    # Trunc title to 250 chars max.
- #                   vid.title = vid.title[:250]
- #                   vid.save()
+                    archive_isolate(vid)
+                #                   self.write_in_csv(vid, "archived")
+                #                   archive_user, created = User.objects.get_or_create(
+                #                       username=ARCHIVE_OWNER_USERNAME,
+                #                   )
+                # Rename video and change owner.
+                #                   vid.owner = archive_user
+                #                   vid.is_draft = True
+                #                   vid.title = "%s %s %s" % (
+                #                       _("Archived"),
+                #                       date.today(),
+                #                       vid.title,
+                #                   )
+                # Trunc title to 250 chars max.
+                #                   vid.title = vid.title[:250]
+                #                   vid.save()
 
-                    # add video to delete
- #                   vid_delete, created = VideoToDelete.objects.get_or_create(
- #                       date_deletion=vid.date_delete
- #                   )
- #                   vid_delete.video.add(vid)
- #                   vid_delete.save()
+                # add video to delete
+                #                   vid_delete, created = VideoToDelete.objects.get_or_create(
+                #                       date_deletion=vid.date_delete
+                #                   )
+                #                   vid_delete.video.add(vid)
+                #                   vid_delete.save()
                 nb_archived += 1
                 if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
                     list_video_archived_by_establishment.setdefault(estab, {})
@@ -221,30 +222,6 @@ class Command(BaseCommand):
             list_video_deleted_by_establishment,
             list_video_archived_by_establishment,
         )
-
-    def archive_isolate(self,vid):
-        self.write_in_csv(vid, "archived")
-        archive_user, created = User.objects.get_or_create(
-            username=ARCHIVE_OWNER_USERNAME,
-        )
-        # Rename video and change owner.
-        vid.owner = archive_user
-        vid.is_draft = True
-        vid.title = "%s %s %s" % (
-            _("Archived"),
-            date.today(),
-            vid.title,
-        )
-        # Trunc title to 250 chars max.
-        vid.title = vid.title[:250]
-        vid.save()
-
-        # add video to delete
-        vid_delete, created = VideoToDelete.objects.get_or_create(
-            date_deletion=vid.date_delete
-        )
-        vid_delete.video.add(vid)
-        vid_delete.save()
 
     def notify_user(self, video: Video, step_day: int) -> int:
         """Notify a user that his video will be deleted soon."""
@@ -300,22 +277,29 @@ class Command(BaseCommand):
             % {"to_email": to_email, "title": video.title}
         )
 
-        if (ENABLE_PAGE_OBSO_MAIL):
-            from django.conf import settings
-            scheme = "http"  # ou "https"
-            domain = settings.ALLOWED_HOSTS[0]  # attention si plusieurs
-            base_url = f"{scheme}://{domain}:8000"
+        if ENABLE_PAGE_OBSO_MAIL:
+            domain = get_current_site(request).domain
+            base_url = f"{URL_SCHEME}://{domain}"
 
             msg_html += "<br>\n"
-            if (PROLONGATION_GRANTED):
-                msg_html += "<p> Vous pouvez décidez de prolonger votre vidéo, de l'archiver (ne sera plus accessible)"
+            if PROLONGATION_GRANTED:
+                msg_html += "<p> " + _(
+                    "You can decide to extend your video, to archive it (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here:"
+                )
             else:
-                msg_html += "<p> Vous pouvez décidez d'archiver votre vidéo (ne sera plus accessible)"
+                msg_html += "<p> " + _(
+                    "You can decide to archive your video (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here:"
+                )
 
-            msg_html += ", de la supprimer, ainsi que de la télécharger avec toutes les données la concernant en cliquant ici :"
-            msg_html += "<a href='"+base_url+"/video/respit/"+video.slug+"'>Appliquez mon choix.</a></p>"
-
-        print(msg_html)
+            msg_html += (
+                "<a href='"
+                + base_url
+                + "/video/respit/"
+                + video.slug
+                + "'>"
+                + _("Apply my choice.")
+                + "</a></p>"
+            )
 
         return send_mail(
             "[%s] %s" % (__TITLE_SITE__, _("Your video will be obsolete")),
