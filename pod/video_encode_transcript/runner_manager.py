@@ -99,7 +99,12 @@ def _build_rendition_parameters() -> ParametersDict:
     """Return rendition parameters serialized for the runner payload."""
     list_rendition = get_list_rendition()
     str_resolution: dict[str, dict[str, Any]] = {
-        str(k): {"resolution": v["resolution"], "encode_mp4": v["encode_mp4"]}
+        str(k): {
+            "resolution": v["resolution"],
+            "video_bitrate": v["video_bitrate"],
+            "audio_bitrate": v["audio_bitrate"],
+            "encode_mp4": v["encode_mp4"],
+        }
         for k, v in list_rendition.items()
     }
     return {"rendition": json.dumps(str_resolution)}

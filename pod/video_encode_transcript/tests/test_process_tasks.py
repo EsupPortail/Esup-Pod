@@ -23,7 +23,14 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
 
     @patch(
         "pod.video_encode_transcript.runner_manager.get_list_rendition",
-        return_value={360: {"resolution": "640x360", "encode_mp4": True}},
+        return_value={
+            360: {
+                "resolution": "640x360",
+                "video_bitrate": "750k",
+                "audio_bitrate": "96k",
+                "encode_mp4": True,
+            }
+        },
     )
     @patch("pod.video_encode_transcript.runner_manager._attach_dressing_info")
     @patch("pod.video_encode_transcript.runner_manager._attach_cut_info")
@@ -56,7 +63,14 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
         self.assertEqual(payload["parameters"]["video_title"], "Sample video")
         self.assertEqual(
             json.loads(payload["parameters"]["rendition"]),
-            {"360": {"resolution": "640x360", "encode_mp4": True}},
+            {
+                "360": {
+                    "resolution": "640x360",
+                    "video_bitrate": "750k",
+                    "audio_bitrate": "96k",
+                    "encode_mp4": True,
+                }
+            },
         )
         mock_get_list_rendition.assert_called_once_with()
         mock_attach_cut_info.assert_called_once()
@@ -134,7 +148,14 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
     )
     @patch(
         "pod.video_encode_transcript.runner_manager.get_list_rendition",
-        return_value={720: {"resolution": "1280x720", "encode_mp4": False}},
+        return_value={
+            720: {
+                "resolution": "1280x720",
+                "video_bitrate": "2000k",
+                "audio_bitrate": "128k",
+                "encode_mp4": False,
+            }
+        },
     )
     def test_submit_studio_task_uses_shared_source_url_and_payload(
         self, mock_get_list_rendition, mock_submit_runner_task_to_managers
@@ -155,7 +176,14 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
         )
         self.assertEqual(
             json.loads(payload["parameters"]["rendition"]),
-            {"720": {"resolution": "1280x720", "encode_mp4": False}},
+            {
+                "720": {
+                    "resolution": "1280x720",
+                    "video_bitrate": "2000k",
+                    "audio_bitrate": "128k",
+                    "encode_mp4": False,
+                }
+            },
         )
         self.assertNotIn("video_id", payload["parameters"])
         mock_get_list_rendition.assert_called_once_with()
