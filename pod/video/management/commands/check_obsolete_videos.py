@@ -73,12 +73,12 @@ POD_ARCHIVE_AFFILIATION = getattr(settings, "POD_ARCHIVE_AFFILIATION", [])
 WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [])
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 
-
 def archive_isolate(vid):
     """
     It Allows the archive process without launching 'get_video archived deleted treatment' in the purpose to be used in other functions
     """
-    write_in_csv(vid, "archived")
+    cmd = Command()
+    cmd.write_in_csv(vid, "archived")
     archive_user, created = User.objects.get_or_create(
         username=ARCHIVE_OWNER_USERNAME,
     )
@@ -100,77 +100,6 @@ def archive_isolate(vid):
     )
     vid_delete.video.add(vid)
     vid_delete.save()
-
-
-def check_csv_header(csv_file: str, fieldnames: list) -> None:
-    """Check for (and add) missing columns in an existing CSV file."""
-    with open(csv_file, "r") as f:
-        lines = f.readlines()
-    if len(lines[0].split(";")) < len(fieldnames):
-        print("Adding missing header columns in %s." % csv_file)
-        lines[0] = ";".join(fieldnames) + "\n"
-        with open(csv_file, "w") as f:
-            f.writelines(lines)
-
-
-def write_in_csv(vid: Video, arch_type: str) -> None:
-    """Add in `type`.csv file informations about the video."""
-    file = "%s/%s.csv" % (settings.LOG_DIRECTORY, arch_type)
-    exists = os.path.isfile(file)
-
-    fieldnames = [
-        "Date",
-        "User name",
-        "User email",
-        "User Affiliation",
-        "User Establishment",
-        "Video Id",
-        "Video title",
-        "Video URL",
-        "Video type",
-        "Date added",
-        "Source file",
-        "Description",
-        "Views",
-    ]
-    if exists:
-        check_csv_header(file, fieldnames)
-
-        with open(file, "a", newline="", encoding="utf-8") as csvfile:
-            writer = csv.DictWriter(csvfile, delimiter=";", fieldnames=fieldnames)
-
-            if not exists:
-                writer.writeheader()
-
-            # Force the username attribute even if HIDE_USERNAME is true whereas the __str__ method
-            # of Owner Class used by vid.owner.owner doesn't do so
-            user_name = "%s %s (%s)" % (
-                vid.owner.first_name,
-                vid.owner.last_name,
-                vid.owner.username,
-            )
-
-            writer.writerow(
-                {
-                    "Date": date.today(),
-                    "User name": user_name,
-                    "User email": vid.owner.email,
-                    "User Affiliation": vid.owner.owner.affiliation,
-                    "User Establishment": vid.owner.owner.establishment,
-                    "Video Id": vid.id,
-                    "Video title": vid.title,
-                    "Video URL": "https:%s" % vid.get_full_url(),
-                    "Video type": vid.type.title,
-                    "Date added": "%s" % vid.date_added.strftime("%Y/%m/%d"),
-                    "Source file": vid.video,
-                    "Description": vid.description.replace(";", "$semic$")
-                    .replace("\r", "")
-                    .replace("\n\n", "\n")
-                    .replace("\n", "$newl$"),
-                    "Views": vid.viewcount,
-                }
-            )
-
 
 class Command(BaseCommand):
     """Checking obsolete videos."""
@@ -225,9 +154,9 @@ class Command(BaseCommand):
                 if not self.dry_mode:
                     self.notify_user(video, step_day)
                 if (
-                    USE_ESTABLISHMENT
-                    and MANAGERS
-                    and video.owner.owner.establishment.lower() in dict(MANAGERS)
+                        USE_ESTABLISHMENT
+                        and MANAGERS
+                        and video.owner.owner.establishment.lower() in dict(MANAGERS)
                 ):
                     list_video_notified_by_establishment.setdefault(
                         video.owner.owner.establishment.lower(), {}
@@ -342,11 +271,11 @@ class Command(BaseCommand):
                 + "by editing your video:"
             )
             msg_html += (
-                "\n"
-                + '<a href="%(scheme)s:%(url)s" '
-                + 'rel="noopener" target="_blank">'
-                + "%(scheme)s:%(url)s</a></p>"
-            ) % {"scheme": URL_SCHEME, "url": video.get_full_url()}
+                                "\n"
+                                + '<a href="%(scheme)s:%(url)s" '
+                                + 'rel="noopener" target="_blank">'
+                                + "%(scheme)s:%(url)s</a></p>"
+                        ) % {"scheme": URL_SCHEME, "url": video.get_full_url()}
             msg_html += "\n<p>" + _("Regards") + "</p>\n"
         else:
             msg_html = _("Hello %(name)s,") % {"name": name}
@@ -390,13 +319,13 @@ class Command(BaseCommand):
                 )
 
             msg_html += (
-                "<a href='"
-                + base_url
-                + "/video/respit/"
-                + video.slug
-                + "'>"
-                + _("Apply my choice.")
-                + "</a></p>"
+                    "<a href='"
+                    + base_url
+                    + "/video/respit/"
+                    + video.slug
+                    + "'>"
+                    + _("Apply my choice.")
+                    + "</a></p>"
             )
 
         return send_mail(
@@ -406,7 +335,7 @@ class Command(BaseCommand):
             to_email,
             fail_silently=False,
             html_message=msg_html,
-        )
+            )
 
     def notify_manager_of_obsolete_video(self, list_video: dict) -> None:
         """Notify manager(s) with a list of obsolete videos."""
@@ -422,13 +351,13 @@ class Command(BaseCommand):
                         "site_title": __TITLE_SITE__
                     }
                 msg_html += (
-                    "<br>\n<p>"
-                    + _(
-                        "For your information, "
-                        + "below is the list of videos that will soon reach "
-                        + "the deletion deadline."
-                    )
-                    + "</p>"
+                        "<br>\n<p>"
+                        + _(
+                    "For your information, "
+                    + "below is the list of videos that will soon reach "
+                    + "the deletion deadline."
+                )
+                        + "</p>"
                 )
                 msg_html += "\n<p>"
                 msg_html += self.get_list_video_html(list_video[estab], False)
@@ -458,7 +387,7 @@ class Command(BaseCommand):
                         to_email,
                         fail_silently=False,
                         html_message=msg_html,
-                    )
+                        )
                 if MANAGERS:
                     print(
                         _(
@@ -482,12 +411,12 @@ class Command(BaseCommand):
                         "site_title": __TITLE_SITE__
                     }
                 msg_html += (
-                    "<br>\n<p>"
-                    + _(
-                        "For information, "
-                        + "you will find below the list of deleted video."
-                    )
-                    + "</p>"
+                        "<br>\n<p>"
+                        + _(
+                    "For information, "
+                    + "you will find below the list of deleted video."
+                )
+                        + "</p>"
                 )
 
                 msg_html += "\n<p>"
@@ -518,7 +447,7 @@ class Command(BaseCommand):
                         to_email,
                         fail_silently=False,
                         html_message=msg_html,
-                    )
+                        )
                 if MANAGERS:
                     print(
                         _("Manager of “%(et)s” notified for %(nb)s deleted video(s).")
@@ -539,12 +468,12 @@ class Command(BaseCommand):
                         "site_title": __TITLE_SITE__
                     }
                 msg_html += (
-                    "<br>\n<p>"
-                    + _(
-                        "For information, "
-                        + "you will find below the list of archived video."
-                    )
-                    + "</p>"
+                        "<br>\n<p>"
+                        + _(
+                    "For information, "
+                    + "you will find below the list of archived video."
+                )
+                        + "</p>"
                 )
 
                 msg_html += "\n<p>"
@@ -576,7 +505,7 @@ class Command(BaseCommand):
                         to_email,
                         fail_silently=False,
                         html_message=msg_html,
-                    )
+                        )
                 if MANAGERS:
                     print(
                         _("Manager of “%(estab)s” notified for %(nb)s archived video(s).")
@@ -599,14 +528,14 @@ class Command(BaseCommand):
                     msg_html += vid
                 else:
                     msg_html += (
-                        "%(title)s ("
-                        + "<a href='%(scheme)s:%(url)s' rel='noopener'"
-                        + " target='_blank'>%(scheme)s:%(url)s</a>)."
-                    ) % {
-                        "scheme": URL_SCHEME,
-                        "url": vid.get_full_url(),
-                        "title": vid,
-                    }
+                                        "%(title)s ("
+                                        + "<a href='%(scheme)s:%(url)s' rel='noopener'"
+                                        + " target='_blank'>%(scheme)s:%(url)s</a>)."
+                                ) % {
+                                    "scheme": URL_SCHEME,
+                                    "url": vid.get_full_url(),
+                                    "title": vid,
+                                }
                 msg_html += "</li>"
             msg_html += "</ol>"
         return msg_html
@@ -614,14 +543,82 @@ class Command(BaseCommand):
     def get_manager_emails(self, video: Video):
         """Return the list of manager emails."""
         if (
-            USE_ESTABLISHMENT
-            and MANAGERS
-            and video.owner.owner.establishment.lower() in dict(MANAGERS)
+                USE_ESTABLISHMENT
+                and MANAGERS
+                and video.owner.owner.establishment.lower() in dict(MANAGERS)
         ):
             video_estab = video.owner.owner.establishment.lower()
             return dict(MANAGERS)[video_estab]
         else:
             return CONTACT_US_EMAIL
+
+    def write_in_csv(self, vid: Video, arch_type: str) -> None:
+        """Add in `type`.csv file informations about the video."""
+        file = "%s/%s.csv" % (settings.LOG_DIRECTORY, arch_type)
+        exists = os.path.isfile(file)
+
+        fieldnames = [
+            "Date",
+            "User name",
+            "User email",
+            "User Affiliation",
+            "User Establishment",
+            "Video Id",
+            "Video title",
+            "Video URL",
+            "Video type",
+            "Date added",
+            "Source file",
+            "Description",
+            "Views",
+        ]
+        if exists:
+            self.check_csv_header(file, fieldnames)
+
+        with open(file, "a", newline="", encoding="utf-8") as csvfile:
+            writer = csv.DictWriter(csvfile, delimiter=";", fieldnames=fieldnames)
+
+            if not exists:
+                writer.writeheader()
+
+            # Force the username attribute even if HIDE_USERNAME is true whereas the __str__ method
+            # of Owner Class used by vid.owner.owner doesn't do so
+            user_name = "%s %s (%s)" % (
+                vid.owner.first_name,
+                vid.owner.last_name,
+                vid.owner.username,
+            )
+
+            writer.writerow(
+                {
+                    "Date": date.today(),
+                    "User name": user_name,
+                    "User email": vid.owner.email,
+                    "User Affiliation": vid.owner.owner.affiliation,
+                    "User Establishment": vid.owner.owner.establishment,
+                    "Video Id": vid.id,
+                    "Video title": vid.title,
+                    "Video URL": "https:%s" % vid.get_full_url(),
+                    "Video type": vid.type.title,
+                    "Date added": "%s" % vid.date_added.strftime("%Y/%m/%d"),
+                    "Source file": vid.video,
+                    "Description": vid.description.replace(";", "$semic$")
+                    .replace("\r", "")
+                    .replace("\n\n", "\n")
+                    .replace("\n", "$newl$"),
+                    "Views": vid.viewcount,
+                }
+            )
+
+    def check_csv_header(self, csv_file: str, fieldnames: list) -> None:
+        """Check for (and add) missing columns in an existing CSV file."""
+        with open(csv_file, "r") as f:
+            lines = f.readlines()
+        if len(lines[0].split(";")) < len(fieldnames):
+            print("Adding missing header columns in %s." % csv_file)
+            lines[0] = ";".join(fieldnames) + "\n"
+            with open(csv_file, "w") as f:
+                f.writelines(lines)
 
 
 """

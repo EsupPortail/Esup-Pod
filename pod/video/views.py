@@ -112,6 +112,7 @@ from pod.video.rest_views import ChannelSerializer
 from pod.video.utils import get_videos as video_get_videos
 
 from .context_processors import get_available_videos
+from .management.commands import check_obsolete_videos
 from .utils import (
     change_owner,
     get_filtered_categories_for_user,
