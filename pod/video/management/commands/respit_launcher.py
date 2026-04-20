@@ -56,9 +56,7 @@ class Command(BaseCommand):
 
             notif_list = []
 
-            videos = Video.objects.exclude(
-                owner__username=ARCHIVE_OWNER_USERNAME
-            )
+            videos = Video.objects.exclude(owner__username=ARCHIVE_OWNER_USERNAME)
 
             for p in videos:
 
@@ -161,13 +159,23 @@ class Command(BaseCommand):
 
                     # launch the calcul model
                     try:
-                        mod = importlib.import_module("pod.video.management.commands.respit_model." + RESPIT_MODEL)
+                        mod = importlib.import_module(
+                            "pod.video.management.commands.respit_model." + RESPIT_MODEL
+                        )
                     except ModuleNotFoundError as e:
-                        self.stderr.write(self.style.ERROR(_("An Error occurred while processing.")))
-                        raise CommandError(_("Respit model not found: %(error)s") % {"error": e}) from e
+                        self.stderr.write(
+                            self.style.ERROR(_("An Error occurred while processing."))
+                        )
+                        raise CommandError(
+                            _("Respit model not found: %(error)s") % {"error": e}
+                        ) from e
                     except ImportError as e:
-                        self.stderr.write(self.style.ERROR(_("An Error occurred while processing.")))
-                        raise CommandError(_("Respit model import error: %(error)s") % {"error": e}) from e
+                        self.stderr.write(
+                            self.style.ERROR(_("An Error occurred while processing."))
+                        )
+                        raise CommandError(
+                            _("Respit model import error: %(error)s") % {"error": e}
+                        ) from e
 
                     # Insert repist in BDD
                     daysmore = mod.calcul(data_to_add)

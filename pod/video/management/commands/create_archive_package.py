@@ -111,13 +111,11 @@ def archive_download_archive(slug):
     path = os.path.join(os.path.dirname(BASE_DIR)) + "/pod/media/video_package"
 
     cmd = Command()
-    cmd.archive_pack(slug , "", Video.objects.filter(slug=slug).first(), path, False)
+    cmd.archive_pack(slug, "", Video.objects.filter(slug=slug).first(), path, False)
 
-    zip_name = (path + "/" + slug)
+    zip_name = path + "/" + slug
 
-    mediaPackage_dir = os.path.join(
-        path, "", slug
-    )
+    mediaPackage_dir = os.path.join(path, "", slug)
 
     directory_name = mediaPackage_dir
 
@@ -184,7 +182,14 @@ class Command(BaseCommand):
         else:
             print("ERROR: Cannot access to file '%s'." % vid.video.path)
 
-    def archive_pack(self, video_dir: str, user_name: str, vid: Video, path_custom: str = "", move_else_copy: bool = True) -> None:
+    def archive_pack(
+        self,
+        video_dir: str,
+        user_name: str,
+        vid: Video,
+        path_custom: str = "",
+        move_else_copy: bool = True,
+    ) -> None:
         """Create a archive package for Video vid."""
         # Get username from CSV
         user_name = user_name.split("(")
@@ -192,7 +197,7 @@ class Command(BaseCommand):
         user_name = user_name[-1][:-1]
 
         # Create video folder
-        if (path_custom == ""):
+        if path_custom == "":
             mediaPackage_dir = os.path.join(ARCHIVE_ROOT, user_name, video_dir)
         else:
             mediaPackage_dir = os.path.join(path_custom, user_name, video_dir)

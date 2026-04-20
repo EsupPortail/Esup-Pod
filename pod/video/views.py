@@ -112,7 +112,6 @@ from pod.video.rest_views import ChannelSerializer
 from pod.video.utils import get_videos as video_get_videos
 
 from .context_processors import get_available_videos
-from .management.commands import check_obsolete_videos
 from .utils import (
     change_owner,
     get_filtered_categories_for_user,
@@ -4046,10 +4045,13 @@ def go_archive(request, slug=None):
     """
     if able_or_not_respit(slug) is True and ENABLE_PAGE_OBSO_MAIL:
         from pod.video.management.commands import check_obsolete_videos
+
         check_obsolete_videos.archive_isolate(Video.objects.get(slug=slug))
         return HttpResponsePermanentRedirect("/video/well/archived/or/not/" + slug)
-    else :
-        return HttpResponseBadRequest("Impossible to archive. This service is not available.")
+    else:
+        return HttpResponseBadRequest(
+            "Impossible to archive. This service is not available."
+        )
 
 
 def go_prolong(request, slug):
@@ -4061,5 +4063,7 @@ def go_prolong(request, slug):
         vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)
         vivi.save()
         return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/" + slug)
-    else :
-        return HttpResponseBadRequest("Impossible to extend. This service is not available.")
+    else:
+        return HttpResponseBadRequest(
+            "Impossible to extend. This service is not available."
+        )
