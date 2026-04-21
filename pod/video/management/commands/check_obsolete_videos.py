@@ -10,15 +10,12 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import gettext as _
 from django.template.defaultfilters import striptags
 from django.core.mail import send_mail
-from django.contrib.auth.models import User
 
 # from django.core.mail import mail_admins
 from django.core.mail import mail_managers
 from django.contrib.sites.shortcuts import get_current_site
-import csv
-import os
 
-from pod.video.models import Video, VideoToDelete
+from pod.video.models import Video
 from pod.video.utils import archive_video, write_in_csv
 from datetime import date, timedelta
 
@@ -71,6 +68,7 @@ ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
 
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
+
 
 class Command(BaseCommand):
     """Checking obsolete videos."""

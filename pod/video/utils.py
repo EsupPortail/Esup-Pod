@@ -8,7 +8,7 @@ import shutil
 import logging
 from math import ceil
 import csv
-from datetime import date, timedelta
+from datetime import date
 from defusedxml import minidom
 from django.core.serializers import serialize
 
@@ -486,6 +486,7 @@ def get_filtered_owners_for_videos(user_videos, search_term=None, limit=20):
         ]
     )
 
+
 def archive_video(vid):
     """
     It Allows the archive process without launching 'get_video archived deleted treatment' in the purpose to be used in other functions
@@ -583,6 +584,7 @@ def write_in_csv(vid: Video, arch_type: str) -> None:
                 }
             )
 
+
 def store_as_dublincore(vid: Video, mediaPackage_dir: str, user_name: str) -> None:
     """Store video metadata as Dublin Core Format in mediaPackage_dir."""
     xmlcontent = '<?xml version="1.0" encoding="utf-8"?>\n'
@@ -677,7 +679,7 @@ def move_video_to_archive(mediaPackage_dir: str, vid: Video, dry_mode: bool = Tr
         print("ERROR: Cannot access to file '%s'." % vid.video.path)
 
 
-def copy_archive_to( media_package_dir: str, vid: Video) -> None:
+def copy_archive_to(media_package_dir: str, vid: Video) -> None:
     """Move video source file to mediaPackage_dir."""
     if os.access(vid.video.path, os.F_OK):
         shutil.copy(
@@ -691,7 +693,7 @@ def copy_archive_to( media_package_dir: str, vid: Video) -> None:
 def archive_pack(media_package_dir: str, user_name: str, vid: Video,
                  only_copy: bool = True, dry_mode: bool = True) -> None:
     """Create a archive package for Video vid."""
-    from pod.video.models import Video, Notes, AdvancedNotes, Comment, ViewCount
+    from pod.video.models import Notes, AdvancedNotes, Comment, ViewCount
     from pod.chapter.models import Chapter
     from pod.completion.models import Contributor, Document, Overlay, Track
     from pod.enrichment.models import Enrichment
@@ -715,7 +717,7 @@ def archive_pack(media_package_dir: str, user_name: str, vid: Video,
     ]:
         # nb: contributors are already exported in dublincore.xml
         export_complement(
-            media_package_dir, model.__name__, model.objects.filter(video=vid),dry_mode
+            media_package_dir, model.__name__, model.objects.filter(video=vid), dry_mode
         )
     # Export also the video itself as json
     export_complement(media_package_dir, "Video", [vid], dry_mode)
