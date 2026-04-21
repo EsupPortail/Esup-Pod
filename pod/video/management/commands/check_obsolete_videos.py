@@ -19,12 +19,8 @@ import csv
 import os
 
 from pod.video.models import Video, VideoToDelete
+from pod.video.utils import archive_video, write_in_csv
 from datetime import date, timedelta
-
-# from pod.custom.settings_local import ENABLE_PAGE_OBSO_MAIL
-ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
-PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
-
 
 USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
 USE_ESTABLISHMENT = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
@@ -71,8 +67,10 @@ ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 POD_ARCHIVE_AFFILIATION = getattr(settings, "POD_ARCHIVE_AFFILIATION", [])
 # number of step in days defore deletion
 WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [])
-LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
+ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
+PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
 
+LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 
 class Command(BaseCommand):
     """Checking obsolete videos."""
@@ -164,29 +162,8 @@ class Command(BaseCommand):
 
             if vid.owner.owner.affiliation in POD_ARCHIVE_AFFILIATION:
                 if not self.dry_mode:
-                    archive_isolate(vid)
-                #                   self.write_in_csv(vid, "archived")
-                #                   archive_user, created = User.objects.get_or_create(
-                #                       username=ARCHIVE_OWNER_USERNAME,
-                #                   )
-                # Rename video and change owner.
-                #                   vid.owner = archive_user
-                #                   vid.is_draft = True
-                #                   vid.title = "%s %s %s" % (
-                #                       _("Archived"),
-                #                       date.today(),
-                #                       vid.title,
-                #                   )
-                # Trunc title to 250 chars max.
-                #                   vid.title = vid.title[:250]
-                #                   vid.save()
+                    archive_video(vid)
 
-                # add video to delete
-                #                   vid_delete, created = VideoToDelete.objects.get_or_create(
-                #                       date_deletion=vid.date_delete
-                #                   )
-                #                   vid_delete.video.add(vid)
-                #                   vid_delete.save()
                 nb_archived += 1
                 if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
                     list_video_archived_by_establishment.setdefault(estab, {})
@@ -200,7 +177,7 @@ class Command(BaseCommand):
 
             else:
                 if not self.dry_mode:
-                    self.write_in_csv(vid, "deleted")
+                    write_in_csv(vid, "deleted")
                     vid.delete()
                 else:
                     print("Video %s would have been deleted." % vid)
@@ -230,9 +207,9 @@ class Command(BaseCommand):
             msg_html = _("Hello %(name)s,") % {"name": name}
             msg_html += "<br>\n"
             msg_html += "<p>" + _(
-                'Your video entitled <a href="//%(url)s">“%(title)s”</a> will soon arrive'
+                'Your video entitled <a href="%(scheme)s:%(url)s">“%(title)s”</a> will soon arrive'
                 + " at the deletion deadline."
-            ) % {"url": video.get_full_url(), "title": video.title}
+            ) % {"scheme": URL_SCHEME, "url": video.get_full_url(), "title": video.title}
             msg_html += "<br>\n"
             msg_html += _("It will be deleted on %(date_delete)s.") % {
                 "date_delete": video.date_delete
@@ -524,74 +501,6 @@ class Command(BaseCommand):
             return dict(MANAGERS)[video_estab]
         else:
             return CONTACT_US_EMAIL
-
-    def write_in_csv(self, vid: Video, arch_type: str) -> None:
-        """Add in `type`.csv file informations about the video."""
-        file = "%s/%s.csv" % (settings.LOG_DIRECTORY, arch_type)
-        exists = os.path.isfile(file)
-
-        fieldnames = [
-            "Date",
-            "User name",
-            "User email",
-            "User Affiliation",
-            "User Establishment",
-            "Video Id",
-            "Video title",
-            "Video URL",
-            "Video type",
-            "Date added",
-            "Source file",
-            "Description",
-            "Views",
-        ]
-        if exists:
-            self.check_csv_header(file, fieldnames)
-
-        with open(file, "a", newline="", encoding="utf-8") as csvfile:
-            writer = csv.DictWriter(csvfile, delimiter=";", fieldnames=fieldnames)
-
-            if not exists:
-                writer.writeheader()
-
-            # Force the username attribute even if HIDE_USERNAME is true whereas the __str__ method
-            # of Owner Class used by vid.owner.owner doesn't do so
-            user_name = "%s %s (%s)" % (
-                vid.owner.first_name,
-                vid.owner.last_name,
-                vid.owner.username,
-            )
-
-            writer.writerow(
-                {
-                    "Date": date.today(),
-                    "User name": user_name,
-                    "User email": vid.owner.email,
-                    "User Affiliation": vid.owner.owner.affiliation,
-                    "User Establishment": vid.owner.owner.establishment,
-                    "Video Id": vid.id,
-                    "Video title": vid.title,
-                    "Video URL": "https:%s" % vid.get_full_url(),
-                    "Video type": vid.type.title,
-                    "Date added": "%s" % vid.date_added.strftime("%Y/%m/%d"),
-                    "Source file": vid.video,
-                    "Description": vid.description.replace(";", "$semic$")
-                    .replace("\r", "")
-                    .replace("\n\n", "\n")
-                    .replace("\n", "$newl$"),
-                    "Views": vid.viewcount,
-                }
-            )
-
-    def check_csv_header(self, csv_file: str, fieldnames: list) -> None:
-        """Check for (and add) missing columns in an existing CSV file."""
-        with open(csv_file, "r") as f:
-            lines = f.readlines()
-        if len(lines[0].split(";")) < len(fieldnames):
-            print("Adding missing header columns in %s." % csv_file)
-            lines[0] = ";".join(fieldnames) + "\n"
-            with open(csv_file, "w") as f:
-                f.writelines(lines)
 
 
 """
