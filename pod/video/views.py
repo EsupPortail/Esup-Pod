@@ -4036,7 +4036,7 @@ def able_or_not_respit(slug):
     step_date = vid.date_delete - timedelta(days=higher_warn)
     display_or_not = date.today() >= step_date
 
-    return True#display_or_not
+    return display_or_not
 
 
 def go_archive(request, slug=None):
