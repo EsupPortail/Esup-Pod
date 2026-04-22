@@ -6,8 +6,6 @@ Django version: 4.2.
 
 import os
 
-from pod.custom.settings_local import RESPIT_MODEL
-
 ##
 # flatpages
 ##

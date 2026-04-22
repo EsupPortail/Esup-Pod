@@ -11412,7 +11412,7 @@ msgid "This interface allows you to specify your preferences regarding the futur
 msgstr "Cette interface vous permet d'indiquer vos préférences quant au futur de votre vidéo sur cette plateforme."
 
 msgid "Select this option if you want to extend the publication of your video by %(rrd)s days."
-msgstr "Choisissez cette option si vous souhaitez prolonger de %(rrd)s jours la publication de votre vidéo"
+msgstr "Choisissez cette option si vous souhaitez prolonger de %(rrd)s jours la publication de votre vidéo."
 
 msgid "Select this option if you want to archive your video. It will then be unpublished and will no longer be accessible to the public. However, it will remain on the video server, along with its metadata, and its publication can be reactivated if necessary."
 msgstr "Choisissez cette option si vous souhaitez archiver votre vidéo. Elle sera alors dépubliée et ne sera plus accessible aux publics. Toutefois, elle restera présente sur le serveur vidéo, ainsi que les métadonnées qui l'accompagnent, et sa publication pourra être réactivée en cas de besoin."
