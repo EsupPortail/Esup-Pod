@@ -11408,6 +11408,21 @@ msgstr "Votre video a bien été archivée."
 msgid "Your video is outdated, what do you want do?"
 msgstr "Votre vidéo est obsolète, que voulez-vous faire ?"
 
+msgid "This interface allows you to specify your preferences regarding the future of your video on this platform."
+msgstr "Cette interface vous permet d'indiquer vos préférences quant au futur de votre vidéo sur cette plateforme."
+
+msgid "Select this option if you want to extend the publication of your video by %(rrd)s days."
+msgstr "Choisissez cette option si vous souhaitez prolonger de %(rrd)s jours la publication de votre vidéo"
+
+msgid "Select this option if you want to archive your video. It will then be unpublished and will no longer be accessible to the public. However, it will remain on the video server, along with its metadata, and its publication can be reactivated if necessary."
+msgstr "Choisissez cette option si vous souhaitez archiver votre vidéo. Elle sera alors dépubliée et ne sera plus accessible aux publics. Toutefois, elle restera présente sur le serveur vidéo, ainsi que les métadonnées qui l'accompagnent, et sa publication pourra être réactivée en cas de besoin."
+
+msgid "Select this option if you decide to permanently delete your video from the server, along with its metadata. You should only do this after careful consideration. It is therefore essential that you download the video and its metadata first."
+msgstr "Choisissez cette option si vous décidez de supprimer définitivement votre vidéo du serveur ainsi que les métadonnées qui l'accompagnent. Cette action doit être faite en toute connaissance de cause. Il est alors impératif de télécharger la vidéo et ses métadonnées."
+
+msgid "This link allows you to export your video, along with its metadata and attached files, as a ZIP file so you can save them to your storage space. We strongly recommend using this option before permanently deleting your video from the server."
+msgstr "Ce lien permet d'exporter votre vidéo ainsi que ses métadonnées et ses fichiers attachés sous forme d’un ficher Zip, afin de les sauvegarder sur vos espaces de stockage. Cette option est fortement conseillée avant toute suppression définitive de votre vidéo du serveur."
+
 msgid "Export this video."
 msgstr "Exporter cette video."
 

@@ -272,28 +272,28 @@ class ValidFormRespitTest(TestCase):
         self.assertEqual(response.status_code, 301)
 
     def test_archive_action(self):
-        """Test l'action Archive avec le Test Client"""
-        # Connecte l'utilisateur
+        """Test the Archive action with the client test"""
+        # Connect the user
         self.client.force_login(self.user)
 
-        # Simule l'envoi du formulaire avec action Archive
+        # Simulate the sending of the form with the action "Archive"
         response = self.client.post(
             f"/video/respit/{self.video1.slug}/", {"action": "Archive"}
         )
-        # Vérifie que le code HTTP est 200
+        # Check if the HTTP code is 200
         self.assertEqual(response.status_code, 200)
 
     @override_settings(PROLONGATION_GRANTED=True)
     def test_extend_action(self):
-        """Test l'action Archive avec le Test Client"""
-        # Connecte l'utilisateur
+        """Test the Archive action with the client test"""
+        # Connect the user
         self.client.force_login(self.user)
 
-        # Simule l'envoi du formulaire avec action Archive
+        # Simulate the sending of the form with the action "Archive"
         response = self.client.post(
             f"/video/respit/{self.video1.slug}/", {"action": "Extend"}
         )
-        # Vérifie que le code HTTP est 200
+        # Check if the HTTP code is 200
         self.assertEqual(response.status_code, 200)
 
     from unittest.mock import patch
@@ -303,13 +303,13 @@ class ValidFormRespitTest(TestCase):
         self.video1.date_delete = date.today() + timedelta(days=50)
         self.video1.save()
 
-        """Test l'action Archive avec le Test Client"""
-        # Connecte l'utilisateur
+        """Test the Archive action with the client test"""
+        # Connect the user
         self.client.force_login(self.user)
 
-        # Simule l'envoi du formulaire avec action Archive
+        # Simulate the sending of the form with the action "Archive"
         response = self.client.post(f"/video/go/prolong/{self.video1.slug}/")
-        # Vérifie que le code HTTP est 301
+        # Check if the HTTP code is 301
         self.assertEqual(response.status_code, 301)
 
     @patch("pod.video.views.ENABLE_PAGE_OBSO_MAIL", True)
@@ -317,11 +317,11 @@ class ValidFormRespitTest(TestCase):
         self.video1.date_delete = date.today() + timedelta(days=50)
         self.video1.save()
 
-        """Test l'action Archive avec le Test Client"""
-        # Connecte l'utilisateur
+        """Test the Archive action with the client test"""
+        # Connect the user
         self.client.force_login(self.user)
 
-        # Simule l'envoi du formulaire avec action Archive
+        # Simulate the sending of the form with the action "Archive"
         response = self.client.post(f"/video/go/archive/{self.video1.slug}/")
-        # Vérifie que le code HTTP est 301
+        # Check if the HTTP code is 301
         self.assertEqual(response.status_code, 301)

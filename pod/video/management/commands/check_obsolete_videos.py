@@ -21,7 +21,6 @@ import os
 from pod.video.models import Video, VideoToDelete
 from datetime import date, timedelta
 
-# from pod.custom.settings_local import ENABLE_PAGE_OBSO_MAIL
 ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
 
@@ -194,28 +193,7 @@ class Command(BaseCommand):
             if vid.owner.owner.affiliation in POD_ARCHIVE_AFFILIATION:
                 if not self.dry_mode:
                     archive_isolate(vid)
-                #                   self.write_in_csv(vid, "archived")
-                #                   archive_user, created = User.objects.get_or_create(
-                #                       username=ARCHIVE_OWNER_USERNAME,
-                #                   )
-                # Rename video and change owner.
-                #                   vid.owner = archive_user
-                #                   vid.is_draft = True
-                #                   vid.title = "%s %s %s" % (
-                #                       _("Archived"),
-                #                       date.today(),
-                #                       vid.title,
-                #                   )
-                # Trunc title to 250 chars max.
-                #                   vid.title = vid.title[:250]
-                #                   vid.save()
 
-                # add video to delete
-                #                   vid_delete, created = VideoToDelete.objects.get_or_create(
-                #                       date_deletion=vid.date_delete
-                #                   )
-                #                   vid_delete.video.add(vid)
-                #                   vid_delete.save()
                 nb_archived += 1
                 if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
                     list_video_archived_by_establishment.setdefault(estab, {})
@@ -255,6 +233,34 @@ class Command(BaseCommand):
     def notify_user(self, video: Video, step_day: int) -> int:
         """Notify a user that his video will be deleted soon."""
         name = video.owner.last_name + " " + video.owner.first_name
+
+        custom_message_page_obso_mail = ""
+
+        if ENABLE_PAGE_OBSO_MAIL:
+            domain = get_current_site(request).domain
+            base_url = f"{URL_SCHEME}://{domain}"
+
+            custom_message_page_obso_mail += "<br>\n"
+
+            if PROLONGATION_GRANTED:
+                custom_message_page_obso_mail += "<p> " + _(
+                    "You can decide to extend your video, to archive it (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here:"
+                )
+            else:
+                custom_message_page_obso_mail += "<p> " + _(
+                    "You can decide to archive your video (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here:"
+                )
+
+            custom_message_page_obso_mail += (
+                "<a href='"
+                + base_url
+                + "/video/respit/"
+                + video.slug
+                + "'>"
+                + _("Apply my choice.")
+                + "</a></p>"
+            )
+
         if video.owner.is_staff:
             msg_html = _("Hello %(name)s,") % {"name": name}
             msg_html += "<br>\n"
@@ -262,22 +268,28 @@ class Command(BaseCommand):
                 'Your video entitled <a href="%(scheme)s:%(url)s">“%(title)s”</a> will soon arrive'
                 + " at the deletion deadline."
             ) % {"scheme": URL_SCHEME, "url": video.get_full_url(), "title": video.title}
+
             msg_html += "<br>\n"
             msg_html += _("It will be deleted on %(date_delete)s.") % {
                 "date_delete": video.date_delete
             }
-            msg_html += "</p>\n<p>"
-            msg_html += _(
-                "If you want to keep it, "
-                + "you can change the removal date "
-                + "by editing your video:"
-            )
-            msg_html += (
-                "\n"
-                + '<a href="%(scheme)s:%(url)s" '
-                + 'rel="noopener" target="_blank">'
-                + "%(scheme)s:%(url)s</a></p>"
-            ) % {"scheme": URL_SCHEME, "url": video.get_full_url()}
+
+            if not ENABLE_PAGE_OBSO_MAIL:
+                msg_html += "</p>\n<p>"
+                msg_html += _(
+                    "If you want to keep it, "
+                    + "you can change the removal date "
+                    + "by editing your video:"
+                )
+                msg_html += (
+                    "\n"
+                    + '<a href="%(scheme)s:%(url)s" '
+                    + 'rel="noopener" target="_blank">'
+                    + "%(scheme)s:%(url)s</a></p>"
+                ) % {"scheme": URL_SCHEME, "url": video.get_full_url()}
+            else:
+                msg_html += custom_message_page_obso_mail
+
             msg_html += "\n<p>" + _("Regards") + "</p>\n"
         else:
             msg_html = _("Hello %(name)s,") % {"name": name}
@@ -290,12 +302,17 @@ class Command(BaseCommand):
             msg_html += _("It will be deleted on %(date_delete)s.") % {
                 "date_delete": video.date_delete
             }
-            msg_html += "<br>\n"
-            msg_html += _(
-                "If you want to keep it, "
-                + "please contact the manager(s) in charge of your "
-                + "establishment at this address(es): %(email_address)s."
-            ) % {"email_address": ", ".join(self.get_manager_emails(video))}
+
+            if not ENABLE_PAGE_OBSO_MAIL:
+                msg_html += "<br>\n"
+                msg_html += _(
+                    "If you want to keep it, "
+                    + "please contact the manager(s) in charge of your "
+                    + "establishment at this address(es): %(email_address)s."
+                ) % {"email_address": ", ".join(self.get_manager_emails(video))}
+            else:
+                msg_html += custom_message_page_obso_mail
+
             msg_html += "</p>\n<p>" + _("Regards") + "</p>\n"
 
         to_email = [video.owner.email]
@@ -305,30 +322,6 @@ class Command(BaseCommand):
             _("Sending mail to %(to_email)s for video %(title)s.")
             % {"to_email": to_email, "title": video.title}
         )
-
-        if ENABLE_PAGE_OBSO_MAIL:
-            domain = get_current_site(request).domain
-            base_url = f"{URL_SCHEME}://{domain}"
-
-            msg_html += "<br>\n"
-            if PROLONGATION_GRANTED:
-                msg_html += "<p> " + _(
-                    "You can decide to extend your video, to archive it (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here:"
-                )
-            else:
-                msg_html += "<p> " + _(
-                    "You can decide to archive your video (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here:"
-                )
-
-            msg_html += (
-                "<a href='"
-                + base_url
-                + "/video/respit/"
-                + video.slug
-                + "'>"
-                + _("Apply my choice.")
-                + "</a></p>"
-            )
 
         return send_mail(
             "[%s] %s" % (__TITLE_SITE__, _("Your video will be obsolete")),

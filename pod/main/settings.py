@@ -6,6 +6,8 @@ Django version: 4.2.
 
 import os
 
+from pod.custom.settings_local import RESPIT_MODEL
+
 ##
 # flatpages
 ##
@@ -335,3 +337,10 @@ TINYMCE_DEFAULT_CONFIG = {
     "removeformat | help",
     "relative_urls": False,
 }
+
+RESPIT_MODEL = "carafe"
+ENABLE_PAGE_OBSO_MAIL = False
+PROLONGATION_GRANTED = False
+DELETION_GRANTED = False
+# flake8: noqa
+RESPIT_MODEL_PARAMETERS = []
