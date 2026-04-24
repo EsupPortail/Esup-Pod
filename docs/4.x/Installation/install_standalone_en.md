@@ -283,7 +283,7 @@ If you’re using Redis on another machine, don’t forget to modify the **bind*
 >
 > Either set `protected-mode no` (and understand what that means in terms of access) or set `protected-mode yes` (and understand that Redis will only be accessible from this server).
 >
-> If `protected-mode yes` (the default value) is set and you want to access Redis from another server, you'll get an error like this: `consumer: Cannot connect to redis://:6379/: Error 111 connecting to :6379. Connection refused`
+> If `protected-mode yes` (the default value) is set and you want to access Redis from another server, you'll get an error like this: `consumer: Cannot connect to redis://:6379/: Error 111 connecting to:6379. Connection refused`
 >
 > If you want to secure Redis (**strongly recommended**), you can set a Redis password with the `requirepass "<my_redis_password>"` setting (see configuration below).
 {: .alert .alert-warning}
@@ -377,7 +377,7 @@ To use Elasticsearch 8, you need java 17 on your machine.
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get install -y default-jdk
 ```
 
-If you haven’t already done so :
+If you haven’t already done so:
 
 ```sh
 sudo apt-get install -y wget
@@ -409,7 +409,7 @@ discovery.seed_hosts: ["<my_es_host>"]
 cluster.initial_master_nodes: ["pod-1"]
 ```
 
-Depending on your configuration, `<my_es_host>` can be replaced by either :
+Depending on your configuration, `<my_es_host>` can be replaced by either:
 
 - **127.0.0.1**: for local access to the machine only.
 - **the IP address of the Elasticsearch server**, obtained by `hostname -I`: for remote access.
@@ -559,7 +559,7 @@ ES_OPTIONS = { 'verify_certs': False, 'basic_auth': ('pod', '<my_es_password>')}
 ES_VERSION = “7” or “8
 ```
 
-To start the Elasticsearch service automatically, run the command :
+To start the Elasticsearch service automatically, run the command:
 
 ```sh
 pod@pod:$ sudo systemctl enable elasticsearch

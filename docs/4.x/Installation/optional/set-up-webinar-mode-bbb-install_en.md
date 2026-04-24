@@ -126,7 +126,7 @@ Reference site: <https://github.com/Renater/SIPMediaGW>
 
 ###### Prerequisites
 
-```bash
+```sh
 # Create a user: vagrant
 adduser vagrant
 usermod -aG wheel vagrant
@@ -136,7 +136,7 @@ sudo apt-get install git
 
 ###### Effective installation
 
-```bash
+```sh
 # Retrieve the latest version of SIPMediaGW from Git, in the /sipmediagw application directory
 cd /
 sudo git clone https://github.com/Renater/SIPMediaGW.git sipmediagw
@@ -150,7 +150,7 @@ HOST_IP=1.2.3.4 ./provision.sh
 
 ###### Configuration
 
-```bash
+```sh
 # Edit the /sipmediagw/.env file with its values
 MAIN_APP=streaming
 BROWSE_FILE="bigbluebutton.py"
@@ -174,7 +174,7 @@ allowedToken = '1234'
 
 ###### Service restart
 
-```bash
+```sh
 # Restart the service
 sudo systemctl restart sipmediagw
 ```

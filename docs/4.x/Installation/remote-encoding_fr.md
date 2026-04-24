@@ -23,21 +23,21 @@ lang: fr
 
 ## Installation sur le ou les serveur(s) en frontal
 
-Il ne faut pas avoir installé ffmpeg, ffmpegthumbnailer et imagemagick. Si c’est le cas, les désinstaller :
+Il ne faut pas avoir installé ffmpeg, ffmpegthumbnailer et imagemagick. Si c’est le cas, les désinstaller :
 
-```bash
+```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get purge ffmpeg ffmpegthumbnailer imagemagick
 ```
 
 On peut utiliser le même REDIS que pour la gestion du cache du frontal, cf. [Configuration et usage de REDIS](redis_fr)
 
-Rajouter la configuration Celery/REDIS dans le fichier `settings_local.py` :
+Rajouter la configuration Celery/REDIS dans le fichier `settings_local.py` :
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 ```
 
-```python
+```py
 # Configuration à réaliser sur le serveur frontal
 # Pour utiliser l’encodage traditionnel déporté
 CELERY_TO_ENCODE = True
@@ -55,7 +55,7 @@ CELERY_TASK_ACKS_LATE = True
 
 ### FFMPEG
 
-Pour l’encodage des vidéos et la creation des vignettes, il faut installer ffmpeg, ffmpegthumbnailer et imagemagick :
+Pour l’encodage des vidéos et la creation des vignettes, il faut installer ffmpeg, ffmpegthumbnailer et imagemagick :
 
 ```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo apt install -y ffmpeg ffmpegthumbnailer imagemagick
@@ -67,18 +67,18 @@ Il faut installer Pod **sans réinitialiser ou migrer la base** et **sans Nginx 
 Vous pouvez suivre la doc Installation de la plateforme Pod.
 Rajouter la configuration de tout ça dans le fichier de configuration
 
-Il faut maintenant dire au serveur d’encodage :
+Il faut maintenant dire au serveur d’encodage :
 
 - Que l’on souhaite utiliser CELERY
 - Donner l’adresse du serveur avec REDIS (le CELERY BROKER)
 - De connecter la base de données commune
 - De connecter l’ElasticSearch commun
 
-```bash
+```sh
 (django_pod4) pod@pod-encodage:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 ```
 
-```python
+```py
 # Configuration à réaliser sur le serveur d’encodage
 # Pour utiliser l’encodage traditionnel déporté
 CELERY_TO_ENCODE = True
@@ -126,29 +126,29 @@ USE_PODFILE = True
 
 ### Activer Celery sur le ou les serveur(s) d’encodage
 
-Mettre le contenu de [https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd](https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd) dans `/etc/init.d/celeryd` :
+Mettre le contenu de [https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd](https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd) dans `/etc/init.d/celeryd` :
 
-```bash
+```sh
 (root) cd /etc/init.d
 (root) wget https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd
 ```
 
-Puis donner les droits adéquats :
+Puis donner les droits adéquats :
 
-```bash
+```sh
 (root) cd /etc/init.d
 (root) wget https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd
 (django_pod4) pod@pod-enc:~/django_projects/podv4$ sudo vim /etc/init.d/celeryd
 (django_pod4) pod@pod-enc:~/django_projects/podv4$ sudo chmod u+x /etc/init.d/celeryd
 ```
 
-Créer le fichier default associé :
+Créer le fichier default associé :
 
-```bash
+```sh
 (django_pod4) pod@pod-enc:/usr/local/django_projects/podv4$ sudo vim /etc/default/celeryd
 ```
 
-```bash
+```sh
 CELERYD_NODES="worker1"                                                # Nom du/des worker(s). Ajoutez autant de workers que de tache à executer en paralelle.
 DJANGO_SETTINGS_MODULE="pod.settings"                                  # settings de votre Pod
 CELERY_BIN="/home/pod/.virtualenvs/django_pod4/bin/celery"              # répertoire source de celery
@@ -168,15 +168,15 @@ CELERYD_LOG_LEVEL="INFO"                                               # niveau 
 
 Démarrer Celeryd
 
-```bash
+```sh
 (django_pod4) pod@pod-enc:~/django_projects/podv4$ sudo /etc/init.d/celeryd start
 ```
 
-> ⚠️ En cas d’erreur du type `consumer: Cannot connect to redis://:6379/: Error 111 connecting to :6379. Connection refused`, cela vient typiquement de la configuration de REDIS. Editer le fichier `/etc/redis/redis.conf` pour y positionner **protected-mode no** (ou gérer le protected-mode avec un mot de passe).
+> ⚠️ En cas d’erreur du type `consumer: Cannot connect to redis://:6379/: Error 111 connecting to :6379. Connection refused`, cela vient typiquement de la configuration de REDIS. Editer le fichier `/etc/redis/redis.conf` pour y positionner **protected-mode no** (ou gérer le protected-mode avec un mot de passe).
 
-Pour vérifier si Celery fonctionne bien :
+Pour vérifier si Celery fonctionne bien :
 
-```bash
+```sh
 celery -A pod.main worker -l info
 ```
 
@@ -186,14 +186,14 @@ Pour monitorer la liste des encodages en cours ou en attente, vous pouvez utilis
 
 Placez-vous donc dans l’environnement virtuel django et lancez les commandes suivantes, en remplacant <ID> par le thread Redis voulu (5 pour les encodages, 6 pour xAPI par exemple).
 
-Pour les tâches en cours :
+Pour les tâches en cours :
 
-```bash
+```sh
 (django_pod4) pod@pod-transcodage:/$ celery --broker=redis://redis:6379/<ID> inspect active
 ```
 
-Pour les tâches en attente :
+Pour les tâches en attente :
 
-```bash
+```sh
 (django_pod4) pod@pod-transcodage:/$ celery --broker=redis://redis:6379/<ID> inspect reserved
 ```

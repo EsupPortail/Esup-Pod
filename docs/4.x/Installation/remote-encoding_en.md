@@ -25,7 +25,7 @@ lang: en
 
 ffmpeg, ffmpegthumbnailer and imagemagick must not have been installed. If you have, uninstall them:
 
-```bash
+```sh
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get purge ffmpeg ffmpegthumbnailer imagemagick
 ```
 
@@ -33,11 +33,11 @@ You can use the same REDIS as for front-end cache management, see [Configuring a
 
 Add the Celery/REDIS configuration to the `settings_local.py` file:
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 ```
 
-```python
+```py
 # Configuration to be carried out on the front-end server
 # To use traditional remote encoding
 CELERY_TO_ENCODE = True
@@ -67,18 +67,18 @@ Pod must be installed **without reinitialising or migrating the database** and *
 You can follow the Installation of the Pod platform doc.
 Add the configuration of all this in the configuration file
 
-You now need to tell the encoding server :
+You now need to tell the encoding server:
 
 - That you want to use CELERY
 - Give the address of the server with REDIS (the CELERY BROKER)
 - Connect the common database
 - Connect the common ElasticSearch
 
-```bash
+```sh
 (django_pod4) pod@pod-encodage:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 ```
 
-```python
+```py
 # Configuration to be carried out on the encoding server
 # To use traditional remote encoding
 CELERY_TO_ENCODE = True
@@ -125,29 +125,29 @@ USE_PODFILE = True
 
 ### Activate Celery on the encoding server(s)
 
-Put the contents of [https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd](https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd) in `/etc/init.d/celeryd` :
+Put the contents of [https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd](https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd) in `/etc/init.d/celeryd`:
 
-```bash
+```sh
 (root) cd /etc/init.d
 (root) wget https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd
 ```
 
 Then assign the appropriate rights:
 
-```bash
+```sh
 (root) cd /etc/init.d
 (root) wget https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd
 (django_pod4) pod@pod-enc:~/django_projects/podv4$ sudo vim /etc/init.d/celeryd
 (django_pod4) pod@pod-enc:~/django_projects/podv4$ sudo chmod u+x /etc/init.d/celeryd
 ```
 
-Create the associated default file :
+Create the associated default file:
 
-```bash
+```sh
 (django_pod4) pod@pod-enc:/usr/local/django_projects/podv4$ sudo vim /etc/default/celeryd
 ```
 
-```bash
+```sh
 CELERYD_NODES="worker1"                                               # Name of the worker(s). Add as many workers as there are tasks to execute in parallel.
 DJANGO_SETTINGS_MODULE="pod.settings"                                 # settings of your Pod
 CELERY_BIN="/home/pod/.virtualenvs/django_pod4/bin/celery"            # source directory of celery
@@ -167,15 +167,15 @@ CELERYD_LOG_LEVEL="INFO"                                              # level of
 
 Start Celeryd
 
-```bash
+```sh
 (django_pod4) pod@pod-enc:~/django_projects/podv4$ sudo /etc/init.d/celeryd start
 ```
 
-> ⚠️ If you get an error like `consumer: Cannot connect to redis://:6379/: Error 111 connecting to :6379. Connection refused`, this is typically due to the REDIS configuration. Edit the `/etc/redis/redis.conf` file to set **protected-mode no** (or manage protected-mode with a password).
+> ⚠️ If you get an error like `consumer: Cannot connect to redis://:6379/: Error 111 connecting to:6379. Connection refused`, this is typically due to the REDIS configuration. Edit the `/etc/redis/redis.conf` file to set **protected-mode no** (or manage protected-mode with a password).
 
 To check if Celery is working properly:
 
-```bash
+```sh
 celery -A pod.main worker -l info
 ```
 
@@ -187,12 +187,12 @@ Enter the Django virtual environment and run the following commands, replacing <
 
 For active tasks:
 
-```bash
+```sh
 (django_pod4) pod@pod-transcoding:/$ celery --broker=redis://redis:6379/<ID> inspect active
 ```
 
 For pending tasks:
 
-```bash
+```sh
 (django_pod4) pod@pod-transcoding:/$ celery --broker=redis://redis:6379/<ID> inspect reserved
 ```

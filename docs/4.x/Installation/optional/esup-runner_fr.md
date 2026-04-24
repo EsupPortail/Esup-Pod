@@ -39,7 +39,7 @@ Ce document explique:
 
 Configuration minimale recommandée, en production:
 
-```python
+```py
 USE_RUNNER_MANAGER = True
 RM_TASKS_DELETED_AFTER_DAYS = 60
 SECURE_SSL_REDIRECT = True
@@ -114,7 +114,7 @@ En parallèle, l'interface vidéo affiche aussi le rang en file d'attente (`rank
 
 La commande:
 
-```bash
+```sh
 python manage.py process_tasks
 ```
 

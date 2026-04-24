@@ -16,9 +16,9 @@ lang: fr
 
 ## Activation sur le serveur frontal
 
-Ajouter la configuration Celery/Redis dans le fichier `settings_local.py` :
+Ajouter la configuration Celery/Redis dans le fichier `settings_local.py` :
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 
 # Configuration Celery sur le frontal
@@ -37,12 +37,12 @@ Il faut installer Pod **sans réinitialiser la base** et sans nginx/uwsgi/Elasti
 
 ### Ajouter la configuration correspondante dans le fichier settings
 
-Il faut maintenant indiquer au serveur d’encodage :
+Il faut maintenant indiquer au serveur d’encodage :
 
 * qu’on souhaite utiliser CELERY
 * l’adresse du serveur frontal comme BROKER pour CELERY
 
-```bash
+```sh
 (django_pod4) pod@pod-encodage:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 
 USE_XAPI = True
@@ -60,14 +60,14 @@ Mettre le contenu de
 [https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd](https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd)
 dans `/etc/init.d/celeryd`
 
-```bash
+```sh
 (django_pod4) pod@pod-enc:~/django_projects/podv4$ sudo vim /etc/init.d/celeryd-xapi
 (django_pod4) pod@pod-enc:~/django_projects/podv4$ sudo chmod u+x /etc/init.d/celeryd-xapi
 ```
 
-Puis créer le fichier default associé :
+Puis créer le fichier default associé :
 
-```bash
+```sh
 (django_pod4) pod@pod-enc:/usr/local/django_projects/podv4$ sudo vim /etc/default/celeryd-xapi
 
 CELERYD_NODES="worker-xapi"                                              # Nom du/des worker(s). Ajoutez autant de workers que de tâches à exécuter en parallèle.
@@ -87,12 +87,12 @@ CELERYD_LOG_LEVEL="INFO"                                               # niveau 
 
 ### Démarrer Celeryd
 
-```bash
+```sh
 (django_pod4) pod@pod-enc:~/django_projects/podv4$ sudo /etc/init.d/celeryd-xapi start
 ```
 
-Pour vérifier si Celery fonctionne bien :
+Pour vérifier si Celery fonctionne bien :
 
-```bash
+```sh
 celery -A pod.xapi.xapi_tasks -l INFO -Q xapi --concurrency 1 -n xapi
 ```

@@ -10,6 +10,6 @@ You can find all the Pod platform configuration variables at this address: [http
 
 The variables are used by the platform for its operation. Their values can be changed in your configuration file `custom/settings_local.py`:
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 ```

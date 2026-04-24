@@ -59,7 +59,7 @@ Un script "check_database_problems.py" dédié à cet usage est accessible ici 
 Il est nécessaire de récupérer ce script et de le positionner dans le répertoire `pod/video/management/commands`, avec les bons droits.
 {: .alert .alert-warning}
 
-```bash
+```sh
 python manage.py check_database_problems
 ```
 
@@ -69,7 +69,7 @@ Le script va détecter et corriger d’éventuelles incohérences.
 
 Exécutez le script d’export depuis un serveur Pod v3 en utilisant la commande suivante :
 
-```bash
+```sh
 python manage.py export_data_from_v3_to_v4
 ```
 
@@ -106,7 +106,7 @@ Vérifier votre `custom/settings_local.py` pour trouver le répertoire configur�
 - Si vous rencontrez une erreur de type "Too many connections", vous pouvez augmenter la valeur de la variable `time_sleep`.
   Le traitement prendra plus de temps, mais pourra se terminer sans erreur.
 
-- Ce script peut être exécuté autant de fois que nécessaire ; les données sont supprimées avant l’insertion.
+- Ce script peut être exécuté autant de fois que nécessaire ; les données sont supprimées avant l’insertion.
 
 - Selon vos données, ce script peut prendre beaucoup de temps. Typiquement, l’importation de la table `video_viewcount` est longue.
   De plus, comme la librairie pour la gestion des mots-clés a changé entre la v3 et la v4, le traitement est spécifique et nécessite du temps pour éviter les erreurs de type "Too many connections".
@@ -115,7 +115,7 @@ Vérifier votre `custom/settings_local.py` pour trouver le répertoire configur�
 
 - Après l’importation, n’oubliez pas de **réindexer toutes les vidéos** pour Elasticsearch avec :
 
-```bash
+```sh
 python manage.py index_videos --all
 ```
 
@@ -125,7 +125,7 @@ python manage.py index_videos --all
 
 Exécutez le script en utilisant la commande de gestion :
 
-```bash
+```sh
 python manage.py import_data_from_v3_to_v4
 ```
 
@@ -139,19 +139,19 @@ python manage.py import_data_from_v3_to_v4
 
 Mode simulation :
 
-```bash
+```sh
 python manage.py import_data_from_v3_to_v4 --dry
 ```
 
 Si la base de données est totalement vide (sans tables), il est possible d’exécuter cette commande qui réalise un `make createDB` avant l’importation des données :
 
-```bash
+```sh
 python manage.py import_data_from_v3_to_v4 --createDB
 ```
 
 Si vous avez rencontré une erreur de type `Too many connections` lors de l’importation des mots-clés, n’hésitez pas à augmenter la valeur de la variable `time_sleep` (genre 0.4 ou 0.5, en secondes) et relancer le traitement, mais seulement pour les mots-clés :
 
-```bash
+```sh
 python manage.py import_data_from_v3_to_v4 --onlytags
 ```
 

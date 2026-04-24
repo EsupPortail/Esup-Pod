@@ -38,7 +38,7 @@ Click on `Save`.
 
 ### Adding the Keycloak configuration in the settings file
 
-```bash
+```sh
 AUTH_TYPE = (('local', ('local')), ('OIDC', "OIDC"))
 USE_OIDC = True
 OIDC_NAME = "OPENID KeyCloak"

@@ -97,7 +97,7 @@ Il faut ensuite relancer le script présent à la racine afin de créer les fich
 (django_pod4) pod@pod:~/django_projects/podv4$ make createDB
 ```
 
-> Ne pas oublier de créer à nouveau un superutilisateur :
+> Ne pas oublier de créer à nouveau un superutilisateur :
 >
 > ```sh
 > (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py createsuperuser
@@ -134,7 +134,7 @@ server { listen 80 default_server;
 [...]
 ```
 
-> ⚠️ Il peut aussi être nécessaire de remplacer cette étape par la suppression du fichier `default` :
+> ⚠️ Il peut aussi être nécessaire de remplacer cette étape par la suppression du fichier `default` :
 >
 > ```sh
 > (django_pod4) pod@pod:~/django_projects/podv4$ sudo unlink /etc/nginx/sites-enabled/default
@@ -164,7 +164,7 @@ http {
 ```
 
 Il faut ensuite spécifier le host pour le serveur web (changer si besoin les paramètres dans le fichier `pod_nginx.conf`).
-Profiter aussi pour mettre les droits au groupe `www-data` en éditant ce fichier pod_nginx.conf, à la 1° ligne : `user pod www-data;`
+Profiter aussi pour mettre les droits au groupe `www-data` en éditant ce fichier pod_nginx.conf, à la 1° ligne : `user pod www-data;`
 
 ```sh
 (django_pod4) pod@pod:(~/django_projects/podv4$) cp pod_nginx.conf pod/custom/.
@@ -173,7 +173,7 @@ Profiter aussi pour mettre les droits au groupe `www-data` en éditant ce fichie
 (django_pod4) pod@pod:(~/django_projects/podv4$) sudo /etc/init.d/nginx restart (ou sudo systemctl restart nginx)
 ```
 
-Pour démarrer le service Nginx automatiquement, lancer la commande :
+Pour démarrer le service Nginx automatiquement, lancer la commande :
 
 ```sh
 pod@pod:$ sudo systemctl enable nginx
@@ -285,7 +285,7 @@ sudo logrotate -d /etc/logrotate.d/esup-pod
 ## Personnalisations
 
 Certaines pages ont été automatiquement pré-générées pour vous faciliter la tâche, mais il reste certaines informations à y compléter.
-Il y a notamment les pages suivantes :
+Il y a notamment les pages suivantes :
 
 * `Accueil`: <https://pod.univ.fr/admin/flatpages/flatpage/1/change/>
 * `/accessibility/`: <https://pod.univ.fr/admin/flatpages/flatpage/3/change/>

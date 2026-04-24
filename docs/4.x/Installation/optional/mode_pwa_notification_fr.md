@@ -14,7 +14,7 @@ Les métadonnées de l’application sont pré-remplies, mais toutes les options
 
 Voici la configuration par défaut pour Pod, vous pouvez surcharger chaque variable dans votre fichier de configuration.
 
-```python
+```py
 PWA_APP_NAME = "Pod"
 PWA_APP_DESCRIPTION = _(
 "Pod is aimed at users of our institutions, by allowing the publication of "
@@ -33,7 +33,7 @@ PWA_APP_DIR = "ltr"
 PWA_APP_LANG = "fr-FR"
 ```
 
-Pour en savoir plus : [https://github.com/silviolleite/django-pwa](https://github.com/silviolleite/django-pwa)
+Pour en savoir plus : [https://github.com/silviolleite/django-pwa](https://github.com/silviolleite/django-pwa)
 
 ## Notifications push
 
@@ -41,7 +41,7 @@ Afin de permettre à l’application d’envoyer aux utilisateurs des notificati
 
 Ensuite, les clés doivent être indiqués dans la configuration via les paramètres suivants:
 
-```python
+```py
 WEBPUSH_SETTINGS = {
     "VAPID_PUBLIC_KEY": "<clé-publique>",
     "VAPID_PRIVATE_KEY": "<clé-privée>",

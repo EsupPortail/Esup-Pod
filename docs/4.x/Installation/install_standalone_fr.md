@@ -233,9 +233,9 @@ TEMPLATE_VISIBLE_SETTINGS = {
 TIME_ZONE = "Europe/Paris"
 ```
 
-> _Remarque concernant TEMPLATE_VISIBLE_SETTINGS : du moment qu’on le surcharge dans les settings, il faut surcharger tous ses éléments par défaut._
+> _Remarque concernant TEMPLATE_VISIBLE_SETTINGS : du moment qu’on le surcharge dans les settings, il faut surcharger tous ses éléments par défaut._
 >
-> 🔧 La liste des paramètres possibles est accessible via ce lien : [Configuration de la plateforme](https://github.com/EsupPortail/Esup-Pod/blob/master/CONFIGURATION_FR.md)
+> 🔧 La liste des paramètres possibles est accessible via ce lien : [Configuration de la plateforme](https://github.com/EsupPortail/Esup-Pod/blob/master/CONFIGURATION_FR.md)
 
 ### Installation de toutes les librairies python
 
@@ -283,12 +283,12 @@ Si vous utilisez Redis sur une autre machine, n’oubliez pas de modifier le **b
 >
 > Soit mettre _protected-mode no_ (et comprendre ce que cela implique en termes d'accès) soit mettre _protected-mode yes_ (et comprendre que Redis ne pourra être accessible que depuis ce serveur).
 >
-> Si _protected-mode yes_(valeur par défaut) et que vous souhaitez y accéder depuis un autre serveur, vous obtiendrez une erreur du type : `consumer: Cannot connect to redis://:6379/: Error 111 connecting to :6379. Connection refused`
+> Si _protected-mode yes_(valeur par défaut) et que vous souhaitez y accéder depuis un autre serveur, vous obtiendrez une erreur du type : `consumer: Cannot connect to redis://:6379/: Error 111 connecting to:6379. Connection refused`
 >
 > Si vous souhaitez sécuriser votre Redis (**fortement recommandé**), il est possible de mettre un mot de passe pour Redis, via le paramètre `requirepass "<my_redis_password>"`  (cf. configuration ci-dessous).
 {: .alert .alert-warning}
 
-Si vous ne souhaitez pas toucher au bind, vous pouvez aussi modifier votre `settings_local.py` et personnaliser cet extrait du _settings.py_ par défaut avec votre `<my_redis_host>` :
+Si vous ne souhaitez pas toucher au bind, vous pouvez aussi modifier votre `settings_local.py` et personnaliser cet extrait du _settings.py_ par défaut avec votre `<my_redis_host>` :
 
 ```py
 CACHES = {
@@ -319,7 +319,7 @@ SESSION_REDIS = {
 }
 ```
 
-En cas de version sécurisé de Redis avec mot de passe, vous pouvez modifier votre `settings_local.py`  avec votre `<my_redis_host>` et `<my_redis_password>` :
+En cas de version sécurisé de Redis avec mot de passe, vous pouvez modifier votre `settings_local.py`  avec votre `<my_redis_host>` et `<my_redis_password>` :
 
 ```py
 CACHES = {
@@ -351,15 +351,15 @@ SESSION_REDIS = {
 }
 ```
 
-Selon votre configuration, `<my_redis_host>` peut être remplacé soit par :
+Selon votre configuration, `<my_redis_host>` peut être remplacé soit par :
 
-- **127.0.0.1** : pour des accès seulement en local à la machine.
-- **l’adresse IP du serveur REDIS**, obtenu par `hostname -I` : pour des accès distants (pensez à modifier aussi le paramètre `bind` de _/etc/redis/redis.conf_).
+- **127.0.0.1** : pour des accès seulement en local à la machine.
+- **l’adresse IP du serveur REDIS**, obtenu par `hostname -I` : pour des accès distants (pensez à modifier aussi le paramètre `bind` de _/etc/redis/redis.conf_).
 
 > Attention au format de votre mot de passe Redis `<my_redis_password>`; s'il contient des caractères 'problématiques' (`#`, `@`, `:`, `/`, `?`, `&`, `%`, `+`, `[`, `]`, `{`, `}`, `"`, space), cela provoquera, dans Pod, une erreur du type `Invalid IPv6 URL` pour les URLs Redis.
 {: .alert .alert-warning}
 
-Pour démarrer le service REDIS automatiquement, lancer la commande :
+Pour démarrer le service REDIS automatiquement, lancer la commande :
 
 ```sh
 pod@pod:$ sudo systemctl enable redis-server
@@ -377,7 +377,7 @@ Pour utiliser Elasticsearch 8, il faut avoir java 17 sur sa machine.
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo apt-get install -y default-jdk
 ```
 
-Si ce n’est pas déjà fait :
+Si ce n’est pas déjà fait :
 
 ```sh
 sudo apt-get install -y wget
@@ -409,10 +409,10 @@ discovery.seed_hosts: ["<my_es_host>"]
 cluster.initial_master_nodes: ["pod-1"]
 ```
 
-Selon votre configuration, `<my_es_host>` peut être remplacé soit par :
+Selon votre configuration, `<my_es_host>` peut être remplacé soit par :
 
-- **127.0.0.1** : pour des accès seulement en local à la machine.
-- **l’adresse IP du serveur Elasticsearch**, obtenu par `hostname -I` : pour des accès distants.
+- **127.0.0.1** : pour des accès seulement en local à la machine.
+- **l’adresse IP du serveur Elasticsearch**, obtenu par `hostname -I` : pour des accès distants.
 
 **Il est recommandé d’utiliser le mode security d’ES8.**
 Générer l’utilisateur pod pour ES :
@@ -435,7 +435,7 @@ sudo /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.http
 sudo /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.http.ssl.truststore.secure_password
 ```
 
-Copier le fichier `.p12` dans `/etc/elasticsearch/` :
+Copier le fichier `.p12` dans `/etc/elasticsearch/` :
 
 ```sh
 sudo cp /usr/share/elasticsearch/elastic-stack-ca.p12 /usr/share/elasticsearch/elastic-certificates.p12 /etc/elasticsearch/
@@ -534,7 +534,7 @@ DELETE http://127.0.0.1:9200/pod [status:404 request:0.140s]
 An error occured during index video deletion: 404-index_not_found_exception : no such index
 Successfully create index Video
 (django_pod4) pod@pod:~/django_projects/podv4$ curl -XGET "127.0.01:9200/pod/_search"
-# ES8 en mode security : (django_pod4) pod@pod:~/django_projects/podv4$ curl -k -XGET "127.0.0.1:9200/pod/_search"  -u pod:<my_es_password>
+# ES8 en mode security : (django_pod4) pod@pod:~/django_projects/podv4$ curl -k -XGET "127.0.0.1:9200/pod/_search"  -u pod:<my_es_password>
 {"took":35,"timed_out":false,"_shards":{"total":2,"successful":2,"skipped":0,"failed":0},"hits":{"total":0,"max_score":null,"hits":[]}}
 ```
 
@@ -560,7 +560,7 @@ ES_OPTIONS = {"verify_certs": False, "basic_auth": ("pod", "<my_es_password>")}
 ES_VERSION = "8"
 ```
 
-Pour démarrer le service Elasticsearch automatiquement, lancer la commande :
+Pour démarrer le service Elasticsearch automatiquement, lancer la commande :
 
 ```sh
 pod@pod:$ sudo systemctl enable elasticsearch

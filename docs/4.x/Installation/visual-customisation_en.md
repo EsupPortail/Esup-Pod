@@ -10,9 +10,9 @@ lang: en
 
 You can display your school’s logo at the bottom of the page.
 
-To do this, place your logo in the `pod/main/static/custom/img/` folder, and enter its path in the `settings_local.pyv :
+To do this, place your logo in the `pod/main/static/custom/img/` folder, and enter its path in the `settings_local.py`:
 
-```python
+```py
 TEMPLATE_VISIBLE_SETTINGS = {
   ...
   'LOGO_ETB': 'custom/img/logo_my_etab.svg',
@@ -46,7 +46,7 @@ You can use just one file, and invert the colours in your custom CSS as follows:
 
 To customise the look of your Pod server, you can add your own style sheet, by specifying this in the `settings_local.py` file:
 
-```python
+```py
 TEMPLATE_VISIBLE_SETTINGS = {
   ...
   'CSS_OVERRIDE': 'custom/theme-mon_etab.css',
@@ -132,7 +132,7 @@ In this file, you can change the Pod colours. Here are a few examples:
 
 You can change the default favicon displayed by Pod by specifying the following in the `settings_local.py` file:
 
-```python
+```py
 TEMPLATE_VISIBLE_SETTINGS = {
   ...
   'FAVICON': 'img/logoPod.svg',
@@ -143,8 +143,8 @@ TEMPLATE_VISIBLE_SETTINGS = {
 We strongly recommend that you use the svg format for this icon, as this format makes it easy to manage colour variants for an Internet browser in dark mode. If you look at the `main/static/img/pod_favicon.svg` file for example, you’ll see the following instructions:
 
 ```css
-@media (prefers-color-scheme: dark) { :root { fill: #FFF }}
-@media (prefers-color-scheme: light) { :root { fill: #000 }}
+@media (prefers-color-scheme: dark) {:root { fill: #FFF }}
+@media (prefers-color-scheme: light) {:root { fill: #000 }}
 ```
 
 These can be used to manage 2 different sets of colours in the same logo, allowing good contrast to be maintained whatever the background colour. Don’t hesitate to use them as inspiration when creating your own `favicon.svg`.
@@ -153,7 +153,7 @@ These can be used to manage 2 different sets of colours in the same logo, allowi
 
 ## Use the same image as a logo and favicon
 
-It’s perfectly possible to use the same image, but if your image has 2 sets of colours, I suggest you add the following CSS lines (or use them as inspiration) in your custom CSS file so that it is always displayed in contrast on Pod :
+It’s perfectly possible to use the same image, but if your image has 2 sets of colours, I suggest you add the following CSS lines (or use them as inspiration) in your custom CSS file so that it is always displayed in contrast on Pod:
 
 ```css
 /* When your logo.svg already switch color on browser color-scheme: dark */
@@ -171,16 +171,16 @@ It’s perfectly possible to use the same image, but if your image has 2 sets of
 
 ## Useful commands
 
-Depending on your environment, once you have made these changes, don’t forget to :
+Depending on your environment, once you have made these changes, don’t forget to:
 
-- deploy static files (CSS, images, etc.) using the command :
+- deploy static files (CSS, images, etc.) using the command:
 
-```bash
+```sh
 (django_pod4) pod@pod-:~/django_projects/podv4$ make statics
 ```
 
 - restart the various services affected, typically the uwsgi-pod service on your web servers:
 
-```bash
+```sh
 pod@pod-:~/django_projects/podv4$ sudo systemctl restart uwsgi-pod
 ```

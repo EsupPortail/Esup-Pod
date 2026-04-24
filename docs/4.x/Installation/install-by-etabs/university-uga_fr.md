@@ -23,17 +23,17 @@ Celle ci a été installée "from scratch", et remplacera notre plateforme POD 3
 
 ![Infrastructure Pod v4 à l’UGA](uga/architecture.webp)
 
-Cette infrastructure repose sur l’utilisation de :
+Cette infrastructure repose sur l’utilisation de :
 
-- **Serveur web/frontal** : Pod v4, Nginx, uWSGI, Redis
-- **Serveur d’encodage/transcription** : Celery, ffmpeg, Whisper, GPU Nvidia L4
-- **Serveur base de données** : MariaDB
-- **Serveur d’indexation** : Elasticsearch
-- **Serveur de fichiers** : serveur de fichiers partagé NFS entre le serveur frontal et d’encodage (40 To - 38 To utilisé)
+- **Serveur web/frontal** : Pod v4, Nginx, uWSGI, Redis
+- **Serveur d’encodage/transcription** : Celery, ffmpeg, Whisper, GPU Nvidia L4
+- **Serveur base de données** : MariaDB
+- **Serveur d’indexation** : Elasticsearch
+- **Serveur de fichiers** : serveur de fichiers partagé NFS entre le serveur frontal et d’encodage (40 To - 38 To utilisé)
 
 Tous les serveurs tournent sur Debian 12.
 
-### Étape 1 : Installation de POD V4
+### Étape 1 : Installation de POD V4
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -64,7 +64,7 @@ make altinstall
 pip3.12 install virtualenvwrapper --break-system-packages
 ```
 
-En tant que user POD, modifier le fichier `/home/pod/.bashrc` :
+En tant que user POD, modifier le fichier `/home/pod/.bashrc` :
 
 ```sh
 export WORKON_HOME=$HOME/.virtualenvs
@@ -72,28 +72,28 @@ export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3.12
 source /usr/local/bin/virtualenvwrapper.sh
 ```
 
-Puis prendre en charge ces modifications :
+Puis prendre en charge ces modifications :
 
 ```sh
 source .bashrc
 ```
 
-Et enfin créer l‘environnement virtuel :
+Et enfin créer l‘environnement virtuel :
 
-*sur le serveur frontal :*
+*sur le serveur frontal :*
 
 ```sh
 mkvirtualenv --system-site-packages --python=/usr/local/bin/python3.12 django_pod4
 ```
 
-*sur le serveur d’encodage :*
+*sur le serveur d’encodage :*
 
 ```sh
 mkvirtualenv --system-site-packages --python=/usr/local/bin/python3.12 django_pod4_encode
 mkvirtualenv --system-site-packages --python=/usr/local/bin/python3.12 django_pod4_transcript
 ```
 
-> Pour entrer dans l’environnement virtuel :
+> Pour entrer dans l’environnement virtuel :
 >
 > ```sh
 > workon django_pod4
@@ -110,19 +110,19 @@ cd podV4
 pip3 install -r requirements.txt
 ```
 
-Pour utiliser la base de données MySQL/MariaDB sur le serveur frontal (ou sur un serveur distant) il faut installer le moteur MySql/Python :
+Pour utiliser la base de données MySQL/MariaDB sur le serveur frontal (ou sur un serveur distant) il faut installer le moteur MySql/Python :
 
 ```sh
 sudo apt install pkg-config python3-dev default-libmysqlclient-dev
 ```
 
-Puis dans l’environnement `django_pod4`, installer le moteur Mysql/Python :
+Puis dans l’environnement `django_pod4`, installer le moteur Mysql/Python :
 
 ```sh
 pip3 install mysqlclient
 ```
 
-Création d’un dossier pour les logs de l’application :
+Création d’un dossier pour les logs de l’application :
 
 ```sh
 mkdir /var/log/pod
@@ -130,14 +130,14 @@ ls -n /data/django4/podv4/pod/log /var/log/pod/
 ```
 
 Dans l’espace partagé NFS, créer un dossier `Media` et un fichier `setting_local.py`
-Faire un lien symbolique depuis le dossier pod des deux serveurs, afin que ces fichiers soient partagés entre les deux serveurs :
+Faire un lien symbolique depuis le dossier pod des deux serveurs, afin que ces fichiers soient partagés entre les deux serveurs :
 
 ```sh
 ls -n pod/custom/setting_local.py /data/NFS/setting_local.py
 ls -n pod/media /data/NFS/media
 ```
 
-### Étape 2 : Installation de MariaDB 10.11.6
+### Étape 2 : Installation de MariaDB 10.11.6
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -145,32 +145,32 @@ ls -n pod/media /data/NFS/media
 | **Documentations de référence**| [Documentation Esup POD](https://www.esup-portail.org/wiki/spaces/ES/pages/1163984911/Mise+en+production+de+la+plateforme+Pod+V3#MiseenproductiondelaplateformePodV3-BasededonnéesMySQL/MariaDB)|
 {: .table .table-striped}
 
-Après avoir installé MariaDB, éditer le fichier `/etc/mysql/mariadb.conf.d/50-server.cnf` :
+Après avoir installé MariaDB, éditer le fichier `/etc/mysql/mariadb.conf.d/50-server.cnf` :
 
 ```conf
 character-set-server  = utf8
 collation-server      = utf8_general_ci
 ```
 
-Editer le fichier `etc/mysql/my.cnf` :
+Editer le fichier `etc/mysql/my.cnf` :
 
 ```conf
 max_allowed_packet=256M
 ```
 
-Donner les grant access à l’utilisateur pod :
+Donner les grant access à l’utilisateur pod :
 
 ```sql
 GRANT ALL PRIVILEGES ON pod.* TO 'pod'@X.X.X.X IDENTIFIED BY 'mdp';
 ```
 
-Installer le timezone dans le moteur mariaDB :
+Installer le timezone dans le moteur mariaDB :
 
 ```sh
 mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql --database=mysql
 ```
 
-Ajouter la configuration concernant la base de données dans le fichier `pod/custom/setting_local.py` :
+Ajouter la configuration concernant la base de données dans le fichier `pod/custom/setting_local.py` :
 
 ```py
 DATABASES = {
@@ -185,7 +185,7 @@ DATABASES = {
          { 'init_command': "SET storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1", }, } }
 ```
 
-### Étape 3 : Installation de Redis
+### Étape 3 : Installation de Redis
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -193,7 +193,7 @@ DATABASES = {
 | **Documentations de référence** | [Documentation Redis](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-linux/)|
 {: .table .table-striped}
 
-Installer Redis :
+Installer Redis :
 
 ```sh
 curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
@@ -203,14 +203,14 @@ sudo apt-get update
 sudo apt-get install redis
 ```
 
-Pour activer et lancer Redis :
+Pour activer et lancer Redis :
 
 ```sh
 sudo systemctl enable redis-server
 sudo systemctl start redis-server
 ```
 
-Ajouter la configuration suivante dans `pod/custom/setting_local.py` :
+Ajouter la configuration suivante dans `pod/custom/setting_local.py` :
 
 ```py
 CACHES = {
@@ -242,16 +242,16 @@ SESSION_REDIS = {
 }
 ```
 
-Modifier le fichier `/etc/redis/redis.conf` :
+Modifier le fichier `/etc/redis/redis.conf` :
 
 ```conf
 bind X.X.X.X 127.0.0.1
-protect-mode : no
+protect-mode: no
 ```
 
 > Il faut remplacer X.X.X.X par l’adresse IP du serveur hebergeant Redis.
 
-### Étape 4 : Mise en place de l’encodage
+### Étape 4 : Mise en place de l’encodage
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -261,7 +261,7 @@ protect-mode : no
 
 #### FFMPEG
 
-Installer ffmpeg (version 5.1.6-0+deb12u1) :
+Installer ffmpeg (version 5.1.6-0+deb12u1) :
 
 ```sh
 sudo apt-get install ffmpeg ffmpegthumbnailer imagemagick
@@ -269,13 +269,13 @@ sudo apt-get install ffmpeg ffmpegthumbnailer imagemagick
 
 #### Celery
 
-Vérifier que Celery est bien installé sur chaque environnement virtuel :
+Vérifier que Celery est bien installé sur chaque environnement virtuel :
 
 ```sh
 pip show celery
 ```
 
-Ajouter la configuration suivante dans `pod/custom/setting_local.py` :
+Ajouter la configuration suivante dans `pod/custom/setting_local.py` :
 
 ```py
 USE_REMOTE_ENCODING_TRANSCODING = True # Active encode
@@ -304,13 +304,13 @@ TRANSCRIPTION_MODEL_PARAM = {
 
 Créer le fichier `/etc/init.d/celeryd_encodet/etc/init.d/celeryd_transcript` et y mettre le contenu de [https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd](https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd)
 
-Puis rendre le fichier exécutable :
+Puis rendre le fichier exécutable :
 
 ```sh
 sudo chmod u+x /etc/init.d/celeryd_*
 ```
 
-Créer le fichier `/etc/default/celeryd_encod` et insérer le contenu suivant :
+Créer le fichier `/etc/default/celeryd_encod` et insérer le contenu suivant :
 
 ```conf
 CELERYD_NODES="worker-encodage"
@@ -326,7 +326,7 @@ CELERY_CREATE_DIRS=1
 CELERYD_LOG_LEVEL="INFO"
 ```
 
-Créer le fichier `/etc/default/celeryd_transcript` et insérer le contenu suivant :
+Créer le fichier `/etc/default/celeryd_transcript` et insérer le contenu suivant :
 
 ```conf
 CELERYD_NODES="worker-transcript"
@@ -342,7 +342,7 @@ CELERY_CREATE_DIRS=1
 CELERYD_LOG_LEVEL="INFO"
 ```
 
-Démarrer les workers Celery :
+Démarrer les workers Celery :
 
 ```sh
 sudo /etc/init.d/celeryd_transcript start
@@ -355,7 +355,7 @@ sudo /etc/init.d/celeryd_encod start
 > python -m pod.settings
 > ```
 
-### Étape 5 : Installation d’Elasticsearch
+### Étape 5 : Installation d’Elasticsearch
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -365,13 +365,13 @@ sudo /etc/init.d/celeryd_encod start
 
 #### Installation d’Elasticsearch (8.17.4) *(sur serveur d’indexation)*
 
-Installer Java :
+Installer Java :
 
 ```sh
 sudo apt-get install default-jdk
 ```
 
-Installer ElasticSearch :
+Installer ElasticSearch :
 
 ```sh
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
@@ -379,7 +379,7 @@ echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://arti
 sudo apt-get update && sudo apt-get install elasticsearch
 ```
 
-Création d’un user pod au niveau d’Elasticsearch :
+Création d’un user pod au niveau d’Elasticsearch :
 
 ```sh
 sudo /usr/share/elasticsearch/bin/elasticsearch-users useradd pod -p podpod -r superuser
@@ -387,17 +387,17 @@ sudo /usr/share/elasticsearch/bin/elasticsearch-users useradd pod -p podpod -r s
 
 #### Paramétrage du mode sécurité d’ES 8
 
-Génération des certificats pour activer le TLS :
+Génération des certificats pour activer le TLS :
 
 ```sh
 sudo /usr/share/elasticsearch/bin/elasticsearch-certutil ca
 sudo /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
 ```
 
-> Deux certificats ont été créés : `/usr/share/elasticsearch/elastic-stack-ca.p12` et `/usr/share/elasticsearch/elastic-certificates.p12`
+> Deux certificats ont été créés : `/usr/share/elasticsearch/elastic-stack-ca.p12` et `/usr/share/elasticsearch/elastic-certificates.p12`
 
 Lancer la commande `/usr/share/elasticsearch/bin/elasticsearch-certutil http` afin de générer des certificats pour le cryptage http.
-Saisir les noms d’hôtes et les adresses IP des machines à partir desquelles vous souhaitez communiquer avec elaticsearch via http :
+Saisir les noms d’hôtes et les adresses IP des machines à partir desquelles vous souhaitez communiquer avec elaticsearch via http :
 
 ```conf
 Generate a CDR => no
@@ -419,7 +419,7 @@ sudo chown pod:pod /etc/elasticsearch/elastic-stack-ca.p12 /etc/elasticsearch/el
 sudo chmod +r /etc/elasticsearch/elastic-stack-ca.p12 /etc/elasticsearch/elastic-certificates.p12
 ```
 
-Modifier le fichier `/etc/elasticsearch.yml` :
+Modifier le fichier `/etc/elasticsearch.yml` :
 
 ```yml
 xpack.security.http.ssl:
@@ -436,7 +436,7 @@ xpack.security.transport.ssl:
   truststore.path: /etc/elasticsearch/elastic-certificates.p12
  ```
 
-Définir les mots de passe :
+Définir les mots de passe :
 
 ```sh
 bin/elasticsearch-keystore add xpack.security.http.ssl.keystore.secure_password
@@ -453,7 +453,7 @@ sudo systemctl enable elasticsearch.service
 sudo systemctl start elasticsearch.service
 ```
 
-Vérifier le fonctionnement d’ES 8 :
+Vérifier le fonctionnement d’ES 8 :
 
 ```sh
 curl -k -XGET "https://127.0.0.1:9200" -u pod:podpod
@@ -463,32 +463,32 @@ Résultat :
 
 ```json
 {
-  "name" : "pod-1",
-  "cluster_name" : "pod-application",
-  "cluster_uuid" : "3HgKDjb6T7e6Mgt1oxB1Mg",
-  "version" : {
-    "number" : "8.17.4",
-    "build_flavor" : "default",
-    "build_type" : "deb",
-    "build_hash" : "c63c7f5f8ce7d2e4805b7b3d842e7e792d84dda1",
-    "build_date" : "2025-03-20T15:39:59.811110136Z",
-    "build_snapshot" : false,
-    "lucene_version" : "9.12.0",
-    "minimum_wire_compatibility_version" : "7.17.0",
-    "minimum_index_compatibility_version" : "7.0.0"
+  "name": "pod-1",
+  "cluster_name": "pod-application",
+  "cluster_uuid": "3HgKDjb6T7e6Mgt1oxB1Mg",
+  "version": {
+    "number": "8.17.4",
+    "build_flavor": "default",
+    "build_type": "deb",
+    "build_hash": "c63c7f5f8ce7d2e4805b7b3d842e7e792d84dda1",
+    "build_date": "2025-03-20T15:39:59.811110136Z",
+    "build_snapshot": false,
+    "lucene_version": "9.12.0",
+    "minimum_wire_compatibility_version": "7.17.0",
+    "minimum_index_compatibility_version": "7.0.0"
   },
-  "tagline" : "You Know, for Search"
+  "tagline": "You Know, for Search"
 }
 ```
 
-Installation du plugin ICU :
+Installation du plugin ICU :
 
 ```sh
 sudo bin/elasticsearch-plugin install analysis-icu
 sudo systemctl restart elasticsearch.service
 ```
 
-Ou alors, si vous rencontrez des problèmes de pare-feu :
+Ou alors, si vous rencontrez des problèmes de pare-feu :
 
 ```sh
 sudo CLI_JAVA_OPTS="-Dhttp.proxyHost=proxy.univ.fr -Dhttp.proxyPort=3128 -Dhttps.proxyHost=proxy.univ.fr -Dhttps.proxyPort=3128" /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
@@ -496,27 +496,27 @@ sudo CLI_JAVA_OPTS="-Dhttp.proxyHost=proxy.univ.fr -Dhttp.proxyPort=3128 -Dhttps
 
 #### Création de l’index Pod *(sur serveur frontal)*
 
-Modifier le fichier `pod/custom/setting_local.py` :
+Modifier le fichier `pod/custom/setting_local.py` :
 
 ```py
 ES_VERSION = 8
 ES_URL = ['http://elastic.univ.fr:9200/']
-ES_OPTIONS = {'verify_certs' : False, 'basic_auth' : ('pod', 'mdp')}
+ES_OPTIONS = {'verify_certs': False, 'basic_auth': ('pod', 'mdp')}
 ```
 
-Modifier le fichier requirements.txt :
+Modifier le fichier requirements.txt :
 
 ```conf
 elasticsearch==8.17.2
 ```
 
-Et dans l’environnement virtuel `django_pod4` appliquer la modification précédente :
+Et dans l’environnement virtuel `django_pod4` appliquer la modification précédente :
 
 ```sh
 pip3 install -r requirements.txt
 ```
 
-Puis lancer la création de l’index Pod :
+Puis lancer la création de l’index Pod :
 
 ```sh
 python manage.py create_pod_index
@@ -524,7 +524,7 @@ python manage.py create_pod_index
 
 > `Video index successfully created on ES.` Félicitations !
 
-### Étape 6 : Installation de NGINX et UWSGI
+### Étape 6 : Installation de NGINX et UWSGI
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -540,7 +540,7 @@ sudo apt install nginx-extras
 sudo /etc/init.d/nginx status
 ```
 
-Configurer NGINX :
+Configurer NGINX :
 
 ```sh
 sudo vim /etc/nginx/sites-enabled/default
@@ -552,12 +552,12 @@ Commenter la ligne `listen [::]:80 default_server;`
 sudo vim /etc/nginx/nginx.conf
 ```
 
-Ajouter la ligne suivante :
+Ajouter la ligne suivante :
 
 ```conf
 http {
 [...]
-     # Pod Progress Bar : reserve 1MB under the name 'uploads' to track uploads
+     # Pod Progress Bar : reserve 1MB under the name 'uploads' to track uploads
  upload_progress uploadp 1m;
 [...]
 ```
@@ -568,7 +568,7 @@ Copier le fichier `pod/pod_nginx.conf` dans le répertoire `pod/custom`, et modi
 cp /data/django4/podv4/pod_nginx.conf /data/django4/podv4/pod/custom/.
 ```
 
-Créer un lien symbolique du fichier vers le dossier `sites-enabled` de NGINX, et redémarrer le service :
+Créer un lien symbolique du fichier vers le dossier `sites-enabled` de NGINX, et redémarrer le service :
 
 ```sh
 sudo ln -s pod/custom/pod_nginx.conf /etc/nginx/sites-enabled/pod_nginx.conf
@@ -577,7 +577,7 @@ sudo ln -s pod/custom/pod_nginx.conf /etc/nginx/sites-enabled/pod_nginx.conf
 
 #### Installation d’UWSGI
 
-Dans l’environnement virtuel `django_pod4`, installer le module UWSGI :
+Dans l’environnement virtuel `django_pod4`, installer le module UWSGI :
 
 ```sh
 pip3 install uwsgi
@@ -585,7 +585,7 @@ uwsgi --version
 2.0.29
 ```
 
-Copier le fichier `pod/pod_uwsgi.ini` dans le répertoire `pod/custom`, et modifier les paramètres :
+Copier le fichier `pod/pod_uwsgi.ini` dans le répertoire `pod/custom`, et modifier les paramètres :
 
 ```sh
 cp pod/pod_uwsgi.ini pod/custom/.
@@ -605,13 +605,13 @@ logto           = /var/log/pod/log/uwsgi.log
 buffer-size     = 8192
 ```
 
-Toujours dans l’environnement virtuel `django_pod4`, appliquer les paramètres :
+Toujours dans l’environnement virtuel `django_pod4`, appliquer les paramètres :
 
 ```sh
 sudo uwsgi --ini pod/custom/pod_uwsgi.ini --enable-threads --daemonize /var/log/pod/uwsgi-pod.log --uid pod --gid www-data --pidfile /tmp/pod.pid
 ```
 
-Créer le service :
+Créer le service :
 
 ```sh
 sudo nano /etc/systemd/system/uwsgi-pod.service
@@ -636,14 +636,14 @@ NotifyAccess=all
 WantedBy=multi-user.target
 ```
 
-Puis activer le service, et le lancer :
+Puis activer le service, et le lancer :
 
 ```sh
 sudo systemctl enable uwsgi-pod
 sudo systemctl start uwsgi-pod
 ```
 
-### Étape 7 : Installation des dépendances et mise en route
+### Étape 7 : Installation des dépendances et mise en route
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -651,7 +651,7 @@ sudo systemctl start uwsgi-pod
 | **Documentations de référence** | [Documentation ESUP Pod](https://www.esup-portail.org/wiki/spaces/ES/pages/1163984902/Installation+de+la+plateforme+Pod+V3)|
 {: .table .table-striped}
 
-Si besoin, installer Curl :
+Si besoin, installer Curl :
 
 ```sh
 apt-get install -y curl
@@ -668,26 +668,26 @@ npm install -g npm@11.2.0
 yarn --version
 ```
 
-En tant que user pod, installer les dépendances dans le dossier `pod` :
+En tant que user pod, installer les dépendances dans le dossier `pod` :
 
 ```sh
 cd /data/django4/podv4/pod
 yarn install
 ```
 
-Dans l’environnement `django_pod4`, déployer les fichiers statiques :
+Dans l’environnement `django_pod4`, déployer les fichiers statiques :
 
 ```sh
 python manage.py collectstatic --no-input --clear
 ```
 
-Lancer le script `createDB`, afin de créer les fichiers de migration et la BDD :
+Lancer le script `createDB`, afin de créer les fichiers de migration et la BDD :
 
 ```sh
 make createDB
 ```
 
-Dans l’environnement `django_pod4`, créer un superutilisateur POD :
+Dans l’environnement `django_pod4`, créer un superutilisateur POD :
 
 ```sh
 python manage.py createsuperuser
@@ -695,10 +695,10 @@ python manage.py createsuperuser
 
 ### Configurer l’application POD
 
-Voici la configuration de l’application POD à l’UGA :
+Voici la configuration de l’application POD à l’UGA :
 > Ces fichiers évoluerons lors du passage en https et lors de la mise en production des serveurs
 
-`pod/custom/settings_local.py` :
+`pod/custom/settings_local.py` :
 
 ```py
 SECRET_KEY = 'secretkey'
@@ -720,7 +720,7 @@ DEBUG = False
 ES_VERSION = 8
 ES_URL = ['http://elastic.univ.fr:9200/']
 ES_INDEX = "pod"
-ES_OPTIONS = {'verify_certs' : False, 'basic_auth' : ('pod', 'podpod')}
+ES_OPTIONS = {'verify_certs': False, 'basic_auth': ('pod', 'podpod')}
 
 ALLOWED_HOSTS = ['pod-univ.fr', 'pod-univ']
 BASE_URL = 'http://pod.univ.fr'

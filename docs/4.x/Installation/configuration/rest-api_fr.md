@@ -6,19 +6,19 @@ lang: fr
 
 # Utilisation de l’API Rest
 
-Pour utiliser, importer et exporter des données depuis et vers votre instance de Pod, vous avez deux possibilités : via un navigateur ou en ligne de commande.
+Pour utiliser, importer et exporter des données depuis et vers votre instance de Pod, vous avez deux possibilités : via un navigateur ou en ligne de commande.
 
 ## Navigateur
 
-Via votre navigateur, il vous suffit de vous rendre sur la page Rest de votre pod : `http(s)://pod.univ.fr/rest` et de renseigner le compte root de votre instance.
+Via votre navigateur, il vous suffit de vous rendre sur la page Rest de votre pod : `http(s)://pod.univ.fr/rest` et de renseigner le compte root de votre instance.
 
 Vous aurez donc accès aux données au format JSON de votre instance et pourrez en poster de nouvelles.
 
 N’hésitez pas à explorer cette interface pour y découvrir toutes les possibilités.
 
-Nous vous conseillons de restreindre l’accès à "/rest" de votre instance via votre configuration nginx :
+Nous vous conseillons de restreindre l’accès à "/rest" de votre instance via votre configuration nginx :
 
-```bash
+```sh
 location /rest {
     allow XXX.XXX.X.X/24;
     deny all;
@@ -27,43 +27,43 @@ location /rest {
 
 ## Terminal
 
-Pour gérer les données de votre instance de Pod en ligne de commande, voici les différentes étapes à suivre :
+Pour gérer les données de votre instance de Pod en ligne de commande, voici les différentes étapes à suivre :
 
 ### Créer un jeton d’authentification
 
-Dans l’administration, il faut créer un jeton d’authentification : `http(s)://pod.univ.fr/admin/authtoken/`
+Dans l’administration, il faut créer un jeton d’authentification : `http(s)://pod.univ.fr/admin/authtoken/`
 
 > ⚠️ Attention, le jeton aura les mêmes accès que l’utilisateur sélectionné pour le créer.
 
 Il vous suffit ensuite d’utiliser ce jeton dans vos requêtes Curl.
 
-Par exemple, cette requête permet de récupérer les utilisateurs :
+Par exemple, cette requête permet de récupérer les utilisateurs :
 
-```bash
+```sh
 curl -H "Content-Type: application/json" -H 'Authorization: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX' -X GET -d '{}' http(s)://pod.univ.fr/rest/users/
 ```
 
 Pour savoir comment créer vos requêtes, n’hésitez pas à utiliser l’interface web via votre navigateur, vous aurez la liste des objets modifiables et des exemples de requêtes.
 
-Autre exemple, la commande suivante permet de créer un type intitulé "test :
+Autre exemple, la commande suivante permet de créer un type intitulé "test :
 
-```bash
+```sh
 curl -H "Content-Type: application/json" -H 'Authorization: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX' -X POST -d '{
     "title": "test"
 }' http(s)://pod.univ.fr/rest/types/
 ```
 
-L’exécution de cette commande renvoie le type créé :
+L’exécution de cette commande renvoie le type créé :
 
-```bash
+```sh
     {"id":13,"url":"http(s)://pod.univ.fr/rest/types/13/","title":"test","description":"-- désolé, aucune traduction fournie --","icon":null}
 ```
 
 Enfin, on peut modifier un élément présent. Par exemple, on peut changer le type créé ci-dessus.
 
-La commande suivante change le titre du type dont l’identifiant est 13 :
+La commande suivante change le titre du type dont l’identifiant est 13 :
 
-```bash
+```sh
     curl -H "Content-Type: application/json" -H 'Authorization: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX' -X PATCH -d '{
         "title": "test new"
     }' http(s)://pod.univ.fr/rest/types/13/
@@ -71,9 +71,9 @@ La commande suivante change le titre du type dont l’identifiant est 13 :
 
 Cette commande renvoie les mêmes informations que lors de la création.
 
-Enfin, il est également possible de poster (sans lancer l’encodage) des vidéos en ligne de commande. Voici un exemple :
+Enfin, il est également possible de poster (sans lancer l’encodage) des vidéos en ligne de commande. Voici un exemple :
 
-```bash
+```sh
 curl  -H "Content-Type: multipart/form-data" \
     -H 'Authorization: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX' \
     -F "owner=http(s)://pod.univ.fr/rest/users/1/" \
@@ -83,34 +83,34 @@ curl  -H "Content-Type: multipart/form-data" \
     http(s)://pod.univ.fr/rest/videos/
 ```
 
-En cas de succès, cette commande renvoie toutes les informations disponibles liées a cette vidéo. Si vous souhaitez lancer l’encodage de cette dernière, vous pouvez utiliser l’information "slug" ou titre-court (généré automatiquement lors de la création) en paramètre dans une deuxième commande. Exemple :
+En cas de succès, cette commande renvoie toutes les informations disponibles liées a cette vidéo. Si vous souhaitez lancer l’encodage de cette dernière, vous pouvez utiliser l’information "slug" ou titre-court (généré automatiquement lors de la création) en paramètre dans une deuxième commande. Exemple :
 
-```bash
+```sh
 curl -XGET -H "Content-Type: application/json" \
     -H 'Authorization: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX' \
     "http(s)://pod.univ.fr/rest/launch_encode_view/?slug=id-ma-video"
 ```
 
-Attention, pour les relations entre objet, il faut préciser l’url plutôt que la clé primaire :
+Attention, pour les relations entre objet, il faut préciser l’url plutôt que la clé primaire :
 
-```bash
+```sh
     The HyperlinkedModelSerializer class is similar to the ModelSerializer class except that it uses hyperlinks to represent relationships, rather than primary keys. By default the serializer will include a url field instead of a primary key field.
 ```
 
 Ceci pourrait être modifié dans les futures versions de Pod.
 
-Gestion des diffuseurs en ligne de commande :
+Gestion des diffuseurs en ligne de commande :
 
-Récupération de la liste des diffuseurs :
+Récupération de la liste des diffuseurs :
 
-```bash
+```sh
 curl  -H "Content-Type: application/json" \
   -H 'Authorization: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX' \
   -F "slug=id-ma-video" \
   http(s)://pod.univ.fr/rest/broadcasters/
 ```
 
-La réponse du serveur sera de cette forme :
+La réponse du serveur sera de cette forme :
 
 ```json
 {
@@ -132,13 +132,13 @@ La réponse du serveur sera de cette forme :
 }
 ```
 
-Vous trouverez ci-dessous un exemple de mise à jour du paramètre "status" d’un diffuseur. En utilisant la réponse précédente, on peut donc exécuter la commande suivante :
+Vous trouverez ci-dessous un exemple de mise à jour du paramètre "status" d’un diffuseur. En utilisant la réponse précédente, on peut donc exécuter la commande suivante :
 
-```bash
+```sh
 curl --location --request PATCH 'https://pod.univ.fr/rest/broadcasters/nom-de-mon-diffuseur/' \
 --header 'Authorization: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX' \
 --header 'Content-Type: application/json' \
---data-raw '{"status" : true}'
+--data-raw '{"status": true}'
 ```
 
 ## DublinCore
@@ -147,9 +147,9 @@ Enfin, pour avoir la représentation au format DublinCore de vos vidéos, il suf
 
 Vous pouvez filtrer vos vidéos à l’aide de paramètre GET ajoutés à votre URL.
 
-Par exemple, pour avoir la représentation DublinCore des vidéos de l’utilisateur 1, vous pouvez exécuter la commande suivante :
+Par exemple, pour avoir la représentation DublinCore des vidéos de l’utilisateur 1, vous pouvez exécuter la commande suivante :
 
-```bash
+```sh
 curl -H "Content-Type: application/json" -H 'Authorization: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX' -X GET http(s)://pod.univ.fr/rest/dublincore/?owner=1
 ```
 

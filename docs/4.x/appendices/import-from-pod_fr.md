@@ -6,32 +6,32 @@ lang: fr
 
 # Importer en masse des utilisateurs d’un Pod vers un autre Pod
 
-1. Exporter les utilisateurs de Pod n°1 :
+1. Exporter les utilisateurs de Pod n°1 :
 
-    Depuis le compte pod :
+    Depuis le compte pod :
 
-    ```bash
+    ```sh
     python manage.py dumpdata auth.user --indent 2 > export_user.json
     ```
 
-2. Nettoyage du json avec jq :
+2. Nettoyage du json avec jq :
 
-    Installation de jq depuis debian :
+    Installation de jq depuis debian :
 
-    ```bash
+    ```sh
     apt-get install jq
     ```
 
-    ```bash
+    ```sh
     cat export_user.json | jq ' [.[] | del(.pk?, .fields.is_superuser?, .fields.last_login?, .fields.date_joined?,
     .fields.groups?, .fields.user_permissions?) ]' > import_user.json
     ```
 
-    Suppression du pk, is_superuser, last-login, ... : à adapter suivant le besoin
+    Suppression du pk, is_superuser, last-login, ... : à adapter suivant le besoin
 
-3. Import des utilisateurs dans Pod n°2 :
+3. Import des utilisateurs dans Pod n°2 :
 
-    ```bash
+    ```sh
     python manage.py loaddata import_user.json
     ```
 

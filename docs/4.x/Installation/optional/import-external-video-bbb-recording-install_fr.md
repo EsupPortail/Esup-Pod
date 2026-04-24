@@ -73,7 +73,7 @@ Pour ce faire, voici la marche à suivre pour chaque serveur BBB 2.6+ de l’arc
 
 - Installer le format vidéo de traitement d’enregistrement supplémentaire via la commande suivante :
 
-```bash
+```sh
 sudo apt install bbb-playback-video
 ```
 
@@ -111,7 +111,7 @@ Personnellement, c’est sur ce fichier que j’ai directement modifié les vale
 
 - Redémarrer à minima la file d’attente de traitement d’enregistrements :
 
-```bash
+```sh
 sudo systemctl restart bbb-rap-resque-worker.service
 # Il se peut qu’il faille aussi redémarrer le service Nginx
 # Personnellement, je préfère redémarrer tous les services BBB (attention s’il y a des sessions en cours) via :

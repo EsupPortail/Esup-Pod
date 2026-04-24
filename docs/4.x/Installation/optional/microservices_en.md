@@ -36,7 +36,7 @@ Each microservice is launched via a Celery command.
 
 In the `settings_local.py` file:
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 
 # Celery configuration on the frontend
@@ -48,7 +48,7 @@ ENCODING_TRANSCODING_CELERY_BROKER_URL = "redis://redis:6379/5"
 
 Install system dependencies:
 
-```bash
+```sh
 (django_pod4) pod@pod-encoding:/usr/local/django_projects/podv4$ apt-get update && apt-get install -y ffmpeg \
     ffmpegthumbnailer \
     imagemagick
@@ -56,13 +56,13 @@ Install system dependencies:
 
 Install Python libraries (in a virtual environment):
 
-```bash
+```sh
 (django_pod4) pod@pod-encoding:/usr/local/django_projects/podv4$ pip3 install --no-cache-dir -r requirements-encode.txt
 ```
 
 Required configuration in the `settings_local.py` file:
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 
 # Configuration on the encoding server
@@ -74,7 +74,7 @@ POD_API_TOKEN = "xxxx"
 
 Then simply launch Celery via:
 
-```bash
+```sh
 (django_pod4) pod@pod-encoding:/usr/local/django_projects/podv4$ celery -A pod.video_encode_transcript.encoding_tasks worker -l INFO -Q encoding --concurrency 1 -n encode
 ```
 
@@ -90,7 +90,7 @@ Your `podv4` directory from the backend server must be shared between your serve
 
 In the `settings_local.py` file:
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 
 # Celery configuration on the frontend
@@ -102,20 +102,20 @@ ENCODING_TRANSCODING_CELERY_BROKER_URL = "redis://redis:6379/5"
 
 Install system dependencies:
 
-```bash
+```sh
 (django_pod4) pod@pod-transcoding:/usr/local/django_projects/podv4$ apt-get update && apt-get install -y sox libsox-fmt-mp3
 ```
 
 Install Python libraries:
 
-```bash
+```sh
 (django_pod4) pod@pod-transcoding:/usr/local/django_projects/podv4$ pip3 install --no-cache-dir -r requirements-transcripts.txt \
     && pip3 install --no-cache-dir -r requirements-encode.txt
 ```
 
 Required configuration in `settings_local.py`:
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 
 # REST API address to call after remote encoding or transcription:
@@ -126,7 +126,7 @@ POD_API_TOKEN = "xxxx"
 
 Then launch Celery:
 
-```bash
+```sh
 (django_pod4) pod@pod-transcoding:/usr/local/django_projects/podv4$ celery -A pod.video_encode_transcript.transcripting_tasks worker -l INFO -Q transcripting --concurrency 1 -n transcript
 ```
 
@@ -142,7 +142,7 @@ Your `podv4` directory from the backend server must be shared between your serve
 
 In `settings_local.py`:
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 
 USE_XAPI = True
@@ -158,13 +158,13 @@ XAPI_CELERY_BROKER_URL = "redis://redis:6379/6"
 
 Install Python dependencies in a virtual environment (identical to those for encoding):
 
-```bash
+```sh
 (django_pod4) pod@pod-transcoding:/usr/local/django_projects/podv4$ pip3 install --no-cache-dir -r requirements-encode.txt
 ```
 
 Then simply launch Celery:
 
-```bash
+```sh
 (django_pod4) pod@pod-transcoding:/usr/local/django_projects/podv4$ celery -A pod.xapi.xapi_tasks worker -l INFO -Q xapi --concurrency 1 -n xapi
 ```
 
@@ -176,12 +176,12 @@ Navigate to the django virtual environment and run the following commands, repla
 
 For active tasks:
 
-```bash
+```sh
 (django_pod4) pod@pod-transcoding:/$ celery --broker=redis://redis:6379/<ID> inspect active
 ```
 
 For pending tasks:
 
-```bash
+```sh
 (django_pod4) pod@pod-transcoding:/$ celery --broker=redis://redis:6379/<ID> inspect reserved
 ```

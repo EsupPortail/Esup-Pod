@@ -14,13 +14,13 @@ Le script récupère toutes vidéos de la table recorder_recordingfiletreatment.
 
 ## Ajouter le délai de rétention dans le fichier de configuration `custom/settings_local.py`
 
-```bash
+```sh
 RECORD_RETENTION = 30
 ```
 
 ## **Créer le fichier `/pod/custom/management/commands/enregistrement.py`
 
-```python
+```py
 import os
 import shutil
 from django.core.management.base import BaseCommand
@@ -74,15 +74,15 @@ class Command(BaseCommand):
             checkRecordingRetention()
 ```
 
-Pour exécuter la commande manuellement :
+Pour exécuter la commande manuellement :
 
-```bash
+```sh
 python manage.py enregistrement checkRecordingRetention
 ```
 
-Pour exécuter la commande par cron :
+Pour exécuter la commande par cron :
 
-```bash
+```sh
 crontab -e
 
 */15 * * * * /usr/bin/bash -c 'export WORKON_HOME=/data/www/%userpod%/.virtualenvs; export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.11; cd /data/www/%userpod%/django_projects/podv4; source /usr/bin/virtualenvwrapper.sh; workon django_pod; python manage.py enregistrement checkRecordingRetention'

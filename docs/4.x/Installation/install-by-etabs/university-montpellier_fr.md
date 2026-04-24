@@ -25,17 +25,17 @@ Ce document présente les travaux réalisés par l’Université de Montpellier 
 
 ![Infrastructure Pod v4 à l’UM](um/architecture.webp)
 
-Cette infrastructure repose sur l’utilisation de :
+Cette infrastructure repose sur l’utilisation de :
 
-- **1 load balancer HAProxy** : ce load balancer est utilisé à l’université pour quasiment l’ensemble des sites Web.
-- **2 serveurs Web** : utiliser deux serveurs web en frontal renforce la sécurité et la disponibilité, en répartissant la charge et en évitant les points de défaillance uniques.<br>
-  _Briques installées sur ces serveurs Web : Pod, Nginx, uWSGI._
-- **1 serveur principal** : ce serveur - nommé principal pour le différencier des autres - correspond à un serveur d’encodage déporté pour lequel REDIS et Elasticsearch sont installés.<br>
-  _Briques installées sur ces serveurs Web : Pod, REDIS, Elasticsearch, Celery (1 worker), ffmpeg, Whisper._
-- **3 serveurs d’encodage** : serveurs d’encodage déportés purs, principalement utilisés pour la transcription (qui ne peut encore être réalisée sur les serveurs GPU - depuis 2025, ~17% des vidéos sont transcrites) et pour l’encodage des vidéos dont le format n’est pas géré par les serveurs GPU.<br>
-  _Briques installées sur ces serveurs Web : Pod, Celery (1 worker), ffmpeg, Whisper._
-- **1 base de données** : base de données MariaDB mutualisée.
-- **1 serveur de fichiers** : serveur de fichiers partagé NFS d’une taille de 50To, dont 40To est occupé actuellement.
+- **1 load balancer HAProxy** : ce load balancer est utilisé à l’université pour quasiment l’ensemble des sites Web.
+- **2 serveurs Web** : utiliser deux serveurs web en frontal renforce la sécurité et la disponibilité, en répartissant la charge et en évitant les points de défaillance uniques.<br>
+  _Briques installées sur ces serveurs Web : Pod, Nginx, uWSGI._
+- **1 serveur principal** : ce serveur - nommé principal pour le différencier des autres - correspond à un serveur d’encodage déporté pour lequel REDIS et Elasticsearch sont installés.<br>
+  _Briques installées sur ces serveurs Web : Pod, REDIS, Elasticsearch, Celery (1 worker), ffmpeg, Whisper._
+- **3 serveurs d’encodage** : serveurs d’encodage déportés purs, principalement utilisés pour la transcription (qui ne peut encore être réalisée sur les serveurs GPU - depuis 2025, ~17% des vidéos sont transcrites) et pour l’encodage des vidéos dont le format n’est pas géré par les serveurs GPU.<br>
+  _Briques installées sur ces serveurs Web : Pod, Celery (1 worker), ffmpeg, Whisper._
+- **1 base de données** : base de données MariaDB mutualisée.
+- **1 serveur de fichiers** : serveur de fichiers partagé NFS d’une taille de 50To, dont 40To est occupé actuellement.
 
 _Tous les serveurs tournent sur Debian 12._
 
@@ -60,7 +60,7 @@ _Tous les serveurs tournent sur Debian 12._
 
 ---
 
-### Étape 1 : Installation de Pod v4
+### Étape 1 : Installation de Pod v4
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -70,8 +70,8 @@ _Tous les serveurs tournent sur Debian 12._
 
 J’ai suivi rigoureusement la documentation **[Installation d’Esup-Pod en mode Stand Alone / Environnement](../install_standalone_fr#environnement)**.
 
-> Spécificité UM :
-> Vis-à-vis de l’ancienne infrastructure, j’ai conservé le même **identifiant Linux** pour le user `pod`, via la commande :
+> Spécificité UM :
+> Vis-à-vis de l’ancienne infrastructure, j’ai conservé le même **identifiant Linux** pour le user `pod`, via la commande :
 >
 > ```sh
 > user@pod:~$ usermod -u 1313 pod
@@ -82,7 +82,7 @@ Concernant le fichier de configuration `settings_local.py`, une version finale e
 🎯 A la fin de cette étape, Pod v4 est installé sur tous les serveurs Pod, avec toutes ses librairies Python.
 {: .alert .alert-primary}
 
-### Étape 2 : Configuration et utilisation d’une base de données MySQL/MariaDB
+### Étape 2 : Configuration et utilisation d’une base de données MySQL/MariaDB
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -99,7 +99,7 @@ Au vue de l’architecture, j’ai remplacé `<my_database_host>` par **l’adre
 🎯 A la fin de cette étape, tous les serveurs Pod peuvent utiliser la base de données de type MySQL/MariaDB.
 {: .alert .alert-primary}
 
-### Étape 3 : Installation de REDIS
+### Étape 3 : Installation de REDIS
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -109,7 +109,7 @@ Au vue de l’architecture, j’ai remplacé `<my_database_host>` par **l’adre
 
 Pour installer REDIS sur le serveur principal, j’ai suivi la **[documentation du mode Stand Alone / Redis](../install_standalone_fr#redis)**.
 
-Au vue de l’architecture, j’ai remplacé partout `<my_redis_host>` par **l’adresse IP du serveur REDIS**, obtenu par `hostname -I` sur le serveur principal et j’ai édité le fichier _/etc/redis/redis.conf_ avec ces informations :
+Au vue de l’architecture, j’ai remplacé partout `<my_redis_host>` par **l’adresse IP du serveur REDIS**, obtenu par `hostname -I` sur le serveur principal et j’ai édité le fichier _/etc/redis/redis.conf_ avec ces informations :
 
 ```sh
 bind <my_redis_host>
@@ -119,7 +119,7 @@ protected-mode no
 🎯 A la fin de cette étape, REDIS est installé sur le serveur principal de Pod.
 {: .alert .alert-primary}
 
-### Étape 4 : Configuration et utilisation de REDIS
+### Étape 4 : Configuration et utilisation de REDIS
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -132,7 +132,7 @@ Pour configurer et utiliser REDIS sur tous les serveurs Pod, j’ai suivi la doc
 🎯 A la fin de cette étape, REDIS peut être utilisé par l’ensemble des serveurs Pod.
 {: .alert .alert-primary}
 
-### Étape 5 : Installation d’Elasticsearch
+### Étape 5 : Installation d’Elasticsearch
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -142,7 +142,7 @@ Pour configurer et utiliser REDIS sur tous les serveurs Pod, j’ai suivi la doc
 
 Pour installer Elasticsearch sur le serveur principal, j’ai suivi la **[documentation du mode Stand Alone / Elasticsearch](../install_standalone_fr#elasticsearch)** avec le _mode Security d’ES8_ activé.
 
-Au vue de l’architecture, j’ai remplacé partout `<my_es_host>` par **l’adresse IP du serveur Elasticsearch**, obtenu par `hostname -I` sur le serveur principal et j’ai édité le fichier _/etc/elasticsearch/elasticsearch.yml_ avec ces informations :
+Au vue de l’architecture, j’ai remplacé partout `<my_es_host>` par **l’adresse IP du serveur Elasticsearch**, obtenu par `hostname -I` sur le serveur principal et j’ai édité le fichier _/etc/elasticsearch/elasticsearch.yml_ avec ces informations :
 
 ```yml
 cluster.name: pod-application
@@ -168,7 +168,7 @@ xpack.security.http.ssl.truststore.path: /etc/elasticsearch/elastic-certificates
 🎯 A la fin de cette étape, Elasticsearch est installé sur le serveur principal de Pod.
 {: .alert .alert-primary}
 
-### Étape 6 : Installation des dépendances
+### Étape 6 : Installation des dépendances
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -184,7 +184,7 @@ Pour installer les dépendances sur tous les serveurs Pod, j’ai suivi la **[do
 🎯 A la fin de cette étape, les dépendances de Pod sont installés sur tous les serveurs Pod.
 {: .alert .alert-primary}
 
-### Étape 7 : Installation du système Web reposant sur NGINX/uWSGI et paramétrage
+### Étape 7 : Installation du système Web reposant sur NGINX/uWSGI et paramétrage
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -194,8 +194,8 @@ Pour installer les dépendances sur tous les serveurs Pod, j’ai suivi la **[do
 
 Pour installer, configurer et utiliser Nginx/uWSGI sur tous les serveurs Web, j’ai suivi la documentation concernant la mise en place de **[Frontal Web Nginx / UWSGI et fichiers statiques](../production-mode_fr#frontal-web-nginx--uwsgi-et-fichiers-statiques)**.
 
-> Spécificité UM :
-> Vis-à-vis de l’ancienne infrastructure, j’ai conservé le même **identifiant Linux** pour le groupe `www-data` que celui du groupe `nginx`, et j’ai ajouté le user `pod` à ce groupe via les commandes :
+> Spécificité UM :
+> Vis-à-vis de l’ancienne infrastructure, j’ai conservé le même **identifiant Linux** pour le groupe `www-data` que celui du groupe `nginx`, et j’ai ajouté le user `pod` à ce groupe via les commandes :
 >
 > ```sh
 > user@pod:~$ sudo groupmod -g 989 www-data
@@ -205,7 +205,7 @@ Pour installer, configurer et utiliser Nginx/uWSGI sur tous les serveurs Web, j�
 🎯 A la fin de cette étape, les serveurs Web reposant sur Nginx / UWSGI sont opérationnels.
 {: .alert .alert-primary}
 
-### Étape 8 : Installation du système d’encodage
+### Étape 8 : Installation du système d’encodage
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -223,7 +223,7 @@ Cela implique l’utilisation de REDIS du serveur principal et de Celery sur les
 🎯 A la fin de cette étape, les serveurs d’encodage, reposant sur **REDIS** et du **Celery**, sont fonctionnels.
 {: .alert .alert-primary}
 
-### Étape 9 : Installation du système de transcription
+### Étape 9 : Installation du système de transcription
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -239,7 +239,7 @@ Pour installer ce système d’autotranscription, j’ai suivi la **[documentati
 🎯 A la fin de cette étape, les serveurs d’encodage peuvent réaliser des transcriptions.
 {: .alert .alert-primary}
 
-### Étape 10 : Personnalisation visuelle
+### Étape 10 : Personnalisation visuelle
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -254,7 +254,7 @@ Pour réaliser la personnalisation visuelle pour mon établissement, j’ai suiv
 🎯 A la fin de cette étape, le site Web Pod v4 sera à la charte graphique de votre établissement.
 {: .alert .alert-primary}
 
-### Étape 11 : Migration des données entre la version 3  et la version 4
+### Étape 11 : Migration des données entre la version 3  et la version 4
 
 |                        | Commentaires                                      |
 |------------------------|---------------------------------------------------|
@@ -417,7 +417,7 @@ HOMEPAGE_SHOWS_RESTRICTED = True
 ES_URL = ['https://<my_es_host>:9200/']
 ES_VERSION = 8
 # ES_MAX_RETRIES = 10
-ES_OPTIONS = {'verify_certs' : False, 'basic_auth' : ('pod', '<my_es_password>')}
+ES_OPTIONS = {'verify_certs': False, 'basic_auth': ('pod', '<my_es_password>')}
 
 # Encodage encore via Celery
 CELERY_TO_ENCODE = True
@@ -445,7 +445,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
     'CSS_OVERRIDE': 'custom/custom-etab.css',
     'FAVICON': 'custom/img/favicon.png',
     # Si besoin de Matomo
-    # 'TRACKING_TEMPLATE' : 'custom/tracking.html'
+    # 'TRACKING_TEMPLATE': 'custom/tracking.html'
     # Si besoin de spécificique
     # 'PRE_HEADER_TEMPLATE': 'preheader.html'
 }
@@ -464,7 +464,7 @@ SUBJECT_CHOICES = (
 DEFAULT_THUMBNAIL = 'custom/img/default.svg'
 
 # Paramétrage Captcha
-# Si besoin : 'captcha.helpers.random_char_challenge'
+# Si besoin : 'captcha.helpers.random_char_challenge'
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
 # ('captcha.helpers.noise_null',)
 CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_arcs', 'captcha.helpers.noise_dots',)
@@ -849,7 +849,7 @@ master          = true
 processes       = 10
 # the socket (use the full path to be safe
 socket          = /usr/local/django_projects/podv4/podv4.sock
-# http          = :8000
+# http          =:8000
 # ... with appropriate permissions - may be needed
 chmod-socket    = 666
 # clear environment on exit
@@ -891,4 +891,4 @@ CELERYD_LOG_LEVEL="INFO"                                               # niveau 
 
 #### Fichier CSS pour l’UM
 
-Voici le lien direct vers la dernière version du CSS UM : [https://video.umontpellier.fr/static/custom/custom-um.css](https://video.umontpellier.fr/static/custom/custom-um.css)
+Voici le lien direct vers la dernière version du CSS UM : [https://video.umontpellier.fr/static/custom/custom-um.css](https://video.umontpellier.fr/static/custom/custom-um.css)

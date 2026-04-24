@@ -274,7 +274,7 @@ To migrate data from Pod v3 to Pod v4, I followed the **[documentation on the da
 🎯 At the end of this step, the Pod v4 website is truly in production, with all existing data.
 {: .alert .alert-primary}
 
-Voici la traduction en anglais, sans autre modification que la traduction elle-même :
+Voici la traduction en anglais, sans autre modification que la traduction elle-même :
 
 ---
 
@@ -418,7 +418,7 @@ HOMEPAGE_SHOWS_RESTRICTED = True
 # Elasticsearch URLs
 ES_URL = ['https://<my_es_host>:9200/']
 ES_VERSION = 8
-ES_OPTIONS = {'verify_certs' : False, 'basic_auth' : ('pod', '<my_es_password>')}
+ES_OPTIONS = {'verify_certs': False, 'basic_auth': ('pod', '<my_es_password>')}
 
 # Encoding still via Celery
 CELERY_TO_ENCODE = True
@@ -444,7 +444,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
     'CSS_OVERRIDE': 'custom/custom-etab.css',
     'FAVICON': 'custom/img/favicon.png',
     # If Matomo needed
-    # 'TRACKING_TEMPLATE' : 'custom/tracking.html'
+    # 'TRACKING_TEMPLATE': 'custom/tracking.html'
     # If you need specific
     # 'PRE_HEADER_TEMPLATE': 'preheader.html'
 }

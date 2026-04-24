@@ -38,7 +38,7 @@ Cliquer sur `Sauver`.
 
 ### Ajout de la conf KeyCloak dans le fichier settings
 
-```bash
+```sh
 AUTH_TYPE = (('local', ('local')), ('OIDC', "OIDC"))
 USE_OIDC = True
 OIDC_NAME = "OPENID KeyCloak"
@@ -60,4 +60,4 @@ _(1) Crédentials du client KeyCloak_
 
 _(2) Récupérer les infos dans la configuration OpenID du serveur KeyCloak_
 
-> ⚠️ Remarque : si vous rencontrez l’erreur "module `lib` has no attribute `X509_V_FLAG_CB_ISSUER_CHECK`", vous devrez mettre à jour la bibliothèque OpenSSL de Python.
+> ⚠️ Remarque : si vous rencontrez l’erreur "module `lib` has no attribute `X509_V_FLAG_CB_ISSUER_CHECK`", vous devrez mettre à jour la bibliothèque OpenSSL de Python.

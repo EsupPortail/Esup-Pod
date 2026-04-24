@@ -73,7 +73,7 @@ To do this, here is the procedure to follow for each BBB 2.6+ server in the arch
 
 - Install the additional recording processing video format via the following command:
 
-```bash
+```sh
 sudo apt install bbb-playback-video
 ```
 
@@ -111,7 +111,7 @@ Personally, I directly modified the values in this file to set: -preset medium -
 
 - At a minimum, restart the recording processing queue:
 
-```bash
+```sh
 sudo systemctl restart bbb-rap-resque-worker.service
 # It may also be necessary to restart the Nginx service
 # Personally, I prefer to restart all BBB services (be careful if there are sessions in progress) via:

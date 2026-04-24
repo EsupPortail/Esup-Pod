@@ -26,7 +26,7 @@ Thus, you just need to take the Pod installation documentation in the "Productio
 
 When setting up the second site, you will need to rename the necessary Nginx configuration files with different names than those of the first site. For example:
 
-```bash
+```sh
 pod@pod:~/django_projects/podv4$ cp pod_nginx.conf pod/custom/pod_nginx2.conf
 pod@pod:~/django_projects/podv4$ vim pod/custom/pod_nginx2.conf
 pod@pod:~/django_projects/podv4$ sudo ln -s /usr/local/django_projects/podv4/pod/custom/pod_nginx2.conf /etc/nginx/sites-enabled/pod_nginx2.conf
@@ -56,7 +56,7 @@ Once deployment is complete, a few adjustments need to be made in the newly crea
 
 The file must contain at least these two lines:
 
-```python
+```py
 from .settings import *
 SITE_ID = 2
 ES_INDEX = 'pod'
@@ -66,7 +66,7 @@ In this file, it is possible to override any Pod setting for this specific site.
 
 Example usage:
 
-```bash
+```sh
 python manage.py <command> --settings=pod.sites2_settings
 ```
 
@@ -86,7 +86,7 @@ The people in the "Site Admin" group will therefore only have permissions on the
 
 Diagram:
 
-```bash
+```sh
 NGINX-VHOST
  -> uwsgi socket
      -> uwsgi ini file
@@ -97,7 +97,7 @@ Each tenant must have its own site identifier (`SITE_ID=2`).
 
 Example file:
 
-```python
+```py
 from .settings import *
 SITE_ID = 2
 ES_INDEX = 'podtenant'
@@ -110,7 +110,7 @@ CONTACT_US_EMAIL = ['contact@tenant.fr']
 
 Additional settings:
 
-```python
+```py
 TEMPLATE_VISIBLE_SETTINGS = {
     'TITLE_SITE': 'tenant.Video',
     'TITLE_ETB': 'Tenant title',
@@ -129,14 +129,14 @@ CELERY_BROKER_URL = "amqp://pod:p0drabbit@localhost/rabbitpod-tenant"
 
 Each command must be launched with the tenant's settings file:
 
-```bash
+```sh
 python manage.py runserver tenant:8080 --settings=pod.tenant_settings
 python manage.py index_videos --all --settings=pod.tenant_settings
 ```
 
 ### Cron tasks
 
-```bash
+```sh
 0 3 * * * cd /usr/local/django_projects/podv4 && /home/pod/.virtualenvs/django_pod/bin/python manage.py clearsessions &>> /usr/local/django_projects/podv4/pod/log/cron_clearsessions.log 2>&1
 0 4 * * * cd /usr/local/django_projects/podv4 && /home/pod/.virtualenvs/django_pod/bin/python manage.py index_videos --all &>> /usr/local/django_projects/podv4/pod/log/cron_index.log 2>&1
 0 5 * * * cd /usr/local/django_projects/podv4 && /home/pod/.virtualenvs/django_pod/bin/python manage.py check_obsolete_videos >> /usr/local/django_projects/podv4/pod/log/cron_obsolete.log 2>&1

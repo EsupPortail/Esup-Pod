@@ -10,7 +10,7 @@ lang: en
 
     From the Pod account:
 
-    ```bash
+    ```sh
     python manage.py dumpdata auth.user --indent 2 > export_user.json
     ```
 
@@ -18,11 +18,11 @@ lang: en
 
     Install jq from Debian:
 
-    ```bash
+    ```sh
     apt-get install jq
     ```
 
-    ```bash
+    ```sh
     cat export_user.json | jq ' [.[] | del(.pk?, .fields.is_superuser?, .fields.last_login?, .fields.date_joined?,
     .fields.groups?, .fields.user_permissions?) ]' > import_user.json
     ```
@@ -31,7 +31,7 @@ lang: en
 
 3. Importing users into Pod No. 2:
 
-    ```bash
+    ```sh
     python manage.py loaddata import_user.json
     ```
 

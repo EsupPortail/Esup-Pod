@@ -24,7 +24,7 @@ In short, if you have `ACCOMMODATION_YEARS = {'student': 1}` in your settings fi
 
 As a reminder, here are the default possible values for affiliation:
 
-```bash
+```sh
 AFFILIATION = getattr(
     settings, 'AFFILIATION',
     (
@@ -88,13 +88,13 @@ In addition, two CSV files (`deleted.csv` and `archived.csv`) are created in Dja
 
 To enable daily video processing, you must first add this variable to your configuration file:
 
-```bash
+```sh
 USE_OBSOLESCENCE = True
 ```
 
 Then, you need to schedule a cron job to run once a day (here at 5:00) with the command:
 
-```bash
+```sh
 0 5 * * * cd /home/pod/django_projects/podv4 && /home/pod/.virtualenvs/django_pod4/bin/python manage.py check_obsolete_videos
 ```
 
@@ -105,7 +105,7 @@ Starting from version 3.7.0 of Pod, a script is provided to automatically handle
 This script exports the source video file along with related documents and metadata (subtitles, notes, comments) into a separate folder, before deleting the video from Pod.
 A set of parameters can be customized directly in the `create_archive_package.py` file:
 
-```bash
+```sh
 """CUSTOM PARAMETERS."""
 ARCHIVE_ROOT = "/video_archiving"  # Folder where archive packages will be moved
 HOW_MANY_DAYS = 365  # Delay before an archived video is moved to ARCHIVE_ROOT
@@ -113,7 +113,7 @@ HOW_MANY_DAYS = 365  # Delay before an archived video is moved to ARCHIVE_ROOT
 
 If you want to test the command without deleting any video, you can run it with the `--dry` option:
 
-```bash
+```sh
 python manage.py create_archive_package --dry
 ```
 
@@ -121,7 +121,7 @@ You will then receive an email with a summary of the videos that would have been
 
 Next, schedule a weekly cron job (here on Mondays at 6:00):
 
-```bash
+```sh
 0 6 * * 1 cd /home/pod/django_projects/podv4 && /home/pod/.virtualenvs/django_pod4/bin/python manage.py create_archive_package &>> /var/log/pod/create_archive_package.log
 ```
 
@@ -135,12 +135,12 @@ If the video was archived (and not deleted), and if you act in time, it can stil
 To do so, you must specify the video ID and the user to whom the video should be reassigned:
 (1st parameter = video_id, 2nd parameter = user_id)
 
-```bash
+```sh
 pod@pod:~$ python manage.py unarchive_video 1234 5678
 ```
 
 From version 3.7.0 of Pod, the 2nd parameter (user_id) becomes optional: you only need to specify the video to be unarchived:
 
-```bash
+```sh
 pod@pod:~$ python manage.py unarchive_video 1234
 ```

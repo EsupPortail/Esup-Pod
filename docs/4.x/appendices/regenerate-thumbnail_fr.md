@@ -13,16 +13,16 @@ Afin de réaliser cette tâche, un script a été réalisé (commande `create_th
 | pod/video/management/commands/create_thubnail.py |
 {: .table .table-striped}
 
-Il suffit alors de se positionner dans le bon environnement :
+Il suffit alors de se positionner dans le bon environnement :
 
-```bash
+```sh
 cd /usr/local/django_projects/podv4/
 workon django_pod4
 ```
 
-Et de lancer la commande de régénération :
+Et de lancer la commande de régénération :
 
-```bash
+```sh
 python manage.py create_thumbnail video_id1 video_id2
 ```
 

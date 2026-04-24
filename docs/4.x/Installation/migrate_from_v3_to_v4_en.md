@@ -59,7 +59,7 @@ A dedicated script, `check_database_problems.py`, is available here: [https://gi
 You need to retrieve this script and place it in the `pod/video/management/commands` directory with the correct permissions.
 {: .alert .alert-warning}
 
-```bash
+```sh
 python manage.py check_database_problems
 ```
 
@@ -69,7 +69,7 @@ The script will detect and fix inconsistencies.
 
 Run the script from a Pod v3 server using the following command:
 
-```bash
+```sh
 python manage.py export_data_from_v3_to_v4
 ```
 
@@ -115,7 +115,7 @@ Check your `custom/settings_local.py` to find the configured `BASE_DIR` director
 
 - After import, do not forget to **re-index all videos** for Elasticsearch with:
 
-```bash
+```sh
 python manage.py index_videos --all
 ```
 
@@ -125,7 +125,7 @@ python manage.py index_videos --all
 
 Run the script using the management command:
 
-```bash
+```sh
 python manage.py import_data_from_v3_to_v4
 ```
 
@@ -139,19 +139,19 @@ python manage.py import_data_from_v3_to_v4
 
 Dry run:
 
-```bash
+```sh
 python manage.py import_data_from_v3_to_v4 --dry
 ```
 
 If the database is completely empty (no tables), you can run this command which will perform a `make createDB` before importing data:
 
-```bash
+```sh
 python manage.py import_data_from_v3_to_v4 --createDB
 ```
 
 If you encountered a "Too many connections" error while importing tags, feel free to increase the `time_sleep` value (e.g., 0.4 or 0.5 seconds) and re-run the process, but only for tags:
 
-```bash
+```sh
 python manage.py import_data_from_v3_to_v4 --onlytags
 ```
 

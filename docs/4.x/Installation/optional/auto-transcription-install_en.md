@@ -14,14 +14,14 @@ lang: en
 
 To split the audio file from Pod and transcribe it, we need Sox. Therefore, you need to install the following two libraries:
 
-```bash
+```sh
 (django_pod4) pod@:/$ sudo apt-get install sox
 (django_pod4) pod@:/$ sudo apt-get install libsox-fmt-mp3
 ```
 
 You also need to install the Python module `ffmpeg-normalize`:
 
-```bash
+```sh
 (django_pod4) pod@:/path/to/project/django_projects/podv4$ pip install ffmpeg-normalize
 ```
 
@@ -42,7 +42,7 @@ The Coqui-AI STT model is no longer actively maintained, and as it performs less
 
 Install the application in the virtual environment (`vosk==0.3.45`):
 
-```bash
+```sh
 (django_pod4) pod@podv4:/usr/local/django_projects/podv4$ pip3 install vosk
 ```
 
@@ -50,20 +50,20 @@ Download the models from: [https://alphacephei.com/vosk/models](https://alphacep
 
 For example, for the French model:
 
-```bash
+```sh
 (django_pod4) pod@:/path/to/project/.../transcription/fr/vosk/$ wget https://alphacephei.com/vosk/models/vosk-model-fr-0.6-linto-2.2.0.zip
 ```
 
 Then unzip:
 
-```bash
+```sh
 sudo apt-get install unzip
 unzip vosk-model-fr-0.6-linto-2.2.0.zip
 ```
 
 In `custom/settings-local.py`, add:
 
-```python
+```py
 # Transcription
 USE_TRANSCRIPTION = True
 
@@ -82,7 +82,7 @@ TRANSCRIPTION_MODEL_PARAM = {
 
 For English, add:
 
-```python
+```py
 'VOSK': {
   'fr': { ... },
   'en': {
@@ -103,7 +103,7 @@ You need to download the corresponding compilation model from this link: [https:
 
 For example, for the French model:
 
-```bash
+```sh
 wget https://alphacephei.com/vosk/models/vosk-model-fr-0.6-linto-2.2.0-compile.zip
 sudo apt-get install unzip
 unzip vosk-model-fr-0.6-linto-2.2.0-compile.zip
@@ -153,7 +153,7 @@ After Docker is installed, create an `entrypoint.sh` file and a `Dockerfile` in 
 
 Copy the following script into the `entrypoint.sh` file:
 
-```bash
+```sh
 #!/bin/bash
 modelPath="$KALDI_ROOT/compile-model/$1"
 cat "$KALDI_ROOT/tools/env.sh" > "$modelPath/path.sh"
@@ -164,7 +164,7 @@ cd $modelPath
 
 Then copy the code below, tailored to enrich a model, into the `Dockerfile` file. This will create a container with everything needed installed:
 
-```bash
+```sh
 ## Build the DockerFile
 # docker build --tag kaldi -f DockerFile .
 ##
@@ -211,13 +211,13 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 After copying and creating the two files `Dockerfile` and `entrypoint.sh`, you just need to run the following command in the same directory as the previously mentioned files:
 
-```bash
+```sh
 docker build --tag kaldi -f DockerFile .
 ```
 
 Finally, you need to enable the enrichment of the Vosk model in a Pod application. To do this, add the following parameters to the `custom/settings-local.py` file:
 
-```python
+```py
 ACTIVE_ENRICH = True
 MODEL_COMPILE_DIR = "/path/to/project/django_projects/compile-model"
 ```
@@ -228,19 +228,19 @@ MODEL_COMPILE_DIR = "/path/to/project/django_projects/compile-model"
 
 On the encoders:
 
-```bash
+```sh
 pip install openai-whisper
 ```
 
 Or if you want to benefit from the latest commits:
 
-```bash
+```sh
 pip install git+https://github.com/openai/whisper.git
 ```
 
 Example configuration for `custom/settings_local.py`:
 
-```python
+```py
 TRANSCRIPTION_TYPE = "WHISPER"
 TRANSCRIPTION_MODEL_PARAM = {
   'WHISPER': {

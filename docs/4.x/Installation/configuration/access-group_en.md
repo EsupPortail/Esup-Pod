@@ -33,7 +33,7 @@ It is possible to import access groups using a command included in Pod and a JSO
 
 The file must be formatted as follows:
 
-```bash
+```sh
 [
 {
     ‘code_name’: ‘mygroup1’,
@@ -42,10 +42,10 @@ The file must be formatted as follows:
     ‘users_to_remove’: [‘admin’]
 },
 {
-    ‘code_name’ : ‘mygroup2’,
-    ‘display_name’ : ‘My group 2’,
-    ‘users_to_add’ : [“login1”,‘login2’],
-    ‘users_to_remove’ : [“login3”,‘login4’]
+    ‘code_name’: ‘mygroup2’,
+    ‘display_name’: ‘My group 2’,
+    ‘users_to_add’: [“login1”,‘login2’],
+    ‘users_to_remove’: [“login3”,‘login4’]
 },
 ...
 ]
@@ -55,7 +55,7 @@ Each group is identified by its **code_name**, which allows it to be identified.
 
 The command to run for importing is as follows:
 
-```bash
+```sh
 python manager.py accessgroups import_json myjson.json
 ```
 

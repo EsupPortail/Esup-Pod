@@ -10,9 +10,9 @@ lang: fr
 
 Vous pouvez faire apparaitre en bas de page le logo de votre établissement.
 
-Pour cela, placez votre logo dans le dossier `pod/main/static/custom/img/`, et indiquez son chemin dans le fichier `settings_local.pyv :
+Pour cela, placez votre logo dans le dossier `pod/main/static/custom/img/`, et indiquez son chemin dans le fichier `settings_local.pyv :
 
-```python
+```py
 TEMPLATE_VISIBLE_SETTINGS = {
   ...
   'LOGO_ETB': 'custom/img/logo_mon_etab.svg',
@@ -22,7 +22,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
 
 ### Si vous avez un logo d’établissement coloré
 
-Nous vous invitons à prévoir également une 2e version "mode sombre" de votre logo, qui sera suffisamment contrastée sur fonds foncés. Placez le fichier dans le même dossier que le premier, puis dans votre fichier CSS personnalisé (voir "Changer les couleurs principales de Pod" ci-dessous) indiquez ceci :
+Nous vous invitons à prévoir également une 2e version "mode sombre" de votre logo, qui sera suffisamment contrastée sur fonds foncés. Placez le fichier dans le même dossier que le premier, puis dans votre fichier CSS personnalisé (voir "Changer les couleurs principales de Pod" ci-dessous) indiquez ceci :
 
 ```css
 [data-theme="dark"] .pod-footer-logo {
@@ -32,7 +32,7 @@ Nous vous invitons à prévoir également une 2e version "mode sombre" de votre 
 
 ### Si votre logo d’établissement est monochrome
 
-Vous pouvez n’utiliser qu’un fichier, et en inverser les couleurs dans votre CSS personnalisé ainsi :
+Vous pouvez n’utiliser qu’un fichier, et en inverser les couleurs dans votre CSS personnalisé ainsi :
 
 ```css
 [data-theme="dark"] .pod-footer-logo {
@@ -44,9 +44,9 @@ Vous pouvez n’utiliser qu’un fichier, et en inverser les couleurs dans votre
 
 ## Changer les couleurs principales de Pod
 
-Pour personnaliser le look de votre serveur Pod, vous pouvez ajouter votre propre feuille de style, en indiquant ceci dans le fichier `settings_local.py` :
+Pour personnaliser le look de votre serveur Pod, vous pouvez ajouter votre propre feuille de style, en indiquant ceci dans le fichier `settings_local.py` :
 
-```python
+```py
 TEMPLATE_VISIBLE_SETTINGS = {
   ...
   'CSS_OVERRIDE': 'custom/theme-mon_etab.css',
@@ -56,7 +56,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
 
 Placez alors un fichier `theme-mon_etab.css` dans le dossier `pod/main/static/custom/`
 
-Dans ce dernier, vous pouvez modifier les couleurs de Pod. Voici quelques exemples :
+Dans ce dernier, vous pouvez modifier les couleurs de Pod. Voici quelques exemples :
 
 ### Vert Lillois
 
@@ -130,9 +130,9 @@ Dans ce dernier, vous pouvez modifier les couleurs de Pod. Voici quelques exempl
 
 ## Modifier l’icône "favicon" de Pod
 
-Il est possible de modifier le logo par défaut affiché en favori par Pod, en indiquant ceci dans le fichier `settings_local.py` :
+Il est possible de modifier le logo par défaut affiché en favori par Pod, en indiquant ceci dans le fichier `settings_local.py` :
 
-```python
+```py
 TEMPLATE_VISIBLE_SETTINGS = {
   ...
   'FAVICON': 'img/logoPod.svg',
@@ -140,11 +140,11 @@ TEMPLATE_VISIBLE_SETTINGS = {
 }
 ```
 
-Nous vous conseillons fortement le format svg pour cette icone, car ce format permet de gérer facilement des variantes de couleurs pour un navigateur Internet en mode sombre. En regardant le fichier `main/static/img/pod_favicon.svg` par exemple, vous verrez les instructions suivantes :
+Nous vous conseillons fortement le format svg pour cette icone, car ce format permet de gérer facilement des variantes de couleurs pour un navigateur Internet en mode sombre. En regardant le fichier `main/static/img/pod_favicon.svg` par exemple, vous verrez les instructions suivantes :
 
 ```css
-@media (prefers-color-scheme: dark)  { :root { fill: #FFF }}
-@media (prefers-color-scheme: light) { :root { fill: #000 }}
+@media (prefers-color-scheme: dark)  {:root { fill: #FFF }}
+@media (prefers-color-scheme: light) {:root { fill: #000 }}
 ```
 
 Ces dernières permettent de gérer 2 jeux de couleurs différents dans le même logo, permettant de conserver un bon contraste quel que soit la couleur de fond. N’hésitez-pas à vous en inspirer si vous créez votre propre `favicon.svg`.
@@ -153,7 +153,7 @@ Ces dernières permettent de gérer 2 jeux de couleurs différents dans le même
 
 ## Utiliser la même image comme logo et comme favicon
 
-C’est tout à fait possible d’utiliser la même image, mais si votre image comprend 2 jeux de couleurs, je vous invite à ajouter les lignes CSS suivantes (ou à vous en inspirer) dans votre fichier CSS personnalisé pour que celle-ci s’affiche toujours contrastée sur Pod :
+C’est tout à fait possible d’utiliser la même image, mais si votre image comprend 2 jeux de couleurs, je vous invite à ajouter les lignes CSS suivantes (ou à vous en inspirer) dans votre fichier CSS personnalisé pour que celle-ci s’affiche toujours contrastée sur Pod :
 
 ```css
 /* When your logo.svg already switch color on browser color-scheme: dark */
@@ -171,16 +171,16 @@ C’est tout à fait possible d’utiliser la même image, mais si votre image c
 
 ## Commandes utiles
 
-Selon votre environnement, après avoir réalisé ces modifications, n’oubliez pas de :
+Selon votre environnement, après avoir réalisé ces modifications, n’oubliez pas de :
 
-- déployer les fichiers statiques (CSS, images...) via la commande :
+- déployer les fichiers statiques (CSS, images...) via la commande :
 
-```bash
+```sh
 (django_pod4) pod@pod-:~/django_projects/podv4$ make statics
 ```
 
-- redémarrer les différents services impactés, typiquement le service uwsgi-pod de vos servurs Web :
+- redémarrer les différents services impactés, typiquement le service uwsgi-pod de vos servurs Web :
 
-```bash
+```sh
 pod@pod-:~/django_projects/podv4$ sudo systemctl restart uwsgi-pod
 ```

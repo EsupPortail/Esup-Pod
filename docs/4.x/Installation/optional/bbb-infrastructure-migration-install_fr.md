@@ -94,7 +94,7 @@ Ce plugin `bbb-recorder` avait déjà été utilisé pour l’ancien système,
  dans Pod v2 (cf. [Documentation ESUP-Portail](https://www.esup-portail.org/wiki/x/AgCBNg))
  et a été utilisé à de nombreuses reprises avec succès.
 
-> ⚠️ A compter de Juillet 2025, il semble y avoir une incompatibilité entre bbb-recorder et les dernières versions de google-chrome-stable :
+> ⚠️ A compter de Juillet 2025, il semble y avoir une incompatibilité entre bbb-recorder et les dernières versions de google-chrome-stable :
 pour convertir des vidéos issues d’une instance BBB 2.2, il a fallu downgrader `google-chrome-stable` de la version 139 à 128, pour arriver à télécharger les enregistrements.
 
 #### Fonctionnement de `bbb-recorder`
@@ -113,7 +113,7 @@ Pour ma part, sur les serveurs Debian 11, voici ce qui a été réalisé.
 
 ##### Installation de Chrome et des pré-requis
 
-```bash
+```sh
 sudo -i
 apt install xvfb
 curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
@@ -128,7 +128,7 @@ apt-get -y install google-chrome-stable
 
 Voici l’installation pour un utilisateur `pod`.
 
-```bash
+```sh
 cd ~
 git clone https://github.com/jibon57/bbb-recorder
 cd bbb-recorder
@@ -139,7 +139,7 @@ cp .env.example .env
 Gestion du répertoire contenant les vidéos :
  dans mon cas `/data/www/pod/bbb-recorder` et du répertoire de logs `/data/www/pod/bbb-recorder/logs`.
 
-```bash
+```sh
 mkdir /data/www/pod/bbb-recorder
 mkdir /data/www/pod/bbb-recorder/logs
 ```
@@ -218,7 +218,7 @@ Les autres paramètres sont nécessaires, à minima, lors de l’exécution du s
 
 Concernant le répertoire contenant les fichiers vidéos générés par `bbb-recorder` (`IMPORT_VIDEO_BBB_RECORDER_PATH`), il est à créer manuellement - en même temps que son sous-répertoire des logs - avec les lignes de commande suivantes; n’hésitez pas à les modifier à votre convenance selon votre architecture système et vos droits :
 
-```bash
+```sh
 mkdir /data/www/pod/bbb-recorder/logs -p
 chown pod:nginx /data/www/pod/bbb-recorder/logs
 ```
@@ -328,38 +328,38 @@ Ce script a été testé avec Moodle 4.
 
 ###### Initialisation
 
-```bash
+```sh
 cd /usr/local/django_projects/podv3
 workon django_pod3
 ```
 
 ###### 1. Revendication de tous les enregistrements (simulation)
 
-```bash
+```sh
 python -W ignore manage.py migrate_bbb_recordings --use-manual-claim --dry
 ```
 
 ###### 2. Revendication des 2 derniers enregistrements (simulation)
 
-```bash
+```sh
 python -W ignore manage.py migrate_bbb_recordings --min-value-record-process=1 --max-value-record-process=2 --use-manual-claim --dry &
 ```
 
 ###### 3. Import vidéo externe avec base Moodle (simulation)
 
-```bash
+```sh
 python -W ignore manage.py migrate_bbb_recordings --use-import-video --use-database-moodle --dry
 ```
 
 ###### 4. Import vidéo externe sans base Moodle (10 derniers, simulation)
 
-```bash
+```sh
 python -W ignore manage.py migrate_bbb_recordings --min-value-record-process=1 --max-value-record-process=10 --use-import-video --dry
 ```
 
 ###### 5. Export CSV avec base Moodle (10 derniers, simulation)
 
-```bash
+```sh
 python3 manage.py migrate_bbb_recordings --use_export_csv --use-database-moodle --max-value-record-process=10 --dry
 ```
 

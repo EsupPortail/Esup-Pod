@@ -38,7 +38,7 @@ With this, when nginx finds a `file.css.gz` file in the static folder, it sends 
 
 #### pod_nginx.conf
 
-```bash
+```sh
 location /static {
     gzip_static  on;
     gzip_types text/plain application/xml text/css text/javascript application/javascript image/svg+xml;
@@ -50,7 +50,7 @@ For this to work properly, you must of course have ‘.gz’ files, so we manual
 
 #### compress_static.sh
 
-```bash
+```sh
 #!/bin/bash
 # Generate compressed versions of all static files to be served by nginx
 cd podv4/pod/static/
@@ -71,7 +71,7 @@ To optimise bandwidth, we can also improve performance by asking nginx to compre
 
 #### compression in pod_nginx.conf
 
-```bash
+```sh
     # Django media
     location /media {
         gzip on;
@@ -97,7 +97,7 @@ For more information on the importance of setting ‘expires’, please refer to
 
 #### Caching in `pod_nginx.conf`
 
-```bash
+```sh
 location /media {
     expires 1y;
     add_header Cache-Control ‘public’;

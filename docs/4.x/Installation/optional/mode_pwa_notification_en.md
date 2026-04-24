@@ -14,7 +14,7 @@ The application metadata is pre-filled, but all options (icons, application name
 
 Here is the default configuration for Pod; you can override each variable in your configuration file.
 
-```python
+```py
 PWA_APP_NAME = "Pod"
 PWA_APP_DESCRIPTION = _(
 "Pod is aimed at users of our institutions, by allowing the publication of "
@@ -41,7 +41,7 @@ To allow the application to send native notifications to users, it is necessary 
 
 Then, the keys must be specified in the configuration via the following parameters:
 
-```python
+```py
 WEBPUSH_SETTINGS = {
     "VAPID_PUBLIC_KEY": "<public-key>",
     "VAPID_PRIVATE_KEY": "<private-key>",

@@ -10,11 +10,11 @@ Par défaut, l’application exécute les taches d’encodage et de transcriptio
 
 Si l’encodage est effectué sur la même machine que le frontal, leur execution est "threadée" (exécuté dans un sous processus).
 
-Pour configurer ces taches et leur exécution, vous pouvez vous reporter sur le fichier de configuration disponible à cette adresse :
+Pour configurer ces taches et leur exécution, vous pouvez vous reporter sur le fichier de configuration disponible à cette adresse :
 
 [https://github.com/EsupPortail/Esup-Pod/blob/master/CONFIGURATION_FR.md#configuration-de-lapplication-encodage-et-transcription-de-vid%C3%A9o](https://github.com/EsupPortail/Esup-Pod/blob/master/CONFIGURATION_FR.md#configuration-de-lapplication-encodage-et-transcription-de-vid%C3%A9o)
 
-La configuration se réalise dans votre ```custom/settings_local.py```, en particulier pour les paramètres suivants :
+La configuration se réalise dans votre ```custom/settings_local.py```, en particulier pour les paramètres suivants :
 
 ```sh
 # Pour ne pas utiliser l’encodage traditionnel déporté

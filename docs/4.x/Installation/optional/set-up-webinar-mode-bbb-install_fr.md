@@ -150,7 +150,7 @@ HOST_IP=1.2.3.4 ./provision.sh
 
 ###### Configuration
 
-```bash
+```sh
 # Editer le fichier/sipmediagw/.env avec ses valeurs
 MAIN_APP=streaming
 BROWSE_FILE="bigbluebutton.py"

@@ -20,7 +20,7 @@ To install nginx version 1.14, you must first add the **backports** repository:
 
 Switch to root user (sudo -s)
 
-```bash
+```sh
 $> vim /etc/apt/sources.list
 ```
 
@@ -28,19 +28,19 @@ Add the line: `deb http://ftp.debian.org/debian stretch-backports main`
 
 Then update:
 
-```bash
+```sh
 $> apt update
 ```
 
 ## Installing nginx
 
-```bash
+```sh
 $> apt-get -t stretch-backports install nginx
 ```
 
 Next, install the nginx-rtmp module:
 
-```bash
+```sh
 $> apt-get install libnginx-mod-rtmp
 ```
 
@@ -48,19 +48,19 @@ $> apt-get install libnginx-mod-rtmp
 
 For multi-bitrate, install ffmpeg which encodes the video stream in real-time:
 
-```bash
+```sh
 $> aptitude install ffmpeg
 ```
 
 To verify everything went well, list the contents of the nginx enabled modules directory:
 
-```bash
+```sh
 $> ls -l /etc/nginx/modules-enabled/
 ```
 
 You should see mod-rtmp.conf:
 
-```bash
+```sh
 total 16
 [...]
 lrwxrwxrwx 1 root root 48 Oct  17 12:59 50-mod-rtmp.conf -> /usr/share/nginx/modules-available/mod-rtmp.conf
@@ -69,7 +69,7 @@ lrwxrwxrwx 1 root root 48 Oct  17 12:59 50-mod-rtmp.conf -> /usr/share/nginx/mod
 
 Next, add the `include rtmp` instruction in nginx.conf and create the corresponding snippets:
 
-```bash
+```sh
 $> vim /etc/nginx/nginx.conf
 [...]
 include /etc/nginx/snippets/rtmp.conf;
@@ -78,7 +78,7 @@ include /etc/nginx/snippets/rtmp.conf;
 
 Then, create the **RTMP** snippet:
 
-```bash
+```sh
 $> vim /etc/nginx/snippets/rtmp.conf
 ```
 
@@ -88,7 +88,7 @@ Below is the original configuration file which uses **3 encodings** and is not s
 
 #### File `/etc/nginx/snippets/rtmp.conf`
 
-```bash
+```sh
 rtmp {
     server {
         listen 1935; # default rtmp port
@@ -155,7 +155,7 @@ Which gives:
 
 #### File `/etc/nginx/snippets/rtmp.conf` (Reduced latency)
 
-```bash
+```sh
 rtmp {
     server {
         listen 1935; # default rtmp port
@@ -210,7 +210,7 @@ rtmp {
 >
 > Finally, by commenting out the following parameters, this problem no longer reappeared:
 >
-> ```bash
+> ```sh
 > # hls_max_fragment 3s;
 >
 > # hls_playlist_length 10s;
@@ -222,13 +222,13 @@ You can see all the directives for this module at this address: [https://github.
 
 Finally, declare the `hls` route to read the videos:
 
-```bash
+```sh
 $> vim /etc/nginx/sites-enabled/default
 ```
 
 ### File `/etc/nginx/sites-enabled/default`
 
-```bash
+```sh
 server {
   listen 80 default_server;
   root /var/www/html;
@@ -257,7 +257,7 @@ server {
 
 First, activate the live application by adding "live" to THIRD_PARTY_APPS in the settings_local.py file
 
-```bash
+```sh
 ...
 THIRD_PARTY_APPS = ["xxx","xxx","live"]
 ...
@@ -269,7 +269,7 @@ First, add the type of streaming hardware you have (currently 2 choices).
 
 This will limit the choices in the site admin
 
-```bash
+```sh
 ...
 BROADCASTER_PILOTING_SOFTWARE = ['Wowza', 'SMP']
 ...
@@ -290,7 +290,7 @@ This allows controlling the start and stop of recording.
 
 ### Example
 
-```bash
+```sh
 # example for WOWZA:
 {
   "server_url":"http://stream01.univ.fr:8087",
@@ -362,7 +362,7 @@ This functionality must be set up as follows:
 
 - Add a periodic CRON task; every minute is recommended, but it is possible to increase or decrease the time and adjust the settings on pod accordingly (see the following points ...):
 
-```bash
+```sh
 bash -c 'export WORKON_HOME=/home/pod/.virtualenvs; export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.11; cd /home/pod/django_projects/podv4; source /usr/local/bin/virtualenvwrapper.sh; workon django_pod4; python manage.py live_viewcounter'
 ```
 
@@ -390,7 +390,7 @@ We have just created a live stream accessible in HTML5, multi-bitrate and adapti
 
 ### File `nico.m3u8`
 
-```bash
+```sh
       #EXTM3U
       #EXT-X-VERSION:3
       #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=320000

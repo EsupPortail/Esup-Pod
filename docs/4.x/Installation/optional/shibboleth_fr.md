@@ -16,7 +16,7 @@ L’authentification fédérée avec Shibboleth permet d’ouvrir la connexion �
 
 Afin de pouvoir mettre en place l’authentification avec Shibboleth, il est nécessaire d’installer un Service Provider. Chaque application “Shibbolétisée” doit posséder son propre SP. À noter qu’il est également nécessaire d’avoir au préalable un IDP (Identity provider) dans votre établissement, si ce n’est pas déjà le cas, un tutoriel existe sur le site de Renater pour en installer un.
 
-Pour installer un SP Shibboleth, vous pouvez suivre les différentes documentations :
+Pour installer un SP Shibboleth, vous pouvez suivre les différentes documentations :
 
 * [tutoriel de Renater pour installer un SP version 3 (chapitres jusqu’à 5 ou 6)](https://services.renater.fr/federation/documentation/guides-installation/sp3/chap01)
 * [Wiki Shibboleth — Installation (en anglais)](https://wiki.shibboleth.net/confluence/display/SP3/Installation)
@@ -31,11 +31,11 @@ Le but final est d’avoir un serveur Apache2 en frontal qui (grâce au `mod_shi
 
 Il s’agit seulement d’une façon de faire, vous n’êtes pas obligé de mettre en place la communication entre Shibboleth et votre application de cette manière. Vous pouvez par exemple [installer Shibboleth du côté Nginx](https://wiki.shibboleth.net) ou encore faire tourner votre instance de Pod en utilisant le mod_wsgi d’Apache et donc sans aucune utilisation de Nginx. Ces méthodes n’ont pas été testées dans ce contexte et sont plus complexes à mettre en place — à vous de choisir celle qui vous convient selon vos besoins.
 
-### Étape 1 : configuration de Nginx
+### Étape 1 : configuration de Nginx
 
 Dans un premier temps, il est nécessaire de changer le port sur lequel Nginx fonctionne (puisqu’on veut que Apache soit frontal). Dans le bloc `server` du fichier `pod_nginx.conf`, il faut donc changer le port d’écoute. Dans cet exemple, le port 8080 a été choisi (mais vous pouvez en choisir un autre). Il est également nécessaire d’activer l’option `proxy_pass_request_header` pour permettre la bonne transmission des headers entre Apache et Nginx. Vous devrez aussi activer `underscores_in_headers`.
 
-```bash
+```sh
 server {
     listen 8080;
     proxy_pass_request_headers on;
@@ -44,15 +44,15 @@ server {
 }
 ```
 
-### Étape 2 : configuration de Apache2
+### Étape 2 : configuration de Apache2
 
 Côté Apache (ou httpd), il faut configurer un `VirtualHost` (ou modifier le `VirtualHost` de base), ou configurer le `httpd.conf` si vous utilisez un serveur httpd.
 
 Selon que vous utilisez HTTP ou la version complète d’Apache, pensez à charger les modules `mod_shib`, `mod_ssl` (si besoin), `mod_proxy` et `mod_proxy_http` pour que l’ensemble des directives ci-dessous fonctionnent.
 
-Exemple :
+Exemple :
 
-```bash
+```sh
 <Location />
     ProxyPass https://127.0.0.1:8080/
     ProxyPassReverse http://127.0.0.1:8080/
@@ -75,9 +75,9 @@ Exemple :
 </Location>
 ```
 
-Si vous devez utiliser `mod_ssl` avec des échanges en HTTPS, vous devrez peut-être utiliser ces options (ou une partie au moins) en complément :
+Si vous devez utiliser `mod_ssl` avec des échanges en HTTPS, vous devrez peut-être utiliser ces options (ou une partie au moins) en complément :
 
-```bash
+```sh
 SSLProxyEngine On
 SSLProxyVerify none
 SSLProxyCheckPeerCN off
@@ -87,13 +87,13 @@ ProxyRequests Off
 ProxyPreserveHost On
 ```
 
-> ⚠️ Pensez également à tester votre installation de Shibboleth en vous rendant sur `/shib/secure` : il s’agit d’une route de test qui vous permet de vérifier le bon fonctionnement de votre SP.
+> ⚠️ Pensez également à tester votre installation de Shibboleth en vous rendant sur `/shib/secure` : il s’agit d’une route de test qui vous permet de vérifier le bon fonctionnement de votre SP.
 
-### Étape 3 : configuration de Pod
+### Étape 3 : configuration de Pod
 
 Pour prendre en charge l’authentification avec Shibboleth dans Pod, il faut paramétrer 5 settings:
 
-```bash
+```sh
 USE_SHIB = True  # Active l'authentification Shibboleth dans la page de connexion
 SHIB_NAME = "Fédération de Test"  # Précise le nom de la fédération d’identité qui sera affichée
 SHIBBOLETH_ATTRIBUTE_MAP = {
@@ -107,17 +107,17 @@ SHIB_URL = "https://univ-lr.fr/shib/Shibboleth.sso/Login"
 SHIB_LOGOUT_URL = "https://univ-lr.fr/shib/Shibboleth.sso/Logout"
 ```
 
-Pensez également à ajouter l’authentification Shibboleth à l’attribut `AUTH_TYPE` :
+Pensez également à ajouter l’authentification Shibboleth à l’attribut `AUTH_TYPE` :
 
-```bash
+```sh
 AUTH_TYPE = (('local', ('local')), ('CAS', 'CAS'), ('Shibboleth', 'Shibboleth'))
 ```
 
-Une fois la configuration dans Pod effectuée, l’authentification Shibboleth s’affichera dans la page de connexion :
+Une fois la configuration dans Pod effectuée, l’authentification Shibboleth s’affichera dans la page de connexion :
 
 ![Authentification Shibboleth](shibboleth_screens/shibboleth1.png)
 
->💡Il est totalement possible de faire cohabiter différents types d’authentification : vous pouvez très bien activer CAS, Shibboleth et l’authentification locale en même temps.
+>💡Il est totalement possible de faire cohabiter différents types d’authentification : vous pouvez très bien activer CAS, Shibboleth et l’authentification locale en même temps.
 
 > À partir de là, l’authentification Shibboleth devrait fonctionner correctement pour Pod. Si des erreurs subsistent, pensez à regarder les logs de Shibboleth-SP (`/var/log/shibboleth`) ou du côté de l’IdP pour trouver la source.
 

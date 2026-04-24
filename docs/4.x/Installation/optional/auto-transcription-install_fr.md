@@ -14,21 +14,21 @@ lang: fr
 
 Pour découper le fichier audio de Pod et faire sa transcription, nous avons besoin de Sox, il faut donc installer les deux librairies suivantes :
 
-```bash
+```sh
 (django_pod4) pod@:/$ sudo apt-get install sox
 (django_pod4) pod@:/$ sudo apt-get install libsox-fmt-mp3
 ```
 
-Il faut également installer le module Python `ffmpeg-normalize` :
+Il faut également installer le module Python `ffmpeg-normalize` :
 
-```bash
+```sh
 (django_pod4) pod@:/path/to/project/django_projects/podv4$ pip install ffmpeg-normalize
 ```
 
 Tous les modèles peuvent être stockés dans `/path/to/project/django_projects/transcription`.
 Il convient de faire un sous‑dossier par langue (ex. `fr`, `en`) et par type de modèle (`whisper`, `vosk`, etc.).
 
-Par exemple, pour un modèle Vosk français :
+Par exemple, pour un modèle Vosk français :
 `/path/to/project/django_projects/transcription/fr/vosk/vosk-model-fr-0.6-linto-2.2.0/`
 
 À présent, vous pouvez installer un des deux modèles : **Whisper** ou **Vosk**. Il est toutefois conseillé d’utiliser Whisper.
@@ -40,30 +40,30 @@ Le modèle STT de Coqui-AI n’étant plus activement maintenu, et étant moins 
 
 ## Vosk
 
-Installez l’application dans l’environnement virtuel (`vosk==0.3.45`) :
+Installez l’application dans l’environnement virtuel (`vosk==0.3.45`) :
 
-```bash
+```sh
 (django_pod4)pod@podv4:/usr/local/django_projects/podv4$ pip3 install vosk
 ```
 
 Téléchargez les modèles depuis : [https://alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)
 
-Par exemple, pour le modèle Français :
+Par exemple, pour le modèle Français :
 
-```bash
+```sh
 (django_pod4) pod@:/path/to/project/.../transcription/fr/vosk/$ wget https://alphacephei.com/vosk/models/vosk-model‑fr‑0.6‑linto‑2.2.0.zip
 ```
 
-Puis décompressez :
+Puis décompressez :
 
-```bash
+```sh
 sudo apt-get install unzip
 unzip vosk-model‑fr‑0.6‑linto‑2.2.0.zip
 ```
 
-Dans `custom/settings-local.py`, ajoutez :
+Dans `custom/settings-local.py`, ajoutez :
 
-```python
+```py
 # Transcription
 USE_TRANSCRIPTION = True
 
@@ -80,9 +80,9 @@ TRANSCRIPTION_MODEL_PARAM = {
 }
 ```
 
-Pour l’anglais, ajoutez :
+Pour l’anglais, ajoutez :
 
-```python
+```py
 'VOSK': {
   'fr': { … },
   'en': {
@@ -99,17 +99,17 @@ En installant les modèles de compilation vous pourrez contribuer à l’enrichi
 
 Les modèles utilisés pour l’enrichissement du modèle peuvent être stockés dans `/path/to/project/django_projects/compile-model`
 
-Il faut télécharger le modèle de compilation correspondant sur ce lien : [https://alphacephei.com/vosk/lm#update-process](https://alphacephei.com/vosk/lm#update-process)
+Il faut télécharger le modèle de compilation correspondant sur ce lien : [https://alphacephei.com/vosk/lm#update-process](https://alphacephei.com/vosk/lm#update-process)
 
-Par exemple pour le modèle français :
+Par exemple pour le modèle français :
 
-```bash
+```sh
 wget https://alphacephei.com/vosk/models/vosk-model‑fr‑0.6‑linto‑2.2.0‑compile.zip
 sudo apt-get install unzip
 unzip vosk‑model‑fr‑0.6‑linto‑2.2.0‑compile.zip
 ```
 
-La structure doit ressembler à :
+La structure doit ressembler à :
 
 ```txt
 compile-model
@@ -151,9 +151,9 @@ Maintenant il faut installer docker sur votre machine. (voir [https://docs.docke
 
 Après que docker soit installé, créer un fichier entrypoint.sh et DockerFile dans un même dossier.
 
-Copier le script suivant dans le fichier `entrypoint.sh` :
+Copier le script suivant dans le fichier `entrypoint.sh` :
 
-```bash
+```sh
 #!/bin/bash
 modelPath="$KALDI_ROOT/compile-model/$1"
 cat "$KALDI_ROOT/tools/env.sh" > "$modelPath/path.sh"
@@ -162,9 +162,9 @@ cd $modelPath
 /bin/bash -c "utils/build_const_arpa_lm.sh lm.gz data/lang_test data/lang_test_rescore"
 ```
 
-Puis copier le code ci-dessous, fait sur mesure afin d’enrichir un modèle dans le Fichier _DockerFile_, cela créera un container avec tout ce qu’il faut installer :
+Puis copier le code ci-dessous, fait sur mesure afin d’enrichir un modèle dans le Fichier _DockerFile_, cela créera un container avec tout ce qu’il faut installer :
 
-```bash
+```sh
 ## Build the DockerFile
 # docker build --tag kaldi -f DockerFile .
 ##
@@ -211,13 +211,13 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 Après avoir copié et créé les deux fichiers _Dockerfile_ et entrypoint.sh il suffit de lancer la commande ci-dessous en étant dans la même dossier que les fichiers précédemment mentionnés.
 
-```bash
+```sh
 docker build --tag kaldi -f DockerFile .
 ```
 
-Pour finir, il faut activer l’enrichissement du modèle vosk dans une application pod, pour cela il suffit d’ajouter dans le fichier `custom/settings-local.py` les paramètres suivants :
+Pour finir, il faut activer l’enrichissement du modèle vosk dans une application pod, pour cela il suffit d’ajouter dans le fichier `custom/settings-local.py` les paramètres suivants :
 
-```python
+```py
 ACTIVE_ENRICH = True
 MODEL_COMPILE_DIR = "/path/to/project/django_projects/compile-model"
 ```
@@ -226,21 +226,21 @@ MODEL_COMPILE_DIR = "/path/to/project/django_projects/compile-model"
 
 ## Whisper (v20240930)
 
-Sur les encodeurs :
+Sur les encodeurs :
 
-```bash
+```sh
 pip install openai-whisper
 ```
 
-ou si vous souhaitez bénéficier des derniers commits :
+ou si vous souhaitez bénéficier des derniers commits :
 
-```bash
+```sh
 pip install git+https://github.com/openai/whisper.git
 ```
 
-Exemple de configuration `custom/settings_local.py` :
+Exemple de configuration `custom/settings_local.py` :
 
-```python
+```py
 TRANSCRIPTION_TYPE = "WHISPER"
 TRANSCRIPTION_MODEL_PARAM = {
   'WHISPER': {
@@ -256,13 +256,13 @@ TRANSCRIPTION_MODEL_PARAM = {
 }
 ```
 
-Pour créer le répertoire adéquat :
+Pour créer le répertoire adéquat :
 
 ```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ mkdir /usr/local/django_projects/transcription/whisper -p
 ```
 
-Voir les détails ici pour le choix du modèle : [https://github.com/openai/whisper#available-models-and-languages](https://github.com/openai/whisper#available-models-and-languages)
+Voir les détails ici pour le choix du modèle : [https://github.com/openai/whisper#available-models-and-languages](https://github.com/openai/whisper#available-models-and-languages)
 
 Le modèle `small` n’est pas plus gourmand que Vosk et offre déjà de bonnes performances.
 

@@ -11,7 +11,7 @@ lang: fr
 Redis (REmote DIctionary Server) est une base de données NoSQL **clé-valeur** extrêmement rapide, principalement utilisée comme **cache**, **file d’attente** et **moteur de messages**.
 Elle fonctionne en mémoire (RAM), ce qui lui permet d’offrir des performances bien supérieures aux bases de données traditionnelles pour certaines tâches.
 
-Dans le cadre de Pod, REDIS est utilisé comme :
+Dans le cadre de Pod, REDIS est utilisé comme :
 
 - gestionnaire de caches pour les **serveurs Web**,
 - gestionnaire de files des tâches d’encodage/transcription/xAPI pour les **serveurs d’encodages**, en complément de **Celery**. _Seulement dans le cas d’encodage déporté sur d’autres serveurs (notion de Celery Broker)_.
@@ -33,7 +33,7 @@ Dans le cadre de Pod, REDIS est utilisé comme :
 
 ### Configuration effective
 
-La configuration se réalise dans votre ```custom/settings_local.py``` :
+La configuration se réalise dans votre ```custom/settings_local.py``` :
 
 ```sh
 # Pour utiliser l’encodage traditionnel déporté

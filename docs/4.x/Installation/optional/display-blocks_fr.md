@@ -9,7 +9,7 @@ lang: fr
 > ⚠️ Documentation à tester sur un Pod v4.
 
 > Ce paragraphe ne concerne que les versions de ESUP-Pod 3.6.0 et suivantes. Depuis cette version, l’affichage des dernières vidéos sur la page d’accueil est remplacé par l’affichage de blocs. Un bloc par défaut (Dernières vidéos) est créé pour conserver l’équivalent. Pour faire afficher les prochains événements, si vous avez activé le “live”, il vous faudra ajouter un bloc de type “Prochains événements”.
-> Les variables suivantes sont obsolètes (elles sont désormais configurables dans chaque bloc) :
+> Les variables suivantes sont obsolètes (elles sont désormais configurables dans chaque bloc) :
 >
 > * HOMEPAGE_SHOWS_PASSWORDED
 > * HOMEPAGE_SHOWS_RESTRICTED

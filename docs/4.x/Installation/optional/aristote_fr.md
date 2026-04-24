@@ -24,7 +24,7 @@ Jusqu’à la version 3.8.1 de POD, ces URL commencent par le nom de domaine du 
 
 ## Configuration
 
-Pour activer la fonctionnalité il faut renseigner les variables suivantes dans le fichier `pod/custom/settings_local.py` :
+Pour activer la fonctionnalité il faut renseigner les variables suivantes dans le fichier `pod/custom/settings_local.py` :
 
 - `USE_AI_ENHANCEMENT = True` # Activation de la fonctionnalité
 - `AI_ENHANCEMENT_API_URL = 'https://api.aristote.education/api'` # URL pour contacter l’API d’Aristote
@@ -34,7 +34,7 @@ Pour activer la fonctionnalité il faut renseigner les variables suivantes dans 
 
 Pour obtenir les valeurs à renseigner pour les variables `AI_ENHANCEMENT_CLIENT_ID` et `AI_ENHANCEMENT_CLIENT_SECRET`, il faut faire une demande d’accès à l’API d’Aristote auprès de Centrale Supelec (contact.aristote [at] centralesupelec.fr).
 
-D’autres variables (utiles mais non nécessaires au fonctionnement) peuvent également être ajoutées :
+D’autres variables (utiles mais non nécessaires au fonctionnement) peuvent également être ajoutées :
 
 - `AI_ENHANCEMENT_CGU_URL = 'https://disi.pages.centralesupelec.fr/innovation/aristote/aristote-website/utilisation_service'` # URL de la page des conditions d’utilisation de l’IA Aristote
 - `AI_ENHANCEMENT_FIELDS_HELP_TEXT = ''` # Personnalisation des termes utilisés pour décrire les champ de saisie sur le formulaire de demande d’enrichissement

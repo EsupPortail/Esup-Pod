@@ -11,9 +11,9 @@ lang: fr
 ## Configuration
 
 Une paire de clés RSA est nécessaire pour ActivityPub.
-Elles peuvent être générées ainsi :
+Elles peuvent être générées ainsi :
 
-```python
+```py
 from Crypto.PublicKey import RSA
 
 activitypub_key = RSA.generate(2048)
@@ -30,9 +30,9 @@ with open("pod/activitypub/ap.pub", "w") as fd:
     fd.write(activitypub_key.publickey().export_key().decode())
 ```
 
-Ajouter la configuration Celery/Redis dans le fichier `settings_local.py` :
+Ajouter la configuration Celery/Redis dans le fichier `settings_local.py` :
 
-```bash
+```sh
 pod@pod:/usr/local/django_projects/podv4$ nano pod/custom/settings_local.py
 # Configuration ActivityPub
 USE_ACTIVITYPUB = True
@@ -51,14 +51,14 @@ Mettre le contenu de
 [https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd](https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd)
 dans `/etc/init.d/celeryd-activitypub`
 
-```bash
+```sh
 pod@pod:~$ sudo nano /etc/init.d/celeryd-activitypub
 pod@pod:~$ sudo chmod u+x /etc/init.d/celeryd-activitypub
 ```
 
-Puis créer le fichier default associé :
+Puis créer le fichier default associé :
 
-```bash
+```sh
 pod@pod:~$ sudo nano /etc/default/celeryd-activitypub
 CELERYD_NODES="worker-activitypub"                                     # Nom du/des worker(s). Ajoutez autant de workers que de tâches à exécuter en parallèle.
 CELERY_BIN="/home/pod/.virtualenvs/django_pod/bin/celery"               # répertoire source de celery
@@ -75,24 +75,24 @@ CELERYD_LOG_LEVEL="INFO"                                               # niveau 
 
 ### Vérifier que tout est OK
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ celery --app pod.activitypub.tasks worker --loglevel INFO --queues activitypub --concurrency 1 --hostname activitypub
 ```
 
 ## Démarrer Celeryd
 
-```bash
+```sh
 pod@pod:~$ sudo /etc/init.d/celeryd-activitypub start
 ```
 
-Lancer Celeryd automatiquement au redémarrage du serveur :
+Lancer Celeryd automatiquement au redémarrage du serveur :
 
-```bash
+```sh
 pod@pod:~$ sudo systemd-sysv-install enable celeryd-activitypub
 ```
 
-Pour vérifier si Celery fonctionne correctement :
+Pour vérifier si Celery fonctionne correctement :
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ celery --broker=redis://127.0.0.1:6379/7 inspect active
 ```

@@ -15,14 +15,14 @@ A script has been created to perform this task (`create_thumbnail` command).
 
 All you need to do is position yourself in the right environment:
 
-```bash
+```sh
 cd /usr/local/django_projects/podv4/
 workon django_pod4
 ```
 
 And run the regeneration command:
 
-```bash
+```sh
 python manage.py create_thumbnail video_id1 video_id2
 ```
 

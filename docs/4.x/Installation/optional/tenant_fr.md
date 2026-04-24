@@ -24,9 +24,9 @@ Afin de mettre en place le multi-tenants sur Pod, il conviendra de correctement 
 
 Ainsi, il suffit de prendre la documentation d'installation de Pod dans la section "Mise en production" et de refaire la manipulation autant de fois que vous avez de sites.
 
-Lors de la mise en place du deuxième site, il conviendra de renommer les fichiers nécessaires à la configuration Nginx avec des noms différents de ceux du premier site. Par exemple :
+Lors de la mise en place du deuxième site, il conviendra de renommer les fichiers nécessaires à la configuration Nginx avec des noms différents de ceux du premier site. Par exemple :
 
-```bash
+```sh
 pod@pod:~/django_projects/podv4$ cp pod_nginx.conf pod/custom/pod_nginx2.conf
 pod@pod:~/django_projects/podv4$ vim pod/custom/pod_nginx2.conf
 pod@pod:~/django_projects/podv4$ sudo ln -s /usr/local/django_projects/podv4/pod/custom/pod_nginx2.conf /etc/nginx/sites-enabled/pod_nginx2.conf
@@ -36,15 +36,15 @@ pod@pod:~/django_projects/podv4$ cp pod_uwsgi2.ini pod/custom/.
 pod@pod:~/django_projects/podv4$ sudo uwsgi --ini pod/custom/pod_uwsgi2.ini --enable-threads --daemonize /usr/local/django_projects/podv4/pod/log/uwsgi-pod2.log --uid pod2 --gid www-data --pidfile /tmp/pod2.pid
 ```
 
-### Cas particulier : le fichier `.ini`
+### Cas particulier : le fichier `.ini`
 
-Concernant le fichier `pod_uwsgi2.ini`, vous devrez modifier le chemin vers le socket :
+Concernant le fichier `pod_uwsgi2.ini`, vous devrez modifier le chemin vers le socket :
 
 ```ini
 socket = /home/pod/django_projects/podv4/pod4v2.sock
 ```
 
-Vous devez également utiliser un fichier de settings personnalisé. Pour cela, ajoutez cette ligne à la fin du fichier `.ini` :
+Vous devez également utiliser un fichier de settings personnalisé. Pour cela, ajoutez cette ligne à la fin du fichier `.ini` :
 
 ```ini
 env = DJANGO_SETTINGS_MODULE=pod.sites2_settings
@@ -54,9 +54,9 @@ env = DJANGO_SETTINGS_MODULE=pod.sites2_settings
 
 Une fois le déploiement terminé, il est nécessaire de faire quelques ajustements dans le fichier de settings nouvellement créé.
 
-Le fichier doit au minimum contenir ces deux lignes :
+Le fichier doit au minimum contenir ces deux lignes :
 
-```python
+```py
 from .settings import *
 SITE_ID = 2
 ES_INDEX = 'pod'
@@ -64,9 +64,9 @@ ES_INDEX = 'pod'
 
 Dans ce fichier, il est possible de surcharger n'importe quel setting de Pod pour ce site en particulier.
 
-Exemple d'utilisation :
+Exemple d'utilisation :
 
-```bash
+```sh
 python manage.py <commande> --settings=pod.sites2_settings
 ```
 
@@ -75,7 +75,7 @@ Il est notamment nécessaire de le faire lors de la mise à jour de l'index Elas
 ## Création des "Admin site"
 
 Tout utilisateur ayant le statut **super utilisateur** pourra se connecter sur toutes les instances de Pod déployées.
-En revanche, si vous souhaitez avoir des administrateurs de site spécifiques, procédez ainsi :
+En revanche, si vous souhaitez avoir des administrateurs de site spécifiques, procédez ainsi :
 
 * Dans l'administration de chaque site, créez un groupe "Admin du site" (ou autre nom au choix) et attribuez-lui les permissions souhaitées.
 * Ajoutez les utilisateurs à ce groupe.
@@ -84,9 +84,9 @@ Les personnes dans le groupe "Admin du site" n'auront donc les permissions que s
 
 ## Commande de mise en place
 
-Schéma :
+Schéma :
 
-```bash
+```sh
 NGINX-VHOST
  -> socket uwsgi
      -> fichier ini uwsgi
@@ -95,9 +95,9 @@ NGINX-VHOST
 
 Chaque tenant doit avoir son propre identifiant de site (`SITE_ID=2`).
 
-Exemple de fichier :
+Exemple de fichier :
 
-```python
+```py
 from .settings import *
 SITE_ID = 2
 ES_INDEX = 'podtenant'
@@ -108,9 +108,9 @@ HELP_MAIL = 'no-reply@tenant.fr'
 CONTACT_US_EMAIL = ['contact@tenant.fr']
 ```
 
-Paramètres supplémentaires :
+Paramètres supplémentaires :
 
-```python
+```py
 TEMPLATE_VISIBLE_SETTINGS = {
     'TITLE_SITE': 'tenant.Video',
     'TITLE_ETB': 'Tenant title',
@@ -127,16 +127,16 @@ CELERY_TO_ENCODE = True
 CELERY_BROKER_URL = "amqp://pod:p0drabbit@localhost/rabbitpod-tenant"
 ```
 
-Chaque commande doit être lancée avec le fichier de settings du tenant :
+Chaque commande doit être lancée avec le fichier de settings du tenant :
 
-```bash
+```sh
 python manage.py runserver tenant:8080 --settings=pod.tenant_settings
 python manage.py index_videos --all --settings=pod.tenant_settings
 ```
 
 ### Cron tasks
 
-```bash
+```sh
 0 3 * * * cd /usr/local/django_projects/podv4 && /home/pod/.virtualenvs/django_pod/bin/python manage.py clearsessions &>> /usr/local/django_projects/podv4/pod/log/cron_clearsessions.log 2>&1
 0 4 * * * cd /usr/local/django_projects/podv4 && /home/pod/.virtualenvs/django_pod/bin/python manage.py index_videos --all &>> /usr/local/django_projects/podv4/pod/log/cron_index.log 2>&1
 0 5 * * * cd /usr/local/django_projects/podv4 && /home/pod/.virtualenvs/django_pod/bin/python manage.py check_obsolete_videos >> /usr/local/django_projects/podv4/pod/log/cron_obsolete.log 2>&1

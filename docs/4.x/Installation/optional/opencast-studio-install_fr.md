@@ -58,7 +58,7 @@ Dans votre `custom/settings-local.py`, les paramètres suivants concernent l’u
 | **FFMPEG_STUDIO_COMMAND** | Commande ffmpeg utilisée pour l’encodage des vidéos du studio | _cf. remarque ci-dessous_ |
 {: .table .table-striped}
 
-Pensez à vérifier la version de ffmpeg utilisée par le serveur d’encodage. S’il s’agit d’une version 5 ou plus, il est nécessaire de surcharger le paramètre `FFMPEG_STUDIO_COMMAND` de votre `custom/settings-local.py` avec :
+Pensez à vérifier la version de ffmpeg utilisée par le serveur d’encodage. S’il s’agit d’une version 5 ou plus, il est nécessaire de surcharger le paramètre `FFMPEG_STUDIO_COMMAND` de votre `custom/settings-local.py` avec :
 
 ```sh
 FFMPEG_STUDIO_COMMAND = (

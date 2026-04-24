@@ -14,81 +14,81 @@ Le live se base sur le module RTMP de Nginx.
 
 ## Pré-requis
 
-- Installation : documentation réalisée à l’époque sur Debian 9.4 64 bits.
+- Installation : documentation réalisée à l’époque sur Debian 9.4 64 bits.
 
-Pour installer nginx en version 1.14, il faut d’abord ajouter les **backports** :
+Pour installer nginx en version 1.14, il faut d’abord ajouter les **backports** :
 
 Se placer en tant que root (sudo -s)
 
-```bash
+```sh
 $> vim /etc/apt/sources.list
 ```
 
-Ajouter la ligne : `deb http://ftp.debian.org/debian stretch-backports main`
+Ajouter la ligne : `deb http://ftp.debian.org/debian stretch-backports main`
 
-Puis faire une mise à jour :
+Puis faire une mise à jour :
 
-```bash
+```sh
 $> apt update
 ```
 
 ## Installation de nginx
 
-```bash
+```sh
 $> apt-get -t stretch-backports install nginx
 ```
 
-Ensuite, il faut installer le module nginx-rtmp :
+Ensuite, il faut installer le module nginx-rtmp :
 
-```bash
+```sh
 $> apt-get install libnginx-mod-rtmp
 ```
 
 ## ffmpeg
 
-Pour le multibitrate, il faut installer ffmpeg qui encode en temps réel le flux vidéo :
+Pour le multibitrate, il faut installer ffmpeg qui encode en temps réel le flux vidéo :
 
-```bash
+```sh
 $> aptitude install ffmpeg
 ```
 
-Pour vérifier que tout s’est bien passé, il faut lister le répertoire modules enabled de nginx :
+Pour vérifier que tout s’est bien passé, il faut lister le répertoire modules enabled de nginx :
 
-```bash
+```sh
 $> ls -l /etc/nginx/modules-enabled/
 ```
 
-Vous devez voir mod-rtmp.conf :
+Vous devez voir mod-rtmp.conf :
 
-```bash
+```sh
 total 16
 [...]
 lrwxrwxrwx 1 root root 48 oct. 17 12:59 50-mod-rtmp.conf -> /usr/share/nginx/modules-available/mod-rtmp.conf
 [...]
 ```
 
-Ensuite, il faut ajouter l’instruction include rtmp dans le nginx.conf et créer le snippets correspondant :
+Ensuite, il faut ajouter l’instruction include rtmp dans le nginx.conf et créer le snippets correspondant :
 
-```bash
+```sh
 $> vim /etc/nginx/nginx.conf
 [...]
 include /etc/nginx/snippets/rtmp.conf;
 [...]
 ```
 
-Il faut donc ensuite créer le snippet **RTMP** :
+Il faut donc ensuite créer le snippet **RTMP** :
 
-```bash
+```sh
 $> vim /etc/nginx/snippets/rtmp.conf
 ```
 
 ### Fichier rtmp.conf originel
 
-Ci-dessous le fichier de configuration originel qui utilise **3 encodages** et n’est pas spécialement optimisé vis-à-vis de la latence (il faut compter entre **15 et 30 secondes de latence** avec cette configuration) :
+Ci-dessous le fichier de configuration originel qui utilise **3 encodages** et n’est pas spécialement optimisé vis-à-vis de la latence (il faut compter entre **15 et 30 secondes de latence** avec cette configuration) :
 
 #### Fichier `/etc/nginx/snippets/rtmp.conf`
 
-```bash
+```sh
 rtmp {
     server {
         listen 1935; # port rtmp par defaut
@@ -144,18 +144,18 @@ Ci-dessous le même fichier de configuration qui utilise **2 encodages** et qui 
 
 Ce fichier reprend des éléments de configuration présenté par Ludovic Bouguerra de la société Kalyzée lors de son Webinaire "Mise en place d’une infrastructure de live et réduction de la latence avec Pod" du 23 septembre 2022.
 
-Les éléments de configuration modifiés sont les suivants :
+Les éléments de configuration modifiés sont les suivants :
 
 - 2 encodages réalisés
 - le preset en ultrafast
 - l’option tune zerolatency
 - le nombre de keyframes (- g) positionné à 60 (ou 50)
 
-Ce qui donne :
+Ce qui donne :
 
 #### Fichier `/etc/nginx/snippets/rtmp.conf` (latence réduite)
 
-```bash
+```sh
 rtmp {
     server {
         listen 1935; # port rtmp par defaut
@@ -208,27 +208,27 @@ rtmp {
 >
 > ⚠️ Suite à la mise en place en production, il s’est avéré que, lors de la publication RTMP de la part de SMP 351, cette configuration pouvait provoquer une erreur du type " **force fragment split**".
 >
-> Finalement, en commentant les paramètres suivants, ce problème n’est plus réapparu :
+> Finalement, en commentant les paramètres suivants, ce problème n’est plus réapparu :
 >
-> ```bash
+> ```sh
 > # hls\_max\_fragment 3s;
 >
 > # hls\_playlist\_length 10s;
 > ```
 
-Vous pouvez voir toutes les directives de ce module à cette adresse : [https://github.com/arut/nginx-rtmp-module/wiki/Directives](https://github.com/arut/nginx-rtmp-module/wiki/Directives)
+Vous pouvez voir toutes les directives de ce module à cette adresse : [https://github.com/arut/nginx-rtmp-module/wiki/Directives](https://github.com/arut/nginx-rtmp-module/wiki/Directives)
 
 ## HTTP
 
-Il faut enfin déclarer la route `hls` pour lire les vidéos :
+Il faut enfin déclarer la route `hls` pour lire les vidéos :
 
-```bash
+```sh
 $> vim /etc/nginx/sites-enabled/default
 ```
 
 ### Fichier `/etc/nginx/sites-enabled/default`
 
-```bash
+```sh
 server {
   listen 80 default_server;
   root /var/www/html;
@@ -245,9 +245,9 @@ server {
             }
             alias /dev/shm/hls;
             add_header Cache-Control no-cache;
-            add_header 'Access-Control-Allow-Origin' 'https://pod.univ-machin.fr'; # <--- surtout pas "*" : risque d’injection de code !!!
+            add_header 'Access-Control-Allow-Origin' 'https://pod.univ-machin.fr'; # <--- surtout pas "*" : risque d’injection de code !!!
         }
-  add_header 'Access-Control-Allow-Origin' 'https://pod.univ-machin.fr'; # Hotfix pour diffusion depuis un autre serveur <--- surtout pas "*" : risque d’injection de code !!!
+  add_header 'Access-Control-Allow-Origin' 'https://pod.univ-machin.fr'; # Hotfix pour diffusion depuis un autre serveur <--- surtout pas "*" : risque d’injection de code !!!
 }
 ```
 
@@ -257,7 +257,7 @@ server {
 
 Il faut commencer par activer l’application live en ajoutant "live" dans THIRD\_PARTY\_APPS dans le fichier settings\_local.py
 
-```bash
+```sh
 ...
 THIRD_PARTY_APPS = ["xxx","xxx","live"]
 ...
@@ -269,13 +269,13 @@ Il faut d’abord ajouter le type de type de matériel pour le streaming dont vo
 
 Cela limitera les choix dans l’admin du site
 
-```bash
+```sh
 ...
 BROADCASTER_PILOTING_SOFTWARE = ['Wowza', 'SMP']
 ...
 ```
 
-Ensuite il faut se rendre dans l’administration de Pod :
+Ensuite il faut se rendre dans l’administration de Pod :
 
 - créer un bâtiment
 - puis un diffuseur rattaché à ce bâtiment en précisant l’url de lecture du flux de direct
@@ -290,7 +290,7 @@ Cela permet de piloter le démarrage et l’arrêt de l’enregistrement.
 
 ### Exemple
 
-```bash
+```sh
 # exemple pour WOWZA:
 {
   "server_url":"http://stream01.univ.fr:8087",
@@ -318,13 +318,13 @@ Le paramétrer dans le "DEFAULT\_EVENT\_PATH" du fichier `settings\_local.py`
 
 ### avec SMP Extron
 
-si vous utilisez des SMP vous pouvez récupérer le fichier vidéo issue d’un évènement (live) de 2 manières :
+si vous utilisez des SMP vous pouvez récupérer le fichier vidéo issue d’un évènement (live) de 2 manières :
 
 #### récupération via SFTP
 
 Pod se connecte au serveur SMP pour récupérer le fichier vidéo et l’encoder en tant que vidéo liée à l’évènement).
 
-Dans la configuration json du diffuseur :
+Dans la configuration json du diffuseur :
 
 - vérifier que le port est bien déclaré et ouvert entre les 2 serveurs
 - `use_opencast` doit être à false
@@ -334,19 +334,19 @@ Dans la configuration json du diffuseur :
 
 Le SMP, s’il dispose de la fonctionnalité de push (modèle Extron 351 par exemple), envoie directement le fichier dans le studio de Pod qui va l’encoder et le lier à l’évènement.
 
-Dans la configuration json du diffuseur :
+Dans la configuration json du diffuseur :
 
 - `use_opencast` doit être à "true"
 - `sftp_port` peut être vide
 - `rtmp_streamer_id` doit être correctement défini
 
-Pour connaître le `rtmp_streamer_id`, vous pouvez appeler l’url suivante de votre SMP et voir quel streamer est configuré en rtmp (dans le `pub_url`) :
+Pour connaître le `rtmp_streamer_id`, vous pouvez appeler l’url suivante de votre SMP et voir quel streamer est configuré en rtmp (dans le `pub_url`) :
 
 <http://xxx.xxx.xx.x/api/swis/resources?uri=/streamer/rtmp/1&uri=/streamer/rtmp/2&uri=/streamer/rtmp/3&uri=/streamer/rtmp/4&uri=/streamer/rtmp/5&uri=/streamer/rtmp/6>
 
 Vous devez aussi ajouter un Enregistreur (Recorder) dans l’admin de Pod avec l’Ip du SMP (définir un Salt, Login, Password)
 
-Du côté SMP vous devez :
+Du côté SMP vous devez :
 
 - Activer (ou installer) le plugin Opencast depuis l’interface de gestion du matériel (Configuration -> Advanced Features)
 - Paramétrer la publication vers le Opencast de Pod (Scheduled Events -> Publish Settings -> Active Profiles )
@@ -358,29 +358,29 @@ Du côté SMP vous devez :
 
 Pod inclut une fonction qui permet de compter les spectateurs sur un direct en temps réel.
 
-Cette fonctionnalité doit être mise en place de la façon suivante :
+Cette fonctionnalité doit être mise en place de la façon suivante :
 
-- Ajouter une tâche CRON périodique; chaque minute recommandé, mais il est possible d’augmenter ou de diminuer le temps et régler les settings sur pod en conséquence (voir les points suivants ...) :
+- Ajouter une tâche CRON périodique; chaque minute recommandé, mais il est possible d’augmenter ou de diminuer le temps et régler les settings sur pod en conséquence (voir les points suivants ...) :
 
-```bash
+```sh
 bash -c 'export WORKON\_HOME=/home/pod/.virtualenvs; export VIRTUALENVWRAPPER\_PYTHON=/usr/bin/python3.11; cd /home/pod/django_projects/podv4; source /usr/local/bin/virtualenvwrapper.sh; workon django_pod4; python manage.py live_viewcounter'
 ```
 
-> ⚠️ ATTENTION : Il est possible que vous ayez à modifier cette commande suivant vos chemins d’installation de POD.
+> ⚠️ ATTENTION : Il est possible que vous ayez à modifier cette commande suivant vos chemins d’installation de POD.
 
 - Réglez le setting `HEARTBEAT_DELAY`, celui ci permet de définir le délai entre lequel un client va remonter son "signal" au serveur. Il est par défaut fixé à 45 secondes.
 - Réglez le setting `VIEW_EXPIRATION_DELAY`, il permet de définir le délai maximum pour lequel une vue va encore considérée comme présente sur le direct.
 
-> Afin de mieux comprendre ces notions de délais voici un exemple avec les paramètres par défaut : Le client (le terminal sur lequel l’utilisateur est en train de regarder le direct) va remonter un signal au serveur > Pod de manière périodique toutes les **45** (HEARTBEAT\_DELAY) secondes. Chaque **minute** (temps du CRON), une tâche vérifie la validité de chaque spectateur pour déterminer si il est encore présent sur le > direct. Pour cela, elle élimine tout les spectateurs qui n’ont pas remonté de signal depuis **60** (VIEW\_EXPIRATION\_DELAY) secondes.
+> Afin de mieux comprendre ces notions de délais voici un exemple avec les paramètres par défaut : Le client (le terminal sur lequel l’utilisateur est en train de regarder le direct) va remonter un signal au serveur > Pod de manière périodique toutes les **45** (HEARTBEAT\_DELAY) secondes. Chaque **minute** (temps du CRON), une tâche vérifie la validité de chaque spectateur pour déterminer si il est encore présent sur le > direct. Pour cela, elle élimine tout les spectateurs qui n’ont pas remonté de signal depuis **60** (VIEW\_EXPIRATION\_DELAY) secondes.
 
-**A noter** : Il est laissé la possibilité de modifier les délais pour pallier à d’éventuelles pertes de performances à cause de la remontée des vues. Si vous rencontrez des difficultés à ce niveau, n’hésitez pas à doubler les délais. Le comptage sera moins précis en temps réel mais vous gagnerez en nombre de requêtes.
+**A noter** : Il est laissé la possibilité de modifier les délais pour pallier à d’éventuelles pertes de performances à cause de la remontée des vues. Si vous rencontrez des difficultés à ce niveau, n’hésitez pas à doubler les délais. Le comptage sera moins précis en temps réel mais vous gagnerez en nombre de requêtes.
 
 ## Diffusion d’un flux video en direct (avec OBS)
 
-Avec **OBS**, dans les paramètres, onglet Flux, je précise ces données :
+Avec **OBS**, dans les paramètres, onglet Flux, je précise ces données :
 
-- **URL** : rtmp://serveur.univ.fr/live
-- **Clé de stream** : nico
+- **URL** : rtmp://serveur.univ.fr/live
+- **Clé de stream** : nico
 
 Dans **Pod**, dans les paramètres de mon diffuseur, dans le champ URL, je vais préciser ceci : <http://serveur.univ.fr/hls/nico.m3u8>
 
@@ -390,7 +390,7 @@ Nous venons donc de créer un flux diffusé en direct accessible en HTML5, multi
 
 ### Fichier `nico.m3u8`
 
-```bash
+```sh
       #EXTM3U
       #EXT-X-VERSION:3
       #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=320000

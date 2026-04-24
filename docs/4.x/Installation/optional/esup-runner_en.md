@@ -39,7 +39,7 @@ This document explains:
 
 Recommended minimal configuration, in production:
 
-```python
+```py
 USE_RUNNER_MANAGER = True
 RM_TASKS_DELETED_AFTER_DAYS = 60
 SECURE_SSL_REDIRECT = True
@@ -114,7 +114,7 @@ In parallel, the video interface also shows queue rank (`rank`) and the total nu
 
 The command:
 
-```bash
+```sh
 python manage.py process_tasks
 ```
 

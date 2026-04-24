@@ -18,7 +18,7 @@ Feel free to explore this interface to discover all its possibilities.
 
 We recommend restricting access to ‘/rest’ on your instance via your nginx configuration:
 
-```bash
+```sh
 location /rest {
     allow XXX.XXX.X.X/24;
     deny all;
@@ -39,7 +39,7 @@ You can then use this token in your Curl requests.
 
 For example, this request allows you to retrieve users:
 
-```bash
+```sh
 curl -H ‘Content-Type: application/json’ -H “Authorisation: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX” -X GET -d “{}” http(s)://pod.univ.fr/rest/users/
 ```
 
@@ -47,7 +47,7 @@ To learn how to create your queries, feel free to use the web interface via your
 
 Another example: the following command allows you to create a type called ‘test’:
 
-```bash
+```sh
 curl -H ‘Content-Type: application/json’ -H “Authorisation: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX” -X POST -d '{
     ‘title’: ‘test’
 }' http(s)://pod.univ.fr/rest/types/
@@ -55,7 +55,7 @@ curl -H ‘Content-Type: application/json’ -H “Authorisation: Token XXXXXXXX
 
 Executing this command returns the created type:
 
-```bash
+```sh
     {‘id’:13,‘url’:‘http(s)://pod.univ.fr/rest/types/13/’,‘title’:‘test’,“description”:‘-- sorry, no translation provided --’,‘icon’:null}
 ```
 
@@ -63,7 +63,7 @@ Finally, you can modify an existing element. For example, you can change the typ
 
 The following command changes the title of the type with the identifier 13:
 
-```bash
+```sh
     curl -H ‘Content-Type: application/json’ -H 'Authorisation: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX' -X PATCH -d '{
         ‘title’: ‘test new’
     }' http(s)://pod.univ.fr/rest/types/13/
@@ -73,7 +73,7 @@ This command returns the same information as when creating.
 
 Finally, it is also possible to post (without launching encoding) videos from the command line. Here is an example:
 
-```bash
+```sh
 curl  -H "Content-Type: multipart/form-data" \
     -H 'Authorization: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX' \
     -F "owner=http(s)://pod.univ.fr/rest/users/1/" \
@@ -85,7 +85,7 @@ curl  -H "Content-Type: multipart/form-data" \
 
 If successful, this command returns all available information related to this video. If you wish to start encoding it, you can use the ‘slug’ or short title information (generated automatically during creation) as a parameter in a second command. Example:
 
-```bash
+```sh
 curl -XGET -H ‘Content-Type: application/json’ \
     -H “Authorisation: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX” \
     ‘http(s)://pod.univ.fr/rest/launch_encode_view/?slug=id-ma-video’
@@ -93,7 +93,7 @@ curl -XGET -H ‘Content-Type: application/json’ \
 
 Please note that for object relationships, you must specify the URL rather than the primary key:
 
-```bash
+```sh
     The HyperlinkedModelSerializer class is similar to the ModelSerializer class except that it uses hyperlinks to represent relationships, rather than primary keys. By default, the serialiser will include a URL field instead of a primary key field.
 ```
 
@@ -103,7 +103,7 @@ Managing broadcasters from the command line:
 
 Retrieving the list of broadcasters:
 
-```bash
+```sh
 curl  -H ‘Content-Type: application/json’ \
   -H “Authorisation: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX” \
   -F ‘slug=id-ma-video’ \
@@ -134,11 +134,11 @@ The server response will be in this format:
 
 Below is an example of updating the ‘status’ parameter of a broadcaster. Using the previous response, we can therefore execute the following command:
 
-```bash
+```sh
 curl --location --request PATCH “https://pod.univ.fr/rest/broadcasters/nom-de-mon-diffuseur/” \
 --header “Authorisation: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX” \
 --header “Content-Type: application/json” \
---data-raw “{‘status’ : true}”
+--data-raw “{‘status’: true}”
 ```
 
 ## DublinCore
@@ -149,7 +149,7 @@ You can filter your videos using GET parameters added to your URL.
 
 For example, to obtain the DublinCore representation of user 1’s videos, you can run the following command:
 
-```bash
+```sh
 curl -H ‘Content-Type: application/json’ -H “Authorisation: Token XXXXXXXXXXX71922e47ed412eabcbd241XXXXXXX” -X GET http(s)://pod.univ.fr/rest/dublincore/?owner=1
 ```
 

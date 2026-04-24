@@ -18,7 +18,7 @@ lang: en
 
 Add the Celery/Redis configuration in the `settings_local.py` file:
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 
 # Celery configuration on the frontal
@@ -42,7 +42,7 @@ You must now indicate to the encoding server:
 * that we want to use CELERY
 * the address of the frontal server as the BROKER for CELERY
 
-```bash
+```sh
 (django_pod4) pod@pod-encoding:/usr/local/django_projects/podv4$ vim pod/custom/settings_local.py
 
 USE_XAPI = True
@@ -60,14 +60,14 @@ Put the content of
 [https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd](https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd)
 into `/etc/init.d/celeryd`
 
-```bash
+```sh
 (django_pod4) pod@pod-enc:~/django_projects/podv4$ sudo vim /etc/init.d/celeryd-xapi
 (django_pod4) pod@pod-enc:~/django_projects/podv4$ sudo chmod u+x /etc/init.d/celeryd-xapi
 ```
 
 Then create the associated default file:
 
-```bash
+```sh
 (django_pod4) pod@pod-enc:/usr/local/django_projects/podv4$ sudo vim /etc/default/celeryd-xapi
 
 CELERYD_NODES="worker-xapi"                                            # Name of the worker(s). Add as many workers as tasks to run in parallel.
@@ -87,12 +87,12 @@ CELERYD_LOG_LEVEL="INFO"                                               # log inf
 
 ### Start Celeryd
 
-```bash
+```sh
 (django_pod4) pod@pod-enc:~/django_projects/podv4$ sudo /etc/init.d/celeryd-xapi start
 ```
 
 To check if Celery is working properly:
 
-```bash
+```sh
 celery -A pod.xapi.xapi_tasks -l INFO -Q xapi --concurrency 1 -n xapi
 ```

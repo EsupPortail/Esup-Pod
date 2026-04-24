@@ -13,7 +13,7 @@ lang: en
 An RSA key pair is required for ActivityPub.
 It can be generated as follows:
 
-```python
+```py
 from Crypto.PublicKey import RSA
 
 activitypub_key = RSA.generate(2048)
@@ -32,7 +32,7 @@ with open("pod/activitypub/ap.pub", "w") as fd:
 
 Add the Celery/Redis configuration in the `settings_local.py` file:
 
-```bash
+```sh
 pod@pod:/usr/local/django_projects/podv4$ nano pod/custom/settings_local.py
 # ActivityPub configuration
 USE_ACTIVITYPUB = True
@@ -51,14 +51,14 @@ Put the content of
 [https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd](https://raw.githubusercontent.com/celery/celery/main/extra/generic-init.d/celeryd)
 into `/etc/init.d/celeryd-activitypub`
 
-```bash
+```sh
 pod@pod:~$ sudo nano /etc/init.d/celeryd-activitypub
 pod@pod:~$ sudo chmod u+x /etc/init.d/celeryd-activitypub
 ```
 
 Then create the associated default file:
 
-```bash
+```sh
 pod@pod:~$ sudo nano /etc/default/celeryd-activitypub
 CELERYD_NODES="worker-activitypub"                                     # Name of the worker(s). Add as many workers as tasks to run in parallel.
 CELERY_BIN="/home/pod/.virtualenvs/django_pod/bin/celery"              # celery source directory
@@ -75,24 +75,24 @@ CELERYD_LOG_LEVEL="INFO"                                               # log lev
 
 ### Check that everything is OK
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ celery --app pod.activitypub.tasks worker --loglevel INFO --queues activitypub --concurrency 1 --hostname activitypub
 ```
 
 ## Start Celeryd
 
-```bash
+```sh
 pod@pod:~$ sudo /etc/init.d/celeryd-activitypub start
 ```
 
 Launch Celeryd automatically on server reboot:
 
-```bash
+```sh
 pod@pod:~$ sudo systemd-sysv-install enable celeryd-activitypub
 ```
 
 To check if Celery is working correctly:
 
-```bash
+```sh
 (django_pod4) pod@pod:/usr/local/django_projects/podv4$ celery --broker=redis://127.0.0.1:6379/7 inspect active
 ```

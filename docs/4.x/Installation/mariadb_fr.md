@@ -13,7 +13,7 @@ Cette documentation ne concerne que la configuration et l’utilisation d’une 
 
 ## Installation des librairies
 
-Sur les serveurs devant utiliser la base de données MySQL/MariaDB, il est nécessaire d’installer le moteur MySQL/MariaDB / Python via les commandes suivantes :
+Sur les serveurs devant utiliser la base de données MySQL/MariaDB, il est nécessaire d’installer le moteur MySQL/MariaDB / Python via les commandes suivantes :
 
 ```sh
 pod@pod:$ sudo apt install -y mariadb-client
@@ -56,7 +56,7 @@ Il faut ensuite lancer le script présent à la racine afin de créer les fichie
 (django_pod4) pod@pod:~/django_projects/podv4$ make createDB
 ```
 
-> Ne pas oublier de créer à nouveau un superutilisateur :
+> Ne pas oublier de créer à nouveau un superutilisateur :
 >
 > ```sh
 > (django_pod4) pod@pod:~/django_projects/podv4$ python manage.py createsuperuser

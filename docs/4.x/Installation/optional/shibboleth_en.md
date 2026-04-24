@@ -35,7 +35,7 @@ This is just one possible setup — you are not required to configure communicat
 
 First, you need to change the port on which Nginx runs (since Apache will be in front). In the `server` block of the `pod_nginx.conf` file, change the listening port. In this example, port 8080 is used (but you may choose another). You also need to enable the `proxy_pass_request_header` option to allow proper transmission of headers between Apache and Nginx. You should also enable `underscores_in_headers`.
 
-```bash
+```sh
 server {
     listen 8080;
     proxy_pass_request_headers on;
@@ -52,7 +52,7 @@ Depending on whether you are using HTTP or the full version of Apache, make sure
 
 Example:
 
-```bash
+```sh
 <Location />
     ProxyPass https://127.0.0.1:8080/
     ProxyPassReverse http://127.0.0.1:8080/
@@ -77,7 +77,7 @@ Example:
 
 If you need to use `mod_ssl` with HTTPS exchanges, you may need to use these options (or at least some of them) in addition:
 
-```bash
+```sh
 SSLProxyEngine On
 SSLProxyVerify none
 SSLProxyCheckPeerCN off
@@ -93,7 +93,7 @@ ProxyPreserveHost On
 
 To enable authentication with Shibboleth in Pod, you need to set 5 settings:
 
-```bash
+```sh
 USE_SHIB = True  # Enables Shibboleth authentication in the login page
 SHIB_NAME = "Test Federation"  # Specifies the name of the identity federation to be displayed
 SHIBBOLETH_ATTRIBUTE_MAP = {
@@ -109,7 +109,7 @@ SHIB_LOGOUT_URL = "https://univ-lr.fr/shib/Shibboleth.sso/Logout"
 
 Also make sure to add Shibboleth authentication to the `AUTH_TYPE` attribute:
 
-```bash
+```sh
 AUTH_TYPE = (('local', ('local')), ('CAS', 'CAS'), ('Shibboleth', 'Shibboleth'))
 ```
 

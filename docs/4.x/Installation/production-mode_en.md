@@ -169,7 +169,7 @@ Also take the opportunity to assign rights to the `www-data` group by editing th
 (django_pod4) pod@pod:~/django_projects/podv4$ sudo /etc/init.d/nginx restart (or sudo systemctl restart nginx)
 ```
 
-To start the Nginx service automatically, run the command :
+To start the Nginx service automatically, run the command:
 
 ```sh
 pod@pod:$ sudo systemctl enable nginx
