@@ -279,7 +279,6 @@ class ValidFormRespitTestCase(TestCase):
 
         print("--->  test_archive_action of ValidFormRespitTestCase: OK")
 
-
     @override_settings(PROLONGATION_GRANTED=True)
     def test_extend_action(self):
         """Test extend option in the form"""
@@ -295,7 +294,6 @@ class ValidFormRespitTestCase(TestCase):
 
         print("--->  test_extend_action of ValidFormRespitTestCase: OK")
 
-
     def test_delete_action(self):
         """Test delete option in the form"""
         # Simulates the submission of the form with archive delete
@@ -306,10 +304,9 @@ class ValidFormRespitTestCase(TestCase):
         response = valid_form_respit(request, self.video1.slug)
         # Check that HTTP code is 301
         self.assertEqual(response.status_code, 301)
-        self.assertEqual(response.get('Location'),f"/video/delete/{self.video1.slug}")
+        self.assertEqual(response.get('Location'), f"/video/delete/{self.video1.slug}")
 
         print("--->  test_delete_action of ValidFormRespitTestCase: OK")
-
 
     @patch("pod.video.views.ENABLE_PAGE_OBSO_MAIL", True)
     def test_go_prolong_action(self):
@@ -326,7 +323,6 @@ class ValidFormRespitTestCase(TestCase):
         self.assertEqual(response.get('Location'), f"/video/well/prolonged/or/not/{self.video1.slug}")
 
         print("--->  test_go_prolong_action of ValidFormRespitTestCase: OK")
-
 
     @patch("pod.video.views.ENABLE_PAGE_OBSO_MAIL", True)
     def test_go_archive_action(self):
@@ -350,4 +346,3 @@ class ValidFormRespitTestCase(TestCase):
             os.remove("%s/%s.csv" % (settings.LOG_DIRECTORY, "archived"))
         except FileNotFoundError:
             pass
-
