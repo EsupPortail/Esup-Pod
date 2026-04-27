@@ -11415,7 +11415,7 @@ msgid "Select this option if you want to extend the publication of your video by
 msgstr "Choisissez cette option si vous souhaitez prolonger de %(rrd)s jours la publication de votre vidéo."
 
 msgid "Select this option if you want to archive your video. It will then be unpublished and will no longer be accessible to the public. However, it will remain on the video server, along with its metadata, and its publication can be reactivated if necessary."
-msgstr "Choisissez cette option si vous souhaitez archiver votre vidéo. Elle sera alors dépubliée et ne sera plus accessible aux publics. Toutefois, elle restera présente sur le serveur vidéo, ainsi que les métadonnées qui l'accompagnent, et sa publication pourra être réactivée en cas de besoin."
+msgstr "Choisissez cette option si vous souhaitez archiver votre vidéo. Elle sera alors dépubliée et ne sera plus accessible aux publics. Toutefois, elle restera présente sur le serveur vidéo, ainsi que les métadonnées qui l'accompagnent, et sa publication pourra être réactivée en cas de besoin et sur demande auprès d’un gestionnaire."
 
 msgid "Select this option if you decide to permanently delete your video from the server, along with its metadata. You should only do this after careful consideration. It is therefore essential that you download the video and its metadata first."
 msgstr "Choisissez cette option si vous décidez de supprimer définitivement votre vidéo du serveur ainsi que les métadonnées qui l'accompagnent. Cette action doit être faite en toute connaissance de cause. Il est alors impératif de télécharger la vidéo et ses métadonnées."
@@ -11479,11 +11479,20 @@ msgid "Please Wait."
 msgstr "Veuillez patienter."
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "You can decide to extend your video, to archive it (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here:"
-msgstr "Vous pouvez décidez de prolonger votre vidéo, de l'archiver (ne sera plus accessible), de la supprimer, ainsi que de la télécharger avec toutes les données la concernant en cliquant ici :"
+msgid "You can choose to extend the duration of your video, archive it (it will be unpublished and no longer accessible), download it along with all its associated data, or delete it (after saving it) by clicking here:"
+msgstr "Vous pouvez décider de prolonger votre vidéo, de l'archiver (elle sera dépubliée et ne sera plus accessible), de la télécharger avec toutes les données qui l’accompagnent, ainsi que de la supprimer (après l’avoir sauvegardée), en cliquant ici :"
 
-msgid "You can decide to archive your video (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here:"
-msgstr "Vous pouvez décidez d'archiver votre vidéo (ne sera plus accessible), de la supprimer, ainsi que de la télécharger avec toutes les données la concernant en cliquant ici :"
+msgid "You can choose to archive your video (it will be unpublished and no longer accessible), download it along with all its associated data, or delete it (after saving it) by clicking here:"
+msgstr "Vous pouvez décider d'archiver votre vidéo (elle sera dépubliée et ne sera plus accessible), de la télécharger avec toutes les données qui l’accompagnent, ainsi que de la supprimer (après l’avoir sauvegardée), en cliquant ici :"
+
+msgid "You can choose to extend the duration of your video, archive it (it will be unpublished and no longer accessible), or download it along with all its associated data by clicking here:"
+msgstr "Vous pouvez décider de prolonger votre vidéo, de l'archiver (elle sera dépubliée et ne sera plus accessible), ainsi que de la télécharger avec toutes les données qui l’accompagnent, en cliquant ici :"
+
+msgid "You can choose to archive your video (it will be unpublished and no longer accessible), or download it along with all its associated data by clicking here:"
+msgstr "Vous pouvez d'archiver votre vidéo (elle sera dépubliée et ne sera plus accessible), ainsi que de la télécharger avec toutes les données qui l’accompagnent, en cliquant ici :"
+
+msgid "Unless you take action, your video will be archived (unpublished) and may be deleted."
+msgstr "Sans action de votre part votre vidéo sera archivée(dépubliée) et pourra être supprimée par un gestionnaire ou automatiquement"
 
 msgid "Apply my choice."
 msgstr "Appliquez mon choix."

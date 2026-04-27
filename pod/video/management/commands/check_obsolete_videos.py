@@ -23,7 +23,7 @@ from datetime import date, timedelta
 
 ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
-
+DELETION_GRANTED = getattr(settings, "DELETION_GRANTED", False)
 
 USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
 USE_ESTABLISHMENT = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
@@ -243,13 +243,23 @@ class Command(BaseCommand):
             custom_message_page_obso_mail += "<br>\n"
 
             if PROLONGATION_GRANTED:
-                custom_message_page_obso_mail += "<p> " + _(
-                    "You can decide to extend your video, to archive it (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here:"
-                )
+                if DELETION_GRANTED:
+                    custom_message_page_obso_mail += "<p> " + _(
+                        "You can choose to extend the duration of your video, archive it (it will be unpublished and no longer accessible), download it along with all its associated data, or delete it (after saving it) by clicking here:"
+                    )
+                else:
+                    custom_message_page_obso_mail += "<p> " + _(
+                        "You can choose to extend the duration of your video, archive it (it will be unpublished and no longer accessible), or download it along with all its associated data by clicking here:"
+                    )
             else:
-                custom_message_page_obso_mail += "<p> " + _(
-                    "You can decide to archive your video (won’t be available anymore), to remove it, and to download it with the concerned datas, by clicking here:"
-                )
+                if DELETION_GRANTED:
+                    custom_message_page_obso_mail += "<p> " + _(
+                        "You can choose to archive your video (it will be unpublished and no longer accessible), download it along with all its associated data, or delete it (after saving it) by clicking here:"
+                    )
+                else:
+                    custom_message_page_obso_mail += "<p> " + _(
+                        "You can choose to archive your video (it will be unpublished and no longer accessible), or download it along with all its associated data by clicking here:"
+                    )
 
             custom_message_page_obso_mail += (
                 "<a href='"
@@ -257,9 +267,11 @@ class Command(BaseCommand):
                 + "/video/respit/"
                 + video.slug
                 + "'>"
-                + _("Apply my choice.")
+                + base_url + "/video/respit/" + video.slug
                 + "</a></p>"
             )
+            custom_message_page_obso_mail += "<br>\n"
+            custom_message_page_obso_mail += _("Unless you take action, your video will be archived (unpublished) and may be deleted.")
 
         if video.owner.is_staff:
             msg_html = _("Hello %(name)s,") % {"name": name}
