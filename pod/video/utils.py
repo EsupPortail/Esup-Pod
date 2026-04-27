@@ -549,40 +549,40 @@ def write_in_csv(vid: Video, arch_type: str) -> None:
     if exists:
         check_csv_header(file, fieldnames)
 
-        with open(file, "a", newline="", encoding="utf-8") as csvfile:
-            writer = csv.DictWriter(csvfile, delimiter=";", fieldnames=fieldnames)
+    with open(file, "a", newline="", encoding="utf-8") as csvfile:
+        writer = csv.DictWriter(csvfile, delimiter=";", fieldnames=fieldnames)
 
-            if not exists:
-                writer.writeheader()
+        if not exists:
+            writer.writeheader()
 
-            # Force the username attribute even if HIDE_USERNAME is true whereas the __str__ method
-            # of Owner Class used by vid.owner.owner doesn't do so
-            user_name = "%s %s (%s)" % (
-                vid.owner.first_name,
-                vid.owner.last_name,
-                vid.owner.username,
-            )
+        # Force the username attribute even if HIDE_USERNAME is true whereas the __str__ method
+        # of Owner Class used by vid.owner.owner doesn't do so
+        user_name = "%s %s (%s)" % (
+            vid.owner.first_name,
+            vid.owner.last_name,
+            vid.owner.username,
+        )
 
-            writer.writerow(
-                {
-                    "Date": date.today(),
-                    "User name": user_name,
-                    "User email": vid.owner.email,
-                    "User Affiliation": vid.owner.owner.affiliation,
-                    "User Establishment": vid.owner.owner.establishment,
-                    "Video Id": vid.id,
-                    "Video title": vid.title,
-                    "Video URL": "https:%s" % vid.get_full_url(),
-                    "Video type": vid.type.title,
-                    "Date added": "%s" % vid.date_added.strftime("%Y/%m/%d"),
-                    "Source file": vid.video,
-                    "Description": vid.description.replace(";", "$semic$")
-                    .replace("\r", "")
-                    .replace("\n\n", "\n")
-                    .replace("\n", "$newl$"),
-                    "Views": vid.viewcount,
-                }
-            )
+        writer.writerow(
+            {
+                "Date": date.today(),
+                "User name": user_name,
+                "User email": vid.owner.email,
+                "User Affiliation": vid.owner.owner.affiliation,
+                "User Establishment": vid.owner.owner.establishment,
+                "Video Id": vid.id,
+                "Video title": vid.title,
+                "Video URL": "https:%s" % vid.get_full_url(),
+                "Video type": vid.type.title,
+                "Date added": "%s" % vid.date_added.strftime("%Y/%m/%d"),
+                "Source file": vid.video,
+                "Description": vid.description.replace(";", "$semic$")
+                .replace("\r", "")
+                .replace("\n\n", "\n")
+                .replace("\n", "$newl$"),
+                "Views": vid.viewcount,
+            }
+        )
 
 
 def store_as_dublincore(vid: Video, mediaPackage_dir: str, user_name: str) -> None:

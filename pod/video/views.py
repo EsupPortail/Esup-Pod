@@ -3975,8 +3975,8 @@ def valid_form_respit(request, slug=None):
                         {"slug": slug, "RALLONGE_RESPIT_DAYS": RALLONGE_RESPIT_DAYS},
                     )
                 else:
-                    raise Exception("Vous ne pouvez pas prolonger plus votre video")
-                    print("")
+                    raise Exception("The video can no longer be extended")
+
             if action == "Archive":
                 return render(request, "videos/archive_or_not.html", {"slug": slug})
 
