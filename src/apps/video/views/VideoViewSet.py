@@ -338,3 +338,36 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    @extend_schema(
+        summary="Transfer video ownership",
+        description="Allows an admin to change the owner of a video.",
+        request={"application/json": {"type": "object", "properties": {"owner_id": {"type": "integer"}}}},
+        responses={200: {"type": "object", "properties": {"status": {"type": "string"}}}},
+    )
+    @action(
+        detail=True, methods=["post"], permission_classes=[permissions.IsAdminUser]
+    )
+    def transfer_ownership(self, request, slug=None):
+        """
+        Transfers the ownership of a video to another user.
+        Accessible only by administrators.
+        """
+        video = self.get_object()
+        new_owner_id = request.data.get("owner_id")
+
+        if not new_owner_id:
+            raise ValidationError({"owner_id": _("This field is required.")})
+
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        try:
+            new_owner = User.objects.get(pk=new_owner_id)
+        except User.DoesNotExist:
+            raise ValidationError({"owner_id": _("User not found.")})
+
+        video.owner = new_owner
+        video.save(update_fields=["owner"])
+
+        return Response({"status": "ownership transferred"})
