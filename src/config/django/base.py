@@ -163,6 +163,7 @@ APPS_WITH_CUSTOM_SETTINGS = [
     "authentication",
     "video",
     "swagger",
+    "core",
     "encoding",
 ]
 
