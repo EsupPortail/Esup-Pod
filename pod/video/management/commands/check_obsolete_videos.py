@@ -10,15 +10,14 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import gettext as _
 from django.template.defaultfilters import striptags
 from django.core.mail import send_mail
-from django.contrib.auth.models import User
 
 # from django.core.mail import mail_admins
 from django.core.mail import mail_managers
 from django.contrib.sites.shortcuts import get_current_site
-import csv
-import os
 
-from pod.video.models import Video, VideoToDelete
+from pod.video.models import Video
+from pod.video.utils import archive_video, write_in_csv
+
 from datetime import date, timedelta
 
 ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
@@ -71,35 +70,6 @@ POD_ARCHIVE_AFFILIATION = getattr(settings, "POD_ARCHIVE_AFFILIATION", [])
 # number of step in days defore deletion
 WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [])
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
-
-
-def archive_isolate(vid):
-    """
-    It Allows the archive process without launching 'get_video archived deleted treatment' in the purpose to be used in other functions
-    """
-    cmd = Command()
-    cmd.write_in_csv(vid, "archived")
-    archive_user, created = User.objects.get_or_create(
-        username=ARCHIVE_OWNER_USERNAME,
-    )
-    # Rename video and change owner.
-    vid.owner = archive_user
-    vid.is_draft = True
-    vid.title = "%s %s %s" % (
-        _("Archived"),
-        date.today(),
-        vid.title,
-    )
-    # Trunc title to 250 chars max.
-    vid.title = vid.title[:250]
-    vid.save()
-
-    # add video to delete
-    vid_delete, created = VideoToDelete.objects.get_or_create(
-        date_deletion=vid.date_delete
-    )
-    vid_delete.video.add(vid)
-    vid_delete.save()
 
 
 class Command(BaseCommand):
@@ -192,7 +162,7 @@ class Command(BaseCommand):
 
             if vid.owner.owner.affiliation in POD_ARCHIVE_AFFILIATION:
                 if not self.dry_mode:
-                    archive_isolate(vid)
+                    archive_video(vid)
 
                 nb_archived += 1
                 if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
@@ -207,7 +177,7 @@ class Command(BaseCommand):
 
             else:
                 if not self.dry_mode:
-                    self.write_in_csv(vid, "deleted")
+                    write_in_csv(vid, "deleted")
                     vid.delete()
                 else:
                     print("Video %s would have been deleted." % vid)
@@ -267,11 +237,15 @@ class Command(BaseCommand):
                 + "/video/respit/"
                 + video.slug
                 + "'>"
-                + base_url + "/video/respit/" + video.slug
+                + base_url
+                + "/video/respit/"
+                + video.slug
                 + "</a></p>"
             )
             custom_message_page_obso_mail += "<br>\n"
-            custom_message_page_obso_mail += _("Unless you take action, your video will be archived (unpublished) and may be deleted.")
+            custom_message_page_obso_mail += _(
+                "Unless you take action, your video will be archived (unpublished) and may be deleted."
+            )
 
         if video.owner.is_staff:
             msg_html = _("Hello %(name)s,") % {"name": name}
@@ -558,74 +532,6 @@ class Command(BaseCommand):
             return dict(MANAGERS)[video_estab]
         else:
             return CONTACT_US_EMAIL
-
-    def write_in_csv(self, vid: Video, arch_type: str) -> None:
-        """Add in `type`.csv file informations about the video."""
-        file = "%s/%s.csv" % (settings.LOG_DIRECTORY, arch_type)
-        exists = os.path.isfile(file)
-
-        fieldnames = [
-            "Date",
-            "User name",
-            "User email",
-            "User Affiliation",
-            "User Establishment",
-            "Video Id",
-            "Video title",
-            "Video URL",
-            "Video type",
-            "Date added",
-            "Source file",
-            "Description",
-            "Views",
-        ]
-        if exists:
-            self.check_csv_header(file, fieldnames)
-
-        with open(file, "a", newline="", encoding="utf-8") as csvfile:
-            writer = csv.DictWriter(csvfile, delimiter=";", fieldnames=fieldnames)
-
-            if not exists:
-                writer.writeheader()
-
-            # Force the username attribute even if HIDE_USERNAME is true whereas the __str__ method
-            # of Owner Class used by vid.owner.owner doesn't do so
-            user_name = "%s %s (%s)" % (
-                vid.owner.first_name,
-                vid.owner.last_name,
-                vid.owner.username,
-            )
-
-            writer.writerow(
-                {
-                    "Date": date.today(),
-                    "User name": user_name,
-                    "User email": vid.owner.email,
-                    "User Affiliation": vid.owner.owner.affiliation,
-                    "User Establishment": vid.owner.owner.establishment,
-                    "Video Id": vid.id,
-                    "Video title": vid.title,
-                    "Video URL": "https:%s" % vid.get_full_url(),
-                    "Video type": vid.type.title,
-                    "Date added": "%s" % vid.date_added.strftime("%Y/%m/%d"),
-                    "Source file": vid.video,
-                    "Description": vid.description.replace(";", "$semic$")
-                    .replace("\r", "")
-                    .replace("\n\n", "\n")
-                    .replace("\n", "$newl$"),
-                    "Views": vid.viewcount,
-                }
-            )
-
-    def check_csv_header(self, csv_file: str, fieldnames: list) -> None:
-        """Check for (and add) missing columns in an existing CSV file."""
-        with open(csv_file, "r") as f:
-            lines = f.readlines()
-        if len(lines[0].split(";")) < len(fieldnames):
-            print("Adding missing header columns in %s." % csv_file)
-            lines[0] = ";".join(fieldnames) + "\n"
-            with open(csv_file, "w") as f:
-                f.writelines(lines)
 
 
 """

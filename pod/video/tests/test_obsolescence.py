@@ -17,6 +17,8 @@ from django.test import RequestFactory
 from django.contrib.auth.models import User
 from django.test import TestCase
 
+from unittest.mock import patch
+
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 
@@ -200,7 +202,7 @@ class ObsolescenceTestCase(TestCase):
         self.assertTrue(title2 in list_video_to_delete["other"]["0"])
         self.assertTrue(video_to_archive in list_video_to_archive["other"]["0"])
 
-        # on verifie que la vidéo archivée est bien archivée
+        # Check that the archived video has been really archived
         video_to_archive = Video.objects.get(id=6)
         archive_user, created = User.objects.get_or_create(
             username=ARCHIVE_OWNER_USERNAME,
@@ -212,10 +214,10 @@ class ObsolescenceTestCase(TestCase):
         vid_delete = VideoToDelete.objects.get(date_deletion=video_to_archive.date_delete)
         self.assertTrue(video_to_archive in vid_delete.video.all())
 
-        # On vérifie que la video supprimée est bien supprimée
+        # Check that the deleted video has been permanently deleted
         self.assertEqual(Video.objects.filter(id=7).count(), 0)
 
-        # On verifie que les fichiers csv sont bien créés
+        # Check that csv file has been created
         file1 = "%s/%s.csv" % (settings.LOG_DIRECTORY, "deleted")
         self.assertTrue(os.path.isfile(file1))
         file2 = "%s/%s.csv" % (settings.LOG_DIRECTORY, "archived")
@@ -246,7 +248,7 @@ class ObsolescenceTestCase(TestCase):
             pass
 
 
-class ValidFormRespitTest(TestCase):
+class ValidFormRespitTestCase(TestCase):
 
     fixtures = [
         "initial_data.json",
@@ -263,65 +265,88 @@ class ValidFormRespitTest(TestCase):
             type=Type.objects.get(id=1),
         )
 
+    def test_archive_action(self):
+        """Test archive option in the form"""
+        # Connect the user
+        self.client.force_login(self.user)
+
+        # Simulates the submission of the form with archive action
+        response = self.client.post(
+            f"/video/respit/{self.video1.slug}/", {"action": "Archive"}
+        )
+        # Check that HTTP code is 200
+        self.assertEqual(response.status_code, 200)
+
+        print("--->  test_archive_action of ValidFormRespitTestCase: OK")
+
+    @override_settings(PROLONGATION_GRANTED=True)
+    def test_extend_action(self):
+        """Test extend option in the form"""
+        # Connect the user
+        self.client.force_login(self.user)
+
+        # Simulates the submission of the form with extend action
+        response = self.client.post(
+            f"/video/respit/{self.video1.slug}/", {"action": "Extend"}
+        )
+        # Check that HTTP code is 200
+        self.assertEqual(response.status_code, 200)
+
+        print("--->  test_extend_action of ValidFormRespitTestCase: OK")
+
     def test_delete_action(self):
+        """Test delete option in the form"""
+        # Simulates the submission of the form with archive delete
         request = self.factory.post(
             f"/video/respit/{self.video1.slug}/", {"action": "Delete"}
         )
         request.user = self.user
         response = valid_form_respit(request, self.video1.slug)
+        # Check that HTTP code is 301
         self.assertEqual(response.status_code, 301)
+        self.assertEqual(response.get("Location"), f"/video/delete/{self.video1.slug}")
 
-    def test_archive_action(self):
-        """Test the Archive action with the client test"""
-        # Connect the user
-        self.client.force_login(self.user)
-
-        # Simulate the sending of the form with the action "Archive"
-        response = self.client.post(
-            f"/video/respit/{self.video1.slug}/", {"action": "Archive"}
-        )
-        # Check if the HTTP code is 200
-        self.assertEqual(response.status_code, 200)
-
-    @override_settings(PROLONGATION_GRANTED=True)
-    def test_extend_action(self):
-        """Test the Archive action with the client test"""
-        # Connect the user
-        self.client.force_login(self.user)
-
-        # Simulate the sending of the form with the action "Archive"
-        response = self.client.post(
-            f"/video/respit/{self.video1.slug}/", {"action": "Extend"}
-        )
-        # Check if the HTTP code is 200
-        self.assertEqual(response.status_code, 200)
-
-    from unittest.mock import patch
+        print("--->  test_delete_action of ValidFormRespitTestCase: OK")
 
     @patch("pod.video.views.ENABLE_PAGE_OBSO_MAIL", True)
     def test_go_prolong_action(self):
+        """Test extend confirmation by the form"""
         self.video1.date_delete = date.today() + timedelta(days=50)
         self.video1.save()
 
-        """Test the Archive action with the client test"""
         # Connect the user
         self.client.force_login(self.user)
 
-        # Simulate the sending of the form with the action "Archive"
         response = self.client.post(f"/video/go/prolong/{self.video1.slug}/")
-        # Check if the HTTP code is 301
+        # Check that HTTP code is 301
         self.assertEqual(response.status_code, 301)
+        self.assertEqual(
+            response.get("Location"), f"/video/well/prolonged/or/not/{self.video1.slug}"
+        )
+
+        print("--->  test_go_prolong_action of ValidFormRespitTestCase: OK")
 
     @patch("pod.video.views.ENABLE_PAGE_OBSO_MAIL", True)
     def test_go_archive_action(self):
+        """Test archive confirmation by the form"""
         self.video1.date_delete = date.today() + timedelta(days=50)
         self.video1.save()
 
-        """Test the Archive action with the client test"""
         # Connect the user
         self.client.force_login(self.user)
 
-        # Simulate the sending of the form with the action "Archive"
         response = self.client.post(f"/video/go/archive/{self.video1.slug}/")
-        # Check if the HTTP code is 301
+        # Check that HTTP code is 301
         self.assertEqual(response.status_code, 301)
+        self.assertEqual(
+            response.get("Location"), f"/video/well/archived/or/not/{self.video1.slug}"
+        )
+
+        print("--->  test_go_archive_action of ValidFormRespitTestCase: OK")
+
+    def tearDown(self):
+        """Cleanup all created stuffs."""
+        try:
+            os.remove("%s/%s.csv" % (settings.LOG_DIRECTORY, "archived"))
+        except FileNotFoundError:
+            pass

@@ -121,7 +121,6 @@ class Command(BaseCommand):
                     # duration
                     data_to_add["duration_video"] = p.duration
 
-
                     # video type
                     type_name = ""
                     type_id = ""

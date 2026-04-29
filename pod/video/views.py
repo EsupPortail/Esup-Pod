@@ -109,7 +109,11 @@ from pod.video.models import (
     get_transcription_choices,
 )
 from pod.video.rest_views import ChannelSerializer
-from pod.video.utils import get_videos as video_get_videos
+from pod.video.utils import (
+    get_videos as video_get_videos,
+    archive_video,
+    archive_and_get_link,
+)
 
 from .context_processors import get_available_videos
 from .utils import (
@@ -4012,9 +4016,8 @@ def archive_and_download(request, slug):
     """
     This function will create a zip archive package and launch a download of it in the user browser.
     """
-    from pod.video.management.commands import create_archive_package
 
-    url = create_archive_package.archive_download_archive(slug)
+    url = archive_and_get_link(slug)
     return render(request, "videos/archive_download.html", {"url": url, "slug": slug})
 
 
@@ -4044,9 +4047,7 @@ def go_archive(request, slug=None):
     This function will launch a archive process and say if it has worked or not on an interface.
     """
     if able_or_not_respit(slug) is True and ENABLE_PAGE_OBSO_MAIL:
-        from pod.video.management.commands import check_obsolete_videos
-
-        check_obsolete_videos.archive_isolate(Video.objects.get(slug=slug))
+        archive_video(Video.objects.get(slug=slug))
         return HttpResponsePermanentRedirect("/video/well/archived/or/not/" + slug)
     else:
         return HttpResponseBadRequest(
