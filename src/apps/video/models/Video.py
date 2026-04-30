@@ -247,7 +247,13 @@ class Video(models.Model):
         """Returns the thumbnail URL or the default one if it doesn't exist."""
         if self.thumbnail and hasattr(self.thumbnail, "url"):
             return self.thumbnail.url
-        return video_settings.default_thumbnail
+
+        if self.overview and hasattr(self.overview, "url"):
+            return self.overview.url
+
+        from django.templatetags.static import static
+
+        return static(video_settings.default_thumbnail or "img/default_thumbnail.png")
 
     def get_tag_list(self):
         """Returns the tags as a comma-separated string."""
