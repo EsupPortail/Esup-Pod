@@ -122,6 +122,7 @@ CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default="redis://redis:6379
 # ==============================================================================
 REDIS_CACHE_URL = env("REDIS_CACHE_URL", default=None)
 REDIS_SESSION_URL = env("REDIS_SESSION_URL", default=None)
+REDIS_PASSWORD = env("REDIS_PASSWORD", default=None)
 
 if REDIS_CACHE_URL:
     CACHES = {
@@ -130,6 +131,7 @@ if REDIS_CACHE_URL:
             "LOCATION": REDIS_CACHE_URL,
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "PASSWORD": REDIS_PASSWORD,
                 "IGNORE_EXCEPTIONS": True,
             },
         }
@@ -148,6 +150,7 @@ if REDIS_SESSION_URL:
     SESSION_ENGINE = "redis_sessions.session"
     SESSION_REDIS = {
         "url": REDIS_SESSION_URL,
+        "password": REDIS_PASSWORD,
         "prefix": "session",
         "socket_timeout": 1,
     }
