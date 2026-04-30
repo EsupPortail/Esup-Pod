@@ -342,12 +342,15 @@ class VideoViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary="Transfer video ownership",
         description="Allows an admin to change the owner of a video.",
-        request={"application/json": {"type": "object", "properties": {"owner_id": {"type": "integer"}}}},
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {"owner_id": {"type": "integer"}},
+            }
+        },
         responses={200: {"type": "object", "properties": {"status": {"type": "string"}}}},
     )
-    @action(
-        detail=True, methods=["post"], permission_classes=[permissions.IsAdminUser]
-    )
+    @action(detail=True, methods=["post"], permission_classes=[permissions.IsAdminUser])
     def transfer_ownership(self, request, slug=None):
         """
         Transfers the ownership of a video to another user.
@@ -360,6 +363,7 @@ class VideoViewSet(viewsets.ModelViewSet):
             raise ValidationError({"owner_id": _("This field is required.")})
 
         from django.contrib.auth import get_user_model
+
         User = get_user_model()
 
         try:

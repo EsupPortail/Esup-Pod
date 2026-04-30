@@ -155,3 +155,46 @@ class OIDCLoginViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(User.objects.filter(username="oidcuser").exists())
+
+
+class OwnerPictureTests(APITestCase):
+    """
+    Test suite for managing an owner's profile picture.
+    """
+
+    def setUp(self):
+        """
+        Initializes a test user and an image for upload.
+        """
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        self.user = User.objects.create_user(username="picuser", password="picpassword")
+        self.owner, _ = Owner.objects.get_or_create(user=self.user)
+        self.client.force_authenticate(user=self.user)
+
+        # Build the URL by appending 'picture/' to the owner detail URL
+        owner_detail_url = reverse("owner-detail", args=[self.owner.id])
+        self.url = f"{owner_detail_url}picture/"
+
+        self.image_content = b"fake_image_content"
+        self.uploaded_pic = SimpleUploadedFile(
+            "test_pic.jpg", self.image_content, content_type="image/jpeg"
+        )
+
+    def test_upload_and_delete_picture(self):
+        """
+        Tests that an authenticated user can upload a picture and then delete it.
+        """
+        # 1. Upload the picture
+        response = self.client.patch(
+            self.url, {"picture": self.uploaded_pic}, format="multipart"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.owner.refresh_from_db()
+        self.assertTrue(bool(self.owner.userpicture))
+
+        # 2. Delete the picture
+        delete_response = self.client.delete(self.url)
+        self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
+        self.owner.refresh_from_db()
+        self.assertFalse(bool(self.owner.userpicture))
