@@ -138,8 +138,8 @@ class Command(BaseCommand):
                         nb_theme = nb_theme + 1
                         theme_list.append(vthe.id)
 
-                    data_to_add["themes_count"] = nb_theme
-                    data_to_add["themes_video"] = theme_list
+                    data_to_add["nb_theme"] = nb_theme
+                    data_to_add["theme_list"] = theme_list
 
                     # Video Owner
                     for ow in Video.objects.filter(id=p.id):
