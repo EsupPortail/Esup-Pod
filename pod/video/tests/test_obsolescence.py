@@ -19,7 +19,7 @@ from django.test import RequestFactory
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
@@ -408,7 +408,6 @@ class ValidFormRespitTestCase(TestCase):
 
         # ✅ move appelé avec TON objet
         mock_move_archive.assert_called_once_with("/tmp/test", self.video1, False)
-
 
     def tearDown(self):
         """Cleanup all created stuffs."""
