@@ -118,11 +118,7 @@ class VideoSerializer(serializers.ModelSerializer):
         """Returns the absolute URL of the video thumbnail."""
         request = self.context.get("request")
         url = obj.thumbnail_url
-        if (
-            url
-            and request
-            and not (url.startswith("http://") or url.startswith("https://"))
-        ):
+        if url and request and not url.startswith("http"):
             return request.build_absolute_uri(url)
         return url
 

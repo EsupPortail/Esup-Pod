@@ -253,7 +253,7 @@ class Video(models.Model):
 
         from django.templatetags.static import static
 
-        return static(video_settings.default_thumbnail or "img/default_thumbnail.png")
+        return static(video_settings.default_thumbnail or "img/default_thumbnail.svg")
 
     def get_tag_list(self):
         """Returns the tags as a comma-separated string."""
