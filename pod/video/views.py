@@ -109,7 +109,11 @@ from pod.video.models import (
     get_transcription_choices,
 )
 from pod.video.rest_views import ChannelSerializer
-from pod.video.utils import get_videos as video_get_videos, archive_video, archive_and_get_link
+from pod.video.utils import (
+    get_videos as video_get_videos,
+    archive_video,
+    archive_and_get_link,
+)
 
 from .context_processors import get_available_videos
 from .utils import (
@@ -125,8 +129,10 @@ from .utils import (
     sort_videos_list,
 )
 
-# from django.contrib.auth.hashers import check_password
+WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [60, 30, 7])
 
+RALLONGE_RESPIT_DAYS = getattr(settings, "RALLONGE_RESPIT_DAYS", 365)
+ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -214,10 +220,6 @@ ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 HIDE_USER_FILTER = getattr(settings, "HIDE_USER_FILTER", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
-WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [])
-ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
-RALLONGE_RESPIT_DAYS = getattr(settings, "RALLONGE_RESPIT_DAYS", 365)
-
 USE_RUNNER_MANAGER = getattr(settings, "USE_RUNNER_MANAGER", False)
 
 if USE_TRANSCRIPTION:
@@ -2558,11 +2560,13 @@ def video_oembed(request):
             '<iframe src="%(provider)s%(video_url)s%(slug_private)s'
             + '?is_iframe=true" width="640" height="360" '
             + 'style="padding: 0; margin: 0; border:0" '
+            + 'title="%(title)s" '
             + "allowfullscreen loading='lazy'></iframe>"
         ) % {
             "provider": data["provider_url"],
             "video_url": video_url,
             "slug_private": "%s/" % slug_private if slug_private else "",
+            "title": video.title,
         }
         data["thumbnail_url"] = "%s:%s" % (protocole, video.get_thumbnail_url())
         if hasattr(video.thumbnail, "file"):
@@ -3975,8 +3979,8 @@ def valid_form_respit(request, slug=None):
                         {"slug": slug, "RALLONGE_RESPIT_DAYS": RALLONGE_RESPIT_DAYS},
                     )
                 else:
-                    raise Exception("The video can no longer be extended")
-
+                    raise Exception("Vous ne pouvez pas prolonger plus votre video")
+                    print("")
             if action == "Archive":
                 return render(request, "videos/archive_or_not.html", {"slug": slug})
 
@@ -4012,8 +4016,9 @@ def archive_and_download(request, slug):
     """
     This function will create a zip archive package and launch a download of it in the user browser.
     """
+    from pod.video.management.commands import create_archive_package
 
-    url = archive_and_get_link(slug)
+    url = create_archive_package.archive_download_archive(slug)
     return render(request, "videos/archive_download.html", {"url": url, "slug": slug})
 
 
@@ -4045,8 +4050,10 @@ def go_archive(request, slug=None):
     if able_or_not_respit(slug) is True and ENABLE_PAGE_OBSO_MAIL:
         archive_video(Video.objects.get(slug=slug))
         return HttpResponsePermanentRedirect("/video/well/archived/or/not/" + slug)
-    else :
-        return HttpResponseBadRequest("Impossible to archive. This service is not available.")
+    else:
+        return HttpResponseBadRequest(
+            "Impossible to archive. This service is not available."
+        )
 
 
 def go_prolong(request, slug):
@@ -4058,5 +4065,7 @@ def go_prolong(request, slug):
         vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)
         vivi.save()
         return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/" + slug)
-    else :
-        return HttpResponseBadRequest("Impossible to extend. This service is not available.")
+    else:
+        return HttpResponseBadRequest(
+            "Impossible to extend. This service is not available."
+        )

@@ -651,7 +651,9 @@ def read_archived_csv() -> dict:
     return csv_data
 
 
-def export_complement(folder: str, export_type: str, export_objects: list, dry_mode: bool = True) -> None:
+def export_complement(
+    folder: str, export_type: str, export_objects: list, dry_mode: bool = True
+) -> None:
     """Store a video complement as json."""
     if len(export_objects) > 0:
         export_file = os.path.join(folder, "%s.json" % export_type)
@@ -662,10 +664,15 @@ def export_complement(folder: str, export_type: str, export_objects: list, dry_m
                 out.write(content)
 
 
-def move_video_to_archive(mediaPackage_dir: str, vid: Video, dry_mode: bool = True) -> None:
+def move_video_to_archive(
+    mediaPackage_dir: str, vid: Video, dry_mode: bool = True
+) -> None:
     """Move video source file to mediaPackage_dir."""
     if os.access(vid.video.path, os.F_OK):
-        print("  * Moving %s to " % vid.video.path, os.path.join(mediaPackage_dir, os.path.basename(vid.video.name)))
+        print(
+            "  * Moving %s to " % vid.video.path,
+            os.path.join(mediaPackage_dir, os.path.basename(vid.video.name)),
+        )
         if not dry_mode:
             shutil.move(
                 vid.video.path,
@@ -690,8 +697,13 @@ def copy_archive_to(media_package_dir: str, vid: Video) -> None:
         print("ERROR: Cannot access to file '%s'." % vid.video.path)
 
 
-def archive_pack(media_package_dir: str, user_name: str, vid: Video,
-                 only_copy: bool = True, dry_mode: bool = True) -> None:
+def archive_pack(
+    media_package_dir: str,
+    user_name: str,
+    vid: Video,
+    only_copy: bool = True,
+    dry_mode: bool = True,
+) -> None:
     """Create a archive package for Video vid."""
     from pod.video.models import Notes, AdvancedNotes, Comment, ViewCount
     from pod.chapter.models import Chapter
@@ -757,7 +769,7 @@ def archive_and_get_link(slug):
     media_url = getattr(settings, "MEDIA_URL", "/media/")
     media_root = getattr(settings, "MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 
-    media_package_dir = os.path.join(media_root , "tmp", slug)
+    media_package_dir = os.path.join(media_root, "tmp", slug)
     vid = Video.objects.filter(slug=slug).first()
     archive_pack(media_package_dir, "", vid, only_copy=True, dry_mode=False)
 

@@ -36,6 +36,7 @@ __FILEPICKER__ = False
 
 # from ..custom.settings_local import PROLONGATION_GRANTED, RALLONGE_RESPIT_DAYS
 PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
+DELETION_GRANTED = getattr(settings, "DELETION_GRANTED", False)
 RALLONGE_RESPIT_DAYS = getattr(settings, "RALLONGE_RESPIT_DAYS", 365)
 
 if getattr(settings, "USE_PODFILE", False):
@@ -1407,39 +1408,62 @@ class NoteCommentsForm(forms.ModelForm):
 
 class ArchiveChoiceForm(forms.Form):
     if PROLONGATION_GRANTED:
-        action = forms.ChoiceField(
-            choices=[
+        if DELETION_GRANTED:
+            CHOICES = [
                 (
-                    _(""),
-                    [
-                        (
-                            "Extend",
-                            (
-                                _("Extend (Automatically by %(rrd)s days)")
-                                % {"rrd": RALLONGE_RESPIT_DAYS}
-                            ),
-                        ),
-                        ("Archive", _("Archive")),
-                        ("Delete", _("Delete")),
-                    ],
+                    "Extend",
+                    _("Extend (Automatically by %(rrd)s days)")
+                    % {"rrd": RALLONGE_RESPIT_DAYS},
                 ),
-            ],
-            widget=forms.RadioSelect(attrs={"required": "True", "class": "choice_video"}),
-            required=False,
-            label=False,
-        )
+                ("Archive", _("Archive")),
+                ("Delete", _("Delete")),
+            ]
+        else:
+            CHOICES = [
+                (
+                    "Extend",
+                    _("Extend (Automatically by %(rrd)s days)")
+                    % {"rrd": RALLONGE_RESPIT_DAYS},
+                ),
+                ("Archive", _("Archive")),
+            ]
     else:
-        action = forms.ChoiceField(
-            choices=[
-                (
-                    _(""),
-                    [
-                        ("Archive", _("Archive")),
-                        ("Delete", _("Delete")),
-                    ],
-                ),
-            ],
-            widget=forms.RadioSelect(attrs={"required": "True", "class": "choice_video"}),
-            required=False,
-            label=False,
+        if DELETION_GRANTED:
+            CHOICES = [
+                ("Archive", _("Archive")),
+                ("Delete", _("Delete")),
+            ]
+        else:
+            CHOICES = [
+                ("Archive", _("Archive")),
+            ]
+
+    action_help_texts = {
+        "Extend": _(
+            "Select this option if you want to extend the publication of your video by %(rrd)s days."
         )
+        % {"rrd": RALLONGE_RESPIT_DAYS},
+        "Archive": _(
+            "Select this option if you want to archive your video. It will then be unpublished and will no longer be accessible to the public. However, it will remain on the video server, along with its metadata, and its publication can be reactivated if necessary."
+        ),
+        "Delete": _(
+            "Select this option if you decide to permanently delete your video from the server, along with its metadata. You should only do this after careful consideration. It is therefore essential that you download the video and its metadata first."
+        ),
+    }
+
+    action = forms.ChoiceField(
+        choices=CHOICES,
+        widget=forms.RadioSelect(attrs={"required": "True", "class": "choice_video"}),
+        required=False,
+        label=False,
+    )
+
+    def get_choices_with_help(self):
+        return [
+            {
+                "value": value,
+                "label": label,
+                "help": self.action_help_texts.get(value, ""),
+            }
+            for value, label in self.CHOICES
+        ]

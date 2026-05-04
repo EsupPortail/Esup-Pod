@@ -110,7 +110,13 @@ class Command(BaseCommand):
                 if os.access(vid.video.path, os.F_OK):
                     total_weight += os.path.getsize(vid.video.path)
                 list_video.append(str(vid))
-                archive_pack(media_package_dir, user_name, vid, only_copy=False, dry_mode=self.dry_mode)
+                archive_pack(
+                    media_package_dir,
+                    user_name,
+                    vid,
+                    only_copy=False,
+                    dry_mode=self.dry_mode,
+                )
             else:
                 print("  * Video %s not present in archived file" % vid.id)
             print("---")

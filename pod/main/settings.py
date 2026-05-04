@@ -335,3 +335,10 @@ TINYMCE_DEFAULT_CONFIG = {
     "removeformat | help",
     "relative_urls": False,
 }
+
+RESPIT_MODEL = "carafe"
+ENABLE_PAGE_OBSO_MAIL = False
+PROLONGATION_GRANTED = False
+DELETION_GRANTED = False
+# noqa: E731
+RESPIT_MODEL_PARAMETERS = []

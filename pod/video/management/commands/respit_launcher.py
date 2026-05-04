@@ -56,22 +56,19 @@ class Command(BaseCommand):
 
             notif_list = []
 
-            videos = Video.objects.exclude(
-                owner__username=ARCHIVE_OWNER_USERNAME
-            )
+            videos = Video.objects.exclude(owner__username=ARCHIVE_OWNER_USERNAME)
 
             for p in videos:
 
                 if (p.date_delete - timedelta(days=higher_warn + 1)) <= (date.today()):
                     data_to_add = {}
 
-                    # print(p.id)
-                    # print(p.title)
-
                     data_to_add["id"] = p.id
                     data_to_add["title"] = p.title
                     data_to_add["view_count"] = p.get_viewcount()
                     data_to_add["view_count_year"] = p.get_viewcount(365)
+                    data_to_add["is_draft"] = p.is_draft
+                    data_to_add["is_restricted"] = p.is_restricted
 
                     today = datetime.now()
                     diff = today - datetime(
@@ -94,15 +91,17 @@ class Command(BaseCommand):
                     data_to_add["date_delete"] = p.date_delete
                     data_to_add["description"] = p.description
 
-                    # Nombre de chaines
+                    # Channels (count and id)
                     nb_chaine = 0
-
+                    channel_list = []
                     for vvc in Channel.objects.filter(video=p):
+                        channel_list.append(vvc.id)
                         nb_chaine = nb_chaine + 1
 
-                    data_to_add["channel_count"] = nb_chaine
+                    data_to_add["channel_list"] = channel_list
+                    data_to_add["nb_channel"] = nb_chaine
 
-                    # Nombre de fois en favoris
+                    # Number of times added to favorites
                     cfav = 0
 
                     favorites = Playlist.objects.filter(name__exact="Favorites")
@@ -120,9 +119,7 @@ class Command(BaseCommand):
                     data_to_add["nb_comment"] = nb_comment
 
                     # duration
-                    data_to_add["duration_video"] = time.strftime(
-                        "%H:%M:%S", time.gmtime(p.duration)
-                    )
+                    data_to_add["duration_video"] = p.duration
 
                     # video type
                     type_name = ""
@@ -136,9 +133,12 @@ class Command(BaseCommand):
 
                     # Video Theme
                     theme_list = []
+                    nb_theme = 0
                     for vthe in Theme.objects.filter(video=p):
-                        theme_list.append(vthe.title)
+                        nb_theme = nb_theme + 1
+                        theme_list.append(vthe.id)
 
+                    data_to_add["themes_count"] = nb_theme
                     data_to_add["themes_video"] = theme_list
 
                     # Video Owner
@@ -152,22 +152,32 @@ class Command(BaseCommand):
 
                     data_to_add["owner_video_additional"] = additionnal_owner_list
 
-                    # Categorie
+                    # Category
                     category_list = []
                     for cat in Category.objects.filter(video=p):
-                        category_list.append(cat.slug)
+                        category_list.append(cat.id)
 
                     data_to_add["category_list"] = category_list
 
                     # launch the calcul model
                     try:
-                        mod = importlib.import_module("pod.video.management.commands.respit_model." + RESPIT_MODEL)
+                        mod = importlib.import_module(
+                            "pod.video.management.commands.respit_model." + RESPIT_MODEL
+                        )
                     except ModuleNotFoundError as e:
-                        self.stderr.write(self.style.ERROR(_("An Error occurred while processing.")))
-                        raise CommandError(_("Respit model not found: %(error)s") % {"error": e}) from e
+                        self.stderr.write(
+                            self.style.ERROR(_("An Error occurred while processing."))
+                        )
+                        raise CommandError(
+                            _("Respit model not found: %(error)s") % {"error": e}
+                        ) from e
                     except ImportError as e:
-                        self.stderr.write(self.style.ERROR(_("An Error occurred while processing.")))
-                        raise CommandError(_("Respit model import error: %(error)s") % {"error": e}) from e
+                        self.stderr.write(
+                            self.style.ERROR(_("An Error occurred while processing."))
+                        )
+                        raise CommandError(
+                            _("Respit model import error: %(error)s") % {"error": e}
+                        ) from e
 
                     # Insert repist in BDD
                     daysmore = mod.calcul(data_to_add)
