@@ -54,10 +54,12 @@ class EncodingTaskTestCase(TestCase):
             source_url=source_url,
         )
 
+        from django.conf import settings
         from config.env import env
 
+        site_url = settings.SITE_URL.rstrip("/")
         webhook_secret = env("ENCODING_WEBHOOK_SECRET", default="")
-        expected_notify_url = f"http://api:8000/api/encoding/webhook/?secret={webhook_secret}&video_id={self.video.id}"
+        expected_notify_url = f"{site_url}/api/encoding/webhook/?secret={webhook_secret}&video_id={self.video.id}"
 
         rendition_config = {
             "360": {"resolution": "640x360", "encode_mp4": True},
