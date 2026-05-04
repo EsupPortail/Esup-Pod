@@ -1,4 +1,5 @@
 """Test the Obsolete videos."""
+import tempfile
 
 from django.test import override_settings
 from django.conf import settings
@@ -11,13 +12,14 @@ from datetime import date, timedelta
 import os
 from django.contrib.sites.models import Site
 
+from ..utils import check_csv_header, read_archived_csv, archive_pack
 from ..views import valid_form_respit
 
 from django.test import RequestFactory
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
@@ -343,6 +345,70 @@ class ValidFormRespitTestCase(TestCase):
         )
 
         print("--->  test_go_archive_action of ValidFormRespitTestCase: OK")
+
+    def test_check_csv_header_action(self):
+        initial_content = "col1;col2\nvalue1;value2\n"
+
+        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as tmp:
+            tmp.write(initial_content)
+            tmp_path = tmp.name
+
+        check_csv_header(tmp_path, ["col1", "col2", "col3"])
+
+        with open(tmp_path, "r") as f:
+            first_line = f.readline()
+
+        self.assertEqual(first_line, "col1;col2;col3\n")
+
+    def test_read_csv_action(self):
+        csv_content = (
+            "2024-01-01;John Doe;john@example.com;Affil;Estab;123;Title;url;type;2024-01-02\n"
+        )
+
+        with tempfile.NamedTemporaryFile(mode="w+", delete=False, encoding="utf-8") as tmp:
+            tmp.write(csv_content)
+            tmp_path = tmp.name
+
+        with patch("pod.video.utils.ARCHIVE_CSV", tmp_path):
+            result = read_archived_csv()
+
+        self.assertIn("123", result)
+        self.assertEqual(result["123"]["User name"], "John Doe")
+
+    @patch("pod.video.utils.move_video_to_archive")
+    @patch("pod.video.utils.copy_archive_to")
+    @patch("pod.video.utils.export_complement")
+    @patch("pod.video.utils.store_as_dublincore")
+    @patch("pod.video.utils.os.makedirs")
+    def test_archive_pack_move_and_real_mode(
+            self,
+            mock_makedirs,
+            mock_store_dc,
+            mock_export,
+            mock_copy_archive,
+            mock_move_archive,
+    ):
+        archive_pack("/tmp/test", "John", self.video1, only_copy=False, dry_mode=False)
+
+        # ✅ dossier créé
+        mock_makedirs.assert_called_once_with("/tmp/test", exist_ok=True)
+
+        # ✅ dublincore généré avec TON objet
+        mock_store_dc.assert_called_once_with(self.video1, "/tmp/test", "John")
+
+        # ✅ export avec TON objet
+        mock_export.assert_any_call("/tmp/test", "Video", [self.video1], False)
+
+        # vérifie que dry_mode=False est bien propagé partout
+        for call in mock_export.call_args_list:
+            self.assertFalse(call.args[-1])
+
+        # ❌ pas de copy
+        mock_copy_archive.assert_not_called()
+
+        # ✅ move appelé avec TON objet
+        mock_move_archive.assert_called_once_with("/tmp/test", self.video1, False)
+
 
     def tearDown(self):
         """Cleanup all created stuffs."""
