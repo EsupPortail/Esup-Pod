@@ -40,7 +40,6 @@ Example cron (every 3 minutes):
 `*/3 * * * * /usr/bin/bash -c 'export WORKON_HOME=/home/pod/.virtualenvs; export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3; cd /usr/local/django_projects/podv4; source /usr/local/bin/virtualenvwrapper.sh; workon django_pod4; python manage.py process_tasks >> /usr/local/django_projects/podv4/pod/log/process_tasks.log 2>&1'`
 """
 
-import json
 import logging
 from datetime import timedelta
 
@@ -50,14 +49,18 @@ from django.contrib.sites.models import Site
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from pod.cut.models import CutVideo
-from pod.dressing.models import Dressing
 from pod.recorder.models import Recording
 from pod.video.models import Video
 from pod.video_encode_transcript.models import RunnerManager, Task
-from pod.video_encode_transcript.runner_manager_utils import (
-    store_before_remote_encoding_recording,
-    store_before_remote_encoding_video,
+from pod.video_encode_transcript.runner_manager import (
+    _build_base_url as build_runner_base_url,
+    _build_studio_source_url as build_runner_studio_source_url,
+    _build_transcription_source_url as build_runner_transcription_source_url,
+    _build_video_source_url as build_runner_video_source_url,
+    _prepare_encoding_parameters as prepare_runner_encoding_parameters,
+    _prepare_task_data as build_runner_task_data,
+    _prepare_transcription_parameters as prepare_runner_transcription_parameters,
+    _submit_to_runner_managers as submit_runner_task_to_managers,
 )
 from pod.video_encode_transcript.task_queue import (
     get_user_priority,
@@ -322,7 +325,7 @@ class Command(BaseCommand):
                 self.print_log(
                     f"Processing task {task.id} for video {video.id} - Priority: {priority_label}"
                 )
-                result = self._submit_encoding_task(video, task, site, runner_managers)
+                result = self._submit_encoding_task(video, site, runner_managers)
                 if result:
                     success_count += 1
                     self.print_success(
@@ -361,7 +364,7 @@ class Command(BaseCommand):
                 self.print_log(
                     f"Processing studio task {task.id} for recording {recording.id}"
                 )
-                result = self._submit_studio_task(recording, task, site, runner_managers)
+                result = self._submit_studio_task(recording, site, runner_managers)
                 if result:
                     success_count += 1
                     self.print_success(
@@ -404,9 +407,7 @@ class Command(BaseCommand):
                 self.print_log(
                     f"Processing transcription task {task.id} for video {video.id} - Priority: {priority_label}"
                 )
-                result = self._submit_transcription_task(
-                    video, task, site, runner_managers
-                )
+                result = self._submit_transcription_task(video, site, runner_managers)
                 if result:
                     success_count += 1
                     self.print_success(
@@ -571,364 +572,79 @@ class Command(BaseCommand):
             f"studio {success_count_studio}/{len(pending_studio_tasks)} successfully submitted"
         )
 
-    def _submit_encoding_task(
-        self, video: Video, task: Task, site: Site, runner_managers: list
+    def _submit_task_to_runner_managers(
+        self,
+        *,
+        task_type: str,
+        source_type: str,
+        source_id: int,
+        source_url: str,
+        base_url: str,
+        parameters: dict,
+        runner_managers: list,
     ) -> bool:
-        """
-        Try to submit an encoding task to available runner managers.
-        Returns True if successful, False otherwise.
-        """
-        VERSION = getattr(settings, "VERSION", "4.X")
-        TEMPLATE_VISIBLE_SETTINGS = getattr(
-            settings,
-            "TEMPLATE_VISIBLE_SETTINGS",
-            {
-                "TITLE_SITE": "Pod",
-                "TITLE_ETB": "University name",
-            },
+        """Build the runner payload and submit it using shared runner helpers."""
+        data = build_runner_task_data(
+            source_url=source_url,
+            base_url=base_url,
+            parameters=parameters,
+            task_type=task_type,
         )
-        __TITLE_SITE__ = TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE", "Pod")
-        __TITLE_ETB__ = TEMPLATE_VISIBLE_SETTINGS.get("TITLE_ETB", "University name")
+        return submit_runner_task_to_managers(
+            runner_managers=runner_managers,
+            data=data,
+            task_type=task_type,
+            source_type=source_type,
+            source_id=source_id,
+        )
 
-        base_url = self._build_base_url(site)
-        content_url = self._build_content_url(video, base_url)
-        parameters = self._prepare_encoding_parameters(video, base_url)
-
-        data = {
-            "etab_name": f"{__TITLE_ETB__} / {__TITLE_SITE__}",
-            "app_name": "Esup-Pod",
-            "app_version": f"{VERSION}",
-            "task_type": "encoding",
-            "source_url": f"{content_url}",
-            "notify_url": f"{base_url}/runner/notify_task_end/",
-            "parameters": parameters,
-        }
-
-        return self._post_encoding_to_runner(data, task, video, runner_managers)
-
-    def _build_base_url(self, site: Site) -> str:
-        SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
-        url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
-        return f"{url_scheme}://{site.domain}"
-
-    def _build_content_url(self, video: Video, base_url: str) -> str:
-        return "%s/media/%s" % (base_url, video.video)
-
-    def _prepare_encoding_parameters(self, video: Video, base_url: str) -> dict:
-        from pod.video_encode_transcript.encoding_utils import get_list_rendition
-
-        list_rendition = get_list_rendition()
-        str_resolution = {
-            str(k): {"resolution": v["resolution"], "encode_mp4": v["encode_mp4"]}
-            for k, v in list_rendition.items()
-        }
-        parameters = {"rendition": json.dumps(str_resolution)}
-
-        cut_info = self._get_cut_info(video)
-        if cut_info:
-            parameters["cut"] = json.dumps(cut_info)
-
-        dressing_info = self._get_dressing_info(video, base_url)
-        if dressing_info:
-            parameters["dressing"] = json.dumps(dressing_info)
-
-        return parameters
-
-    def _get_cut_info(self, video: Video) -> dict | None:
-        try:
-            cut_video = CutVideo.objects.get(video=video)
-            return {
-                "start": str(cut_video.start),
-                "end": str(cut_video.end),
-                "initial_duration": str(cut_video.duration),
-            }
-        except CutVideo.DoesNotExist:
-            return None
-
-    def _get_dressing_info(self, video: Video, base_url: str) -> dict | None:
-        try:
-            if not Dressing.objects.filter(videos=video).exists():
-                return None
-            dressing = Dressing.objects.get(videos=video)
-            if not dressing:
-                return None
-            str_dressing_info: dict = {}
-            if dressing.watermark:
-                watermark_content_url = "%s/media/%s" % (
-                    base_url,
-                    str(dressing.watermark.file.name),
-                )
-                str_dressing_info["watermark"] = watermark_content_url
-                str_dressing_info["watermark_position"] = dressing.position
-                str_dressing_info["watermark_opacity"] = str(dressing.opacity)
-            if dressing.opening_credits:
-                str_dressing_info["opening_credits"] = dressing.opening_credits.slug
-                opening_content_url = "%s/media/%s" % (
-                    base_url,
-                    str(dressing.opening_credits.video.name),
-                )
-                str_dressing_info["opening_credits_video"] = opening_content_url
-                str_dressing_info["opening_credits_video_duration"] = str(
-                    dressing.opening_credits.duration
-                )
-            if dressing.ending_credits:
-                str_dressing_info["ending_credits"] = dressing.ending_credits.slug
-                ending_content_url = "%s/media/%s" % (
-                    base_url,
-                    str(dressing.ending_credits.video.name),
-                )
-                str_dressing_info["ending_credits_video"] = ending_content_url
-                str_dressing_info["ending_credits_video_duration"] = str(
-                    dressing.ending_credits.duration
-                )
-            return str_dressing_info or None
-        except Exception as exc:
-            log.warning(
-                "Error retrieving dressing for video id: %s, %s", video.id, str(exc)
-            )
-            return None
-
-    def _post_encoding_to_runner(
-        self, data: dict, task: Task, video: Video, runner_managers: list
+    def _submit_encoding_task(
+        self, video: Video, site: Site, runner_managers: list
     ) -> bool:
-        for runner_manager in runner_managers:
-            try:
-                execute_url = runner_manager.url
-                if not execute_url.endswith("/"):
-                    execute_url += "/"
-                execute_url += "task/execute"
-
-                headers = {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {runner_manager.token}",
-                }
-
-                response = requests.post(
-                    execute_url, data=json.dumps(data), headers=headers, timeout=30
-                )
-
-                if response.status_code == 200:
-                    task_id = response.json().get("task_id")
-                    status = response.json().get("status")
-
-                    task.status = status
-                    task.runner_manager = runner_manager
-                    task.task_id = task_id
-                    task.save()
-                    store_before_remote_encoding_video(video.id, execute_url, data)
-
-                    log.info(
-                        f"Successfully submitted encoding task for video {video.id} to runner manager {runner_manager.name}"
-                    )
-                    return True
-                log.warning(
-                    f"Runner manager {runner_manager.name} returned status code {response.status_code}"
-                )
-            except requests.RequestException as exc:
-                log.warning(
-                    f"Cannot reach runner manager {runner_manager.name}: {str(exc)}"
-                )
-
-        return False
+        """Submit an encoding task using shared runner manager helpers."""
+        base_url = build_runner_base_url(site)
+        source_url = build_runner_video_source_url(video, base_url)
+        parameters = prepare_runner_encoding_parameters(video=video, base_url=base_url)
+        return self._submit_task_to_runner_managers(
+            task_type="encoding",
+            source_type="video",
+            source_id=video.id,
+            source_url=source_url,
+            base_url=base_url,
+            parameters=parameters,
+            runner_managers=runner_managers,
+        )
 
     def _submit_transcription_task(
-        self, video: Video, task: Task, site: Site, runner_managers: list
+        self, video: Video, site: Site, runner_managers: list
     ) -> bool:
-        """
-        Try to submit a transcription task to available runner managers.
-        Returns True if successful, False otherwise.
-        """
-        from pod.video_encode_transcript.transcript import (
-            resolve_transcription_language,
+        """Submit a transcription task using shared runner manager helpers."""
+        base_url = build_runner_base_url(site)
+        source_url = build_runner_transcription_source_url(video, base_url)
+        parameters = prepare_runner_transcription_parameters(video=video)
+        return self._submit_task_to_runner_managers(
+            task_type="transcription",
+            source_type="video",
+            source_id=video.id,
+            source_url=source_url,
+            base_url=base_url,
+            parameters=parameters,
+            runner_managers=runner_managers,
         )
-
-        # Get settings
-        SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
-        VERSION = getattr(settings, "VERSION", "4.X")
-        TEMPLATE_VISIBLE_SETTINGS = getattr(
-            settings,
-            "TEMPLATE_VISIBLE_SETTINGS",
-            {
-                "TITLE_SITE": "Pod",
-                "TITLE_ETB": "University name",
-            },
-        )
-        __TITLE_SITE__ = TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE", "Pod")
-        __TITLE_ETB__ = TEMPLATE_VISIBLE_SETTINGS.get("TITLE_ETB", "University name")
-
-        # Build content URL: prefer mp3 if available, else video file
-        url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
-        base_url = url_scheme + "://" + site.domain
-        mp3 = video.get_video_mp3() if hasattr(video, "get_video_mp3") else None
-        if mp3 and getattr(mp3, "source_file", None) and getattr(mp3, "url", None):
-            content_url = f"{base_url}{mp3.url}"
-        else:
-            content_url = f"{base_url}/media/{video.video}"
-
-        # Prepare transcription parameters (aligned with runner_manager._prepare_transcription_parameters)
-        transcription_type = getattr(settings, "TRANSCRIPTION_TYPE", None)
-        normalize = bool(getattr(settings, "TRANSCRIPTION_NORMALIZE", False))
-        params = {
-            "language": resolve_transcription_language(video),
-            "duration": float(getattr(video, "duration", 0) or 0),
-            "normalize": normalize,
-        }
-        if transcription_type:
-            params["model_type"] = transcription_type
-
-        data = {
-            "etab_name": f"{__TITLE_ETB__} / {__TITLE_SITE__}",
-            "app_name": "Esup-Pod",
-            "app_version": f"{VERSION}",
-            "task_type": "transcription",
-            "source_url": f"{content_url}",
-            "notify_url": f"{base_url}/runner/notify_task_end/",
-            "parameters": params,
-        }
-
-        # Try each runner manager
-        for runner_manager in runner_managers:
-            try:
-                execute_url = runner_manager.url
-                if not execute_url.endswith("/"):
-                    execute_url += "/"
-                execute_url += "task/execute"
-
-                headers = {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {runner_manager.token}",
-                }
-
-                response = requests.post(
-                    execute_url, data=json.dumps(data), headers=headers, timeout=30
-                )
-
-                if response.status_code == 200:
-                    task_id = response.json().get("task_id")
-                    status = response.json().get("status")
-
-                    # Update task
-                    task.status = status
-                    task.runner_manager = runner_manager
-                    task.task_id = task_id
-                    task.save()
-
-                    log.info(
-                        f"Successfully submitted transcription task for video {video.id} to runner manager {runner_manager.name}"
-                    )
-                    return True
-                else:
-                    log.warning(
-                        f"Runner manager {runner_manager.name} returned status code {response.status_code}"
-                    )
-            except requests.RequestException as exc:
-                log.warning(
-                    f"Cannot reach runner manager {runner_manager.name}: {str(exc)}"
-                )
-
-        return False
 
     def _submit_studio_task(
-        self, recording: Recording, task: Task, site: Site, runner_managers: list
+        self, recording: Recording, site: Site, runner_managers: list
     ) -> bool:
-        """
-        Try to submit a studio task (recording XML link) to available runner managers.
-        Returns True if successful, False otherwise.
-        """
-        # Get settings
-        SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
-        VERSION = getattr(settings, "VERSION", "4.X")
-        TEMPLATE_VISIBLE_SETTINGS = getattr(
-            settings,
-            "TEMPLATE_VISIBLE_SETTINGS",
-            {
-                "TITLE_SITE": "Pod",
-                "TITLE_ETB": "University name",
-            },
+        """Submit a studio task using shared runner manager helpers."""
+        base_url = build_runner_base_url(site)
+        source_url = build_runner_studio_source_url(recording, base_url)
+        parameters = prepare_runner_encoding_parameters(video=None)
+        return self._submit_task_to_runner_managers(
+            task_type="studio",
+            source_type="recording",
+            source_id=recording.id,
+            source_url=source_url,
+            base_url=base_url,
+            parameters=parameters,
+            runner_managers=runner_managers,
         )
-        __TITLE_SITE__ = TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE", "Pod")
-        __TITLE_ETB__ = TEMPLATE_VISIBLE_SETTINGS.get("TITLE_ETB", "University name")
-
-        # Build source XML URL from MEDIA_ROOT to MEDIA_URL
-        url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
-        base_url = url_scheme + "://" + site.domain
-        media_url = getattr(settings, "MEDIA_URL", "/media/").rstrip("/")
-        try:
-            import os
-
-            rel_path = os.path.relpath(
-                str(recording.source_file), str(getattr(settings, "MEDIA_ROOT", ""))
-            )
-        except Exception:
-            rel_path = str(recording.source_file)
-        rel_path = rel_path.lstrip("/")
-        source_url = f"{base_url}{media_url}/{rel_path}"
-
-        # Parameters: same rendition payload as for video, no cut
-        from pod.video_encode_transcript.encoding_utils import get_list_rendition
-
-        list_rendition = get_list_rendition()
-        str_resolution = {
-            str(k): {"resolution": v["resolution"], "encode_mp4": v["encode_mp4"]}
-            for k, v in list_rendition.items()
-        }
-        json_resolution = json.dumps(str_resolution)
-        parameters = {"rendition": json_resolution}
-
-        data = {
-            "etab_name": f"{__TITLE_ETB__} / {__TITLE_SITE__}",
-            "app_name": "Esup-Pod",
-            "app_version": f"{VERSION}",
-            "task_type": "studio",
-            "source_url": f"{source_url}",
-            "notify_url": f"{base_url}/runner/notify_task_end/",
-            "parameters": parameters,
-        }
-
-        # Try each runner manager
-        for runner_manager in runner_managers:
-            try:
-                execute_url = runner_manager.url
-                if not execute_url.endswith("/"):
-                    execute_url += "/"
-                execute_url += "task/execute"
-
-                headers = {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {runner_manager.token}",
-                }
-
-                response = requests.post(
-                    execute_url, data=json.dumps(data), headers=headers, timeout=30
-                )
-
-                if response.status_code == 200:
-                    task_id = response.json().get("task_id")
-                    status = response.json().get("status")
-
-                    # Update task with studio type
-                    task.status = status
-                    task.runner_manager = runner_manager
-                    task.task_id = task_id
-                    task.save()
-                    store_before_remote_encoding_recording(
-                        recording.id, execute_url, data
-                    )
-
-                    log.info(
-                        f"Successfully submitted studio task for recording {recording.id} to runner manager {runner_manager.name}"
-                    )
-                    return True
-                else:
-                    log.warning(
-                        f"Runner manager {runner_manager.name} returned status code {response.status_code}"
-                    )
-            except requests.RequestException as exc:
-                log.warning(
-                    f"Cannot reach runner manager {runner_manager.name}: {str(exc)}"
-                )
-
-        return False

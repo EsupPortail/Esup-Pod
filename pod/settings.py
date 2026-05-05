@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "4.2.0"
+VERSION = "4.3.0"
 
 ##
 # Installed applications list
@@ -187,7 +187,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAdminUser",),
-    "DEFAULT_PAGINATION_CLASS": ("rest_framework.pagination.PageNumberPagination"),
+    "DEFAULT_PAGINATION_CLASS": "pod.main.rest_pagination.CustomPagination",
     "PAGE_SIZE": 12,
 }
 
