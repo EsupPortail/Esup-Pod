@@ -11432,6 +11432,9 @@ msgstr "Ce service n’est pas disponible."
 msgid "Link to the video:"
 msgstr "Lien vers la vidéo :"
 
+msgid "Submit my choice"
+msgstr "Valider mon choix"
+
 #: pod/video/templates/videos/well_prolonged.html
 msgid "The video life span was extended to"
 msgstr "La vidéo est prolongée jusqu'au"

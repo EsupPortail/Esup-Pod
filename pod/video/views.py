@@ -4017,7 +4017,7 @@ def archive_and_download(request, slug):
     This function will create a zip archive package and launch a download of it in the user browser.
     """
 
-    url = archive_and_get_link(slug)
+    url = archive_and_get_link(slug, "video_package")
     return render(request, "videos/archive_download.html", {"url": url, "slug": slug})
 
 
@@ -4033,7 +4033,11 @@ def able_or_not_respit(slug):
         if higher_warn <= aw:
             higher_warn = aw
 
-    vid = Video.objects.get(slug=slug)
+    try:
+        vid = Video.objects.get(slug=slug)
+    except Exception as e:
+        logging.exception(e)
+        return False
 
     # If we have more than the maximum DeadLine days before the date_delete
     step_date = vid.date_delete - timedelta(days=higher_warn)
