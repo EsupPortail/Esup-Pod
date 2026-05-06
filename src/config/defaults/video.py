@@ -50,3 +50,29 @@ DEFAULT_TYPE_ID = 1
 
 ACCOMMODATION_YEARS = {}
 DEFAULT_YEAR_DATE_DELETE = 2
+
+METADATA_LANGUAGES = [
+    {"value": "fr", "label": "French"},
+    {"value": "en", "label": "English"},
+    {"value": "es", "label": "Spanish"},
+    {"value": "de", "label": "German"},
+    {"value": "it", "label": "Italian"},
+]
+
+METADATA_LICENSES = [
+    {"value": "CC-BY", "label": "Creative Commons BY"},
+    {"value": "CC-BY-SA", "label": "Creative Commons BY-SA"},
+    {"value": "CC-BY-NC", "label": "Creative Commons BY-NC"},
+    {"value": "CC-BY-ND", "label": "Creative Commons BY-ND"},
+    {"value": "COPYRIGHT", "label": "All rights reserved"},
+]
+
+METADATA_CURSUS = [
+    {"value": "L1", "label": "Licence 1"},
+    {"value": "L2", "label": "Licence 2"},
+    {"value": "L3", "label": "Licence 3"},
+    {"value": "M1", "label": "Master 1"},
+    {"value": "M2", "label": "Master 2"},
+    {"value": "D", "label": "Doctorate"},
+    {"value": "0", "label": "Other"},
+]

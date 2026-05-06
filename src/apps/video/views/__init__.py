@@ -7,6 +7,7 @@ from .SubtitleViewSet import SubtitleViewSet
 from .CommentViewSet import CommentViewSet
 from .DisciplineViewSet import DisciplineViewSet
 from .TagViewSet import TagViewSet
+from .TypeViewSet import TypeViewSet
 
 __all__ = [
     "VideoViewSet",
@@ -14,4 +15,5 @@ __all__ = [
     "CommentViewSet",
     "DisciplineViewSet",
     "TagViewSet",
+    "TypeViewSet",
 ]

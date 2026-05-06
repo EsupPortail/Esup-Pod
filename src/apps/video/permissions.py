@@ -25,3 +25,17 @@ class IsOwnerOrCoOwnerOrReadOnly(permissions.BasePermission):
         if request.method == "DELETE":
             return is_owner or is_staff
         return is_owner or is_co_owner or is_staff
+
+
+class IsStaffOrReadOnly(permissions.BasePermission):
+    """
+    Esup-Pod - Custom permission:
+    - Read (GET, HEAD, OPTIONS) allowed for everyone.
+    - Write (POST, PUT, PATCH, DELETE) allowed only for staff/superusers.
+    """
+
+    def has_permission(self, request, view):
+        """Check if the user is staff for non-safe methods."""
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return bool(request.user and (request.user.is_staff or request.user.is_superuser))

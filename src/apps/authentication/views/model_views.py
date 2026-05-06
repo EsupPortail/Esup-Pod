@@ -8,6 +8,7 @@ and AccessGroup models.
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
@@ -103,19 +104,30 @@ class OwnerViewSet(viewsets.ModelViewSet):
             )
             return Response(serializer.data)
         except Owner.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": _("User not found")}, status=status.HTTP_404_NOT_FOUND)
 
-    @action(detail=True, methods=["post", "patch"], url_path="picture")
+    @action(detail=True, methods=["post", "patch", "delete"], url_path="picture")
     def update_picture(self, request, pk=None):
         """
-        Uploads and assigns an image as the user's profile picture.
+        Uploads and assigns an image as the user's profile picture, or deletes it.
         """
         owner = self.get_object()
+
+        if request.method == "DELETE":
+            if owner.userpicture:
+                owner.userpicture.delete(save=False)
+                owner.userpicture = None
+                owner.save(update_fields=["userpicture"])
+            return Response(
+                {"status": "success", "message": _("Profile picture deleted.")},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+
         file = request.FILES.get("picture")
 
         if not file:
             return Response(
-                {"error": "No picture file provided in the request."},
+                {"error": _("No picture file provided in the request.")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -128,7 +140,7 @@ class OwnerViewSet(viewsets.ModelViewSet):
         return Response(
             {
                 "status": "success",
-                "message": "Profile picture updated.",
+                "message": _("Profile picture updated."),
                 "userpicture": request.build_absolute_uri(owner.userpicture.url),
             },
             status=status.HTTP_200_OK,

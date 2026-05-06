@@ -172,6 +172,21 @@ class VideoConfig(BaseSettings):
         default=defaults.DEFAULT_TYPE_ID,
         description="Default Type ID for new videos.",
     )
+    languages: list = Field(
+        default_factory=lambda: defaults.METADATA_LANGUAGES,
+        description="Available languages for videos.",
+        json_schema_extra={"public": True},
+    )
+    licenses: list = Field(
+        default_factory=lambda: defaults.METADATA_LICENSES,
+        description="Available content licenses.",
+        json_schema_extra={"public": True},
+    )
+    cursus: list = Field(
+        default_factory=lambda: defaults.METADATA_CURSUS,
+        description="Available educational levels.",
+        json_schema_extra={"public": True},
+    )
 
     @classmethod
     def settings_customise_sources(
