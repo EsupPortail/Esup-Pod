@@ -80,6 +80,8 @@ lint: start ## Run linters (black, flake8) inside the API service
 	$(DOCKER_COMPOSE_CMD) run --rm $(DOCKER_SERVICE_NAME) black . -l 90
 	$(call info,Running flake8...)
 	$(DOCKER_COMPOSE_CMD) run --rm $(DOCKER_SERVICE_NAME) flake8 src --count --show-source --statistics
+	$(call info,Running PyDoc audit...)
+	python3 scripts/check_pydocs.py
 
 clean: stop ## Full shutdown and cleanup. Usage: make clean [service]
 	$(call info,Cleaning (service(s): $(if $(SERVICE_ARGS),$(SERVICE_ARGS),all))...)
