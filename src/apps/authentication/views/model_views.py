@@ -104,7 +104,9 @@ class OwnerViewSet(viewsets.ModelViewSet):
             )
             return Response(serializer.data)
         except Owner.DoesNotExist:
-            return Response({"error": _("User not found")}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": _("User not found")}, status=status.HTTP_404_NOT_FOUND
+            )
 
     @action(detail=True, methods=["post", "patch", "delete"], url_path="picture")
     def update_picture(self, request, pk=None):

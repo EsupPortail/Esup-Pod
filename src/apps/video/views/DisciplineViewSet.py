@@ -3,11 +3,10 @@ Esup-Pod - DisciplineViewSet.
 """
 
 from rest_framework import viewsets
+
 from src.apps.video.models import Discipline
-from src.apps.video.serializers import DisciplineSerializer
-
-
 from src.apps.video.permissions import IsStaffOrReadOnly
+from src.apps.video.serializers import DisciplineSerializer
 
 
 class DisciplineViewSet(viewsets.ModelViewSet):

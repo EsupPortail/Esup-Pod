@@ -2,12 +2,11 @@
 Esup-Pod - Tag viewset.
 """
 
-from rest_framework import viewsets, filters
-from src.apps.video.serializers import TagSerializer
+from rest_framework import filters, viewsets
+
 from src.apps.video.models import Video
-
-
 from src.apps.video.permissions import IsStaffOrReadOnly
+from src.apps.video.serializers import TagSerializer
 
 
 class TagViewSet(viewsets.ModelViewSet):

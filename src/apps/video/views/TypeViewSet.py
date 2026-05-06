@@ -3,11 +3,10 @@ Esup-Pod - TypeViewSet.
 """
 
 from rest_framework import viewsets
+
 from src.apps.video.models import Type
-from src.apps.video.serializers import TypeSerializer
-
-
 from src.apps.video.permissions import IsStaffOrReadOnly
+from src.apps.video.serializers import TypeSerializer
 
 
 class TypeViewSet(viewsets.ModelViewSet):

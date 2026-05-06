@@ -1,14 +1,24 @@
+"""
+Esup-Pod - Video metadata API tests.
+"""
+
+from django.contrib.sites.models import Site
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+
 from src.apps.video.models import Type
-from django.contrib.sites.models import Site
 
 
 class MetadataAPITests(APITestCase):
+    """
+    Esup-Pod - Tests for the video metadata endpoints.
+    """
+
     def setUp(self):
+        """Set up the test environment."""
         self.site = Site.objects.get_current()
-        self.type = Type.objects.create(title="Cours")
+        self.type = Type.objects.create(title="Course")
         self.type.sites.add(self.site)
 
     def test_metadata_endpoint(self):
@@ -43,4 +53,4 @@ class MetadataAPITests(APITestCase):
             titles = [t["title"] for t in response.data["results"]]
         else:
             titles = [t["title"] for t in response.data]
-        self.assertIn("Cours", titles)
+        self.assertIn("Course", titles)
