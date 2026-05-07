@@ -23,6 +23,7 @@ from ..serializers.GroupSerializer import GroupSerializer
 from ..serializers.OwnerSerializer import OwnerSerializer, OwnerWithGroupsSerializer
 from ..serializers.SiteSerializer import SiteSerializer
 from ..serializers.UserSerializer import UserSerializer
+from ..permissions import IsSuperUser
 from ..services import AccessGroupService
 
 User = get_user_model()
@@ -56,7 +57,7 @@ class OwnerViewSet(viewsets.ModelViewSet):
 
     queryset = Owner.objects.all().order_by("-user")
     serializer_class = OwnerSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUser]
 
     @action(detail=False, methods=["post"], url_path="set-user-accessgroup")
     def set_user_accessgroup(self, request):
@@ -108,12 +109,20 @@ class OwnerViewSet(viewsets.ModelViewSet):
                 {"error": _("User not found")}, status=status.HTTP_404_NOT_FOUND
             )
 
-    @action(detail=True, methods=["post", "patch", "delete"], url_path="picture")
+    @action(
+        detail=True,
+        methods=["post", "patch", "delete"],
+        url_path="picture",
+        permission_classes=[IsAuthenticated],
+    )
     def update_picture(self, request, pk=None):
         """
         Uploads and assigns an image as the user's profile picture, or deletes it.
         """
         owner = self.get_object()
+
+        if not request.user.is_superuser and owner.user != request.user:
+            return Response({"error": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
         if request.method == "DELETE":
             if owner.userpicture:
@@ -161,6 +170,12 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ["username", "first_name", "last_name", "email"]
 
+    def get_queryset(self):
+        """Restrict users from seeing profiles other than their own unless they are superusers."""
+        if not self.request.user.is_superuser:
+            return User.objects.filter(pk=self.request.user.pk)
+        return super().get_queryset()
+
 
 class GroupViewSet(viewsets.ModelViewSet):
     """
@@ -169,7 +184,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUser]
 
 
 class SiteViewSet(viewsets.ModelViewSet):
@@ -179,7 +194,7 @@ class SiteViewSet(viewsets.ModelViewSet):
 
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUser]
 
 
 class AccessGroupViewSet(viewsets.ModelViewSet):
@@ -191,7 +206,7 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
     queryset = AccessGroup.objects.all()
     serializer_class = AccessGroupSerializer
     filterset_fields = ["id", "display_name", "code_name"]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUser]
 
     @action(detail=False, methods=["post"], url_path="set-users-by-name")
     def set_users_by_name(self, request):

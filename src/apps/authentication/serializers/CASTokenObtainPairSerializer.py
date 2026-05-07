@@ -34,7 +34,6 @@ class CASTokenObtainPairSerializer(serializers.Serializer):
         refresh = RefreshToken.for_user(user)
 
         refresh["username"] = user.username
-        refresh["is_staff"] = user.is_staff
         if hasattr(user, "owner"):
             refresh["affiliation"] = user.owner.affiliation
 

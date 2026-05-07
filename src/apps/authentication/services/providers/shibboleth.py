@@ -21,7 +21,10 @@ class ShibbolethService:
         """Verify request comes from a trusted source (SP) if configured."""
         secure_header = auth_settings.shib_secure_header
         if secure_header:
-            return request.META.get(secure_header) == auth_settings.shib_secure_value
+            header_name = secure_header.upper().replace("-", "_")
+            if not header_name.startswith("HTTP_"):
+                header_name = f"HTTP_{header_name}"
+            return request.META.get(header_name) == auth_settings.shib_secure_value
         return True
 
     def get_header_value(self, request, header_name):

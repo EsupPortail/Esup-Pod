@@ -1,6 +1,6 @@
-# Pod V5 Documentation
+# Pod Documentation
 
-Welcome to the Pod V5 Project Documentation. This guide is intended for developers, administrators, and contributors.
+Welcome to the Pod Project Documentation. This guide is intended for developers, administrators, and contributors.
 
 ## Table of Contents
 
@@ -14,6 +14,7 @@ Each application has its own dedicated documentation with overview and technical
 
 - **[Authentication](authentication/README.md)**: Local login, CAS, LDAP, OIDC, and user management.
 - **[Video](video/README.md)**: Video lifecycle, upload, access control, streaming, and subtitle management.
+- **[Collection](collection/README.md)**: Organize videos into Channels, Themes, and Playlists.
 - **[Encoding](encoding/README.md)**: Video transcoding with Celery, Redis, and external Runner Manager.
 - **[API & Swagger](api/README.md)**: REST API usage and documentation guide.
 - **[Core & Management](core/README.md)**: CLI commands for audit and maintenance.
@@ -43,6 +44,7 @@ Pod_V5_Back/
 │   ├── apps/           # Django Apps (Business Logic)
 │   │   ├── authentication/
 │   │   ├── video/
+│   │   ├── collection/
 │   │   ├── encoding/
 │   │   └── core/
 │   └── config/         # Configuration & Settings
@@ -52,6 +54,7 @@ Pod_V5_Back/
 ├── docs/               # Documentation (You are here)
 │   ├── authentication/
 │   ├── video/
+│   ├── collection/
 │   ├── encoding/
 │   ├── api/
 │   ├── core/

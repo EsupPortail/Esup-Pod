@@ -76,7 +76,8 @@ class ShibbolethLoginViewTests(APITestCase):
         """
         headers = {
             "REMOTE_USER": "shibuser",
-            "HTTP_SHIBBOLETH_MAIL": "shib@example.com",
+            "HTTP_SHIBBOLETH_MAIL": "shib@example.org",
+            "HTTP_X_SHIBBOLETH_SECURE": "from-sp",
         }
         response = self.client.get(self.url, **headers)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -86,7 +87,10 @@ class ShibbolethLoginViewTests(APITestCase):
         """
         Tests that authentication fails when the REMOTE_USER header is missing.
         """
-        response = self.client.get(self.url)
+        headers = {
+            "HTTP_X_SHIBBOLETH_SECURE": "from-sp",
+        }
+        response = self.client.get(self.url, **headers)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     @patch(
@@ -143,7 +147,7 @@ class OIDCLoginViewTests(APITestCase):
         mock_user_resp = MagicMock()
         mock_user_resp.json.return_value = {
             "preferred_username": "oidcuser",
-            "email": "oidc@example.com",
+            "email": "oidc@example.org",
             "given_name": "OIDC",
             "family_name": "User",
         }

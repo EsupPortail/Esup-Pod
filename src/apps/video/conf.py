@@ -118,8 +118,8 @@ class VideoConfig(BaseSettings):
         description="Hide types filter.",
         json_schema_extra={"public": True},
     )
-    restrict_edit_to_staff: bool = Field(
-        default=defaults.RESTRICT_EDIT_TO_STAFF,
+    staff_only_editing: bool = Field(
+        default=defaults.STAFF_ONLY_EDITING,
         description="Restrict video editing to staff users only.",
         json_schema_extra={"public": True},
     )

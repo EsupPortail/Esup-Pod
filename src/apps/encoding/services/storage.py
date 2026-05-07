@@ -79,3 +79,16 @@ def get_storage_path_user_picture(instance, filename: str) -> str:
     return os.path.join(
         "userpicture", timezone.now().strftime("%Y/%m/%d"), _hash_filename(filename)
     )
+
+
+def get_storage_path_collection_image(instance, filename: str) -> str:
+    """
+    Generates the storage path for collection logos and banners.
+    Format: collection/images/%Y/%m/%d/hash.ext
+    """
+    return os.path.join(
+        "collection",
+        "images",
+        timezone.now().strftime("%Y/%m/%d"),
+        _hash_filename(filename),
+    )

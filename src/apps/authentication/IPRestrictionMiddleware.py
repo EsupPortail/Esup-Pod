@@ -6,8 +6,8 @@ Ensure that only allowed IPs can access superuser privileges.
 
 import ipaddress
 
+from ipware import get_client_ip
 from django.utils.translation import gettext_lazy as _
-
 from django.conf import settings
 
 
@@ -55,14 +55,14 @@ class IPRestrictionMiddleware:
 
     def __call__(self, request):
         """Process the request and enforce IP restrictions for superusers."""
-        ip = request.META.get("REMOTE_ADDR")
+        ip, is_routable = get_client_ip(request)
         user = request.user
 
         if user.is_authenticated and user.is_superuser:
-            if not ip_in_allowed_range(ip):
+            if not ip or not ip_in_allowed_range(ip):
                 user.is_superuser = False
                 user.last_name = _(
                     "%(last_name)s (Restricted - IP %(ip)s not allowed)"
-                ) % {"last_name": user.last_name, "ip": ip}
+                ) % {"last_name": user.last_name, "ip": ip or "unknown"}
 
         return self.get_response(request)

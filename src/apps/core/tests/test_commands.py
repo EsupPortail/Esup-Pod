@@ -31,7 +31,7 @@ class EnsureSuperuserTests(TestCase):
         Setup environment variables and testing site.
         """
         os.environ["DJANGO_SUPERUSER_USERNAME"] = "testadmin"
-        os.environ["DJANGO_SUPERUSER_EMAIL"] = "testadmin@example.com"
+        os.environ["DJANGO_SUPERUSER_EMAIL"] = "testadmin@example.org"
         os.environ["DJANGO_SUPERUSER_PASSWORD"] = PWD
 
         Site.objects.get_or_create(domain="testserver", name="testserver")
@@ -57,7 +57,7 @@ class EnsureSuperuserTests(TestCase):
         Tests that the command does nothing when the superuser already exists.
         """
         User.objects.create_superuser(
-            username="testadmin", email="testadmin@example.com", password=PWD
+            username="testadmin", email="testadmin@example.org", password=PWD
         )
 
         out = StringIO()

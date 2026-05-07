@@ -20,7 +20,9 @@ from drf_spectacular.utils import extend_schema
 
 from src.apps.video.models import Video
 from src.apps.video.serializers import VideoSerializer
-from src.apps.video.permissions import IsOwnerOrCoOwnerOrReadOnly
+from src.apps.video.permissions import IsOwnerOrCoOwnerOrChannelCollaborator
+from src.apps.authentication.permissions import IsSuperUser
+from django_filters.rest_framework import DjangoFilterBackend
 from src.apps.video.conf import video_settings
 from src.apps.encoding.conf import encoding_settings
 
@@ -36,12 +38,17 @@ class VideoViewSet(viewsets.ModelViewSet):
     serializer_class = VideoSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrCoOwnerOrReadOnly,
+        IsOwnerOrCoOwnerOrChannelCollaborator,
     ]
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
     lookup_field = "slug"
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+        DjangoFilterBackend,
+    ]
     search_fields = ["title", "description", "owner__username"]
+    filterset_fields = ["channel", "themes"]
     ordering_fields = ["created_at", "title"]
     ordering = ["-created_at"]
 
@@ -69,6 +76,16 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     def _apply_query_filters(self, qs):
         """Helper to apply GET query parameters filters."""
+        # Filters from Collection App
+        channel_id = self.request.query_params.get("channel")
+        if channel_id:
+            qs = qs.filter(channel_id=channel_id)
+
+        theme_id = self.request.query_params.get("themes")
+        if theme_id:
+            qs = qs.filter(themes__id=theme_id)
+
+        # Filters from Advanced Branch (Tags, Disciplines, etc.)
         type_slug = self.request.query_params.get("type__slug")
         if type_slug:
             qs = qs.filter(type__slug=type_slug)
@@ -87,26 +104,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         return qs
 
-    def _get_visibility_filter(self, user):
-        """Returns Q object representing video visibility for the user."""
-        if not user.is_authenticated:
-            q_filter = Q(status=Video.Status.PUBLISHED) | (
-                Q(status=Video.Status.RESTRICTED) & Q(is_auth_required=False)
-            )
-            if not video_settings.homepage_shows_passworded:
-                q_filter &= Q(password__isnull=True) | Q(password__exact="")
-            return q_filter
-
-        base_q = (
-            Q(status=Video.Status.PUBLISHED)
-            | Q(status=Video.Status.RESTRICTED)
-            | Q(owner=user)
-            | Q(co_owners=user)
-        )
-        if hasattr(user, "owner"):
-            base_q |= Q(restricted_groups__users=user.owner)
-        return base_q
-
     def get_queryset(self):
         """Filters videos based on the current site, authentication, ownership and visibility."""
         user = self.request.user
@@ -118,11 +115,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         if getattr(self, "action", None) in ["stream", "unlock", "register_view"]:
             return qs
 
-        if user.is_authenticated and user.is_superuser:
-            return qs
-
-        visibility_q = self._get_visibility_filter(user)
-        return qs.filter(visibility_q).distinct()
+        return Video.objects.visible_for(user).filter(id__in=qs).distinct()
 
     def perform_create(self, serializer):
         """Creates a new video, checking user quota and triggering encoding."""
@@ -350,7 +343,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         },
         responses={200: {"type": "object", "properties": {"status": {"type": "string"}}}},
     )
-    @action(detail=True, methods=["post"], permission_classes=[permissions.IsAdminUser])
+    @action(detail=True, methods=["post"], permission_classes=[IsSuperUser])
     def transfer_ownership(self, request, slug=None):
         """
         Transfers the ownership of a video to another user.

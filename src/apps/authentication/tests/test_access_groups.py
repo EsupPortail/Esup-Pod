@@ -25,7 +25,7 @@ class AccessGroupTests(APITestCase):
         Authenticates with a superuser by default.
         """
         self.admin_user = User.objects.create_superuser(
-            username="admin", password="password", email="admin@example.com"
+            username="admin", password="password", email="admin@example.org"
         )
         self.test_user = User.objects.create_user(
             username="testuser", password="password"
