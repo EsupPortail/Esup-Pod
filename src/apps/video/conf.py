@@ -164,7 +164,7 @@ class VideoConfig(BaseSettings):
     )
 
     # --- Media Defaults ---
-    default_thumbnail: str = Field(
+    default_thumbnail: str | None = Field(
         default=defaults.DEFAULT_THUMBNAIL,
         description="Path to the default video thumbnail.",
     )

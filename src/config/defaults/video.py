@@ -45,7 +45,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
     "TITLE_ETB": "University name",
 }
 
-DEFAULT_THUMBNAIL = "img/default.svg"
+DEFAULT_THUMBNAIL = "img/default_thumbnail.svg"
 DEFAULT_TYPE_ID = 1
 
 ACCOMMODATION_YEARS = {}
