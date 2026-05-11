@@ -6,6 +6,8 @@ Typed and validated configuration for the encoding app using pydantic-settings.
 
 from typing import List, Tuple, Type
 
+from django.utils.translation import gettext as _
+
 
 from pydantic import Field
 from pydantic_settings import (
@@ -22,40 +24,40 @@ class EncodingConfig(BaseSettings):
     # --- Storage ---
     videos_dir: str = Field(
         default=defaults.VIDEOS_DIR,
-        description="Default directory for video uploads.",
+        description=_("Default directory for video uploads."),
     )
     thumbnails_dir: str = Field(
         default=defaults.THUMBNAILS_DIR,
-        description="Default directory for video thumbnails.",
+        description=_("Default directory for video thumbnails."),
     )
 
     # --- Upload ---
     max_upload_size_gb: int = Field(
         default=defaults.MAX_UPLOAD_SIZE_GB,
-        description="Maximum video upload size in GB.",
+        description=_("Maximum video upload size in GB."),
         json_schema_extra={"public": True},
     )
     allowed_extensions: Tuple[str, ...] = Field(
         default=defaults.ALLOWED_EXTENSIONS,
-        description="Allowed video file extensions.",
+        description=_("Allowed video file extensions."),
         json_schema_extra={"public": True},
     )
     video_required_fields: List[str] = Field(
         default=defaults.VIDEO_REQUIRED_FIELDS,
-        description="List of required fields when uploading a video.",
+        description=_("List of required fields when uploading a video."),
         json_schema_extra={"public": True},
     )
 
     # --- Quota / Licensing ---
     user_quota_size_gb: int = Field(
         default=defaults.USER_QUOTA_SIZE_GB,
-        description="Max disk space per user in GB.",
+        description=_("Max disk space per user in GB."),
         json_schema_extra={"public": True},
     )
 
     keep_source_file: bool = Field(
         default=defaults.KEEP_SOURCE_FILE,
-        description="If True, the encoding webhook will not delete the original source video upon success.",
+        description=_("If True, the encoding webhook will not delete the original source video upon success."),
     )
 
     @classmethod

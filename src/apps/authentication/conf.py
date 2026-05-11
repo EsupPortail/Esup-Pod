@@ -6,6 +6,8 @@ Typed and validated configuration for the authentication app using pydantic-sett
 
 from typing import Dict, List, Optional, Tuple, Type
 
+from django.utils.translation import gettext as _
+
 
 from pydantic import Field
 from pydantic_settings import (
@@ -23,146 +25,146 @@ class AuthConfig(BaseSettings):
     # --- Feature Flags ---
     use_local_auth: bool = Field(
         default=defaults.USE_LOCAL_AUTH,
-        description="Enable local Django authentication (username/password).",
+        description=_("Enable local Django authentication (username/password)."),
         json_schema_extra={"public": True},
     )
     use_cas: bool = Field(
         default=defaults.USE_CAS,
-        description="Enable CAS (Central Authentication Service).",
+        description=_("Enable CAS (Central Authentication Service)."),
         json_schema_extra={"public": True},
     )
     use_ldap: bool = Field(
         default=defaults.USE_LDAP,
-        description="Enable LDAP user lookup for populating user attributes.",
+        description=_("Enable LDAP user lookup for populating user attributes."),
         json_schema_extra={"public": True},
     )
     use_shib: bool = Field(
         default=defaults.USE_SHIB,
-        description="Enable Shibboleth authentication.",
+        description=_("Enable Shibboleth authentication."),
         json_schema_extra={"public": True},
     )
     use_oidc: bool = Field(
         default=defaults.USE_OIDC,
-        description="Enable OpenID Connect authentication.",
+        description=_("Enable OpenID Connect authentication."),
         json_schema_extra={"public": True},
     )
 
     # --- CAS Configuration ---
     cas_version: str = Field(
         default=defaults.CAS_VERSION,
-        description="CAS protocol version.",
+        description=_("CAS protocol version."),
     )
     cas_force_change_username_case: str = Field(
         default=defaults.CAS_FORCE_CHANGE_USERNAME_CASE,
-        description="Force CAS username case: 'lower', 'upper', or 'False'.",
+        description=_("Force CAS username case: 'lower', 'upper', or 'False'."),
     )
     cas_apply_attributes_to_user: bool = Field(
         default=defaults.CAS_APPLY_ATTRIBUTES_TO_USER,
-        description="Apply CAS attributes directly to the Django user model.",
+        description=_("Apply CAS attributes directly to the Django user model."),
     )
     cas_admin_redirect: bool = Field(
         default=defaults.CAS_ADMIN_REDIRECT,
-        description="Redirect admin login to CAS.",
+        description=_("Redirect admin login to CAS."),
     )
 
     # --- LDAP Configuration ---
     ldap_server_use_ssl: bool = Field(
         default=defaults.LDAP_SERVER_USE_SSL,
-        description="Use SSL for LDAP connection.",
+        description=_("Use SSL for LDAP connection."),
     )
     ldap_user_search_base: str = Field(
         default=defaults.LDAP_USER_SEARCH_BASE,
-        description="LDAP search base for users.",
+        description=_("LDAP search base for users."),
     )
     ldap_user_search_filter: str = Field(
         default=defaults.LDAP_USER_SEARCH_FILTER,
-        description="LDAP search filter for users.",
+        description=_("LDAP search filter for users."),
     )
     ldap_mapping_attributes: Dict[str, str] = Field(
         default=defaults.LDAP_MAPPING_ATTRIBUTES,
-        description="Mapping from internal user fields to LDAP attributes.",
+        description=_("Mapping from internal user fields to LDAP attributes."),
     )
 
     # --- OIDC Configuration ---
     oidc_claim_given_name: str = Field(
         default=defaults.OIDC_CLAIM_GIVEN_NAME,
-        description="OIDC claim for given name.",
+        description=_("OIDC claim for given name."),
     )
     oidc_claim_family_name: str = Field(
         default=defaults.OIDC_CLAIM_FAMILY_NAME,
-        description="OIDC claim for family name.",
+        description=_("OIDC claim for family name."),
     )
     oidc_claim_preferred_username: str = Field(
         default=defaults.OIDC_CLAIM_PREFERRED_USERNAME,
-        description="OIDC claim for preferred username.",
+        description=_("OIDC claim for preferred username."),
     )
     oidc_default_affiliation: str = Field(
         default=defaults.OIDC_DEFAULT_AFFILIATION,
-        description="Default affiliation for OIDC-authenticated users.",
+        description=_("Default affiliation for OIDC-authenticated users."),
     )
     oidc_default_access_group_code_names: List[str] = Field(
         default=defaults.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES,
-        description="Default access groups for OIDC-authenticated users.",
+        description=_("Default access groups for OIDC-authenticated users."),
     )
     oidc_name: str = Field(
         default=defaults.OIDC_NAME,
-        description="Display name for OIDC login.",
+        description=_("Display name for OIDC login."),
         json_schema_extra={"public": True},
     )
 
     # --- Shibboleth Configuration ---
     shibboleth_staff_allowed_domains: Optional[List[str]] = Field(
         default=defaults.SHIBBOLETH_STAFF_ALLOWED_DOMAINS,
-        description="Domains allowed for Shibboleth staff users.",
+        description=_("Domains allowed for Shibboleth staff users."),
     )
     shibboleth_name: str = Field(
         default=defaults.SHIB_NAME,
-        description="Display name for Shibboleth login.",
+        description=_("Display name for Shibboleth login."),
         json_schema_extra={"public": True},
     )
     shib_secure_header: Optional[str] = Field(
         default=defaults.SHIB_SECURE_HEADER,
-        description="HTTP header to check for Shibboleth security (e.g., HTTP_X_SHIB_SECURE).",
+        description=_("HTTP header to check for Shibboleth security (e.g., HTTP_X_SHIB_SECURE)."),
     )
     shib_secure_value: str = Field(
         default=defaults.SHIB_SECURE_VALUE,
-        description="Value expected in shib_secure_header.",
+        description=_("Value expected in shib_secure_header."),
     )
     shibboleth_attribute_map: Dict[str, Tuple[bool, str]] = Field(
         default=defaults.SHIBBOLETH_ATTRIBUTE_MAP,
-        description="Mapping from Shibboleth headers to user fields.",
+        description=_("Mapping from Shibboleth headers to user fields."),
     )
 
     # --- Group / Affiliation ---
     affiliation_staff: Tuple[str, ...] = Field(
         default=defaults.AFFILIATION_STAFF,
-        description="Affiliations that grant staff status.",
+        description=_("Affiliations that grant staff status."),
     )
     create_group_from_affiliation: bool = Field(
         default=defaults.CREATE_GROUP_FROM_AFFILIATION,
-        description="Auto-create access groups from user affiliations.",
+        description=_("Auto-create access groups from user affiliations."),
     )
     create_group_from_groups: bool = Field(
         default=defaults.CREATE_GROUP_FROM_GROUPS,
-        description="Auto-create groups from LDAP/CAS group attributes.",
+        description=_("Auto-create groups from LDAP/CAS group attributes."),
     )
 
     # --- UI ---
     hide_username: bool = Field(
         default=defaults.HIDE_USERNAME,
-        description="Hide usernames on the platform (GDPR compliance).",
+        description=_("Hide usernames on the platform (GDPR compliance)."),
         json_schema_extra={"public": True},
     )
     use_establishment_field: bool = Field(
         default=defaults.USE_ESTABLISHMENT_FIELD,
-        description="Add an establishment attribute to users.",
+        description=_("Add an establishment attribute to users."),
         json_schema_extra={"public": True},
     )
 
     # --- Remote User ---
     remote_user_header: str = Field(
         default=defaults.REMOTE_USER_HEADER,
-        description="HTTP header containing the remote username.",
+        description=_("HTTP header containing the remote username."),
     )
 
     @property
