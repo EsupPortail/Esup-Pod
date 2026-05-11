@@ -5,8 +5,6 @@ Provides a Pydantic settings source that reads from Django settings.
 
 from typing import Any, Tuple
 
-from django.utils.translation import gettext as _
-
 from django.conf import settings
 from pydantic.fields import FieldInfo
 from pydantic_settings import (
