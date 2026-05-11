@@ -118,6 +118,45 @@ CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://redis:6379/0")
 CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default="redis://redis:6379/0")
 
 # ==============================================================================
+# CACHE & SESSION CONFIGURATION (Role 1 & 2 of POD V4)
+# ==============================================================================
+REDIS_CACHE_URL = env("REDIS_CACHE_URL", default=None)
+REDIS_SESSION_URL = env("REDIS_SESSION_URL", default=None)
+REDIS_PASSWORD = env("REDIS_PASSWORD", default=None)
+
+if REDIS_CACHE_URL:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": REDIS_CACHE_URL,
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "PASSWORD": REDIS_PASSWORD,
+                "IGNORE_EXCEPTIONS": True,
+            },
+        }
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "unique-snowflake",
+        }
+    }
+
+CACHE_TIMEOUT = env.int("CACHE_TIMEOUT", default=600)
+
+if REDIS_SESSION_URL:
+    SESSION_ENGINE = "redis_sessions.session"
+    SESSION_REDIS = {
+        "url": REDIS_SESSION_URL,
+        "password": REDIS_PASSWORD,
+        "prefix": "session",
+        "socket_timeout": 1,
+    }
+
+
+# ==============================================================================
 # MODULAR SETTINGS LOADING
 # ==============================================================================
 # 1. Load Defaults: src/config/defaults/{app}.py
