@@ -13,32 +13,32 @@ The central model of the application (`src/apps/video/models/Video.py`).
 
 **Key fields:**
 
-| Field               | Type               | Description                                                       |
-| :------------------ | :----------------- | :---------------------------------------------------------------- |
-| `title`             | CharField          | Video title (max 250 chars).                                      |
-| `slug`              | SlugField          | Auto-generated unique identifier used in URLs (`{title}-{uuid}`). |
-| `description`       | TextField          | Full description of the content.                                  |
-| `video_file`        | FileField          | Stored under `videos/<username>/<slug>.<ext>`.                    |
-| `thumbnail`         | ImageField         | Custom cover image. Falls back to default if absent.              |
-| `overview`          | ImageField         | Auto-generated preview image (non-editable).                      |
-| `duration`          | IntegerField       | Duration in seconds (set by `ffprobe` post-upload).               |
-| `owner`             | FK → User          | Primary owner of the video.                                       |
-| `co_owners`         | M2M → User         | Users with edit rights (cannot delete).                           |
-| `status`            | CharField          | Current video state (see Status choices below).                   |
-| `is_auth_required`  | BooleanField       | Requires login to view, even on restricted videos.                |
-| `password`          | CharField          | Optional password hash (PBKDF2-SHA256).                           |
-| `allow_downloading` | BooleanField       | Exposes the source file URL in the API response.                  |
-| `date_of_event`     | DateField          | Date of the recorded event.                                       |
-| `license`           | CharField          | Content license (CC-BY, COPYRIGHT, etc.).                         |
-| `cursus`            | CharField          | Academic level (L1–M2, Doctorate, Other).                         |
-| `language`          | CharField          | Main spoken language (e.g. `fr`, `en`).                           |
-| `date_to_delete`    | DateField          | Auto-computed expiration date based on owner's affiliation.       |
-| `type`              | FK → Type          | Essential categorization of the video.                            |
-| `disciplines`       | M2M → Discipline   | Associated academic disciplines.                                  |
-| `tags`              | TaggableManager    | Custom tags (using tagulous).                                     |
-| `sites`             | M2M → Site         | Links the video to specific portals for multi-tenancy.            |
-| `restricted_groups` | M2M → AccessGroup  | Limits access to specific user groups (when RESTRICTED).          |
-| `view_count`        | IntegerField       | Total number of views across all dates.                           |
+| Field               | Type              | Description                                                       |
+| :------------------ | :---------------- | :---------------------------------------------------------------- |
+| `title`             | CharField         | Video title (max 250 chars).                                      |
+| `slug`              | SlugField         | Auto-generated unique identifier used in URLs (`{title}-{uuid}`). |
+| `description`       | TextField         | Full description of the content.                                  |
+| `video_file`        | FileField         | Stored under `videos/<username>/<slug>.<ext>`.                    |
+| `thumbnail`         | ImageField        | Custom cover image. Falls back to default if absent.              |
+| `overview`          | ImageField        | Auto-generated preview image (non-editable).                      |
+| `duration`          | IntegerField      | Duration in seconds (set by `ffprobe` post-upload).               |
+| `owner`             | FK → User         | Primary owner of the video.                                       |
+| `co_owners`         | M2M → User        | Users with edit rights (cannot delete).                           |
+| `status`            | CharField         | Current video state (see Status choices below).                   |
+| `is_auth_required`  | BooleanField      | Requires login to view, even on restricted videos.                |
+| `password`          | CharField         | Optional password hash (PBKDF2-SHA256).                           |
+| `allow_downloading` | BooleanField      | Exposes the source file URL in the API response.                  |
+| `date_of_event`     | DateField         | Date of the recorded event.                                       |
+| `license`           | CharField         | Content license (CC-BY, COPYRIGHT, etc.).                         |
+| `cursus`            | CharField         | Academic level (L1–M2, Doctorate, Other).                         |
+| `language`          | CharField         | Main spoken language (e.g. `fr`, `en`).                           |
+| `date_to_delete`    | DateField         | Auto-computed expiration date based on owner's affiliation.       |
+| `type`              | FK → Type         | Essential categorization of the video.                            |
+| `disciplines`       | M2M → Discipline  | Associated academic disciplines.                                  |
+| `tags`              | TaggableManager   | Custom tags (using tagulous).                                     |
+| `sites`             | M2M → Site        | Links the video to specific portals for multi-tenancy.            |
+| `restricted_groups` | M2M → AccessGroup | Limits access to specific user groups (when RESTRICTED).          |
+| `view_count`        | IntegerField      | Total number of views across all dates.                           |
 
 **Status choices:**
 
@@ -105,11 +105,11 @@ Unique constraint on `(video, date)`. Ordered by `-date`.
 
 The list of accessible videos depends on the user's authentication state:
 
-| User type         | Accessible videos                                                                                                                                                    |
-| :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Anonymous**     | Published + Restricted (if `is_auth_required=False` and no `restricted_groups`). Password-protected videos may be hidden depending on `HOMEPAGE_SHOWS_PASSWORDED`.   |
-| **Authenticated** | Published + Restricted + own videos (all statuses) + co-owned. Additionally, restricted videos that are limited to specific AccessGroups where the user is a member. |
-| **Superuser**     | All videos without restriction.                                                                                                                                      |
+- **Anonymous** — Published + Restricted (if `is_auth_required=False` and no `restricted_groups`).
+  Password-protected videos may be hidden depending on `HOMEPAGE_SHOWS_PASSWORDED`.
+- **Authenticated** — Published + Restricted + own videos (all statuses) + co-owned.
+  Additionally, restricted videos limited to specific AccessGroups where the user is a member.
+- **Superuser** — All videos without restriction.
 
 ### Permission Classes
 
@@ -178,17 +178,6 @@ Streams the raw video file. Access rules:
 - Restricted + Group: Access limited to users in the assigned groups.
 - Restricted + Password: direct stream blocked (use `/unlock/` first or supply valid legacy hash).
 - Draft: blocked for non-owners.
-
-### Legacy V4 Download Redirection
-
-In V4, encoded MP4 files were served directly by Nginx at paths like `/media/videos/<sha1_owner_hash>/<id_padded>/<id_padded>_<res>.mp4`. Django never handled those download requests.
-To intercept and redirect old V4 media links to the new stream endpoint (`/api/videos/{slug}/stream/`), you must configure an Nginx rewrite instead:
-
-```nginx
-location ~ ^/media/videos/[^/]+/(\d{4})/\1_(\d+)\.mp4$ {
-    return 301 /api/videos/$1/stream/?resolution=$2;
-}
-```
 
 ### `POST /api/videos/{slug}/register_view/`
 

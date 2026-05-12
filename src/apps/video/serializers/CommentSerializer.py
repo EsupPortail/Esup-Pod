@@ -3,6 +3,7 @@ Esup-Pod - Comment serializer.
 """
 
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from django.db.models import Count, Case, When, Value, BooleanField
 from django.db.models.functions import Concat
 from src.apps.video.models import Comment
@@ -45,6 +46,7 @@ class CommentSerializer(serializers.ModelSerializer):
             "children",
         ]
 
+    @extend_schema_field(serializers.ListSerializer(child=serializers.DictField()))
     def get_children(self, obj):
         """
         Retrieves children if the current context specifies it.

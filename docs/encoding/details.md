@@ -81,7 +81,7 @@ from src.apps.encoding.tasks import trigger_runner_encoding_task
 # Asynchronously trigger encoding for a video
 trigger_runner_encoding_task.delay(
     video_id=123,
-    source_url="https://example.com/video.mp4"
+    source_url="https://example.org/video.mp4"
 )
 ```
 
@@ -109,7 +109,7 @@ from src.apps.encoding.services.runner_client import get_runner_client
 client = get_runner_client()
 response = client.execute_task(
     video_id="video-slug",
-    source_url="https://example.com/video.mp4",
+    source_url="https://example.org/video.mp4",
     parameters={
         "video_id": 123,
         "slug": "video-slug",
@@ -127,8 +127,8 @@ response = client.execute_task(
     "app_name": "Pod",
     "app_version": "5.0.0",
     "task_type": "encoding",
-    "source_url": "https://example.com/video.mp4",
-    "notify_url": "https://pod.example.com/api/encoding/webhook/",
+    "source_url": "https://example.org/video.mp4",
+    "notify_url": "https://pod.example.org/api/encoding/webhook/",
     "parameters": {
         "video_id": 123,
         "slug": "video-slug",

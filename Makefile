@@ -32,6 +32,7 @@ help: ## List available make commands
 
 start: check-django-env ## Start the project/service (detached, build if needed). Usage: make start [service]
 	$(call info,Starting Docker environment (service(s): $(if $(SERVICE_ARGS),$(SERVICE_ARGS),all))...)
+	@mkdir -p media && chmod 775 media
 	$(DOCKER_COMPOSE_CMD) up --build -d $(SERVICE_ARGS)
 	$(call info,Server running in background — use 'make logs' to follow output.)
 

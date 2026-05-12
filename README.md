@@ -1,4 +1,4 @@
-# <img src="./pod/main/static/img/pod_favicon.svg" width="80" alt="" role="presentation"> Esup-Pod - [https://pod.esup-portail.org/](https://pod.esup-portail.org/)
+# Esup-Pod — [https://pod.esup-portail.org/](https://pod.esup-portail.org/)
 
   [![Licence LGPL 3.0](https://img.shields.io/github/license/EsupPortail/Esup-Pod)](https://github.com/EsupPortail/Esup-Pod/blob/master/LICENSE)
   [![Testing Status](https://github.com/EsupPortail/Esup-Pod/actions/workflows/pod_main.yml/badge.svg)](https://github.com/EsupPortail/Esup-Pod/actions)
@@ -83,5 +83,5 @@ For detailed instructions, see:
 
   [ESUP Wiki](https://www.esup-portail.org/wiki/display/ES/esup-pod "Documentation")
 
-| <img src="https://www.univ-lille.fr/typo3conf/ext/ul2fpfb/Resources/Public/assets/img/UL-ROSE-dark-2014.svg" height="50" alt="Université de Lille"> | <img src="https://www.esup-portail.org/sites/default/files/logo-esupportail_1.png" height="50" alt="Esup Portail"> | <img src="https://upload.wikimedia.org/wikipedia/fr/5/50/Bloc_Marianne.svg" height="30" alt=""> Ministère de lʼEnseignement supérieur et de la Recherche |
-| :-------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| [Université de Lille](https://www.univ-lille.fr/) | [Esup Portail](https://www.esup-portail.org/) | Ministère de lʼEnseignement supérieur et de la Recherche |
+| :---: | :---: | :---: |

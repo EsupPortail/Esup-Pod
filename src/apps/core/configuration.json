@@ -73,7 +73,7 @@
               "pod_version_init": "3.1"
             },
             "CAS_SERVER_URL": {
-              "default_value": "https://cas.univ-lille.fr",
+              "default_value": "https://cas.example.org",
               "description": {
                 "en": [
                   "Url of the institution’s CAS server."
@@ -133,7 +133,7 @@
               "pod_version_init": "5.0.0"
             },
             "LDAP_SERVER_URL": {
-              "default_value": "ldap://ldap.univ.fr",
+              "default_value": "ldap://ldap.example.org",
               "description": {
                 "en": [
                   "LDAP server URL."
@@ -169,7 +169,7 @@
               "pod_version_init": "5.0.0"
             },
             "LDAP_BIND_DN": {
-              "default_value": "cn=pod,ou=app,dc=univ,dc=fr",
+              "default_value": "cn=pod,ou=app,dc=example,dc=com",
               "description": {
                 "en": [
                   "Identifiant (DN) of the account to connect to the LDAP server."
@@ -193,7 +193,7 @@
               "pod_version_init": "3.1"
             },
             "LDAP_USER_SEARCH_BASE": {
-              "default_value": "ou=people,dc=univ,dc=fr",
+              "default_value": "ou=people,dc=example,dc=com",
               "description": {
                 "en": [
                   "LDAP search base for users."
@@ -238,7 +238,7 @@
               "pod_version_init": "3.1"
             },
             "OIDC_OP_TOKEN_ENDPOINT": {
-              "default_value": "https://auth.example.com/oidc/token",
+              "default_value": "https://auth.example.org/oidc/token",
               "description": {
                 "en": [
                   "OIDC Provider Token endpoint."
@@ -250,7 +250,7 @@
               "pod_version_init": "3.1"
             },
             "OIDC_OP_USER_ENDPOINT": {
-              "default_value": "https://auth.example.com/oidc/userinfo",
+              "default_value": "https://auth.example.org/oidc/userinfo",
               "description": {
                 "en": [
                   "OIDC Provider UserInfo endpoint."
@@ -262,7 +262,7 @@
               "pod_version_init": "3.1"
             },
             "OIDC_RP_CLIENT_ID": {
-              "default_value": "mon-client-id",
+              "default_value": "my-client-id",
               "description": {
                 "en": [
                   "OIDC Client ID."
@@ -274,7 +274,7 @@
               "pod_version_init": "3.1"
             },
             "OIDC_RP_CLIENT_SECRET": {
-              "default_value": "mon-secret",
+              "default_value": "my-secret",
               "description": {
                 "en": [
                   "OIDC Client Secret."

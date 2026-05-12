@@ -4,11 +4,12 @@ Esup-Pod - Video model.
 
 from datetime import date
 from django.contrib.sites.models import Site
+from django.db.models import Q
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, identify_hasher
 import tagulous.models
 from src.apps.encoding.services.storage import (
     get_storage_path_video,
@@ -17,10 +18,43 @@ from src.apps.encoding.services.storage import (
 from src.apps.video.conf import video_settings
 
 
+class VideoManager(models.Manager):
+    """Custom manager for Video model providing visibility filtering."""
+
+    def visible_for(self, user):
+        """Returns a queryset of videos visible to the given user."""
+        if user.is_authenticated and user.is_superuser:
+            return self.get_queryset()
+
+        if not user.is_authenticated:
+            q_filter = Q(status=self.model.Status.PUBLISHED) | (
+                Q(status=self.model.Status.RESTRICTED) & Q(is_auth_required=False)
+            )
+            if not video_settings.homepage_shows_passworded:
+                q_filter &= Q(password__isnull=True) | Q(password__exact="")
+            return self.get_queryset().filter(q_filter)
+
+        # Authenticated users
+        base_q = (
+            Q(status=self.model.Status.PUBLISHED)
+            | Q(status=self.model.Status.RESTRICTED)
+            | Q(owner=user)
+            | Q(co_owners=user)
+            | Q(channel__owner=user)
+            | Q(channel__collaborators=user)
+        )
+        if hasattr(user, "owner"):
+            base_q |= Q(restricted_groups__users=user.owner)
+
+        return self.get_queryset().filter(base_q).distinct()
+
+
 class Video(models.Model):
     """
     Esup-Pod - Model representing a video.
     """
+
+    objects = VideoManager()
 
     # 1.CHOICES
     class Status(models.TextChoices):
@@ -111,6 +145,15 @@ class Video(models.Model):
         related_name="videos",
         on_delete=models.CASCADE,
         verbose_name=_("Owner"),
+    )
+    channel = models.ForeignKey(
+        "collection.Channel",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="videos",
+        verbose_name=_("Channel"),
+        help_text=_("The channel this video belongs to."),
     )
     co_owners = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
@@ -290,8 +333,11 @@ class Video(models.Model):
         Encrypts the password if the video is protected.
         An already encrypted password will not be re-encrypted.
         """
-        if self.password and not self.password.startswith("pbkdf2_sha256$"):
-            self.password = make_password(self.password, hasher="pbkdf2_sha256")
+        if self.password:
+            try:
+                identify_hasher(self.password)
+            except ValueError:
+                self.password = make_password(self.password)
 
     def save(self, *args, **kwargs):
         """
@@ -316,7 +362,7 @@ class Video(models.Model):
     def get_absolute_url(self):
         """
         Returns the V4-compatible permalink.
-        Format: /video/<slug>/ where slug is already "0042-mon-titre-de-video".
+        Format: /video/<slug>/ where slug is already "0042-my-video-title".
 
         previously this returned f"/video/{self.pk}-{self.slug}/" which
         produced a double-ID like /video/42-0042-titre/. The slug already embeds

@@ -36,9 +36,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "drf_spectacular",
     "django_cas_ng",
+    "django_filters",
     "src.apps.utils",
     "src.apps.authentication",
     "src.apps.info",
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     "src.apps.video",
     "src.apps.encoding",
     "tagulous",
+    "src.apps.collection",
 ]
 
 MIDDLEWARE = [
@@ -168,6 +171,7 @@ APPS_WITH_CUSTOM_SETTINGS = [
     "swagger",
     "core",
     "encoding",
+    "collection",
 ]
 
 
@@ -185,3 +189,12 @@ def _load_settings_from_module(module_path):
 for app_config_name in APPS_WITH_CUSTOM_SETTINGS:
     _load_settings_from_module(f"src.config.defaults.{app_config_name}")
     _load_settings_from_module(f"src.config.settings.{app_config_name}")
+
+if not globals().get("CORS_ALLOWED_ORIGINS") and not globals().get(
+    "CORS_ALLOW_ALL_ORIGINS"
+):
+    import warnings
+
+    warnings.warn(
+        "CORS_ALLOWED_ORIGINS is empty. Cross-origin requests will fail.", stacklevel=2
+    )

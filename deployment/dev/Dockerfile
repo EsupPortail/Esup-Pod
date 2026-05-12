@@ -37,4 +37,11 @@ COPY deployment/dev/scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN dos2unix /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/entrypoint.sh
 
+RUN addgroup --gid 1001 --system appgroup && \
+    adduser --uid 1001 --system --ingroup appgroup appuser && \
+    mkdir -p /app/src/static /app/src/media /app/media /app/staticfiles && \
+    chown -R appuser:appgroup /app
+
+USER appuser
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

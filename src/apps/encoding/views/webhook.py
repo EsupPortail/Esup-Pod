@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from src.apps.video.models import Video
 from config.env import env
@@ -29,6 +30,16 @@ class EncodingWebhookView(APIView):
     permission_classes = []
     authentication_classes = []
 
+    @extend_schema(
+        request=None,
+        responses={
+            200: OpenApiResponse(description="Encoding result processed successfully."),
+            400: OpenApiResponse(description="Missing required fields in payload."),
+            401: OpenApiResponse(description="Invalid or missing webhook secret."),
+            404: OpenApiResponse(description="Video not found."),
+            500: OpenApiResponse(description="Error during file retrieval."),
+        },
+    )
     def post(self, request, *args, **kwargs):
         """Handle incoming webhook payload from the encoding runner."""
         if not self._is_secret_valid(request):
@@ -67,10 +78,15 @@ class EncodingWebhookView(APIView):
 
     def _is_secret_valid(self, request) -> bool:
         """Check if the secret provided in the URL matches the expected secret."""
-        secret_provided = request.query_params.get("secret")
         webhook_secret = env("ENCODING_WEBHOOK_SECRET", default="")
+        if not webhook_secret:
+            logger.critical(
+                "ENCODING_WEBHOOK_SECRET is not configured. Webhook disabled."
+            )
+            return False
 
-        if webhook_secret and secret_provided != webhook_secret:
+        secret_provided = request.query_params.get("secret")
+        if secret_provided != webhook_secret:
             logger.warning("Invalid webhook secret received: %s", secret_provided)
             return False
         return True

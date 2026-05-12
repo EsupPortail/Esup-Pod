@@ -60,4 +60,4 @@ DEFAULT_LDAP_MAPPING_ATTRIBUTES = {
     "establishment": "establishment",
 }
 
-DEFAULT_LDAP_USER_SEARCH = ("ou=people,dc=univ,dc=fr", "(uid=%(uid)s)")
+DEFAULT_LDAP_USER_SEARCH = ("ou=people,dc=example,dc=com", "(uid=%(uid)s)")

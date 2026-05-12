@@ -14,6 +14,9 @@ from config.django.test.init_env import *  # noqa: F401, F403 # isort:skip
 from config.django.dev.docker import *  # noqa: F401, F403
 from config.env import env
 
+import tempfile
+import os
+
 DEBUG = False
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
@@ -42,3 +45,7 @@ DATABASES = {
         },
     }
 }
+
+temp_dir = tempfile.gettempdir()
+MEDIA_ROOT = os.path.join(temp_dir, "pod_test_media")
+STATIC_ROOT = os.path.join(temp_dir, "pod_test_static")

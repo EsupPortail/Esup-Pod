@@ -28,7 +28,7 @@ class TestUserPopulator(TestCase):
         """
         Initializes a test user and a populator instance.
         """
-        self.user = User.objects.create(username="testuser", email="test@example.com")
+        self.user = User.objects.create(username="testuser", email="test@example.org")
         self.populator = UserPopulator(self.user)
 
     def test_init_creates_owner(self):
@@ -49,7 +49,7 @@ class TestUserPopulator(TestCase):
             "primaryAffiliation": "student",
             "affiliation": ["student"],
             "groups": ["group1"],
-            "mail": "test@example.com",
+            "mail": "test@example.org",
         }
         self.populator.run("CAS", attributes)
 
@@ -66,7 +66,7 @@ class TestUserPopulator(TestCase):
         attributes = {
             "first_name": "Shib",
             "last_name": "User",
-            "email": "shib@example.com",
+            "email": "shib@example.org",
             "affiliation": "faculty",
             "affiliations": "faculty;staff",
         }
@@ -76,7 +76,7 @@ class TestUserPopulator(TestCase):
         self.assertEqual(self.user.owner.auth_type, "Shibboleth")
         self.assertEqual(self.user.first_name, "Shib")
         self.assertEqual(self.user.last_name, "User")
-        self.assertEqual(self.user.email, "shib@example.com")
+        self.assertEqual(self.user.email, "shib@example.org")
         self.assertEqual(self.user.owner.affiliation, "faculty")
         self.assertTrue(self.user.is_staff)
 
@@ -96,7 +96,7 @@ class TestUserPopulator(TestCase):
         attributes = {
             "given_name": "Oidc",
             "family_name": "User",
-            "email": "oidc@example.com",
+            "email": "oidc@example.org",
         }
         self.populator.run("OIDC", attributes)
 
@@ -104,7 +104,7 @@ class TestUserPopulator(TestCase):
         self.assertEqual(self.user.owner.auth_type, "OIDC")
         self.assertEqual(self.user.first_name, "Oidc")
         self.assertEqual(self.user.last_name, "User")
-        self.assertEqual(self.user.email, "oidc@example.com")
+        self.assertEqual(self.user.email, "oidc@example.org")
         self.assertEqual(self.user.owner.affiliation, "member")
         self.assertTrue(AccessGroup.objects.filter(code_name="oidc_group").exists())
 
@@ -130,7 +130,7 @@ class TestUserPopulator(TestCase):
         mock_get_conn.return_value = mock_conn
 
         mock_entry = {
-            "mail": MagicMock(value="ldap@example.com"),
+            "mail": MagicMock(value="ldap@example.org"),
             "givenName": MagicMock(value="Ldap"),
             "sn": MagicMock(value=["User"]),
             "eduPersonPrimaryAffiliation": MagicMock(value="student"),
@@ -145,7 +145,7 @@ class TestUserPopulator(TestCase):
         self.assertEqual(self.user.owner.auth_type, "LDAP")
         self.assertEqual(self.user.first_name, "Ldap")
         self.assertEqual(self.user.last_name, "User")
-        self.assertEqual(self.user.email, "ldap@example.com")
+        self.assertEqual(self.user.email, "ldap@example.org")
         self.assertEqual(self.user.owner.affiliation, "student")
         self.assertTrue(AccessGroup.objects.filter(code_name="ldap_group").exists())
 

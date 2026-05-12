@@ -60,7 +60,7 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
 AUTH_LDAP_USER_SEARCH = getattr(
     settings,
     "AUTH_LDAP_USER_SEARCH",
-    ("ou=people,dc=univ,dc=fr", "(uid=%(uid)s)"),
+    ("ou=people,dc=example,dc=com", "(uid=%(uid)s)"),
 )
 
 

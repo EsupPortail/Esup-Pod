@@ -84,6 +84,8 @@ class VideoSerializer(serializers.ModelSerializer):
             "license",
             "cursus",
             "language",
+            "channel",
+            "themes",
             "created_at",
             "updated_at",
             "date_to_delete",
@@ -109,6 +111,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "encodings",
         ]
 
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_encodings(self, obj):
         """Returns a list of available encoded resolutions (e.g., ['1080p', '720p'])."""
         return [enc.resolution for enc in obj.encodings.all()]
@@ -128,6 +131,7 @@ class VideoSerializer(serializers.ModelSerializer):
             return make_password(value)
         return value
 
+    @extend_schema_field(serializers.URLField(allow_null=True))
     def get_video_url(self, obj):
         """Calculates the absolute URL of the video file based on access rights."""
         request = self.context.get("request")

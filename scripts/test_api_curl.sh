@@ -265,7 +265,7 @@ echo -e "${GREEN}OK${NC}"
 
 # 13. USER DETAIL UPDATE (PATCH)
 echo -n ">>> [13/15] Patching User Info via UserViewSet... "
-MY_EMAIL="ci_modified_$TIMESTAMP@example.com"
+MY_EMAIL="ci_modified_$TIMESTAMP@example.org"
 ME_PATCH=$(curl -s -X 'PATCH' "$BASE_URL/api/auth/users/$USER_ID/" \
   -H "$AUTH_HEADER" \
   -H 'Content-Type: application/json' \
