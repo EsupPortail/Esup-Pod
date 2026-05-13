@@ -54,7 +54,9 @@ class Theme(BaseContainer):
 
         if self.parent:
             if self.parent == self:
-                raise ValidationError({"parent": _("A theme cannot be its own parent.")})
+                raise ValidationError(
+                    {"parent": _("A theme cannot be its own parent.")}
+                )
 
             current_parent = self.parent
             while current_parent is not None:

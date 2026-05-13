@@ -123,9 +123,6 @@ class VideoConfig(BaseSettings):
     restrict_edit_to_staff: bool = Field(
         default=defaults.RESTRICT_EDIT_TO_STAFF,
         description=_("Restrict video editing to staff users only."),
-    staff_only_editing: bool = Field(
-        default=defaults.STAFF_ONLY_EDITING,
-        description="Restrict video editing to staff users only.",
         json_schema_extra={"public": True},
     )
     homepage_shows_passworded: bool = Field(
@@ -147,7 +144,9 @@ class VideoConfig(BaseSettings):
     # --- Expiration Settings ---
     accommodation_years: Dict[str, int] = Field(
         default_factory=lambda: defaults.ACCOMMODATION_YEARS,
-        description=_("Dictionary linking an affiliation to a number of years before expiration."),
+        description=_(
+            "Dictionary linking an affiliation to a number of years before expiration."
+        ),
     )
     default_year_date_delete: int = Field(
         default=defaults.DEFAULT_YEAR_DATE_DELETE,

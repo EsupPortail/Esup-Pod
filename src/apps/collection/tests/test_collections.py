@@ -25,8 +25,12 @@ class CollectionTests(APITestCase):
     def setUp(self):
         """Set up test data."""
         self.user = User.objects.create_user(username="testuser", password="password")
-        self.admin = User.objects.create_superuser(username="admin", password="password")
-        self.other_user = User.objects.create_user(username="other", password="password")
+        self.admin = User.objects.create_superuser(
+            username="admin", password="password"
+        )
+        self.other_user = User.objects.create_user(
+            username="other", password="password"
+        )
 
         self.client.force_authenticate(user=self.user)
 
@@ -66,7 +70,9 @@ class CollectionTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         parent_theme = Theme.objects.get(slug="science")
 
-        response = self.client.post(url, {"title": "Physics", "parent": parent_theme.id})
+        response = self.client.post(
+            url, {"title": "Physics", "parent": parent_theme.id}
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         child_theme = Theme.objects.get(slug="physics")
         self.assertEqual(child_theme.parent, parent_theme)

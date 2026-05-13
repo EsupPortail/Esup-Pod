@@ -124,7 +124,9 @@ class AuthConfig(BaseSettings):
     )
     shib_secure_header: Optional[str] = Field(
         default=defaults.SHIB_SECURE_HEADER,
-        description=_("HTTP header to check for Shibboleth security (e.g., HTTP_X_SHIB_SECURE)."),
+        description=_(
+            "HTTP header to check for Shibboleth security (e.g., HTTP_X_SHIB_SECURE)."
+        ),
     )
     shib_secure_value: str = Field(
         default=defaults.SHIB_SECURE_VALUE,

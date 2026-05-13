@@ -106,7 +106,9 @@ class Command(BaseCommand):
                 json_settings.extend(app.get("settings", {}).keys())
 
             # Also check top level settings if any
-            json_settings.extend(data[0]["configuration_apps"].get("settings", {}).keys())
+            json_settings.extend(
+                data[0]["configuration_apps"].get("settings", {}).keys()
+            )
 
         missing_in_json = sorted(list(set(local_settings_list) - set(json_settings)))
         extra_in_json = sorted(list(set(json_settings) - set(local_settings_list)))
@@ -128,7 +130,9 @@ class Command(BaseCommand):
         else:
             if extra_in_json:
                 self.stdout.write(
-                    self.style.WARNING(f"\nExtra in JSON (not in code): {extra_in_json}")
+                    self.style.WARNING(
+                        f"\nExtra in JSON (not in code): {extra_in_json}"
+                    )
                 )
             self.stdout.write(
                 self.style.SUCCESS(

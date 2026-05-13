@@ -57,7 +57,9 @@ class EncodingConfig(BaseSettings):
 
     keep_source_file: bool = Field(
         default=defaults.KEEP_SOURCE_FILE,
-        description=_("If True, the encoding webhook will not delete the original source video upon success."),
+        description=_(
+            "If True, the encoding webhook will not delete the original source video upon success."
+        ),
     )
 
     @classmethod

@@ -79,7 +79,9 @@ class AccessGroupTests(APITestCase):
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertFalse(self.owner.accessgroups.filter(code_name="test_group").exists())
+        self.assertFalse(
+            self.owner.accessgroups.filter(code_name="test_group").exists()
+        )
 
     def test_set_users_by_name(self):
         """

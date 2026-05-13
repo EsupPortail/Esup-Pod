@@ -14,7 +14,9 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-@override_settings(PASSWORD_HASHERS=["django.contrib.auth.hashers.PBKDF2PasswordHasher"])
+@override_settings(
+    PASSWORD_HASHERS=["django.contrib.auth.hashers.PBKDF2PasswordHasher"]
+)
 class LegacyHashUnlockTest(APITestCase):
     """
     Test the legacy format hash unlocking.
