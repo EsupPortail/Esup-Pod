@@ -10,6 +10,7 @@ Usage:
 """
 
 import os
+import tempfile
 
 import config.django.test.init_env  # noqa: F401
 
@@ -23,3 +24,8 @@ DATABASES = {
 }
 
 ALLOWED_HOSTS = ["*"]
+
+
+temp_dir = tempfile.gettempdir()
+MEDIA_ROOT = os.path.join(temp_dir, "pod_test_media")
+STATIC_ROOT = os.path.join(temp_dir, "pod_test_static")

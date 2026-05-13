@@ -123,6 +123,9 @@ class VideoConfig(BaseSettings):
     restrict_edit_to_staff: bool = Field(
         default=defaults.RESTRICT_EDIT_TO_STAFF,
         description=_("Restrict video editing to staff users only."),
+    staff_only_editing: bool = Field(
+        default=defaults.STAFF_ONLY_EDITING,
+        description="Restrict video editing to staff users only.",
         json_schema_extra={"public": True},
     )
     homepage_shows_passworded: bool = Field(
@@ -166,7 +169,7 @@ class VideoConfig(BaseSettings):
     )
 
     # --- Media Defaults ---
-    default_thumbnail: str = Field(
+    default_thumbnail: str | None = Field(
         default=defaults.DEFAULT_THUMBNAIL,
         description=_("Path to the default video thumbnail."),
     )

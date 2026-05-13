@@ -35,6 +35,5 @@ ALLOWED_EXTENSIONS = (
 )
 VIDEO_REQUIRED_FIELDS = []
 
-
 # Webhook behavior
 KEEP_SOURCE_FILE = True

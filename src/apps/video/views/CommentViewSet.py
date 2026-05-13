@@ -22,6 +22,7 @@ class CommentViewSet(viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     @extend_schema(
+        operation_id="comment_list",
         parameters=[
             OpenApiParameter("only", str, enum=["parents"]),
         ],
@@ -58,7 +59,7 @@ class CommentViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(comment)
         return Response(serializer.data)
 
-    @extend_schema(request=CommentSerializer)
+    @extend_schema(operation_id="comment_add", request=CommentSerializer)
     def add_comment(self, request, video_slug: str, comment_id: int = None):
         """
         Adds a new comment or a reply to a video.

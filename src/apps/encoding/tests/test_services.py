@@ -111,13 +111,13 @@ class StorageServicesTests(TestCase):
     def test_get_storage_path_video(self, mock_now):
         """Verifies the generation of hashed storage paths for videos."""
         mock_now.return_value = datetime(2023, 5, 10)
-        filename = "ma_video_vacances.mp4"
+        filename = "my_holiday_video.mp4"
         path = get_storage_path_video(self.video, filename)
 
         self.assertTrue(path.startswith("video/source/2023/05/10/"))
 
         name_on_disk = path.split("/")[-1]
-        self.assertNotIn("ma_video_vacances", name_on_disk)
+        self.assertNotIn("my_holiday_video", name_on_disk)
         self.assertEqual(len(name_on_disk), 44)
 
     @patch("django.utils.timezone.now")

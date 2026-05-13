@@ -36,9 +36,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "drf_spectacular",
     "django_cas_ng",
+    "django_filters",
     "src.apps.utils",
     "src.apps.authentication",
     "src.apps.info",
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     "src.apps.video",
     "src.apps.encoding",
     "tagulous",
+    "src.apps.collection",
 ]
 
 MIDDLEWARE = [
@@ -118,6 +121,45 @@ CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://redis:6379/0")
 CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default="redis://redis:6379/0")
 
 # ==============================================================================
+# CACHE & SESSION CONFIGURATION (Role 1 & 2 of POD V4)
+# ==============================================================================
+REDIS_CACHE_URL = env("REDIS_CACHE_URL", default=None)
+REDIS_SESSION_URL = env("REDIS_SESSION_URL", default=None)
+REDIS_PASSWORD = env("REDIS_PASSWORD", default=None)
+
+if REDIS_CACHE_URL:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": REDIS_CACHE_URL,
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "PASSWORD": REDIS_PASSWORD,
+                "IGNORE_EXCEPTIONS": True,
+            },
+        }
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "unique-snowflake",
+        }
+    }
+
+CACHE_TIMEOUT = env.int("CACHE_TIMEOUT", default=600)
+
+if REDIS_SESSION_URL:
+    SESSION_ENGINE = "redis_sessions.session"
+    SESSION_REDIS = {
+        "url": REDIS_SESSION_URL,
+        "password": REDIS_PASSWORD,
+        "prefix": "session",
+        "socket_timeout": 1,
+    }
+
+
+# ==============================================================================
 # MODULAR SETTINGS LOADING
 # ==============================================================================
 # 1. Load Defaults: src/config/defaults/{app}.py
@@ -129,6 +171,7 @@ APPS_WITH_CUSTOM_SETTINGS = [
     "swagger",
     "core",
     "encoding",
+    "collection",
 ]
 
 
@@ -146,3 +189,12 @@ def _load_settings_from_module(module_path):
 for app_config_name in APPS_WITH_CUSTOM_SETTINGS:
     _load_settings_from_module(f"src.config.defaults.{app_config_name}")
     _load_settings_from_module(f"src.config.settings.{app_config_name}")
+
+if not globals().get("CORS_ALLOWED_ORIGINS") and not globals().get(
+    "CORS_ALLOW_ALL_ORIGINS"
+):
+    import warnings
+
+    warnings.warn(
+        "CORS_ALLOWED_ORIGINS is empty. Cross-origin requests will fail.", stacklevel=2
+    )

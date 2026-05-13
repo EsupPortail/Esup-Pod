@@ -64,8 +64,11 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 
     new_file = instance.video_file
     if old_file and not old_file == new_file:
-        if old_file.name and os.path.isfile(old_file.path):
-            os.remove(old_file.path)
+        try:
+            if os.path.isfile(old_file.path):
+                os.remove(old_file.path)
+        except ValueError:
+            pass
 
 
 @receiver(post_save, sender=Video)

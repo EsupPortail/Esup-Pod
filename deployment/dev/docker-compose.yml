@@ -43,9 +43,9 @@ services:
       DJANGO_SETTINGS_MODULE: config.django.dev.docker
       ALLOWED_HOSTS: "*"
       SERVICE_LABEL: api
-      ENCODING_MANAGER_URL: http://esup-runner-manager:8081
+      ENCODING_MANAGER_URL: ${ENCODING_MANAGER_URL}
       ENCODING_MANAGER_TOKEN: ${ENCODING_MANAGER_TOKEN}
-      SITE_URL: "http://api:8000"
+      SITE_URL: ${SITE_URL:-http://api:8000}
       ENCODING_WEBHOOK_SECRET: ${ENCODING_WEBHOOK_SECRET}
     command: ["run-server"]
     networks:
@@ -84,9 +84,9 @@ services:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0
       SERVICE_LABEL: celery
-      ENCODING_MANAGER_URL: http://esup-runner-manager:8081
+      ENCODING_MANAGER_URL: ${ENCODING_MANAGER_URL}
       ENCODING_MANAGER_TOKEN: ${ENCODING_MANAGER_TOKEN}
-      SITE_URL: "http://api:8000"
+      SITE_URL: ${SITE_URL:-http://api:8000}
       ENCODING_WEBHOOK_SECRET: ${ENCODING_WEBHOOK_SECRET}
     command: ["celery", "-A", "config", "worker", "-l", "info"]
     networks:

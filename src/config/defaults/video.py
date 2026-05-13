@@ -25,7 +25,7 @@ HIDE_SHARE = False
 HIDE_DISCIPLINES = False
 HIDE_CURSUS = False
 HIDE_TYPES = False
-RESTRICT_EDIT_TO_STAFF = False
+STAFF_ONLY_EDITING = False
 HOMEPAGE_SHOWS_PASSWORDED = False
 
 # Cache
@@ -45,7 +45,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
     "TITLE_ETB": "University name",
 }
 
-DEFAULT_THUMBNAIL = "img/default.svg"
+DEFAULT_THUMBNAIL = "img/default_thumbnail.svg"
 DEFAULT_TYPE_ID = 1
 
 ACCOMMODATION_YEARS = {}

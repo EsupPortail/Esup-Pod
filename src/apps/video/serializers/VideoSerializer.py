@@ -4,6 +4,7 @@ Esup-Pod - Video serializer.
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from src.apps.video.models import Video, Type, Discipline
 from .SubtitleSerializer import SubtitleSerializer
 from django.contrib.auth.hashers import make_password
@@ -39,7 +40,7 @@ class VideoSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     date_to_delete = serializers.DateField(required=False, allow_null=True)
-    thumbnail_url = serializers.ReadOnlyField()
+    thumbnail_url = serializers.SerializerMethodField()
     type_id = serializers.PrimaryKeyRelatedField(
         queryset=Type.objects.all(), source="type", write_only=True, required=False
     )
@@ -83,6 +84,8 @@ class VideoSerializer(serializers.ModelSerializer):
             "license",
             "cursus",
             "language",
+            "channel",
+            "themes",
             "created_at",
             "updated_at",
             "date_to_delete",
@@ -108,9 +111,19 @@ class VideoSerializer(serializers.ModelSerializer):
             "encodings",
         ]
 
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_encodings(self, obj):
         """Returns a list of available encoded resolutions (e.g., ['1080p', '720p'])."""
         return [enc.resolution for enc in obj.encodings.all()]
+
+    @extend_schema_field(serializers.URLField(allow_null=True))
+    def get_thumbnail_url(self, obj):
+        """Returns the absolute URL of the video thumbnail."""
+        request = self.context.get("request")
+        url = obj.thumbnail_url
+        if url and request and not url.startswith("http"):
+            return request.build_absolute_uri(url)
+        return url
 
     def validate_password(self, value):
         """Hashes the password if it is provided."""
@@ -118,6 +131,7 @@ class VideoSerializer(serializers.ModelSerializer):
             return make_password(value)
         return value
 
+    @extend_schema_field(serializers.URLField(allow_null=True))
     def get_video_url(self, obj):
         """Calculates the absolute URL of the video file based on access rights."""
         request = self.context.get("request")

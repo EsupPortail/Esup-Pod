@@ -6,7 +6,7 @@ This document details the configuration and internal workings of the authenticat
 
 ### A. CAS (SSO)
 
-1. The Frontend redirects the user to the CAS server (e.g., `https://cas.univ-lille.fr`).
+1. The Frontend redirects the user to the CAS server (e.g., `https://cas.example.org`).
 2. Once authenticated, the user returns with a `ticket`.
 3. The Frontend sends this ticket to the Backend via **POST** `/api/auth/token/cas/`.
 4. The Backend validates the ticket, retrieves attributes (and optionally completes via LDAP), updates the local user, and returns a JWT.
@@ -31,7 +31,7 @@ The following variables in `src/config/settings/authentication.py` control behav
 
 ### CAS Configuration
 
-- `CAS_SERVER_URL`: Server URL (e.g., `https://cas.univ-lille.fr`)
+- `CAS_SERVER_URL`: Server URL (e.g., `https://cas.example.org`)
 - `CAS_VERSION`: Protocol version (e.g., `'3'`)
 - `CAS_APPLY_ATTRIBUTES_TO_USER`: If `True`, updates local data with data from CAS.
 
@@ -39,7 +39,7 @@ The following variables in `src/config/settings/authentication.py` control behav
 
 Used if `USE_LDAP = True`.
 
-- `LDAP_SERVER`: Dictionary containing `url` (e.g., `ldap://ldap.univ.fr`) and `port`.
+- `LDAP_SERVER`: Dictionary containing `url` (e.g., `ldap://ldap.example.org`) and `port`.
 - `AUTH_LDAP_BIND_DN`: Connection user (Bind DN).
 - `USER_LDAP_MAPPING_ATTRIBUTES`: Maps LDAP fields to Django.
   - `uid` -> `username`

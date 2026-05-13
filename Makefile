@@ -32,6 +32,7 @@ help: ## List available make commands
 
 start: check-django-env ## Start the project/service (detached, build if needed). Usage: make start [service]
 	$(call info,Starting Docker environment (service(s): $(if $(SERVICE_ARGS),$(SERVICE_ARGS),all))...)
+	@mkdir -p media && chmod 775 media
 	$(DOCKER_COMPOSE_CMD) up --build -d $(SERVICE_ARGS)
 	$(call info,Server running in background — use 'make logs' to follow output.)
 
@@ -80,6 +81,8 @@ lint: start ## Run linters (black, flake8) inside the API service
 	$(DOCKER_COMPOSE_CMD) run --rm $(DOCKER_SERVICE_NAME) black . -l 90
 	$(call info,Running flake8...)
 	$(DOCKER_COMPOSE_CMD) run --rm $(DOCKER_SERVICE_NAME) flake8 src --count --show-source --statistics
+	$(call info,Running PyDoc audit...)
+	python3 scripts/check_pydocs.py
 
 clean: stop ## Full shutdown and cleanup. Usage: make clean [service]
 	$(call info,Cleaning (service(s): $(if $(SERVICE_ARGS),$(SERVICE_ARGS),all))...)
