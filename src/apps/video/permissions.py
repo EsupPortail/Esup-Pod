@@ -22,7 +22,7 @@ class IsOwnerOrCoOwnerOrChannelCollaborator(permissions.BasePermission):
         if not request.user or not request.user.is_authenticated:
             return False
 
-        # 1. Superusers have all rights (God Mode)
+        # 1. Superusers have all rights
         if request.user.is_superuser:
             return True
 
@@ -30,8 +30,8 @@ class IsOwnerOrCoOwnerOrChannelCollaborator(permissions.BasePermission):
         if obj.owner == request.user:
             return True
 
-        # 3. Staff Only Editing: if enabled, non-staff users cannot edit (as co-owners/collaborators)
-        if video_settings.staff_only_editing and not request.user.is_staff:
+        # 3. Restrict editing to staff only: non-staff users cannot edit (as co-owners/collaborators)
+        if video_settings.restrict_edit_to_staff and not request.user.is_staff:
             return False
 
         # 4. Video Co-owner
@@ -47,3 +47,19 @@ class IsOwnerOrCoOwnerOrChannelCollaborator(permissions.BasePermission):
             return is_channel_owner or is_channel_collab
 
         return False
+
+
+class IsStaffOrReadOnly(permissions.BasePermission):
+    """
+    Esup-Pod - Custom permission:
+    - Read (GET, HEAD, OPTIONS) allowed for everyone.
+    - Write (POST, PUT, PATCH, DELETE) allowed only for staff/superusers.
+    """
+
+    def has_permission(self, request, view):
+        """Check if the user is staff for non-safe methods."""
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return bool(
+            request.user and (request.user.is_staff or request.user.is_superuser)
+        )

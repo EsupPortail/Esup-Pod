@@ -76,7 +76,9 @@ class Comment(models.Model):
         return list(
             self.get_children.annotate(nbr_vote=Count("votes", distinct=True))
             .annotate(
-                author_name=Concat("author__first_name", Value(" "), "author__last_name")
+                author_name=Concat(
+                    "author__first_name", Value(" "), "author__last_name"
+                )
             )
             .annotate(
                 is_owner=Case(
