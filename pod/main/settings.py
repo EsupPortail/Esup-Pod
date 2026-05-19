@@ -336,7 +336,7 @@ TINYMCE_DEFAULT_CONFIG = {
     "relative_urls": False,
 }
 
-RESPIT_MODEL = "carafe"
+RESPIT_MODEL = "base"
 ENABLE_PAGE_OBSO_MAIL = False
 PROLONGATION_GRANTED = False
 DELETION_GRANTED = False

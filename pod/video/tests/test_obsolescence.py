@@ -347,6 +347,7 @@ class ValidFormRespitTestCase(TestCase):
         print("--->  test_go_archive_action of ValidFormRespitTestCase: OK")
 
     def test_check_csv_header_action(self):
+        """Test check_csv_header in utils.py directly"""
         initial_content = "col1;col2\nvalue1;value2\n"
 
         with tempfile.NamedTemporaryFile(mode="w+", delete=False) as tmp:
@@ -361,6 +362,7 @@ class ValidFormRespitTestCase(TestCase):
         self.assertEqual(first_line, "col1;col2;col3\n")
 
     def test_read_csv_action(self):
+        """Test read_archived_csv in utils.py directly"""
         csv_content = (
             "2024-01-01;John Doe;john@example.com;Affil;Estab;123;Title;url;type;2024-01-02\n"
         )
@@ -390,23 +392,23 @@ class ValidFormRespitTestCase(TestCase):
     ):
         archive_pack("/tmp/test", "John", self.video1, only_copy=False, dry_mode=False)
 
-        # ✅ dossier créé
+        # ✅ Folder created
         mock_makedirs.assert_called_once_with("/tmp/test", exist_ok=True)
 
-        # ✅ dublincore généré avec TON objet
+        # ✅ Dublincore generated with object
         mock_store_dc.assert_called_once_with(self.video1, "/tmp/test", "John")
 
-        # ✅ export avec TON objet
+        # ✅ Move called with object
         mock_export.assert_any_call("/tmp/test", "Video", [self.video1], False)
 
-        # vérifie que dry_mode=False est bien propagé partout
+        # Check if dry_mode=False is well spread everywhere
         for call in mock_export.call_args_list:
             self.assertFalse(call.args[-1])
 
-        # ❌ pas de copy
+        # ❌ No copy
         mock_copy_archive.assert_not_called()
 
-        # ✅ move appelé avec TON objet
+        # ✅ Move called with object
         mock_move_archive.assert_called_once_with("/tmp/test", self.video1, False)
 
     def tearDown(self):

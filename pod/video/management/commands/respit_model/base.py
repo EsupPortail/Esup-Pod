@@ -14,12 +14,13 @@ def calcul(parameters):
     # channel_list: list of channel for a video [array}
     # nb_fav: number of favorite the video belong (int)
     # nb_comment: amount of comment on the video (int)
-    # duration_video': 'duration of the video in sec (int)
-    # type_video : Video type (string)
-    # themes_video': themes of the video (array)
-    # themes_count': number of the video (int)
+    # duration_video: 'duration of the video in sec (int)
+    # type_name_video : Video type (string)
+    # type_id_video : Video type (id)
+    # theme_list: themes of the video (array)
+    # nb_theme: number of the video (int)
     # owner_video': owner of the video (string)
-    # owner_video_additional: Additional owner of the video (string)
+    # owner_video_additional: Additional owner of the video (array)
     # category_list: categories of the video (array)
 
     print(parameters)

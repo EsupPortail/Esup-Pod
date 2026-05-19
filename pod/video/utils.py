@@ -764,18 +764,18 @@ def archive_pack(
         move_video_to_archive(media_package_dir, vid, dry_mode)
 
 
-def archive_and_get_link(slug):
-    """Generate a zip archive of the video and metadata from the concerned folder"""
+def archive_and_get_link(slug, sub_fold="tmp"):
+    """Generate a zip archive of the video and metadata from the concerned media folder"""
     media_url = getattr(settings, "MEDIA_URL", "/media/")
     media_root = getattr(settings, "MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 
-    media_package_dir = os.path.join(media_root, "tmp", slug)
+    media_package_dir = os.path.join(media_root, sub_fold, slug)
     vid = Video.objects.filter(slug=slug).first()
-    archive_pack(media_package_dir, "", vid, only_copy=True, dry_mode=False)
+    archive_pack(str(media_package_dir), "", vid, only_copy=True, dry_mode=False)
 
-    shutil.make_archive(media_package_dir, "zip", media_package_dir)
+    shutil.make_archive(str(media_package_dir), "zip", str(media_package_dir))
 
     # remove old temp folder
     shutil.rmtree(media_package_dir)
 
-    return media_url + "/tmp/" + slug + ".zip"
+    return media_url + sub_fold + "/" + slug + ".zip"

@@ -3967,11 +3967,11 @@ def valid_form_respit(request, slug=None):
             action = request.POST["action"]
             if (
                 action == "Delete"
-            ):  # Si l'utilisateur sélectionne l'action "supprimer" dans l'interface
+            ):  # If the user choose the action "delete" in the interface.
                 return HttpResponsePermanentRedirect("/video/delete/" + slug)
             if (
                 action == "Extend"
-            ):  # Si l'utilisateur sélectionne l'action "prolonger" dans l'interface
+            ):  # If the user choose the action "extend" in the interface.
                 if able_or_not_respit(slug) is True:
                     return render(
                         request,
@@ -3979,7 +3979,7 @@ def valid_form_respit(request, slug=None):
                         {"slug": slug, "RALLONGE_RESPIT_DAYS": RALLONGE_RESPIT_DAYS},
                     )
                 else:
-                    raise Exception("Vous ne pouvez pas prolonger plus votre video")
+                    raise Exception("You can't extender your video more.")
                     print("")
             if action == "Archive":
                 return render(request, "videos/archive_or_not.html", {"slug": slug})
@@ -4016,9 +4016,8 @@ def archive_and_download(request, slug):
     """
     This function will create a zip archive package and launch a download of it in the user browser.
     """
-    from pod.video.management.commands import create_archive_package
 
-    url = create_archive_package.archive_download_archive(slug)
+    url = archive_and_get_link(slug, "video_package")
     return render(request, "videos/archive_download.html", {"url": url, "slug": slug})
 
 
@@ -4034,7 +4033,11 @@ def able_or_not_respit(slug):
         if higher_warn <= aw:
             higher_warn = aw
 
-    vid = Video.objects.get(slug=slug)
+    try:
+        vid = Video.objects.get(slug=slug)
+    except Exception as e:
+        logging.exception(e)
+        return False
 
     # If we have more than the maximum DeadLine days before the date_delete
     step_date = vid.date_delete - timedelta(days=higher_warn)
