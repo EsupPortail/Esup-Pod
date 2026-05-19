@@ -58,13 +58,19 @@ class Video(models.Model):
 
     # 1.CHOICES
     class Status(models.TextChoices):
-        """Possible lifecycle statuses for a video."""
+        """Visibility/publication status of a video (independent of encoding)."""
 
         DRAFT = "DR", _("Draft (Private)")
         PUBLISHED = "PU", _("Published (Public)")
         RESTRICTED = "RE", _("Restricted (Access Controlled)")
-        ENCODING = "EN", _("Encoding in progress")
-        ERROR = "ER", _("Encoding Error")
+
+    class EncodingStatus(models.TextChoices):
+        """Encoding pipeline status (independent of visibility)."""
+
+        PENDING = "PE", _("Pending")
+        PROCESSING = "PR", _("Processing")
+        DONE = "DO", _("Done")
+        ERROR = "ER", _("Error")
 
     class License(models.TextChoices):
         """Available content licenses for legal protection."""
@@ -166,8 +172,18 @@ class Video(models.Model):
         _("Status"),
         max_length=2,
         choices=Status.choices,
-        default=Status.ENCODING,
+        default=Status.DRAFT,
         db_index=True,
+    )
+    encoding_status = models.CharField(
+        _("Encoding Status"),
+        max_length=2,
+        choices=EncodingStatus.choices,
+        default=EncodingStatus.PENDING,
+        db_index=True,
+        help_text=_(
+            "Tracks the encoding pipeline state independently from the video’s visibility."
+        ),
     )
     is_auth_required = models.BooleanField(
         _("Authentication Required"),

@@ -36,9 +36,7 @@ class CommentViewSet(viewsets.GenericViewSet):
         """
         only_parents = request.query_params.get("only") == "parents"
         user_id = request.user.id if request.user.is_authenticated else None
-        queryset = self.get_serializer_class().get_optimized_queryset(
-            video_slug, user_id
-        )
+        queryset = self.get_serializer_class().get_optimized_queryset(video_slug, user_id)
         queryset = queryset.filter(parent__isnull=True)
         serializer = self.get_serializer(
             queryset,

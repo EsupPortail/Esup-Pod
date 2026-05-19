@@ -55,6 +55,15 @@ jobs:
       - name: Create .env file
         run: cp .env.example .env
 
+      - name: Pre-pull Docker images with retries
+        run: |
+          for i in {1..5}; do
+            echo "Attempt $i to pull images..."
+            timeout 60s docker pull ghcr.io/esupportail/esup-runner-manager:latest && \
+            timeout 60s docker pull ghcr.io/esupportail/esup-runner-runner:latest && \
+            break || sleep 10
+          done
+
       - name: Build Stack
         env:
           VERSION: ${VERSION}

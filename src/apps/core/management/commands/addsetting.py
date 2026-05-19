@@ -155,17 +155,13 @@ class Command(BaseCommand):
 
         print("Add a english description (leave blank and type enter to leave):")
         previous_value = (
-            setting["description"].get("en", [""])
-            if setting.get("description")
-            else [""]
+            setting["description"].get("en", [""]) if setting.get("description") else [""]
         )
         description_en = self.get_description(previous_value)
 
         print("Add a french description (leave blank and type enter to leave):")
         previous_value = (
-            setting["description"].get("fr", [""])
-            if setting.get("description")
-            else [""]
+            setting["description"].get("fr", [""]) if setting.get("description") else [""]
         )
         description_fr = self.get_description(previous_value)
 

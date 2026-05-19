@@ -25,6 +25,9 @@ class VideoSerializer(serializers.ModelSerializer):
     owner_id = serializers.ReadOnlyField(source="owner.id")
     video_url = serializers.SerializerMethodField()
     status_label = serializers.CharField(source="get_status_display", read_only=True)
+    encoding_status_label = serializers.CharField(
+        source="get_encoding_status_display", read_only=True
+    )
     has_password = serializers.BooleanField(source="password", read_only=True)
     password = serializers.CharField(write_only=True, required=False)
     tags = serializers.StringRelatedField(many=True, required=False)
@@ -72,6 +75,8 @@ class VideoSerializer(serializers.ModelSerializer):
             "co_owners",
             "status",
             "status_label",
+            "encoding_status",
+            "encoding_status_label",
             "is_auth_required",
             "password",
             "thumbnail_url",
@@ -107,6 +112,8 @@ class VideoSerializer(serializers.ModelSerializer):
             "owner",
             "owner_id",
             "status_label",
+            "encoding_status",
+            "encoding_status_label",
             "subtitles",
             "encodings",
         ]
@@ -185,9 +192,7 @@ class VideoSerializer(serializers.ModelSerializer):
         Global validation to handle WEBTV_MODE.
         """
         attrs = super().validate(attrs)
-        has_video_file_in_req = (
-            "video_file" in attrs and attrs["video_file"] is not None
-        )
+        has_video_file_in_req = "video_file" in attrs and attrs["video_file"] is not None
         already_has_file = bool(self.instance.video_file) if self.instance else False
         is_clearing_file = "video_file" in attrs and attrs["video_file"] is None
         has_file_after_update = (

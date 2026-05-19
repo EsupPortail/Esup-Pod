@@ -26,7 +26,7 @@ class EncodingWebhookViewTests(APITestCase):
 
     def setUp(self):
         """
-        Setup a video in ENCODING status and expected webhook URLs.
+        Setup a video in DRAFT status (encoding tracked via encoding_status).
         """
         self.user = User.objects.create_user(username="testuser", password="password")
         video_content = SimpleUploadedFile(
@@ -35,7 +35,7 @@ class EncodingWebhookViewTests(APITestCase):
         self.video = Video.objects.create(
             title="Webhook Test Video",
             owner=self.user,
-            status=Video.Status.ENCODING,
+            status=Video.Status.DRAFT,
             video_file=video_content,
         )
         self.url = reverse("encoding:webhook")
@@ -77,7 +77,9 @@ class EncodingWebhookViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.video.refresh_from_db()
-        self.assertEqual(self.video.status, Video.Status.PUBLISHED)
+        # Visibility remains DRAFT (encoding does not publish automatically anymore).
+        self.assertEqual(self.video.status, Video.Status.DRAFT)
+        self.assertEqual(self.video.encoding_status, Video.EncodingStatus.DONE)
 
         self.assertEqual(self.video.video_file.name, original_file_name)
         self.assertTrue(self.video.overview.name.endswith(".png"))
@@ -105,7 +107,9 @@ class EncodingWebhookViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["status"], "error_recorded")
         self.video.refresh_from_db()
-        self.assertEqual(self.video.status, Video.Status.ERROR)
+        # Visibility (DRAFT) is preserved; only encoding_status is set to ERROR.
+        self.assertEqual(self.video.status, Video.Status.DRAFT)
+        self.assertEqual(self.video.encoding_status, Video.EncodingStatus.ERROR)
 
     @patch("src.apps.encoding.views.webhook.env")
     def test_webhook_missing_video_id(self, mock_env):
@@ -132,8 +136,6 @@ class EncodingWebhookViewTests(APITestCase):
             "status": "success",
         }
 
-        response = self.client.post(
-            self.url + "?secret=wrongsecret", data, format="json"
-        )
+        response = self.client.post(self.url + "?secret=wrongsecret", data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

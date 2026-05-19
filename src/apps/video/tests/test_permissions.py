@@ -182,7 +182,13 @@ class VideoPermissionsTests(APITestCase):
 
         video = Video.objects.get(title="New Video")
         self.assertEqual(video.owner, self.user_owner)
-        self.assertTrue(
-            video.status
-            in [Video.Status.ENCODING, Video.Status.PUBLISHED, Video.Status.ERROR]
+        # After creation, visibility defaults to DRAFT while encoding starts.
+        self.assertEqual(video.status, Video.Status.DRAFT)
+        self.assertIn(
+            video.encoding_status,
+            [
+                Video.EncodingStatus.PENDING,
+                Video.EncodingStatus.PROCESSING,
+                Video.EncodingStatus.ERROR,
+            ],
         )

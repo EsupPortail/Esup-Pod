@@ -112,10 +112,11 @@ class EncodingWebhookView(APIView):
 
             self._process_video_files(video, client, task_id, file_list, thumbnail_path)
 
-            video.status = Video.Status.PUBLISHED
+            # Mark encoding as done.
+            video.encoding_status = Video.EncodingStatus.DONE
             video.save()
 
-            logger.info("Video pk=%s downloaded successfully and published.", video.pk)
+            logger.info("Video pk=%s encoded successfully.", video.pk)
             return Response({"status": "published"})
 
         except Exception as e:
@@ -125,8 +126,8 @@ class EncodingWebhookView(APIView):
                 e,
                 exc_info=True,
             )
-            video.status = Video.Status.ERROR
-            video.save(update_fields=["status"])
+            video.encoding_status = Video.EncodingStatus.ERROR
+            video.save(update_fields=["encoding_status"])
             return Response(
                 {"status": "error_during_download"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -134,8 +135,8 @@ class EncodingWebhookView(APIView):
 
     def _handle_encoding_failure(self, video: Video, payload: dict) -> Response:
         """Handle the failure of an encoding reported by the runner."""
-        video.status = Video.Status.ERROR
-        video.save(update_fields=["status"])
+        video.encoding_status = Video.EncodingStatus.ERROR
+        video.save(update_fields=["encoding_status"])
         error_msg = payload.get("error_message") or payload.get("error")
         logger.error("Encoding failed for video pk=%s: %s", video.pk, error_msg)
         return Response({"status": "error_recorded"})
@@ -161,9 +162,7 @@ class EncodingWebhookView(APIView):
                 # the V4-compatibility normalisation applied in the stream action.
                 if not res.endswith("p"):
                     res = f"{res}p"
-                encoded_video_file = client.download_task_file_to_temp(
-                    task_id, file_name
-                )
+                encoded_video_file = client.download_task_file_to_temp(task_id, file_name)
 
                 encoding_obj, created = EncodingVideo.objects.get_or_create(
                     video=video, resolution=res
