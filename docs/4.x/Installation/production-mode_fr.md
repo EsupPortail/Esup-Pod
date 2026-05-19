@@ -155,16 +155,20 @@ Rajouter les lignes ci-dessous dans le fichier de configuration de nginx :
 `/etc/nginx/nginx.conf`
 
 ```conf
+user pod www-data;
+[...]
 http {
-[...]
-     # Pod Progress Bar : reserve 1MB under the name "uploads" to track uploads
- upload_progress uploadp 1m;
-[...]
+    [...]
+    # Pod Progress Bar : reserve 1MB under the name "uploads" to track uploads
+    upload_progress uploadp 1m;
+    [...]
 }
 ```
 
+> 💡 Mettre user pod www-data; en première ligne indique à Nginx de lancer ses processus worker avec l’utilisateur `pod` et le groupe `www-data` au lieu de `www-data:www-data`.
+> Cela simplifie la gestion des droits et accès aux fichiers vidéos, entre autres, pour la suite.
+
 Il faut ensuite spécifier le host pour le serveur web (changer si besoin les paramètres dans le fichier `pod_nginx.conf`).
-Profiter aussi pour mettre les droits au groupe `www-data` en éditant ce fichier pod_nginx.conf, à la 1° ligne : `user pod www-data;`
 
 ```sh
 (django_pod4) pod@pod:(~/django_projects/podv4$) cp pod_nginx.conf pod/custom/.
