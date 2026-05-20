@@ -25,7 +25,7 @@ class EncodingTaskTestCase(TestCase):
 
     def setUp(self):
         """
-        Setup a user and a video in ENCODING status.
+        Setup a user and a video in DRAFT status (encoding tracked via encoding_status).
         """
         # ggignore-start
         # gitguardian:ignore
@@ -36,7 +36,7 @@ class EncodingTaskTestCase(TestCase):
         self.video = Video.objects.create(
             title="Test Video",
             description="Testing the encoding task",
-            status=Video.Status.ENCODING,
+            status=Video.Status.DRAFT,
             owner=self.user,
         )
 
@@ -99,4 +99,5 @@ class EncodingTaskTestCase(TestCase):
         mock_client.execute_task.assert_called_once()
 
         video = Video.objects.get(id=self.video.id)
-        self.assertEqual(video.status, Video.Status.ENCODING)
+        # encoding_status is set to PROCESSING at task start before the retry.
+        self.assertEqual(video.encoding_status, Video.EncodingStatus.PROCESSING)

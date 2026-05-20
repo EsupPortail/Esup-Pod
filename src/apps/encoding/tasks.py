@@ -34,6 +34,11 @@ def trigger_runner_encoding_task(self, video_id: int, source_url: str):
         logger.error("Video %s not found. Aborting encoding task.", video_id)
         return None
 
+    # Signal immediately that encoding has started.
+    Video.objects.filter(pk=video_id).update(
+        encoding_status=Video.EncodingStatus.PROCESSING
+    )
+
     try:
         webhook_path = reverse("encoding:webhook")
         site_url = getattr(settings, "SITE_URL", "http://api:8000")
@@ -78,6 +83,7 @@ def trigger_runner_encoding_task(self, video_id: int, source_url: str):
             exc,
             exc_info=True,
         )
-        video.status = Video.Status.ERROR
-        video.save(update_fields=["status"])
+        Video.objects.filter(pk=video_id).update(
+            encoding_status=Video.EncodingStatus.ERROR
+        )
         raise
