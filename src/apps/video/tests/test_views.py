@@ -225,6 +225,52 @@ class VideoViewSetTests(APITestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_update_video_tags(self):
+        """Verifies that tags can be updated via the API."""
+        self.client.force_authenticate(user=self.user)
+        url = reverse("video-detail", kwargs={"slug": self.video.slug})
+        data = {"tags": ["newtag1", "newtag2"]}
+        response = self.client.patch(url, data, format="multipart")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.video.refresh_from_db()
+        tags = [t.name for t in self.video.tags.all()]
+        self.assertIn("newtag1", tags)
+        self.assertIn("newtag2", tags)
+        self.assertNotIn("django", tags)
+        data = {"tags": "newtag3, newtag4"}
+        response = self.client.patch(url, data, format="multipart")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.video.refresh_from_db()
+        tags = [t.name for t in self.video.tags.all()]
+        self.assertIn("newtag3", tags)
+        self.assertIn("newtag4", tags)
+        self.assertNotIn("newtag1", tags)
+
+    def test_clear_video_password(self):
+        """Verifies that setting the password to an empty string clears the password lock."""
+        self.client.force_authenticate(user=self.user)
+        url = reverse("video-detail", kwargs={"slug": self.restricted_video.slug})
+        response = self.client.get(url)
+        self.assertTrue(response.data["has_password"])
+        data = {"password": ""}
+        response = self.client.patch(url, data, format="multipart")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(response.data["has_password"])
+        self.restricted_video.refresh_from_db()
+        self.assertFalse(bool(self.restricted_video.password))
+
+    def test_owner_first_last_name_in_payload(self):
+        """Verifies that owner_first_name and owner_last_name are present in video payload."""
+        self.user.first_name = "Jean"
+        self.user.last_name = "Dupont"
+        self.user.save()
+
+        url = reverse("video-detail", kwargs={"slug": self.video.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["owner_first_name"], "Jean")
+        self.assertEqual(response.data["owner_last_name"], "Dupont")
+
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class SubtitleViewSetTests(APITestCase):
