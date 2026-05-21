@@ -25,6 +25,8 @@ from django.db.models import Q
 from pod.video.tests.test_obsolescence import ARCHIVE_OWNER_USERNAME
 
 USE_RESPIT = getattr(settings, "USE_RESPIT", False)
+SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
+URL_SCHEME = "https" if SECURE_SSL_REDIRECT else "http"
 
 
 class Command(BaseCommand):
@@ -180,7 +182,7 @@ class Command(BaseCommand):
                         ) from e
 
                     # Insert repist in BDD
-                    daysmore = mod.calcul(data_to_add)
+                    daysmore = mod.calcul(data_to_add,self.dry_mode)
 
                     if self.dry_mode is False:
                         p.date_delete = p.date_delete + timedelta(days=daysmore)
@@ -193,7 +195,7 @@ class Command(BaseCommand):
                         self.stdout.write(self.style.SUCCESS(p.date_delete))
                         self.stdout.write("")
 
-                        notif_list.insert(p.id, p.title)
+                        notif_list.append((p, daysmore))
 
                     else:
                         self.stdout.write(
@@ -228,15 +230,26 @@ class Command(BaseCommand):
                     self.stdout.write("\n")
                     self.stdout.write("** Send the mail to the managers. **")
                     msg_html = (
-                        "Hello ! The deadline for the following videos has been postponed according to the model's guidelines : "
+                        "Hello !</br></br>The deadline for the following videos has been postponed according to the model's guidelines : "
                         + RESPIT_MODEL
-                        + " : \n"
+                        + " : <ul>"
                     )
 
-                    for nl in notif_list:
-                        msg_html += "-" + nl + "\n"
+                    for video, daysmore in notif_list:
+                        msg_html += "<li>"
+                        msg_html += (
+                            "%(title)s ("
+                            + "<a href='%(scheme)s:%(url)s' rel='noopener'"
+                            + " target='_blank'>%(scheme)s:%(url)s</a>) add %(daysmore)s day(s)."
+                        ) % {
+                            "scheme": URL_SCHEME,
+                            "url": video.get_full_url(),
+                            "title": video.title,
+                            "daysmore": daysmore
+                        }
+                        msg_html += "</li>"
 
-                    msg_html += "\nHave a good day."
+                    msg_html += "</ul></br>Have a good day."
 
                     # print(msg_html)
                     mail_managers(
