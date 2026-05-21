@@ -370,12 +370,13 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
+                    total = sum(len(videos) for videos in list_video[estab].values())
                     print(
                         _(
                             "Manager of “%(estab)s” notified for"
                             + " %(nb)s soon to be obsolete video(s)."
                         )
-                        % {"estab": estab, "nb": len(list_video[estab])}
+                        % {"estab": estab, "nb": total}
                     )
 
     def notify_manager_of_deleted_video(self, list_video: dict) -> None:
