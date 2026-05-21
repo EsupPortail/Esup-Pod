@@ -310,7 +310,7 @@ class Command(BaseCommand):
         )
 
         return send_mail(
-            "[%s] %s" % (__TITLE_SITE__, _("Your video will be obsolete")),
+            "[%s] %s" % (__TITLE_SITE__, _("Your video will be obsolete soon")),
             striptags(msg_html),
             DEFAULT_FROM_EMAIL,
             to_email,
