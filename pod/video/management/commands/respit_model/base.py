@@ -1,4 +1,4 @@
-def calcul(parameters,dry_mode: bool = True):
+def calcul(parameters, dry_mode: bool = True):
 
     # id: Id of the video (int)
     # title: Title of the video (string)

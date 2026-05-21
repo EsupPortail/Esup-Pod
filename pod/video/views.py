@@ -3944,7 +3944,7 @@ def video_respit(request, slug):
     display_or_not = able_or_not_respit(slug, request.user)
     form = ArchiveChoiceForm(request.POST)
 
-    vid = get_object_or_404(Video,slug=slug)
+    vid = get_object_or_404(Video, slug=slug)
 
     return render(
         request,
@@ -4037,7 +4037,7 @@ def able_or_not_respit(slug, user=None):
 
     try:
         vid = Video.objects.get(slug=slug)
-    except Exception as e:
+    except Exception :
         return False
 
     if user is not None:

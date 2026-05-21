@@ -3,6 +3,7 @@ from django.conf import settings
 
 RESPIT_MODEL_PARAMETER = getattr(settings, "RESPIT_MODEL_PARAMETER", [])
 
+
 def to_date(v):
     if isinstance(v, datetime):
         return v.date()
@@ -39,6 +40,7 @@ PARAM_MATCHERS = {
 
 # Fallback for any parameter missing from the dictionary
 DEFAULT_MATCHER = PARAM_MATCHERS["id"]
+
 
 def match_criterion(param_name: str, param_value, criterion_value, dry_mode: bool = True) -> bool:
     if dry_mode:
