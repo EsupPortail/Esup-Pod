@@ -3941,8 +3941,10 @@ def video_respit(request, slug):
     This function will render the interface which is reachable by the user from the reminder email with the concerned link.
     The interface allows to extend, archive or delete a video in the appropriated context.
     """
-    display_or_not = able_or_not_respit(slug)
+    display_or_not = able_or_not_respit(slug, request.user)
     form = ArchiveChoiceForm(request.POST)
+
+    vid = get_object_or_404(Video,slug=slug)
 
     return render(
         request,
@@ -3950,7 +3952,7 @@ def video_respit(request, slug):
         {
             "form": form,
             "slug": slug,
-            "video": Video.objects.get(slug=slug),
+            "video": vid,
             "ENABLE_PAGE_OBSO_MAIL": ENABLE_PAGE_OBSO_MAIL,
             "display_or_not": display_or_not,
         },
@@ -3972,7 +3974,7 @@ def valid_form_respit(request, slug=None):
             if (
                 action == "Extend"
             ):  # If the user choose the action "extend" in the interface.
-                if able_or_not_respit(slug) is True:
+                if able_or_not_respit(slug, request.user) is True:
                     return render(
                         request,
                         "videos/prolong_or_not.html",
@@ -3980,7 +3982,7 @@ def valid_form_respit(request, slug=None):
                     )
                 else:
                     raise Exception("You can't extender your video more.")
-                    print("")
+
             if action == "Archive":
                 return render(request, "videos/archive_or_not.html", {"slug": slug})
 
@@ -4021,7 +4023,7 @@ def archive_and_download(request, slug):
     return render(request, "videos/archive_download.html", {"url": url, "slug": slug})
 
 
-def able_or_not_respit(slug):
+def able_or_not_respit(slug, user=None):
     """
     This function will say if we have the right conditions to display the respit form or not.
     """
@@ -4036,8 +4038,13 @@ def able_or_not_respit(slug):
     try:
         vid = Video.objects.get(slug=slug)
     except Exception as e:
-        logging.exception(e)
         return False
+
+    if user is not None:
+        if not user.is_authenticated:
+            return False
+        if user != vid.owner and user not in vid.additional_owners.all():
+            return False
 
     # If we have more than the maximum DeadLine days before the date_delete
     step_date = vid.date_delete - timedelta(days=higher_warn)
@@ -4046,11 +4053,12 @@ def able_or_not_respit(slug):
     return display_or_not
 
 
+@login_required(redirect_field_name="referrer")
 def go_archive(request, slug=None):
     """
     This function will launch a archive process and say if it has worked or not on an interface.
     """
-    if able_or_not_respit(slug) is True and ENABLE_PAGE_OBSO_MAIL:
+    if able_or_not_respit(slug, request.user) is True and ENABLE_PAGE_OBSO_MAIL:
         archive_video(Video.objects.get(slug=slug))
         return HttpResponsePermanentRedirect("/video/well/archived/or/not/" + slug)
     else:
@@ -4059,11 +4067,12 @@ def go_archive(request, slug=None):
         )
 
 
+@login_required(redirect_field_name="referrer")
 def go_prolong(request, slug):
     """
     This function will extend a video about RALLONGE_RESPIT_DAYS days and display the new delete_date.
     """
-    if able_or_not_respit(slug) is True and ENABLE_PAGE_OBSO_MAIL:
+    if able_or_not_respit(slug, request.user) is True and ENABLE_PAGE_OBSO_MAIL:
         vivi = Video.objects.get(slug=slug)
         vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)
         vivi.save()

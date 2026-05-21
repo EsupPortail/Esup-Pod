@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-21 10:31+0000\n"
+"POT-Creation-Date: 2026-05-21 11:28+0000\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -10118,7 +10118,11 @@ msgid ""
 msgstr ""
 
 #: pod/video/templates/videos/video_respist_choice.html
-msgid "This service is not available."
+msgid "Access denied"
+msgstr ""
+
+#: pod/video/templates/videos/video_respist_choice.html
+msgid "The video does not belong to you or has already been processed."
 msgstr ""
 
 #: pod/video/templates/videos/video_row_select.html

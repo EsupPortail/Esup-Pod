@@ -39,6 +39,8 @@
         <a href="/video/archive/and/download/{{ video.slug }}/">{% trans "Export this video." %}</a>
         <small class="filter-info text-muted">{% trans "This link allows you to export your video, along with its metadata and attached files, as a ZIP file so you can save them to your storage space. We strongly recommend using this option before permanently deleting your video from the server." %}</small>
     {% else %}
-        <h1>{% trans "This service is not available." %}</h1>
+        <h1>{% trans "Access denied" %}</h1>
+        <p>{% trans "The video does not belong to you or has already been processed." %}</p>
+        <p> <b>{% trans "Link to the video:" %}</b><a href="/video/{{ video.slug }}"> {{ video.title }}</a></p>
     {% endif %}
 {% endblock page_content %}

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-21 10:31+0000\n"
+"POT-Creation-Date: 2026-05-21 11:28+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -9224,7 +9224,6 @@ msgid "Sending mail to %(to_email)s for video %(title)s."
 msgstr "Envoi d’un courriel à %(to_email)s pour la vidéo %(title)s."
 
 #: pod/video/management/commands/check_obsolete_videos.py
-#, python-format
 msgid "Your video will be obsolete soon"
 msgstr "Votre vidéo sera bientôt obsolète"
 
@@ -10864,8 +10863,12 @@ msgstr ""
 "suppression définitive de votre vidéo du serveur."
 
 #: pod/video/templates/videos/video_respist_choice.html
-msgid "This service is not available."
-msgstr "Ce service n’est pas disponible."
+msgid "Access denied"
+msgstr "Accès refusé"
+
+#: pod/video/templates/videos/video_respist_choice.html
+msgid "The video does not belong to you or has already been processed."
+msgstr "La vidéo ne vous appartient pas ou a déjà été traitée."
 
 #: pod/video/templates/videos/video_row_select.html
 msgid "Selected"
@@ -11633,6 +11636,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "This service is not available."
+#~ msgstr "Ce service n’est pas disponible."
 
 #~ msgid "Delete the playlist"
 #~ msgstr "Supprimer la liste de lecture"
