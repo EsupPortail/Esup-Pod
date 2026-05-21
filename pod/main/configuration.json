@@ -3457,10 +3457,23 @@
                           "default_value": false,
                           "description": {
                             "en": [
-                             "Allows the user to extend the lifespan of their videos themselves via the reminder email."
+                             "Allows the user to extend the lifespan of his videos himself via the reminder email."
                            ],
                             "fr": [
-                              "Autorise l’utilisateur à étendre lui même la durée de vie de ses vidéos à travers le courriel de rappel."
+                              "Autorise l’utilisateur à étendre lui-même la durée de vie de ses vidéos à travers le courriel de rappel."
+                            ]
+                          },
+                          "pod_version_end": "",
+                          "pod_version_init": "4.3.0"
+                        },
+                        "DELETION_GRANTED": {
+                          "default_value": false,
+                          "description": {
+                            "en": [
+                             "Allows the user to delete his videos himself via the reminder email."
+                           ],
+                            "fr": [
+                              "Autorise l’utilisateur à supprimer lui-même ses vidéos à travers le courriel de rappel."
                             ]
                           },
                           "pod_version_end": "",
