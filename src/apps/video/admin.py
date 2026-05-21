@@ -3,7 +3,15 @@ Esup-Pod - Video administrator interface.
 """
 
 from django.contrib import admin
-from src.apps.video.models import Video, Type, Discipline, Subtitle
+from src.apps.video.models import (
+    Video,
+    Type,
+    Discipline,
+    Subtitle,
+    Comment,
+    ViewCount,
+    Vote,
+)
 
 
 @admin.register(Video)
@@ -51,3 +59,33 @@ class SubtitleAdmin(admin.ModelAdmin):
 
     list_display = ("video", "language", "file")
     list_filter = ("language",)
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    """Admin for Comments."""
+
+    list_display = ("id", "author", "video", "added", "parent", "direct_parent")
+    list_filter = ("added",)
+    search_fields = ("content", "author__username", "video__title")
+    raw_id_fields = ("author", "video", "parent", "direct_parent")
+    readonly_fields = ("added",)
+
+
+@admin.register(ViewCount)
+class ViewCountAdmin(admin.ModelAdmin):
+    """Admin for Video View Counts."""
+
+    list_display = ("video", "date", "count")
+    list_filter = ("date",)
+    search_fields = ("video__title",)
+    raw_id_fields = ("video",)
+
+
+@admin.register(Vote)
+class VoteAdmin(admin.ModelAdmin):
+    """Admin for Votes on Comments."""
+
+    list_display = ("id", "user", "comment")
+    search_fields = ("user__username", "comment__content")
+    raw_id_fields = ("user", "comment")
