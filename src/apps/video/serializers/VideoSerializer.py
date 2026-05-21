@@ -16,6 +16,39 @@ from .DisciplineSerializer import DisciplineSerializer
 User = get_user_model()
 
 
+class TagListSerializerField(serializers.Field):
+    """
+    Custom field for django-tagulous TagField to support read and write operations.
+    """
+
+    def get_value(self, dictionary):
+        """Extracts the field value from the provided dictionary."""
+        if self.field_name not in dictionary:
+            return serializers.empty
+        if hasattr(dictionary, "getlist"):
+            return dictionary.getlist(self.field_name)
+        return dictionary.get(self.field_name)
+
+    def to_representation(self, value):
+        return [tag.name for tag in value.all()]
+
+    def to_internal_value(self, data):
+        """Converts the provided data into the internal list format."""
+        if isinstance(data, list):
+            result = []
+            for item in data:
+                if isinstance(item, str):
+                    result.extend([t.strip() for t in item.split(",") if t.strip()])
+                else:
+                    result.append(item)
+            return result
+        if isinstance(data, str):
+            return [tag.strip() for tag in data.split(",") if tag.strip()]
+        raise serializers.ValidationError(
+            "Expected a list of tags or a comma-separated string."
+        )
+
+
 class VideoSerializer(serializers.ModelSerializer):
     """
     Esup-Pod - Serializer for the Video model.
@@ -23,14 +56,18 @@ class VideoSerializer(serializers.ModelSerializer):
 
     owner = serializers.ReadOnlyField(source="owner.username")
     owner_id = serializers.ReadOnlyField(source="owner.id")
+    owner_first_name = serializers.ReadOnlyField(source="owner.first_name")
+    owner_last_name = serializers.ReadOnlyField(source="owner.last_name")
     video_url = serializers.SerializerMethodField()
     status_label = serializers.CharField(source="get_status_display", read_only=True)
     encoding_status_label = serializers.CharField(
         source="get_encoding_status_display", read_only=True
     )
     has_password = serializers.BooleanField(source="password", read_only=True)
-    password = serializers.CharField(write_only=True, required=False)
-    tags = serializers.StringRelatedField(many=True, required=False)
+    password = serializers.CharField(
+        write_only=True, required=False, allow_blank=True, allow_null=True
+    )
+    tags = TagListSerializerField(required=False)
     subtitles = SubtitleSerializer(many=True, read_only=True)
     encodings = serializers.SerializerMethodField()
     co_owners = serializers.PrimaryKeyRelatedField(
@@ -72,6 +109,8 @@ class VideoSerializer(serializers.ModelSerializer):
             "is_video",
             "owner",
             "owner_id",
+            "owner_first_name",
+            "owner_last_name",
             "co_owners",
             "status",
             "status_label",
@@ -111,6 +150,8 @@ class VideoSerializer(serializers.ModelSerializer):
             "duration",
             "owner",
             "owner_id",
+            "owner_first_name",
+            "owner_last_name",
             "status_label",
             "encoding_status",
             "encoding_status_label",

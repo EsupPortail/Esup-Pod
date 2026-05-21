@@ -14,6 +14,7 @@ It uses 'git ls-files' to scan relevant files, falling back to an OS walk if git
 import ast
 import os
 import subprocess
+import sys
 
 
 def get_git_files(root_dir="src"):
@@ -143,6 +144,8 @@ def run_audit(root_dir="src"):
 
     if not found_issues:
         print("Everything is perfect! 🏁")
+    else:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
