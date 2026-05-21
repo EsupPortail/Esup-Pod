@@ -22,6 +22,7 @@ class TagListSerializerField(serializers.Field):
     """
 
     def get_value(self, dictionary):
+        """Extracts the field value from the provided dictionary."""
         if self.field_name not in dictionary:
             return serializers.empty
         if hasattr(dictionary, "getlist"):
@@ -32,6 +33,7 @@ class TagListSerializerField(serializers.Field):
         return [tag.name for tag in value.all()]
 
     def to_internal_value(self, data):
+        """Converts the provided data into the internal list format."""
         if isinstance(data, list):
             result = []
             for item in data:
