@@ -72,26 +72,6 @@ class Video(models.Model):
         DONE = "DO", _("Done")
         ERROR = "ER", _("Error")
 
-    class License(models.TextChoices):
-        """Available content licenses for legal protection."""
-
-        CC_BY = "CC-BY", _("Creative Commons BY")
-        CC_BY_SA = "CC-BY-SA", _("Creative Commons BY-SA")
-        CC_BY_NC = "CC-BY-NC", _("Creative Commons BY-NC")
-        CC_BY_ND = "CC-BY-ND", _("Creative Commons BY-ND")
-        COPYRIGHT = "COPYRIGHT", _("All rights reserved")
-
-    class Cursus(models.TextChoices):
-        """Educational levels/cursus categories."""
-
-        L1 = "L1", _("Licence 1")
-        L2 = "L2", _("Licence 2")
-        L3 = "L3", _("Licence 3")
-        M1 = "M1", _("Master 1")
-        M2 = "M2", _("Master 2")
-        DOCTORATE = "D", _("Doctorate")
-        OTHER = "0", _("Other")
-
     # 2. CORE
     title = models.CharField(
         _("Title"),
@@ -230,25 +210,26 @@ class Video(models.Model):
     date_of_event = models.DateField(
         _("Date of Event"), default=date.today, blank=True, null=True
     )
-    license = models.CharField(
-        _("License"),
-        max_length=20,
-        choices=License.choices,
-        default=License.COPYRIGHT,
+    license = models.ForeignKey(
+        "video.License",
+        on_delete=models.SET_NULL,
+        verbose_name=_("License"),
         blank=True,
         null=True,
     )
-    cursus = models.CharField(
-        _("Cursus"),
-        max_length=10,
-        choices=Cursus.choices,
-        default=Cursus.OTHER,
+    cursus = models.ForeignKey(
+        "video.Cursus",
+        on_delete=models.SET_NULL,
+        verbose_name=_("Cursus"),
         blank=True,
+        null=True,
     )
-    language = models.CharField(
-        _("Main Language"),
-        max_length=10,
-        default=settings.LANGUAGE_CODE,
+    language = models.ForeignKey(
+        "video.Language",
+        on_delete=models.SET_NULL,
+        verbose_name=_("Main Language"),
+        blank=True,
+        null=True,
         help_text=_("Language spoken in the video (e.g. 'fr', 'en')."),
     )
     transcript_language = models.CharField(
@@ -338,7 +319,7 @@ class Video(models.Model):
             "date": self.created_at.strftime("%Y-%m-%d") if self.created_at else "",
             "format": "video/mp4",
             "rights": (
-                self.license if self.license else video_settings.default_dc_rights
+                self.license.slug if self.license else video_settings.default_dc_rights
             ),
             "coverage": video_settings.default_dc_coverage,
             "subject": ", ".join([d.title for d in self.disciplines.all()]),

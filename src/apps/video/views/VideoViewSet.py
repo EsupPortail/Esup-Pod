@@ -133,7 +133,14 @@ class VideoViewSet(viewsets.ModelViewSet):
                 }
             )
 
-        provided_license = self.request.data.get("license")
+        target_license = serializer.validated_data.get("license")
+        if not target_license and video_settings.default_license:
+            from src.apps.video.models import License
+
+            try:
+                target_license = License.objects.get(slug=video_settings.default_license)
+            except License.DoesNotExist:
+                target_license = None
 
         from src.apps.video.models import Type
 
@@ -148,9 +155,7 @@ class VideoViewSet(viewsets.ModelViewSet):
             owner=self.request.user,
             status=Video.Status.DRAFT,
             type=video_type,
-            license=(
-                provided_license if provided_license else video_settings.default_license
-            ),
+            license=target_license,
         )
 
         current_site = get_current_site(self.request)
@@ -342,14 +347,24 @@ class VideoViewSet(viewsets.ModelViewSet):
         """
         Returns dynamic choices for video fields to help the frontend.
         """
+        from src.apps.video.models import License, Cursus, Language
+
         return Response(
             {
-                "licenses": video_settings.licenses,
-                "cursus": video_settings.cursus,
+                "licenses": [
+                    {"value": lic.slug, "label": lic.name}
+                    for lic in License.objects.all()
+                ],
+                "cursus": [
+                    {"value": c.slug, "label": c.name} for c in Cursus.objects.all()
+                ],
                 "statuses": [
                     {"value": c[0], "label": c[1]} for c in Video.Status.choices
                 ],
-                "languages": video_settings.languages,
+                "languages": [
+                    {"value": lang.slug, "label": lang.name}
+                    for lang in Language.objects.all()
+                ],
             }
         )
 

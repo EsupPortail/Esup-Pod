@@ -10,6 +10,30 @@ from rest_framework.test import APITestCase
 from src.apps.video.models import Type
 
 
+def populate_test_metadata():
+    """Populate Language, License, and Cursus default values for tests."""
+    from src.apps.video.models import Language, License, Cursus
+    from src.apps.video.conf import video_settings
+
+    for order, item in enumerate(video_settings.languages):
+        Language.objects.get_or_create(
+            slug=item["value"],
+            defaults={"name": item["label"], "order": order},
+        )
+
+    for order, item in enumerate(video_settings.licenses):
+        License.objects.get_or_create(
+            slug=item["value"],
+            defaults={"name": item["label"], "order": order},
+        )
+
+    for order, item in enumerate(video_settings.cursus):
+        Cursus.objects.get_or_create(
+            slug=item["value"],
+            defaults={"name": item["label"], "order": order},
+        )
+
+
 class MetadataAPITests(APITestCase):
     """
     Esup-Pod - Tests for the video metadata endpoints.
@@ -17,6 +41,7 @@ class MetadataAPITests(APITestCase):
 
     def setUp(self):
         """Set up the test environment."""
+        populate_test_metadata()
         self.site = Site.objects.get_current()
         self.type = Type.objects.create(title="Course")
         self.type.sites.add(self.site)
