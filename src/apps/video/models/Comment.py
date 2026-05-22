@@ -9,6 +9,8 @@ from django.db.models import Count, Case, When, Value, BooleanField
 from django.db.models.functions import Concat
 from .Video import Video
 
+from django.core.files.storage import default_storage
+
 User = get_user_model()
 
 
@@ -73,10 +75,13 @@ class Comment(models.Model):
         Optimized method to retrieve children in a dictionary format
         for JSON response, including annotations for votes and ownership.
         """
-        return list(
+        children = list(
             self.get_children.annotate(nbr_vote=Count("votes", distinct=True))
             .annotate(
-                author_name=Concat("author__first_name", Value(" "), "author__last_name")
+                author_name=Concat("author__last_name", Value(" "), "author__first_name")
+            )
+            .annotate(
+                author_picture=models.F("author__owner__userpicture")
             )
             .annotate(
                 is_owner=Case(
@@ -91,11 +96,16 @@ class Comment(models.Model):
                 "direct_parent__id",
                 "is_owner",
                 "author_name",
+                "author_picture",
                 "added",
                 "content",
                 "nbr_vote",
             )
         )
+        for child in children:
+            if child["author_picture"]:
+                child["author_picture"] = default_storage.url(child["author_picture"])
+        return children
 
     def __str__(self) -> str:
         """Render the comment as string."""

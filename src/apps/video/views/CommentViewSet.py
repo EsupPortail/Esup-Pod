@@ -88,8 +88,10 @@ class CommentViewSet(viewsets.GenericViewSet):
         return Response(
             {
                 "id": comment.id,
-                "author_name": f"{comment.author.first_name} {comment.author.last_name}".strip()
+                "author_name": f"{comment.author.last_name} {comment.author.first_name}".strip()
                 or comment.author.username,
+                "author_picture": comment.author.owner.userpicture.url if hasattr(comment.author, "owner") and comment.author.owner.userpicture else None,
+                "content": comment.content,
                 "added": comment.added,
             },
             status=status.HTTP_201_CREATED,
