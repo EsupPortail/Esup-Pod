@@ -271,6 +271,29 @@ class VideoViewSetTests(APITestCase):
         self.assertEqual(response.data["owner_first_name"], "Jean")
         self.assertEqual(response.data["owner_last_name"], "Dupont")
 
+    def test_thumbnail_serialization_fallback(self):
+        """Verifies that the serialized thumbnail field falls back to thumbnail_url when empty."""
+        self.client.force_authenticate(user=self.user)
+
+        url = reverse("video-detail", kwargs={"slug": self.video.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("default_thumbnail", response.data["thumbnail_url"])
+        self.assertEqual(response.data["thumbnail"], response.data["thumbnail_url"])
+
+        # Add overview file
+        overview_file = SimpleUploadedFile(
+            "overview.png", b"image_content", content_type="image/png"
+        )
+        self.video.overview = overview_file
+        self.video.save()
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("thumbnails", response.data["thumbnail_url"])
+        self.assertNotIn("default_thumbnail", response.data["thumbnail_url"])
+        self.assertEqual(response.data["thumbnail"], response.data["thumbnail_url"])
+
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class SubtitleViewSetTests(APITestCase):

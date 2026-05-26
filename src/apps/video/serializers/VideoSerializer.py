@@ -256,3 +256,13 @@ class VideoSerializer(serializers.ModelSerializer):
                     }
                 )
         return attrs
+
+    def to_representation(self, instance):
+        """
+        Customizes representation to return the overview URL or default thumbnail
+        as the 'thumbnail' field if no manual thumbnail has been uploaded.
+        """
+        data = super().to_representation(instance)
+        if not data.get("thumbnail"):
+            data["thumbnail"] = data.get("thumbnail_url")
+        return data
