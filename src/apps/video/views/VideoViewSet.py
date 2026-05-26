@@ -16,7 +16,7 @@ from django.http import FileResponse, Http404
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.contrib.auth.hashers import check_password
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 
 from src.apps.video.models import Video
 from src.apps.video.serializers import VideoSerializer
@@ -233,6 +233,23 @@ class VideoViewSet(viewsets.ModelViewSet):
             return first_encoding.file
         return video.video_file
 
+    @extend_schema(
+        summary="Stream video file",
+        description="Serves the video file as a progressive stream. Supports optional resolution filtering (e.g., 360p, 720p, 1080p). Falls back to the best available resolution if the requested one is not found.",
+        parameters=[
+            OpenApiParameter(
+                name="resolution",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Target resolution for streaming (e.g., '1080', '720p', '360'). If specified without 'p', the backend automatically appends it.",
+            )
+        ],
+        responses={
+            200: OpenApiResponse(description="Video stream served successfully (progressive MP4 stream)."),
+            404: OpenApiResponse(description="Video file or specified resolution not found on disk."),
+        }
+    )
     @action(detail=True, methods=["get"], permission_classes=[permissions.AllowAny])
     def stream(self, request, slug=None):
         """Serves the video file as a stream."""
@@ -256,6 +273,22 @@ class VideoViewSet(viewsets.ModelViewSet):
         response["Content-Type"] = "video/mp4"
         return response
 
+    @extend_schema(
+        summary="Register a video view",
+        description="Increments both the global view counter of the video and the daily views statistics (used for charts).",
+        responses={
+            200: OpenApiResponse(
+                description="View registered successfully. Returns the updated total view count.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "status": {"type": "string", "example": "viewed"},
+                        "total_count": {"type": "integer", "example": 105}
+                    }
+                }
+            )
+        }
+    )
     @action(detail=True, methods=["post"], permission_classes=[permissions.AllowAny])
     def register_view(self, request, slug=None):
         """Increments the view count for the video and daily statistics."""
@@ -270,6 +303,57 @@ class VideoViewSet(viewsets.ModelViewSet):
         view_count_obj.save(update_fields=["count"])
         return Response({"status": "viewed", "total_count": video.view_count})
 
+    @extend_schema(
+        summary="Unlock restricted video",
+        description="Unlocks a restricted/password-protected video using either a raw password in JSON body or a legacy V4 hash.",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "description": "Plain text password to unlock the video.",
+                        "example": "securePassword123"
+                    },
+                    "hash": {
+                        "type": "string",
+                        "description": "Legacy V4 SHA1 security hash to bypass the password prompt.",
+                        "example": "7c5a0c3b84138e1219b16828a2a7a409f584e03d"
+                    }
+                }
+            }
+        },
+        parameters=[
+            OpenApiParameter(
+                name="hash",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Optional legacy V4 SHA1 security hash passed via query parameters to unlock the stream.",
+            )
+        ],
+        responses={
+            200: OpenApiResponse(
+                description="Video unlocked successfully. Returns the absolute URL of the video source file.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "video_url": {"type": "string", "format": "uri", "example": "http://api.pod.univ.fr/media/video/sources/my-video.mp4"},
+                        "source": {"type": "string", "example": "legacy_hash", "nullable": True}
+                    }
+                }
+            ),
+            403: OpenApiResponse(
+                description="Incorrect password or invalid legacy hash.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "error": {"type": "string", "example": "Incorrect password or hash"}
+                    }
+                }
+            ),
+        }
+    )
     @action(
         detail=True, methods=["get", "post"], permission_classes=[permissions.AllowAny]
     )

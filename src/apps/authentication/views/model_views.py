@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -37,7 +37,11 @@ class UserMeView(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    @extend_schema(responses=UserSerializer)
+    @extend_schema(
+        summary="Retrieve authenticated user profile",
+        description="Returns the profile information, including username, email, full name, affiliation, and establishment of the currently authenticated user.",
+        responses={200: UserSerializer}
+    )
     def get(self, request):
         """Returns the profile of the current authenticated user."""
         serializer = UserSerializer(request.user)
@@ -49,6 +53,32 @@ class UserMeView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List user owner profiles",
+        description="Retrieve a list of user profiles (Owner models) containing additional metadata such as affiliation, establishment, and profile picture. Restricted to superusers."
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve owner profile details",
+        description="Retrieve details of a specific Owner profile. Restricted to superusers."
+    ),
+    create=extend_schema(
+        summary="Create an owner profile",
+        description="Add a new Owner profile. Restricted to superusers."
+    ),
+    update=extend_schema(
+        summary="Update an owner profile",
+        description="Fully update an existing Owner profile. Restricted to superusers."
+    ),
+    partial_update=extend_schema(
+        summary="Partially update an owner profile",
+        description="Partially update an existing Owner profile. Restricted to superusers."
+    ),
+    destroy=extend_schema(
+        summary="Delete an owner profile",
+        description="Delete an Owner profile. Restricted to superusers."
+    ),
+)
 class OwnerViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing Owner profiles.
@@ -59,6 +89,29 @@ class OwnerViewSet(viewsets.ModelViewSet):
     serializer_class = OwnerSerializer
     permission_classes = [IsSuperUser]
 
+    @extend_schema(
+        summary="Assign access groups to user",
+        description="Assigns access groups to a user based on their username. Restricted to superusers.",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "username": {"type": "string", "description": "The unique username of the user."},
+                    "groups": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "List of access group code names to assign."
+                    }
+                },
+                "required": ["username", "groups"]
+            }
+        },
+        responses={
+            200: OwnerWithGroupsSerializer,
+            400: OpenApiResponse(description="Missing username or groups."),
+            404: OpenApiResponse(description="User not found.")
+        }
+    )
     @action(detail=False, methods=["post"], url_path="set-user-accessgroup")
     def set_user_accessgroup(self, request):
         """
@@ -83,6 +136,29 @@ class OwnerViewSet(viewsets.ModelViewSet):
         except Owner.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    @extend_schema(
+        summary="Remove access groups from user",
+        description="Removes access groups from a user based on their username. Restricted to superusers.",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "username": {"type": "string", "description": "The unique username of the user."},
+                    "groups": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "List of access group code names to remove."
+                    }
+                },
+                "required": ["username", "groups"]
+            }
+        },
+        responses={
+            200: OwnerWithGroupsSerializer,
+            400: OpenApiResponse(description="Missing username or groups."),
+            404: OpenApiResponse(description="User not found.")
+        }
+    )
     @action(detail=False, methods=["post"], url_path="remove-user-accessgroup")
     def remove_user_accessgroup(self, request):
         """
@@ -109,6 +185,34 @@ class OwnerViewSet(viewsets.ModelViewSet):
                 {"error": _("User not found")}, status=status.HTTP_404_NOT_FOUND
             )
 
+    @extend_schema(
+        summary="Update profile picture",
+        description="Uploads and assigns an image as the user's profile picture. Or deletes the existing picture if a DELETE request is made.",
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "picture": {"type": "string", "format": "binary", "description": "Image file to upload."}
+                }
+            }
+        },
+        responses={
+            200: OpenApiResponse(
+                description="Profile picture updated successfully.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "status": {"type": "string", "example": "success"},
+                        "message": {"type": "string", "example": "Profile picture updated."},
+                        "userpicture": {"type": "string", "format": "uri"}
+                    }
+                }
+            ),
+            204: OpenApiResponse(description="Profile picture deleted successfully."),
+            400: OpenApiResponse(description="No picture file provided."),
+            403: OpenApiResponse(description="Forbidden - cannot modify another user's picture.")
+        }
+    )
     @action(
         detail=True,
         methods=["post", "patch", "delete"],
@@ -158,6 +262,32 @@ class OwnerViewSet(viewsets.ModelViewSet):
         )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List users",
+        description="Retrieve a list of standard Django Users. Regular users can only see their own profile, whereas superusers can see all users."
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve user details",
+        description="Retrieve details of a specific user by their ID. Regular users can only retrieve their own user record."
+    ),
+    create=extend_schema(
+        summary="Create a user",
+        description="Register a new user."
+    ),
+    update=extend_schema(
+        summary="Update a user",
+        description="Fully update a user profile. Regular users can only update their own profile."
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a user",
+        description="Partially update a user profile. Regular users can only update their own profile."
+    ),
+    destroy=extend_schema(
+        summary="Delete a user",
+        description="Permanently delete a user account."
+    ),
+)
 class UserViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing standard Django Users.
@@ -177,6 +307,32 @@ class UserViewSet(viewsets.ModelViewSet):
         return super().get_queryset()
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List user permission groups",
+        description="Retrieve a list of standard Django groups. Restricted to superusers."
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve permission group",
+        description="Retrieve details of a specific group by ID. Restricted to superusers."
+    ),
+    create=extend_schema(
+        summary="Create a permission group",
+        description="Create a new Django group. Restricted to superusers."
+    ),
+    update=extend_schema(
+        summary="Update a permission group",
+        description="Fully update a Django group. Restricted to superusers."
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a permission group",
+        description="Partially update a Django group. Restricted to superusers."
+    ),
+    destroy=extend_schema(
+        summary="Delete a permission group",
+        description="Delete a Django group. Restricted to superusers."
+    ),
+)
 class GroupViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing Django Groups (Permissions).
@@ -187,6 +343,32 @@ class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = [IsSuperUser]
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List multi-site domains",
+        description="Retrieve a list of all sites/domains configured in this multi-tenant installation. Restricted to superusers."
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve site domain details",
+        description="Retrieve details of a specific site domain by ID. Restricted to superusers."
+    ),
+    create=extend_schema(
+        summary="Create a site domain",
+        description="Add a new site/domain. Restricted to superusers."
+    ),
+    update=extend_schema(
+        summary="Update a site domain",
+        description="Fully update a site domain. Restricted to superusers."
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a site domain",
+        description="Partially update a site domain. Restricted to superusers."
+    ),
+    destroy=extend_schema(
+        summary="Delete a site domain",
+        description="Delete a site domain. Restricted to superusers."
+    ),
+)
 class SiteViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing Sites.
@@ -197,6 +379,32 @@ class SiteViewSet(viewsets.ModelViewSet):
     permission_classes = [IsSuperUser]
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List access groups",
+        description="Retrieve a list of all LDAP or local access groups configured for the system. Restricted to superusers."
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve access group",
+        description="Retrieve detailed information about a specific access group. Restricted to superusers."
+    ),
+    create=extend_schema(
+        summary="Create an access group",
+        description="Create a new access group. Restricted to superusers."
+    ),
+    update=extend_schema(
+        summary="Update an access group",
+        description="Fully update an access group. Restricted to superusers."
+    ),
+    partial_update=extend_schema(
+        summary="Partially update an access group",
+        description="Partially update an access group. Restricted to superusers."
+    ),
+    destroy=extend_schema(
+        summary="Delete an access group",
+        description="Delete an access group. Restricted to superusers."
+    ),
+)
 class AccessGroupViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing Access Groups.
@@ -208,6 +416,29 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
     filterset_fields = ["id", "display_name", "code_name"]
     permission_classes = [IsSuperUser]
 
+    @extend_schema(
+        summary="Set users of an access group",
+        description="Replaces/assigns the list of users belonging to an access group by their usernames. Restricted to superusers.",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "code_name": {"type": "string", "description": "The unique code name of the access group."},
+                    "users": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Array of usernames to assign as sole members of this access group."
+                    }
+                },
+                "required": ["code_name", "users"]
+            }
+        },
+        responses={
+            200: AccessGroupSerializer,
+            400: OpenApiResponse(description="Missing code_name or users."),
+            404: OpenApiResponse(description="AccessGroup not found.")
+        }
+    )
     @action(detail=False, methods=["post"], url_path="set-users-by-name")
     def set_users_by_name(self, request):
         """
@@ -235,6 +466,29 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
                 {"error": "AccessGroup not found"}, status=status.HTTP_404_NOT_FOUND
             )
 
+    @extend_schema(
+        summary="Remove users from an access group",
+        description="Removes a list of users (by their usernames) from an access group (by its code_name). Restricted to superusers.",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "code_name": {"type": "string", "description": "The unique code name of the access group."},
+                    "users": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Array of usernames to remove from the access group."
+                    }
+                },
+                "required": ["code_name", "users"]
+            }
+        },
+        responses={
+            200: AccessGroupSerializer,
+            400: OpenApiResponse(description="Missing code_name or users."),
+            404: OpenApiResponse(description="AccessGroup not found.")
+        }
+    )
     @action(detail=False, methods=["post"], url_path="remove-users-by-name")
     def remove_users_by_name(self, request):
         """

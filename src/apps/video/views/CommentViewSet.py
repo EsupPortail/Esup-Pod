@@ -5,7 +5,7 @@ Esup-Pod - Comment views.
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 from src.apps.video.models import Video, Comment, Vote
 from src.apps.video.serializers import CommentSerializer
 
@@ -23,9 +23,19 @@ class CommentViewSet(viewsets.GenericViewSet):
 
     @extend_schema(
         operation_id="comment_list",
+        summary="List video comments",
+        description="Retrieves comments for a specific video by its slug. Supports hierarchical tree representation (nested child comments under parents). If ?only=parents is provided, only first-level comments are returned.",
         parameters=[
-            OpenApiParameter("only", str, enum=["parents"]),
+            OpenApiParameter(
+                name="only",
+                type=str,
+                enum=["parents"],
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Specify 'parents' to only get root comments without embedding children.",
+            ),
         ],
+        responses={200: CommentSerializer(many=True)}
     )
     def list_comments(self, request, video_slug: str):
         """
@@ -45,7 +55,12 @@ class CommentViewSet(viewsets.GenericViewSet):
         )
         return Response(serializer.data)
 
-    @extend_schema()
+    @extend_schema(
+        operation_id="comment_detail",
+        summary="Retrieve comment details",
+        description="Retrieves a specific comment and all its nested children by its ID and the video's slug.",
+        responses={200: CommentSerializer}
+    )
     def detail_comment(self, request, video_slug: str, comment_id: int):
         """
         Retrieves a specific comment and its nested children.
@@ -59,7 +74,28 @@ class CommentViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(comment)
         return Response(serializer.data)
 
-    @extend_schema(operation_id="comment_add", request=CommentSerializer)
+    @extend_schema(
+        operation_id="comment_add",
+        summary="Add comment or reply",
+        description="Adds a new comment or a reply/nested comment to an existing comment. Pass the comment_id of the parent comment in the URL path to add a reply.",
+        request=CommentSerializer,
+        responses={
+            201: OpenApiResponse(
+                description="Comment/reply added successfully.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer", "example": 45},
+                        "author_name": {"type": "string", "example": "DOE Jane"},
+                        "author_picture": {"type": "string", "format": "uri", "nullable": True, "example": "http://api.pod.univ.fr/media/users/avatar.jpg"},
+                        "content": {"type": "string", "example": "Interesting presentation, thank you!"},
+                        "added": {"type": "string", "format": "date-time", "example": "2026-05-26T08:30:00Z"}
+                    }
+                }
+            ),
+            400: OpenApiResponse(description="Comment content cannot be empty.")
+        }
+    )
     def add_comment(self, request, video_slug: str, comment_id: int = None):
         """
         Adds a new comment or a reply to a video.
@@ -102,7 +138,23 @@ class CommentViewSet(viewsets.GenericViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    @extend_schema()
+    @extend_schema(
+        operation_id="comment_delete",
+        summary="Delete a comment",
+        description="Deletes a specific comment by ID. The user must be the author of the comment, the owner of the video, or a superuser.",
+        responses={
+            200: OpenApiResponse(
+                description="Deletion outcome status.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "deleted": {"type": "boolean", "example": True}
+                    }
+                }
+            ),
+            403: OpenApiResponse(description="Insufficient permissions to delete this comment.")
+        }
+    )
     def delete_comment(self, request, video_slug: str, comment_id: int):
         """
         Deletes a comment. Permission check: Author, Video Owner, or Superuser.
@@ -122,7 +174,21 @@ class CommentViewSet(viewsets.GenericViewSet):
         comment.delete()
         return Response({"deleted": True})
 
-    @extend_schema()
+    @extend_schema(
+        operation_id="comment_user_votes",
+        summary="Get user voted comment IDs",
+        description="Returns a list of comment IDs that the currently authenticated user has voted on (liked) for this specific video.",
+        responses={
+            200: OpenApiResponse(
+                description="List of comment IDs.",
+                response={
+                    "type": "array",
+                    "items": {"type": "integer"},
+                    "example": [12, 15, 34]
+                }
+            )
+        }
+    )
     def get_user_votes(self, request, video_slug: str):
         """
         Returns a list of IDs for comments the user has voted on for a specific video.
@@ -135,7 +201,24 @@ class CommentViewSet(viewsets.GenericViewSet):
         ).values_list("comment_id", flat=True)
         return Response(list(voted_ids))
 
-    @extend_schema()
+    @extend_schema(
+        operation_id="comment_toggle_vote",
+        summary="Toggle like/vote on comment",
+        description="Toggles (adds or removes) a vote/like on a specific comment for the current user. Returns the updated vote status and total vote count.",
+        responses={
+            200: OpenApiResponse(
+                description="Vote status toggled.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "status": {"type": "string", "example": "voted"},
+                        "nbr_vote": {"type": "integer", "example": 4}
+                    }
+                }
+            ),
+            401: OpenApiResponse(description="Authentication required to vote.")
+        }
+    )
     def toggle_vote(self, request, video_slug: str, comment_id: int):
         """
         Toggles (adds/removes) a vote on a comment by the current user.

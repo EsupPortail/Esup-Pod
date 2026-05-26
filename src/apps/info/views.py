@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 @extend_schema(
     summary="System Information",
+    description="Retrieves the general public details of the backend project, including project name and version, useful for system status checks and frontend version displays.",
     responses={
         200: {
             "type": "object",
@@ -49,6 +50,7 @@ class SystemInfoView(APIView):
 
 @extend_schema(
     summary="App Configuration Flags",
+    description="Retrieves a list of whitelisted public configuration flags grouped by application module. This allows the frontend to adapt dynamically based on backend options (e.g., maximum upload sizes, habilitation groups, or enabled authentication protocols) without exposing secrets.",
     responses={
         200: {
             "type": "object",

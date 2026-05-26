@@ -80,7 +80,14 @@ class VideoSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     date_to_delete = serializers.DateField(required=False, allow_null=True)
-    thumbnail_url = serializers.SerializerMethodField()
+    thumbnail = serializers.ImageField(
+        required=False,
+        allow_null=True,
+        help_text="The video thumbnail image. When serialized (read-only), if no manual thumbnail has been uploaded, this field dynamically falls back to the auto-generated storyboard preview ('overview') or the default static thumbnail URL."
+    )
+    thumbnail_url = serializers.SerializerMethodField(
+        help_text="The absolute URL of the video thumbnail, automatically falling back to the overview preview or default static thumbnail if not explicitly uploaded."
+    )
     type_id = serializers.PrimaryKeyRelatedField(
         queryset=Type.objects.all(), source="type", write_only=True, required=False
     )
