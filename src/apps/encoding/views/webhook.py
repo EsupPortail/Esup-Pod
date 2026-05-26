@@ -162,7 +162,9 @@ class EncodingWebhookView(APIView):
                 # the V4-compatibility normalisation applied in the stream action.
                 if not res.endswith("p"):
                     res = f"{res}p"
-                encoded_video_file = client.download_task_file_to_temp(task_id, file_name)
+                encoded_video_file = client.download_task_file_to_temp(
+                    task_id, file_name
+                )
 
                 encoding_obj, created = EncodingVideo.objects.get_or_create(
                     video=video, resolution=res

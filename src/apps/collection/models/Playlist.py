@@ -67,7 +67,9 @@ class PlaylistItem(models.Model):
     Join table between Playlist and Video with ordering.
     """
 
-    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, related_name="items")
+    playlist = models.ForeignKey(
+        Playlist, on_delete=models.CASCADE, related_name="items"
+    )
     video = models.ForeignKey(
         Video, on_delete=models.CASCADE, related_name="playlist_links"
     )

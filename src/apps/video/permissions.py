@@ -60,4 +60,6 @@ class IsStaffOrReadOnly(permissions.BasePermission):
         """Check if the user is staff for non-safe methods."""
         if request.method in permissions.SAFE_METHODS:
             return True
-        return bool(request.user and (request.user.is_staff or request.user.is_superuser))
+        return bool(
+            request.user and (request.user.is_staff or request.user.is_superuser)
+        )

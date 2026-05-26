@@ -338,7 +338,9 @@ class PlaylistViewSet(viewsets.ModelViewSet):
                 description="Playlist reordered successfully.",
                 response={
                     "type": "object",
-                    "properties": {"status": {"type": "string", "example": "reordered"}},
+                    "properties": {
+                        "status": {"type": "string", "example": "reordered"}
+                    },
                 },
             )
         },
