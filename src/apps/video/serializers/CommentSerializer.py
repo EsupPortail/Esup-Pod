@@ -65,6 +65,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.CharField(allow_null=True))
     def get_author_picture(self, obj):
+        """
+        Retrieves the profile picture URL of the comment's author.
+        """
         if hasattr(obj.author, "owner") and obj.author.owner.userpicture:
             return obj.author.owner.userpicture.url
         return None

@@ -367,7 +367,6 @@ class CommentBasicViewTests(APITestCase):
         response = self.client.post(url_add, {"content": "Hello API test"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-
         self.assertIn("id", response.data)
         self.assertIn("author_name", response.data)
         self.assertIn("author_picture", response.data)

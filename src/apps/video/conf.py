@@ -152,6 +152,11 @@ class VideoConfig(BaseSettings):
         default=defaults.DEFAULT_YEAR_DATE_DELETE,
         description=_("Default number of years before a video is deleted."),
     )
+    delete_source_on_video_delete: bool = Field(
+        default=defaults.DELETE_SOURCE_ON_VIDEO_DELETE,
+        description=_("Delete the original source video file when a video is deleted."),
+        json_schema_extra={"public": True},
+    )
 
     # --- Metadata (Dublin Core) ---
     default_dc_coverage: str = Field(

@@ -9,7 +9,7 @@ from django.contrib.sites.models import Site
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
-from src.apps.video.models import Video, Type
+from src.apps.video.models import Video, Type, Subtitle
 from src.apps.video.services.metadata import extract_video_duration
 
 logger = logging.getLogger(__name__)
@@ -33,20 +33,36 @@ def set_video_slug(sender, instance, created, **kwargs):
         instance.slug = new_slug
 
 
+def _safe_remove(field):
+    """Esup-Pod - Safely deletes a file from disk if it exists."""
+    if field:
+        try:
+            if os.path.isfile(field.path):
+                os.remove(field.path)
+        except ValueError:
+            pass
+
+
 @receiver(post_delete, sender=Video)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
     Esup-Pod - Deletes physical files from the disk when the Video object is deleted.
     """
-    if instance.video_file:
-        if os.path.isfile(instance.video_file.path):
-            os.remove(instance.video_file.path)
-    if instance.thumbnail:
-        if os.path.isfile(instance.thumbnail.path):
-            os.remove(instance.thumbnail.path)
-    if instance.overview:
-        if os.path.isfile(instance.overview.path):
-            os.remove(instance.overview.path)
+    from src.apps.video.conf import video_settings
+
+    if video_settings.delete_source_on_video_delete:
+        _safe_remove(instance.video_file)
+
+    _safe_remove(instance.thumbnail)
+    _safe_remove(instance.overview)
+
+
+@receiver(post_delete, sender=Subtitle)
+def auto_delete_subtitle_file_on_delete(sender, instance, **kwargs):
+    """
+    Esup-Pod - Deletes physical subtitle files from disk when Subtitle object is deleted.
+    """
+    _safe_remove(instance.file)
 
 
 @receiver(pre_save, sender=Video)

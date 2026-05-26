@@ -2,9 +2,13 @@
 Esup-Pod - Video models tests.
 """
 
+import os
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from src.apps.video.models import Video, ViewCount, Comment
+from django.core.files.uploadedfile import SimpleUploadedFile
+from src.apps.video.models import Video, ViewCount, Comment, Subtitle
+from src.apps.encoding.models.EncodingVideo import EncodingVideo
+from src.apps.collection.models.Channel import Channel
 import datetime
 
 User = get_user_model()
@@ -66,3 +70,115 @@ class CommentBasicTests(TestCase):
         )
         self.assertEqual(str(comment), "Small test comment")
         self.assertEqual(comment.number_vote, 0)
+
+
+class FileCleanupTests(TestCase):
+    """Esup-Pod - Tests for physical file cleanup on object deletion."""
+
+    def setUp(self):
+        """Sets up a test user and their owner profile for file cleanup testing."""
+        self.user = User.objects.create_user(
+            username="test_cleanup_user", password="password"
+        )
+        self.owner = self.user.owner
+
+    def test_subtitle_file_cleanup(self):
+        """Verifies that physical subtitle files are deleted when the object is deleted."""
+        video = Video.objects.create(
+            title="Video for subtitle test",
+            owner=self.user,
+            status=Video.Status.PUBLISHED,
+        )
+        subtitle_file = SimpleUploadedFile(
+            "subtitle.vtt", b"WEBVTT\n\n00:00.000 --> 00:01.000\nHello"
+        )
+        subtitle = Subtitle.objects.create(
+            video=video, language=Subtitle.Language.FRENCH, file=subtitle_file
+        )
+        file_path = subtitle.file.path
+        self.assertTrue(os.path.exists(file_path))
+
+        subtitle.delete()
+        self.assertFalse(os.path.exists(file_path))
+
+    def test_encoding_video_file_cleanup(self):
+        """Verifies that encoded physical video files are deleted on deletion."""
+        video = Video.objects.create(
+            title="Video for encoding test",
+            owner=self.user,
+            status=Video.Status.PUBLISHED,
+        )
+        encoded_file = SimpleUploadedFile("encoded.mp4", b"dummy video content")
+        encoding = EncodingVideo.objects.create(
+            video=video, resolution="720p", file=encoded_file
+        )
+        file_path = encoding.file.path
+        self.assertTrue(os.path.exists(file_path))
+
+        encoding.delete()
+        self.assertFalse(os.path.exists(file_path))
+
+    def test_channel_files_cleanup(self):
+        """Verifies that channel logo and banner files are deleted on deletion."""
+        logo_file = SimpleUploadedFile("logo.png", b"dummy logo")
+        banner_file = SimpleUploadedFile("banner.png", b"dummy banner")
+        channel = Channel.objects.create(
+            title="Test Channel", owner=self.user, logo=logo_file, banner=banner_file
+        )
+        logo_path = channel.logo.path
+        banner_path = channel.banner.path
+        self.assertTrue(os.path.exists(logo_path))
+        self.assertTrue(os.path.exists(banner_path))
+
+        channel.delete()
+        self.assertFalse(os.path.exists(logo_path))
+        self.assertFalse(os.path.exists(banner_path))
+
+    def test_owner_picture_cleanup(self):
+        """Verifies that the user's profile picture is deleted when profile is deleted."""
+        picture_file = SimpleUploadedFile("profile.png", b"dummy avatar")
+        self.owner.userpicture = picture_file
+        self.owner.save()
+
+        picture_path = self.owner.userpicture.path
+        self.assertTrue(os.path.exists(picture_path))
+
+        self.owner.delete()
+        self.assertFalse(os.path.exists(picture_path))
+
+    def test_video_source_cleanup_flag_true(self):
+        """Verifies original source video is deleted when cleanup flag is enabled."""
+        from src.apps.video.conf import video_settings
+
+        video_settings.delete_source_on_video_delete = True
+
+        video_file = SimpleUploadedFile("source.mp4", b"source content")
+        video = Video.objects.create(
+            title="Video true flag test", owner=self.user, video_file=video_file
+        )
+        file_path = video.video_file.path
+        self.assertTrue(os.path.exists(file_path))
+
+        video.delete()
+        self.assertFalse(os.path.exists(file_path))
+
+    def test_video_source_cleanup_flag_false(self):
+        """Verifies original source video is kept when cleanup flag is disabled."""
+        from src.apps.video.conf import video_settings
+
+        video_settings.delete_source_on_video_delete = False
+
+        video_file = SimpleUploadedFile("source.mp4", b"source content")
+        video = Video.objects.create(
+            title="Video false flag test", owner=self.user, video_file=video_file
+        )
+        file_path = video.video_file.path
+        self.assertTrue(os.path.exists(file_path))
+
+        video.delete()
+        # Source should still exist
+        self.assertTrue(os.path.exists(file_path))
+
+        # Clean up manually to not leave test files
+        if os.path.exists(file_path):
+            os.remove(file_path)

@@ -80,9 +80,7 @@ class Comment(models.Model):
             .annotate(
                 author_name=Concat("author__last_name", Value(" "), "author__first_name")
             )
-            .annotate(
-                author_picture=models.F("author__owner__userpicture")
-            )
+            .annotate(author_picture=models.F("author__owner__userpicture"))
             .annotate(
                 is_owner=Case(
                     When(author__id=user_id, then=Value(True)),

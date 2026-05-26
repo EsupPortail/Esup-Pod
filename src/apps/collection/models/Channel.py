@@ -2,8 +2,11 @@
 Esup-Pod - Channel model.
 """
 
+import os
 from django.db import models
 from django.conf import settings
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from src.apps.collection.models.base import BaseContainer
 from src.apps.encoding.services.storage import get_storage_path_collection_image
@@ -53,3 +56,22 @@ class Channel(BaseContainer):
 
         verbose_name = _("Channel")
         verbose_name_plural = _("Channels")
+
+
+@receiver(post_delete, sender=Channel)
+def auto_delete_channel_files_on_delete(sender, instance, **kwargs):
+    """
+    Esup-Pod - Deletes physical logo and banner files from disk when Channel object is deleted.
+    """
+    if instance.logo:
+        try:
+            if os.path.isfile(instance.logo.path):
+                os.remove(instance.logo.path)
+        except ValueError:
+            pass
+    if instance.banner:
+        try:
+            if os.path.isfile(instance.banner.path):
+                os.remove(instance.banner.path)
+        except ValueError:
+            pass

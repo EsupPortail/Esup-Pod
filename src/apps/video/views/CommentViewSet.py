@@ -90,7 +90,12 @@ class CommentViewSet(viewsets.GenericViewSet):
                 "id": comment.id,
                 "author_name": f"{comment.author.last_name} {comment.author.first_name}".strip()
                 or comment.author.username,
-                "author_picture": comment.author.owner.userpicture.url if hasattr(comment.author, "owner") and comment.author.owner.userpicture else None,
+                "author_picture": (
+                    comment.author.owner.userpicture.url
+                    if hasattr(comment.author, "owner")
+                    and comment.author.owner.userpicture
+                    else None
+                ),
                 "content": comment.content,
                 "added": comment.added,
             },

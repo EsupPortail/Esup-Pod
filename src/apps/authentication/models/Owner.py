@@ -7,10 +7,11 @@ Custom profile extending the Django User model.
 import hashlib
 import logging
 
+import os
 from django.contrib.auth.models import Permission, User
 from django.contrib.sites.models import Site
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
@@ -146,3 +147,16 @@ def create_owner_profile(sender, instance: User, created: bool, **kwargs) -> Non
                 f"Error creating owner profile for user {instance.username}: {e}",
                 exc_info=True,
             )
+
+
+@receiver(post_delete, sender=Owner)
+def auto_delete_owner_files_on_delete(sender, instance, **kwargs):
+    """
+    Esup-Pod - Deletes physical userpicture from disk when Owner object is deleted.
+    """
+    if instance.userpicture:
+        try:
+            if os.path.isfile(instance.userpicture.path):
+                os.remove(instance.userpicture.path)
+        except ValueError:
+            pass
