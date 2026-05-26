@@ -37,27 +37,27 @@ class IsSubtitleVideoOwnerOrReadOnly(permissions.BasePermission):
                 required=False,
                 description="Filter subtitles associated with a specific Video ID.",
             )
-        ]
+        ],
     ),
     retrieve=extend_schema(
         summary="Retrieve a subtitle track",
-        description="Retrieve details of a specific subtitle track."
+        description="Retrieve details of a specific subtitle track.",
     ),
     create=extend_schema(
         summary="Upload a subtitle track",
-        description="Add a new subtitle file (.vtt or .srt) to a video. Only the video owner or a superuser is allowed to upload subtitles for a video."
+        description="Add a new subtitle file (.vtt or .srt) to a video. Only the video owner or a superuser is allowed to upload subtitles for a video.",
     ),
     update=extend_schema(
         summary="Update a subtitle track",
-        description="Fully update an existing subtitle track. Only the video owner is allowed to perform this action."
+        description="Fully update an existing subtitle track. Only the video owner is allowed to perform this action.",
     ),
     partial_update=extend_schema(
         summary="Partially update a subtitle track",
-        description="Partially update an existing subtitle track. Only the video owner is allowed to perform this action."
+        description="Partially update an existing subtitle track. Only the video owner is allowed to perform this action.",
     ),
     destroy=extend_schema(
         summary="Delete a subtitle track",
-        description="Permanently delete a subtitle track and its file from the system. Only the video owner is allowed to delete it."
+        description="Permanently delete a subtitle track and its file from the system. Only the video owner is allowed to delete it.",
     ),
 )
 class SubtitleViewSet(viewsets.ModelViewSet):

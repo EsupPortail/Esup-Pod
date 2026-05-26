@@ -35,7 +35,7 @@ class CommentViewSet(viewsets.GenericViewSet):
                 description="Specify 'parents' to only get root comments without embedding children.",
             ),
         ],
-        responses={200: CommentSerializer(many=True)}
+        responses={200: CommentSerializer(many=True)},
     )
     def list_comments(self, request, video_slug: str):
         """
@@ -59,7 +59,7 @@ class CommentViewSet(viewsets.GenericViewSet):
         operation_id="comment_detail",
         summary="Retrieve comment details",
         description="Retrieves a specific comment and all its nested children by its ID and the video's slug.",
-        responses={200: CommentSerializer}
+        responses={200: CommentSerializer},
     )
     def detail_comment(self, request, video_slug: str, comment_id: int):
         """
@@ -87,14 +87,26 @@ class CommentViewSet(viewsets.GenericViewSet):
                     "properties": {
                         "id": {"type": "integer", "example": 45},
                         "author_name": {"type": "string", "example": "DOE Jane"},
-                        "author_picture": {"type": "string", "format": "uri", "nullable": True, "example": "http://api.pod.univ.fr/media/users/avatar.jpg"},
-                        "content": {"type": "string", "example": "Interesting presentation, thank you!"},
-                        "added": {"type": "string", "format": "date-time", "example": "2026-05-26T08:30:00Z"}
-                    }
-                }
+                        "author_picture": {
+                            "type": "string",
+                            "format": "uri",
+                            "nullable": True,
+                            "example": "http://api.pod.univ.fr/media/users/avatar.jpg",
+                        },
+                        "content": {
+                            "type": "string",
+                            "example": "Interesting presentation, thank you!",
+                        },
+                        "added": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2026-05-26T08:30:00Z",
+                        },
+                    },
+                },
             ),
-            400: OpenApiResponse(description="Comment content cannot be empty.")
-        }
+            400: OpenApiResponse(description="Comment content cannot be empty."),
+        },
     )
     def add_comment(self, request, video_slug: str, comment_id: int = None):
         """
@@ -147,13 +159,13 @@ class CommentViewSet(viewsets.GenericViewSet):
                 description="Deletion outcome status.",
                 response={
                     "type": "object",
-                    "properties": {
-                        "deleted": {"type": "boolean", "example": True}
-                    }
-                }
+                    "properties": {"deleted": {"type": "boolean", "example": True}},
+                },
             ),
-            403: OpenApiResponse(description="Insufficient permissions to delete this comment.")
-        }
+            403: OpenApiResponse(
+                description="Insufficient permissions to delete this comment."
+            ),
+        },
     )
     def delete_comment(self, request, video_slug: str, comment_id: int):
         """
@@ -184,10 +196,10 @@ class CommentViewSet(viewsets.GenericViewSet):
                 response={
                     "type": "array",
                     "items": {"type": "integer"},
-                    "example": [12, 15, 34]
-                }
+                    "example": [12, 15, 34],
+                },
             )
-        }
+        },
     )
     def get_user_votes(self, request, video_slug: str):
         """
@@ -212,12 +224,12 @@ class CommentViewSet(viewsets.GenericViewSet):
                     "type": "object",
                     "properties": {
                         "status": {"type": "string", "example": "voted"},
-                        "nbr_vote": {"type": "integer", "example": 4}
-                    }
-                }
+                        "nbr_vote": {"type": "integer", "example": 4},
+                    },
+                },
             ),
-            401: OpenApiResponse(description="Authentication required to vote.")
-        }
+            401: OpenApiResponse(description="Authentication required to vote."),
+        },
     )
     def toggle_vote(self, request, video_slug: str, comment_id: int):
         """

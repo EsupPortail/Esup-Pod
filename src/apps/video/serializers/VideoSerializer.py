@@ -83,7 +83,7 @@ class VideoSerializer(serializers.ModelSerializer):
     thumbnail = serializers.ImageField(
         required=False,
         allow_null=True,
-        help_text="The video thumbnail image. When serialized (read-only), if no manual thumbnail has been uploaded, this field dynamically falls back to the auto-generated storyboard preview ('overview') or the default static thumbnail URL."
+        help_text="The video thumbnail image. When serialized (read-only), if no manual thumbnail has been uploaded, this field dynamically falls back to the auto-generated storyboard preview ('overview') or the default static thumbnail URL.",
     )
     thumbnail_url = serializers.SerializerMethodField(
         help_text="The absolute URL of the video thumbnail, automatically falling back to the overview preview or default static thumbnail if not explicitly uploaded."

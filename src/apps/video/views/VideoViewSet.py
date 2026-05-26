@@ -246,9 +246,13 @@ class VideoViewSet(viewsets.ModelViewSet):
             )
         ],
         responses={
-            200: OpenApiResponse(description="Video stream served successfully (progressive MP4 stream)."),
-            404: OpenApiResponse(description="Video file or specified resolution not found on disk."),
-        }
+            200: OpenApiResponse(
+                description="Video stream served successfully (progressive MP4 stream)."
+            ),
+            404: OpenApiResponse(
+                description="Video file or specified resolution not found on disk."
+            ),
+        },
     )
     @action(detail=True, methods=["get"], permission_classes=[permissions.AllowAny])
     def stream(self, request, slug=None):
@@ -283,11 +287,11 @@ class VideoViewSet(viewsets.ModelViewSet):
                     "type": "object",
                     "properties": {
                         "status": {"type": "string", "example": "viewed"},
-                        "total_count": {"type": "integer", "example": 105}
-                    }
-                }
+                        "total_count": {"type": "integer", "example": 105},
+                    },
+                },
             )
-        }
+        },
     )
     @action(detail=True, methods=["post"], permission_classes=[permissions.AllowAny])
     def register_view(self, request, slug=None):
@@ -313,14 +317,14 @@ class VideoViewSet(viewsets.ModelViewSet):
                     "password": {
                         "type": "string",
                         "description": "Plain text password to unlock the video.",
-                        "example": "securePassword123"
+                        "example": "securePassword123",
                     },
                     "hash": {
                         "type": "string",
                         "description": "Legacy V4 SHA1 security hash to bypass the password prompt.",
-                        "example": "7c5a0c3b84138e1219b16828a2a7a409f584e03d"
-                    }
-                }
+                        "example": "7c5a0c3b84138e1219b16828a2a7a409f584e03d",
+                    },
+                },
             }
         },
         parameters=[
@@ -338,21 +342,32 @@ class VideoViewSet(viewsets.ModelViewSet):
                 response={
                     "type": "object",
                     "properties": {
-                        "video_url": {"type": "string", "format": "uri", "example": "http://api.pod.univ.fr/media/video/sources/my-video.mp4"},
-                        "source": {"type": "string", "example": "legacy_hash", "nullable": True}
-                    }
-                }
+                        "video_url": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "http://api.pod.univ.fr/media/video/sources/my-video.mp4",
+                        },
+                        "source": {
+                            "type": "string",
+                            "example": "legacy_hash",
+                            "nullable": True,
+                        },
+                    },
+                },
             ),
             403: OpenApiResponse(
                 description="Incorrect password or invalid legacy hash.",
                 response={
                     "type": "object",
                     "properties": {
-                        "error": {"type": "string", "example": "Incorrect password or hash"}
-                    }
-                }
+                        "error": {
+                            "type": "string",
+                            "example": "Incorrect password or hash",
+                        }
+                    },
+                },
             ),
-        }
+        },
     )
     @action(
         detail=True, methods=["get", "post"], permission_classes=[permissions.AllowAny]
