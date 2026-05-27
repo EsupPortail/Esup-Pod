@@ -68,7 +68,7 @@ ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 # list of affiliation's owner to archive instead of delete video
 POD_ARCHIVE_AFFILIATION = getattr(settings, "POD_ARCHIVE_AFFILIATION", [])
 # number of step in days defore deletion
-WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [])
+WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [60, 30, 7])
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 
 
@@ -210,38 +210,26 @@ class Command(BaseCommand):
             domain = get_current_site(request).domain
             base_url = f"{URL_SCHEME}://{domain}"
 
-            custom_message_page_obso_mail += "<br>\n"
-
-            if PROLONGATION_GRANTED:
-                if DELETION_GRANTED:
-                    custom_message_page_obso_mail += "<p> " + _(
-                        "You can choose to extend the duration of your video, archive it (it will be unpublished and no longer accessible), download it along with all its associated data, or delete it (after saving it) by clicking here:"
-                    )
-                else:
-                    custom_message_page_obso_mail += "<p> " + _(
-                        "You can choose to extend the duration of your video, archive it (it will be unpublished and no longer accessible), or download it along with all its associated data by clicking here:"
-                    )
-            else:
-                if DELETION_GRANTED:
-                    custom_message_page_obso_mail += "<p> " + _(
-                        "You can choose to archive your video (it will be unpublished and no longer accessible), download it along with all its associated data, or delete it (after saving it) by clicking here:"
-                    )
-                else:
-                    custom_message_page_obso_mail += "<p> " + _(
-                        "You can choose to archive your video (it will be unpublished and no longer accessible), or download it along with all its associated data by clicking here:"
-                    )
-
-            custom_message_page_obso_mail += (
-                "<a href='"
-                + base_url
-                + "/video/respit/"
-                + video.slug
-                + "'>"
-                + base_url
-                + "/video/respit/"
-                + video.slug
-                + "</a></p>"
+            custom_message_page_obso_mail += "<p>%s</p><ul>" % _("You can choose to:")
+            custom_message_page_obso_mail += "<li>%s</li>" % (
+                _("archive your video (it will be unpublished and no longer accessible)"),
             )
+            if PROLONGATION_GRANTED:
+                custom_message_page_obso_mail += "<li>%s</li> " % _(
+                    "postpone its deletion date"
+                )
+            if DELETION_GRANTED:
+                custom_message_page_obso_mail += "<li>%s</li> " % _(
+                    "delete it (after saving it)"
+                )
+            custom_message_page_obso_mail += "<li>%s</li>" % (
+                _("download it along with all its associated data"),
+            )
+            custom_message_page_obso_mail += (
+                '</ul><p style="margin:1em;font-size:1.2em"><a href="%s/video/respite/%s">%s</a></p>'
+                % (base_url, video.slug, _("Choose an action for my video"))
+            )
+
             custom_message_page_obso_mail += "<br>\n"
             custom_message_page_obso_mail += _(
                 "Unless you take action, your video will be archived (unpublished) and may be deleted."
@@ -256,9 +244,9 @@ class Command(BaseCommand):
             ) % {"scheme": URL_SCHEME, "url": video.get_full_url(), "title": video.title}
 
             msg_html += "<br>\n"
-            msg_html += _("It will be deleted on %(date_delete)s.") % {
-                "date_delete": video.date_delete
-            }
+            msg_html += _(
+                "It will be unpublished on <strong>%(date_delete)s</strong>."
+            ) % {"date_delete": video.date_delete}
 
             if not ENABLE_PAGE_OBSO_MAIL:
                 msg_html += "</p>\n<p>"

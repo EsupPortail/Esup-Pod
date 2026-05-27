@@ -1,3 +1,10 @@
+"""
+Esup-Pod - Base Respite model.
+
+This is just a proof of concept, not intented to be used in production.
+We invite you to use this as a starting point to establish your own model.
+"""
+
 import json
 
 
@@ -26,6 +33,9 @@ def calcul(parameters, dry_mode: bool = True):
     # owner_video_additional: Additional owner of the video (array)
     # category_list: categories of the video (array)
     if dry_mode:
-        print("Compute delete respite for video ", parameters["id"], " - ", parameters["title"])
+        print(
+            "Compute delete respite for video %s - %s"
+            % (parameters["id"], parameters["title"])
+        )
     print(json.dumps(parameters, sort_keys=True, indent=2, default=str))
     return 1

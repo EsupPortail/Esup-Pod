@@ -14,7 +14,7 @@ import os
 from django.contrib.sites.models import Site
 
 from ..utils import check_csv_header, read_archived_csv, archive_pack
-from ..views import valid_form_respit
+from ..views import valid_form_respite
 
 from django.test import RequestFactory
 from django.contrib.auth.models import User
@@ -275,7 +275,7 @@ class ValidFormRespitTestCase(TestCase):
 
         # Simulates the submission of the form with archive action
         response = self.client.post(
-            f"/video/respit/{self.video1.slug}/", {"action": "Archive"}
+            f"/video/respite/{self.video1.slug}/", {"action": "Archive"}
         )
         # Check that HTTP code is 200
         self.assertEqual(response.status_code, 200)
@@ -290,7 +290,7 @@ class ValidFormRespitTestCase(TestCase):
 
         # Simulates the submission of the form with extend action
         response = self.client.post(
-            f"/video/respit/{self.video1.slug}/", {"action": "Extend"}
+            f"/video/respite/{self.video1.slug}/", {"action": "Extend"}
         )
         # Check that HTTP code is 200
         self.assertEqual(response.status_code, 200)
@@ -301,10 +301,10 @@ class ValidFormRespitTestCase(TestCase):
         """Test delete option in the form"""
         # Simulates the submission of the form with archive delete
         request = self.factory.post(
-            f"/video/respit/{self.video1.slug}/", {"action": "Delete"}
+            f"/video/respite/{self.video1.slug}/", {"action": "Delete"}
         )
         request.user = self.user
-        response = valid_form_respit(request, self.video1.slug)
+        response = valid_form_respite(request, self.video1.slug)
         # Check that HTTP code is 301
         self.assertEqual(response.status_code, 301)
         self.assertEqual(response.get("Location"), f"/video/delete/{self.video1.slug}")

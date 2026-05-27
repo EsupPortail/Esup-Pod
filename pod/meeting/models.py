@@ -279,7 +279,7 @@ class Meeting(models.Model):
         verbose_name=_("Slides"),
         help_text=_("""
         BigBlueButton will accept Office documents (.doc .docx .pptx),
-        text documents(.txt), images (.png ,.jpg) and Adobe Acrobat documents (.pdf);
+        text documents(.txt), images (.png, .jpg) and Adobe Acrobat documents (.pdf);
         we recommend converting documents to .pdf prior to uploading for best results.
         Maximum size is 30 MB or 150 pages per document.
         """),

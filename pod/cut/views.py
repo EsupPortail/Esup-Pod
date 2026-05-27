@@ -77,7 +77,7 @@ def cut_video(request, slug):
             video.save()
 
             messages.add_message(request, messages.SUCCESS, _("The cut was made."))
-            return redirect(reverse("video:dashboard"))
+            return redirect("video:dashboard")
 
         else:
             messages.add_message(

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-21 11:28+0000\n"
+"POT-Creation-Date: 2026-05-27 16:45+0200\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -365,8 +365,6 @@ msgstr ""
 #: pod/playlist/templates/playlist/delete.html
 #: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/videos/archive_or_not.html
-#: pod/video/templates/videos/prolong_or_not.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Agreement required"
 msgstr ""
@@ -1306,11 +1304,6 @@ msgstr ""
 msgid ""
 "There is an overlap with the overlay {0}, please change time start and/or "
 "time end values."
-msgstr ""
-
-#: pod/completion/permissions/video.py
-#, python-brace-format
-msgid "{func.__name__}: Permission denied for user {current_user.pk}."
 msgstr ""
 
 #: pod/completion/templates/contributor/form_contributor.html
@@ -5037,8 +5030,6 @@ msgstr ""
 
 #: pod/main/templates/maintenance.html
 #: pod/video/templates/videos/archive_download.html
-#: pod/video/templates/videos/well_archived.html
-#: pod/video/templates/videos/well_prolonged.html
 msgid "Return to homepage"
 msgstr ""
 
@@ -5542,7 +5533,7 @@ msgstr ""
 msgid ""
 "\n"
 "        BigBlueButton will accept Office documents (.doc .docx .pptx),\n"
-"        text documents(.txt), images (.png ,.jpg) and Adobe Acrobat "
+"        text documents(.txt), images (.png, .jpg) and Adobe Acrobat "
 "documents (.pdf);\n"
 "        we recommend converting documents to .pdf prior to uploading for "
 "best results.\n"
@@ -6560,13 +6551,6 @@ msgid "Private"
 msgstr ""
 
 #: pod/playlist/models.py
-#, python-brace-format
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
-msgstr ""
-
-#: pod/playlist/models.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
@@ -6941,6 +6925,10 @@ msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
+msgstr ""
+
+#: pod/playlist/views.py
+msgid "Delete the playlist"
 msgstr ""
 
 #: pod/playlist/views.py
@@ -7331,7 +7319,7 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr ""
 
@@ -7628,21 +7616,6 @@ msgstr ""
 
 #: pod/recorder/admin.py
 msgid "Encode selected recordings and create new video"
-msgstr ""
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Studio recording {item.id} encoding started"
-msgstr ""
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Recording {item.id} is not a studio recording and can’t be encoded"
-msgstr ""
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Error for {item}: {e}"
 msgstr ""
 
 #: pod/recorder/admin.py
@@ -8456,13 +8429,13 @@ msgstr ""
 msgid "A comment can’t be empty"
 msgstr ""
 
+#: pod/video/forms.py pod/video/templates/videos/archive_or_not.html
+msgid "Archive"
+msgstr ""
+
 #: pod/video/forms.py
 #, python-format
 msgid "Extend (Automatically by %(rrd)s days)"
-msgstr ""
-
-#: pod/video/forms.py pod/video/templates/videos/archive_or_not.html
-msgid "Archive"
 msgstr ""
 
 #: pod/video/forms.py
@@ -8473,11 +8446,18 @@ msgid ""
 msgstr ""
 
 #: pod/video/forms.py
+msgid "Select this option if you want to archive your video."
+msgstr ""
+
+#: pod/video/forms.py pod/video/templates/videos/archive_or_not.html
 msgid ""
-"Select this option if you want to archive your video. It will then be "
-"unpublished and will no longer be accessible to the public. However, it will "
-"remain on the video server, along with its metadata, and its publication can "
-"be reactivated if necessary."
+"It will then be unpublished and will no longer be accessible to the public."
+msgstr ""
+
+#: pod/video/forms.py
+msgid ""
+"However, it will remain on the video server for a certain period, during "
+"which time a publication can be reactivated upon request to a manager."
 msgstr ""
 
 #: pod/video/forms.py
@@ -8488,8 +8468,16 @@ msgid ""
 "metadata first."
 msgstr ""
 
+#: pod/video/forms.py
+msgid "Obsolescence choice"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "Your preference regarding the future of your video on this platform."
+msgstr ""
+
 #: pod/video/management/commands/check_obsolete_videos.py
-#: pod/video/management/commands/respit_launcher.py
+#: pod/video/management/commands/respite_launcher.py
 msgid "An Error occurred while processing."
 msgstr ""
 
@@ -8508,31 +8496,27 @@ msgid "%s video(s) archived."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to extend the duration of your video, archive it (it will be "
-"unpublished and no longer accessible), download it along with all its "
-"associated data, or delete it (after saving it) by clicking here:"
+msgid "You can choose to:"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to extend the duration of your video, archive it (it will be "
-"unpublished and no longer accessible), or download it along with all its "
-"associated data by clicking here:"
+msgid "archive your video (it will be unpublished and no longer accessible)"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to archive your video (it will be unpublished and no longer "
-"accessible), download it along with all its associated data, or delete it "
-"(after saving it) by clicking here:"
+msgid "postpone its deletion date"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to archive your video (it will be unpublished and no longer "
-"accessible), or download it along with all its associated data by clicking "
-"here:"
+msgid "delete it (after saving it)"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "download it along with all its associated data"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "Choose an action for my video"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -8555,7 +8539,7 @@ msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
-msgid "It will be deleted on %(date_delete)s."
+msgid "It will be unpublished on <strong>%(date_delete)s</strong>."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -8568,6 +8552,11 @@ msgstr ""
 #, python-format
 msgid ""
 "Your video entitled “%(title)s” will soon arrive at the deletion deadline."
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+#, python-format
+msgid "It will be deleted on %(date_delete)s."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -8688,14 +8677,35 @@ msgstr ""
 msgid "Packaging %s archived videos on Pod"
 msgstr ""
 
-#: pod/video/management/commands/respit_launcher.py
-#, python-format
-msgid "Respit model not found: %(error)s"
+#: pod/video/management/commands/respite_launcher.py
+msgid "DRY MODE. This is only a simulation of what would be done."
 msgstr ""
 
-#: pod/video/management/commands/respit_launcher.py
+#: pod/video/management/commands/respite_launcher.py
 #, python-format
-msgid "Respit model import error: %(error)s"
+msgid ""
+"Hello! The deadline for the following videos has been postponed according to "
+"the model’s guidelines: <strong>%s</strong>"
+msgstr ""
+
+#: pod/video/management/commands/respite_launcher.py
+msgid ""
+"Be careful: BASE mode is just a proof of concept, not intented to be used in "
+"production."
+msgstr ""
+
+#: pod/video/management/commands/respite_launcher.py
+msgid "Have a good day."
+msgstr ""
+
+#: pod/video/management/commands/respite_launcher.py
+#, python-format
+msgid "Respite model not found: %(error)s"
+msgstr ""
+
+#: pod/video/management/commands/respite_launcher.py
+#, python-format
+msgid "Respite model import error: %(error)s"
 msgstr ""
 
 #: pod/video/models.py pod/video/views.py
@@ -9259,13 +9269,27 @@ msgstr "Voer een titel in."
 msgid "Back to choices"
 msgstr ""
 
+#: pod/video/templates/videos/archive_download.html
+msgid "Download video archive"
+msgstr ""
+
 #: pod/video/templates/videos/archive_or_not.html
 msgid "Are you sure you want to archive this video?"
 msgstr ""
 
 #: pod/video/templates/videos/archive_or_not.html
-msgid "The archiving is permanent."
+#: pod/video/templates/videos/prolong_or_not.html
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Link to the video:"
 msgstr ""
+
+#: pod/video/templates/videos/archive_or_not.html
+#: pod/video/templates/videos/prolong_or_not.html
+#: pod/video/templates/videos/video_respite_choice.html
+#, fuzzy
+#| msgid "Date email sent"
+msgid "Date to delete:"
+msgstr "Datum verzonden e-mail"
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
@@ -9569,7 +9593,7 @@ msgstr ""
 
 #: pod/video/templates/videos/prolong_or_not.html
 #, python-format
-msgid "This will extend the video life span by %(rrd)s days"
+msgid "This will extend the video life span by %(rrd)s days."
 msgstr ""
 
 #: pod/video/templates/videos/prolong_or_not.html
@@ -10087,29 +10111,19 @@ msgstr ""
 msgid "Total number of videos in the queue:"
 msgstr ""
 
-#: pod/video/templates/videos/video_respist_choice.html
-msgid "Your video is outdated, what do you want do?"
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Your video will soon be deleted, what do you want do?"
 msgstr ""
 
-#: pod/video/templates/videos/video_respist_choice.html
-msgid ""
-"This interface allows you to specify your preferences regarding the future "
-"of your video on this platform."
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Apply my choice"
 msgstr ""
 
-#: pod/video/templates/videos/video_respist_choice.html
-msgid "Link to the video:"
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Export this video"
 msgstr ""
 
-#: pod/video/templates/videos/video_respist_choice.html
-msgid "Submit my choice"
-msgstr ""
-
-#: pod/video/templates/videos/video_respist_choice.html
-msgid "Export this video."
-msgstr ""
-
-#: pod/video/templates/videos/video_respist_choice.html
+#: pod/video/templates/videos/video_respite_choice.html
 msgid ""
 "This link allows you to export your video, along with its metadata and "
 "attached files, as a ZIP file so you can save them to your storage space. We "
@@ -10117,11 +10131,15 @@ msgid ""
 "from the server."
 msgstr ""
 
-#: pod/video/templates/videos/video_respist_choice.html
+#: pod/video/templates/videos/video_respite_choice.html pod/video/views.py
+msgid "This service is not available."
+msgstr ""
+
+#: pod/video/templates/videos/video_respite_choice.html
 msgid "Access denied"
 msgstr ""
 
-#: pod/video/templates/videos/video_respist_choice.html
+#: pod/video/templates/videos/video_respite_choice.html
 msgid "The video does not belong to you or has already been processed."
 msgstr ""
 
@@ -10139,26 +10157,6 @@ msgstr ""
 
 #: pod/video/templates/videos/videos.html
 msgid "Show view statistics for all videos"
-msgstr ""
-
-#: pod/video/templates/videos/well_archived.html
-msgid "Video Archiving"
-msgstr ""
-
-#: pod/video/templates/videos/well_archived.html
-msgid "Your video has not been archived."
-msgstr ""
-
-#: pod/video/templates/videos/well_archived.html
-msgid "Your video has been archived."
-msgstr ""
-
-#: pod/video/templates/videos/well_prolonged.html
-msgid "Video extension"
-msgstr ""
-
-#: pod/video/templates/videos/well_prolonged.html
-msgid "The video life span was extended to"
 msgstr ""
 
 #: pod/video/templates/videos/widgets/customclearablefileinput.html
@@ -10492,6 +10490,49 @@ msgstr ""
 msgid "Server error while processing filter."
 msgstr ""
 
+#: pod/video/views.py
+msgid ""
+"This video does not exist on this site. Maybe it has already been deleted or "
+"archived."
+msgstr ""
+
+#: pod/video/views.py
+msgid "You are not logged in. Please log in first."
+msgstr ""
+
+#: pod/video/views.py
+msgid "This video is not approaching its obsolescence date."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
+msgid "Impossible to archive video “%(slug)s”."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
+msgid "Your video “%(slug)s” has NOT been archived."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
+msgid "Your video “%(slug)s” has been archived."
+msgstr ""
+
+#: pod/video/views.py
+msgid "It may be already extended, archived or deleted."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
+msgid "Impossible to extend video %s."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
+msgid "The video life span was extended to %(date)s."
+msgstr ""
+
 #: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
 msgid "resolution"
 msgstr ""
@@ -10520,33 +10561,33 @@ msgstr ""
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Unable to reach runner manager '%(name)s' at %(url)s. Check the URL and "
+"Unable to reach runner manager “%(name)s” at %(url)s. Check the URL and "
 "network access. Error: %(error)s"
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Runner manager '%(name)s' responded but rejected authentication (HTTP "
+"Runner manager “%(name)s” responded but rejected authentication (HTTP "
 "%(status)s). Check the bearer token."
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
-msgid "Connection to runner manager '%(name)s' succeeded (HTTP %(status)s)."
+msgid "Connection to runner manager “%(name)s” succeeded (HTTP %(status)s)."
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Runner manager '%(name)s' is reachable but endpoint %(url)s was not found "
+"Runner manager “%(name)s” is reachable but endpoint %(url)s was not found "
 "(HTTP 404). Check the configured URL."
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Runner manager '%(name)s' is reachable but returned an unexpected response "
+"Runner manager “%(name)s” is reachable but returned an unexpected response "
 "(HTTP %(status)s)."
 msgstr ""
 

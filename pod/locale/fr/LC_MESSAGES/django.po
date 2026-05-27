@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-21 11:28+0000\n"
+"POT-Creation-Date: 2026-05-27 16:45+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -375,8 +375,6 @@ msgstr ""
 #: pod/playlist/templates/playlist/delete.html
 #: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/videos/archive_or_not.html
-#: pod/video/templates/videos/prolong_or_not.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Agreement required"
 msgstr "Accord requis"
@@ -1355,11 +1353,6 @@ msgstr ""
 "Il y a un chevauchement avec la superposition {0}, veuillez changer son "
 "temps de début et/ou de fin."
 
-#: pod/completion/permissions/video.py
-#, python-brace-format
-msgid "{func.__name__}: Permission denied for user {current_user.pk}."
-msgstr ""
-
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
@@ -1737,8 +1730,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format « ."
-"vtt »."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format "
+"« .vtt »."
 
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
@@ -5304,8 +5297,6 @@ msgstr ""
 
 #: pod/main/templates/maintenance.html
 #: pod/video/templates/videos/archive_download.html
-#: pod/video/templates/videos/well_archived.html
-#: pod/video/templates/videos/well_prolonged.html
 msgid "Return to homepage"
 msgstr "Revenir à la page d’accueil"
 
@@ -5825,7 +5816,7 @@ msgstr "Diapositives"
 msgid ""
 "\n"
 "        BigBlueButton will accept Office documents (.doc .docx .pptx),\n"
-"        text documents(.txt), images (.png ,.jpg) and Adobe Acrobat "
+"        text documents(.txt), images (.png, .jpg) and Adobe Acrobat "
 "documents (.pdf);\n"
 "        we recommend converting documents to .pdf prior to uploading for "
 "best results.\n"
@@ -5834,7 +5825,7 @@ msgid ""
 msgstr ""
 "\n"
 "        BigBlueButton acceptera les documents Office (.doc .docx .pptx), \n"
-"        les documents texte (.txt), les images (.png ,.jpg) et les documents "
+"        les documents texte (.txt), les images (.png, .jpg) et les documents "
 "Adobe Acrobat (.pdf); \n"
 "        nous vous recommandons de convertir les documents en .pdf avant de "
 "les télécharger pour de meilleurs résultats.\n"
@@ -7007,17 +6998,6 @@ msgid "Private"
 msgstr "Privé"
 
 #: pod/playlist/models.py
-#, fuzzy, python-brace-format
-#| msgid "%(counter)s video found"
-#| msgid_plural "%(counter)s videos found"
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
-msgstr ""
-"Veuillez entrer un titre contenant entre 1 et "
-"{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
-
-#: pod/playlist/models.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
@@ -7414,6 +7394,10 @@ msgstr "Vous ne pouvez pas accéder à cette liste de lecture."
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
+
+#: pod/playlist/views.py
+msgid "Delete the playlist"
+msgstr "Supprimer la liste de lecture"
 
 #: pod/playlist/views.py
 #, python-format
@@ -7815,7 +7799,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -8138,23 +8122,6 @@ msgstr "Modification du quiz pour la vidéo « %s »"
 #: pod/recorder/admin.py
 msgid "Encode selected recordings and create new video"
 msgstr "Encoder les enregistrements sélectionnés et créer une nouvelle vidéo"
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Studio recording {item.id} encoding started"
-msgstr "Encodage de l’enregistrement en studio {item.id} démarré"
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Recording {item.id} is not a studio recording and can’t be encoded"
-msgstr ""
-"L’enregistrement {item.id} n’est pas un enregistrement studio et ne peut pas "
-"être encodé."
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Error for {item}: {e}"
-msgstr ""
 
 #: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
@@ -9062,14 +9029,14 @@ msgstr "Une note ne peut pas être vide"
 msgid "A comment can’t be empty"
 msgstr "Un commentaire ne peut pas être vide"
 
+#: pod/video/forms.py pod/video/templates/videos/archive_or_not.html
+msgid "Archive"
+msgstr "Archiver"
+
 #: pod/video/forms.py
 #, python-format
 msgid "Extend (Automatically by %(rrd)s days)"
 msgstr "Prolonger (Automatiquement de %(rrd)s jours)"
-
-#: pod/video/forms.py pod/video/templates/videos/archive_or_not.html
-msgid "Archive"
-msgstr "Archiver"
 
 #: pod/video/forms.py
 #, python-format
@@ -9081,17 +9048,22 @@ msgstr ""
 "publication de votre vidéo."
 
 #: pod/video/forms.py
+msgid "Select this option if you want to archive your video."
+msgstr "Choisissez cette option pour archiver votre vidéo."
+
+#: pod/video/forms.py pod/video/templates/videos/archive_or_not.html
 msgid ""
-"Select this option if you want to archive your video. It will then be "
-"unpublished and will no longer be accessible to the public. However, it will "
-"remain on the video server, along with its metadata, and its publication can "
-"be reactivated if necessary."
+"It will then be unpublished and will no longer be accessible to the public."
+msgstr "Elle sera dépubliée et ne sera plus accessible au public."
+
+#: pod/video/forms.py
+msgid ""
+"However, it will remain on the video server for a certain period, during "
+"which time a publication can be reactivated upon request to a manager."
 msgstr ""
-"Choisissez cette option si vous souhaitez archiver votre vidéo. Elle sera "
-"alors dépubliée et ne sera plus accessible aux publics. Toutefois, elle "
-"restera présente sur le serveur vidéo, ainsi que les métadonnées qui "
-"l'accompagnent, et sa publication pourra être réactivée en cas de besoin et "
-"sur demande auprès d’un gestionnaire."
+"Toutefois, elle restera sur le serveur vidéo pendant une certaine période, "
+"pendant laquelle une publication pourra être réactivée sur demande auprès "
+"d’un gestionnaire."
 
 #: pod/video/forms.py
 msgid ""
@@ -9101,12 +9073,20 @@ msgid ""
 "metadata first."
 msgstr ""
 "Choisissez cette option si vous décidez de supprimer définitivement votre "
-"vidéo du serveur ainsi que les métadonnées qui l'accompagnent. Cette action "
-"doit être faite en toute connaissance de cause. Il est alors impératif de "
-"télécharger la vidéo et ses métadonnées."
+"vidéo du serveur ainsi que les métadonnées qui l’accompagnent. Cette action "
+"doit être faite en toute connaissance de cause. Il fortement conseillé de "
+"télécharger au préalable la vidéo et ses métadonnées."
+
+#: pod/video/forms.py
+msgid "Obsolescence choice"
+msgstr "Choix d’obsolescence"
+
+#: pod/video/forms.py
+msgid "Your preference regarding the future of your video on this platform."
+msgstr "Vos préférences quant au futur de votre vidéo sur cette plateforme."
 
 #: pod/video/management/commands/check_obsolete_videos.py
-#: pod/video/management/commands/respit_launcher.py
+#: pod/video/management/commands/respite_launcher.py
 msgid "An Error occurred while processing."
 msgstr "Une erreur est survenue durant l’exécution du processus."
 
@@ -9125,54 +9105,37 @@ msgid "%s video(s) archived."
 msgstr "%s vidéo(s) archivée(s)."
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to extend the duration of your video, archive it (it will be "
-"unpublished and no longer accessible), download it along with all its "
-"associated data, or delete it (after saving it) by clicking here:"
-msgstr ""
-"Vous pouvez décider de prolonger votre vidéo, de l'archiver (elle sera "
-"dépubliée et ne sera plus accessible), de la télécharger avec toutes les "
-"données qui l’accompagnent, ainsi que de la supprimer (après l’avoir "
-"sauvegardée), en cliquant ici :"
+msgid "You can choose to:"
+msgstr "Vous pouvez choisir :"
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to extend the duration of your video, archive it (it will be "
-"unpublished and no longer accessible), or download it along with all its "
-"associated data by clicking here:"
+msgid "archive your video (it will be unpublished and no longer accessible)"
 msgstr ""
-"Vous pouvez décider de prolonger votre vidéo, de l'archiver (elle sera "
-"dépubliée et ne sera plus accessible), ainsi que de la télécharger avec "
-"toutes les données qui l’accompagnent, en cliquant ici :"
+"d’archiver votre vidéo (elle sera dépubliée et ne sera plus accessible)"
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to archive your video (it will be unpublished and no longer "
-"accessible), download it along with all its associated data, or delete it "
-"(after saving it) by clicking here:"
-msgstr ""
-"Vous pouvez décider d'archiver votre vidéo (elle sera dépubliée et ne sera "
-"plus accessible), de la télécharger avec toutes les données qui "
-"l’accompagnent, ainsi que de la supprimer (après l’avoir sauvegardée), en "
-"cliquant ici :"
+msgid "postpone its deletion date"
+msgstr "de reporter sa date d’obsolescence"
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to archive your video (it will be unpublished and no longer "
-"accessible), or download it along with all its associated data by clicking "
-"here:"
-msgstr ""
-"Vous pouvez d'archiver votre vidéo (elle sera dépubliée et ne sera plus "
-"accessible), ainsi que de la télécharger avec toutes les données qui "
-"l’accompagnent, en cliquant ici :"
+msgid "delete it (after saving it)"
+msgstr "de la supprimer (après l’avoir sauvegardée)"
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "download it along with all its associated data"
+msgstr "de la télécharger avec toutes les données associées"
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "Choose an action for my video"
+msgstr "Choisir une action pour ma vidéo"
 
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid ""
 "Unless you take action, your video will be archived (unpublished) and may be "
 "deleted."
 msgstr ""
-"Sans action de votre part votre vidéo sera archivée(dépubliée) et pourra "
-"être supprimée par un gestionnaire ou automatiquement"
+"Sans action de votre part, votre vidéo sera archivée (dépubliée) et pourra "
+"être supprimée."
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
@@ -9190,8 +9153,8 @@ msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
-msgid "It will be deleted on %(date_delete)s."
-msgstr "Elle sera supprimée le %(date_delete)s."
+msgid "It will be unpublished on <strong>%(date_delete)s</strong>."
+msgstr "Elle sera dépubliée le <strong>%(date_delete)s</strong>."
 
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid ""
@@ -9208,6 +9171,11 @@ msgid ""
 msgstr ""
 "Votre vidéo intitulée « %(title)s » arrive bientôt à la date limite de "
 "suppression."
+
+#: pod/video/management/commands/check_obsolete_videos.py
+#, python-format
+msgid "It will be deleted on %(date_delete)s."
+msgstr "Elle sera supprimée le %(date_delete)s."
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
@@ -9349,15 +9317,40 @@ msgstr ""
 msgid "Packaging %s archived videos on Pod"
 msgstr "Déplacement de %s vidéos archivées sur Pod"
 
-#: pod/video/management/commands/respit_launcher.py
-#, python-format
-msgid "Respit model not found: %(error)s"
-msgstr ""
+#: pod/video/management/commands/respite_launcher.py
+msgid "DRY MODE. This is only a simulation of what would be done."
+msgstr "MODE SEC. Il ne s’agit que d’une simulation de ce qui se passerait."
 
-#: pod/video/management/commands/respit_launcher.py
+#: pod/video/management/commands/respite_launcher.py
 #, python-format
-msgid "Respit model import error: %(error)s"
+msgid ""
+"Hello! The deadline for the following videos has been postponed according to "
+"the model’s guidelines: <strong>%s</strong>"
 msgstr ""
+"Bonjour ! La date limite pour les vidéos suivantes a été prolongée "
+"conformément aux directives du modèle : <strong>%s</strong>"
+
+#: pod/video/management/commands/respite_launcher.py
+msgid ""
+"Be careful: BASE mode is just a proof of concept, not intented to be used in "
+"production."
+msgstr ""
+"Attention : le mode BASE n’est qu’une démonstration de faisabilité, et n’est "
+"pas destiné à être utilisé en production."
+
+#: pod/video/management/commands/respite_launcher.py
+msgid "Have a good day."
+msgstr "Passez une bonne journée."
+
+#: pod/video/management/commands/respite_launcher.py
+#, python-format
+msgid "Respite model not found: %(error)s"
+msgstr "Modèle de répit introuvable : %(error)s"
+
+#: pod/video/management/commands/respite_launcher.py
+#, python-format
+msgid "Respite model import error: %(error)s"
+msgstr "Erreur d’importation du modèle de répit : %(error)s"
 
 #: pod/video/models.py pod/video/views.py
 msgid "None / All"
@@ -9949,13 +9942,25 @@ msgstr "Veuillez patienter."
 msgid "Back to choices"
 msgstr "Retour aux choix"
 
+#: pod/video/templates/videos/archive_download.html
+msgid "Download video archive"
+msgstr "Télécharger l’archive vidéo"
+
 #: pod/video/templates/videos/archive_or_not.html
 msgid "Are you sure you want to archive this video?"
 msgstr "Êtes-vous sûr·e de vouloir archiver cette vidéo ?"
 
 #: pod/video/templates/videos/archive_or_not.html
-msgid "The archiving is permanent."
-msgstr "L’archivage est définitif."
+#: pod/video/templates/videos/prolong_or_not.html
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Link to the video:"
+msgstr "Lien vers la vidéo :"
+
+#: pod/video/templates/videos/archive_or_not.html
+#: pod/video/templates/videos/prolong_or_not.html
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Date to delete:"
+msgstr "Date de suppression :"
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
@@ -10270,8 +10275,8 @@ msgstr "Êtes vous sûr·e de vouloir prolonger cette vidéo ?"
 
 #: pod/video/templates/videos/prolong_or_not.html
 #, python-format
-msgid "This will extend the video life span by %(rrd)s days"
-msgstr "Cela ralongera la durée de vie de la vidéo de %(rrd)s jours"
+msgid "This will extend the video life span by %(rrd)s days."
+msgstr "Cela ralongera la durée de vie de la vidéo de %(rrd)s jours."
 
 #: pod/video/templates/videos/prolong_or_not.html
 msgid "Extend"
@@ -10826,49 +10831,41 @@ msgstr "Rang dans la file d’attente :"
 msgid "Total number of videos in the queue:"
 msgstr "Nombre total de vidéos dans la file d’attente :"
 
-#: pod/video/templates/videos/video_respist_choice.html
-msgid "Your video is outdated, what do you want do?"
-msgstr "Votre vidéo est obsolète, que voulez-vous faire ?"
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Your video will soon be deleted, what do you want do?"
+msgstr "Votre vidéo sera bientôt obsolète, que voulez-vous faire ?"
 
-#: pod/video/templates/videos/video_respist_choice.html
-msgid ""
-"This interface allows you to specify your preferences regarding the future "
-"of your video on this platform."
-msgstr ""
-"Cette interface vous permet d'indiquer vos préférences quant au futur de "
-"votre vidéo sur cette plateforme."
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Apply my choice"
+msgstr "Appliquer mon choix"
 
-#: pod/video/templates/videos/video_respist_choice.html
-msgid "Link to the video:"
-msgstr "Lien vers la vidéo :"
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Export this video"
+msgstr "Exporter cette vidéo"
 
-#: pod/video/templates/videos/video_respist_choice.html
-msgid "Submit my choice"
-msgstr "Valider mon choix"
-
-#: pod/video/templates/videos/video_respist_choice.html
-msgid "Export this video."
-msgstr "Exporter cette video."
-
-#: pod/video/templates/videos/video_respist_choice.html
+#: pod/video/templates/videos/video_respite_choice.html
 msgid ""
 "This link allows you to export your video, along with its metadata and "
 "attached files, as a ZIP file so you can save them to your storage space. We "
 "strongly recommend using this option before permanently deleting your video "
 "from the server."
 msgstr ""
-"Ce lien permet d'exporter votre vidéo ainsi que ses métadonnées et ses "
+"Ce lien permet d’exporter votre vidéo ainsi que ses métadonnées et ses "
 "fichiers attachés sous forme d’un ficher Zip, afin de les sauvegarder sur "
 "vos espaces de stockage. Cette option est fortement conseillée avant toute "
 "suppression définitive de votre vidéo du serveur."
 
-#: pod/video/templates/videos/video_respist_choice.html
+#: pod/video/templates/videos/video_respite_choice.html pod/video/views.py
+msgid "This service is not available."
+msgstr "Ce service n’est pas disponible."
+
+#: pod/video/templates/videos/video_respite_choice.html
 msgid "Access denied"
 msgstr "Accès refusé"
 
-#: pod/video/templates/videos/video_respist_choice.html
+#: pod/video/templates/videos/video_respite_choice.html
 msgid "The video does not belong to you or has already been processed."
-msgstr "La vidéo ne vous appartient pas ou a déjà été traitée."
+msgstr "Cette vidéo ne vous appartient pas ou a déjà été traitée."
 
 #: pod/video/templates/videos/video_row_select.html
 msgid "Selected"
@@ -10885,26 +10882,6 @@ msgstr "Modifier la période de visualisation"
 #: pod/video/templates/videos/videos.html
 msgid "Show view statistics for all videos"
 msgstr "Afficher les statistiques de visualisation de toutes les vidéos"
-
-#: pod/video/templates/videos/well_archived.html
-msgid "Video Archiving"
-msgstr "Archivage Vidéo"
-
-#: pod/video/templates/videos/well_archived.html
-msgid "Your video has not been archived."
-msgstr "Votre video n’a pas été archivée."
-
-#: pod/video/templates/videos/well_archived.html
-msgid "Your video has been archived."
-msgstr "Votre video a bien été archivée."
-
-#: pod/video/templates/videos/well_prolonged.html
-msgid "Video extension"
-msgstr "Prolongation Vidéo"
-
-#: pod/video/templates/videos/well_prolonged.html
-msgid "The video life span was extended to"
-msgstr "La vidéo est prolongée jusqu'au"
 
 #: pod/video/templates/videos/widgets/customclearablefileinput.html
 msgid ": "
@@ -11248,6 +11225,51 @@ msgstr "Erreur serveur lors de la récupération des vidéos de l’utilisateur.
 msgid "Server error while processing filter."
 msgstr "Erreur serveur lors du traitement du filtre."
 
+#: pod/video/views.py
+msgid ""
+"This video does not exist on this site. Maybe it has already been deleted or "
+"archived."
+msgstr ""
+"Cette vidéo n’existe pas sur ce site. Elle a peut-être déjà été supprimée ou "
+"archivée."
+
+#: pod/video/views.py
+msgid "You are not logged in. Please log in first."
+msgstr "Vous n’êtes pas connecté. Veuillez vous connecter au préalable."
+
+#: pod/video/views.py
+msgid "This video is not approaching its obsolescence date."
+msgstr "Cette vidéo n’approche pas de sa date d’obsolescence."
+
+#: pod/video/views.py
+#, python-format
+msgid "Impossible to archive video “%(slug)s”."
+msgstr "Impossible d’archiver la vidéo « %(slug)s »."
+
+#: pod/video/views.py
+#, python-format
+msgid "Your video “%(slug)s” has NOT been archived."
+msgstr "Votre vidéo « %(slug)s » n’a PAS été archivée."
+
+#: pod/video/views.py
+#, python-format
+msgid "Your video “%(slug)s” has been archived."
+msgstr "Votre vidéo « %(slug)s » a bien été archivée."
+
+#: pod/video/views.py
+msgid "It may be already extended, archived or deleted."
+msgstr "Il se peut qu’elle ait déjà été prolongée, archivée ou supprimée."
+
+#: pod/video/views.py
+#, python-format
+msgid "Impossible to extend video %s."
+msgstr "Impossible de prolonger la vidéo %s."
+
+#: pod/video/views.py
+#, python-format
+msgid "The video life span was extended to %(date)s."
+msgstr "La vidéo a été prolongée jusqu’au %(date)s."
+
 #: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
 msgid "resolution"
 msgstr "résolution"
@@ -11276,7 +11298,7 @@ msgstr "Runner manager non trouvé."
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Unable to reach runner manager '%(name)s' at %(url)s. Check the URL and "
+"Unable to reach runner manager “%(name)s” at %(url)s. Check the URL and "
 "network access. Error: %(error)s"
 msgstr ""
 "Impossible de joindre le runner manager « %(name)s » à l’adresse %(url)s. "
@@ -11285,7 +11307,7 @@ msgstr ""
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Runner manager '%(name)s' responded but rejected authentication (HTTP "
+"Runner manager “%(name)s” responded but rejected authentication (HTTP "
 "%(status)s). Check the bearer token."
 msgstr ""
 "Le runner manager « %(name)s » a répondu mais a rejeté l’authentification "
@@ -11293,13 +11315,13 @@ msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
-msgid "Connection to runner manager '%(name)s' succeeded (HTTP %(status)s)."
+msgid "Connection to runner manager “%(name)s” succeeded (HTTP %(status)s)."
 msgstr "Connexion au runner manager « %(name)s » réussie (HTTP %(status)s)."
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Runner manager '%(name)s' is reachable but endpoint %(url)s was not found "
+"Runner manager “%(name)s” is reachable but endpoint %(url)s was not found "
 "(HTTP 404). Check the configured URL."
 msgstr ""
 "Le runner manager « %(name)s » est accessible, mais le point de terminaison "
@@ -11308,7 +11330,7 @@ msgstr ""
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Runner manager '%(name)s' is reachable but returned an unexpected response "
+"Runner manager “%(name)s” is reachable but returned an unexpected response "
 "(HTTP %(status)s)."
 msgstr ""
 "Le runner manager « %(name)s » est accessible, mais a renvoyé une réponse "
@@ -11636,15 +11658,6 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "This service is not available."
-#~ msgstr "Ce service n’est pas disponible."
-
-#~ msgid "Delete the playlist"
-#~ msgstr "Supprimer la liste de lecture"
-
-#~ msgid "Apply my choice."
-#~ msgstr "Appliquez mon choix."
 
 #~ msgid "Dashboard Filters"
 #~ msgstr "Filtres du tableau de bord"
