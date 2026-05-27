@@ -78,9 +78,7 @@ class Comment(models.Model):
         children = list(
             self.get_children.annotate(nbr_vote=Count("votes", distinct=True))
             .annotate(
-                author_name=Concat(
-                    "author__last_name", Value(" "), "author__first_name"
-                )
+                author_name=Concat("author__last_name", Value(" "), "author__first_name")
             )
             .annotate(author_picture=models.F("author__owner__userpicture"))
             .annotate(

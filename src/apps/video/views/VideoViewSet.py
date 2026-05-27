@@ -119,9 +119,7 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Creates a new video, checking user quota and triggering encoding."""
-        user_videos = Video.objects.filter(owner=self.request.user).exclude(
-            video_file=""
-        )
+        user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file="")
         total_bytes = sum(v.video_file.size for v in user_videos if v.video_file)
         incoming_file = self.request.FILES.get("video_file")
         incoming_size = incoming_file.size if incoming_file else 0
@@ -237,7 +235,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Stream video file",
-        description="Serves the video file as a progressive stream. Supports optional resolution filtering (e.g., 360p, 720p, 1080p). Falls back to the best available resolution if the requested one is not found.",
         parameters=[
             OpenApiParameter(
                 name="resolution",
@@ -258,7 +255,10 @@ class VideoViewSet(viewsets.ModelViewSet):
     )
     @action(detail=True, methods=["get"], permission_classes=[permissions.AllowAny])
     def stream(self, request, slug=None):
-        """Serves the video file as a stream."""
+        """
+        Serves the video file as a progressive stream. Supports optional resolution filtering (e.g., 360p, 720p, 1080p).
+        Falls back to the best available resolution if the requested one is not found.
+        """
         video = self.get_object()
         self._check_stream_permissions(request, video)
 
@@ -281,7 +281,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Register a video view",
-        description="Increments both the global view counter of the video and the daily views statistics (used for charts).",
         responses={
             200: OpenApiResponse(
                 description="View registered successfully. Returns the updated total view count.",
@@ -297,7 +296,9 @@ class VideoViewSet(viewsets.ModelViewSet):
     )
     @action(detail=True, methods=["post"], permission_classes=[permissions.AllowAny])
     def register_view(self, request, slug=None):
-        """Increments the view count for the video and daily statistics."""
+        """
+        Increments both the global view counter of the video and the daily views statistics (used for charts).
+        """
         video = self.get_object()
         video.view_count = F("view_count") + 1
         video.save(update_fields=["view_count"])
@@ -311,7 +312,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Unlock restricted video",
-        description="Unlocks a restricted/password-protected video using either a raw password in JSON body or a legacy V4 hash.",
         request={
             "application/json": {
                 "type": "object",
@@ -376,7 +376,7 @@ class VideoViewSet(viewsets.ModelViewSet):
     )
     def unlock(self, request, slug=None):
         """
-        Unlocks a RESTRICTED video with a password or legacy V4 hash.
+        Unlocks a restricted/password-protected video using either a raw password in JSON body or a legacy V4 hash.
         """
         video = self.get_object()
 
@@ -410,7 +410,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="List my videos",
-        description="Returns only videos owned or co-owned by the current user.",
         responses={200: VideoSerializer(many=True)},
     )
     @action(
@@ -418,7 +417,7 @@ class VideoViewSet(viewsets.ModelViewSet):
     )
     def me(self, request):
         """
-        Retrieves a filtered list of videos where the current user is either the owner or a co-owner.
+        Returns only videos owned or co-owned by the current user.
         """
         user = request.user
         queryset = (
@@ -435,13 +434,12 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Video metadata choices",
-        description="Returns available choices for License, Cursus, and Status.",
         responses={200: dict},
     )
     @action(detail=False, methods=["get"], permission_classes=[permissions.AllowAny])
     def metadata(self, request):
         """
-        Returns dynamic choices for video fields to help the frontend.
+        Returns available choices for License, Cursus, and Status to help the frontend.
         """
         return Response(
             {
@@ -456,21 +454,18 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Transfer video ownership",
-        description="Allows an admin to change the owner of a video.",
         request={
             "application/json": {
                 "type": "object",
                 "properties": {"owner_id": {"type": "integer"}},
             }
         },
-        responses={
-            200: {"type": "object", "properties": {"status": {"type": "string"}}}
-        },
+        responses={200: {"type": "object", "properties": {"status": {"type": "string"}}}},
     )
     @action(detail=True, methods=["post"], permission_classes=[IsSuperUser])
     def transfer_ownership(self, request, slug=None):
         """
-        Transfers the ownership of a video to another user.
+        Allows an admin to change the owner of a video.
         Accessible only by administrators.
         """
         video = self.get_object()

@@ -236,7 +236,6 @@ class PlaylistViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Add video to playlist",
-        description="Adds a video (by its ID) to the playlist in a thread-safe and duplicate-protected manner.",
         request={
             "application/json": {
                 "type": "object",
@@ -264,7 +263,9 @@ class PlaylistViewSet(viewsets.ModelViewSet):
     )
     @action(detail=True, methods=["post"])
     def add_video(self, request, slug=None):
-        """Add a video to the playlist in a thread-safe manner."""
+        """
+        Adds a video (by its ID) to the playlist in a thread-safe and duplicate-protected manner.
+        """
         from django.db import transaction
 
         video_id = request.data.get("video_id")
@@ -284,7 +285,6 @@ class PlaylistViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Remove video from playlist",
-        description="Removes a video (by its ID) from the playlist.",
         request={
             "application/json": {
                 "type": "object",
@@ -304,7 +304,7 @@ class PlaylistViewSet(viewsets.ModelViewSet):
     )
     @action(detail=True, methods=["post"])
     def remove_video(self, request, slug=None):
-        """Remove a video from the playlist."""
+        """Removes a video (by its ID) from the playlist."""
         playlist = self.get_object()
         video_id = request.data.get("video_id")
         item = get_object_or_404(PlaylistItem, playlist=playlist, video_id=video_id)
@@ -313,7 +313,6 @@ class PlaylistViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Reorder playlist videos",
-        description="Reorder videos in the playlist by providing an array of objects mapping video IDs to their new positions.",
         request={
             "application/json": {
                 "type": "object",
@@ -338,16 +337,14 @@ class PlaylistViewSet(viewsets.ModelViewSet):
                 description="Playlist reordered successfully.",
                 response={
                     "type": "object",
-                    "properties": {
-                        "status": {"type": "string", "example": "reordered"}
-                    },
+                    "properties": {"status": {"type": "string", "example": "reordered"}},
                 },
             )
         },
     )
     @action(detail=True, methods=["post"])
     def reorder(self, request, slug=None):
-        """Reorder videos in the playlist by updating their position values."""
+        """Reorder videos in the playlist by providing an array of objects mapping video IDs to their new positions."""
         playlist = self.get_object()
         positions = request.data.get("positions", [])
         updated_items = []

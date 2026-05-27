@@ -81,9 +81,7 @@ class CommentSerializer(serializers.ModelSerializer):
             Comment.objects.filter(video__slug=video_slug)
             .annotate(nbr_vote=Count("votes", distinct=True))
             .annotate(
-                author_name=Concat(
-                    "author__last_name", Value(" "), "author__first_name"
-                )
+                author_name=Concat("author__last_name", Value(" "), "author__first_name")
             )
             .annotate(
                 is_owner=Case(

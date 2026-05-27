@@ -24,7 +24,6 @@ class CommentViewSet(viewsets.GenericViewSet):
     @extend_schema(
         operation_id="comment_list",
         summary="List video comments",
-        description="Retrieves comments for a specific video by its slug. Supports hierarchical tree representation (nested child comments under parents). If ?only=parents is provided, only first-level comments are returned.",
         parameters=[
             OpenApiParameter(
                 name="only",
@@ -39,16 +38,14 @@ class CommentViewSet(viewsets.GenericViewSet):
     )
     def list_comments(self, request, video_slug: str):
         """
-        Retrieves comments for a specific video.
+        Retrieves comments for a specific video by its slug. Supports hierarchical tree representation (nested child comments under parents).
         GET /comment/<video_slug>/
         If ?only=parents is provided, only first-level comments are returned.
         Otherwise, all top-level comments are returned with their children embedded.
         """
         only_parents = request.query_params.get("only") == "parents"
         user_id = request.user.id if request.user.is_authenticated else None
-        queryset = self.get_serializer_class().get_optimized_queryset(
-            video_slug, user_id
-        )
+        queryset = self.get_serializer_class().get_optimized_queryset(video_slug, user_id)
         queryset = queryset.filter(parent__isnull=True)
         serializer = self.get_serializer(
             queryset,
@@ -60,12 +57,11 @@ class CommentViewSet(viewsets.GenericViewSet):
     @extend_schema(
         operation_id="comment_detail",
         summary="Retrieve comment details",
-        description="Retrieves a specific comment and all its nested children by its ID and the video's slug.",
         responses={200: CommentSerializer},
     )
     def detail_comment(self, request, video_slug: str, comment_id: int):
         """
-        Retrieves a specific comment and its nested children.
+        Retrieves a specific comment and all its nested children by its ID and the video's slug.
         GET /comment/<comment_id>/<video_slug>/
         """
         user_id = request.user.id if request.user.is_authenticated else None
@@ -79,7 +75,6 @@ class CommentViewSet(viewsets.GenericViewSet):
     @extend_schema(
         operation_id="comment_add",
         summary="Add comment or reply",
-        description="Adds a new comment or a reply/nested comment to an existing comment. Pass the comment_id of the parent comment in the URL path to add a reply.",
         request=CommentSerializer,
         responses={
             201: OpenApiResponse(
@@ -112,7 +107,8 @@ class CommentViewSet(viewsets.GenericViewSet):
     )
     def add_comment(self, request, video_slug: str, comment_id: int = None):
         """
-        Adds a new comment or a reply to a video.
+        Adds a new comment or a reply/nested comment to an existing comment.
+        Pass the comment_id of the parent comment in the URL path to add a reply.
         POST /comment/add/<video_slug>/
         POST /comment/add/<video_slug>/<comment_id>/
         """
@@ -155,7 +151,6 @@ class CommentViewSet(viewsets.GenericViewSet):
     @extend_schema(
         operation_id="comment_delete",
         summary="Delete a comment",
-        description="Deletes a specific comment by ID. The user must be the author of the comment, the owner of the video, or a superuser.",
         responses={
             200: OpenApiResponse(
                 description="Deletion outcome status.",
@@ -171,7 +166,7 @@ class CommentViewSet(viewsets.GenericViewSet):
     )
     def delete_comment(self, request, video_slug: str, comment_id: int):
         """
-        Deletes a comment. Permission check: Author, Video Owner, or Superuser.
+        Deletes a specific comment by ID. The user must be the author of the comment, the owner of the video, or a superuser.
         POST /comment/del/<video_slug>/<comment_id>/
         """
         comment = get_object_or_404(Comment, id=comment_id, video__slug=video_slug)
@@ -191,7 +186,6 @@ class CommentViewSet(viewsets.GenericViewSet):
     @extend_schema(
         operation_id="comment_user_votes",
         summary="Get user voted comment IDs",
-        description="Returns a list of comment IDs that the currently authenticated user has voted on (liked) for this specific video.",
         responses={
             200: OpenApiResponse(
                 description="List of comment IDs.",
@@ -205,7 +199,7 @@ class CommentViewSet(viewsets.GenericViewSet):
     )
     def get_user_votes(self, request, video_slug: str):
         """
-        Returns a list of IDs for comments the user has voted on for a specific video.
+        Returns a list of comment IDs that the currently authenticated user has voted on (liked) for this specific video.
         GET /comment/vote/<video_slug>/
         """
         if not request.user.is_authenticated:
@@ -218,7 +212,6 @@ class CommentViewSet(viewsets.GenericViewSet):
     @extend_schema(
         operation_id="comment_toggle_vote",
         summary="Toggle like/vote on comment",
-        description="Toggles (adds or removes) a vote/like on a specific comment for the current user. Returns the updated vote status and total vote count.",
         responses={
             200: OpenApiResponse(
                 description="Vote status toggled.",
@@ -235,7 +228,7 @@ class CommentViewSet(viewsets.GenericViewSet):
     )
     def toggle_vote(self, request, video_slug: str, comment_id: int):
         """
-        Toggles (adds/removes) a vote on a comment by the current user.
+        Toggles (adds or removes) a vote/like on a specific comment for the current user. Returns the updated vote status and total vote count.
         POST /comment/vote/<video_slug>/<comment_id>/
         """
         if not request.user.is_authenticated:

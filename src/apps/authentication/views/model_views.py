@@ -94,7 +94,6 @@ class OwnerViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Assign access groups to user",
-        description="Assigns access groups to a user based on their username. Restricted to superusers.",
         request={
             "application/json": {
                 "type": "object",
@@ -121,8 +120,8 @@ class OwnerViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["post"], url_path="set-user-accessgroup")
     def set_user_accessgroup(self, request):
         """
+        Assigns access groups to a user based on their username. Restricted to superusers.
         Equivalent of accessgroups_set_user_accessgroup.
-        Assigns AccessGroups to a user via their username.
         """
         username = request.data.get("username")
         groups = request.data.get("groups")
@@ -140,13 +139,10 @@ class OwnerViewSet(viewsets.ModelViewSet):
             )
             return Response(serializer.data)
         except Owner.DoesNotExist:
-            return Response(
-                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
     @extend_schema(
         summary="Remove access groups from user",
-        description="Removes access groups from a user based on their username. Restricted to superusers.",
         request={
             "application/json": {
                 "type": "object",
@@ -173,8 +169,8 @@ class OwnerViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["post"], url_path="remove-user-accessgroup")
     def remove_user_accessgroup(self, request):
         """
+        Removes access groups from a user based on their username. Restricted to superusers.
         Equivalent of accessgroups_remove_user_accessgroup.
-        Removes AccessGroups from a user via their username.
         """
         username = request.data.get("username")
         groups = request.data.get("groups")
@@ -198,7 +194,6 @@ class OwnerViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Update profile picture",
-        description="Uploads and assigns an image as the user's profile picture. Or deletes the existing picture if a DELETE request is made.",
         request={
             "multipart/form-data": {
                 "type": "object",
@@ -241,7 +236,7 @@ class OwnerViewSet(viewsets.ModelViewSet):
     )
     def update_picture(self, request, pk=None):
         """
-        Uploads and assigns an image as the user's profile picture, or deletes it.
+        Uploads and assigns an image as the user's profile picture, or deletes it if a DELETE request is made.
         """
         owner = self.get_object()
 
@@ -434,7 +429,6 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Set users of an access group",
-        description="Replaces/assigns the list of users belonging to an access group by their usernames. Restricted to superusers.",
         request={
             "application/json": {
                 "type": "object",
@@ -461,8 +455,8 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["post"], url_path="set-users-by-name")
     def set_users_by_name(self, request):
         """
+        Replaces/assigns the list of users belonging to an access group by their usernames. Restricted to superusers.
         Equivalent of accessgroups_set_users_by_name.
-        Adds a list of users (by username) to an AccessGroup (by code_name).
         """
         code_name = request.data.get("code_name")
         users = request.data.get("users")
@@ -487,7 +481,6 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Remove users from an access group",
-        description="Removes a list of users (by their usernames) from an access group (by its code_name). Restricted to superusers.",
         request={
             "application/json": {
                 "type": "object",
@@ -514,8 +507,8 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["post"], url_path="remove-users-by-name")
     def remove_users_by_name(self, request):
         """
+        Removes a list of users (by their usernames) from an access group (by its code_name). Restricted to superusers.
         Equivalent of accessgroups_remove_users_by_name.
-        Removes a list of users (by username) from an AccessGroup (by code_name).
         """
         code_name = request.data.get("code_name")
         users = request.data.get("users")

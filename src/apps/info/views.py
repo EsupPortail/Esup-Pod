@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 @extend_schema(
     summary="System Information",
-    description="Retrieves the general public details of the backend project, including project name and version, useful for system status checks and frontend version displays.",
     responses={
         200: {
             "type": "object",
@@ -30,8 +29,8 @@ logger = logging.getLogger(__name__)
 )
 class SystemInfoView(APIView):
     """
-    Simple view to return public system information,
-    including the current version.
+    Retrieves the general public details of the backend project, including project name and version,
+    useful for system status checks and frontend version displays.
     """
 
     permission_classes = [AllowAny]
@@ -50,7 +49,6 @@ class SystemInfoView(APIView):
 
 @extend_schema(
     summary="App Configuration Flags",
-    description="Retrieves a list of whitelisted public configuration flags grouped by application module. This allows the frontend to adapt dynamically based on backend options (e.g., maximum upload sizes, habilitation groups, or enabled authentication protocols) without exposing secrets.",
     responses={
         200: {
             "type": "object",
@@ -62,7 +60,9 @@ class SystemInfoView(APIView):
 )
 class ConfigInfoView(APIView):
     """
-    Returns a JSON with the whitelisted public configuration fields for each app.
+    Retrieves a list of whitelisted public configuration flags grouped by application module.
+    This allows the frontend to adapt dynamically based on backend options (e.g., maximum upload sizes,
+    habilitation groups, or enabled authentication protocols) without exposing secrets.
 
     Only fields explicitly marked with json_schema_extra={"public": True} in
     their Field() definition are included. All other fields are private by default,
