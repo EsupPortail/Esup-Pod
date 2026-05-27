@@ -43,11 +43,10 @@ class UserMeView(APIView):
 
     @extend_schema(
         summary="Retrieve authenticated user profile",
-        description="Returns the profile information, including username, email, full name, affiliation, and establishment of the currently authenticated user.",
         responses={200: UserSerializer},
     )
     def get(self, request):
-        """Returns the profile of the current authenticated user."""
+        """Returns the profile information, including username, email, full name, affiliation, and establishment of the currently authenticated user."""
         serializer = UserSerializer(request.user)
         data = serializer.data
         if hasattr(request.user, "owner"):

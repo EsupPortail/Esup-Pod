@@ -152,7 +152,7 @@ def create_owner_profile(sender, instance: User, created: bool, **kwargs) -> Non
 @receiver(post_delete, sender=Owner)
 def auto_delete_owner_files_on_delete(sender, instance, **kwargs):
     """
-    Esup-Pod - Deletes physical userpicture from disk when Owner object is deleted.
+    Deletes physical userpicture from disk when Owner object is deleted.
     """
     if instance.userpicture:
         try:
