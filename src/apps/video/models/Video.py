@@ -348,8 +348,23 @@ class Video(models.Model):
 
         if not self.id:
             from src.apps.video.services.metadata import calculate_expiration_date
+            from src.apps.video.models import License, Type
 
             self.date_to_delete = calculate_expiration_date(self.owner)
+
+            if not self.license_id and video_settings.default_license:
+                try:
+                    self.license = License.objects.get(
+                        slug=video_settings.default_license
+                    )
+                except License.DoesNotExist:
+                    pass
+
+            if not self.type_id and video_settings.default_type_id:
+                try:
+                    self.type = Type.objects.get(pk=video_settings.default_type_id)
+                except Type.DoesNotExist:
+                    pass
 
         super().save(*args, **kwargs)
 

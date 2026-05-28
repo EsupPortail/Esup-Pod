@@ -13,8 +13,12 @@ jobs:
   # 1. Code Quality
   quality-check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref || github.ref }}
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
@@ -30,6 +34,13 @@ jobs:
       - name: Format code with Black
         run: |
           black . -l 90
+
+      - name: Commit formatted code
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: Auto-format code with Black"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
 
       - name: Lint with flake8
         run: flake8 src --count --show-source --statistics
