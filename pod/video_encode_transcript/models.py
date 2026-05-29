@@ -526,6 +526,28 @@ def default_site_runner_manager(sender, instance, **kwargs):
         instance.site = Site.objects.get_current()
 
 
+class PriorityUser(models.Model):
+    """Hold users that should always be dequeued first (priority 0)."""
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_("User"),
+        help_text=_("User with absolute task queue priority (priority 0)."),
+    )
+    date_added = models.DateTimeField(
+        verbose_name=_("Date added"), default=timezone.now, editable=False
+    )
+
+    def __str__(self):
+        return str(self.user)
+
+    class Meta:
+        verbose_name = _("Priority user")
+        verbose_name_plural = _("Priority users")
+        ordering = ["user__username", "id"]
+
+
 class Task(models.Model):
     """Hold information about tasks managed by the runner managers."""
 
