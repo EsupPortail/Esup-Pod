@@ -6,14 +6,10 @@ import time
 
 import bleach
 from django.conf import settings
-from django.core.mail import (
-    EmailMultiAlternatives,
-    mail_admins,
-    mail_managers,
-    send_mail,
-)
+from django.core.mail import EmailMultiAlternatives, mail_admins, mail_managers, send_mail
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
 from pod.progressive_web_app.utils import notify_user
 from pod.video.models import Video
 
@@ -60,6 +56,30 @@ MANAGERS = getattr(settings, "MANAGERS", {})
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
+MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
+DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "")
+
+
+def _is_safe_file_path(path_file) -> bool:
+    """Return whether a path resolves inside an authorized local root."""
+    if not path_file:
+        return False
+    try:
+        candidate = os.path.realpath(os.fspath(path_file))
+    except (TypeError, ValueError, OSError):
+        return False
+
+    allowed_roots = [MEDIA_ROOT, DEFAULT_RECORDER_PATH, "/tmp"]
+    for root in allowed_roots:
+        if not root:
+            continue
+        root_real = os.path.realpath(root)
+        try:
+            if os.path.commonpath([candidate, root_real]) == root_real:
+                return True
+        except ValueError:
+            continue
+    return False
 
 
 # ##########################################################################
@@ -93,9 +113,17 @@ def add_encoding_log(video_id, log) -> None:
 
 def check_file(path_file) -> bool:
     """Check if path_file is accessible and is not null."""
-    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
-        return True
-    return False
+    if not _is_safe_file_path(path_file):
+        return False
+    safe_path = os.path.realpath(os.fspath(path_file))
+    try:
+        return (
+            os.path.isfile(safe_path)
+            and os.access(safe_path, os.F_OK)
+            and os.stat(safe_path).st_size > 0
+        )
+    except (OSError, ValueError):
+        return False
 
 
 def create_outputdir(video_id, video_path):
