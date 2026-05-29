@@ -173,26 +173,46 @@ class Comment extends HTMLElement {
     comment_container.setAttribute("class", "comment_container");
     let comment_content = document.createElement("div");
     comment_content.setAttribute("class", "comment_content");
-    comment_content.innerHTML = `
-      <div class="comment_content_header inline_flex_space">
-    <h3 class="user_name">${owner}</h3>
-    <comment-since since=${added_since.toISOString()}></comment-since>
-      </div>
-      <div class="comment_content_body">
-      </div>
-      <div class="comment_content_footer">
-    <div class="actions inline_flex_space"></div>
-    <div class="form" data-comment="${id}"></div>
-      </div>
-  `;
+
+    const commentHeader = document.createElement("div");
+    commentHeader.setAttribute("class", "comment_content_header inline_flex_space");
+
+    const userName = document.createElement("h3");
+    userName.setAttribute("class", "user_name");
+    userName.textContent = owner;
+    commentHeader.appendChild(userName);
+
+    const commentSince = document.createElement("comment-since");
+    commentSince.setAttribute("since", added_since.toISOString());
+    commentHeader.appendChild(commentSince);
+
+    const commentBody = document.createElement("div");
+    commentBody.setAttribute("class", "comment_content_body");
+
+    const commentFooter = document.createElement("div");
+    commentFooter.setAttribute("class", "comment_content_footer");
+
+    const actions = document.createElement("div");
+    actions.setAttribute("class", "actions inline_flex_space");
+    commentFooter.appendChild(actions);
+
+    const form = document.createElement("div");
+    form.setAttribute("class", "form");
+    form.setAttribute("data-comment", id);
+    commentFooter.appendChild(form);
+
+    comment_content.appendChild(commentHeader);
+    comment_content.appendChild(commentBody);
+    comment_content.appendChild(commentFooter);
     comment_container.appendChild(comment_content);
-    if (is_parent)
-      comment_container.querySelector(".comment_content_body").innerHTML =
-        content;
-    else
-      comment_container
-        .querySelector(".comment_content_body")
-        .appendChild(content);
+    const contentBody = comment_container.querySelector(".comment_content_body");
+    if (contentBody) {
+      if (content instanceof Node) {
+        contentBody.appendChild(content);
+      } else {
+        contentBody.textContent = content;
+      }
+    }
     let svg_icon = [
       `<span class="unvoted"><i class="bi bi-star"></i></span>`,
       `<span class="voted"><i class="bi bi-star-fill"></i></span>`,
@@ -883,10 +903,21 @@ function add_user_tag(comment_value, parent_comment) {
     e.stopPropagation();
     scrollToComment(parent_comment);
   });
-  tag.innerHTML = `
-    <i aria-hidden="true" class="bi bi-reply-fill"></i>
-    <span class="reply_author">@${reply_to}</span>
-    <span class="reply_content">${reply_content}</span>`;
+
+  const icon = document.createElement("i");
+  icon.setAttribute("aria-hidden", "true");
+  icon.setAttribute("class", "bi bi-reply-fill");
+  tag.appendChild(icon);
+
+  const author = document.createElement("span");
+  author.setAttribute("class", "reply_author");
+  author.textContent = `@${reply_to}`;
+  tag.appendChild(author);
+
+  const content = document.createElement("span");
+  content.setAttribute("class", "reply_content");
+  content.textContent = reply_content;
+  tag.appendChild(content);
   const comment_text = document.createElement("span");
   comment_text.setAttribute("class", "comment_text");
   comment_text.innerText = comment_value;
