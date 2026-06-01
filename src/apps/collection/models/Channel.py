@@ -2,6 +2,7 @@
 Esup-Pod - Channel model.
 """
 
+import logging
 import os
 from django.db import models
 from django.conf import settings
@@ -11,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from src.apps.collection.models.base import BaseContainer
 from src.apps.encoding.services.storage import get_storage_path_collection_image
 
+logger = logging.getLogger(__name__)
 
 class Channel(BaseContainer):
     """
@@ -67,11 +69,11 @@ def auto_delete_channel_files_on_delete(sender, instance, **kwargs):
         try:
             if os.path.isfile(instance.logo.path):
                 os.remove(instance.logo.path)
-        except ValueError:
-            pass
+        except ValueError as e:
+            logger.warning("Could not delete channel logo %s: %s", instance.logo, e)
     if instance.banner:
         try:
             if os.path.isfile(instance.banner.path):
                 os.remove(instance.banner.path)
-        except ValueError:
-            pass
+        except ValueError as e:
+            logger.warning("Could not delete channel banner %s: %s", instance.banner, e)
