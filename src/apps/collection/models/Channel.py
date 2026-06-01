@@ -14,6 +14,7 @@ from src.apps.encoding.services.storage import get_storage_path_collection_image
 
 logger = logging.getLogger(__name__)
 
+
 class Channel(BaseContainer):
     """
     Esup-Pod - Model representing a channel.
