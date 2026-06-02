@@ -54,28 +54,14 @@ from pod.recorder.models import Recording
 from pod.video.models import Video
 from pod.video_encode_transcript.models import RunnerManager, Task
 from pod.video_encode_transcript.runner_manager import (
-    _build_base_url as build_runner_base_url,
-)
-from pod.video_encode_transcript.runner_manager import (
-    _build_studio_source_url as build_runner_studio_source_url,
-)
-from pod.video_encode_transcript.runner_manager import (
-    _build_transcription_source_url as build_runner_transcription_source_url,
-)
-from pod.video_encode_transcript.runner_manager import (
-    _build_video_source_url as build_runner_video_source_url,
-)
-from pod.video_encode_transcript.runner_manager import (
-    _prepare_encoding_parameters as prepare_runner_encoding_parameters,
-)
-from pod.video_encode_transcript.runner_manager import (
-    _prepare_task_data as build_runner_task_data,
-)
-from pod.video_encode_transcript.runner_manager import (
-    _prepare_transcription_parameters as prepare_runner_transcription_parameters,
-)
-from pod.video_encode_transcript.runner_manager import (
-    _submit_to_runner_managers as submit_runner_task_to_managers,
+    _build_base_url,
+    _build_studio_source_url,
+    _build_transcription_source_url,
+    _build_video_source_url,
+    _prepare_encoding_parameters,
+    _prepare_task_data,
+    _prepare_transcription_parameters,
+    _submit_to_runner_managers,
 )
 from pod.video_encode_transcript.task_queue import (
     HIGH_PRIORITY,
@@ -172,7 +158,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(message))
 
     def _format_priority_label(self, priority: int) -> str:
-        """Return a human readable queue-priority label."""
+        """Return a human readable queue-priority label for logs."""
         if priority == HIGH_PRIORITY:
             return "HIGH"
         if priority == LOW_PRIORITY:
@@ -618,13 +604,13 @@ class Command(BaseCommand):
         runner_managers: list,
     ) -> bool:
         """Build the runner payload and submit it using shared runner helpers."""
-        data = build_runner_task_data(
+        data = _prepare_task_data(
             source_url=source_url,
             base_url=base_url,
             parameters=parameters,
             task_type=task_type,
         )
-        return submit_runner_task_to_managers(
+        return _submit_to_runner_managers(
             runner_managers=runner_managers,
             data=data,
             task_type=task_type,
@@ -636,9 +622,9 @@ class Command(BaseCommand):
         self, video: Video, site: Site, runner_managers: list
     ) -> bool:
         """Submit an encoding task using shared runner manager helpers."""
-        base_url = build_runner_base_url(site)
-        source_url = build_runner_video_source_url(video, base_url)
-        parameters = prepare_runner_encoding_parameters(video=video, base_url=base_url)
+        base_url = _build_base_url(site)
+        source_url = _build_video_source_url(video, base_url)
+        parameters = _prepare_encoding_parameters(video=video, base_url=base_url)
         return self._submit_task_to_runner_managers(
             task_type="encoding",
             source_type="video",
@@ -653,9 +639,9 @@ class Command(BaseCommand):
         self, video: Video, site: Site, runner_managers: list
     ) -> bool:
         """Submit a transcription task using shared runner manager helpers."""
-        base_url = build_runner_base_url(site)
-        source_url = build_runner_transcription_source_url(video, base_url)
-        parameters = prepare_runner_transcription_parameters(video=video)
+        base_url = _build_base_url(site)
+        source_url = _build_transcription_source_url(video, base_url)
+        parameters = _prepare_transcription_parameters(video=video)
         return self._submit_task_to_runner_managers(
             task_type="transcription",
             source_type="video",
@@ -670,9 +656,9 @@ class Command(BaseCommand):
         self, recording: Recording, site: Site, runner_managers: list
     ) -> bool:
         """Submit a studio task using shared runner manager helpers."""
-        base_url = build_runner_base_url(site)
-        source_url = build_runner_studio_source_url(recording, base_url)
-        parameters = prepare_runner_encoding_parameters(video=None)
+        base_url = _build_base_url(site)
+        source_url = _build_studio_source_url(recording, base_url)
+        parameters = _prepare_encoding_parameters(video=None)
         return self._submit_task_to_runner_managers(
             task_type="studio",
             source_type="recording",
