@@ -6,7 +6,7 @@ lang: fr
 
 # Système de migration des données entre la version 3 et la version 4
 
-Ce document décrit le processus de migration des données de l’application Pod depuis la version 3.8.x vers la version 4.0.x.
+Ce document décrit le processus de migration des données de l’application Pod depuis la version 3.8.x vers la version 4.x.
 Le système repose sur deux scripts principaux :
 
 - l’un pour exporter les données de Pod v3 vers un fichier JSON,
@@ -15,9 +15,9 @@ Le système repose sur deux scripts principaux :
 ## Prérequis
 
 - Une version de Pod en 3.8.x (de 3.8.1 à 3.8.4 à ce jour)
-- Une version de Pod en 4.0.x (4.0.beta à ce jour)
+- Une version de Pod en 4.x (4.0.beta à ce jour)
 - Assurez-vous d’avoir accès à la base de données de Pod, en version 3.8.x (MariaDB/MySQL ou PostgreSQL).
-- Assurez-vous d’avoir accès à la base de données de Pod, en version 4.0.x (MariaDB/MySQL ou PostgreSQL).
+- Assurez-vous d’avoir accès à la base de données de Pod, en version 4.x (MariaDB/MySQL ou PostgreSQL).
 
 ---
 
@@ -162,4 +162,4 @@ Bien entendu, il est possible de mixer les différents arguments.
 ---
 
 En suivant ces instructions, vous devriez pouvoir migrer avec succès
- votre base de données de Pod v3.8.x vers Pod v4.0.x.
+ votre base de données de Pod v3.8.x vers Pod v4.x.
