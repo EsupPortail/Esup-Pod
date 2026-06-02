@@ -1,4 +1,4 @@
-"""Security-focused tests for video forms helpers."""
+"""Esup-Pod security-focused tests for video forms helpers."""
 
 import os
 import tempfile
