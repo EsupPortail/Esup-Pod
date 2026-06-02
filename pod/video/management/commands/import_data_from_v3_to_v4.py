@@ -1,7 +1,7 @@
 """
-Import data from Pod v3.8.x JSON file to Pod v4.0.x.
+Import data from Pod v3.8.x JSON file to Pod v4.x.
 
-This script is designed to import data from a Pod v3.8.x JSON file into a Pod v4.0.x database.
+This script is designed to import data from a Pod v3.8.x JSON file into a Pod v4.x database.
 It supports both MariaDB/MySQL and PostgreSQL databases. The script reads data from a specified JSON file,
 processes it, and inserts it into the appropriate tables in the Pod v4 database.
 It also handles tag management using the Tagulous library.
@@ -65,15 +65,15 @@ import logging
 import os
 import subprocess
 import time
-import urllib3
-
 from contextlib import contextmanager
-from django.core.management.base import BaseCommand
-from django.db import connection, close_old_connections
-from django.db import transaction
+
+import urllib3
 from django.conf import settings
-from pod.video.models import Video
+from django.core.management.base import BaseCommand
+from django.db import close_old_connections, connection, transaction
+
 from pod.recorder.models import Recorder
+from pod.video.models import Video
 
 # Base directory
 BASE_DIR = getattr(settings, "BASE_DIR", "/home/pod/django_projects/podv3/pod")
@@ -144,7 +144,7 @@ class Command(BaseCommand):
             )
 
         # Manage Pod version
-        if VERSION[:3] == "4.0":
+        if VERSION.startswith("4."):
             self.stdout.write(
                 self.style.SUCCESS(
                     f" - Pod version: {VERSION}. "
@@ -156,7 +156,7 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.ERROR(
                     f" - Pod version: {VERSION}. "
-                    "This script can only be used for Pod version 4.0.x. "
+                    "This script can only be used for Pod version 4.x. "
                     "The process stops here!"
                 )
             )
