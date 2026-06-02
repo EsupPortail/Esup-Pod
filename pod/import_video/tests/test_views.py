@@ -1,5 +1,5 @@
 """
-Tests the views for import_video module.
+Esup-Pod tests the views for import_video module.
 
 *  run with `python manage.py test pod.import_video.tests.test_views`
 
@@ -390,6 +390,7 @@ class ExternalRecordingUploadTestView(TestCase):
         ]
 
         def youtube_side_effect(source_url, client):
+            """Raise on primary client, return stream on fallback client."""
             if client == "ANDROID_VR":
                 raise HTTPError(
                     url="https://youtube.url",
