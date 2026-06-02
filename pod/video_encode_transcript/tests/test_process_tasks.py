@@ -35,17 +35,17 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
     @patch("pod.video_encode_transcript.runner_manager._attach_dressing_info")
     @patch("pod.video_encode_transcript.runner_manager._attach_cut_info")
     @patch(
-        "pod.video_encode_transcript.management.commands.process_tasks.submit_runner_task_to_managers"
+        "pod.video_encode_transcript.management.commands.process_tasks._submit_to_runner_managers"
     )
     def test_submit_encoding_task_includes_video_metadata(
         self,
-        mock_submit_runner_task_to_managers,
+        mock_submit_to_runner_managers,
         mock_attach_cut_info,
         mock_attach_dressing_info,
         mock_get_list_rendition,
     ) -> None:
         """Encoding tasks should build a shared payload including video metadata."""
-        mock_submit_runner_task_to_managers.return_value = True
+        mock_submit_to_runner_managers.return_value = True
 
         video = SimpleNamespace(
             id=17,
@@ -59,7 +59,7 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
         )
 
         self.assertTrue(result)
-        payload = mock_submit_runner_task_to_managers.call_args.kwargs["data"]
+        payload = mock_submit_to_runner_managers.call_args.kwargs["data"]
         self.assertEqual(payload["parameters"]["video_id"], 17)
         self.assertEqual(payload["parameters"]["video_slug"], "sample-video")
         self.assertEqual(payload["parameters"]["video_title"], "Sample video")
@@ -83,7 +83,7 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
         self.assertEqual(
             payload["notify_url"], "http://example.com/runner/notify_task_end/"
         )
-        mock_submit_runner_task_to_managers.assert_called_once_with(
+        mock_submit_to_runner_managers.assert_called_once_with(
             runner_managers=[self.runner_manager],
             data=payload,
             task_type="encoding",
@@ -96,17 +96,17 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
         TRANSCRIPTION_NORMALIZE=True,
     )
     @patch(
-        "pod.video_encode_transcript.management.commands.process_tasks.submit_runner_task_to_managers"
+        "pod.video_encode_transcript.management.commands.process_tasks._submit_to_runner_managers"
     )
     @patch(
         "pod.video_encode_transcript.transcript.resolve_transcription_language",
         return_value="fr",
     )
     def test_submit_transcription_task_includes_video_metadata(
-        self, mock_resolve_transcription_language, mock_submit_runner_task_to_managers
+        self, mock_resolve_transcription_language, mock_submit_to_runner_managers
     ) -> None:
         """Transcription tasks should build a shared payload including metadata."""
-        mock_submit_runner_task_to_managers.return_value = True
+        mock_submit_to_runner_managers.return_value = True
 
         video = Mock(
             id=23,
@@ -123,7 +123,7 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
         )
 
         self.assertTrue(result)
-        payload = mock_submit_runner_task_to_managers.call_args.kwargs["data"]
+        payload = mock_submit_to_runner_managers.call_args.kwargs["data"]
         self.assertEqual(payload["parameters"]["language"], "fr")
         self.assertEqual(payload["parameters"]["duration"], 12.5)
         self.assertTrue(payload["parameters"]["normalize"])
@@ -134,7 +134,7 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
         self.assertEqual(
             payload["source_url"], "http://example.com/media/videos/transcript.mp4"
         )
-        mock_submit_runner_task_to_managers.assert_called_once_with(
+        mock_submit_to_runner_managers.assert_called_once_with(
             runner_managers=[self.runner_manager],
             data=payload,
             task_type="transcription",
@@ -148,7 +148,7 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
         MEDIA_URL="/media/",
     )
     @patch(
-        "pod.video_encode_transcript.management.commands.process_tasks.submit_runner_task_to_managers"
+        "pod.video_encode_transcript.management.commands.process_tasks._submit_to_runner_managers"
     )
     @patch(
         "pod.video_encode_transcript.runner_manager.get_list_rendition",
@@ -162,10 +162,10 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
         },
     )
     def test_submit_studio_task_uses_shared_source_url_and_payload(
-        self, mock_get_list_rendition, mock_submit_runner_task_to_managers
+        self, mock_get_list_rendition, mock_submit_to_runner_managers
     ) -> None:
         """Studio tasks should reuse shared source URL and payload builders."""
-        mock_submit_runner_task_to_managers.return_value = True
+        mock_submit_to_runner_managers.return_value = True
 
         recording = SimpleNamespace(id=31, source_file="/srv/media/studio/source.xml")
 
@@ -174,7 +174,7 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
         )
 
         self.assertTrue(result)
-        payload = mock_submit_runner_task_to_managers.call_args.kwargs["data"]
+        payload = mock_submit_to_runner_managers.call_args.kwargs["data"]
         self.assertEqual(
             payload["source_url"], "http://example.com/media/studio/source.xml"
         )
@@ -191,7 +191,7 @@ class ProcessTasksCommandPayloadTests(SimpleTestCase):
         )
         self.assertNotIn("video_id", payload["parameters"])
         mock_get_list_rendition.assert_called_once_with()
-        mock_submit_runner_task_to_managers.assert_called_once_with(
+        mock_submit_to_runner_managers.assert_called_once_with(
             runner_managers=[self.runner_manager],
             data=payload,
             task_type="studio",
