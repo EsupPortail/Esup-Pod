@@ -1,4 +1,4 @@
-"""Security tests for path handling in Encoding_video_model."""
+"""Esup-Pod security tests for path handling in Encoding_video_model."""
 
 import os
 import tempfile
