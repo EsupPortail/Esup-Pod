@@ -50,13 +50,13 @@
     </h2>
     <div class="card-text">
       <form class="form input-group" method="get" action="{% url 'videos:videos' %}">
-        <select class="form-select" onchange="this.form.submit();" name="discipline" id="discipline">
+        <select class="form-select" name="discipline" id="discipline">
           <option value="#">{% trans 'Disciplines' %}...</option>
           {% for disc in DISCIPLINES %}
             <option value="{{disc.slug}}">{{disc.title}}  ({{disc.video_count}})</option>
           {% endfor %}
         </select>
-        <input value="{% trans 'Submit' %}" class="visually-hidden-focusable btn btn-primary" type="submit">
+        <input value="{% trans 'Submit' %}" class="btn btn-primary btn-sm" type="submit">
       </form>
     </div>
   </div>
@@ -71,13 +71,13 @@
     </h2>
     <div class="card-text">
       <form class="form input-group" method="get" action="{% url 'videos:videos' %}">
-        <select class="form-select" onchange="this.form.submit();" name="type" id="type">
+        <select class="form-select" name="type" id="type">
           <option value="#">{% trans 'Types' %}...</option>
           {% for type in TYPES %}
             <option value="{{type.slug}}">{{type.title}}  ({{type.video_count}})</option>
           {% endfor %}
         </select>
-        <input value="{% trans 'Submit' %}" class="visually-hidden-focusable btn btn-primary" type="submit">
+        <input value="{% trans 'Submit' %}" class="btn btn-primary btn-sm" type="submit">
       </form>
     </div>
   </div>
