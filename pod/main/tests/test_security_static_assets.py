@@ -1,4 +1,4 @@
-"""Security regression tests for frontend assets."""
+"""Esup-Pod security regression tests for frontend assets."""
 
 import unittest
 from pathlib import Path
@@ -23,12 +23,17 @@ class FrontendSecurityAssetsTests(unittest.TestCase):
         )
         self.assertNotIn(".innerHTML += (", script)
 
-    def test_aside_filters_submit_form_without_window_location(self):
-        """Test that sidebar filters submit forms safely without inline redirects."""
+    def test_aside_filters_submit_with_small_buttons_without_js_redirect(self):
+        """Test that sidebar filters keep explicit submit without inline JS."""
         template = self._read_asset("pod/main/templates/aside.html")
-        self.assertIn('onchange="this.form.submit();"', template)
+        self.assertNotIn("onchange=", template)
+        self.assertNotIn('onchange="this.form.submit();"', template)
         self.assertNotIn("window.location = this.options[this.selectedIndex]", template)
         self.assertNotIn("data-value=", template)
+        self.assertIn('name="discipline"', template)
+        self.assertIn('name="type"', template)
+        self.assertIn('type="submit"', template)
+        self.assertIn("btn btn-primary btn-sm", template)
 
     def test_completion_overlay_validation_uses_dom_parser(self):
         """Test that overlay validation checks forbidden tags via parsed DOM."""
