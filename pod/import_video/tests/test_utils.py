@@ -1,4 +1,4 @@
-"""Tests for SSRF protections in import_video utils."""
+"""Esup-Pod tests for SSRF protections in import_video utils."""
 
 from unittest.mock import Mock, patch
 
