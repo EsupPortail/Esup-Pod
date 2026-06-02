@@ -32,11 +32,11 @@ class TaskQueueTests(TestCase):
     def setUp(self) -> None:
         """Create users/videos with different affiliations used by ranking tests."""
         self.site = Site.objects.get(id=1)
-        self.teacher = User.objects.create(username="teacher", password=PWD)  # nosem
-        self.student = User.objects.create(username="student", password=PWD)  # nosem
+        self.teacher = User.objects.create(username="teacher", password=PWD)
+        self.student = User.objects.create(username="student", password=PWD)
         self.priority_student = User.objects.create(
             username="priority-student", password=PWD
-        )  # nosem
+        )
 
         self.teacher.owner.affiliation = "faculty"
         self.teacher.owner.sites.add(Site.objects.get_current())
