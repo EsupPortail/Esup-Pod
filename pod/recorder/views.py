@@ -8,7 +8,6 @@ import re
 import uuid
 from datetime import datetime, timedelta
 
-# import urllib
 from urllib.parse import unquote
 
 import bleach
@@ -33,8 +32,6 @@ from django.http import (
     JsonResponse,
 )
 
-# from django.core.exceptions import SuspiciousOperation
-# import urllib.parse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.defaultfilters import truncatechars
 from django.template.loader import render_to_string
@@ -935,8 +932,10 @@ def digest_capture_admin(request, name):
     if request.POST.get("state", "") not in known_states:
         return HttpResponseBadRequest()
 
+    state = request.POST.get("state")
     return HttpResponse(
-        "%s %s %s" % (escape(name), _("set to"), escape(request.POST.get("state"))),
+        _("%(name)s set to %(state)s")
+        % {"name": escape(name), "state": escape(state)},
         content_type="text/plain; charset=utf-8",
     )
 
