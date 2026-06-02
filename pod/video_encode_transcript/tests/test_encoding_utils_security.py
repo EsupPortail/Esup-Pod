@@ -1,4 +1,4 @@
-"""Security tests for encoding path helpers."""
+"""Esup-Pod security tests for encoding path helpers."""
 
 import os
 import tempfile
