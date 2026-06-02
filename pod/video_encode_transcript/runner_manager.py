@@ -14,6 +14,7 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
+
 from pod.cut.models import CutVideo
 from pod.recorder.models import Recording
 from pod.video.models import Video
@@ -520,6 +521,32 @@ def _submit_to_runner_managers(
     return False
 
 
+def submit_task_to_runner_managers(
+    *,
+    runner_managers: list[RunnerManager],
+    task_type: TaskType,
+    source_type: SourceType,
+    source_id: Union[int, str],
+    source_url: str,
+    base_url: str,
+    parameters: ParametersDict,
+) -> bool:
+    """Build a runner payload and submit it to the given runner managers."""
+    data = _prepare_task_data(
+        source_url=source_url,
+        base_url=base_url,
+        parameters=parameters,
+        task_type=task_type,
+    )
+    return _submit_to_runner_managers(
+        runner_managers=runner_managers,
+        data=data,
+        task_type=task_type,
+        source_type=source_type,
+        source_id=source_id,
+    )
+
+
 def _update_task_pending(
     source_type: SourceType, source_id: Union[int, str], task_type: TaskType
 ) -> tuple[Optional[int], Optional[int]]:
@@ -754,6 +781,60 @@ def _prepare_transcription_parameters(video: Video) -> ParametersDict:
         params: ParametersDict = {"lang": getattr(video, "transcript", "") or ""}
         _attach_video_metadata(params, video)
         return params
+
+
+def submit_encoding_task(
+    video: Video, site: Site, runner_managers: list[RunnerManager]
+) -> bool:
+    """Submit a pending video encoding task to the provided runner managers."""
+    base_url = _build_base_url(site)
+    source_url = _build_video_source_url(video, base_url)
+    parameters = _prepare_encoding_parameters(video=video, base_url=base_url)
+    return submit_task_to_runner_managers(
+        runner_managers=runner_managers,
+        task_type="encoding",
+        source_type="video",
+        source_id=video.id,
+        source_url=source_url,
+        base_url=base_url,
+        parameters=parameters,
+    )
+
+
+def submit_transcription_task(
+    video: Video, site: Site, runner_managers: list[RunnerManager]
+) -> bool:
+    """Submit a pending video transcription task to the provided runner managers."""
+    base_url = _build_base_url(site)
+    source_url = _build_transcription_source_url(video, base_url)
+    parameters = _prepare_transcription_parameters(video=video)
+    return submit_task_to_runner_managers(
+        runner_managers=runner_managers,
+        task_type="transcription",
+        source_type="video",
+        source_id=video.id,
+        source_url=source_url,
+        base_url=base_url,
+        parameters=parameters,
+    )
+
+
+def submit_studio_task(
+    recording: Recording, site: Site, runner_managers: list[RunnerManager]
+) -> bool:
+    """Submit a pending studio encoding task to the provided runner managers."""
+    base_url = _build_base_url(site)
+    source_url = _build_studio_source_url(recording, base_url)
+    parameters = _prepare_encoding_parameters(video=None)
+    return submit_task_to_runner_managers(
+        runner_managers=runner_managers,
+        task_type="studio",
+        source_type="recording",
+        source_id=recording.id,
+        source_url=source_url,
+        base_url=base_url,
+        parameters=parameters,
+    )
 
 
 def _edit_task(
