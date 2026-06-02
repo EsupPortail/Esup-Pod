@@ -54,14 +54,9 @@ from pod.recorder.models import Recording
 from pod.video.models import Video
 from pod.video_encode_transcript.models import RunnerManager, Task
 from pod.video_encode_transcript.runner_manager import (
-    _build_base_url,
-    _build_studio_source_url,
-    _build_transcription_source_url,
-    _build_video_source_url,
-    _prepare_encoding_parameters,
-    _prepare_task_data,
-    _prepare_transcription_parameters,
-    _submit_to_runner_managers,
+    submit_encoding_task,
+    submit_studio_task,
+    submit_transcription_task,
 )
 from pod.video_encode_transcript.task_queue import (
     HIGH_PRIORITY,
@@ -592,79 +587,26 @@ class Command(BaseCommand):
             f"studio {success_count_studio}/{len(pending_studio_tasks)} successfully submitted"
         )
 
-    def _submit_task_to_runner_managers(
-        self,
-        *,
-        task_type: str,
-        source_type: str,
-        source_id: int,
-        source_url: str,
-        base_url: str,
-        parameters: dict,
-        runner_managers: list,
-    ) -> bool:
-        """Build the runner payload and submit it using shared runner helpers."""
-        data = _prepare_task_data(
-            source_url=source_url,
-            base_url=base_url,
-            parameters=parameters,
-            task_type=task_type,
-        )
-        return _submit_to_runner_managers(
-            runner_managers=runner_managers,
-            data=data,
-            task_type=task_type,
-            source_type=source_type,
-            source_id=source_id,
-        )
-
     def _submit_encoding_task(
         self, video: Video, site: Site, runner_managers: list
     ) -> bool:
         """Submit an encoding task using shared runner manager helpers."""
-        base_url = _build_base_url(site)
-        source_url = _build_video_source_url(video, base_url)
-        parameters = _prepare_encoding_parameters(video=video, base_url=base_url)
-        return self._submit_task_to_runner_managers(
-            task_type="encoding",
-            source_type="video",
-            source_id=video.id,
-            source_url=source_url,
-            base_url=base_url,
-            parameters=parameters,
-            runner_managers=runner_managers,
+        return submit_encoding_task(
+            video=video, site=site, runner_managers=runner_managers
         )
 
     def _submit_transcription_task(
         self, video: Video, site: Site, runner_managers: list
     ) -> bool:
         """Submit a transcription task using shared runner manager helpers."""
-        base_url = _build_base_url(site)
-        source_url = _build_transcription_source_url(video, base_url)
-        parameters = _prepare_transcription_parameters(video=video)
-        return self._submit_task_to_runner_managers(
-            task_type="transcription",
-            source_type="video",
-            source_id=video.id,
-            source_url=source_url,
-            base_url=base_url,
-            parameters=parameters,
-            runner_managers=runner_managers,
+        return submit_transcription_task(
+            video=video, site=site, runner_managers=runner_managers
         )
 
     def _submit_studio_task(
         self, recording: Recording, site: Site, runner_managers: list
     ) -> bool:
         """Submit a studio task using shared runner manager helpers."""
-        base_url = _build_base_url(site)
-        source_url = _build_studio_source_url(recording, base_url)
-        parameters = _prepare_encoding_parameters(video=None)
-        return self._submit_task_to_runner_managers(
-            task_type="studio",
-            source_type="recording",
-            source_id=recording.id,
-            source_url=source_url,
-            base_url=base_url,
-            parameters=parameters,
-            runner_managers=runner_managers,
+        return submit_studio_task(
+            recording=recording, site=site, runner_managers=runner_managers
         )
