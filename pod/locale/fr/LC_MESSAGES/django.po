@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-29 11:33+0200\n"
+"POT-Creation-Date: 2026-06-02 15:01+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -8717,8 +8717,9 @@ msgid "Recorder for Studio not found."
 msgstr "Enregistreur studio non trouvé."
 
 #: pod/recorder/views.py
-msgid "set to"
-msgstr "défini sur"
+#, python-format
+msgid "%(name)s set to %(state)s"
+msgstr "%(name)s défini sur %(state)s"
 
 #: pod/speaker/forms.py
 msgid "You can search speaker by first name, last name and job."
