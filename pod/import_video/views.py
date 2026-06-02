@@ -41,6 +41,7 @@ from pod.main.tasks import (
 )
 from pod.main.utils import display_message_with_icon, is_ajax, secure_post_request
 from pod.main.views import in_maintenance
+from pod.video.utils import resolution_to_int
 
 from .forms import ExternalRecordingForm
 from .models import ExternalRecording
@@ -746,16 +747,6 @@ def get_mediacad_api_description(type_source_url: TypeSourceURL) -> str:
     return description
 
 
-def _resolution_to_int(resolution: str | None) -> int:
-    """Convert a textual resolution like '1080p' into an integer."""
-    if not isinstance(resolution, str) or not resolution.endswith("p"):
-        return 0
-    try:
-        return int(resolution[:-1])
-    except ValueError:
-        return 0
-
-
 def _log_youtube_adaptive_limit(yt_video, selected_stream, yt_client: str) -> None:
     """Log when higher resolutions are only available through adaptive streams."""
     try:
@@ -769,10 +760,10 @@ def _log_youtube_adaptive_limit(yt_video, selected_stream, yt_client: str) -> No
             .desc()
             .first()
         )
-        adaptive_best_resolution = _resolution_to_int(
+        adaptive_best_resolution = resolution_to_int(
             getattr(adaptive_best_stream, "resolution", None)
         )
-        selected_resolution = _resolution_to_int(
+        selected_resolution = resolution_to_int(
             getattr(selected_stream, "resolution", None)
         )
         if adaptive_best_resolution > selected_resolution:
@@ -797,7 +788,7 @@ def _select_best_youtube_progressive_stream(yt_video):
     for stream in progressive_streams:
         if fallback_stream is None:
             fallback_stream = stream
-        if _resolution_to_int(getattr(stream, "resolution", None)) <= 1080:
+        if resolution_to_int(getattr(stream, "resolution", None)) <= 1080:
             return stream
 
     if fallback_stream is not None:
