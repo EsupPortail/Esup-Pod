@@ -34,7 +34,7 @@ PWD = "password"
 )
 class VideoViewSetTests(APITestCase):
     """
-    Esup-Pod - Tests for the VideoViewSet.
+    Tests for the VideoViewSet.
     """
 
     @classmethod
@@ -298,7 +298,7 @@ class VideoViewSetTests(APITestCase):
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class SubtitleViewSetTests(APITestCase):
     """
-    Esup-Pod - Tests for the SubtitleViewSet.
+    Tests for the SubtitleViewSet.
     """
 
     @classmethod
@@ -371,7 +371,7 @@ class SubtitleViewSetTests(APITestCase):
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class CommentBasicViewTests(APITestCase):
-    """Esup-Pod - Tests for the CommentViewSet."""
+    """Tests for the CommentViewSet."""
 
     def setUp(self):
         """Sets up user and video for comment API testing."""
@@ -409,7 +409,7 @@ class CommentBasicViewTests(APITestCase):
 
 class TagViewSetTests(APITestCase):
     """
-    Esup-Pod - Tests for the TagViewSet.
+    Tests for the TagViewSet.
     """
 
     def _get_results(self, response):

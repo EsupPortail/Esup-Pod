@@ -11,12 +11,12 @@ User = get_user_model()
 
 class MigrationURLTest(TestCase):
     """
-    Esup-Pod - Tests for legacy URL formats.
+    Tests for legacy URL formats.
     """
 
     def setUp(self):
         """
-        Esup-Pod - Setup test data.
+        Setup test data.
         """
         self.user = User.objects.create_user(
             username="migrationuser", password="password"
@@ -24,7 +24,7 @@ class MigrationURLTest(TestCase):
 
     def test_slug_format_matches_v4(self):
         """
-        Esup-Pod - Slug must follow the V4 format: "%04d-<slugified-title>".
+        Slug must follow the V4 format: "%04d-<slugified-title>".
 
         V4 reference (models2.py L.924-925):
             newid = "%04d" % newid          # e.g. 42 → "0042"
@@ -42,7 +42,7 @@ class MigrationURLTest(TestCase):
 
     def test_get_absolute_url_v4_format(self):
         """
-        Esup-Pod - get_absolute_url() must return /video/<slug>/.
+        get_absolute_url() must return /video/<slug>/.
         The slug already contains the zero-padded ID, so no double-ID.
         """
         video = Video.objects.create(
@@ -60,7 +60,7 @@ class MigrationURLTest(TestCase):
 
     def test_api_video_detail_accessible_by_slug(self):
         """
-        Esup-Pod - The V5 API endpoint /api/videos/<slug>/ must return 200
+        The V5 API endpoint /api/videos/<slug>/ must return 200
         when called with the V4-format slug.
         """
         video = Video.objects.create(

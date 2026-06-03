@@ -13,7 +13,7 @@ from src.apps.encoding.services.storage import get_storage_path_encoded_video
 
 class EncodingVideo(models.Model):
     """
-    Esup-Pod - Model representing an encoded resolution of a video.
+    Model representing an encoded resolution of a video.
     """
 
     video = models.ForeignKey(
@@ -32,7 +32,7 @@ class EncodingVideo(models.Model):
 
     class Meta:
         """
-        Esup-Pod - Meta class for EncodingVideo.
+        Meta class for EncodingVideo.
         """
 
         verbose_name = _("Encoded Video")
@@ -47,7 +47,7 @@ class EncodingVideo(models.Model):
 @receiver(post_delete, sender=EncodingVideo)
 def auto_delete_encoded_file_on_delete(sender, instance, **kwargs):
     """
-    Esup-Pod - Deletes physical encoded video files from disk when EncodingVideo object is deleted.
+    Deletes physical encoded video files from disk when EncodingVideo object is deleted.
     """
     if instance.file:
         try:

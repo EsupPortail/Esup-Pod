@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 class VideoViewSet(viewsets.ModelViewSet):
     """
-    Esup-Pod - API view set for the Video model.
+    API view set for the Video model.
     """
 
     queryset = Video.objects.all()

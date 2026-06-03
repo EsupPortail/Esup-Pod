@@ -51,7 +51,7 @@ class TagListSerializerField(serializers.Field):
 
 class VideoSerializer(serializers.ModelSerializer):
     """
-    Esup-Pod - Serializer for the Video model.
+    Serializer for the Video model.
     """
 
     owner = serializers.ReadOnlyField(source="owner.username")

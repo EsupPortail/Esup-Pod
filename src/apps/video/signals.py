@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 @receiver(post_save, sender=Video)
 def set_video_slug(sender, instance, created, **kwargs):
     """
-    Esup-Pod - Generates the V4-compatible slug after the first INSERT.
+    Generates the V4-compatible slug after the first INSERT.
 
     Format: "%04d-<slugified-title>" (e.g. "0042-video-title")
 
@@ -34,7 +34,7 @@ def set_video_slug(sender, instance, created, **kwargs):
 
 
 def _safe_remove(field):
-    """Esup-Pod - Safely deletes a file from disk if it exists."""
+    """Safely deletes a file from disk if it exists."""
     if field:
         try:
             if os.path.isfile(field.path):
@@ -46,7 +46,7 @@ def _safe_remove(field):
 @receiver(post_delete, sender=Video)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
-    Esup-Pod - Deletes physical files from the disk when the Video object is deleted.
+    Deletes physical files from the disk when the Video object is deleted.
     """
     from src.apps.video.conf import video_settings
 
@@ -60,7 +60,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 @receiver(post_delete, sender=Subtitle)
 def auto_delete_subtitle_file_on_delete(sender, instance, **kwargs):
     """
-    Esup-Pod - Deletes physical subtitle files from disk when Subtitle object is deleted.
+    Deletes physical subtitle files from disk when Subtitle object is deleted.
     """
     _safe_remove(instance.file)
 
@@ -68,7 +68,7 @@ def auto_delete_subtitle_file_on_delete(sender, instance, **kwargs):
 @receiver(pre_save, sender=Video)
 def auto_delete_file_on_change(sender, instance, **kwargs):
     """
-    Esup-Pod - Deletes the old file if a new version is uploaded for the same video.
+    Deletes the old file if a new version is uploaded for the same video.
     """
     if not instance.pk:
         return False
@@ -90,7 +90,7 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 @receiver(post_save, sender=Video)
 def video_post_save(sender, instance, created, **kwargs):
     """
-    Esup-Pod - At the time of creation (upload finished), calculate the duration.
+    At the time of creation (upload finished), calculate the duration.
     """
     logger.debug(
         "video_post_save triggered. created=%s, file=%s",
@@ -119,7 +119,7 @@ def video_post_save(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Video)
 def auto_assign_site_to_video(sender, instance, created, **kwargs):
     """
-    Esup-Pod - Fallback signal: Ensures the video is linked to the current site
+    Fallback signal: Ensures the video is linked to the current site
     if created via admin or other means.
     """
     if created:
@@ -134,7 +134,7 @@ def auto_assign_site_to_video(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Type)
 def auto_assign_site_to_type(sender, instance, created, **kwargs):
     """
-    Esup-Pod - Fallback signal: Ensures the type is linked to the current site
+    Fallback signal: Ensures the type is linked to the current site
     if created via admin or other means.
     """
     if created:

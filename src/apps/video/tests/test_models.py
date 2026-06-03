@@ -16,7 +16,7 @@ User = get_user_model()
 
 class VideoModelTests(TestCase):
     """
-    Esup-Pod - Tests for the Video application models.
+    Tests for the Video application models.
     """
 
     def setUp(self):
@@ -54,7 +54,7 @@ class VideoModelTests(TestCase):
 
 
 class CommentBasicTests(TestCase):
-    """Esup-Pod - Tests for the Comment model."""
+    """Tests for the Comment model."""
 
     def setUp(self):
         """Sets up a video and a user for comment testing."""
@@ -73,7 +73,7 @@ class CommentBasicTests(TestCase):
 
 
 class FileCleanupTests(TestCase):
-    """Esup-Pod - Tests for physical file cleanup on object deletion."""
+    """Tests for physical file cleanup on object deletion."""
 
     def setUp(self):
         """Sets up a test user and their owner profile for file cleanup testing."""

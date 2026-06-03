@@ -18,7 +18,7 @@ from src.config.defaults import video as defaults
 
 
 class VideoConfig(BaseSettings):
-    """Esup-Pod - Video app configuration with typed fields and validation."""
+    """Video app configuration with typed fields and validation."""
 
     # --- Feature Flags ---
     use_stats_view: bool = Field(

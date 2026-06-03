@@ -12,7 +12,7 @@ from src.apps.video.models import Type
 
 class MetadataAPITests(APITestCase):
     """
-    Esup-Pod - Tests for the video metadata endpoints.
+    Tests for the video metadata endpoints.
     """
 
     def setUp(self):

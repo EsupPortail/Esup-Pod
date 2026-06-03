@@ -72,7 +72,7 @@ class IsChannelOwnerOrCollaboratorOrReadOnly(permissions.BasePermission):
 
 class IsAdminOrThemeOwner(permissions.BasePermission):
     """
-    Esup-Pod - Custom permission for Theme model:
+    Custom permission for Theme model:
     - Admins: Full access.
     - Others:
         - Read: Always allowed.

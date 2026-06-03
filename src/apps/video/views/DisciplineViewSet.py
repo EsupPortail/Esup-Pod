@@ -38,7 +38,7 @@ from src.apps.video.serializers import DisciplineSerializer
 )
 class DisciplineViewSet(viewsets.ModelViewSet):
     """
-    Esup-Pod - API view set for the Discipline model.
+    API view set for the Discipline model.
     """
 
     queryset = Discipline.objects.all()

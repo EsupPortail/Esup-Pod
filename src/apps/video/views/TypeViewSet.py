@@ -38,7 +38,7 @@ from src.apps.video.serializers import TypeSerializer
 )
 class TypeViewSet(viewsets.ModelViewSet):
     """
-    Esup-Pod - API view set for the Type model.
+    API view set for the Type model.
     """
 
     queryset = Type.objects.all()

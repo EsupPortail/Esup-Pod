@@ -51,7 +51,7 @@ class VideoManager(models.Manager):
 
 class Video(models.Model):
     """
-    Esup-Pod - Model representing a video.
+    Model representing a video.
     """
 
     objects = VideoManager()

@@ -10,7 +10,7 @@ from django.utils.text import slugify
 
 class Discipline(models.Model):
     """
-    Esup-Pod - Model representing a specific academic discipline.
+    Model representing a specific academic discipline.
     """
 
     title = models.CharField(_("Title"), max_length=100)

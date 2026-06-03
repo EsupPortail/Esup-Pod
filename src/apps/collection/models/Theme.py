@@ -11,7 +11,7 @@ from src.apps.video.models.Video import Video
 
 class Theme(BaseContainer):
     """
-    Esup-Pod - Model representing a thematic category.
+    Model representing a thematic category.
     Themes are part of a global taxonomy managed by administrators,
     or can be specific to a channel if OWNER_CAN_MANAGE_THEMES is enabled.
     """

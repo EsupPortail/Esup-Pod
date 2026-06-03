@@ -14,7 +14,7 @@ FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 
 class CustomImageModel(models.Model):
-    """Esup-Pod custom image Model."""
+    """Custom image model."""
 
     file = models.ImageField(
         _("Image"),

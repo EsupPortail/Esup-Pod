@@ -38,7 +38,7 @@ from src.apps.video.serializers import TagSerializer
 )
 class TagViewSet(viewsets.ModelViewSet):
     """
-    Esup-Pod - API view set for Tags.
+    API view set for Tags.
     """
 
     queryset = Video.tags.tag_model.objects.all()

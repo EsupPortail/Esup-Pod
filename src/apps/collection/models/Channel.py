@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class Channel(BaseContainer):
     """
-    Esup-Pod - Model representing a channel.
+    Model representing a channel.
     A channel is the identity of a creator or a service.
     """
 
@@ -64,7 +64,7 @@ class Channel(BaseContainer):
 @receiver(post_delete, sender=Channel)
 def auto_delete_channel_files_on_delete(sender, instance, **kwargs):
     """
-    Esup-Pod - Deletes physical logo and banner files from disk when Channel object is deleted.
+    Deletes physical logo and banner files from disk when Channel object is deleted.
     """
     if instance.logo:
         try:

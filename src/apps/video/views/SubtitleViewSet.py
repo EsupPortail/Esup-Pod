@@ -13,7 +13,7 @@ from src.apps.video.serializers import SubtitleSerializer
 
 class IsSubtitleVideoOwnerOrReadOnly(permissions.BasePermission):
     """
-    Esup-Pod - Custom permission:
+    Custom permission:
     - Read: Allowed for everyone (or based on global config).
     - Write/Delete: Allowed only if the user is the owner of the linked video.
     """
@@ -62,7 +62,7 @@ class IsSubtitleVideoOwnerOrReadOnly(permissions.BasePermission):
 )
 class SubtitleViewSet(viewsets.ModelViewSet):
     """
-    Esup-Pod - API endpoint to handle subtitles (upload, listing, deletion).
+    API endpoint to handle subtitles (upload, listing, deletion).
     """
 
     queryset = Subtitle.objects.all()
