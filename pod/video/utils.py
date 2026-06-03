@@ -6,6 +6,7 @@ import json
 import re
 import shutil
 import logging
+import importlib
 from math import ceil
 import csv
 from datetime import date
@@ -72,6 +73,45 @@ ARCHIVE_CSV = "%s/archived.csv" % settings.LOG_DIRECTORY
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 
 ARCHIVE_ROOT = getattr(settings, "ARCHIVE_ROOT", "/video_archiving")
+
+USE_RESPIT = getattr(settings, "USE_RESPIT", False)
+
+RESPIT_MODEL = getattr(settings, "RESPIT_MODEL", "base")
+
+
+def is_archiving_authorized(vid: Video) -> bool:
+    """Check if video owner's affiliation is allowed to archive."""
+    if vid is None:
+        return False
+
+    if not getattr(settings, "POD_ARCHIVE_AFFILIATION", []):
+        return False
+    allowed_affiliations = getattr(settings, "POD_ARCHIVE_AFFILIATION", [])
+
+    owner = getattr(vid.owner, "owner", None)
+    owner_affiliation = getattr(owner, "affiliation", "")
+    if not owner_affiliation:
+        return False
+
+    is_owner_affiliations_allowed = owner_affiliation.strip() in allowed_affiliations
+
+    # Check if the video can be archived.
+    if USE_RESPIT:
+        allowed_video = False
+        try:
+            mod = importlib.import_module(
+                "pod.video.management.commands.respit_model." + RESPIT_MODEL
+            )
+            allowed_video = mod.is_video_can_be_archieved(vid)
+        except ModuleNotFoundError:
+            print("An Error occurred while processing.")
+        except ImportError:
+            print("An Error occurred while processing.")
+
+    else:
+        allowed_video = True
+
+    return bool(allowed_affiliations and is_owner_affiliations_allowed and allowed_video)
 
 ###############################################################
 # EMAIL

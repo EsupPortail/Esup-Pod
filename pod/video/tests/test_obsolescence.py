@@ -259,6 +259,8 @@ class ValidFormRespitTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user.owner.affiliation = "faculty"
+        self.user.owner.save()
 
         self.video1 = Video.objects.create(
             title="Video_to_delete",
@@ -274,12 +276,40 @@ class ValidFormRespitTestCase(TestCase):
 
         # Simulates the submission of the form with archive action
         response = self.client.post(
-            f"/video/respit/{self.video1.slug}/", {"action": "Archive"}
+            f"/video/valid/form/respit/{self.video1.slug}/", {"action": "Archive"}
         )
         # Check that HTTP code is 200
         self.assertEqual(response.status_code, 200)
 
         print("--->  test_archive_action of ValidFormRespitTestCase: OK")
+
+    @override_settings(POD_ARCHIVE_AFFILIATION=["faculty"])
+    def test_archive_option_hidden_if_user_not_authorized(self):
+        """Test archive option is hidden when user affiliation is not allowed."""
+        self.video1.date_delete = date.today() + timedelta(days=50)
+        self.video1.save()
+
+        self.user.owner.affiliation = "student"
+        self.user.owner.save()
+        self.client.force_login(self.user)
+
+        response = self.client.get(f"/video/respit/{self.video1.slug}/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'value="Archive"')
+
+    @override_settings(POD_ARCHIVE_AFFILIATION=["faculty"])
+    def test_archive_action_forbidden_if_user_not_authorized(self):
+        """Test archive action returns bad request when user is not allowed."""
+        self.user.owner.affiliation = "student"
+        self.user.owner.save()
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            f"/video/valid/form/respit/{self.video1.slug}/", {"action": "Archive"}
+        )
+
+        self.assertEqual(response.status_code, 400)
 
     @override_settings(PROLONGATION_GRANTED=True)
     def test_extend_action(self):

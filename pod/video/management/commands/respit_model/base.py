@@ -1,3 +1,6 @@
+from pod.video.models import Video
+
+
 def calcul(parameters, dry_mode: bool = True):
 
     # id: Id of the video (int)
@@ -25,3 +28,7 @@ def calcul(parameters, dry_mode: bool = True):
 
     print(parameters)
     return 1
+
+
+def is_video_can_be_archieved(vid: Video):
+    return True

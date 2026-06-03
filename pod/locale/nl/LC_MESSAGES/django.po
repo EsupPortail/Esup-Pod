@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-21 11:28+0000\n"
+"POT-Creation-Date: 2026-06-02 13:57+0000\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -8508,31 +8508,27 @@ msgid "%s video(s) archived."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to extend the duration of your video, archive it (it will be "
-"unpublished and no longer accessible), download it along with all its "
-"associated data, or delete it (after saving it) by clicking here:"
+msgid "extend the duration of your video"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to extend the duration of your video, archive it (it will be "
-"unpublished and no longer accessible), or download it along with all its "
-"associated data by clicking here:"
+msgid "archive it (it will be unpublished and no longer accessible)"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to archive your video (it will be unpublished and no longer "
-"accessible), download it along with all its associated data, or delete it "
-"(after saving it) by clicking here:"
+msgid "delete it (after saving it)"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to archive your video (it will be unpublished and no longer "
-"accessible), or download it along with all its associated data by clicking "
-"here:"
+msgid "You can choose to..."
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "download it along with all its associated data"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "...by clicking here:"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py

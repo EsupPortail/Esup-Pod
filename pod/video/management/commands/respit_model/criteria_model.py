@@ -1,7 +1,20 @@
 from datetime import datetime, date
+from os.path import basename
 from django.conf import settings
+from pod.video.models import Video
 
-RESPIT_MODEL_PARAMETER = getattr(settings, "RESPIT_MODEL_PARAMETER", [])
+
+RESPIT_MODEL_PARAMETERS = getattr(
+    settings,
+    "RESPIT_MODEL_PARAMETERS",
+    {
+        "respit_criteria_parameter": [],
+        "archiving_criteria_parameter": {
+            "excluded_title_terms": [],
+            "excluded_discipline_terms": [],
+        },
+    }
+)
 
 
 def to_date(v):
@@ -68,7 +81,8 @@ def match_criteria_row(parameters: dict, criteria: dict, dry_mode: bool = True) 
 def calcul(parameters: dict, dry_mode: bool = True) -> int:
     if dry_mode:
         print("Compute delete respit for video ", parameters["id"], " - ", parameters["title"])
-    for row in RESPIT_MODEL_PARAMETER:
+
+    for row in RESPIT_MODEL_PARAMETERS.get("respit_criteria_parameter", []):
         if match_criteria_row(parameters, row["criteria"], dry_mode):
             date_added = parameters["date_added"]
             date_delete = parameters["date_delete"]
@@ -83,3 +97,46 @@ def calcul(parameters: dict, dry_mode: bool = True) -> int:
             return max(0, delta)
 
     return 0
+
+
+def is_video_can_be_archieved(vid: Video):
+    archiving_criteria = RESPIT_MODEL_PARAMETERS.get("archiving_criteria_parameter", {})
+
+    attribute_scores = archiving_criteria.get("attribute_scores", {})
+    minimum_expected_score = archiving_criteria.get("minimum_expected_score", 0)
+    excluded_title_terms = archiving_criteria.get("excluded_title_terms", [])
+    excluded_discipline_terms = archiving_criteria.get("excluded_discipline_terms", [])
+
+    score = 0
+
+    title = (getattr(vid, "title", "") or "").strip()
+    title_lower = title.lower()
+    video_field = getattr(vid, "video", None)
+    filename = basename(getattr(video_field, "name", "") or "")
+    is_title_excluded = any(term in title_lower for term in excluded_title_terms)
+
+    if title and filename and title_lower != filename.lower() and not is_title_excluded:
+        score += attribute_scores.get("title", 0)
+
+    description = (getattr(vid, "description", "") or "").strip()
+    if description:
+        score += attribute_scores.get("description", 0)
+
+    disciplines = getattr(vid, "discipline", None)
+    if disciplines is not None:
+        has_valid_discipline = any(
+            (getattr(discipline, "slug", "") not in excluded_discipline_terms)
+            for discipline in disciplines.all()
+        )
+        if has_valid_discipline:
+            score += attribute_scores.get("discipline", 0)
+
+    tags = getattr(vid, "tags", None)
+    if tags is not None and tags.count() > 0:
+        score += attribute_scores.get("tags", 0)
+
+    if getattr(vid, "date_evt", None):
+        score += attribute_scores.get("date_evt", 0)
+
+    print("Metadata score completion = %s." % score)
+    return score >= minimum_expected_score

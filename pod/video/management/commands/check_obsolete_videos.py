@@ -16,7 +16,7 @@ from django.core.mail import mail_managers
 from django.contrib.sites.shortcuts import get_current_site
 
 from pod.video.models import Video
-from pod.video.utils import archive_video, write_in_csv
+from pod.video.utils import archive_video, is_archiving_authorized, write_in_csv
 
 from datetime import date, timedelta
 
@@ -65,8 +65,6 @@ __TITLE_SITE__ = (
 )
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
-# list of affiliation's owner to archive instead of delete video
-POD_ARCHIVE_AFFILIATION = getattr(settings, "POD_ARCHIVE_AFFILIATION", [])
 # number of step in days defore deletion
 WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [])
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
@@ -160,7 +158,7 @@ class Command(BaseCommand):
             title = "%s - %s" % (vid.id, vid.title)
             estab = vid.owner.owner.establishment.lower()
 
-            if vid.owner.owner.affiliation in POD_ARCHIVE_AFFILIATION:
+            if is_archiving_authorized(vid):
                 if not self.dry_mode:
                     archive_video(vid)
 
@@ -212,24 +210,7 @@ class Command(BaseCommand):
 
             custom_message_page_obso_mail += "<br>\n"
 
-            if PROLONGATION_GRANTED:
-                if DELETION_GRANTED:
-                    custom_message_page_obso_mail += "<p> " + _(
-                        "You can choose to extend the duration of your video, archive it (it will be unpublished and no longer accessible), download it along with all its associated data, or delete it (after saving it) by clicking here:"
-                    )
-                else:
-                    custom_message_page_obso_mail += "<p> " + _(
-                        "You can choose to extend the duration of your video, archive it (it will be unpublished and no longer accessible), or download it along with all its associated data by clicking here:"
-                    )
-            else:
-                if DELETION_GRANTED:
-                    custom_message_page_obso_mail += "<p> " + _(
-                        "You can choose to archive your video (it will be unpublished and no longer accessible), download it along with all its associated data, or delete it (after saving it) by clicking here:"
-                    )
-                else:
-                    custom_message_page_obso_mail += "<p> " + _(
-                        "You can choose to archive your video (it will be unpublished and no longer accessible), or download it along with all its associated data by clicking here:"
-                    )
+            custom_message_page_obso_mail = self.html_options(custom_message_page_obso_mail, video)
 
             custom_message_page_obso_mail += (
                 "<a href='"
@@ -317,6 +298,22 @@ class Command(BaseCommand):
             fail_silently=False,
             html_message=msg_html,
         )
+
+    def html_options(self, custom_message_page_obso_mail, video):
+        options = []
+        if PROLONGATION_GRANTED:
+            options.append(_("extend the duration of your video"))
+        if is_archiving_authorized(video):
+            options.append(
+                _("archive it (it will be unpublished and no longer accessible)"))
+        if DELETION_GRANTED:
+            options.append(_("delete it (after saving it)"))
+        custom_message_page_obso_mail += "<p>" + _("You can choose to...") + "</p><ul>"
+        if options:
+            custom_message_page_obso_mail += "".join(f"<li>{option}</li>" for option in options)
+        custom_message_page_obso_mail += ("<li>" + _("download it along with all its associated data") + "</li></ul>"
+                                          + _("...by clicking here:") + " ")
+        return custom_message_page_obso_mail
 
     def notify_manager_of_obsolete_video(self, list_video: dict) -> None:
         """Notify manager(s) with a list of obsolete videos."""
