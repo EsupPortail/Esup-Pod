@@ -3,22 +3,22 @@
 *  run with 'python manage.py check_obsolete_videos [--dry]'
 """
 
+from datetime import date, timedelta
+
 from django.conf import settings
-from django.http import request
-from django.utils import translation
-from django.core.management.base import BaseCommand, CommandError
-from django.utils.translation import gettext as _
-from django.template.defaultfilters import striptags
-from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
 
 # from django.core.mail import mail_admins
-from django.core.mail import mail_managers
-from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail, mail_managers
+from django.core.management.base import BaseCommand, CommandError
+from django.http import request
+from django.template.defaultfilters import striptags
+from django.urls import reverse
+from django.utils import translation
+from django.utils.translation import gettext as _
 
 from pod.video.models import Video
 from pod.video.utils import archive_video, write_in_csv
-
-from datetime import date, timedelta
 
 ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
@@ -225,9 +225,10 @@ class Command(BaseCommand):
             custom_message_page_obso_mail += "<li>%s</li>" % (
                 _("download it along with all its associated data"),
             )
+            respite_url = reverse("video:video_respite", args=(video.slug,))
             custom_message_page_obso_mail += (
-                '</ul><p style="margin:1em;font-size:1.2em"><a href="%s/video/respite/%s">%s</a></p>'
-                % (base_url, video.slug, _("Choose an action for my video"))
+                '</ul><p style="margin:1em;font-size:1.2em"><a href="%s%s">%s</a></p>'
+                % (base_url, respite_url, _("Choose an action for my video"))
             )
 
             custom_message_page_obso_mail += "<br>\n"

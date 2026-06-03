@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block page_content %}
+    <h1>{% trans "Archive Download" %}</h1>
     <div class="list-group">
-            <h1>{% trans "Archive Download" %}</h1>
-            <div class="list-group-item">
-                <div class="form-group form-group-required ">
-                    <div>{% trans "Your archive download gonna start." %}</div>
-                    <small id="id_agreeHelp" class="form-text">{% trans "Please Wait." %}</small>
-                </div>
+        <div class="list-group-item">
+            <div class="form-group form-group-required ">
+                <div>{% trans "Your archive download gonna start." %}</div>
+                <small id="id_agreeHelp" class="form-text">{% trans "Please Wait." %}</small>
             </div>
+        </div>
     </div>
 
     <div class="text-center mt-1">
-        <a href="/video/respit/{{ slug }}/" class="btn btn btn-secondary">
+        <a href="/video/respite/{{ slug }}/" class="btn btn btn-secondary">
             {% trans "Back to choices" %}
         </a>
         <a href="/" class="btn btn btn-secondary">
@@ -20,5 +20,5 @@
         </a>
     </div>
 
-    <meta http-equiv="refresh" content="0; URL={{ url }}" />
+    <a href="{{ url }}" class="btn btn btn-primary">{% trans "Download video archive" %}</a>
 {% endblock page_content %}
