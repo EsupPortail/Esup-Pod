@@ -99,7 +99,12 @@ def _build_rendition_parameters() -> ParametersDict:
     """Return rendition parameters serialized for the runner payload."""
     list_rendition = get_list_rendition()
     str_resolution: dict[str, dict[str, Any]] = {
-        str(k): {"resolution": v["resolution"], "encode_mp4": v["encode_mp4"]}
+        str(k): {
+            "resolution": v["resolution"],
+            "video_bitrate": v["video_bitrate"],
+            "audio_bitrate": v["audio_bitrate"],
+            "encode_mp4": v["encode_mp4"],
+        }
         for k, v in list_rendition.items()
     }
     return {"rendition": json.dumps(str_resolution)}
@@ -119,56 +124,105 @@ def _attach_cut_info(parameters: ParametersDict, video: Video) -> None:
         pass
 
 
-def _attach_dressing_info(parameters: ParametersDict, video: Video) -> None:
+def _build_base_url(site: Site) -> str:
+    """Build the public base URL for a given Django site."""
+    url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
+    return f"{url_scheme}://{site.domain}"
+
+
+def _build_video_source_url(video: Video, base_url: str) -> str:
+    """Build the public source URL for a video file."""
+    return f"{base_url}/media/{video.video}"
+
+
+def _build_transcription_source_url(video: Video, base_url: str) -> str:
+    """Build the preferred source URL for transcription tasks."""
+    mp3 = video.get_video_mp3() if hasattr(video, "get_video_mp3") else None
+    mp3file = getattr(mp3, "source_file", None) if mp3 else None
+    if mp3file is not None and getattr(mp3file, "url", None):
+        return f"{base_url}{mp3file.url}"
+    return _build_video_source_url(video, base_url)
+
+
+def _build_studio_source_url(recording: Recording, base_url: str) -> str:
+    """Build the public source URL for a studio XML file."""
+    source_file = recording.source_file
+    media_url = getattr(settings, "MEDIA_URL", "/media/").rstrip("/")
+    try:
+        rel_path = os.path.relpath(
+            str(source_file), str(getattr(settings, "MEDIA_ROOT", ""))
+        )
+    except Exception:
+        rel_path = str(source_file)
+    rel_path = rel_path.lstrip("/")
+    return f"{base_url}{media_url}/{rel_path}"
+
+
+def _build_media_asset_url(base_url: str, asset_name: str) -> str:
+    """Build a public media URL for a stored asset name."""
+    return f"{base_url}/media/{asset_name}"
+
+
+def _extend_with_watermark_info(
+    dressing_info: ParametersDict, dressing: Any, base_url: str
+) -> None:
+    """Append watermark-related dressing metadata when available."""
+    if not dressing.watermark:
+        return
+
+    log.info("Dressing watermark found")
+    dressing_info["watermark"] = _build_media_asset_url(
+        base_url, str(dressing.watermark.file.name)
+    )
+    dressing_info["watermark_position"] = dressing.position
+    dressing_info["watermark_opacity"] = str(dressing.opacity)
+
+
+def _extend_with_credit_info(
+    dressing_info: ParametersDict, credit_name: str, credit, base_url: str
+) -> None:
+    """Append opening/ending credit metadata when available."""
+    if not credit:
+        return
+
+    log.info("Dressing %s found", credit_name.replace("_", " "))
+    dressing_info[credit_name] = credit.slug
+    dressing_info[f"{credit_name}_video"] = _build_media_asset_url(
+        base_url, str(credit.video.name)
+    )
+    dressing_info[f"{credit_name}_video_duration"] = str(credit.duration)
+
+
+def _attach_dressing_info(
+    parameters: ParametersDict, video: Video, base_url: Optional[str] = None
+) -> None:
     """Attach dressing information to parameters if available for the given video."""
     try:
         from pod.dressing.models import Dressing
 
-        site = Site.objects.get_current()
-        url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
-        base_url = url_scheme + "://" + site.domain
+        if base_url is None:
+            site = Site.objects.get_current()
+            base_url = _build_base_url(site)
 
-        str_dressing_info = {}
-        if Dressing.objects.filter(videos=video).exists():
-            log.info("Dressing found for video id: %s", video.id)
-            dressing = Dressing.objects.get(videos=video)
-            if dressing:
-                if dressing.watermark:
-                    log.info("Dressing watermark found")
-                    watermark_content_url = "%s/media/%s" % (
-                        base_url,
-                        str(dressing.watermark.file.name),
-                    )
-                    str_dressing_info["watermark"] = watermark_content_url
-                    str_dressing_info["watermark_position"] = dressing.position
-                    str_dressing_info["watermark_opacity"] = str(dressing.opacity)
-                if dressing.opening_credits:
-                    log.info("Dressing opening credits found")
-                    str_dressing_info["opening_credits"] = dressing.opening_credits.slug
-                    opening_content_url = "%s/media/%s" % (
-                        base_url,
-                        str(dressing.opening_credits.video.name),
-                    )
-                    str_dressing_info["opening_credits_video"] = opening_content_url
-                    str_dressing_info["opening_credits_video_duration"] = str(
-                        dressing.opening_credits.duration
-                    )
-                if dressing.ending_credits:
-                    log.info("Dressing ending credits found")
-                    str_dressing_info["ending_credits"] = dressing.ending_credits.slug
-                    ending_content_url = "%s/media/%s" % (
-                        base_url,
-                        str(dressing.ending_credits.video.name),
-                    )
-                    str_dressing_info["ending_credits_video"] = ending_content_url
-                    str_dressing_info["ending_credits_video_duration"] = str(
-                        dressing.ending_credits.duration
-                    )
-                    # str_dressing_info["ending_credits_video_hasaudio"] = str(
-                    #     dressing.ending_credits.video.has_audio()
-                    # )
-        if str_dressing_info:
-            parameters["dressing"] = json.dumps(str_dressing_info)
+        if not Dressing.objects.filter(videos=video).exists():
+            return
+
+        log.info("Dressing found for video id: %s", video.id)
+        dressing = Dressing.objects.get(videos=video)
+        if not dressing:
+            return
+
+        dressing_info: ParametersDict = {}
+        _extend_with_watermark_info(dressing_info, dressing, base_url)
+        _extend_with_credit_info(
+            dressing_info, "opening_credits", dressing.opening_credits, base_url
+        )
+        _extend_with_credit_info(
+            dressing_info, "ending_credits", dressing.ending_credits, base_url
+        )
+
+        if dressing_info:
+            parameters["dressing"] = json.dumps(dressing_info)
     except Exception as exc:
         log.error(f"Error obtaining dressing for video {video.id}: {str(exc)}")
 
@@ -190,6 +244,7 @@ def _attach_video_metadata(parameters: ParametersDict, video: Video) -> None:
 
 def _prepare_encoding_parameters(
     video: Optional[Video] = None,
+    base_url: Optional[str] = None,
 ) -> ParametersDict:
     """Prepare encoding parameters for video or recording.
 
@@ -197,6 +252,8 @@ def _prepare_encoding_parameters(
         video: Video object (for video encoding).
                For studio recordings, pass None as video-specific metadata,
                cut and dressing info do not apply.
+        base_url: Explicit base URL to use for dressing asset URLs.
+                  Defaults to the current site URL when omitted.
 
     Returns:
         Dictionary with rendition and, when a video is provided, optional
@@ -207,7 +264,10 @@ def _prepare_encoding_parameters(
 
     if video:
         _attach_cut_info(parameters, video)
-        _attach_dressing_info(parameters, video)
+        if base_url is None:
+            _attach_dressing_info(parameters, video)
+        else:
+            _attach_dressing_info(parameters, video, base_url=base_url)
         _attach_video_metadata(parameters, video)
 
     return parameters
@@ -431,6 +491,35 @@ def _submit_to_runner_manager(
     return True
 
 
+def _submit_to_runner_managers(
+    *,
+    runner_managers: list[RunnerManager],
+    data: RunnerManagerTaskPayload,
+    task_type: TaskType,
+    source_type: SourceType,
+    source_id: Union[int, str],
+) -> bool:
+    """Try runner managers in order and stop on the first successful submission."""
+    video_id, recording_id = _ids_for(source_type, source_id)
+
+    for rm in runner_managers:
+        if _submit_to_runner_manager(
+            rm,
+            data=data,
+            task_type=task_type,
+            source_type=source_type,
+            video_id=video_id,
+            recording_id=recording_id,
+        ):
+            return True
+
+    log.warning(
+        f"No runner manager available to process {task_type} for {source_type} {source_id}. "
+        f"Task will remain pending and will be retried by the process_tasks command."
+    )
+    return False
+
+
 def _update_task_pending(
     source_type: SourceType, source_id: Union[int, str], task_type: TaskType
 ) -> tuple[Optional[int], Optional[int]]:
@@ -497,7 +586,7 @@ def _send_task_to_runner_manager(
     try:
         # Keep a local pending row even when no runner is currently available.
         # This allows process_tasks to retry submission later.
-        video_id, recording_id = _update_task_pending(source_type, source_id, task_type)
+        _update_task_pending(source_type, source_id, task_type)
 
         site = Site.objects.get_current()
         runner_managers_list = _get_runner_managers(site)
@@ -510,23 +599,13 @@ def _send_task_to_runner_manager(
         # Build payload and try immediate submission
         data = _prepare_task_data(source_url, base_url, parameters, task_type)
 
-        # Try each runner manager by priority and stop on the first healthy one.
-        for rm in runner_managers_list:
-            if _submit_to_runner_manager(
-                rm,
-                data=data,
-                task_type=task_type,
-                source_type=source_type,
-                video_id=video_id,
-                recording_id=recording_id,
-            ):
-                return True
-
-        log.warning(
-            f"No runner manager available to process {task_type} for {source_type} {source_id}. "
-            f"Task will remain pending and will be retried by the process_tasks command."
+        return _submit_to_runner_managers(
+            runner_managers=runner_managers_list,
+            data=data,
+            task_type=task_type,
+            source_type=source_type,
+            source_id=source_id,
         )
-        return False
 
     except Exception as exc:
         log.error(
@@ -543,9 +622,8 @@ def encode_video(video_id: int) -> None:
         # Get video info
         video = get_object_or_404(Video, id=video_id)
         # Build content URL
-        url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
-        base_url = url_scheme + "://" + site.domain
-        content_url = "%s/media/%s" % (base_url, video.video)
+        base_url = _build_base_url(site)
+        content_url = _build_video_source_url(video, base_url)
 
         # Prepare encoding parameters
         parameters = _prepare_encoding_parameters(video=video)
@@ -579,22 +657,8 @@ def encode_studio_recording(recording_id: int) -> None:
         site = Site.objects.get_current()
         # Get studio recording
         recording = Recording.objects.get(id=recording_id)
-        # Source file corresponds to Pod XML file
-        source_file = recording.source_file
-
-        # Build source file URL.
-        # `source_file` is sometimes an absolute MEDIA_ROOT path and sometimes already relative.
-        url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
-        base_url = url_scheme + "://" + site.domain
-        media_url = getattr(settings, "MEDIA_URL", "/media/").rstrip("/")
-        try:
-            rel_path = os.path.relpath(
-                str(source_file), str(getattr(settings, "MEDIA_ROOT", ""))
-            )
-        except Exception:
-            rel_path = str(source_file)
-        rel_path = rel_path.lstrip("/")
-        source_url = f"{base_url}{media_url}/{rel_path}"
+        base_url = _build_base_url(site)
+        source_url = _build_studio_source_url(recording, base_url)
 
         # Prepare encoding parameters (no specific cut info for studio recordings)
         parameters = _prepare_encoding_parameters(video=None)
@@ -622,15 +686,8 @@ def transcript_video(video_id: int) -> None:
         site = Site.objects.get_current()
         # Get video info
         video = get_object_or_404(Video, id=video_id)
-        # Get associated mp3 file if exists
-        mp3file = video.get_video_mp3().source_file if video.get_video_mp3() else None
-        url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
-        base_url = url_scheme + "://" + site.domain
-        if mp3file is not None:
-            content_url = "%s%s" % (base_url, mp3file.url)
-        else:
-            # Build video content URL
-            content_url = "%s/media/%s" % (base_url, video.video)
+        base_url = _build_base_url(site)
+        content_url = _build_transcription_source_url(video, base_url)
 
         # Prepare transcript parameters
         parameters = _prepare_transcription_parameters(video=video)

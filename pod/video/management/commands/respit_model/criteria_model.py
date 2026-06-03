@@ -58,13 +58,14 @@ DEFAULT_MATCHER = PARAM_MATCHERS["id"]
 def match_criterion(param_name: str, param_value, criterion_value, dry_mode: bool = True) -> bool:
     if dry_mode:
         print("\tCheck criterion ", param_name, " = ", param_value, " compared with ", criterion_value)
+
     if param_value is None:
         return False
     matcher = PARAM_MATCHERS.get(param_name, DEFAULT_MATCHER)
     if dry_mode:
-        if matcher(param_value, criterion_value) :
+        if matcher(param_value, criterion_value):
             print("\t\tReturn True")
-        else :
+        else:
             print("\t\tReturn False")
     return matcher(param_value, criterion_value)
 
@@ -80,8 +81,12 @@ def match_criteria_row(parameters: dict, criteria: dict, dry_mode: bool = True) 
 
 def calcul(parameters: dict, dry_mode: bool = True) -> int:
     if dry_mode:
-        print("Compute delete respit for video ", parameters["id"], " - ", parameters["title"])
-
+        print(
+            "Compute delete respit for video ",
+            parameters["id"],
+            " - ",
+            parameters["title"],
+        )
     for row in RESPIT_MODEL_PARAMETERS.get("respit_criteria_parameter", []):
         if match_criteria_row(parameters, row["criteria"], dry_mode):
             date_added = parameters["date_added"]

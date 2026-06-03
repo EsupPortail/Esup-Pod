@@ -95,8 +95,18 @@ class RunnerManagerHelperTests(SimpleTestCase):
         with patch(
             "pod.video_encode_transcript.runner_manager.get_list_rendition",
             return_value={
-                360: {"resolution": "640x360", "encode_mp4": True},
-                720: {"resolution": "1280x720", "encode_mp4": False},
+                360: {
+                    "resolution": "640x360",
+                    "video_bitrate": "750k",
+                    "audio_bitrate": "96k",
+                    "encode_mp4": True,
+                },
+                720: {
+                    "resolution": "1280x720",
+                    "video_bitrate": "2000k",
+                    "audio_bitrate": "128k",
+                    "encode_mp4": False,
+                },
             },
         ):
             params = _build_rendition_parameters()
@@ -104,10 +114,48 @@ class RunnerManagerHelperTests(SimpleTestCase):
         self.assertEqual(
             json.loads(params["rendition"]),
             {
-                "360": {"resolution": "640x360", "encode_mp4": True},
-                "720": {"resolution": "1280x720", "encode_mp4": False},
+                "360": {
+                    "resolution": "640x360",
+                    "video_bitrate": "750k",
+                    "audio_bitrate": "96k",
+                    "encode_mp4": True,
+                },
+                "720": {
+                    "resolution": "1280x720",
+                    "video_bitrate": "2000k",
+                    "audio_bitrate": "128k",
+                    "encode_mp4": False,
+                },
             },
         )
+
+    def test_build_rendition_parameters_includes_bitrate_fields_for_each_rendition(
+        self,
+    ) -> None:
+        """Ensure each serialized rendition includes both audio and video bitrates."""
+        with patch(
+            "pod.video_encode_transcript.runner_manager.get_list_rendition",
+            return_value={
+                360: {
+                    "resolution": "640x360",
+                    "video_bitrate": "750k",
+                    "audio_bitrate": "96k",
+                    "encode_mp4": True,
+                },
+                1080: {
+                    "resolution": "1920x1080",
+                    "video_bitrate": "3000k",
+                    "audio_bitrate": "192k",
+                    "encode_mp4": False,
+                },
+            },
+        ):
+            params = _build_rendition_parameters()
+
+        rendition_payload = json.loads(params["rendition"])
+        for rendition_data in rendition_payload.values():
+            self.assertIn("video_bitrate", rendition_data)
+            self.assertIn("audio_bitrate", rendition_data)
 
     def test_attach_cut_info_adds_serialized_cut(self) -> None:
         """Store cut metadata when a CutVideo row exists."""
