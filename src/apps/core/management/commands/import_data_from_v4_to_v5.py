@@ -1,35 +1,38 @@
+import html
 import logging
 import os
 from contextlib import nullcontext as dummy_context
 
-from django.core.management.base import BaseCommand
+from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
-from django.db import transaction, connection
+from django.core.management.base import BaseCommand
+from django.db import transaction, connection, models
 from django.db.models.signals import post_save, pre_save, post_delete
 from django.utils import timezone
-from django.utils.timezone import make_aware, is_naive
 from django.utils.dateparse import parse_datetime
-from django.utils.text import slugify
-from django.conf import settings
 from django.utils.html import strip_tags
-import html
+from django.utils.text import slugify
+from django.utils.timezone import make_aware, is_naive
 
 from src.apps.authentication.models import Owner, AccessGroup, GroupSite
-from src.apps.authentication.models.Owner import create_owner_profile, default_site_owner
+from src.apps.authentication.models.Owner import (
+    create_owner_profile,
+    default_site_owner,
+)
 from src.apps.authentication.models.GroupSite import (
     create_groupsite_profile,
     default_site_groupsite,
 )
-from src.apps.collection.models import Channel, Theme, ThemeItem, Playlist, PlaylistItem
-
-
-def clean_html(text):
-    if not text:
-        return text
-    return html.unescape(strip_tags(text))
-
-
+from src.apps.collection.models import (
+    Channel,
+    Theme,
+    ThemeItem,
+    Playlist,
+    PlaylistItem,
+)
+from src.apps.encoding.conf import encoding_settings
+from src.apps.encoding.models import EncodingVideo
 from src.apps.video.models import (
     Video,
     Type,
@@ -39,9 +42,22 @@ from src.apps.video.models import (
     Vote,
     Subtitle,
 )
-from src.apps.encoding.models import EncodingVideo
-from src.apps.encoding.conf import encoding_settings
-from django.db import models
+from src.apps.video.signals import (
+    set_video_slug,
+    auto_delete_file_on_delete,
+    auto_delete_file_on_change,
+    video_post_save,
+    auto_assign_site_to_video,
+    auto_assign_site_to_type,
+)
+
+logger = logging.getLogger(__name__)
+
+
+def clean_html(text):
+    if not text:
+        return text
+    return html.unescape(strip_tags(text))
 
 
 class MigrationMapping(models.Model):
@@ -60,18 +76,6 @@ class MigrationMapping(models.Model):
         app_label = "core"
         db_table = "core_migrationmapping"
         unique_together = ("model_name", "v4_id")
-
-
-from src.apps.video.signals import (
-    set_video_slug,
-    auto_delete_file_on_delete,
-    auto_delete_file_on_change,
-    video_post_save,
-    auto_assign_site_to_video,
-    auto_assign_site_to_type,
-)
-
-logger = logging.getLogger(__name__)
 
 
 class DryRunRollbackException(Exception):
@@ -107,50 +111,95 @@ class Command(BaseCommand):
             help="Number of records to process per database transaction/batch",
         )
 
+    # ------------------------------------------------------------------
+    # Shared helpers
+    # ------------------------------------------------------------------
+
+    def _record_batch_errors(self, model_name, batch, error):
+        """Record MigrationMapping error entries for a failed batch."""
+        try:
+            with transaction.atomic():
+                err_mappings = [
+                    MigrationMapping(
+                        model_name=model_name,
+                        v4_id=item["id"],
+                        status=MigrationMapping.Status.ERROR,
+                        message=str(error),
+                    )
+                    for item in batch
+                ]
+                MigrationMapping.objects.bulk_create(
+                    err_mappings, ignore_conflicts=True
+                )
+        except Exception as inner_e:
+            logger.warning(
+                f"Could not record migration error to database: {inner_e}"
+            )
+
+    def _get_unprocessed_items(self, model_name, items):
+        """Filter out already-migrated items."""
+        migrated_ids = set(
+            MigrationMapping.objects.filter(
+                model_name=model_name, status="SUCCESS"
+            ).values_list("v4_id", flat=True)
+        )
+        return [item for item in items if item["id"] not in migrated_ids]
+
+    @staticmethod
+    def _parse_aware_datetime(dt_str):
+        """Parse a datetime string and return a timezone-aware datetime or None."""
+        if not dt_str:
+            return None
+        dt = parse_datetime(dt_str)
+        if dt is None:
+            return None
+        return make_aware(dt) if is_naive(dt) else dt
+
+    @staticmethod
+    def _make_unique_slug(base_slug, existing_slugs, max_length=255):
+        """Return a slug that is unique within *existing_slugs*."""
+        base_slug = base_slug[: max_length - 10]  # leave room for suffix
+        slug = base_slug
+        counter = 1
+        while slug in existing_slugs:
+            slug = f"{base_slug}-{counter}"
+            counter += 1
+        existing_slugs.add(slug)
+        return slug[:max_length]
+
+    def _bulk_create_batched(self, model, items, batch_size, label):
+        """Bulk-create *items* in batches, logging errors."""
+        success_count = 0
+        for i in range(0, len(items), batch_size):
+            batch = items[i : i + batch_size]
+            try:
+                with transaction.atomic():
+                    model.objects.bulk_create(batch, ignore_conflicts=True)
+                    success_count += len(batch)
+            except Exception as e:
+                self.stdout.write(
+                    self.style.ERROR(f"Error inserting {label} batch: {e}")
+                )
+        return success_count
+
+    # ------------------------------------------------------------------
+    # Main entry point
+    # ------------------------------------------------------------------
+
     def handle(self, *args, **options):
         file_path = options["file"]
         dry_run = options["dry_run"]
-        batch_size = options["batch_size"]
 
         if dry_run:
             self.stdout.write(
                 self.style.WARNING(
-                    "WARNING: Running in DRY-RUN mode. No changes will be written to the database."
+                    "WARNING: Running in DRY-RUN mode. "
+                    "No changes will be written to the database."
                 )
             )
 
-        class LazyJSONData:
-            def __init__(self, file_path, stdout, style):
-                self.file_path = file_path
-                self.stdout = stdout
-                self.style = style
-
-            def get(self, key, default=None):
-                import ijson
-
-                try:
-                    with open(self.file_path, "rb") as f:
-                        items = list(ijson.items(f, f"{key}.item"))
-                        return (
-                            items if items else (default if default is not None else [])
-                        )
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.ERROR(f"Error reading '{key}' with ijson: {e}")
-                    )
-                    return default if default is not None else []
-
-        data = LazyJSONData(file_path, self.stdout, self.style)
-
-        # Ensure the MigrationMapping table exists dynamically
-        if MigrationMapping._meta.db_table not in connection.introspection.table_names():
-            try:
-                with connection.schema_editor() as schema_editor:
-                    schema_editor.create_model(MigrationMapping)
-            except Exception as e:
-                self.stdout.write(
-                    self.style.WARNING(f"Warning creating MigrationMapping table: {e}")
-                )
+        data = self._make_lazy_data(file_path)
+        self._setup_migration_table()
 
         self.stdout.write(
             self.style.SUCCESS("*** Start importing data from V4 to V5 ***")
@@ -162,75 +211,149 @@ class Command(BaseCommand):
         # Disable signals to prevent conflicts and improve performances
         self.disconnect_signals()
 
-        # Wrap in a single transaction if dry_run
-        transaction_context = transaction.atomic() if dry_run else dummy_context()
+        try:
+            self._run_import(data, options, dry_run)
+        finally:
+            self.reconnect_signals()
+            self.stdout.write(
+                self.style.SUCCESS("*** Finished migration process ***")
+            )
+
+    def _make_lazy_data(self, file_path):
+        """Build the lazy JSON reader."""
+
+        class LazyJSONData:
+            def __init__(self, fp, stdout, style):
+                self.file_path = fp
+                self.stdout = stdout
+                self.style = style
+
+            def get(self, key, default=None):
+                import ijson
+
+                try:
+                    with open(self.file_path, "rb") as f:
+                        items = list(ijson.items(f, f"{key}.item"))
+                        return (
+                            items
+                            if items
+                            else (default if default is not None else [])
+                        )
+                except Exception as e:
+                    self.stdout.write(
+                        self.style.ERROR(
+                            f"Error reading '{key}' with ijson: {e}"
+                        )
+                    )
+                    return default if default is not None else []
+
+        return LazyJSONData(file_path, self.stdout, self.style)
+
+    def _setup_migration_table(self):
+        """Ensure the MigrationMapping table exists."""
+        table_names = connection.introspection.table_names()
+        if MigrationMapping._meta.db_table not in table_names:
+            try:
+                with connection.schema_editor() as schema_editor:
+                    schema_editor.create_model(MigrationMapping)
+            except Exception as e:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"Warning creating MigrationMapping table: {e}"
+                    )
+                )
+
+    def _run_import(self, data, options, dry_run):
+        """Execute all import steps inside an optional transaction."""
+        batch_size = options["batch_size"]
+        ctx = transaction.atomic() if dry_run else dummy_context()
 
         try:
-            with transaction_context:
-                # 1. Users, groups, and auth profiles
-                self.import_users(data.get("auth_user", []), batch_size)
-                self.import_owners(data.get("authentication_owner", []), batch_size)
-                self.import_groups(data.get("auth_group", []), batch_size)
-                self.import_accessgroups(
-                    data.get("authentication_accessgroup", []), batch_size
-                )
-                self.import_groupsites(
-                    data.get("authentication_groupsite", []), batch_size
-                )
-
-                # 2. Prereqs for videos (Types, Disciplines, Channels, Themes)
-                self.import_types(data.get("video_type", []), batch_size)
-                self.import_disciplines(data.get("video_discipline", []), batch_size)
-                self.import_channels(data.get("video_channel", []), data, batch_size)
-                self.import_themes(data.get("video_theme", []), batch_size)
-
-                # 3. Videos
-                self.import_video_tags(data)
-                self.import_videos(data.get("video_video", []), data, options)
-
-                # 4. Playlists
-                self.import_playlists(data.get("playlist_playlist", []), batch_size)
-                self.import_playlist_contents(
-                    data.get("playlist_playlistcontent", []),
-                    data.get("playlist_playlist", []),
-                    batch_size,
-                )
-
-                # 5. Extra entities: Comments, Votes, ViewCounts
-                self.import_comments(data.get("video_comment", []), batch_size)
-                self.import_votes(data.get("video_vote", []), batch_size)
-                self.import_viewcounts(data.get("video_viewcount", []), batch_size)
-
-                # 6. Relations (ManyToMany join tables)
-                self.import_relations(data, batch_size)
-
-                # 7. Subtitles and Encoded resolutions
-                self.import_subtitles(data.get("completion_track", []), data, batch_size)
-                self.import_encoded_videos(
-                    data.get("video_encode_transcript_encodingvideo", []), batch_size
-                )
+            with ctx:
+                self._run_import_steps(data, options, batch_size)
 
                 if dry_run:
                     self.stdout.write(
                         self.style.SUCCESS(
-                            "Dry run completed successfully. Rolling back database changes..."
+                            "Dry run completed successfully. "
+                            "Rolling back database changes..."
                         )
                     )
                     raise DryRunRollbackException("Dry run rollback")
 
-                # Ensure at least one superuser exists in the target database
                 self.ensure_superuser_exists()
-
-                self.stdout.write(self.style.SUCCESS("Migration completed successfully!"))
+                self.stdout.write(
+                    self.style.SUCCESS("Migration completed successfully!")
+                )
         except DryRunRollbackException:
             logger.info("Dry-run transaction rolled back.")
         except Exception as e:
-            self.stdout.write(self.style.ERROR(f"Error during import: {e}"))
+            self.stdout.write(
+                self.style.ERROR(f"Error during import: {e}")
+            )
             logger.exception("Error during data import")
-        finally:
-            # Reconnect signals
-            self.reconnect_signals()
-            self.stdout.write(self.style.SUCCESS("*** Finished migration process ***"))
+
+    def _run_import_steps(self, data, options, batch_size):
+        """Sequentially run every import step."""
+        # 1. Users, groups, and auth profiles
+        self.import_users(data.get("auth_user", []), batch_size)
+        self.import_owners(
+            data.get("authentication_owner", []), batch_size
+        )
+        self.import_groups(data.get("auth_group", []), batch_size)
+        self.import_accessgroups(
+            data.get("authentication_accessgroup", []), batch_size
+        )
+        self.import_groupsites(
+            data.get("authentication_groupsite", []), batch_size
+        )
+
+        # 2. Prereqs for videos
+        self.import_types(data.get("video_type", []), batch_size)
+        self.import_disciplines(
+            data.get("video_discipline", []), batch_size
+        )
+        self.import_channels(
+            data.get("video_channel", []), data, batch_size
+        )
+        self.import_themes(data.get("video_theme", []), batch_size)
+
+        # 3. Videos
+        self.import_video_tags(data)
+        self.import_videos(data.get("video_video", []), data, options)
+
+        # 4. Playlists
+        self.import_playlists(
+            data.get("playlist_playlist", []), batch_size
+        )
+        self.import_playlist_contents(
+            data.get("playlist_playlistcontent", []),
+            data.get("playlist_playlist", []),
+            batch_size,
+        )
+
+        # 5. Extra entities
+        self.import_comments(data.get("video_comment", []), batch_size)
+        self.import_votes(data.get("video_vote", []), batch_size)
+        self.import_viewcounts(
+            data.get("video_viewcount", []), batch_size
+        )
+
+        # 6. Relations (ManyToMany join tables)
+        self.import_relations(data, batch_size)
+
+        # 7. Subtitles and Encoded resolutions
+        self.import_subtitles(
+            data.get("completion_track", []), data, batch_size
+        )
+        self.import_encoded_videos(
+            data.get("video_encode_transcript_encodingvideo", []),
+            batch_size,
+        )
+
+    # ------------------------------------------------------------------
+    # Signal management
+    # ------------------------------------------------------------------
 
     def disconnect_signals(self):
         self.stdout.write("Disconnecting signals...")
@@ -270,15 +393,34 @@ class Command(BaseCommand):
                 },
             )
 
+    # ------------------------------------------------------------------
+    # Users
+    # ------------------------------------------------------------------
+
+    def _build_user_defaults(self, item):
+        """Build the defaults dict for a single User."""
+        defaults = {
+            "id": item["id"],
+            "password": item.get("password", ""),
+            "is_superuser": item.get("is_superuser", False),
+            "username": item.get("username"),
+            "first_name": item.get("first_name", ""),
+            "last_name": item.get("last_name", ""),
+            "email": item.get("email", ""),
+            "is_staff": item.get("is_staff", False),
+            "is_active": item.get("is_active", True),
+        }
+        last_login = self._parse_aware_datetime(item.get("last_login"))
+        if last_login:
+            defaults["last_login"] = last_login
+        date_joined = self._parse_aware_datetime(item.get("date_joined"))
+        if date_joined:
+            defaults["date_joined"] = date_joined
+        return defaults
+
     def import_users(self, items, batch_size):
         self.stdout.write("Importing Users...")
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="User", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
-        )
-
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
+        items_to_process = self._get_unprocessed_items("User", items)
         if not items_to_process:
             self.stdout.write("All Users already migrated.")
             return
@@ -293,31 +435,9 @@ class Command(BaseCommand):
                     instances = []
                     mappings = []
                     for item in batch:
-                        defaults = {
-                            "id": item["id"],
-                            "password": item.get("password", ""),
-                            "is_superuser": item.get("is_superuser", False),
-                            "username": item.get("username"),
-                            "first_name": item.get("first_name", ""),
-                            "last_name": item.get("last_name", ""),
-                            "email": item.get("email", ""),
-                            "is_staff": item.get("is_staff", False),
-                            "is_active": item.get("is_active", True),
-                        }
-                        if item.get("last_login"):
-                            dt = parse_datetime(item["last_login"])
-                            if dt:
-                                defaults["last_login"] = (
-                                    make_aware(dt) if is_naive(dt) else dt
-                                )
-                        if item.get("date_joined"):
-                            dt = parse_datetime(item["date_joined"])
-                            if dt:
-                                defaults["date_joined"] = (
-                                    make_aware(dt) if is_naive(dt) else dt
-                                )
-
-                        instances.append(User(**defaults))
+                        instances.append(
+                            User(**self._build_user_defaults(item))
+                        )
                         mappings.append(
                             MigrationMapping(
                                 model_name="User",
@@ -327,48 +447,81 @@ class Command(BaseCommand):
                             )
                         )
 
-                    User.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    User.objects.bulk_create(
+                        instances, ignore_conflicts=True
+                    )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(batch)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in User batch: {e}"))
-                try:
-                    with transaction.atomic():
-                        err_mappings = [
-                            MigrationMapping(
-                                model_name="User",
-                                v4_id=item["id"],
-                                status=MigrationMapping.Status.ERROR,
-                                message=str(e),
-                            )
-                            for item in batch
-                        ]
-                        MigrationMapping.objects.bulk_create(
-                            err_mappings, ignore_conflicts=True
-                        )
-                except Exception as inner_e:
-                    logger.warning(
-                        f"Could not record migration error to database: {inner_e}"
-                    )
+                self.stdout.write(
+                    self.style.ERROR(f"Error in User batch: {e}")
+                )
+                self._record_batch_errors("User", batch, e)
                 error_count += len(batch)
         self.stdout.write(
-            f"Users imported: {success_count} success, {error_count} errors."
+            f"Users imported: {success_count} success, "
+            f"{error_count} errors."
         )
+
+    # ------------------------------------------------------------------
+    # Owners
+    # ------------------------------------------------------------------
+
+    def _build_owner_entry(self, item, existing_user_ids, existing_owner_users):
+        """Return (Owner_instance_or_None, MigrationMapping, was_success)."""
+        user_id = item.get("user_id")
+        if user_id not in existing_user_ids:
+            mapping = MigrationMapping(
+                model_name="Owner",
+                v4_id=item["id"],
+                status=MigrationMapping.Status.IGNORED,
+                message=f"User ID {user_id} does not exist",
+            )
+            return None, mapping, "ignored"
+
+        if user_id in existing_owner_users:
+            mapping = MigrationMapping(
+                model_name="Owner",
+                v4_id=item["id"],
+                v5_id=item["id"],
+                status=MigrationMapping.Status.SUCCESS,
+            )
+            return None, mapping, "duplicate"
+
+        defaults = {
+            "id": item["id"],
+            "user_id": user_id,
+            "auth_type": item.get("auth_type", "local") or "local",
+            "affiliation": item.get("affiliation", "member") or "member",
+            "comment": item.get("comment", "") or "",
+            "hashkey": item.get("hashkey", "") or "",
+            "userpicture": item.get("userpicture", "") or "",
+            "establishment": item.get("establishment", "U1") or "U1",
+            "accepts_notifications": item.get("accepts_notifications"),
+        }
+        mapping = MigrationMapping(
+            model_name="Owner",
+            v4_id=item["id"],
+            v5_id=item["id"],
+            status=MigrationMapping.Status.SUCCESS,
+        )
+        return Owner(**defaults), mapping, "new"
 
     def import_owners(self, items, batch_size):
         self.stdout.write("Importing Owners...")
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="Owner", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
-        )
-        existing_user_ids = set(User.objects.values_list("id", flat=True))
-        existing_owner_users = set(Owner.objects.values_list("user_id", flat=True))
-
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
+        items_to_process = self._get_unprocessed_items("Owner", items)
         if not items_to_process:
             self.stdout.write("All Owners already migrated.")
             return
+
+        existing_user_ids = set(
+            User.objects.values_list("id", flat=True)
+        )
+        existing_owner_users = set(
+            Owner.objects.values_list("user_id", flat=True)
+        )
 
         success_count = 0
         error_count = 0
@@ -381,89 +534,43 @@ class Command(BaseCommand):
                     instances = []
                     mappings = []
                     for item in batch:
-                        user_id = item.get("user_id")
-                        if user_id not in existing_user_ids:
-                            ignored_count += 1
-                            mappings.append(
-                                MigrationMapping(
-                                    model_name="Owner",
-                                    v4_id=item["id"],
-                                    status=MigrationMapping.Status.IGNORED,
-                                    message=f"User ID {user_id} does not exist",
-                                )
-                            )
-                            continue
-                        if user_id in existing_owner_users:
-                            # Owner profile already created, skip creating duplicate
-                            mappings.append(
-                                MigrationMapping(
-                                    model_name="Owner",
-                                    v4_id=item["id"],
-                                    v5_id=item["id"],
-                                    status=MigrationMapping.Status.SUCCESS,
-                                )
-                            )
-                            success_count += 1
-                            continue
-
-                        defaults = {
-                            "id": item["id"],
-                            "user_id": user_id,
-                            "auth_type": item.get("auth_type", "local") or "local",
-                            "affiliation": item.get("affiliation", "member") or "member",
-                            "comment": item.get("comment", "") or "",
-                            "hashkey": item.get("hashkey", "") or "",
-                            "userpicture": item.get("userpicture", "") or "",
-                            "establishment": item.get("establishment", "U1") or "U1",
-                            "accepts_notifications": item.get("accepts_notifications"),
-                        }
-                        instances.append(Owner(**defaults))
-                        mappings.append(
-                            MigrationMapping(
-                                model_name="Owner",
-                                v4_id=item["id"],
-                                v5_id=item["id"],
-                                status=MigrationMapping.Status.SUCCESS,
-                            )
+                        inst, mapping, status = self._build_owner_entry(
+                            item, existing_user_ids, existing_owner_users
                         )
+                        mappings.append(mapping)
+                        if status == "ignored":
+                            ignored_count += 1
+                        elif status == "duplicate":
+                            success_count += 1
+                        else:
+                            instances.append(inst)
 
                     if instances:
-                        Owner.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                        Owner.objects.bulk_create(
+                            instances, ignore_conflicts=True
+                        )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in Owner batch: {e}"))
-                try:
-                    with transaction.atomic():
-                        err_mappings = [
-                            MigrationMapping(
-                                model_name="Owner",
-                                v4_id=item["id"],
-                                status=MigrationMapping.Status.ERROR,
-                                message=str(e),
-                            )
-                            for item in batch
-                        ]
-                        MigrationMapping.objects.bulk_create(
-                            err_mappings, ignore_conflicts=True
-                        )
-                except Exception as inner_e:
-                    logger.warning(
-                        f"Could not record migration error to database: {inner_e}"
-                    )
+                self.stdout.write(
+                    self.style.ERROR(f"Error in Owner batch: {e}")
+                )
+                self._record_batch_errors("Owner", batch, e)
                 error_count += len(batch)
         self.stdout.write(
-            f"Owners imported: {success_count} success, {error_count} errors, {ignored_count} ignored."
+            f"Owners imported: {success_count} success, "
+            f"{error_count} errors, {ignored_count} ignored."
         )
+
+    # ------------------------------------------------------------------
+    # Groups
+    # ------------------------------------------------------------------
 
     def import_groups(self, items, batch_size):
         self.stdout.write("Importing Groups...")
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="Group", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
-        )
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
+        items_to_process = self._get_unprocessed_items("Group", items)
         if not items_to_process:
             self.stdout.write("All Groups already migrated.")
             return
@@ -478,7 +585,9 @@ class Command(BaseCommand):
                     instances = []
                     mappings = []
                     for item in batch:
-                        instances.append(Group(id=item["id"], name=item["name"][:150]))
+                        instances.append(
+                            Group(id=item["id"], name=item["name"][:150])
+                        )
                         mappings.append(
                             MigrationMapping(
                                 model_name="Group",
@@ -487,24 +596,32 @@ class Command(BaseCommand):
                                 status=MigrationMapping.Status.SUCCESS,
                             )
                         )
-                    Group.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    Group.objects.bulk_create(
+                        instances, ignore_conflicts=True
+                    )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in Group batch: {e}"))
+                self.stdout.write(
+                    self.style.ERROR(f"Error in Group batch: {e}")
+                )
                 error_count += len(batch)
         self.stdout.write(
-            f"Groups imported: {success_count} success, {error_count} errors."
+            f"Groups imported: {success_count} success, "
+            f"{error_count} errors."
         )
+
+    # ------------------------------------------------------------------
+    # AccessGroups
+    # ------------------------------------------------------------------
 
     def import_accessgroups(self, items, batch_size):
         self.stdout.write("Importing AccessGroups...")
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="AccessGroup", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
+        items_to_process = self._get_unprocessed_items(
+            "AccessGroup", items
         )
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
         if not items_to_process:
             self.stdout.write("All AccessGroups already migrated.")
             return
@@ -522,8 +639,12 @@ class Command(BaseCommand):
                         instances.append(
                             AccessGroup(
                                 id=item["id"],
-                                display_name=item.get("display_name", "") or "",
-                                code_name=item.get("code_name", "") or "",
+                                display_name=item.get(
+                                    "display_name", ""
+                                )
+                                or "",
+                                code_name=item.get("code_name", "")
+                                or "",
                                 auto_sync=item.get("auto_sync", False),
                             )
                         )
@@ -535,29 +656,41 @@ class Command(BaseCommand):
                                 status=MigrationMapping.Status.SUCCESS,
                             )
                         )
-                    AccessGroup.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    AccessGroup.objects.bulk_create(
+                        instances, ignore_conflicts=True
+                    )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in AccessGroup batch: {e}"))
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"Error in AccessGroup batch: {e}"
+                    )
+                )
                 error_count += len(batch)
         self.stdout.write(
-            f"AccessGroups imported: {success_count} success, {error_count} errors."
+            f"AccessGroups imported: {success_count} success, "
+            f"{error_count} errors."
         )
+
+    # ------------------------------------------------------------------
+    # GroupSites
+    # ------------------------------------------------------------------
 
     def import_groupsites(self, items, batch_size):
         self.stdout.write("Importing GroupSites...")
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="GroupSite", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
+        items_to_process = self._get_unprocessed_items(
+            "GroupSite", items
         )
-        existing_group_ids = set(Group.objects.values_list("id", flat=True))
-
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
         if not items_to_process:
             self.stdout.write("All GroupSites already migrated.")
             return
+
+        existing_group_ids = set(
+            Group.objects.values_list("id", flat=True)
+        )
 
         success_count = 0
         error_count = 0
@@ -574,7 +707,9 @@ class Command(BaseCommand):
                         if g_id not in existing_group_ids:
                             ignored_count += 1
                             continue
-                        instances.append(GroupSite(id=item["id"], group_id=g_id))
+                        instances.append(
+                            GroupSite(id=item["id"], group_id=g_id)
+                        )
                         mappings.append(
                             MigrationMapping(
                                 model_name="GroupSite",
@@ -584,24 +719,32 @@ class Command(BaseCommand):
                             )
                         )
                     if instances:
-                        GroupSite.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                        GroupSite.objects.bulk_create(
+                            instances, ignore_conflicts=True
+                        )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in GroupSite batch: {e}"))
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"Error in GroupSite batch: {e}"
+                    )
+                )
                 error_count += len(batch)
         self.stdout.write(
-            f"GroupSites imported: {success_count} success, {error_count} errors, {ignored_count} ignored."
+            f"GroupSites imported: {success_count} success, "
+            f"{error_count} errors, {ignored_count} ignored."
         )
+
+    # ------------------------------------------------------------------
+    # Types
+    # ------------------------------------------------------------------
 
     def import_types(self, items, batch_size):
         self.stdout.write("Importing Types...")
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="Type", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
-        )
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
+        items_to_process = self._get_unprocessed_items("Type", items)
         if not items_to_process:
             self.stdout.write("All Types already migrated.")
             return
@@ -616,10 +759,14 @@ class Command(BaseCommand):
                     instances = []
                     mappings = []
                     for item in batch:
-                        slug = item.get("slug") or slugify(item["title"])
+                        slug = (
+                            item.get("slug") or slugify(item["title"])
+                        )
                         instances.append(
                             Type(
-                                id=item["id"], title=item["title"][:100], slug=slug[:100]
+                                id=item["id"],
+                                title=item["title"][:100],
+                                slug=slug[:100],
                             )
                         )
                         mappings.append(
@@ -630,24 +777,32 @@ class Command(BaseCommand):
                                 status=MigrationMapping.Status.SUCCESS,
                             )
                         )
-                    Type.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    Type.objects.bulk_create(
+                        instances, ignore_conflicts=True
+                    )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in Type batch: {e}"))
+                self.stdout.write(
+                    self.style.ERROR(f"Error in Type batch: {e}")
+                )
                 error_count += len(batch)
         self.stdout.write(
-            f"Types imported: {success_count} success, {error_count} errors."
+            f"Types imported: {success_count} success, "
+            f"{error_count} errors."
         )
+
+    # ------------------------------------------------------------------
+    # Disciplines
+    # ------------------------------------------------------------------
 
     def import_disciplines(self, items, batch_size):
         self.stdout.write("Importing Disciplines...")
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="Discipline", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
+        items_to_process = self._get_unprocessed_items(
+            "Discipline", items
         )
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
         if not items_to_process:
             self.stdout.write("All Disciplines already migrated.")
             return
@@ -668,7 +823,9 @@ class Command(BaseCommand):
                                 title=item["title"][:100],
                                 slug=item.get("slug", "")[:255]
                                 or slugify(item["title"])[:255],
-                                description=clean_html(item.get("description", "") or ""),
+                                description=clean_html(
+                                    item.get("description", "") or ""
+                                ),
                             )
                         )
                         mappings.append(
@@ -679,39 +836,59 @@ class Command(BaseCommand):
                                 status=MigrationMapping.Status.SUCCESS,
                             )
                         )
-                    Discipline.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    Discipline.objects.bulk_create(
+                        instances, ignore_conflicts=True
+                    )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in Discipline batch: {e}"))
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"Error in Discipline batch: {e}"
+                    )
+                )
                 error_count += len(batch)
         self.stdout.write(
-            f"Disciplines imported: {success_count} success, {error_count} errors."
+            f"Disciplines imported: {success_count} success, "
+            f"{error_count} errors."
         )
+
+    # ------------------------------------------------------------------
+    # Channels
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _resolve_channel_owner(
+        c_id, channel_owners_map, existing_user_ids, fallback_id
+    ):
+        """Return the owner_id for a channel."""
+        owners = channel_owners_map.get(c_id, [])
+        valid = [o for o in owners if o in existing_user_ids]
+        return valid[0] if valid else fallback_id
 
     def import_channels(self, items, data, batch_size):
         self.stdout.write("Importing Channels...")
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="Channel", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
+        items_to_process = self._get_unprocessed_items("Channel", items)
+        if not items_to_process:
+            self.stdout.write("All Channels already migrated.")
+            return
+
+        existing_user_ids = set(
+            User.objects.values_list("id", flat=True)
         )
-        existing_user_ids = set(User.objects.values_list("id", flat=True))
-        first_user_id = User.objects.first().id if User.objects.exists() else 1
+        first_user_id = (
+            User.objects.first().id if User.objects.exists() else 1
+        )
 
         # Build owners map
         channel_owners_map = {}
         for row in data.get("video_channel_owners", []):
             c_id = row["channel_id"]
-            u_id = row["user_id"]
-            if c_id not in channel_owners_map:
-                channel_owners_map[c_id] = []
-            channel_owners_map[c_id].append(u_id)
-
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
-        if not items_to_process:
-            self.stdout.write("All Channels already migrated.")
-            return
+            channel_owners_map.setdefault(c_id, []).append(
+                row["user_id"]
+            )
 
         success_count = 0
         error_count = 0
@@ -724,17 +901,20 @@ class Command(BaseCommand):
                     mappings = []
                     for item in batch:
                         c_id = item["id"]
-                        owners = channel_owners_map.get(c_id, [])
-                        valid_owners = [o for o in owners if o in existing_user_ids]
-
-                        owner_id = valid_owners[0] if valid_owners else first_user_id
-
+                        owner_id = self._resolve_channel_owner(
+                            c_id,
+                            channel_owners_map,
+                            existing_user_ids,
+                            first_user_id,
+                        )
                         defaults = {
                             "id": c_id,
                             "title": item["title"][:250],
                             "slug": item.get("slug", "")[:255]
                             or slugify(item["title"])[:255],
-                            "description": clean_html(item.get("description", "") or ""),
+                            "description": clean_html(
+                                item.get("description", "") or ""
+                            ),
                             "is_public": item.get("visible", True),
                             "owner_id": owner_id,
                             "old_v4_id": c_id,
@@ -749,53 +929,39 @@ class Command(BaseCommand):
                             )
                         )
 
-                    Channel.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    Channel.objects.bulk_create(
+                        instances, ignore_conflicts=True
+                    )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in Channel batch: {e}"))
-                try:
-                    with transaction.atomic():
-                        err_mappings = [
-                            MigrationMapping(
-                                model_name="Channel",
-                                v4_id=item["id"],
-                                status=MigrationMapping.Status.ERROR,
-                                message=str(e),
-                            )
-                            for item in batch
-                        ]
-                        MigrationMapping.objects.bulk_create(
-                            err_mappings, ignore_conflicts=True
-                        )
-                except Exception as inner_e:
-                    logger.warning(
-                        f"Could not record migration error to database: {inner_e}"
-                    )
+                self.stdout.write(
+                    self.style.ERROR(f"Error in Channel batch: {e}")
+                )
+                self._record_batch_errors("Channel", batch, e)
                 error_count += len(batch)
         self.stdout.write(
-            f"Channels imported: {success_count} success, {error_count} errors."
+            f"Channels imported: {success_count} success, "
+            f"{error_count} errors."
         )
 
-    def import_themes(self, items, batch_size):
-        self.stdout.write("Importing Themes (Pass 1 - without parents)...")
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="Theme", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
+    # ------------------------------------------------------------------
+    # Themes
+    # ------------------------------------------------------------------
+
+    def _import_themes_pass1(
+        self, items_to_process, existing_channel_ids,
+        existing_slugs, batch_size
+    ):
+        """Create themes without parents (Pass 1)."""
+        self.stdout.write(
+            "Importing Themes (Pass 1 - without parents)..."
         )
-        existing_channel_ids = set(Channel.objects.values_list("id", flat=True))
-        existing_slugs = set(Theme.objects.values_list("slug", flat=True))
-
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
-        if not items_to_process:
-            self.stdout.write("All Themes already migrated.")
-            return
-
         success_count = 0
         error_count = 0
 
-        # Pass 1: create them with parent_id = None
         for i in range(0, len(items_to_process), batch_size):
             batch = items_to_process[i : i + batch_size]
             try:
@@ -807,20 +973,20 @@ class Command(BaseCommand):
                         if c_id not in existing_channel_ids:
                             c_id = None
 
-                        base_slug = item.get("slug") or slugify(item["title"])
-                        base_slug = base_slug[:240]  # Leave room for suffix
-                        slug = base_slug
-                        counter = 1
-                        while slug in existing_slugs:
-                            slug = f"{base_slug}-{counter}"
-                            counter += 1
-                        existing_slugs.add(slug)
+                        base_slug = (
+                            item.get("slug") or slugify(item["title"])
+                        )
+                        slug = self._make_unique_slug(
+                            base_slug, existing_slugs
+                        )
 
                         defaults = {
                             "id": item["id"],
                             "title": item["title"][:250],
                             "slug": slug[:255],
-                            "description": clean_html(item.get("description", "") or ""),
+                            "description": clean_html(
+                                item.get("description", "") or ""
+                            ),
                             "channel_id": c_id,
                             "parent_id": None,
                             "old_v4_id": item["id"],
@@ -835,56 +1001,83 @@ class Command(BaseCommand):
                             )
                         )
 
-                    Theme.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    Theme.objects.bulk_create(
+                        instances, ignore_conflicts=True
+                    )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in Theme batch (Pass 1): {e}"))
-                try:
-                    with transaction.atomic():
-                        err_mappings = [
-                            MigrationMapping(
-                                model_name="Theme",
-                                v4_id=item["id"],
-                                status=MigrationMapping.Status.ERROR,
-                                message=str(e),
-                            )
-                            for item in batch
-                        ]
-                        MigrationMapping.objects.bulk_create(
-                            err_mappings, ignore_conflicts=True
-                        )
-                except Exception as inner_e:
-                    logger.warning(
-                        f"Could not record migration error to database: {inner_e}"
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"Error in Theme batch (Pass 1): {e}"
                     )
+                )
+                self._record_batch_errors("Theme", batch, e)
                 error_count += len(batch)
 
-        # Pass 2: Set parent_id
+        return success_count, error_count
+
+    def _update_theme_parents(self, items, batch_size):
+        """Set parent_id for themes (Pass 2)."""
         self.stdout.write("Updating Theme parents (Pass 2)...")
-        existing_theme_ids = set(Theme.objects.values_list("id", flat=True))
+        existing_theme_ids = set(
+            Theme.objects.values_list("id", flat=True)
+        )
         themes_to_update = []
         for item in items:
             t_id = item["id"]
             p_id = item.get("parentId_id")
-            if p_id and p_id in existing_theme_ids and t_id in existing_theme_ids:
-                if t_id != p_id:
-                    themes_to_update.append(Theme(id=t_id, parent_id=p_id))
+            if (
+                p_id
+                and p_id in existing_theme_ids
+                and t_id in existing_theme_ids
+                and t_id != p_id
+            ):
+                themes_to_update.append(
+                    Theme(id=t_id, parent_id=p_id)
+                )
 
-        if themes_to_update:
-            for i in range(0, len(themes_to_update), batch_size):
-                batch = themes_to_update[i : i + batch_size]
-                try:
-                    with transaction.atomic():
-                        Theme.objects.bulk_update(batch, ["parent_id"])
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.ERROR(f"Error updating Theme parents batch: {e}")
+        for i in range(0, len(themes_to_update), batch_size):
+            batch = themes_to_update[i : i + batch_size]
+            try:
+                with transaction.atomic():
+                    Theme.objects.bulk_update(batch, ["parent_id"])
+            except Exception as e:
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"Error updating Theme parents batch: {e}"
                     )
+                )
+
+    def import_themes(self, items, batch_size):
+        items_to_process = self._get_unprocessed_items("Theme", items)
+        if not items_to_process:
+            self.stdout.write("All Themes already migrated.")
+            return
+
+        existing_channel_ids = set(
+            Channel.objects.values_list("id", flat=True)
+        )
+        existing_slugs = set(
+            Theme.objects.values_list("slug", flat=True)
+        )
+
+        success_count, error_count = self._import_themes_pass1(
+            items_to_process, existing_channel_ids,
+            existing_slugs, batch_size
+        )
+        self._update_theme_parents(items, batch_size)
 
         self.stdout.write(
-            f"Themes imported: {success_count} success, {error_count} errors."
+            f"Themes imported: {success_count} success, "
+            f"{error_count} errors."
         )
+
+    # ------------------------------------------------------------------
+    # Video Tags
+    # ------------------------------------------------------------------
 
     def import_video_tags(self, data):
         self.stdout.write("Importing Video Tags...")
@@ -892,7 +1085,9 @@ class Command(BaseCommand):
         v4_tags = data.get("video_tagulous_video_tags", [])
 
         tags_to_create = []
-        existing_tags = set(tag_model.objects.values_list("name", flat=True))
+        existing_tags = set(
+            tag_model.objects.values_list("name", flat=True)
+        )
 
         for item in v4_tags:
             name = item["name"]
@@ -910,8 +1105,14 @@ class Command(BaseCommand):
                 existing_tags.add(name)
 
         if tags_to_create:
-            tag_model.objects.bulk_create(tags_to_create, ignore_conflicts=True)
+            tag_model.objects.bulk_create(
+                tags_to_create, ignore_conflicts=True
+            )
             self.stdout.write(f"Created {len(tags_to_create)} tags.")
+
+    # ------------------------------------------------------------------
+    # Video conversion helpers
+    # ------------------------------------------------------------------
 
     def get_v5_cursus(self, v4_cursus):
         if v4_cursus == "L":
@@ -932,45 +1133,205 @@ class Command(BaseCommand):
     def get_v5_license(self, v4_license):
         if not v4_license:
             return "COPYRIGHT"
-        v4_license_upper = v4_license.upper()
-        if "CC-BY-SA" in v4_license_upper:
+        upper = v4_license.upper()
+        if "CC-BY-SA" in upper:
             return "CC-BY-SA"
-        elif "CC-BY-NC" in v4_license_upper:
+        elif "CC-BY-NC" in upper:
             return "CC-BY-NC"
-        elif "CC-BY-ND" in v4_license_upper:
+        elif "CC-BY-ND" in upper:
             return "CC-BY-ND"
-        elif "CC-BY" in v4_license_upper:
+        elif "CC-BY" in upper:
             return "CC-BY"
         return "COPYRIGHT"
+
+    # ------------------------------------------------------------------
+    # Videos
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _resolve_video_file(item):
+        """Resolve the video file path, adjusting the directory prefix."""
+        video_file = item.get("video", "")
+        videos_dir = encoding_settings.videos_dir
+        if (
+            videos_dir != "videos"
+            and video_file
+            and video_file.startswith("videos/")
+        ):
+            video_file = video_file.replace(
+                "videos/", f"{videos_dir}/", 1
+            )
+        return video_file
+
+    @staticmethod
+    def _resolve_thumbnail(thumb_id, custom_images):
+        """Resolve the thumbnail path from custom images."""
+        if thumb_id not in custom_images:
+            return None
+        path = custom_images[thumb_id]
+        thumbnails_dir = encoding_settings.thumbnails_dir
+        if (
+            thumbnails_dir != "thumbnails"
+            and path
+            and path.startswith("thumbnails/")
+        ):
+            path = path.replace(
+                "thumbnails/", f"{thumbnails_dir}/", 1
+            )
+        return path
+
+    @staticmethod
+    def _parse_date_field(item, field_name):
+        """Parse a date-only field like date_evt or date_delete."""
+        raw = item.get(field_name)
+        if not raw:
+            return None
+        try:
+            return parse_datetime(raw + " 00:00:00").date()
+        except Exception as e:
+            logger.warning(
+                f"Could not parse {field_name} '{raw}' "
+                f"for video {item['id']}: {e}"
+            )
+            return None
+
+    def _build_video_defaults(self, item, context):
+        """Build the defaults dict for a single Video."""
+        v_id = item["id"]
+        owner_id = item.get("owner_id")
+        if owner_id not in context["user_ids"]:
+            owner_id = context["first_user_id"]
+
+        type_id = item.get("type_id")
+        if type_id not in context["type_ids"]:
+            type_id = None
+
+        channel_id = context["video_channels"].get(v_id)
+        if channel_id not in context["channel_ids"]:
+            channel_id = None
+
+        video_file = self._resolve_video_file(item)
+        thumbnail = self._resolve_thumbnail(
+            item.get("thumbnail_id"), context["custom_images"]
+        )
+
+        created_at = (
+            self._parse_aware_datetime(item.get("date_added"))
+            or timezone.now()
+        )
+
+        return {
+            "id": v_id,
+            "title": item["title"][:250],
+            "slug": item["slug"][:255],
+            "description": clean_html(
+                item.get("description", "") or ""
+            ),
+            "video_file": video_file or None,
+            "is_video": item.get("is_video", True),
+            "thumbnail": thumbnail,
+            "overview": clean_html(
+                item.get("overview", "") or ""
+            )
+            or None,
+            "duration": item.get("duration", 0),
+            "view_count": item.get("view_count", 0),
+            "is_360": item.get("is_360", False),
+            "owner_id": owner_id,
+            "channel_id": channel_id,
+            "status": self.get_v5_status(
+                item.get("is_draft", False),
+                item.get("is_restricted", False),
+            ),
+            "encoding_status": (
+                "PR" if item.get("encoding_in_progress") else "DO"
+            ),
+            "is_auth_required": item.get("is_restricted", False),
+            "password": item.get("password", "") or None,
+            "allow_downloading": item.get(
+                "allow_downloading", False
+            ),
+            "disable_comment": item.get("disable_comment", False),
+            "order": item.get("order", 1),
+            "date_of_event": self._parse_date_field(
+                item, "date_evt"
+            ),
+            "license": self.get_v5_license(item.get("licence")),
+            "cursus": self.get_v5_cursus(item.get("cursus")),
+            "language": item.get("main_lang", "fr")[:10],
+            "transcript_language": item.get("transcript", "")[:10],
+            "created_at": created_at,
+            "date_to_delete": self._parse_date_field(
+                item, "date_delete"
+            ),
+        }
+
+    def _tag_missing_files(self, missing_files_video_ids):
+        """Tag videos whose source files are missing."""
+        if not missing_files_video_ids:
+            return
+        self.stdout.write("Tagging videos with missing files...")
+        tag_model = Video.tags.tag_model
+        missing_tag, _ = tag_model.objects.get_or_create(
+            name="Fichier égaré",
+            defaults={"slug": "fichier-egare"},
+        )
+        through_model = Video.tags.through
+
+        existing_relations = set(
+            through_model.objects.filter(
+                tagulous_video_tags_id=missing_tag.id
+            ).values_list("video_id", flat=True)
+        )
+
+        relations = [
+            through_model(
+                video_id=v_id,
+                tagulous_video_tags_id=missing_tag.id,
+            )
+            for v_id in missing_files_video_ids
+            if v_id not in existing_relations
+        ]
+
+        if relations:
+            through_model.objects.bulk_create(
+                relations, ignore_conflicts=True
+            )
 
     def import_videos(self, items, data, options):
         self.stdout.write("Importing Videos...")
         batch_size = options["batch_size"]
         verify_files = options["verify_files"]
 
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="Video", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
-        )
-        existing_user_ids = set(User.objects.values_list("id", flat=True))
-        existing_type_ids = set(Type.objects.values_list("id", flat=True))
-        existing_channel_ids = set(Channel.objects.values_list("id", flat=True))
-        first_user_id = User.objects.first().id if User.objects.exists() else 1
-
-        # Maps
-        custom_images = {
-            row["id"]: row["file"] for row in data.get("main_customimagemodel", [])
-        }
-        video_channels = {
-            row["video_id"]: row["channel_id"]
-            for row in data.get("video_video_channel", [])
-        }
-
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
+        items_to_process = self._get_unprocessed_items("Video", items)
         if not items_to_process:
             self.stdout.write("All Videos already migrated.")
             return
+
+        context = {
+            "user_ids": set(
+                User.objects.values_list("id", flat=True)
+            ),
+            "type_ids": set(
+                Type.objects.values_list("id", flat=True)
+            ),
+            "channel_ids": set(
+                Channel.objects.values_list("id", flat=True)
+            ),
+            "first_user_id": (
+                User.objects.first().id
+                if User.objects.exists()
+                else 1
+            ),
+            "custom_images": {
+                row["id"]: row["file"]
+                for row in data.get("main_customimagemodel", [])
+            },
+            "video_channels": {
+                row["video_id"]: row["channel_id"]
+                for row in data.get("video_video_channel", [])
+            },
+        }
 
         success_count = 0
         error_count = 0
@@ -983,199 +1344,79 @@ class Command(BaseCommand):
                     instances = []
                     mappings = []
                     for item in batch:
-                        v_id = item["id"]
-                        owner_id = item.get("owner_id")
-                        if owner_id not in existing_user_ids:
-                            owner_id = first_user_id
+                        defaults = self._build_video_defaults(
+                            item, context
+                        )
 
-                        type_id = item.get("type_id")
-                        if type_id not in existing_type_ids:
-                            type_id = None
-
-                        channel_id = video_channels.get(v_id)
-                        if channel_id not in existing_channel_ids:
-                            channel_id = None
-
-                        video_file = item.get("video", "")
-                        videos_dir = encoding_settings.videos_dir
-                        if (
-                            videos_dir != "videos"
-                            and video_file
-                            and video_file.startswith("videos/")
-                        ):
-                            video_file = video_file.replace(
-                                "videos/", f"{videos_dir}/", 1
+                        if verify_files and defaults["video_file"]:
+                            fpath = os.path.join(
+                                settings.MEDIA_ROOT,
+                                defaults["video_file"],
                             )
-                        if verify_files and video_file:
-                            file_path = os.path.join(settings.MEDIA_ROOT, video_file)
-                            if not os.path.exists(file_path):
+                            if not os.path.exists(fpath):
                                 self.stdout.write(
                                     self.style.WARNING(
-                                        f"Video V4 ID {v_id} file not found: {file_path}"
+                                        f"Video V4 ID {item['id']} "
+                                        f"file not found: {fpath}"
                                     )
                                 )
-                                missing_files_video_ids.add(v_id)
-
-                        created_at = timezone.now()
-                        if item.get("date_added"):
-                            dt = parse_datetime(item["date_added"])
-                            if dt:
-                                created_at = make_aware(dt) if is_naive(dt) else dt
-
-                        date_of_event = None
-                        if item.get("date_evt"):
-                            try:
-                                date_of_event = parse_datetime(
-                                    item["date_evt"] + " 00:00:00"
-                                ).date()
-                            except Exception as date_e:
-                                logger.warning(
-                                    f"Could not parse date_evt '{item.get('date_evt')}' for video {item['id']}: {date_e}"
+                                missing_files_video_ids.add(
+                                    item["id"]
                                 )
-
-                        date_to_delete = None
-                        if item.get("date_delete"):
-                            try:
-                                date_to_delete = parse_datetime(
-                                    item["date_delete"] + " 00:00:00"
-                                ).date()
-                            except Exception as date_e:
-                                logger.warning(
-                                    f"Could not parse date_delete '{item.get('date_delete')}' for video {item['id']}: {date_e}"
-                                )
-
-                        thumbnail_path = None
-                        thumb_id = item.get("thumbnail_id")
-                        if thumb_id in custom_images:
-                            thumbnail_path = custom_images[thumb_id]
-                            thumbnails_dir = encoding_settings.thumbnails_dir
-                            if (
-                                thumbnails_dir != "thumbnails"
-                                and thumbnail_path
-                                and thumbnail_path.startswith("thumbnails/")
-                            ):
-                                thumbnail_path = thumbnail_path.replace(
-                                    "thumbnails/", f"{thumbnails_dir}/", 1
-                                )
-
-                        encoding_status = "DO"
-                        if item.get("encoding_in_progress"):
-                            encoding_status = "PR"
-
-                        defaults = {
-                            "id": v_id,
-                            "title": item["title"][:250],
-                            "slug": item["slug"][:255],
-                            "description": clean_html(item.get("description", "") or ""),
-                            "video_file": video_file or None,
-                            "is_video": item.get("is_video", True),
-                            "thumbnail": thumbnail_path,
-                            "overview": clean_html(item.get("overview", "") or "")
-                            or None,
-                            "duration": item.get("duration", 0),
-                            "view_count": item.get("view_count", 0),
-                            "is_360": item.get("is_360", False),
-                            "owner_id": owner_id,
-                            "channel_id": channel_id,
-                            "status": self.get_v5_status(
-                                item.get("is_draft", False),
-                                item.get("is_restricted", False),
-                            ),
-                            "encoding_status": encoding_status,
-                            "is_auth_required": item.get("is_restricted", False),
-                            "password": item.get("password", "") or None,
-                            "allow_downloading": item.get("allow_downloading", False),
-                            "disable_comment": item.get("disable_comment", False),
-                            "order": item.get("order", 1),
-                            "date_of_event": date_of_event,
-                            "license": self.get_v5_license(item.get("licence")),
-                            "cursus": self.get_v5_cursus(item.get("cursus")),
-                            "language": item.get("main_lang", "fr")[:10],
-                            "transcript_language": item.get("transcript", "")[:10],
-                            "created_at": created_at,
-                            "date_to_delete": date_to_delete,
-                        }
 
                         instances.append(Video(**defaults))
                         mappings.append(
                             MigrationMapping(
                                 model_name="Video",
-                                v4_id=v_id,
-                                v5_id=v_id,
+                                v4_id=item["id"],
+                                v5_id=item["id"],
                                 status=MigrationMapping.Status.SUCCESS,
                             )
                         )
 
                     if instances:
-                        Video.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                        Video.objects.bulk_create(
+                            instances, ignore_conflicts=True
+                        )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in Video batch: {e}"))
-                try:
-                    with transaction.atomic():
-                        err_mappings = [
-                            MigrationMapping(
-                                model_name="Video",
-                                v4_id=item["id"],
-                                status=MigrationMapping.Status.ERROR,
-                                message=str(e),
-                            )
-                            for item in batch
-                        ]
-                        MigrationMapping.objects.bulk_create(
-                            err_mappings, ignore_conflicts=True
-                        )
-                except Exception as inner_e:
-                    logger.warning(
-                        f"Could not record migration error to database: {inner_e}"
-                    )
+                self.stdout.write(
+                    self.style.ERROR(f"Error in Video batch: {e}")
+                )
+                self._record_batch_errors("Video", batch, e)
                 error_count += len(batch)
 
-        # Link missing file tags if any
-        if missing_files_video_ids:
-            self.stdout.write("Tagging videos with missing files...")
-            tag_model = Video.tags.tag_model
-            missing_tag, _ = tag_model.objects.get_or_create(
-                name="Fichier égaré", defaults={"slug": "fichier-egare"}
-            )
-            through_model = Video.tags.through
-
-            relations_to_create = []
-            existing_relations = set(
-                through_model.objects.filter(
-                    tagulous_video_tags_id=missing_tag.id
-                ).values_list("video_id", flat=True)
-            )
-
-            for v_id in missing_files_video_ids:
-                if v_id not in existing_relations:
-                    relations_to_create.append(
-                        through_model(
-                            video_id=v_id, tagulous_video_tags_id=missing_tag.id
-                        )
-                    )
-
-            if relations_to_create:
-                through_model.objects.bulk_create(
-                    relations_to_create, ignore_conflicts=True
-                )
+        self._tag_missing_files(missing_files_video_ids)
 
         self.stdout.write(
-            f"Videos imported: {success_count} success, {error_count} errors."
+            f"Videos imported: {success_count} success, "
+            f"{error_count} errors."
         )
+
+    # ------------------------------------------------------------------
+    # Playlists
+    # ------------------------------------------------------------------
 
     def import_playlists(self, items, batch_size):
         self.stdout.write("Importing Playlists...")
         migrated_ids = set(
-            MigrationMapping.objects.filter(model_name="Playlist").values_list(
-                "v4_id", flat=True
-            )
+            MigrationMapping.objects.filter(
+                model_name="Playlist"
+            ).values_list("v4_id", flat=True)
         )
-        existing_user_ids = set(User.objects.values_list("id", flat=True))
-        first_user_id = User.objects.first().id if User.objects.exists() else 1
+        existing_user_ids = set(
+            User.objects.values_list("id", flat=True)
+        )
+        first_user_id = (
+            User.objects.first().id if User.objects.exists() else 1
+        )
 
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
+        items_to_process = [
+            item for item in items if item["id"] not in migrated_ids
+        ]
         if not items_to_process:
             self.stdout.write("All Playlists already migrated.")
             return
@@ -1208,17 +1449,23 @@ class Command(BaseCommand):
                         if owner_id not in existing_user_ids:
                             owner_id = first_user_id
 
-                        slug = item.get("slug") or slugify(item["name"])
+                        slug = (
+                            item.get("slug")
+                            or slugify(item["name"])
+                        )
 
                         defaults = {
                             "id": item["id"],
                             "title": item["name"][:250],
                             "slug": slug[:255],
-                            "description": clean_html(item.get("description", "") or ""),
+                            "description": clean_html(
+                                item.get("description", "") or ""
+                            ),
                             "owner_id": owner_id,
                             "is_public": item.get("visibility")
                             in ["public", "protected"],
-                            "password": item.get("password", "") or None,
+                            "password": item.get("password", "")
+                            or None,
                             "old_v4_id": item["id"],
                         }
 
@@ -1233,61 +1480,41 @@ class Command(BaseCommand):
                         )
 
                     if instances:
-                        Playlist.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                        Playlist.objects.bulk_create(
+                            instances, ignore_conflicts=True
+                        )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in Playlist batch: {e}"))
-                try:
-                    with transaction.atomic():
-                        err_mappings = []
-                        for item in batch:
-                            err_mappings.append(
-                                MigrationMapping(
-                                    model_name="Playlist",
-                                    v4_id=item["id"],
-                                    status=MigrationMapping.Status.ERROR,
-                                    message=str(e),
-                                )
-                            )
-                        MigrationMapping.objects.bulk_create(
-                            err_mappings, ignore_conflicts=True
-                        )
-                except Exception as inner_e:
-                    logger.warning(
-                        f"Could not record migration error to database: {inner_e}"
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"Error in Playlist batch: {e}"
                     )
+                )
+                self._record_batch_errors("Playlist", batch, e)
                 error_count += len(batch)
         self.stdout.write(
-            f"Playlists imported: {success_count} success, {ignored_count} ignored (Favorites), {error_count} errors."
+            f"Playlists imported: {success_count} success, "
+            f"{ignored_count} ignored (Favorites), "
+            f"{error_count} errors."
         )
 
-    def import_playlist_contents(self, items, playlist_items, batch_size):
-        self.stdout.write("Importing Playlist Contents & Favorites...")
+    # ------------------------------------------------------------------
+    # Playlist Contents & Favorites
+    # ------------------------------------------------------------------
 
-        # Build a map of V4 playlist ID -> (name, owner_id)
-        playlist_map = {
-            item["id"]: (item["name"], item["owner_id"]) for item in playlist_items
-        }
-
-        existing_playlists = set(Playlist.objects.values_list("id", flat=True))
-        existing_videos = set(Video.objects.values_list("id", flat=True))
-        existing_users = set(User.objects.values_list("id", flat=True))
-
+    def _collect_playlist_and_favorite_entries(
+        self, items, playlist_map,
+        existing_playlists, existing_videos, existing_users,
+        existing_playlist_rels, existing_favorite_rels,
+    ):
+        """Sort playlist content items into playlist items and favorites."""
         from src.apps.collection.models.Favorite import Favorite
-
-        existing_playlist_relations = set(
-            PlaylistItem.objects.values_list("playlist_id", "video_id")
-        )
-        existing_favorite_relations = set(
-            Favorite.objects.values_list("user_id", "video_id")
-        )
 
         playlist_items_to_create = []
         favorites_to_create = []
-
-        playlist_contents_count = 0
-        favorites_count = 0
         ignored_count = 0
 
         for item in items:
@@ -1298,82 +1525,105 @@ class Command(BaseCommand):
                 ignored_count += 1
                 continue
 
-            # Check if this playlist is a "Favorites" playlist
             playlist_info = playlist_map.get(p_id)
             if playlist_info and playlist_info[0] == "Favorites":
                 owner_id = playlist_info[1]
-                if owner_id in existing_users:
-                    if (owner_id, v_id) not in existing_favorite_relations:
-                        favorites_to_create.append(
-                            Favorite(user_id=owner_id, video_id=v_id)
-                        )
-                        existing_favorite_relations.add((owner_id, v_id))
-                else:
+                if owner_id not in existing_users:
                     ignored_count += 1
+                    continue
+                if (owner_id, v_id) not in existing_favorite_rels:
+                    favorites_to_create.append(
+                        Favorite(user_id=owner_id, video_id=v_id)
+                    )
+                    existing_favorite_rels.add((owner_id, v_id))
                 continue
 
-            # Regular playlist content
             if p_id not in existing_playlists:
                 ignored_count += 1
                 continue
 
-            if (p_id, v_id) not in existing_playlist_relations:
+            if (p_id, v_id) not in existing_playlist_rels:
                 rank = item.get("rank", 0)
                 playlist_items_to_create.append(
                     PlaylistItem(
-                        playlist_id=p_id, video_id=v_id, position=rank if rank > 0 else 1
+                        playlist_id=p_id,
+                        video_id=v_id,
+                        position=rank if rank > 0 else 1,
                     )
                 )
-                existing_playlist_relations.add((p_id, v_id))
+                existing_playlist_rels.add((p_id, v_id))
 
-        if playlist_items_to_create:
-            for i in range(0, len(playlist_items_to_create), batch_size):
-                batch = playlist_items_to_create[i : i + batch_size]
-                try:
-                    with transaction.atomic():
-                        PlaylistItem.objects.bulk_create(batch, ignore_conflicts=True)
-                        playlist_contents_count += len(batch)
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.ERROR(f"Error inserting playlist content batch: {e}")
-                    )
+        return playlist_items_to_create, favorites_to_create, ignored_count
 
-        if favorites_to_create:
-            for i in range(0, len(favorites_to_create), batch_size):
-                batch = favorites_to_create[i : i + batch_size]
-                try:
-                    with transaction.atomic():
-                        Favorite.objects.bulk_create(batch, ignore_conflicts=True)
-                        favorites_count += len(batch)
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.ERROR(f"Error inserting favorite batch: {e}")
-                    )
+    def import_playlist_contents(
+        self, items, playlist_items, batch_size
+    ):
+        self.stdout.write(
+            "Importing Playlist Contents & Favorites..."
+        )
+
+        playlist_map = {
+            item["id"]: (item["name"], item["owner_id"])
+            for item in playlist_items
+        }
+
+        existing_playlists = set(
+            Playlist.objects.values_list("id", flat=True)
+        )
+        existing_videos = set(
+            Video.objects.values_list("id", flat=True)
+        )
+        existing_users = set(
+            User.objects.values_list("id", flat=True)
+        )
+
+        from src.apps.collection.models.Favorite import Favorite
+
+        existing_playlist_rels = set(
+            PlaylistItem.objects.values_list(
+                "playlist_id", "video_id"
+            )
+        )
+        existing_favorite_rels = set(
+            Favorite.objects.values_list("user_id", "video_id")
+        )
+
+        (
+            pi_to_create,
+            fav_to_create,
+            ignored_count,
+        ) = self._collect_playlist_and_favorite_entries(
+            items, playlist_map,
+            existing_playlists, existing_videos, existing_users,
+            existing_playlist_rels, existing_favorite_rels,
+        )
+
+        pc_count = self._bulk_create_batched(
+            PlaylistItem, pi_to_create, batch_size,
+            "playlist content",
+        )
+        fav_count = self._bulk_create_batched(
+            Favorite, fav_to_create, batch_size, "favorite"
+        )
 
         self.stdout.write(
-            f"Playlist Contents imported: {playlist_contents_count} success, Favorites imported: {favorites_count} success, ignored: {ignored_count}"
+            f"Playlist Contents imported: {pc_count} success, "
+            f"Favorites imported: {fav_count} success, "
+            f"ignored: {ignored_count}"
         )
 
-    def import_comments(self, items, batch_size):
-        self.stdout.write("Importing Comments...")
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="Comment", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
-        )
-        existing_user_ids = set(User.objects.values_list("id", flat=True))
-        existing_video_ids = set(Video.objects.values_list("id", flat=True))
-        first_user_id = User.objects.first().id if User.objects.exists() else 1
+    # ------------------------------------------------------------------
+    # Comments
+    # ------------------------------------------------------------------
 
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
-        if not items_to_process:
-            self.stdout.write("All Comments already migrated.")
-            return
-
+    def _import_comments_pass1(
+        self, items_to_process, existing_user_ids,
+        existing_video_ids, first_user_id, batch_size
+    ):
+        """Import comments without hierarchy (Pass 1)."""
         success_count = 0
         error_count = 0
 
-        # Pass 1: Import comments without hierarchy
         for i in range(0, len(items_to_process), batch_size):
             batch = items_to_process[i : i + batch_size]
             try:
@@ -1388,11 +1638,12 @@ class Command(BaseCommand):
                         if author_id not in existing_user_ids:
                             author_id = first_user_id
 
-                        added = timezone.now()
-                        if item.get("added"):
-                            dt = parse_datetime(item["added"])
-                            if dt:
-                                added = make_aware(dt) if is_naive(dt) else dt
+                        added = (
+                            self._parse_aware_datetime(
+                                item.get("added")
+                            )
+                            or timezone.now()
+                        )
 
                         defaults = {
                             "id": item["id"],
@@ -1413,78 +1664,115 @@ class Command(BaseCommand):
                             )
                         )
 
-                    Comment.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    Comment.objects.bulk_create(
+                        instances, ignore_conflicts=True
+                    )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
                 self.stdout.write(
-                    self.style.ERROR(f"Error in Comment batch (Pass 1): {e}")
-                )
-                try:
-                    with transaction.atomic():
-                        err_mappings = [
-                            MigrationMapping(
-                                model_name="Comment",
-                                v4_id=item["id"],
-                                status=MigrationMapping.Status.ERROR,
-                                message=str(e),
-                            )
-                            for item in batch
-                        ]
-                        MigrationMapping.objects.bulk_create(
-                            err_mappings, ignore_conflicts=True
-                        )
-                except Exception as inner_e:
-                    logger.warning(
-                        f"Could not record migration error to database: {inner_e}"
+                    self.style.ERROR(
+                        f"Error in Comment batch (Pass 1): {e}"
                     )
+                )
+                self._record_batch_errors("Comment", batch, e)
                 error_count += len(batch)
 
-        # Pass 2: Restore hierarchies
-        self.stdout.write("Restoring Comment hierarchies (Pass 2)...")
-        existing_comment_ids = set(Comment.objects.values_list("id", flat=True))
-        comments_to_update = []
+        return success_count, error_count
+
+    def _restore_comment_hierarchy(self, items, batch_size):
+        """Set parent and direct_parent on comments (Pass 2)."""
+        self.stdout.write(
+            "Restoring Comment hierarchies (Pass 2)..."
+        )
+        existing_ids = set(
+            Comment.objects.values_list("id", flat=True)
+        )
+        to_update = []
 
         for item in items:
             c_id = item["id"]
+            if c_id not in existing_ids:
+                continue
             p_id = item.get("parent_id")
             dp_id = item.get("direct_parent_id")
 
-            if c_id in existing_comment_ids:
-                has_update = False
-                parent_val = None
-                dp_val = None
+            parent_val = (
+                p_id
+                if (p_id and p_id in existing_ids and p_id != c_id)
+                else None
+            )
+            dp_val = (
+                dp_id
+                if (dp_id and dp_id in existing_ids and dp_id != c_id)
+                else None
+            )
 
-                if p_id and p_id in existing_comment_ids and p_id != c_id:
-                    parent_val = p_id
-                    has_update = True
-                if dp_id and dp_id in existing_comment_ids and dp_id != c_id:
-                    dp_val = dp_id
-                    has_update = True
-
-                if has_update:
-                    comments_to_update.append(
-                        Comment(id=c_id, parent_id=parent_val, direct_parent_id=dp_val)
+            if parent_val or dp_val:
+                to_update.append(
+                    Comment(
+                        id=c_id,
+                        parent_id=parent_val,
+                        direct_parent_id=dp_val,
                     )
+                )
 
-        if comments_to_update:
-            for i in range(0, len(comments_to_update), batch_size):
-                batch = comments_to_update[i : i + batch_size]
-                try:
-                    with transaction.atomic():
-                        Comment.objects.bulk_update(
-                            batch, ["parent_id", "direct_parent_id"]
-                        )
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.ERROR(f"Error updating Comment hierarchies: {e}")
+        for i in range(0, len(to_update), batch_size):
+            batch = to_update[i : i + batch_size]
+            try:
+                with transaction.atomic():
+                    Comment.objects.bulk_update(
+                        batch, ["parent_id", "direct_parent_id"]
                     )
+            except Exception as e:
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"Error updating Comment hierarchies: {e}"
+                    )
+                )
+
+    def import_comments(self, items, batch_size):
+        self.stdout.write("Importing Comments...")
+        items_to_process = self._get_unprocessed_items(
+            "Comment", items
+        )
+        if not items_to_process:
+            self.stdout.write("All Comments already migrated.")
+            return
+
+        existing_user_ids = set(
+            User.objects.values_list("id", flat=True)
+        )
+        existing_video_ids = set(
+            Video.objects.values_list("id", flat=True)
+        )
+        first_user_id = (
+            User.objects.first().id if User.objects.exists() else 1
+        )
+
+        self._import_comments_pass1(
+            items_to_process, existing_user_ids,
+            existing_video_ids, first_user_id, batch_size,
+        )
+        self._restore_comment_hierarchy(items, batch_size)
+
+    # ------------------------------------------------------------------
+    # Votes
+    # ------------------------------------------------------------------
 
     def import_votes(self, items, batch_size):
         self.stdout.write("Importing Votes...")
-        existing_comments = set(Comment.objects.values_list("id", flat=True))
-        existing_users = set(User.objects.values_list("id", flat=True))
-        existing_votes = set(Vote.objects.values_list("comment_id", "user_id"))
+        existing_comments = set(
+            Comment.objects.values_list("id", flat=True)
+        )
+        existing_users = set(
+            User.objects.values_list("id", flat=True)
+        )
+        existing_votes = set(
+            Vote.objects.values_list("comment_id", "user_id")
+        )
 
         votes_to_create = []
         ignored_count = 0
@@ -1492,45 +1780,44 @@ class Command(BaseCommand):
         for item in items:
             c_id = item["comment_id"]
             u_id = item["user_id"]
-            if c_id not in existing_comments or u_id not in existing_users:
+            if (
+                c_id not in existing_comments
+                or u_id not in existing_users
+            ):
                 ignored_count += 1
                 continue
 
             if (c_id, u_id) not in existing_votes:
-                votes_to_create.append(Vote(id=item["id"], comment_id=c_id, user_id=u_id))
+                votes_to_create.append(
+                    Vote(id=item["id"], comment_id=c_id, user_id=u_id)
+                )
                 existing_votes.add((c_id, u_id))
 
         if votes_to_create:
-            success_count = 0
-            for i in range(0, len(votes_to_create), batch_size):
-                batch = votes_to_create[i : i + batch_size]
-                try:
-                    with transaction.atomic():
-                        Vote.objects.bulk_create(batch, ignore_conflicts=True)
-                        success_count += len(batch)
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.ERROR(f"Error inserting votes batch: {e}")
-                    )
+            success_count = self._bulk_create_batched(
+                Vote, votes_to_create, batch_size, "votes"
+            )
             self.stdout.write(
-                f"Votes imported: {success_count} success, ignored: {ignored_count}"
+                f"Votes imported: {success_count} success, "
+                f"ignored: {ignored_count}"
             )
         else:
             self.stdout.write("No new Votes to import.")
 
-    def import_viewcounts(self, items, batch_size):
-        self.stdout.write("Importing View Counts (Date-based)...")
-        existing_videos = set(Video.objects.values_list("id", flat=True))
-        existing_viewcounts = set(ViewCount.objects.values_list("video_id", "date"))
+    # ------------------------------------------------------------------
+    # ViewCounts
+    # ------------------------------------------------------------------
 
-        viewcounts_to_create = []
-        ignored_count = 0
-        vc_batch_size = max(batch_size, 5000)
+    def _collect_viewcounts(self, items, existing_videos):
+        """Parse and deduplicate viewcount entries."""
+        existing_viewcounts = set(
+            ViewCount.objects.values_list("video_id", "date")
+        )
+        to_create = []
 
         for item in items:
             v_id = item["video_id"]
             if v_id not in existing_videos:
-                ignored_count += 1
                 continue
 
             dt_str = item.get("date", "")
@@ -1543,28 +1830,39 @@ class Command(BaseCommand):
                 continue
 
             if (v_id, dt) not in existing_viewcounts:
-                viewcounts_to_create.append(
-                    ViewCount(video_id=v_id, date=dt, count=item.get("count", 0))
+                to_create.append(
+                    ViewCount(
+                        video_id=v_id,
+                        date=dt,
+                        count=item.get("count", 0),
+                    )
                 )
                 existing_viewcounts.add((v_id, dt))
 
-        if viewcounts_to_create:
-            success_count = 0
-            for i in range(0, len(viewcounts_to_create), vc_batch_size):
-                batch = viewcounts_to_create[i : i + vc_batch_size]
-                try:
-                    with transaction.atomic():
-                        ViewCount.objects.bulk_create(batch, ignore_conflicts=True)
-                        success_count += len(batch)
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.ERROR(f"Error inserting ViewCounts batch: {e}")
-                    )
+        return to_create
+
+    def import_viewcounts(self, items, batch_size):
+        self.stdout.write("Importing View Counts (Date-based)...")
+        existing_videos = set(
+            Video.objects.values_list("id", flat=True)
+        )
+
+        to_create = self._collect_viewcounts(items, existing_videos)
+        vc_batch_size = max(batch_size, 5000)
+
+        if to_create:
+            success_count = self._bulk_create_batched(
+                ViewCount, to_create, vc_batch_size, "ViewCounts"
+            )
             self.stdout.write(
-                f"ViewCounts imported: {success_count} success, ignored: {ignored_count}"
+                f"ViewCounts imported: {success_count} success"
             )
         else:
             self.stdout.write("No new ViewCounts to import.")
+
+    # ------------------------------------------------------------------
+    # M2M Relations
+    # ------------------------------------------------------------------
 
     def import_m2m_relation(
         self,
@@ -1579,9 +1877,13 @@ class Command(BaseCommand):
         batch_size,
         relation_name,
     ):
-        self.stdout.write(f"Importing {relation_name} relations...")
+        self.stdout.write(
+            f"Importing {relation_name} relations..."
+        )
         existing_relations = set(
-            through_model.objects.values_list(src_field, target_field)
+            through_model.objects.values_list(
+                src_field, target_field
+            )
         )
 
         relations_to_create = []
@@ -1591,318 +1893,361 @@ class Command(BaseCommand):
             src_val = item.get(v4_src_key)
             target_val = item.get(v4_target_key)
 
-            if src_val not in src_ids_set or target_val not in target_ids_set:
+            if (
+                src_val not in src_ids_set
+                or target_val not in target_ids_set
+            ):
                 ignored_count += 1
                 continue
 
             if (src_val, target_val) not in existing_relations:
-                kwargs = {src_field: src_val, target_field: target_val}
+                kwargs = {
+                    src_field: src_val,
+                    target_field: target_val,
+                }
                 relations_to_create.append(through_model(**kwargs))
                 existing_relations.add((src_val, target_val))
 
         if relations_to_create:
-            success_count = 0
-            for i in range(0, len(relations_to_create), batch_size):
-                batch = relations_to_create[i : i + batch_size]
-                try:
-                    with transaction.atomic():
-                        through_model.objects.bulk_create(batch, ignore_conflicts=True)
-                        success_count += len(batch)
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.ERROR(f"Error inserting {relation_name} batch: {e}")
-                    )
+            success_count = self._bulk_create_batched(
+                through_model,
+                relations_to_create,
+                batch_size,
+                relation_name,
+            )
             self.stdout.write(
-                f"{relation_name} relations imported: {success_count} success, ignored: {ignored_count}"
+                f"{relation_name} relations imported: "
+                f"{success_count} success, "
+                f"ignored: {ignored_count}"
             )
         else:
-            self.stdout.write(f"No new {relation_name} relations to import.")
+            self.stdout.write(
+                f"No new {relation_name} relations to import."
+            )
+
+    # ------------------------------------------------------------------
+    # Channel Collaborators
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _add_collab_rows(
+        rows, through_model, existing_channels,
+        existing_users, existing_relations, relations,
+        excluded_pairs=None,
+    ):
+        """Add collaborator rows filtering by validity."""
+        for row in rows:
+            c_id = row["channel_id"]
+            u_id = row["user_id"]
+            if c_id not in existing_channels:
+                continue
+            if u_id not in existing_users:
+                continue
+            if excluded_pairs and (c_id, u_id) in excluded_pairs:
+                continue
+            if (c_id, u_id) not in existing_relations:
+                relations.append(
+                    through_model(channel_id=c_id, user_id=u_id)
+                )
+                existing_relations.add((c_id, u_id))
+
+    def _collect_collaborator_relations(
+        self, data, primary_owners,
+        existing_channels, existing_users, existing_relations,
+    ):
+        """Collect channel collaborator through-model instances."""
+        through_model = Channel.collaborators.through
+        relations = []
+
+        # Build set of (channel_id, primary_owner_id) to exclude
+        owner_pairs = {
+            (c_id, o_id) for c_id, o_id in primary_owners.items()
+        }
+
+        self._add_collab_rows(
+            data.get("video_channel_owners", []),
+            through_model, existing_channels, existing_users,
+            existing_relations, relations,
+            excluded_pairs=owner_pairs,
+        )
+        self._add_collab_rows(
+            data.get("video_channel_users", []),
+            through_model, existing_channels, existing_users,
+            existing_relations, relations,
+        )
+
+        return relations
 
     def import_channel_collaborators(self, data, batch_size):
         self.stdout.write("Importing Channel Collaborators...")
         channels = Channel.objects.values_list("id", "owner_id")
-        primary_owners = {c_id: owner_id for c_id, owner_id in channels}
+        primary_owners = {
+            c_id: owner_id for c_id, owner_id in channels
+        }
         existing_channels = set(primary_owners.keys())
-        existing_users = set(User.objects.values_list("id", flat=True))
+        existing_users = set(
+            User.objects.values_list("id", flat=True)
+        )
 
         through_model = Channel.collaborators.through
         existing_relations = set(
-            through_model.objects.values_list("channel_id", "user_id")
+            through_model.objects.values_list(
+                "channel_id", "user_id"
+            )
         )
 
-        relations_to_create = []
+        relations = self._collect_collaborator_relations(
+            data, primary_owners,
+            existing_channels, existing_users, existing_relations,
+        )
 
-        # 1. Additional owners
-        for row in data.get("video_channel_owners", []):
-            c_id = row["channel_id"]
-            u_id = row["user_id"]
-            if c_id not in existing_channels or u_id not in existing_users:
-                continue
-            if u_id == primary_owners[c_id]:
-                continue
-            if (c_id, u_id) not in existing_relations:
-                relations_to_create.append(through_model(channel_id=c_id, user_id=u_id))
-                existing_relations.add((c_id, u_id))
-
-        # 2. Channel users
-        for row in data.get("video_channel_users", []):
-            c_id = row["channel_id"]
-            u_id = row["user_id"]
-            if c_id not in existing_channels or u_id not in existing_users:
-                continue
-            if (c_id, u_id) not in existing_relations:
-                relations_to_create.append(through_model(channel_id=c_id, user_id=u_id))
-                existing_relations.add((c_id, u_id))
-
-        if relations_to_create:
-            success_count = 0
-            for i in range(0, len(relations_to_create), batch_size):
-                batch = relations_to_create[i : i + batch_size]
-                try:
-                    with transaction.atomic():
-                        through_model.objects.bulk_create(batch, ignore_conflicts=True)
-                        success_count += len(batch)
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.ERROR(
-                            f"Error inserting channel collaborators batch: {e}"
-                        )
-                    )
-            self.stdout.write(f"Channel Collaborators imported: {success_count} success.")
+        if relations:
+            success_count = self._bulk_create_batched(
+                through_model, relations, batch_size,
+                "channel collaborators",
+            )
+            self.stdout.write(
+                f"Channel Collaborators imported: "
+                f"{success_count} success."
+            )
         else:
-            self.stdout.write("No new Channel Collaborators to import.")
+            self.stdout.write(
+                "No new Channel Collaborators to import."
+            )
 
     def import_relations(self, data, batch_size):
         self.stdout.write("Importing Many-to-Many relations...")
 
-        owner_ids = set(Owner.objects.values_list("id", flat=True))
-        site_ids = set(Site.objects.values_list("id", flat=True))
-        accessgroup_ids = set(AccessGroup.objects.values_list("id", flat=True))
-        groupsite_ids = set(GroupSite.objects.values_list("id", flat=True))
-        user_ids = set(User.objects.values_list("id", flat=True))
-        group_ids = set(Group.objects.values_list("id", flat=True))
-        video_ids = set(Video.objects.values_list("id", flat=True))
-        type_ids = set(Type.objects.values_list("id", flat=True))
-        discipline_ids = set(Discipline.objects.values_list("id", flat=True))
-        tag_ids = set(Video.tags.tag_model.objects.values_list("id", flat=True))
-        theme_ids = set(Theme.objects.values_list("id", flat=True))
+        owner_ids = set(
+            Owner.objects.values_list("id", flat=True)
+        )
+        site_ids = set(
+            Site.objects.values_list("id", flat=True)
+        )
+        accessgroup_ids = set(
+            AccessGroup.objects.values_list("id", flat=True)
+        )
+        groupsite_ids = set(
+            GroupSite.objects.values_list("id", flat=True)
+        )
+        user_ids = set(
+            User.objects.values_list("id", flat=True)
+        )
+        group_ids = set(
+            Group.objects.values_list("id", flat=True)
+        )
+        video_ids = set(
+            Video.objects.values_list("id", flat=True)
+        )
+        type_ids = set(
+            Type.objects.values_list("id", flat=True)
+        )
+        discipline_ids = set(
+            Discipline.objects.values_list("id", flat=True)
+        )
+        tag_ids = set(
+            Video.tags.tag_model.objects.values_list(
+                "id", flat=True
+            )
+        )
+        theme_ids = set(
+            Theme.objects.values_list("id", flat=True)
+        )
 
         self.import_m2m_relation(
             data.get("authentication_owner_sites", []),
-            "owner_id",
-            "site_id",
-            Owner.sites.through,
-            "owner_id",
-            "site_id",
-            owner_ids,
-            site_ids,
-            batch_size,
-            "Owner-Site",
+            "owner_id", "site_id",
+            Owner.sites.through, "owner_id", "site_id",
+            owner_ids, site_ids, batch_size, "Owner-Site",
         )
 
         self.import_m2m_relation(
             data.get("authentication_owner_accessgroups", []),
-            "owner_id",
-            "accessgroup_id",
-            Owner.accessgroups.through,
-            "owner_id",
-            "accessgroup_id",
-            owner_ids,
-            accessgroup_ids,
-            batch_size,
-            "Owner-AccessGroup",
+            "owner_id", "accessgroup_id",
+            Owner.accessgroups.through, "owner_id", "accessgroup_id",
+            owner_ids, accessgroup_ids, batch_size, "Owner-AccessGroup",
         )
 
         self.import_m2m_relation(
             data.get("authentication_accessgroup_sites", []),
-            "accessgroup_id",
-            "site_id",
-            AccessGroup.sites.through,
-            "accessgroup_id",
-            "site_id",
-            accessgroup_ids,
-            site_ids,
-            batch_size,
-            "AccessGroup-Site",
+            "accessgroup_id", "site_id",
+            AccessGroup.sites.through, "accessgroup_id", "site_id",
+            accessgroup_ids, site_ids, batch_size, "AccessGroup-Site",
         )
 
         self.import_m2m_relation(
             data.get("authentication_groupsite_sites", []),
-            "groupsite_id",
-            "site_id",
-            GroupSite.sites.through,
-            "groupsite_id",
-            "site_id",
-            groupsite_ids,
-            site_ids,
-            batch_size,
-            "GroupSite-Site",
+            "groupsite_id", "site_id",
+            GroupSite.sites.through, "groupsite_id", "site_id",
+            groupsite_ids, site_ids, batch_size, "GroupSite-Site",
         )
 
         self.import_m2m_relation(
             data.get("auth_user_groups", []),
-            "user_id",
-            "group_id",
-            User.groups.through,
-            "user_id",
-            "group_id",
-            user_ids,
-            group_ids,
-            batch_size,
-            "User-Group",
+            "user_id", "group_id",
+            User.groups.through, "user_id", "group_id",
+            user_ids, group_ids, batch_size, "User-Group",
         )
 
         self.import_m2m_relation(
             data.get("video_video_sites", []),
-            "video_id",
-            "site_id",
-            Video.sites.through,
-            "video_id",
-            "site_id",
-            video_ids,
-            site_ids,
-            batch_size,
-            "Video-Site",
+            "video_id", "site_id",
+            Video.sites.through, "video_id", "site_id",
+            video_ids, site_ids, batch_size, "Video-Site",
         )
 
         self.import_m2m_relation(
             data.get("video_video_additional_owners", []),
-            "video_id",
-            "user_id",
-            Video.co_owners.through,
-            "video_id",
-            "user_id",
-            video_ids,
-            user_ids,
-            batch_size,
-            "Video-CoOwner",
+            "video_id", "user_id",
+            Video.co_owners.through, "video_id", "user_id",
+            video_ids, user_ids, batch_size, "Video-CoOwner",
         )
 
         self.import_m2m_relation(
             data.get("video_video_discipline", []),
-            "video_id",
-            "discipline_id",
-            Video.disciplines.through,
-            "video_id",
-            "discipline_id",
-            video_ids,
-            discipline_ids,
-            batch_size,
-            "Video-Discipline",
+            "video_id", "discipline_id",
+            Video.disciplines.through, "video_id", "discipline_id",
+            video_ids, discipline_ids, batch_size, "Video-Discipline",
         )
 
         self.import_m2m_relation(
             data.get("video_video_restrict_access_to_groups", []),
-            "video_id",
-            "accessgroup_id",
+            "video_id", "accessgroup_id",
             Video.restricted_groups.through,
-            "video_id",
-            "accessgroup_id",
-            video_ids,
-            accessgroup_ids,
-            batch_size,
-            "Video-RestrictedGroup",
+            "video_id", "accessgroup_id",
+            video_ids, accessgroup_ids,
+            batch_size, "Video-RestrictedGroup",
         )
 
         self.import_m2m_relation(
             data.get("video_video_tags", []),
-            "video_id",
-            "tagulous_video_tags_id",
-            Video.tags.through,
-            "video_id",
-            "tagulous_video_tags_id",
-            video_ids,
-            tag_ids,
-            batch_size,
-            "Video-Tag",
+            "video_id", "tagulous_video_tags_id",
+            Video.tags.through, "video_id", "tagulous_video_tags_id",
+            video_ids, tag_ids, batch_size, "Video-Tag",
         )
 
         self.import_m2m_relation(
             data.get("video_video_theme", []),
-            "video_id",
-            "theme_id",
-            ThemeItem,
-            "video_id",
-            "theme_id",
-            video_ids,
-            theme_ids,
-            batch_size,
-            "Theme-Video",
+            "video_id", "theme_id",
+            ThemeItem, "video_id", "theme_id",
+            video_ids, theme_ids, batch_size, "Theme-Video",
         )
 
         self.import_channel_collaborators(data, batch_size)
 
         self.import_m2m_relation(
             data.get("video_type_sites", []),
-            "type_id",
-            "site_id",
-            Type.sites.through,
-            "type_id",
-            "site_id",
-            type_ids,
-            site_ids,
-            batch_size,
-            "Type-Site",
+            "type_id", "site_id",
+            Type.sites.through, "type_id", "site_id",
+            type_ids, site_ids, batch_size, "Type-Site",
         )
+
+    # ------------------------------------------------------------------
+    # Superuser
+    # ------------------------------------------------------------------
 
     def ensure_superuser_exists(self):
         superusers = User.objects.filter(is_superuser=True)
         if not superusers.exists():
             self.stdout.write(
-                "No superuser found in the database. Creating a default superuser..."
+                "No superuser found in the database. "
+                "Creating a default superuser..."
             )
-            username = os.environ.get("DJANGO_SUPERUSER_USERNAME", "admin")
-            email = os.environ.get("DJANGO_SUPERUSER_EMAIL", "admin@example.com")
-            password = os.environ.get("DJANGO_SUPERUSER_PASSWORD", "admin")
+            username = os.environ.get(
+                "DJANGO_SUPERUSER_USERNAME", "admin"
+            )
+            email = os.environ.get(
+                "DJANGO_SUPERUSER_EMAIL", "admin@example.com"
+            )
+            password = os.environ.get(
+                "DJANGO_SUPERUSER_PASSWORD", "admin"
+            )
 
             try:
-                # Use User.objects.create_superuser to automatically trigger password hashing
-                # and create a corresponding authentication.Owner profile via signals
                 User.objects.create_superuser(
-                    username=username, email=email, password=password
+                    username=username,
+                    email=email,
+                    password=password,
                 )
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"Default superuser '{username}' created successfully."
+                        f"Default superuser '{username}' "
+                        f"created successfully."
                     )
                 )
             except Exception as e:
                 self.stdout.write(
-                    self.style.ERROR(f"Error creating default superuser: {e}")
+                    self.style.ERROR(
+                        f"Error creating default superuser: {e}"
+                    )
                 )
         else:
             self.stdout.write(
-                f"Superuser(s) found in the database ({superusers.count()} found). Skipping default superuser creation."
+                f"Superuser(s) found in the database "
+                f"({superusers.count()} found). "
+                f"Skipping default superuser creation."
             )
+
+    # ------------------------------------------------------------------
+    # Subtitles
+    # ------------------------------------------------------------------
+
+    def _validate_subtitle_item(
+        self, item, existing_video_ids, custom_files
+    ):
+        """Validate a subtitle item; return file_path or None."""
+        v_id = item.get("video_id")
+        if v_id not in existing_video_ids:
+            logger.warning(
+                f"Skipping subtitle {item['id']}: "
+                f"Video V4 ID {v_id} not found in V5."
+            )
+            return None
+
+        src_id = item.get("src_id")
+        file_path = custom_files.get(src_id)
+        if not file_path:
+            logger.warning(
+                f"Skipping subtitle {item['id']}: "
+                f"CustomFileModel ID {src_id} not found "
+                f"in V4 files dump."
+            )
+            return None
+        return file_path
 
     def import_subtitles(self, items, data, batch_size):
         self.stdout.write("Importing Subtitles...")
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="Subtitle", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
+        items_to_process = self._get_unprocessed_items(
+            "Subtitle", items
         )
-        existing_video_ids = set(Video.objects.values_list("id", flat=True))
-
-        # Load custom files from podfile_customfilemodel & main_customfilemodel
-        custom_files = {
-            row["id"]: row["file"] for row in data.get("podfile_customfilemodel", [])
-        }
-        custom_files.update(
-            {row["id"]: row["file"] for row in data.get("main_customfilemodel", [])}
-        )
-
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
         if not items_to_process:
             self.stdout.write("All Subtitles already migrated.")
             return
 
+        existing_video_ids = set(
+            Video.objects.values_list("id", flat=True)
+        )
+
+        custom_files = {
+            row["id"]: row["file"]
+            for row in data.get("podfile_customfilemodel", [])
+        }
+        custom_files.update(
+            {
+                row["id"]: row["file"]
+                for row in data.get("main_customfilemodel", [])
+            }
+        )
+
+        from src.config.defaults import video as video_defaults
+
+        valid_langs = {
+            lang["value"]
+            for lang in video_defaults.SUBTITLE_LANGUAGES
+        }
+
         success_count = 0
         error_count = 0
-
-        from src.apps.video.conf import video_settings
-
-        valid_langs = {lang["value"] for lang in video_settings.subtitle_languages}
 
         for i in range(0, len(items_to_process), batch_size):
             batch = items_to_process[i : i + batch_size]
@@ -1911,31 +2256,24 @@ class Command(BaseCommand):
                     instances = []
                     mappings = []
                     for item in batch:
-                        v_id = item.get("video_id")
-                        if v_id not in existing_video_ids:
-                            logger.warning(
-                                f"Skipping subtitle {item['id']}: Video V4 ID {v_id} not found in V5."
-                            )
-                            continue
-
-                        src_id = item.get("src_id")
-                        file_path = custom_files.get(src_id)
+                        file_path = self._validate_subtitle_item(
+                            item, existing_video_ids, custom_files
+                        )
                         if not file_path:
-                            logger.warning(
-                                f"Skipping subtitle {item['id']}: CustomFileModel ID {src_id} not found in V4 files dump."
-                            )
                             continue
 
                         lang = item.get("lang") or "fr"
                         if lang not in valid_langs:
                             logger.warning(
-                                f"Subtitle {item['id']} language '{lang}' is not in V5 choices, importing anyway."
+                                f"Subtitle {item['id']} language "
+                                f"'{lang}' is not in V5 choices, "
+                                f"importing anyway."
                             )
 
                         instances.append(
                             Subtitle(
                                 id=item["id"],
-                                video_id=v_id,
+                                video_id=item.get("video_id"),
                                 language=lang,
                                 file=file_path,
                                 is_default=False,
@@ -1950,47 +2288,67 @@ class Command(BaseCommand):
                             )
                         )
 
-                    Subtitle.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    Subtitle.objects.bulk_create(
+                        instances, ignore_conflicts=True
+                    )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in Subtitle batch: {e}"))
-                try:
-                    with transaction.atomic():
-                        err_mappings = [
-                            MigrationMapping(
-                                model_name="Subtitle",
-                                v4_id=item["id"],
-                                status=MigrationMapping.Status.ERROR,
-                                message=str(e),
-                            )
-                            for item in batch
-                        ]
-                        MigrationMapping.objects.bulk_create(
-                            err_mappings, ignore_conflicts=True
-                        )
-                except Exception as inner_e:
-                    logger.warning(
-                        f"Could not record subtitle migration error to database: {inner_e}"
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"Error in Subtitle batch: {e}"
                     )
+                )
+                self._record_batch_errors("Subtitle", batch, e)
                 error_count += len(batch)
         self.stdout.write(
-            f"Subtitles imported: {success_count} success, {error_count} errors."
+            f"Subtitles imported: {success_count} success, "
+            f"{error_count} errors."
         )
+
+    # ------------------------------------------------------------------
+    # Encoded Videos
+    # ------------------------------------------------------------------
+
+    def _validate_encoded_video_item(self, item, existing_video_ids):
+        """Validate an encoded video item; return file_path or None."""
+        v_id = item.get("video_id")
+        if v_id not in existing_video_ids:
+            logger.warning(
+                f"Skipping encoded video {item['id']}: "
+                f"Video V4 ID {v_id} not found in V5."
+            )
+            return None
+
+        file_path = item.get("source_file")
+        if not file_path:
+            logger.warning(
+                f"Skipping encoded video {item['id']}: "
+                f"Empty source_file."
+            )
+            return None
+
+        videos_dir = encoding_settings.videos_dir
+        if videos_dir != "videos" and file_path.startswith("videos/"):
+            file_path = file_path.replace(
+                "videos/", f"{videos_dir}/", 1
+            )
+        return file_path
 
     def import_encoded_videos(self, items, batch_size):
         self.stdout.write("Importing Encoded Videos...")
-        migrated_ids = set(
-            MigrationMapping.objects.filter(
-                model_name="EncodingVideo", status="SUCCESS"
-            ).values_list("v4_id", flat=True)
+        items_to_process = self._get_unprocessed_items(
+            "EncodingVideo", items
         )
-        existing_video_ids = set(Video.objects.values_list("id", flat=True))
-
-        items_to_process = [item for item in items if item["id"] not in migrated_ids]
         if not items_to_process:
             self.stdout.write("All Encoded Videos already migrated.")
             return
+
+        existing_video_ids = set(
+            Video.objects.values_list("id", flat=True)
+        )
 
         success_count = 0
         error_count = 0
@@ -2002,30 +2360,22 @@ class Command(BaseCommand):
                     instances = []
                     mappings = []
                     for item in batch:
-                        v_id = item.get("video_id")
-                        if v_id not in existing_video_ids:
-                            logger.warning(
-                                f"Skipping encoded video {item['id']}: Video V4 ID {v_id} not found in V5."
+                        file_path = (
+                            self._validate_encoded_video_item(
+                                item, existing_video_ids
                             )
-                            continue
-
-                        file_path = item.get("source_file")
+                        )
                         if not file_path:
-                            logger.warning(
-                                f"Skipping encoded video {item['id']}: Empty source_file."
-                            )
                             continue
 
-                        videos_dir = encoding_settings.videos_dir
-                        if videos_dir != "videos" and file_path.startswith("videos/"):
-                            file_path = file_path.replace("videos/", f"{videos_dir}/", 1)
-
-                        resolution = item.get("name", "360p") or "360p"
+                        resolution = (
+                            item.get("name", "360p") or "360p"
+                        )
 
                         instances.append(
                             EncodingVideo(
                                 id=item["id"],
-                                video_id=v_id,
+                                video_id=item.get("video_id"),
                                 resolution=resolution,
                                 file=file_path,
                             )
@@ -2039,30 +2389,24 @@ class Command(BaseCommand):
                             )
                         )
 
-                    EncodingVideo.objects.bulk_create(instances, ignore_conflicts=True)
-                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    EncodingVideo.objects.bulk_create(
+                        instances, ignore_conflicts=True
+                    )
+                    MigrationMapping.objects.bulk_create(
+                        mappings, ignore_conflicts=True
+                    )
                     success_count += len(instances)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Error in Encoded Video batch: {e}"))
-                try:
-                    with transaction.atomic():
-                        err_mappings = [
-                            MigrationMapping(
-                                model_name="EncodingVideo",
-                                v4_id=item["id"],
-                                status=MigrationMapping.Status.ERROR,
-                                message=str(e),
-                            )
-                            for item in batch
-                        ]
-                        MigrationMapping.objects.bulk_create(
-                            err_mappings, ignore_conflicts=True
-                        )
-                except Exception as inner_e:
-                    logger.warning(
-                        f"Could not record encoded video migration error to database: {inner_e}"
+                self.stdout.write(
+                    self.style.ERROR(
+                        f"Error in Encoded Video batch: {e}"
                     )
+                )
+                self._record_batch_errors(
+                    "EncodingVideo", batch, e
+                )
                 error_count += len(batch)
         self.stdout.write(
-            f"Encoded Videos imported: {success_count} success, {error_count} errors."
+            f"Encoded Videos imported: {success_count} success, "
+            f"{error_count} errors."
         )

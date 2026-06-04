@@ -67,6 +67,7 @@ SUBTITLE_LANGUAGES = [
     {"value": "es", "label": "Spanish"},
     {"value": "de", "label": "German"},
 ]
+DEFAULT_SUBTITLE_LANGUAGE = "fr"
 
 METADATA_LICENSES = [
     {"value": "CC-BY", "label": "Creative Commons BY"},
