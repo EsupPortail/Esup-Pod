@@ -55,7 +55,9 @@ class UserPopulator:
 
     def _populate_from_cas(self, attributes: Dict[str, Any]) -> None:
         """Map CAS attributes to User/Owner."""
-        self.owner.affiliation = attributes.get("primaryAffiliation", auth_settings.default_affiliation)
+        self.owner.affiliation = attributes.get(
+            "primaryAffiliation", auth_settings.default_affiliation
+        )
 
         # Handle affiliations list for group creation/staff status
         affiliations = attributes.get("affiliation", [])
@@ -80,7 +82,9 @@ class UserPopulator:
         if "email" in attributes:
             self.user.email = attributes["email"]
 
-        self.owner.affiliation = attributes.get("affiliation", auth_settings.default_affiliation)
+        self.owner.affiliation = attributes.get(
+            "affiliation", auth_settings.default_affiliation
+        )
 
         affiliations = attributes.get("affiliations", [])
         if isinstance(affiliations, str):

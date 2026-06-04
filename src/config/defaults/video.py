@@ -3,6 +3,7 @@ Esup-Pod - Video defaults.
 Source of truth for default values for Video app.
 """
 
+
 DEFAULT_LICENSE = ""
 # Feature Flags
 USE_STATS_VIEW = False

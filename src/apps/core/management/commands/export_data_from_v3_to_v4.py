@@ -309,7 +309,12 @@ class Command(BaseCommand):
             if table == "meeting":
                 start_at = row_dict.get("start_at")
                 recurring_until = row_dict.get("recurring_until")
-                if start_at and recurring_until and isinstance(start_at, str) and isinstance(recurring_until, str):
+                if (
+                    start_at
+                    and recurring_until
+                    and isinstance(start_at, str)
+                    and isinstance(recurring_until, str)
+                ):
                     # On compare la date. Si recurring_until est inférieure ou égale à start_at,
                     # il est beaucoup plus sûr (à cause des fuseaux horaires MySQL qui peuvent
                     # décaler la date d'un jour) d'annuler la récurrence en mettant NULL.
