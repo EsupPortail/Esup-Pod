@@ -59,6 +59,14 @@ METADATA_LANGUAGES = [
     {"value": "it", "label": "Italian"},
 ]
 
+# Subtitle languages choices
+SUBTITLE_LANGUAGES = [
+    {"value": "fr", "label": "French"},
+    {"value": "en", "label": "English"},
+    {"value": "es", "label": "Spanish"},
+    {"value": "de", "label": "German"},
+]
+
 METADATA_LICENSES = [
     {"value": "CC-BY", "label": "Creative Commons BY"},
     {"value": "CC-BY-SA", "label": "Creative Commons BY-SA"},

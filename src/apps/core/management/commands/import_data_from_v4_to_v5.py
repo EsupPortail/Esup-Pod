@@ -26,7 +26,9 @@ def clean_html(text):
         return text
     return html.unescape(strip_tags(text))
 
-from src.apps.video.models import Video, Type, Discipline, ViewCount, Comment, Vote
+from src.apps.video.models import Video, Type, Discipline, ViewCount, Comment, Vote, Subtitle
+from src.apps.encoding.models import EncodingVideo
+from src.apps.encoding.conf import encoding_settings
 from django.db import models
 
 class MigrationMapping(models.Model):
@@ -163,6 +165,10 @@ class Command(BaseCommand):
 
                 # 6. Relations (ManyToMany join tables)
                 self.import_relations(data, batch_size)
+
+                # 7. Subtitles and Encoded resolutions
+                self.import_subtitles(data.get('completion_track', []), data, batch_size)
+                self.import_encoded_videos(data.get('video_encode_transcript_encodingvideo', []), batch_size)
 
                 if dry_run:
                     self.stdout.write(self.style.SUCCESS("Dry run completed successfully. Rolling back database changes..."))
@@ -835,6 +841,9 @@ class Command(BaseCommand):
                             channel_id = None
 
                         video_file = item.get('video', '')
+                        videos_dir = encoding_settings.videos_dir
+                        if videos_dir != "videos" and video_file and video_file.startswith("videos/"):
+                            video_file = video_file.replace("videos/", f"{videos_dir}/", 1)
                         if verify_files and video_file:
                             file_path = os.path.join(settings.MEDIA_ROOT, video_file)
                             if not os.path.exists(file_path):
@@ -865,6 +874,9 @@ class Command(BaseCommand):
                         thumb_id = item.get('thumbnail_id')
                         if thumb_id in custom_images:
                             thumbnail_path = custom_images[thumb_id]
+                            thumbnails_dir = encoding_settings.thumbnails_dir
+                            if thumbnails_dir != "thumbnails" and thumbnail_path and thumbnail_path.startswith("thumbnails/"):
+                                thumbnail_path = thumbnail_path.replace("thumbnails/", f"{thumbnails_dir}/", 1)
 
                         encoding_status = 'DO'
                         if item.get('encoding_in_progress'):
@@ -1506,3 +1518,152 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.ERROR(f"Error creating default superuser: {e}"))
         else:
             self.stdout.write(f"Superuser(s) found in the database ({superusers.count()} found). Skipping default superuser creation.")
+
+    def import_subtitles(self, items, data, batch_size):
+        self.stdout.write("Importing Subtitles...")
+        migrated_ids = set(MigrationMapping.objects.filter(model_name="Subtitle", status="SUCCESS").values_list("v4_id", flat=True))
+        existing_video_ids = set(Video.objects.values_list("id", flat=True))
+        
+        # Load custom files from podfile_customfilemodel & main_customfilemodel
+        custom_files = {row['id']: row['file'] for row in data.get('podfile_customfilemodel', [])}
+        custom_files.update({row['id']: row['file'] for row in data.get('main_customfilemodel', [])})
+
+        items_to_process = [item for item in items if item['id'] not in migrated_ids]
+        if not items_to_process:
+            self.stdout.write("All Subtitles already migrated.")
+            return
+
+        success_count = 0
+        error_count = 0
+
+        from src.apps.video.conf import video_settings
+        valid_langs = {lang["value"] for lang in video_settings.subtitle_languages}
+
+        for i in range(0, len(items_to_process), batch_size):
+            batch = items_to_process[i:i+batch_size]
+            try:
+                with transaction.atomic():
+                    instances = []
+                    mappings = []
+                    for item in batch:
+                        v_id = item.get('video_id')
+                        if v_id not in existing_video_ids:
+                            logger.warning(f"Skipping subtitle {item['id']}: Video V4 ID {v_id} not found in V5.")
+                            continue
+                        
+                        src_id = item.get('src_id')
+                        file_path = custom_files.get(src_id)
+                        if not file_path:
+                            logger.warning(f"Skipping subtitle {item['id']}: CustomFileModel ID {src_id} not found in V4 files dump.")
+                            continue
+                        
+                        lang = item.get('lang') or 'fr'
+                        if lang not in valid_langs:
+                            logger.warning(f"Subtitle {item['id']} language '{lang}' is not in V5 choices, importing anyway.")
+
+                        instances.append(Subtitle(
+                            id=item['id'],
+                            video_id=v_id,
+                            language=lang,
+                            file=file_path,
+                            is_default=False
+                        ))
+                        mappings.append(MigrationMapping(
+                            model_name="Subtitle",
+                            v4_id=item['id'],
+                            v5_id=item['id'],
+                            status=MigrationMapping.Status.SUCCESS
+                        ))
+                    
+                    Subtitle.objects.bulk_create(instances, ignore_conflicts=True)
+                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    success_count += len(instances)
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f"Error in Subtitle batch: {e}"))
+                try:
+                    with transaction.atomic():
+                        err_mappings = [
+                            MigrationMapping(
+                                model_name="Subtitle",
+                                v4_id=item['id'],
+                                status=MigrationMapping.Status.ERROR,
+                                message=str(e)
+                            )
+                            for item in batch
+                        ]
+                        MigrationMapping.objects.bulk_create(err_mappings, ignore_conflicts=True)
+                except Exception as inner_e:
+                    logger.warning(f"Could not record subtitle migration error to database: {inner_e}")
+                error_count += len(batch)
+        self.stdout.write(f"Subtitles imported: {success_count} success, {error_count} errors.")
+
+    def import_encoded_videos(self, items, batch_size):
+        self.stdout.write("Importing Encoded Videos...")
+        migrated_ids = set(MigrationMapping.objects.filter(model_name="EncodingVideo", status="SUCCESS").values_list("v4_id", flat=True))
+        existing_video_ids = set(Video.objects.values_list("id", flat=True))
+
+        items_to_process = [item for item in items if item['id'] not in migrated_ids]
+        if not items_to_process:
+            self.stdout.write("All Encoded Videos already migrated.")
+            return
+
+        success_count = 0
+        error_count = 0
+
+        for i in range(0, len(items_to_process), batch_size):
+            batch = items_to_process[i:i+batch_size]
+            try:
+                with transaction.atomic():
+                    instances = []
+                    mappings = []
+                    for item in batch:
+                        v_id = item.get('video_id')
+                        if v_id not in existing_video_ids:
+                            logger.warning(f"Skipping encoded video {item['id']}: Video V4 ID {v_id} not found in V5.")
+                            continue
+                        
+                        file_path = item.get('source_file')
+                        if not file_path:
+                            logger.warning(f"Skipping encoded video {item['id']}: Empty source_file.")
+                            continue
+
+                        videos_dir = encoding_settings.videos_dir
+                        if videos_dir != "videos" and file_path.startswith("videos/"):
+                            file_path = file_path.replace("videos/", f"{videos_dir}/", 1)
+
+                        resolution = item.get('name', '360p') or '360p'
+                        
+                        instances.append(EncodingVideo(
+                            id=item['id'],
+                            video_id=v_id,
+                            resolution=resolution,
+                            file=file_path
+                        ))
+                        mappings.append(MigrationMapping(
+                            model_name="EncodingVideo",
+                            v4_id=item['id'],
+                            v5_id=item['id'],
+                            status=MigrationMapping.Status.SUCCESS
+                        ))
+                    
+                    EncodingVideo.objects.bulk_create(instances, ignore_conflicts=True)
+                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    success_count += len(instances)
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f"Error in Encoded Video batch: {e}"))
+                try:
+                    with transaction.atomic():
+                        err_mappings = [
+                            MigrationMapping(
+                                model_name="EncodingVideo",
+                                v4_id=item['id'],
+                                status=MigrationMapping.Status.ERROR,
+                                message=str(e)
+                            )
+                            for item in batch
+                        ]
+                        MigrationMapping.objects.bulk_create(err_mappings, ignore_conflicts=True)
+                except Exception as inner_e:
+                    logger.warning(f"Could not record encoded video migration error to database: {inner_e}")
+                error_count += len(batch)
+        self.stdout.write(f"Encoded Videos imported: {success_count} success, {error_count} errors.")

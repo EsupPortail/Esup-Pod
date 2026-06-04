@@ -7,9 +7,9 @@ the different authentication providers.
 
 from django.conf import settings
 
-from ..models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION
+from ..conf import auth_settings
 
-GROUP_STAFF = AFFILIATION_STAFF
+GROUP_STAFF = auth_settings.affiliation_staff
 
 CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
 
@@ -36,7 +36,7 @@ OIDC_CLAIM_PREFERRED_USERNAME = getattr(
     settings, "OIDC_CLAIM_PREFERRED_USERNAME", "preferred_username"
 )
 OIDC_DEFAULT_AFFILIATION = getattr(
-    settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION
+    settings, "OIDC_DEFAULT_AFFILIATION", auth_settings.default_affiliation
 )
 OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = getattr(
     settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []
@@ -66,4 +66,4 @@ AUTH_LDAP_USER_SEARCH = getattr(
 
 def is_staff_affiliation(affiliation) -> bool:
     """Check if user affiliation correspond to AFFILIATION_STAFF."""
-    return affiliation in AFFILIATION_STAFF
+    return affiliation in auth_settings.affiliation_staff

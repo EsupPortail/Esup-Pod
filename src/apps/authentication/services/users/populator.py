@@ -8,7 +8,6 @@ from ...conf import auth_settings
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
 from ...models import AccessGroup, Owner
-from ...models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION
 from ..ldap_client import get_ldap_conn, get_ldap_entry
 
 logger = logging.getLogger(__name__)
@@ -56,7 +55,7 @@ class UserPopulator:
 
     def _populate_from_cas(self, attributes: Dict[str, Any]) -> None:
         """Map CAS attributes to User/Owner."""
-        self.owner.affiliation = attributes.get("primaryAffiliation", DEFAULT_AFFILIATION)
+        self.owner.affiliation = attributes.get("primaryAffiliation", auth_settings.default_affiliation)
 
         # Handle affiliations list for group creation/staff status
         affiliations = attributes.get("affiliation", [])
@@ -81,7 +80,7 @@ class UserPopulator:
         if "email" in attributes:
             self.user.email = attributes["email"]
 
-        self.owner.affiliation = attributes.get("affiliation", DEFAULT_AFFILIATION)
+        self.owner.affiliation = attributes.get("affiliation", auth_settings.default_affiliation)
 
         affiliations = attributes.get("affiliations", [])
         if isinstance(affiliations, str):
@@ -109,7 +108,7 @@ class UserPopulator:
         self._assign_access_groups(oidc_groups)
 
         # Is user staff?
-        if self.owner.affiliation in AFFILIATION_STAFF:
+        if self.owner.affiliation in auth_settings.affiliation_staff:
             self.user.is_staff = True
 
     def _populate_from_ldap(self) -> None:
@@ -133,7 +132,7 @@ class UserPopulator:
         self.user.save()
 
         self.owner.affiliation = self._get_ldap_value(
-            entry, "primaryAffiliation", DEFAULT_AFFILIATION
+            entry, "primaryAffiliation", auth_settings.default_affiliation
         )
         self.owner.establishment = self._get_ldap_value(entry, "establishment", "")
         self.owner.save()
@@ -158,7 +157,7 @@ class UserPopulator:
         current_site = Site.objects.get_current()
 
         for affiliation in affiliations:
-            if affiliation in AFFILIATION_STAFF:
+            if affiliation in auth_settings.affiliation_staff:
                 self.user.is_staff = True
 
             if create_group_from_aff:
@@ -181,7 +180,7 @@ class UserPopulator:
 
         for group_code in groups:
             # We assume GROUP_STAFF is same as AFFILIATION_STAFF
-            if group_code in AFFILIATION_STAFF:
+            if group_code in auth_settings.affiliation_staff:
                 self.user.is_staff = True
 
             if create_group_from_groups:

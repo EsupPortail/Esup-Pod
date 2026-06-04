@@ -162,6 +162,14 @@ class AuthConfig(BaseSettings):
         description=_("Add an establishment attribute to users."),
         json_schema_extra={"public": True},
     )
+    default_affiliation: str = Field(
+        default=defaults.DEFAULT_AFFILIATION,
+        description=_("Default affiliation code for new users/owners."),
+    )
+    default_establishment: str = Field(
+        default=defaults.DEFAULT_ESTABLISHMENT,
+        description=_("Default establishment code for new users/owners."),
+    )
 
     # --- Remote User ---
     remote_user_header: str = Field(

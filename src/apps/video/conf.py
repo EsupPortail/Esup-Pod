@@ -181,6 +181,11 @@ class VideoConfig(BaseSettings):
         description=_("Available languages for videos."),
         json_schema_extra={"public": True},
     )
+    subtitle_languages: list = Field(
+        default_factory=lambda: defaults.SUBTITLE_LANGUAGES,
+        description=_("Available languages for video subtitles."),
+        json_schema_extra={"public": True},
+    )
     licenses: list = Field(
         default_factory=lambda: defaults.METADATA_LICENSES,
         description=_("Available content licenses."),

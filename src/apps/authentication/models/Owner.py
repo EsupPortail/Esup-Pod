@@ -15,11 +15,11 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from src.apps.encoding.services.storage import get_storage_path_user_picture
+from src.apps.authentication.conf import auth_settings
 
 from .utils import (
     AFFILIATION,
     AUTH_TYPE,
-    DEFAULT_AFFILIATION,
     ESTABLISHMENTS,
     HIDE_USERNAME,
     SECRET_KEY,
@@ -45,7 +45,7 @@ class Owner(models.Model):
         _("Affiliation"),
         max_length=50,
         choices=AFFILIATION,
-        default=DEFAULT_AFFILIATION,
+        default=auth_settings.default_affiliation,
     )
     comment = models.TextField(_("Comment"), blank=True, default="")
     hashkey = models.CharField(
@@ -66,7 +66,7 @@ class Owner(models.Model):
         max_length=10,
         blank=True,
         choices=ESTABLISHMENTS,
-        default=ESTABLISHMENTS[0][0],
+        default=auth_settings.default_establishment,
     )
 
     accessgroups = models.ManyToManyField(
