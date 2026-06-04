@@ -8,6 +8,7 @@ from pod.ai_enhancement.views import (
     enhance_quiz,
     enhance_video,
     enhance_video_json,
+    generate_transcript_file,
     toggle_webhook,
 )
 
@@ -27,5 +28,10 @@ urlpatterns = [
         "enhance_video_json/<slug:video_slug>/json/",
         enhance_video_json,
         name="enhance_video_json",
+    ),
+    path(
+        "enhance_video_transcript_json/<slug:video_slug>/json/",
+        generate_transcript_file,
+        name="enhance_video_transcript_json",
     ),
 ]

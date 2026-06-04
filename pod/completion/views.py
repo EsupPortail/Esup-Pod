@@ -851,7 +851,10 @@ def video_completion_document_save(request, video):
         and request.POST["id-instance-document"] != "None"
     ):
         document = get_object_or_404(Document, id=request.POST["id-instance-document"])
-        form_document = DocumentForm(request.POST, instance=document)
+        posted_data = request.POST.copy()
+        if not posted_data.get("document") and document.document:
+            posted_data["document"] = str(document.document.id)
+        form_document = DocumentForm(posted_data, instance=document)
     else:
         form_document = DocumentForm(request.POST)
     context = get_video_completion_context(video, form_document=form_document)

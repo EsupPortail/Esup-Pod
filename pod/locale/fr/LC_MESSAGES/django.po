@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-21 11:28+0000\n"
+"POT-Creation-Date: 2026-06-04 22:21+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -253,6 +253,10 @@ msgstr "Importer les sous-titres"
 #: pod/ai_enhancement/templates/choose_video_element.html
 msgid "Import the quiz"
 msgstr "Importer le quiz"
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Import transcript"
+msgstr "Importer la transcription"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
 msgid "Remove this enhancement"
@@ -1413,6 +1417,17 @@ msgstr "Liste des documents complémentaires"
 #: pod/video/templates/videos/video-info.html
 msgid "Public document"
 msgstr "Document public"
+
+#: pod/completion/templates/document/list_document.html
+msgid "Download the additional resource “%(document_name)s”"
+msgstr "Modifier le document complémentaire « %(document_name)s »"
+
+#: pod/completion/templates/document/list_document.html
+#: pod/live/templates/live/event-info.html
+#: pod/podfile/templates/podfile/list_folder_files.html
+#: pod/video/templates/videos/video-info.html
+msgid "Download"
+msgstr "Télécharger"
 
 #: pod/completion/templates/document/list_document.html
 #, python-format
@@ -3801,12 +3816,6 @@ msgstr "QR code pour ce lien :"
 #: pod/video/templates/videos/video-info.html
 msgid "Download this QR code"
 msgstr "Télécharger ce QR code"
-
-#: pod/live/templates/live/event-info.html
-#: pod/podfile/templates/podfile/list_folder_files.html
-#: pod/video/templates/videos/video-info.html
-msgid "Download"
-msgstr "Télécharger"
 
 #: pod/live/templates/live/event-script.html
 msgid "Recording not done: "

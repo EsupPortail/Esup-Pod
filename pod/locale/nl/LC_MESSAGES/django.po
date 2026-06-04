@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-21 11:28+0000\n"
+"POT-Creation-Date: 2026-06-04 22:21+0000\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -244,6 +244,10 @@ msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
 msgid "Import the quiz"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Import transcript"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
@@ -1365,6 +1369,18 @@ msgstr ""
 #: pod/completion/templates/document/list_document.html
 #: pod/video/templates/videos/video-info.html
 msgid "Public document"
+msgstr ""
+
+#: pod/completion/templates/document/list_document.html
+#, python-format
+msgid "Download the additional resource “%(document_name)s”"
+msgstr ""
+
+#: pod/completion/templates/document/list_document.html
+#: pod/live/templates/live/event-info.html
+#: pod/podfile/templates/podfile/list_folder_files.html
+#: pod/video/templates/videos/video-info.html
+msgid "Download"
 msgstr ""
 
 #: pod/completion/templates/document/list_document.html
@@ -3566,12 +3582,6 @@ msgstr ""
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
 msgid "Download this QR code"
-msgstr ""
-
-#: pod/live/templates/live/event-info.html
-#: pod/podfile/templates/podfile/list_folder_files.html
-#: pod/video/templates/videos/video-info.html
-msgid "Download"
 msgstr ""
 
 #: pod/live/templates/live/event-script.html
