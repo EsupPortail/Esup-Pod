@@ -173,7 +173,7 @@ class Command(BaseCommand):
                     
                 self.stdout.write(self.style.SUCCESS("Migration completed successfully!"))
         except DryRunRollbackException:
-            pass
+            logger.info("Dry-run transaction rolled back.")
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Error during import: {e}"))
             logger.exception("Error during data import")
@@ -284,8 +284,8 @@ class Command(BaseCommand):
                             for item in batch
                         ]
                         MigrationMapping.objects.bulk_create(err_mappings, ignore_conflicts=True)
-                except Exception:
-                    pass
+                except Exception as inner_e:
+                    logger.warning(f"Could not record migration error to database: {inner_e}")
                 error_count += len(batch)
         self.stdout.write(f"Users imported: {success_count} success, {error_count} errors.")
 
@@ -369,8 +369,8 @@ class Command(BaseCommand):
                             for item in batch
                         ]
                         MigrationMapping.objects.bulk_create(err_mappings, ignore_conflicts=True)
-                except Exception:
-                    pass
+                except Exception as inner_e:
+                    logger.warning(f"Could not record migration error to database: {inner_e}")
                 error_count += len(batch)
         self.stdout.write(f"Owners imported: {success_count} success, {error_count} errors, {ignored_count} ignored.")
 
@@ -635,8 +635,8 @@ class Command(BaseCommand):
                             for item in batch
                         ]
                         MigrationMapping.objects.bulk_create(err_mappings, ignore_conflicts=True)
-                except Exception:
-                    pass
+                except Exception as inner_e:
+                    logger.warning(f"Could not record migration error to database: {inner_e}")
                 error_count += len(batch)
         self.stdout.write(f"Channels imported: {success_count} success, {error_count} errors.")
 
@@ -644,6 +644,7 @@ class Command(BaseCommand):
         self.stdout.write("Importing Themes (Pass 1 - without parents)...")
         migrated_ids = set(MigrationMapping.objects.filter(model_name="Theme", status="SUCCESS").values_list("v4_id", flat=True))
         existing_channel_ids = set(Channel.objects.values_list("id", flat=True))
+        existing_slugs = set(Theme.objects.values_list("slug", flat=True))
 
         items_to_process = [item for item in items if item['id'] not in migrated_ids]
         if not items_to_process:
@@ -665,12 +666,19 @@ class Command(BaseCommand):
                         if c_id not in existing_channel_ids:
                             c_id = None
                             
-                        slug = item.get('slug') or slugify(item['title'])
+                        base_slug = item.get('slug') or slugify(item['title'])
+                        base_slug = base_slug[:240]  # Leave room for suffix
+                        slug = base_slug
+                        counter = 1
+                        while slug in existing_slugs:
+                            slug = f"{base_slug}-{counter}"
+                            counter += 1
+                        existing_slugs.add(slug)
                         
                         defaults = {
                             'id': item['id'],
                             'title': item['title'][:250],
-                            'slug': item['slug'][:255],
+                            'slug': slug[:255],
                             'description': clean_html(item.get('description', '') or ''),
                             'channel_id': c_id,
                             'parent_id': None,
@@ -701,8 +709,8 @@ class Command(BaseCommand):
                             for item in batch
                         ]
                         MigrationMapping.objects.bulk_create(err_mappings, ignore_conflicts=True)
-                except Exception:
-                    pass
+                except Exception as inner_e:
+                    logger.warning(f"Could not record migration error to database: {inner_e}")
                 error_count += len(batch)
         
         # Pass 2: Set parent_id
@@ -843,15 +851,15 @@ class Command(BaseCommand):
                         if item.get('date_evt'):
                             try:
                                 date_of_event = parse_datetime(item['date_evt'] + " 00:00:00").date()
-                            except Exception:
-                                pass
+                            except Exception as date_e:
+                                logger.warning(f"Could not parse date_evt '{item.get('date_evt')}' for video {item['id']}: {date_e}")
                                 
                         date_to_delete = None
                         if item.get('date_delete'):
                             try:
                                 date_to_delete = parse_datetime(item['date_delete'] + " 00:00:00").date()
-                            except Exception:
-                                pass
+                            except Exception as date_e:
+                                logger.warning(f"Could not parse date_delete '{item.get('date_delete')}' for video {item['id']}: {date_e}")
 
                         thumbnail_path = None
                         thumb_id = item.get('thumbnail_id')
@@ -918,8 +926,8 @@ class Command(BaseCommand):
                             for item in batch
                         ]
                         MigrationMapping.objects.bulk_create(err_mappings, ignore_conflicts=True)
-                except Exception:
-                    pass
+                except Exception as inner_e:
+                    logger.warning(f"Could not record migration error to database: {inner_e}")
                 error_count += len(batch)
                 
         # Link missing file tags if any
@@ -986,7 +994,7 @@ class Command(BaseCommand):
                             'slug': slug[:255],
                             'description': clean_html(item.get('description', '') or ''),
                             'owner_id': owner_id,
-                            'is_public': item.get('visibility') == 'public',
+                            'is_public': item.get('visibility') in ['public', 'protected'],
                             'password': item.get('password', '') or None,
                             'old_v4_id': item['id'],
                         }
@@ -1016,8 +1024,8 @@ class Command(BaseCommand):
                                 message=str(e)
                             ))
                         MigrationMapping.objects.bulk_create(err_mappings, ignore_conflicts=True)
-                except Exception:
-                    pass
+                except Exception as inner_e:
+                    logger.warning(f"Could not record migration error to database: {inner_e}")
                 error_count += len(batch)
         self.stdout.write(f"Playlists imported: {success_count} success, {ignored_count} ignored (Favorites), {error_count} errors.")
 
@@ -1173,8 +1181,8 @@ class Command(BaseCommand):
                             for item in batch
                         ]
                         MigrationMapping.objects.bulk_create(err_mappings, ignore_conflicts=True)
-                except Exception:
-                    pass
+                except Exception as inner_e:
+                    logger.warning(f"Could not record migration error to database: {inner_e}")
                 error_count += len(batch)
 
         # Pass 2: Restore hierarchies
