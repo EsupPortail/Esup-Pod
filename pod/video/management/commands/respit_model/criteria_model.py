@@ -56,6 +56,7 @@ DEFAULT_MATCHER = PARAM_MATCHERS["id"]
 
 
 def match_criterion(param_name: str, param_value, criterion_value, dry_mode: bool = True) -> bool:
+    """Check a criterion"""
     if dry_mode:
         print("\tCheck criterion ", param_name, " = ", param_value, " compared with ", criterion_value)
 
@@ -71,6 +72,7 @@ def match_criterion(param_name: str, param_value, criterion_value, dry_mode: boo
 
 
 def match_criteria_row(parameters: dict, criteria: dict, dry_mode: bool = True) -> bool:
+    """Check a criteria row"""
     if dry_mode:
         print("Check criteria row")
     return all(
@@ -80,6 +82,7 @@ def match_criteria_row(parameters: dict, criteria: dict, dry_mode: bool = True) 
 
 
 def calcul(parameters: dict, dry_mode: bool = True) -> int:
+    """Calculate the number of days to add to date_delete"""
     if dry_mode:
         print(
             "Compute delete respit for video ",
@@ -104,7 +107,8 @@ def calcul(parameters: dict, dry_mode: bool = True) -> int:
     return 0
 
 
-def is_video_can_be_archieved(vid: Video):
+def can_video_be_archived(vid: Video):
+    """Checks if a video can be archived"""
     archiving_criteria = RESPIT_MODEL_PARAMETERS.get("archiving_criteria_parameter", {})
 
     attribute_scores = archiving_criteria.get("attribute_scores", {})

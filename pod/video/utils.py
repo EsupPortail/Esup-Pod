@@ -102,7 +102,7 @@ def is_archiving_authorized(vid: Video) -> bool:
             mod = importlib.import_module(
                 "pod.video.management.commands.respit_model." + RESPIT_MODEL
             )
-            allowed_video = mod.is_video_can_be_archieved(vid)
+            allowed_video = mod.can_video_be_archived(vid)
         except ModuleNotFoundError:
             print("An Error occurred while processing.")
         except ImportError:

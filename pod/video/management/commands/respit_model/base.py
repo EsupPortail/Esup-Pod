@@ -2,6 +2,7 @@ from pod.video.models import Video
 
 
 def calcul(parameters, dry_mode: bool = True):
+    """Calculate the number of days to add to date_delete"""
 
     # id: Id of the video (int)
     # title: Title of the video (string)
@@ -30,5 +31,6 @@ def calcul(parameters, dry_mode: bool = True):
     return 1
 
 
-def is_video_can_be_archieved(vid: Video):
+def can_video_be_archived(vid: Video):
+    """Checks if a video can be archived"""
     return True
