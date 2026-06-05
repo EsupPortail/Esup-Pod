@@ -1,5 +1,4 @@
-"""
-Export data from Pod v4.0.x to a JSON file for a future Pod version.
+"""Esup-Pod - Export data from Pod v4.0.x to a JSON file for a future Pod version.
 
 This script is designed to export data from a Pod v4.0.x database to a JSON file,
 which can then be used to migrate the data to a future Pod version (e.g. v5.x).

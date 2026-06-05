@@ -1,5 +1,5 @@
 """
-Export data from Pod v3.8.x to a JSON file for Pod v4.0.x.
+Esup-Pod - Export data from Pod v3.8.x to a JSON file for Pod v4.0.x.
 
 This script is designed to export data from a Pod v3.8.x database to a JSON file, which can then be used to migrate the data to a Pod v4.0.x database.
 The script handles both MariaDB/MySQL and PostgreSQL databases, adapting SQL queries as needed.
