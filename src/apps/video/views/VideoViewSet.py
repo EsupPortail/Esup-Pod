@@ -90,6 +90,10 @@ class VideoViewSet(viewsets.ModelViewSet):
         if type_slug:
             qs = qs.filter(type__slug=type_slug)
 
+        cursus_slug = self.request.query_params.get("cursus__slug")
+        if cursus_slug:
+            qs = qs.filter(cursus__slug=cursus_slug)
+
         discipline_id = self.request.query_params.get("discipline")
         if discipline_id:
             qs = qs.filter(disciplines__id=discipline_id)
