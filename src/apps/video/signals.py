@@ -11,6 +11,7 @@ from django.dispatch import receiver
 from django.utils.text import slugify
 from src.apps.video.models import Video, Type, Subtitle
 from src.apps.video.services.metadata import extract_video_duration
+from src.apps.utils.files import safe_remove_file
 
 logger = logging.getLogger(__name__)
 
@@ -33,16 +34,6 @@ def set_video_slug(sender, instance, created, **kwargs):
         instance.slug = new_slug
 
 
-def _safe_remove(field):
-    """Safely deletes a file from disk if it exists."""
-    if field:
-        try:
-            if os.path.isfile(field.path):
-                os.remove(field.path)
-        except ValueError:
-            pass
-
-
 @receiver(post_delete, sender=Video)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
@@ -51,10 +42,10 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     from src.apps.video.conf import video_settings
 
     if video_settings.delete_source_on_video_delete:
-        _safe_remove(instance.video_file)
+        safe_remove_file(instance.video_file)
 
-    _safe_remove(instance.thumbnail)
-    _safe_remove(instance.overview)
+    safe_remove_file(instance.thumbnail)
+    safe_remove_file(instance.overview)
 
 
 @receiver(post_delete, sender=Subtitle)
@@ -62,7 +53,7 @@ def auto_delete_subtitle_file_on_delete(sender, instance, **kwargs):
     """
     Deletes physical subtitle files from disk when Subtitle object is deleted.
     """
-    _safe_remove(instance.file)
+    safe_remove_file(instance.file)
 
 
 @receiver(pre_save, sender=Video)
@@ -80,11 +71,7 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 
     new_file = instance.video_file
     if old_file and not old_file == new_file:
-        try:
-            if os.path.isfile(old_file.path):
-                os.remove(old_file.path)
-        except ValueError:
-            pass
+        safe_remove_file(old_file)
 
 
 @receiver(post_save, sender=Video)

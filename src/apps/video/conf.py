@@ -183,16 +183,19 @@ class VideoConfig(BaseSettings):
     )
     languages: list = Field(
         default_factory=lambda: defaults.METADATA_LANGUAGES,
+        validation_alias="metadata_languages",
         description=_("Available languages for videos."),
         json_schema_extra={"public": True},
     )
     licenses: list = Field(
         default_factory=lambda: defaults.METADATA_LICENSES,
+        validation_alias="metadata_licenses",
         description=_("Available content licenses."),
         json_schema_extra={"public": True},
     )
     cursus: list = Field(
         default_factory=lambda: defaults.METADATA_CURSUS,
+        validation_alias="metadata_cursus",
         description=_("Available educational levels."),
         json_schema_extra={"public": True},
     )

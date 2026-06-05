@@ -7,7 +7,6 @@ Custom profile extending the Django User model.
 import hashlib
 import logging
 
-import os
 from django.contrib.auth.models import Permission, User
 from django.contrib.sites.models import Site
 from django.db import models
@@ -16,6 +15,7 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from src.apps.encoding.services.storage import get_storage_path_user_picture
+from src.apps.utils.files import safe_remove_file
 
 from .utils import (
     AFFILIATION,
@@ -154,9 +154,4 @@ def auto_delete_owner_files_on_delete(sender, instance, **kwargs):
     """
     Deletes physical userpicture from disk when Owner object is deleted.
     """
-    if instance.userpicture:
-        try:
-            if os.path.isfile(instance.userpicture.path):
-                os.remove(instance.userpicture.path)
-        except ValueError:
-            pass
+    safe_remove_file(instance.userpicture)

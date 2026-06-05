@@ -385,7 +385,7 @@ class CommentBasicViewTests(APITestCase):
 
     def test_add_and_list_comment(self):
         """Verifies that a comment can be added and listed successfully."""
-
+        # 1. Add comment
         url_add = reverse("comment-add-root", kwargs={"video_slug": self.video.slug})
         response = self.client.post(url_add, {"content": "Hello API test"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -397,6 +397,7 @@ class CommentBasicViewTests(APITestCase):
         self.assertIn("added", response.data)
         self.assertEqual(response.data["content"], "Hello API test")
 
+        # 2. List comments
         url_list = reverse("comment-list", kwargs={"video_slug": self.video.slug})
         response_list = self.client.get(url_list)
         self.assertEqual(len(response_list.data), 1)

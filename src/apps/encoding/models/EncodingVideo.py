@@ -2,13 +2,13 @@
 Esup-Pod - Encoding Video model.
 """
 
-import os
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from src.apps.video.models import Video
 from src.apps.encoding.services.storage import get_storage_path_encoded_video
+from src.apps.utils.files import safe_remove_file
 
 
 class EncodingVideo(models.Model):
@@ -49,9 +49,4 @@ def auto_delete_encoded_file_on_delete(sender, instance, **kwargs):
     """
     Deletes physical encoded video files from disk when EncodingVideo object is deleted.
     """
-    if instance.file:
-        try:
-            if os.path.isfile(instance.file.path):
-                os.remove(instance.file.path)
-        except ValueError:
-            pass
+    safe_remove_file(instance.file)

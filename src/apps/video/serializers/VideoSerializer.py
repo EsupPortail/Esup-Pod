@@ -3,6 +3,7 @@ Esup-Pod - Video serializer.
 """
 
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
 from src.apps.video.models import Video, Type, Discipline
@@ -83,10 +84,14 @@ class VideoSerializer(serializers.ModelSerializer):
     thumbnail = serializers.ImageField(
         required=False,
         allow_null=True,
-        help_text="The video thumbnail image. When serialized (read-only), if no manual thumbnail has been uploaded, this field dynamically falls back to the auto-generated storyboard preview ('overview') or the default static thumbnail URL.",
+        help_text=_(
+            "The video thumbnail image. When serialized (read-only), if no manual thumbnail has been uploaded, this field dynamically falls back to the auto-generated storyboard preview ('overview') or the default static thumbnail URL."
+        ),
     )
     thumbnail_url = serializers.SerializerMethodField(
-        help_text="The absolute URL of the video thumbnail, automatically falling back to the overview preview or default static thumbnail if not explicitly uploaded."
+        help_text=_(
+            "The absolute URL of the video thumbnail, automatically falling back to the overview preview or default static thumbnail if not explicitly uploaded."
+        )
     )
     type_id = serializers.PrimaryKeyRelatedField(
         queryset=Type.objects.all(), source="type", write_only=True, required=False

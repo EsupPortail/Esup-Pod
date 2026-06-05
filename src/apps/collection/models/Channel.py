@@ -3,7 +3,6 @@ Esup-Pod - Channel model.
 """
 
 import logging
-import os
 from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_delete
@@ -11,6 +10,7 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from src.apps.collection.models.base import BaseContainer
 from src.apps.encoding.services.storage import get_storage_path_collection_image
+from src.apps.utils.files import safe_remove_file
 
 logger = logging.getLogger(__name__)
 
@@ -66,15 +66,5 @@ def auto_delete_channel_files_on_delete(sender, instance, **kwargs):
     """
     Deletes physical logo and banner files from disk when Channel object is deleted.
     """
-    if instance.logo:
-        try:
-            if os.path.isfile(instance.logo.path):
-                os.remove(instance.logo.path)
-        except ValueError as e:
-            logger.warning("Could not delete channel logo %s: %s", instance.logo, e)
-    if instance.banner:
-        try:
-            if os.path.isfile(instance.banner.path):
-                os.remove(instance.banner.path)
-        except ValueError as e:
-            logger.warning("Could not delete channel banner %s: %s", instance.banner, e)
+    safe_remove_file(instance.logo)
+    safe_remove_file(instance.banner)
