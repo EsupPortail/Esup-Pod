@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-21 11:28+0000\n"
+"POT-Creation-Date: 2026-06-09 11:02+0000\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -392,9 +392,11 @@ msgstr ""
 #: pod/live/templates/live/event-script.html pod/main/context_processors.py
 #: pod/main/templates/base.html pod/main/templates/navbar.html
 #: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
-#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
-#: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/runner_manager.py
+#: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/videos/video-script.html
+#: pod/video/utils.py pod/video/views.py
+#: pod/video_encode_transcript/runner_manager.py
 #: pod/video_encode_transcript/utils.py
 msgid "Home"
 msgstr ""
@@ -5018,6 +5020,7 @@ msgstr ""
 
 #: pod/main/templates/mail/mail_sender.html
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 msgid "Regards"
 msgstr ""
 
@@ -8542,6 +8545,7 @@ msgid ""
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello %(name)s,"
 msgstr ""
@@ -8578,6 +8582,7 @@ msgid ""
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Sending mail to %(to_email)s for video %(title)s."
 msgstr ""
@@ -8587,11 +8592,13 @@ msgid "Your video will be obsolete soon"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello manager(s) of %(estab)s on %(site_title)s,"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello manager(s) of %(site_title)s,"
 msgstr ""
@@ -8641,6 +8648,41 @@ msgstr ""
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid "In %(deadline)s days:"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, python-format
+msgid "%(old)s replaced by %(new)s"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "For information, you will find below the list of reaffected video."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "The reaffected videos on Pod"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, python-format
+msgid "Manager of “%(et)s” notified for %(nb)s reaffected video(s)."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, python-format
+msgid ""
+"You are now the owner of the video <a href=\"%(scheme)s:"
+"%(url)s\">“%(title)s”</a>."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid ""
+"You were automatically designated as the owner because the previous owner is "
+"no longer at the institution and you were previously an additional owner."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "You have been designated as the owner of a video"
 msgstr ""
 
 #: pod/video/management/commands/create_archive_package.py
