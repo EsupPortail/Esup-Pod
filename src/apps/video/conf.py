@@ -176,6 +176,11 @@ class VideoConfig(BaseSettings):
         default=defaults.DEFAULT_TYPE_ID,
         description=_("Default Type ID for new videos."),
     )
+
+    # Note: We must use the `metadata_` prefix here. If we used `languages`,
+    # pydantic's DjangoSettingsSource would automatically load Django's native
+    # `LANGUAGES` setting (a list of tuples), crashing the db sync process.
+    # The clean `languages` API is exposed via @property methods below.
     metadata_languages: list = Field(
         default_factory=lambda: defaults.METADATA_LANGUAGES,
         description=_("Available languages for videos."),
