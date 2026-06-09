@@ -3,6 +3,9 @@ ifneq (,$(wildcard ./.env))
     export
 endif
 
+export UID ?= $(shell id -u)
+export GID ?= $(shell id -g)
+
 # Configurable variables
 DOCKER_COMPOSE_FILE ?= deployment/dev/docker-compose.yml
 DOCKER_SERVICE_NAME ?= api
