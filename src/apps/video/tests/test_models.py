@@ -7,6 +7,8 @@ from django.contrib.auth import get_user_model
 from src.apps.video.models import Video, ViewCount, Comment
 import datetime
 
+from src.apps.video.apps import sync_metadata
+
 User = get_user_model()
 
 
@@ -17,13 +19,14 @@ class VideoModelTests(TestCase):
 
     def setUp(self):
         """Sets up a video and an owner for model testing."""
+        sync_metadata(sender=None)
         self.user = User.objects.create_user(username="owner", password="password")
         self.video = Video.objects.create(
             title="Model Test Video",
             owner=self.user,
             description="A description",
             status=Video.Status.PUBLISHED,
-            license=Video.License.CC_BY,
+            license_id="CC-BY",
         )
 
     def test_get_dublin_core(self):
@@ -33,7 +36,7 @@ class VideoModelTests(TestCase):
         self.assertEqual(dc["description"], "A description")
         self.assertEqual(dc["creator"], "owner")
         self.assertEqual(dc["format"], "video/mp4")
-        self.assertEqual(dc["rights"], Video.License.CC_BY)
+        self.assertEqual(dc["rights"], "CC-BY")
 
     def test_view_count_creation(self):
         """Verifies daily view count records and their string representation."""
@@ -54,6 +57,7 @@ class CommentBasicTests(TestCase):
 
     def setUp(self):
         """Sets up a video and a user for comment testing."""
+        sync_metadata(sender=None)
         self.user = User.objects.create_user(username="commenter2", password="password")
         self.video = Video.objects.create(
             title="A Video", owner=self.user, status=Video.Status.PUBLISHED
