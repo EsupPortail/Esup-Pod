@@ -8,6 +8,7 @@ from django import forms
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.utils.translation import gettext_lazy as _
 
 from src.apps.video.models import (
     Video,
@@ -165,7 +166,9 @@ class VideoTagAdmin(tagulous.admin.TagModelAdmin):
                 # Delete the other tags
                 queryset.exclude(pk=merge_to.pk).delete()
 
-                self.message_user(request, "Tags merged successfully", messages.SUCCESS)
+                self.message_user(
+                    request, _("Tags merged successfully"), messages.SUCCESS
+                )
                 return HttpResponseRedirect(request.get_full_path())
 
         else:
@@ -173,7 +176,7 @@ class VideoTagAdmin(tagulous.admin.TagModelAdmin):
             if len(tag_pks) < 2:
                 self.message_user(
                     request,
-                    "You must select at least two tags to merge",
+                    _("You must select at least two tags to merge"),
                     messages.ERROR,
                 )
                 return HttpResponseRedirect(request.get_full_path())
@@ -191,7 +194,7 @@ class VideoTagAdmin(tagulous.admin.TagModelAdmin):
             request,
             "tagulous/admin/merge_tags.html",
             {
-                "title": "Merge tags",
+                "title": _("Merge tags"),
                 "opts": self.model._meta,
                 "merge_form": merge_form,
                 "tags": queryset,

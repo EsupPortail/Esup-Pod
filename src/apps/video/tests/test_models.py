@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from src.apps.video.models import Video, ViewCount, Comment
 import datetime
 
-from src.apps.video.tests.test_metadata_api import populate_test_metadata
+from src.apps.video.apps import sync_metadata
 
 User = get_user_model()
 
@@ -19,7 +19,7 @@ class VideoModelTests(TestCase):
 
     def setUp(self):
         """Sets up a video and an owner for model testing."""
-        populate_test_metadata()
+        sync_metadata(sender=None)
         self.user = User.objects.create_user(username="owner", password="password")
         self.video = Video.objects.create(
             title="Model Test Video",
@@ -57,7 +57,7 @@ class CommentBasicTests(TestCase):
 
     def setUp(self):
         """Sets up a video and a user for comment testing."""
-        populate_test_metadata()
+        sync_metadata(sender=None)
         self.user = User.objects.create_user(username="commenter2", password="password")
         self.video = Video.objects.create(
             title="A Video", owner=self.user, status=Video.Status.PUBLISHED
