@@ -30,6 +30,11 @@ class Command(BaseCommand):
             self.stderr.write("Superuser environment variables are missing.")
             return
 
+        user = self._get_or_create_superuser(User, username, email, password)
+        self._ensure_owner_and_site(user)
+
+    def _get_or_create_superuser(self, User, username, email, password):
+        """Gets or creates the superuser user and ensures correct privileges."""
         user, created = User.objects.get_or_create(
             username=username,
             defaults={
@@ -60,12 +65,12 @@ class Command(BaseCommand):
                 )
             else:
                 self.stdout.write(f"Superuser '{username}' already exists.")
+        return user
 
-        # Ensure Owner exists, handle potential conflicts or existing records with same hashkey
+    def _ensure_owner_and_site(self, user):
+        """Ensures the Owner exists and is linked to the default Site."""
         owner = Owner.objects.filter(user=user).first()
         if not owner:
-            # If no owner for this user, check if there's an orphaned owner with the same hashkey
-            # (can happen if user was deleted/recreated and constraint didn't clean up)
             import hashlib
             from src.apps.authentication.models.utils import SECRET_KEY
 
@@ -84,6 +89,6 @@ class Command(BaseCommand):
                 owner.save()
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"Superuser '{username}' linked to site '{site.domain}'."
+                        f"Superuser '{user.username}' linked to site '{site.domain}'."
                     )
                 )
