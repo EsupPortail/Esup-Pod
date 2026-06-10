@@ -64,6 +64,21 @@ class EnsureSuperuserTests(TestCase):
         call_command("ensure_superuser", stdout=out)
         self.assertIn("already exists", out.getvalue())
 
+    def test_ensure_superuser_upgrades_existing(self):
+        """
+        Tests that an existing user without superuser rights is upgraded.
+        """
+        User.objects.create_user(
+            username="testadmin", email="testadmin@example.org", password=PWD
+        )
+
+        out = StringIO()
+        call_command("ensure_superuser", stdout=out)
+        self.assertIn("updated to superuser/staff privileges", out.getvalue())
+        user = User.objects.get(username="testadmin")
+        self.assertTrue(user.is_superuser)
+        self.assertTrue(user.is_staff)
+
     def test_ensure_superuser_missing_env(self):
         """
         Tests that the command reports an error if environment variables are missing.

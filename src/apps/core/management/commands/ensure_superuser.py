@@ -32,17 +32,34 @@ class Command(BaseCommand):
 
         user, created = User.objects.get_or_create(
             username=username,
-            defaults={"email": email},
+            defaults={
+                "email": email,
+                "is_staff": True,
+                "is_superuser": True,
+            },
         )
 
         if created:
             user.set_password(password)
-            user.is_staff = True
-            user.is_superuser = True
             user.save()
             self.stdout.write(self.style.SUCCESS(f"Superuser '{username}' created."))
         else:
-            self.stdout.write(f"Superuser '{username}' already exists.")
+            updated = False
+            if not user.is_superuser:
+                user.is_superuser = True
+                updated = True
+            if not user.is_staff:
+                user.is_staff = True
+                updated = True
+            if updated:
+                user.save()
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"Superuser '{username}' updated to superuser/staff privileges."
+                    )
+                )
+            else:
+                self.stdout.write(f"Superuser '{username}' already exists.")
 
         # Ensure Owner exists, handle potential conflicts or existing records with same hashkey
         owner = Owner.objects.filter(user=user).first()
