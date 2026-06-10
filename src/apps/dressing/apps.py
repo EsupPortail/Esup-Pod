@@ -14,3 +14,8 @@ class DressingConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "src.apps.dressing"
     verbose_name = _("Dressing")
+
+    def ready(self):
+        """Connects signals on app startup."""
+        import src.apps.dressing.signals  # noqa: F401
+
