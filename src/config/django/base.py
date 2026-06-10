@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "src.apps.encoding",
     "tagulous",
     "src.apps.collection",
+    "src.apps.dressing",
 ]
 
 MIDDLEWARE = [
@@ -172,6 +173,7 @@ APPS_WITH_CUSTOM_SETTINGS = [
     "core",
     "encoding",
     "collection",
+    "dressing",
 ]
 
 

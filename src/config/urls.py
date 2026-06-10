@@ -28,6 +28,7 @@ urlpatterns = [
     path("api/info/", include("src.apps.info.urls")),
     path("api/auth/", include("src.apps.authentication.urls")),
     path("api/encoding/", include("src.apps.encoding.urls")),
+    path("api/dressing/", include("src.apps.dressing.urls")),
     # NOTE: V4 Compatibility
     # In V4, encoded MP4 files were served directly by Nginx at paths like:
     #   /media/videos/<sha1_owner_hash>/<id_padded>/<id_padded>_<res>.mp4
