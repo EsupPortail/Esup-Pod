@@ -3,8 +3,8 @@ ifneq (,$(wildcard ./.env))
     export
 endif
 
-export UID ?= $(shell id -u)
-export GID ?= $(shell id -g)
+export USER_UID ?= $(shell id -u)
+export USER_GID ?= $(shell id -g)
 
 # Configurable variables
 DOCKER_COMPOSE_FILE ?= deployment/dev/docker-compose.yml
@@ -90,15 +90,23 @@ lint: start ## Run linters (black, flake8) inside the API service
 clean: stop ## Full shutdown and cleanup. Usage: make clean [service]
 	$(call info,Cleaning (service(s): $(if $(SERVICE_ARGS),$(SERVICE_ARGS),all))...)
 	@if [ -z "$(SERVICE_ARGS)" ]; then \
+		$(DOCKER_COMPOSE_CMD) run --rm --user root --no-deps $(DOCKER_SERVICE_NAME) bash -c " \
+			find . -path '*/migrations/*.py' ! -name '__init__.py' -delete && \
+			find . -path '*/migrations/*.pyc' -delete && \
+			find . -type d -name '__pycache__' -exec rm -rf {} + \
+		" || true; \
 		$(DOCKER_COMPOSE_CMD) down --remove-orphans --volumes; \
 	else \
 		$(DOCKER_COMPOSE_CMD) rm -s -v -f $(SERVICE_ARGS); \
 	fi
 
 clean-migrations: ## Delete all migration files (except __init__.py) and .pyc files
-	$(call info,Deleting migration files and .pyc files...)
-	find . -path "*/migrations/*.py" ! -name "__init__.py" -delete
-	find . -path "*/migrations/*.pyc" -delete
+	$(call info,Deleting migration files and .pyc/cache files via Docker root user...)
+	@$(DOCKER_COMPOSE_CMD) run --rm --user root --no-deps $(DOCKER_SERVICE_NAME) bash -c " \
+		find . -path '*/migrations/*.py' ! -name '__init__.py' -delete && \
+		find . -path '*/migrations/*.pyc' -delete && \
+		find . -type d -name '__pycache__' -exec rm -rf {} + \
+	" || true
 	$(call info,Migrations cleaned.)
 
 test: start ## Run tests inside the container (pytest)

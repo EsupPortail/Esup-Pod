@@ -16,6 +16,13 @@ def ip_in_allowed_range(ip) -> bool:
 
     ALLOWED_SUPERUSER_IPS = getattr(settings, "ALLOWED_SUPERUSER_IPS", [])
 
+    # Filter out empty or whitespace-only entries
+    ALLOWED_SUPERUSER_IPS = [
+        ip_range.strip()
+        for ip_range in ALLOWED_SUPERUSER_IPS
+        if ip_range and ip_range.strip()
+    ]
+
     try:
         ip_obj = ipaddress.ip_address(ip)
     except ValueError:

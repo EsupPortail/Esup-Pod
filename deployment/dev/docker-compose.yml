@@ -24,7 +24,7 @@ services:
       context: ../../
       dockerfile: deployment/dev/Dockerfile
     container_name: pod-api
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${USER_UID:-1000}:${USER_GID:-1000}"
     volumes:
       - ../../:/app
       - ../../media:/app/media
@@ -67,7 +67,7 @@ services:
       context: ../../
       dockerfile: deployment/dev/Dockerfile
     container_name: pod-celery
-    user: "${UID:-1000}:${GID:-1000}"
+    user: "${USER_UID:-1000}:${USER_GID:-1000}"
     volumes:
       - ../../:/app
       - ../../media:/app/media

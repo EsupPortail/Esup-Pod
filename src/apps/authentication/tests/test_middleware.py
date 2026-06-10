@@ -44,6 +44,16 @@ class IPRestrictionMiddlewareTests(TestCase):
             mock_settings.ALLOWED_SUPERUSER_IPS = []
             self.assertTrue(ip_in_allowed_range("192.168.1.1"))
 
+    def test_ip_in_allowed_range_empty_values(self):
+        """
+        Tests that any IP is allowed if ALLOWED_SUPERUSER_IPS contains only empty/whitespace values.
+        """
+        with patch(
+            "src.apps.authentication.IPRestrictionMiddleware.settings"
+        ) as mock_settings:
+            mock_settings.ALLOWED_SUPERUSER_IPS = ["", "  "]
+            self.assertTrue(ip_in_allowed_range("192.168.1.1"))
+
     def test_ip_in_allowed_range_invalid_ip(self):
         """
         Tests that an invalid IP string results in a denial of access.
