@@ -18,4 +18,3 @@ class DressingConfig(AppConfig):
     def ready(self):
         """Connects signals on app startup."""
         import src.apps.dressing.signals  # noqa: F401
-
