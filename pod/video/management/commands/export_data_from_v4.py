@@ -1,6 +1,6 @@
-"""Esup-Pod - Export data from Pod v4.0.x to a JSON file for a future Pod version.
+"""Esup-Pod - Export data from Pod v4.x to a JSON file for a future Pod version.
 
-This script is designed to export data from a Pod v4.0.x database to a JSON file,
+This script is designed to export data from a Pod v4.x database to a JSON file,
 which can then be used to migrate the data to a future Pod version (e.g. v5.x).
 The script handles both MariaDB/MySQL and PostgreSQL databases, adapting SQL queries
 as needed.
@@ -68,7 +68,7 @@ VERSION = getattr(settings, "VERSION", "undefined")
 class Command(BaseCommand):
     """Management command to export Pod v4 database tables to a JSON file."""
 
-    help = "Export data from Pod v4.0.x to a JSON file for a future Pod version"
+    help = "Export data from Pod v4.x to a JSON file for a future Pod version"
 
     def handle(self, *args: Any, **options: Any) -> None:
         """Handle the management command call.
