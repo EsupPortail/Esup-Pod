@@ -10,7 +10,7 @@ from .Video import Video
 
 class Subtitle(models.Model):
     """
-    Esup-Pod - Model representing a subtitle for a video.
+    Model representing a subtitle for a video.
     """
 
     class Language(models.TextChoices):

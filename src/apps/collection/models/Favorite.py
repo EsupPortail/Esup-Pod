@@ -10,7 +10,7 @@ from src.apps.video.models.Video import Video
 
 class Favorite(models.Model):
     """
-    Esup-Pod - Simple Model for marking a video as favorite.
+    Simple Model for marking a video as favorite.
     Personal list of videos per user.
 
     Note: Although functionally a "collection" of videos, this model does

@@ -8,7 +8,7 @@ from src.apps.video.models import Type
 
 class TypeSerializer(serializers.ModelSerializer):
     """
-    Esup-Pod - Serializer for the Type model.
+    Serializer for the Type model.
     """
 
     class Meta:

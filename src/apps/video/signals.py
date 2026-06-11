@@ -9,8 +9,9 @@ from django.contrib.sites.models import Site
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
-from src.apps.video.models import Video, Type
+from src.apps.video.models import Video, Type, Subtitle
 from src.apps.video.services.metadata import extract_video_duration
+from src.apps.utils.files import safe_remove_file
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +19,7 @@ logger = logging.getLogger(__name__)
 @receiver(post_save, sender=Video)
 def set_video_slug(sender, instance, created, **kwargs):
     """
-    Esup-Pod - Generates the V4-compatible slug after the first INSERT.
+    Generates the V4-compatible slug after the first INSERT.
 
     Format: "%04d-<slugified-title>" (e.g. "0042-video-title")
 
@@ -36,23 +37,29 @@ def set_video_slug(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=Video)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
-    Esup-Pod - Deletes physical files from the disk when the Video object is deleted.
+    Deletes physical files from the disk when the Video object is deleted.
     """
-    if instance.video_file:
-        if os.path.isfile(instance.video_file.path):
-            os.remove(instance.video_file.path)
-    if instance.thumbnail:
-        if os.path.isfile(instance.thumbnail.path):
-            os.remove(instance.thumbnail.path)
-    if instance.overview:
-        if os.path.isfile(instance.overview.path):
-            os.remove(instance.overview.path)
+    from src.apps.video.conf import video_settings
+
+    if video_settings.delete_source_on_video_delete:
+        safe_remove_file(instance.video_file)
+
+    safe_remove_file(instance.thumbnail)
+    safe_remove_file(instance.overview)
+
+
+@receiver(post_delete, sender=Subtitle)
+def auto_delete_subtitle_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes physical subtitle files from disk when Subtitle object is deleted.
+    """
+    safe_remove_file(instance.file)
 
 
 @receiver(pre_save, sender=Video)
 def auto_delete_file_on_change(sender, instance, **kwargs):
     """
-    Esup-Pod - Deletes the old file if a new version is uploaded for the same video.
+    Deletes the old file if a new version is uploaded for the same video.
     """
     if not instance.pk:
         return False
@@ -64,17 +71,13 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 
     new_file = instance.video_file
     if old_file and not old_file == new_file:
-        try:
-            if os.path.isfile(old_file.path):
-                os.remove(old_file.path)
-        except ValueError:
-            pass
+        safe_remove_file(old_file)
 
 
 @receiver(post_save, sender=Video)
 def video_post_save(sender, instance, created, **kwargs):
     """
-    Esup-Pod - At the time of creation (upload finished), calculate the duration.
+    At the time of creation (upload finished), calculate the duration.
     """
     logger.debug(
         "video_post_save triggered. created=%s, file=%s",
@@ -103,7 +106,7 @@ def video_post_save(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Video)
 def auto_assign_site_to_video(sender, instance, created, **kwargs):
     """
-    Esup-Pod - Fallback signal: Ensures the video is linked to the current site
+    Fallback signal: Ensures the video is linked to the current site
     if created via admin or other means.
     """
     if created:
@@ -118,7 +121,7 @@ def auto_assign_site_to_video(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Type)
 def auto_assign_site_to_type(sender, instance, created, **kwargs):
     """
-    Esup-Pod - Fallback signal: Ensures the type is linked to the current site
+    Fallback signal: Ensures the type is linked to the current site
     if created via admin or other means.
     """
     if created:

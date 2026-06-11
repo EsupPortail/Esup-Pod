@@ -12,7 +12,7 @@ from src.apps.video.conf import VideoConfig
 
 class VideoSettingsTests(SimpleTestCase):
     """
-    Esup-Pod - Tests for the Video application configuration.
+    Tests for the Video application configuration.
     """
 
     def test_load_from_env(self):

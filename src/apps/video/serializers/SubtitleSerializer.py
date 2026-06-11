@@ -8,7 +8,7 @@ from src.apps.video.models import Subtitle
 
 class SubtitleSerializer(serializers.ModelSerializer):
     """
-    Esup-Pod - Serializer for the Subtitle model.
+    Serializer for the Subtitle model.
     """
 
     class Meta:

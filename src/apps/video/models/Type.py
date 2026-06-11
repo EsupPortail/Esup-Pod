@@ -10,7 +10,7 @@ from django.utils.text import slugify
 
 class Type(models.Model):
     """
-    Esup-Pod - Model representing a video Type.
+    Model representing a video Type.
     """
 
     title = models.CharField(_("Title"), max_length=100)

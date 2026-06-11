@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def extract_video_duration(file_path):
     """
-    Esup-Pod - Uses ffprobe to extract the duration in seconds of a video file.
+    Uses ffprobe to extract the duration in seconds of a video file.
     """
     try:
         cmd = [
@@ -63,7 +63,7 @@ def extract_video_duration(file_path):
 
 def calculate_expiration_date(owner):
     """
-    Esup-Pod - Calculates the deletion date based on the user's affiliation.
+    Calculates the deletion date based on the user's affiliation.
     """
     user_affiliations = (
         owner.owner.affiliation

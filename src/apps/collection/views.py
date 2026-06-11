@@ -7,6 +7,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+    OpenApiParameter,
+    OpenApiResponse,
+)
+
 from src.apps.collection.models import (
     Channel,
     Theme,
@@ -28,6 +35,32 @@ from src.apps.collection.permissions import (
 from src.apps.video.models import Video
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List channels",
+        description="Retrieve a list of video channels, filtered by user visibility (public channels, owned channels, or channels where the user is a collaborator).",
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve channel details",
+        description="Retrieve details of a specific video channel by its slug.",
+    ),
+    create=extend_schema(
+        summary="Create a channel",
+        description="Create a new video channel. The authenticated user is automatically set as the owner.",
+    ),
+    update=extend_schema(
+        summary="Update a channel",
+        description="Fully update a channel's details. Only the channel owner or a collaborator can update it.",
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a channel",
+        description="Partially update a channel's details. Only the channel owner or a collaborator can update it.",
+    ),
+    destroy=extend_schema(
+        summary="Delete a channel",
+        description="Permanently delete a channel. Only the channel owner or a collaborator can delete it.",
+    ),
+)
 class ChannelViewSet(viewsets.ModelViewSet):
     """API view set for the Channel model."""
 
@@ -64,6 +97,41 @@ class ChannelViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List top-level themes",
+        description="Retrieve a list of all root/top-level themes (categories) for channels, filtered by visibility and user access permissions.",
+        parameters=[
+            OpenApiParameter(
+                name="channel",
+                type=int,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Filter themes associated with a specific Channel ID.",
+            )
+        ],
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve theme details",
+        description="Retrieve detailed information about a theme by its slug, including children/sub-themes.",
+    ),
+    create=extend_schema(
+        summary="Create a theme",
+        description="Create a new theme. Restricted to authenticated users/theme owners.",
+    ),
+    update=extend_schema(
+        summary="Update a theme",
+        description="Fully update a theme. Restricted to theme owners.",
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a theme",
+        description="Partially update a theme. Restricted to theme owners.",
+    ),
+    destroy=extend_schema(
+        summary="Delete a theme",
+        description="Permanently delete a theme. Restricted to theme owners.",
+    ),
+)
 class ThemeViewSet(viewsets.ModelViewSet):
     """API view set for the Theme model."""
 
@@ -97,6 +165,32 @@ class ThemeViewSet(viewsets.ModelViewSet):
         return qs
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List playlists",
+        description="Retrieve a list of video playlists. For anonymous users, only public playlists are shown. Authenticated users see both public and owned playlists.",
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve playlist details",
+        description="Retrieve details of a specific playlist by slug. Supports password verification via '?password' query param or 'X-Playlist-Password' header.",
+    ),
+    create=extend_schema(
+        summary="Create a playlist",
+        description="Create a new playlist. The authenticated user is set as the owner.",
+    ),
+    update=extend_schema(
+        summary="Update a playlist",
+        description="Fully update a playlist. Only the playlist owner can perform this action.",
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a playlist",
+        description="Partially update a playlist. Only the playlist owner can perform this action.",
+    ),
+    destroy=extend_schema(
+        summary="Delete a playlist",
+        description="Permanently delete a playlist. Only the playlist owner can perform this action.",
+    ),
+)
 class PlaylistViewSet(viewsets.ModelViewSet):
     """API view set for the Playlist model."""
 
@@ -140,9 +234,38 @@ class PlaylistViewSet(viewsets.ModelViewSet):
         """Set the current user as owner upon playlist creation."""
         serializer.save(owner=self.request.user)
 
+    @extend_schema(
+        summary="Add video to playlist",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "video_id": {
+                        "type": "integer",
+                        "description": "ID of the video to add.",
+                    }
+                },
+                "required": ["video_id"],
+            }
+        },
+        responses={
+            201: OpenApiResponse(
+                description="Video added successfully.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "status": {"type": "string", "example": "video added"}
+                    },
+                },
+            ),
+            400: OpenApiResponse(description="Video already in playlist."),
+        },
+    )
     @action(detail=True, methods=["post"])
     def add_video(self, request, slug=None):
-        """Add a video to the playlist in a thread-safe manner."""
+        """
+        Adds a video (by its ID) to the playlist in a thread-safe and duplicate-protected manner.
+        """
         from django.db import transaction
 
         video_id = request.data.get("video_id")
@@ -160,18 +283,68 @@ class PlaylistViewSet(viewsets.ModelViewSet):
             PlaylistItem.objects.create(playlist=playlist, video=video)
         return Response({"status": "video added"}, status=status.HTTP_201_CREATED)
 
+    @extend_schema(
+        summary="Remove video from playlist",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "video_id": {
+                        "type": "integer",
+                        "description": "ID of the video to remove.",
+                    }
+                },
+                "required": ["video_id"],
+            }
+        },
+        responses={
+            204: OpenApiResponse(description="Video removed successfully."),
+            404: OpenApiResponse(description="Video not found in playlist."),
+        },
+    )
     @action(detail=True, methods=["post"])
     def remove_video(self, request, slug=None):
-        """Remove a video from the playlist."""
+        """Removes a video (by its ID) from the playlist."""
         playlist = self.get_object()
         video_id = request.data.get("video_id")
         item = get_object_or_404(PlaylistItem, playlist=playlist, video_id=video_id)
         item.delete()
         return Response({"status": "video removed"}, status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(
+        summary="Reorder playlist videos",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "positions": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "video_id": {"type": "integer"},
+                                "position": {"type": "integer"},
+                            },
+                            "required": ["video_id", "position"],
+                        },
+                    }
+                },
+                "required": ["positions"],
+            }
+        },
+        responses={
+            200: OpenApiResponse(
+                description="Playlist reordered successfully.",
+                response={
+                    "type": "object",
+                    "properties": {"status": {"type": "string", "example": "reordered"}},
+                },
+            )
+        },
+    )
     @action(detail=True, methods=["post"])
     def reorder(self, request, slug=None):
-        """Reorder videos in the playlist by updating their position values."""
+        """Reorder videos in the playlist by providing an array of objects mapping video IDs to their new positions."""
         playlist = self.get_object()
         positions = request.data.get("positions", [])
         updated_items = []
@@ -186,6 +359,32 @@ class PlaylistViewSet(viewsets.ModelViewSet):
         return Response({"status": "reordered"}, status=status.HTTP_200_OK)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List user favorites",
+        description="Retrieve a list of video favorites belonging to the currently authenticated user.",
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve a favorite item",
+        description="Retrieve details of a specific favorite item by its ID. Restricted to the owner.",
+    ),
+    create=extend_schema(
+        summary="Add video to favorites",
+        description="Add a video to the user's favorites list. The authenticated user is automatically set as the owner.",
+    ),
+    update=extend_schema(
+        summary="Update a favorite item",
+        description="Fully update a favorite item. Restricted to the owner.",
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a favorite item",
+        description="Partially update a favorite item. Restricted to the owner.",
+    ),
+    destroy=extend_schema(
+        summary="Remove video from favorites",
+        description="Remove a video from the user's favorites list by deleting the favorite item.",
+    ),
+)
 class FavoriteViewSet(viewsets.ModelViewSet):
     """API view set for the Favorite model."""
 

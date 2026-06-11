@@ -2,16 +2,22 @@
 Esup-Pod - Channel model.
 """
 
+import logging
 from django.db import models
 from django.conf import settings
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from src.apps.collection.models.base import BaseContainer
 from src.apps.encoding.services.storage import get_storage_path_collection_image
+from src.apps.utils.files import safe_remove_file
+
+logger = logging.getLogger(__name__)
 
 
 class Channel(BaseContainer):
     """
-    Esup-Pod - Model representing a channel.
+    Model representing a channel.
     A channel is the identity of a creator or a service.
     """
 
@@ -53,3 +59,12 @@ class Channel(BaseContainer):
 
         verbose_name = _("Channel")
         verbose_name_plural = _("Channels")
+
+
+@receiver(post_delete, sender=Channel)
+def auto_delete_channel_files_on_delete(sender, instance, **kwargs):
+    """
+    Deletes physical logo and banner files from disk when Channel object is deleted.
+    """
+    safe_remove_file(instance.logo)
+    safe_remove_file(instance.banner)

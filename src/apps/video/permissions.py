@@ -8,7 +8,7 @@ from .conf import video_settings
 
 class IsOwnerOrCoOwnerOrChannelCollaborator(permissions.BasePermission):
     """
-    Esup-Pod - Custom permission:
+    Custom permission:
     - Read (GET, HEAD, OPTIONS) allowed for everyone (depending on the view).
     - Write (PUT, PATCH, DELETE) allowed only for the owner, co-owners,
       or collaborators of the video's channel.
@@ -51,7 +51,7 @@ class IsOwnerOrCoOwnerOrChannelCollaborator(permissions.BasePermission):
 
 class IsStaffOrReadOnly(permissions.BasePermission):
     """
-    Esup-Pod - Custom permission:
+    Custom permission:
     - Read (GET, HEAD, OPTIONS) allowed for everyone.
     - Write (POST, PUT, PATCH, DELETE) allowed only for staff/superusers.
     """

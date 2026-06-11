@@ -8,7 +8,7 @@ from src.apps.video.models import Discipline
 
 class DisciplineSerializer(serializers.ModelSerializer):
     """
-    Esup-Pod - Serializer for the Discipline model.
+    Serializer for the Discipline model.
     """
 
     class Meta:
