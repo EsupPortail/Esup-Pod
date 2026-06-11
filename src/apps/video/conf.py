@@ -137,6 +137,11 @@ class VideoConfig(BaseSettings):
         description=_("Default cache timeout for video data in seconds."),
     )
 
+    site_url: str = Field(
+        default="http://localhost:8000",
+        description=_("Base URL of the site."),
+    )
+
     model_config = SettingsConfigDict(
         case_sensitive=False,
     )

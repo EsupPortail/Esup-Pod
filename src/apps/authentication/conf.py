@@ -169,6 +169,12 @@ class AuthConfig(BaseSettings):
         description=_("HTTP header containing the remote username."),
     )
 
+    # --- Security ---
+    allowed_superuser_ips: List[str] = Field(
+        default=defaults.ALLOWED_SUPERUSER_IPS,
+        description=_("Allowed IP ranges for superuser access."),
+    )
+
     @property
     def populate_user(self) -> Optional[str]:
         """Determine user population strategy based on active flags."""

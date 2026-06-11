@@ -39,9 +39,9 @@ class IPRestrictionMiddlewareTests(TestCase):
         Tests that any IP is allowed if the ALLOWED_SUPERUSER_IPS setting is empty.
         """
         with patch(
-            "src.apps.authentication.IPRestrictionMiddleware.settings"
-        ) as mock_settings:
-            mock_settings.ALLOWED_SUPERUSER_IPS = []
+            "src.apps.authentication.IPRestrictionMiddleware.auth_settings"
+        ) as mock_auth_settings:
+            mock_auth_settings.allowed_superuser_ips = []
             self.assertTrue(ip_in_allowed_range("192.168.1.1"))
 
     def test_ip_in_allowed_range_empty_values(self):
@@ -49,9 +49,9 @@ class IPRestrictionMiddlewareTests(TestCase):
         Tests that any IP is allowed if ALLOWED_SUPERUSER_IPS contains only empty/whitespace values.
         """
         with patch(
-            "src.apps.authentication.IPRestrictionMiddleware.settings"
-        ) as mock_settings:
-            mock_settings.ALLOWED_SUPERUSER_IPS = ["", "  "]
+            "src.apps.authentication.IPRestrictionMiddleware.auth_settings"
+        ) as mock_auth_settings:
+            mock_auth_settings.allowed_superuser_ips = ["", "  "]
             self.assertTrue(ip_in_allowed_range("192.168.1.1"))
 
     def test_ip_in_allowed_range_invalid_ip(self):
@@ -65,9 +65,9 @@ class IPRestrictionMiddlewareTests(TestCase):
         Tests that IPs within the configured ranges are correctly identified as allowed.
         """
         with patch(
-            "src.apps.authentication.IPRestrictionMiddleware.settings"
-        ) as mock_settings:
-            mock_settings.ALLOWED_SUPERUSER_IPS = ["192.168.1.0/24", "10.0.0.1"]
+            "src.apps.authentication.IPRestrictionMiddleware.auth_settings"
+        ) as mock_auth_settings:
+            mock_auth_settings.allowed_superuser_ips = ["192.168.1.0/24", "10.0.0.1"]
             self.assertTrue(ip_in_allowed_range("192.168.1.50"))
             self.assertTrue(ip_in_allowed_range("10.0.0.1"))
             self.assertFalse(ip_in_allowed_range("10.0.0.2"))
@@ -81,9 +81,9 @@ class IPRestrictionMiddlewareTests(TestCase):
         request.META["REMOTE_ADDR"] = "8.8.8.8"
 
         with patch(
-            "src.apps.authentication.IPRestrictionMiddleware.settings"
-        ) as mock_settings:
-            mock_settings.ALLOWED_SUPERUSER_IPS = ["127.0.0.1"]
+            "src.apps.authentication.IPRestrictionMiddleware.auth_settings"
+        ) as mock_auth_settings:
+            mock_auth_settings.allowed_superuser_ips = ["127.0.0.1"]
             self.middleware(request)
 
         self.assertFalse(request.user.is_superuser)
@@ -97,9 +97,9 @@ class IPRestrictionMiddlewareTests(TestCase):
         request.META["REMOTE_ADDR"] = "127.0.0.1"
 
         with patch(
-            "src.apps.authentication.IPRestrictionMiddleware.settings"
-        ) as mock_settings:
-            mock_settings.ALLOWED_SUPERUSER_IPS = ["127.0.0.1"]
+            "src.apps.authentication.IPRestrictionMiddleware.auth_settings"
+        ) as mock_auth_settings:
+            mock_auth_settings.allowed_superuser_ips = ["127.0.0.1"]
             self.middleware(request)
 
         self.assertTrue(request.user.is_superuser)
@@ -114,9 +114,9 @@ class IPRestrictionMiddlewareTests(TestCase):
         request.META["REMOTE_ADDR"] = "8.8.8.8"
 
         with patch(
-            "src.apps.authentication.IPRestrictionMiddleware.settings"
-        ) as mock_settings:
-            mock_settings.ALLOWED_SUPERUSER_IPS = ["127.0.0.1"]
+            "src.apps.authentication.IPRestrictionMiddleware.auth_settings"
+        ) as mock_auth_settings:
+            mock_auth_settings.allowed_superuser_ips = ["127.0.0.1"]
             self.middleware(request)
 
         self.assertFalse(request.user.is_superuser)

@@ -168,7 +168,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         if video.video_file:
             from src.apps.encoding.tasks import trigger_runner_encoding_task
 
-            site_url = getattr(settings, "SITE_URL", "http://api:8000").rstrip("/")
+            site_url = video_settings.site_url.rstrip("/")
             source_url = f"{site_url}{video.video_file.url}"
 
             logger.debug("source_url: %s", source_url)

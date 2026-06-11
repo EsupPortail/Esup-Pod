@@ -5,62 +5,28 @@ This module contains configuration settings and utility functions used by
 the different authentication providers.
 """
 
-from django.conf import settings
-
-from ..models.utils import AFFILIATION_STAFF, DEFAULT_AFFILIATION
+from ..conf import auth_settings
+from ..models.utils import AFFILIATION_STAFF
 
 GROUP_STAFF = AFFILIATION_STAFF
 
-CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
+CREATE_GROUP_FROM_AFFILIATION = auth_settings.create_group_from_affiliation
 
-REMOTE_USER_HEADER = getattr(settings, "REMOTE_USER_HEADER", "REMOTE_USER")
-SHIBBOLETH_ATTRIBUTE_MAP = getattr(
-    settings,
-    "SHIBBOLETH_ATTRIBUTE_MAP",
-    {
-        "REMOTE_USER": (True, "username"),
-        "Shibboleth-givenName": (True, "first_name"),
-        "Shibboleth-sn": (False, "last_name"),
-        "Shibboleth-mail": (False, "email"),
-        "Shibboleth-primary-affiliation": (False, "affiliation"),
-        "Shibboleth-unscoped-affiliation": (False, "affiliations"),
-    },
-)
-SHIBBOLETH_STAFF_ALLOWED_DOMAINS = getattr(
-    settings, "SHIBBOLETH_STAFF_ALLOWED_DOMAINS", None
-)
+REMOTE_USER_HEADER = auth_settings.remote_user_header
+SHIBBOLETH_ATTRIBUTE_MAP = auth_settings.shibboleth_attribute_map
+SHIBBOLETH_STAFF_ALLOWED_DOMAINS = auth_settings.shibboleth_staff_allowed_domains
 
-OIDC_CLAIM_GIVEN_NAME = getattr(settings, "OIDC_CLAIM_GIVEN_NAME", "given_name")
-OIDC_CLAIM_FAMILY_NAME = getattr(settings, "OIDC_CLAIM_FAMILY_NAME", "family_name")
-OIDC_CLAIM_PREFERRED_USERNAME = getattr(
-    settings, "OIDC_CLAIM_PREFERRED_USERNAME", "preferred_username"
-)
-OIDC_DEFAULT_AFFILIATION = getattr(
-    settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION
-)
-OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = getattr(
-    settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []
-)
+OIDC_CLAIM_GIVEN_NAME = auth_settings.oidc_claim_given_name
+OIDC_CLAIM_FAMILY_NAME = auth_settings.oidc_claim_family_name
+OIDC_CLAIM_PREFERRED_USERNAME = auth_settings.oidc_claim_preferred_username
+OIDC_DEFAULT_AFFILIATION = auth_settings.oidc_default_affiliation
+OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = auth_settings.oidc_default_access_group_code_names
 
-USER_LDAP_MAPPING_ATTRIBUTES = getattr(
-    settings,
-    "USER_LDAP_MAPPING_ATTRIBUTES",
-    {
-        "uid": "uid",
-        "mail": "mail",
-        "last_name": "sn",
-        "first_name": "givenname",
-        "primaryAffiliation": "eduPersonPrimaryAffiliation",
-        "affiliations": "eduPersonAffiliation",
-        "groups": "memberOf",
-        "establishment": "establishment",
-    },
-)
+USER_LDAP_MAPPING_ATTRIBUTES = auth_settings.ldap_mapping_attributes
 
-AUTH_LDAP_USER_SEARCH = getattr(
-    settings,
-    "AUTH_LDAP_USER_SEARCH",
-    ("ou=people,dc=example,dc=com", "(uid=%(uid)s)"),
+AUTH_LDAP_USER_SEARCH = (
+    auth_settings.ldap_user_search_base,
+    auth_settings.ldap_user_search_filter,
 )
 
 
