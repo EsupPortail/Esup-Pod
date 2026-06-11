@@ -176,22 +176,41 @@ class VideoConfig(BaseSettings):
         default=defaults.DEFAULT_TYPE_ID,
         description=_("Default Type ID for new videos."),
     )
-    languages: list = Field(
+
+    # Note: We must use the `metadata_` prefix here. If we used `languages`,
+    # pydantic's DjangoSettingsSource would automatically load Django's native
+    # `LANGUAGES` setting (a list of tuples), crashing the db sync process.
+    # The clean `languages` API is exposed via @property methods below.
+    metadata_languages: list = Field(
         default_factory=lambda: defaults.METADATA_LANGUAGES,
         description=_("Available languages for videos."),
         json_schema_extra={"public": True},
     )
-
-    licenses: list = Field(
+    metadata_licenses: list = Field(
         default_factory=lambda: defaults.METADATA_LICENSES,
         description=_("Available content licenses."),
         json_schema_extra={"public": True},
     )
-    cursus: list = Field(
+    metadata_cursus: list = Field(
         default_factory=lambda: defaults.METADATA_CURSUS,
         description=_("Available educational levels."),
         json_schema_extra={"public": True},
     )
+
+    @property
+    def languages(self) -> list:
+        """Alias for metadata_languages."""
+        return self.metadata_languages
+
+    @property
+    def licenses(self) -> list:
+        """Alias for metadata_licenses."""
+        return self.metadata_licenses
+
+    @property
+    def cursus(self) -> list:
+        """Alias for metadata_cursus."""
+        return self.metadata_cursus
 
     @classmethod
     def settings_customise_sources(

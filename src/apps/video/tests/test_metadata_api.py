@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from src.apps.video.models import Type
+from src.apps.video.apps import sync_metadata
 
 
 class MetadataAPITests(APITestCase):
@@ -17,6 +18,7 @@ class MetadataAPITests(APITestCase):
 
     def setUp(self):
         """Set up the test environment."""
+        sync_metadata(sender=None)
         self.site = Site.objects.get_current()
         self.type = Type.objects.create(title="Course")
         self.type.sites.add(self.site)
