@@ -9317,7 +9317,7 @@ msgstr "Les vidéos réaffectées sur Pod"
 
 #: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
-msgid "Manager of “%(et)s” notified for %(nb)s reaffected video(s)."
+msgid "Manager(s) of “%(et)s” notified for %(nb)s reaffected video(s)."
 msgstr ""
 "Le(s) gestionnaire(s) de « %(et)s » ont été notifié(s) de %(nb)s vidéo(s) "
 "réaffectée(s)."
@@ -9336,7 +9336,7 @@ msgid ""
 "You were automatically designated as the owner because the previous owner is "
 "no longer at the institution and you were previously an additional owner."
 msgstr ""
-"Vous avez été automatiquement nommé car l'ancien propriétaire n'est plus "
+"Vous avez été automatiquement nommé propriétaire car l'ancien propriétaire n'est plus "
 "dans l'établissement et que vous étiez propriétaire additionnel jusqu'ici."
 
 #: pod/video/management/commands/check_video_owner_exists.py

@@ -1,3 +1,7 @@
+"""Esup-Pod - Check if video owners still exist in LDAP and reaffect videos if not.
+
+*  run with 'python manage.py check_video_owner_exists [--dry]'
+"""
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.db import transaction
@@ -48,6 +52,7 @@ DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 
 
 class Command(BaseCommand):
+    """Check if video owners still exist in LDAP."""
     help = "Check if video owners still exist in LDAP"
     dry_mode = False
     ldap_existing_usernames = []
@@ -55,6 +60,7 @@ class Command(BaseCommand):
     all_reaffected_videos = {}
 
     def add_arguments(self, parser):
+        """Add possible args to the command."""
         parser.add_argument(
             "--dry",
             help="Simulate what would be done.",
@@ -63,6 +69,7 @@ class Command(BaseCommand):
         )
 
     def user_exists_in_ldap(self, conn, username):
+        """Check if the owner username is in LDAP"""
         if username in self.ldap_existing_usernames:
             return True
 
@@ -74,13 +81,14 @@ class Command(BaseCommand):
         return False
 
     def format_owner(self, user):
+        """Format the owner name."""
         full_name = f"{user.first_name} {user.last_name}".strip()
         if full_name:
             return f"{full_name} ({user.username})"
         return f"({user.username})"
 
     def handle(self, *args, **options):
-
+        """Handle the check_video_owner_exists command call."""
         dry_mode = options["dry"]
 
         promoted_count = 0
@@ -128,6 +136,7 @@ class Command(BaseCommand):
         ))
 
     def reaffect_video(self, conn, default_owner, dry_mode, promoted_count, video):
+        """Reaffect video to an owner who is in LDAP or a default user and notify him/her."""
         valid_additional_owner = default_owner
         for additional_owner in video.additional_owners.all():
             if self.user_exists_in_ldap(conn, additional_owner.username):
@@ -177,6 +186,7 @@ class Command(BaseCommand):
         return promoted_count
 
     def notify_manager(self):
+        """Notify all managers for reaffected videos."""
         for estab in self.all_reaffected_videos:
             if len(self.all_reaffected_videos[estab]) > 0:
                 if estab != "other":
@@ -242,6 +252,7 @@ class Command(BaseCommand):
                     )
 
     def notify_user(self, video: Video):
+        """Notify user who becomes owner of a video"""
         name = video.owner.last_name + " " + video.owner.first_name
         msg_html = _("Hello %(name)s,") % {"name": name}
         msg_html += "<br>\n"
