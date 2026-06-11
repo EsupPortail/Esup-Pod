@@ -60,7 +60,7 @@ logger = logging.getLogger(__name__)
 
 
 def clean_html(text):
-    """clean_html method/function."""
+    """Strip HTML tags and unescape HTML entities from a given string."""
     if not text:
         return text
     return html.unescape(strip_tags(text))
@@ -102,7 +102,7 @@ class Command(BaseCommand):
     help = "Import data (Users, Videos, Playlists, relations) from Pod v4 to Pod v5"
 
     def add_arguments(self, parser):
-        """add_arguments method/function."""
+        """Define command-line arguments for the import script."""
         parser.add_argument(
             "--file",
             type=str,
@@ -196,7 +196,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def handle(self, *args, **options):
-        """handle method/function."""
+        """Execute the import process, managing dry-run mode and signal disconnections."""
         file_path = options["file"]
         dry_run = options["dry_run"]
 
@@ -234,13 +234,13 @@ class Command(BaseCommand):
             """LazyJSONData class."""
 
             def __init__(self, fp, stdout, style):
-                """__init__ method/function."""
+                """Initialize the lazy JSON reader with the file path and log stdout/style."""
                 self.file_path = fp
                 self.stdout = stdout
                 self.style = style
 
             def get(self, key, default=None):
-                """get method/function."""
+                """Retrieve all items corresponding to the specified key in the JSON file using ijson."""
                 import ijson
 
                 try:
@@ -342,7 +342,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def disconnect_signals(self):
-        """disconnect_signals method/function."""
+        """Disconnect Django signals to optimize import speed and prevent side effects during bulk inserts."""
         self.stdout.write("Disconnecting signals...")
         post_save.disconnect(create_owner_profile, sender=User)
         post_save.disconnect(default_site_owner, sender=Owner)
@@ -357,7 +357,7 @@ class Command(BaseCommand):
         post_save.disconnect(auto_assign_site_to_type, sender=Type)
 
     def reconnect_signals(self):
-        """reconnect_signals method/function."""
+        """Reconnect Django signals after the import process completes."""
         self.stdout.write("Reconnecting signals...")
         post_save.connect(create_owner_profile, sender=User)
         post_save.connect(default_site_owner, sender=Owner)
@@ -372,7 +372,7 @@ class Command(BaseCommand):
         post_save.connect(auto_assign_site_to_type, sender=Type)
 
     def pre_create_sites(self, items):
-        """pre_create_sites method/function."""
+        """Ensure all Django Sites mentioned in the source data exist in the database."""
         for item in items:
             Site.objects.get_or_create(
                 id=item["id"],
@@ -408,7 +408,7 @@ class Command(BaseCommand):
         return defaults
 
     def import_users(self, items, batch_size):
-        """import_users method/function."""
+        """Import User model records from the V4 dump in batches."""
         self.stdout.write("Importing Users...")
         items_to_process = self._get_unprocessed_items("User", items)
         if not items_to_process:
@@ -491,7 +491,7 @@ class Command(BaseCommand):
         return Owner(**defaults), mapping, "new"
 
     def import_owners(self, items, batch_size):
-        """import_owners method/function."""
+        """Import Owner profiles associated with existing users."""
         self.stdout.write("Importing Owners...")
         items_to_process = self._get_unprocessed_items("Owner", items)
         if not items_to_process:
@@ -541,7 +541,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def import_groups(self, items, batch_size):
-        """import_groups method/function."""
+        """Import django Auth Group records."""
         self.stdout.write("Importing Groups...")
         items_to_process = self._get_unprocessed_items("Group", items)
         if not items_to_process:
@@ -582,7 +582,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def import_accessgroups(self, items, batch_size):
-        """import_accessgroups method/function."""
+        """Import AccessGroup authorization profiles."""
         self.stdout.write("Importing AccessGroups...")
         items_to_process = self._get_unprocessed_items("AccessGroup", items)
         if not items_to_process:
@@ -630,7 +630,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def import_groupsites(self, items, batch_size):
-        """import_groupsites method/function."""
+        """Import GroupSite model records, checking that the associated Group exists."""
         self.stdout.write("Importing GroupSites...")
         items_to_process = self._get_unprocessed_items("GroupSite", items)
         if not items_to_process:
@@ -680,7 +680,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def import_types(self, items, batch_size):
-        """import_types method/function."""
+        """Import Video Type configurations, generating slugs if necessary."""
         self.stdout.write("Importing Types...")
         items_to_process = self._get_unprocessed_items("Type", items)
         if not items_to_process:
@@ -728,7 +728,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def import_disciplines(self, items, batch_size):
-        """import_disciplines method/function."""
+        """Import academic disciplines and clean their descriptions."""
         self.stdout.write("Importing Disciplines...")
         items_to_process = self._get_unprocessed_items("Discipline", items)
         if not items_to_process:
@@ -784,7 +784,7 @@ class Command(BaseCommand):
         return valid[0] if valid else fallback_id
 
     def import_channels(self, items, data, batch_size):
-        """import_channels method/function."""
+        """Import thematic channels and resolve their corresponding owners."""
         self.stdout.write("Importing Channels...")
         items_to_process = self._get_unprocessed_items("Channel", items)
         if not items_to_process:
@@ -930,7 +930,7 @@ class Command(BaseCommand):
                 )
 
     def import_themes(self, items, batch_size):
-        """import_themes method/function."""
+        """Import hierarchical Theme objects in a two-pass process to preserve parental links."""
         items_to_process = self._get_unprocessed_items("Theme", items)
         if not items_to_process:
             self.stdout.write("All Themes already migrated.")
@@ -953,7 +953,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def import_video_tags(self, data):
-        """import_video_tags method/function."""
+        """Import tagulous video tags pre-defined in the V4 dump."""
         self.stdout.write("Importing Video Tags...")
         tag_model = Video.tags.tag_model
         v4_tags = data.get("video_tagulous_video_tags", [])
@@ -985,7 +985,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def get_v5_cursus(self, v4_cursus):
-        """get_v5_cursus method/function."""
+        """Map V4 educational level abbreviation to the corresponding V5 Cursus choice."""
         if v4_cursus == "L":
             return "L1"
         elif v4_cursus == "M":
@@ -995,7 +995,7 @@ class Command(BaseCommand):
         return "0"
 
     def get_v5_status(self, is_draft, is_restricted):
-        """get_v5_status method/function."""
+        """Convert draft and restricted boolean flags to V5 status code choices."""
         if is_draft:
             return "DR"
         elif is_restricted:
@@ -1003,7 +1003,7 @@ class Command(BaseCommand):
         return "PU"
 
     def get_v5_license(self, v4_license):
-        """get_v5_license method/function."""
+        """Normalize V4 license text into a recognized V5 license key."""
         if not v4_license:
             return "COPYRIGHT"
         upper = v4_license.upper()
@@ -1141,7 +1141,7 @@ class Command(BaseCommand):
             through_model.objects.bulk_create(relations, ignore_conflicts=True)
 
     def import_videos(self, items, data, options):
-        """import_videos method/function."""
+        """Import Video records, mapping fields, resolving media paths, and optional file verification."""
         self.stdout.write("Importing Videos...")
         batch_size = options["batch_size"]
         verify_files = options["verify_files"]
@@ -1222,7 +1222,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def import_playlists(self, items, batch_size):
-        """import_playlists method/function."""
+        """Import Playlist metadata, ignoring the automatic 'Favorites' playlist of V4."""
         self.stdout.write("Importing Playlists...")
         migrated_ids = set(
             MigrationMapping.objects.filter(model_name="Playlist").values_list(
@@ -1361,7 +1361,7 @@ class Command(BaseCommand):
         return playlist_items_to_create, favorites_to_create, ignored_count
 
     def import_playlist_contents(self, items, playlist_items, batch_size):
-        """import_playlist_contents method/function."""
+        """Import Playlist items and map V4 'Favorites' playlists to the V5 Favorite model."""
         self.stdout.write("Importing Playlist Contents & Favorites...")
 
         playlist_map = {
@@ -1515,7 +1515,7 @@ class Command(BaseCommand):
                 )
 
     def import_comments(self, items, batch_size):
-        """import_comments method/function."""
+        """Import Video Comment records and restore their nested reply hierarchy."""
         self.stdout.write("Importing Comments...")
         items_to_process = self._get_unprocessed_items("Comment", items)
         if not items_to_process:
@@ -1540,7 +1540,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def import_votes(self, items, batch_size):
-        """import_votes method/function."""
+        """Import Comment Vote records between users and comments."""
         self.stdout.write("Importing Votes...")
         existing_comments = set(Comment.objects.values_list("id", flat=True))
         existing_users = set(User.objects.values_list("id", flat=True))
@@ -1606,7 +1606,7 @@ class Command(BaseCommand):
         return to_create
 
     def import_viewcounts(self, items, batch_size):
-        """import_viewcounts method/function."""
+        """Import historical date-based video view counter records."""
         self.stdout.write("Importing View Counts (Date-based)...")
         existing_videos = set(Video.objects.values_list("id", flat=True))
 
@@ -1638,7 +1638,7 @@ class Command(BaseCommand):
         batch_size,
         relation_name,
     ):
-        """import_m2m_relation method/function."""
+        """Generic helper to import entries into a Many-to-Many through relationship table."""
         self.stdout.write(f"Importing {relation_name} relations...")
         existing_relations = set(
             through_model.objects.values_list(src_field, target_field)
@@ -1742,7 +1742,7 @@ class Command(BaseCommand):
         return relations
 
     def import_channel_collaborators(self, data, batch_size):
-        """import_channel_collaborators method/function."""
+        """Import channel owners and authorized users as V5 Channel Collaborators."""
         self.stdout.write("Importing Channel Collaborators...")
         channels = Channel.objects.values_list("id", "owner_id")
         primary_owners = {c_id: owner_id for c_id, owner_id in channels}
@@ -1776,7 +1776,7 @@ class Command(BaseCommand):
             self.stdout.write("No new Channel Collaborators to import.")
 
     def import_relations(self, data, batch_size):
-        """import_relations method/function."""
+        """Execute the import of all secondary Many-to-Many relational join tables."""
         self.stdout.write("Importing Many-to-Many relations...")
 
         owner_ids = set(Owner.objects.values_list("id", flat=True))
@@ -1954,7 +1954,7 @@ class Command(BaseCommand):
     # ------------------------------------------------------------------
 
     def ensure_superuser_exists(self):
-        """ensure_superuser_exists method/function."""
+        """Check if a superuser is defined in the database, and create a default one if not."""
         superusers = User.objects.filter(is_superuser=True)
         if not superusers.exists():
             self.stdout.write(
@@ -2011,7 +2011,7 @@ class Command(BaseCommand):
         return file_path
 
     def import_subtitles(self, items, data, batch_size):
-        """import_subtitles method/function."""
+        """Import subtitle tracks and resolve their target media file paths."""
         self.stdout.write("Importing Subtitles...")
         items_to_process = self._get_unprocessed_items("Subtitle", items)
         if not items_to_process:
@@ -2109,7 +2109,7 @@ class Command(BaseCommand):
         return file_path
 
     def import_encoded_videos(self, items, batch_size):
-        """import_encoded_videos method/function."""
+        """Import transcoding resolution profiles for the migrated videos."""
         self.stdout.write("Importing Encoded Videos...")
         items_to_process = self._get_unprocessed_items("EncodingVideo", items)
         if not items_to_process:
