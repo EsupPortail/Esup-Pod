@@ -61,6 +61,10 @@ class EncodingConfig(BaseSettings):
             "If True, the encoding webhook will not delete the original source video upon success."
         ),
     )
+    site_url: str = Field(
+        default="http://localhost:8000",
+        description=_("Base URL of the site."),
+    )
 
     @classmethod
     def settings_customise_sources(

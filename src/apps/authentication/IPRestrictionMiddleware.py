@@ -8,13 +8,18 @@ import ipaddress
 
 from ipware import get_client_ip
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
+from .conf import auth_settings
 
 
 def ip_in_allowed_range(ip) -> bool:
     """Check if the provided IP is within the allowed ranges for superusers."""
 
-    ALLOWED_SUPERUSER_IPS = getattr(settings, "ALLOWED_SUPERUSER_IPS", [])
+    # Filter out empty or whitespace-only entries
+    ALLOWED_SUPERUSER_IPS = [
+        ip_range.strip()
+        for ip_range in auth_settings.allowed_superuser_ips
+        if ip_range and ip_range.strip()
+    ]
 
     try:
         ip_obj = ipaddress.ip_address(ip)
