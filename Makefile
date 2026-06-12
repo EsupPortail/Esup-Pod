@@ -3,6 +3,7 @@ ifneq (,$(wildcard ./.env))
     export
 endif
 
+# Export current user UID/GID for docker compose
 export USER_UID ?= $(shell id -u)
 export USER_GID ?= $(shell id -g)
 

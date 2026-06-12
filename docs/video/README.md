@@ -11,6 +11,7 @@ The **Video** application is the core module of Pod V5. It manages the full life
 | **Co-ownership**       | Multiple users can share edit rights on the same video.                            |
 | **Subtitles**          | Attach subtitle files (VTT/SRT) per language (FR, EN, ES).                         |
 | **Streaming**          | Direct file streaming via a dedicated API endpoint.                                |
+| **Hyperlinks**         | Add interactive links (timecodes, external resources) to videos.                   |
 | **Categorization**     | Organize videos with Types, Disciplines, and Tags.                                 |
 | **Comments & Votes**   | Engage users with a commenting and upvote/downvote system.                         |
 | **Multi-tenancy**      | Videos are linked to specific Sites (portals) for data isolation.                  |
@@ -49,6 +50,7 @@ A video passes through the following states:
 | **Comment**   | User comments left on a video.                                               |
 | **Vote**      | Upvotes and downvotes for comments.                                          |
 | **Subtitle**  | A subtitle file attached to a video, for a given language.                   |
+| **VideoHyperlink** | Interactive links attached to a video at specific time intervals.       |
 | **ViewCount** | Stores the number of views per day, per video.                               |
 
 ## API Endpoints
@@ -68,6 +70,9 @@ A video passes through the following states:
 | **GET**      | `/api/tags/`                          | List available tags.                              |
 | **GET/POST** | `/api/videos/{slug}/comments/`        | Manage comments for a video.                      |
 | **POST/DEL** | `/api/comments/{id}/vote/`            | Upvote/downvote or remove vote on a comment.      |
+| **GET**      | `/api/hyperlinks/`                    | List video hyperlinks.                            |
+| **POST**     | `/api/hyperlinks/`                    | Create a hyperlink (video owner/co-owner only).   |
+| **PATCH/DEL**| `/api/hyperlinks/{id}/`               | Modify or delete a hyperlink.                     |
 | **GET**      | `/api/subtitles/`                     | List subtitles (filterable by `?video_id=`).      |
 | **POST**     | `/api/subtitles/`                     | Attach a subtitle to a video.                     |
 | **DELETE**   | `/api/subtitles/{id}/`                | Delete a subtitle (video owner only).             |

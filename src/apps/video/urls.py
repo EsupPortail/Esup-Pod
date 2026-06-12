@@ -11,6 +11,7 @@ from src.apps.video.views import (
     DisciplineViewSet,
     TagViewSet,
     TypeViewSet,
+    VideoHyperlinkViewSet,
 )
 from src.apps.video.conf import video_settings
 
@@ -22,6 +23,33 @@ router.register(r"tags", TagViewSet, basename="tag")
 router.register(r"types", TypeViewSet, basename="type")
 
 urlpatterns = router.urls
+
+if video_settings.use_hyperlinks:
+    router.register(
+        r"video-hyperlinks", VideoHyperlinkViewSet, basename="video-hyperlink"
+    )
+
+urlpatterns = router.urls
+
+if video_settings.use_hyperlinks:
+
+    urlpatterns += [
+        path(
+            "hyperlink/<slug:video_slug>/hyperlinks/",
+            VideoHyperlinkViewSet.as_view({"get": "list_hyperlinks"}),
+            name="video-hyperlink-list",
+        ),
+        path(
+            "hyperlink/<slug:video_slug>/hyperlinks/add/",
+            VideoHyperlinkViewSet.as_view({"post": "add_hyperlink"}),
+            name="video-hyperlink-add",
+        ),
+        path(
+            "hyperlink/<slug:video_slug>/hyperlinks/<uuid:hyperlink_id>/",
+            VideoHyperlinkViewSet.as_view({"delete": "delete_hyperlink"}),
+            name="video-hyperlink-delete",
+        ),
+    ]
 
 if video_settings.active_video_comment:
     urlpatterns += [

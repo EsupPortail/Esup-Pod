@@ -13,6 +13,7 @@ from src.apps.encoding.conf import encoding_settings
 from src.apps.video.conf import video_settings
 from src.apps.authentication.models import AccessGroup
 from .DisciplineSerializer import DisciplineSerializer
+from .HyperlinkSerializer import VideoHyperlinkSerializer
 
 User = get_user_model()
 
@@ -104,6 +105,8 @@ class VideoSerializer(serializers.ModelSerializer):
         source="disciplines", many=True, read_only=True
     )
 
+    hyperlinks = VideoHyperlinkSerializer(many=True, read_only=True)
+
     class Meta:
         """Video serializer metadata."""
 
@@ -151,6 +154,7 @@ class VideoSerializer(serializers.ModelSerializer):
             "disciplines",
             "discipline_details",
             "tags",
+            "hyperlinks",
         ]
         extra_kwargs = {
             "video_file": {"write_only": True},
