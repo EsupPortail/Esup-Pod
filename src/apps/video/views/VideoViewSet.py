@@ -16,7 +16,12 @@ from django.http import FileResponse, Http404
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.contrib.auth.hashers import check_password
-from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiResponse
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+    OpenApiParameter,
+    OpenApiResponse,
+)
 
 from src.apps.video.models import Video
 from src.apps.video.serializers import VideoSerializer
@@ -33,7 +38,7 @@ logger = logging.getLogger(__name__)
 @extend_schema_view(
     list=extend_schema(
         summary="List videos",
-        description="Retrieve a list of videos. This endpoint supports advanced multi-value filtering. You can pass multiple values for the same parameter (e.g., `?tags__name=python&tags__name=django` or `?discipline=1&discipline=2`). Supported multi-value fields: `tags__name`, `tags__slug`, `type__slug`, `cursus__slug`, `discipline`, `status`, and `owner__username`."
+        description="Retrieve a list of videos. This endpoint supports advanced multi-value filtering. You can pass multiple values for the same parameter (e.g., `?tags__name=python&tags__name=django` or `?discipline=1&discipline=2`). Supported multi-value fields: `tags__name`, `tags__slug`, `type__slug`, `cursus__slug`, `discipline`, `status`, and `owner__username`.",
     )
 )
 class VideoViewSet(viewsets.ModelViewSet):

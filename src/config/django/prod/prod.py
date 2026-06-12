@@ -16,3 +16,9 @@ DEBUG = False
 CORS_ALLOW_ALL_ORIGINS = False
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
+
+REST_FRAMEWORK.update(  # noqa: F405
+    {
+        "PAGE_SIZE": env.int("API_PAGE_SIZE", default=50),
+    }
+)

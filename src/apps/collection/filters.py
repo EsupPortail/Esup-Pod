@@ -95,7 +95,9 @@ class PlaylistFilterSet(django_filters.FilterSet):
         """Filter playlists by password-protection status."""
         if value:
             return queryset.exclude(password__isnull=True).exclude(password__exact="")
-        return queryset.filter(password__isnull=True) | queryset.filter(password__exact="")
+        return queryset.filter(password__isnull=True) | queryset.filter(
+            password__exact=""
+        )
 
     class Meta:
         """PlaylistFilterSet metadata."""

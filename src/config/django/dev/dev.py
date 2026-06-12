@@ -197,3 +197,14 @@ if SHOW_SQL_QUERIES:
         "level": "DEBUG",
         "propagate": False,
     }
+
+if DEBUG:
+    import sys
+
+    is_testing = "test" in sys.argv or any("pytest" in arg for arg in sys.argv)
+    if not is_testing:
+        INSTALLED_APPS.append("debug_toolbar")  # noqa: F405
+        INSTALLED_APPS.append("silk")  # noqa: F405
+        MIDDLEWARE.insert(0, "silk.middleware.SilkyMiddleware")  # noqa: F405
+        dt_middleware = "debug_toolbar.middleware.DebugToolbarMiddleware"
+        MIDDLEWARE.insert(1, dt_middleware)  # noqa: F405

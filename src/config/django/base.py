@@ -84,12 +84,16 @@ ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
+# Dans src/config/django/base.py
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": env.int("API_PAGE_SIZE", default=20),
 }
 
 SPECTACULAR_SETTINGS = {
@@ -158,6 +162,7 @@ if REDIS_SESSION_URL:
         "socket_timeout": 1,
     }
 
+INTERNAL_IPS = ["localhost", "127.0.0.1"]
 
 # ==============================================================================
 # MODULAR SETTINGS LOADING

@@ -8,7 +8,7 @@ import django_filters
 from django_filters import rest_framework as filters
 from django.contrib.auth import get_user_model
 
-from src.apps.authentication.models import AccessGroup, Owner
+from src.apps.authentication.models import AccessGroup
 
 User = get_user_model()
 
