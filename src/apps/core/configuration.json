@@ -1069,6 +1069,184 @@
             "en": "Core Configuration",
             "fr": "Configuration Core"
           }
+        },
+        "completion": {
+          "description": {
+            "en": [
+              "Completion application configuration"
+            ],
+            "fr": [
+              "Configuration de l’application completion"
+            ]
+          },
+          "settings": {
+            "ROLE_CHOICES": {
+              "default_value": [
+                [
+                  "actor",
+                  "Actor"
+                ],
+                [
+                  "author",
+                  "Author"
+                ],
+                [
+                  "consultant",
+                  "Consultant"
+                ],
+                [
+                  "contributor",
+                  "Contributor"
+                ],
+                [
+                  "director",
+                  "Director"
+                ],
+                [
+                  "speaker",
+                  "Speaker"
+                ],
+                [
+                  "technician",
+                  "Technician"
+                ],
+                [
+                  "voice-over",
+                  "Voice-over"
+                ]
+              ],
+              "description": {
+                "en": [
+                  "Available roles for contributors."
+                ],
+                "fr": [
+                  "Rôles disponibles pour les contributeurs."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "KIND_CHOICES": {
+              "default_value": [
+                [
+                  "subtitles",
+                  "Subtitles"
+                ],
+                [
+                  "captions",
+                  "Captions"
+                ]
+              ],
+              "description": {
+                "en": [
+                  "Available kinds for subtitle tracks."
+                ],
+                "fr": [
+                  "Types de pistes de sous-titres disponibles."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "DEFAULT_LANG_TRACK": {
+              "default_value": "fr",
+              "description": {
+                "en": [
+                  "Default language for new subtitle tracks."
+                ],
+                "fr": [
+                  "Langue par défaut des pistes de sous-titres."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "LINK_SUPERPOSITION": {
+              "default_value": false,
+              "description": {
+                "en": [
+                  "Enable automatic conversion of URLs into links in overlays."
+                ],
+                "fr": [
+                  "Active la conversion automatique des URLs en liens dans les overlays."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "ACTIVE_MODEL_ENRICH": {
+              "default_value": false,
+              "description": {
+                "en": [
+                  "Enable voice recognition model enrichment (Kaldi/VOSK)."
+                ],
+                "fr": [
+                  "Active l'enrichissement du modèle de reconnaissance vocale (Kaldi/VOSK)."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "USE_SPEAKER": {
+              "default_value": false,
+              "description": {
+                "en": [
+                  "Enable or disable the Speakers module."
+                ],
+                "fr": [
+                  "Active ou désactive le module Intervenants (Speakers)."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "REQUIRED_SPEAKER_FIRSTNAME": {
+              "default_value": true,
+              "description": {
+                "en": [
+                  "Make the first name of a speaker mandatory."
+                ],
+                "fr": [
+                  "Rend le prénom des intervenants obligatoire."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "TRANSCRIPTION_TYPE": {
+              "default_value": "WHISPER",
+              "description": {
+                "en": [
+                  "Type of transcription model (e.g. WHISPER, VOSK)."
+                ],
+                "fr": [
+                  "Type de modèle de transcription (par ex. WHISPER, VOSK)."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "TRANSCRIPTION_MODEL_PARAM": {
+              "default_value": {},
+              "description": {
+                "en": [
+                  "Dictionary of parameters for the transcription model."
+                ],
+                "fr": [
+                  "Dictionnaire de paramètres pour le modèle de transcription."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "MODEL_COMPILE_DIR": {
+              "default_value": "",
+              "description": {
+                "en": [
+                  "Directory to compile the Kaldi model."
+                ],
+                "fr": [
+                  "Répertoire de compilation du modèle Kaldi."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            }
+          },
+          "title": {
+            "en": "Completion Configuration",
+            "fr": "Configuration Completion"
+          }
         }
       },
       "settings": {},
