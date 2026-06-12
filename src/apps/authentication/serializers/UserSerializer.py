@@ -29,6 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "is_staff",
+            "is_superuser",
             "affiliation",
             "establishment",
             "userpicture",

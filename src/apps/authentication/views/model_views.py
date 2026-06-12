@@ -29,6 +29,8 @@ from ..serializers.SiteSerializer import SiteSerializer
 from ..serializers.UserSerializer import UserSerializer
 from ..permissions import IsSuperUser
 from ..services import AccessGroupService
+from django_filters.rest_framework import DjangoFilterBackend
+from ..filters import UserFilterSet, AccessGroupFilterSet
 
 User = get_user_model()
 
@@ -280,7 +282,7 @@ class OwnerViewSet(viewsets.ModelViewSet):
 @extend_schema_view(
     list=extend_schema(
         summary="List users",
-        description="Retrieve a list of standard Django Users. Regular users can only see their own profile, whereas superusers can see all users.",
+        description="Retrieve a list of standard Django Users. Regular users can only see their own profile, whereas superusers can see all users. Supports multi-value filtering (e.g., `?username=A&username=B` or `?email=A&email=B`).",
     ),
     retrieve=extend_schema(
         summary="Retrieve user details",
@@ -306,9 +308,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all().order_by("-date_joined")
     serializer_class = UserSerializer
-    filterset_fields = ["id", "username", "email"]
+    filterset_class = UserFilterSet
     permission_classes = [IsAuthenticated]
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ["username", "first_name", "last_name", "email"]
 
     def get_queryset(self):
@@ -393,7 +395,7 @@ class SiteViewSet(viewsets.ModelViewSet):
 @extend_schema_view(
     list=extend_schema(
         summary="List access groups",
-        description="Retrieve a list of all LDAP or local access groups configured for the system. Restricted to superusers.",
+        description="Retrieve a list of all LDAP or local access groups configured for the system. Restricted to superusers. Supports multi-value filtering (e.g., `?code_name=A&code_name=B`).",
     ),
     retrieve=extend_schema(
         summary="Retrieve access group",
@@ -424,8 +426,9 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
 
     queryset = AccessGroup.objects.all()
     serializer_class = AccessGroupSerializer
-    filterset_fields = ["id", "display_name", "code_name"]
+    filterset_class = AccessGroupFilterSet
     permission_classes = [IsSuperUser]
+    filter_backends = [DjangoFilterBackend]
 
     @extend_schema(
         summary="Set users of an access group",

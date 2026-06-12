@@ -33,12 +33,14 @@ from src.apps.collection.permissions import (
     IsAdminOrThemeOwner,
 )
 from src.apps.video.models import Video
+from django_filters.rest_framework import DjangoFilterBackend
+from src.apps.collection.filters import ChannelFilterSet, PlaylistFilterSet
 
 
 @extend_schema_view(
     list=extend_schema(
         summary="List channels",
-        description="Retrieve a list of video channels, filtered by user visibility (public channels, owned channels, or channels where the user is a collaborator).",
+        description="Retrieve a list of video channels, filtered by user visibility (public channels, owned channels, or channels where the user is a collaborator). Supports multi-value filtering for owner username (e.g., `?owner__username=alice&owner__username=bob`).",
     ),
     retrieve=extend_schema(
         summary="Retrieve channel details",
@@ -71,9 +73,10 @@ class ChannelViewSet(viewsets.ModelViewSet):
         IsChannelOwnerOrCollaboratorOrReadOnly,
     ]
     lookup_field = "slug"
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
     search_fields = ["title", "description", "owner__username"]
     ordering_fields = ["created_at", "title"]
+    filterset_class = ChannelFilterSet
 
     def get_queryset(self):
         """Return channels filtered by user visibility (public, owned, or collaborated)."""
@@ -168,7 +171,7 @@ class ThemeViewSet(viewsets.ModelViewSet):
 @extend_schema_view(
     list=extend_schema(
         summary="List playlists",
-        description="Retrieve a list of video playlists. For anonymous users, only public playlists are shown. Authenticated users see both public and owned playlists.",
+        description="Retrieve a list of video playlists. For anonymous users, only public playlists are shown. Authenticated users see both public and owned playlists. Supports multi-value filtering for owner username (e.g., `?owner__username=alice&owner__username=bob`).",
     ),
     retrieve=extend_schema(
         summary="Retrieve playlist details",
@@ -198,6 +201,10 @@ class PlaylistViewSet(viewsets.ModelViewSet):
     serializer_class = PlaylistSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     lookup_field = "slug"
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    search_fields = ["title", "description", "owner__username"]
+    ordering_fields = ["created_at", "title"]
+    filterset_class = PlaylistFilterSet
 
     def get_queryset(self):
         """Return playlists filtered by user visibility (public or owned)."""
