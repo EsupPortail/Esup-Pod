@@ -1,6 +1,6 @@
-"""Esup-Pod - Export data from Pod v4.0.x to a JSON file for a future Pod version.
+"""Esup-Pod - Export data from Pod v4.x to a JSON file for a future Pod version.
 
-This script is designed to export data from a Pod v4.0.x database to a JSON file,
+This script is designed to export data from a Pod v4.x database to a JSON file,
 which can then be used to migrate the data to a future Pod version (e.g. v5.x).
 The script handles both MariaDB/MySQL and PostgreSQL databases, adapting SQL queries
 as needed.
@@ -22,8 +22,8 @@ Important notes:
   and recorder_recorder_tags. The virtual tag tables
   (video_tagging_tag_2_tagulous, recorder_tagging_tag_2_tagulous) are kept in the
   table list for forward-compatibility but will be silently skipped if absent.
-- The JSON output file is written to: BASE_DIR/../../data_from_v3_to_v4/v4_exported_to_v5.json
-  Example: /usr/local/django_projects/data_from_v3_to_v4/v4_exported_to_v5.json
+- The JSON output file is written to: BASE_DIR/../../data_from_v4_to_v5/v4_exported_to_v5.json
+  Example: /usr/local/django_projects/data_from_v4_to_v5/v4_exported_to_v5.json
 - This script can be rerun as many times as required; the JSON file is regenerated
   each time.
 
@@ -68,7 +68,7 @@ VERSION = getattr(settings, "VERSION", "undefined")
 class Command(BaseCommand):
     """Management command to export Pod v4 database tables to a JSON file."""
 
-    help = "Export data from Pod v4.0.x to a JSON file for a future Pod version"
+    help = "Export data from Pod v4.x to a JSON file for a future Pod version"
 
     def handle(self, *args: Any, **options: Any) -> None:
         """Handle the management command call.
@@ -489,7 +489,7 @@ class Command(BaseCommand):
             options: The options dict passed by Django's management command framework.
         """
         # Output directory and file name for the exported JSON
-        output_directory = "../../data_from_v3_to_v4/"
+        output_directory = "../../data_from_v4_to_v5/"
         output_json_file = "v4_exported_to_v5.json"
 
         # Create output directory if it does not already exist

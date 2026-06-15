@@ -10,7 +10,7 @@ Le système de migration repose sur deux scripts principaux :
 
 ## Prérequis
 
-* Une instance **Pod en version 4.x** (v4.0.x fonctionnelle).
+* Une instance **Pod en version 4.x** (v4.x fonctionnelle).
 * Une instance **Pod en version 5.x** installée et configurée.
 * Un accès aux bases de données respectives (MariaDB/MySQL ou PostgreSQL pour la V4, MariaDB/MySQL pour la V5).
 * Les volumes ou répertoires contenant les fichiers médias (`MEDIA_ROOT`) doivent être accessibles/transférables d'un serveur à l'autre.
@@ -40,7 +40,7 @@ python manage.py export_data_from_v4
 
 ### Emplacement du fichier généré
 Le fichier JSON sera généré à l'emplacement suivant (relativement à votre `BASE_DIR`) :
-`BASE_DIR/../../data_from_v3_to_v4/v4_exported_to_v5.json`
+`BASE_DIR/../../data_from_v4_to_v5/v4_exported_to_v5.json`
 
 > [!TIP]
 > Ce script peut être exécuté autant de fois que nécessaire. Le fichier JSON est entièrement régénéré à chaque exécution.
