@@ -117,7 +117,7 @@ class Command(BaseCommand):
         for video in videos:
             video_count += 1
             owner = video.owner
-            if owner.username == ARCHIVE_OWNER_USERNAME:
+            if owner.username == ARCHIVE_OWNER_USERNAME or owner.username == DEFAULT_OWNER_USERNAME:
                 continue
 
             if self.user_exists_in_ldap(conn, owner.username):
