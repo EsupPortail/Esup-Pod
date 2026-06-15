@@ -7,7 +7,6 @@ the different authentication providers.
 
 from ..conf import auth_settings
 
-
 GROUP_STAFF = auth_settings.affiliation_staff
 
 CREATE_GROUP_FROM_AFFILIATION = auth_settings.create_group_from_affiliation
