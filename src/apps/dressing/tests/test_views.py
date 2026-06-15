@@ -164,7 +164,7 @@ class TestDressingViewSet:
 
         # Mock the limit to a low value (1 MB) to ensure the test does not depend on default settings
         from src.apps.dressing.conf import dressing_settings
-        
+
         original_limit = dressing_settings.max_watermark_size_mb
         dressing_settings.max_watermark_size_mb = 1
 
