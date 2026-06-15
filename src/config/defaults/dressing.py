@@ -4,17 +4,17 @@ Esup-Pod - Dressing default configuration.
 
 USE_DRESSING = True
 
-# Permet aux utilisateurs standards de créer leurs propres habillages.
-# Si False, seuls les administrateurs peuvent les créer, les utilisateurs ne feront que choisir parmi ceux autorisés.
+# Allows standard users to create their own dressings.
+# If False, only administrators can create them, users will only choose among the authorized ones.
 ALLOW_USER_CUSTOM_DRESSING = True
 
-# Taille maximale (en Mo) autorisée pour l'upload d'images de filigrane
+# Maximum allowed size (in MB) for watermark image upload
 MAX_WATERMARK_SIZE_MB = 5
 
-# Durée maximale (en secondes) autorisée pour les vidéos de générique (début/fin).
-# Empêche d'utiliser une vidéo complète en guise de générique pour contourner des limites.
+# Maximum allowed duration (in seconds) for credits videos (opening/ending).
+# Prevents using a full video as credits to bypass limits.
 MAX_CREDITS_DURATION_SECONDS = 60
 
-# Valeurs par défaut pour l'interface
+# Default values for the interface
 DEFAULT_WATERMARK_OPACITY = 100
 DEFAULT_WATERMARK_POSITION = "top_right"

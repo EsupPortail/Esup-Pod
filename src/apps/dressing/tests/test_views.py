@@ -9,6 +9,11 @@ from src.apps.dressing.models import Dressing
 
 User = get_user_model()
 
+# ggignore-start
+# gitguardian:ignore
+TEST_PASSWORD = "testpassword"  # nosec
+# ggignore-end
+
 
 @pytest.fixture
 def api_client():
@@ -19,13 +24,13 @@ def api_client():
 @pytest.fixture
 def user():
     """Fixture to create a standard User."""
-    return User.objects.create_user(username="testuser", password="testpassword")
+    return User.objects.create_user(username="testuser", password=TEST_PASSWORD)
 
 
 @pytest.fixture
 def superuser():
     """Fixture to create a superuser User."""
-    return User.objects.create_superuser(username="admin", password="testpassword")
+    return User.objects.create_superuser(username="admin", password=TEST_PASSWORD)
 
 
 @pytest.mark.django_db
@@ -157,19 +162,28 @@ class TestDressingViewSet:
 
         api_client.force_authenticate(user=user)
 
-        # Mock file_size property and file_exist to simulate a file that is too large
-        with (
-            patch.object(CustomImageModel, "file_exist", return_value=True),
-            patch.object(
-                CustomImageModel,
-                "file_size",
-                new=property(lambda self: 10 * 1024 * 1024),
-            ),
-        ):
-            # Since max is 5 MB, 10 MB should fail
-            response = api_client.post(
-                "/api/dressing/dressing/",
-                {"title": "Too Large Watermark Dressing", "watermark": img.id},
-            )
-            assert response.status_code == 400
-            assert "watermark" in response.data
+        # Mock the limit to a low value (1 MB) to ensure the test does not depend on default settings
+        from src.apps.dressing.conf import dressing_settings
+        
+        original_limit = dressing_settings.max_watermark_size_mb
+        dressing_settings.max_watermark_size_mb = 1
+
+        try:
+            # Mock file_size property and file_exist to simulate a file that is too large
+            with (
+                patch.object(CustomImageModel, "file_exist", return_value=True),
+                patch.object(
+                    CustomImageModel,
+                    "file_size",
+                    new=property(lambda self: 2 * 1024 * 1024),
+                ),
+            ):
+                # Since limit is temporarily 1 MB, 2 MB should fail
+                response = api_client.post(
+                    "/api/dressing/dressing/",
+                    {"title": "Too Large Watermark Dressing", "watermark": img.id},
+                )
+                assert response.status_code == 400
+                assert "watermark" in response.data
+        finally:
+            dressing_settings.max_watermark_size_mb = original_limit

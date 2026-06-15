@@ -55,26 +55,25 @@ class DressingSerializer(serializers.ModelSerializer):
                 )
         return value
 
-    def validate_opening_credits(self, value):
-        """Validate that the opening credits video duration does not exceed the allowed limit."""
+    def _validate_credits(self, value, error_message):
+        """Validate that the credits video duration does not exceed the allowed limit."""
         if value and value.duration:
             if value.duration > dressing_settings.max_credits_duration_seconds:
                 raise serializers.ValidationError(
-                    _(
-                        "Opening credits video duration exceeds the limit of %(limit)s seconds."
-                    )
-                    % {"limit": dressing_settings.max_credits_duration_seconds}
+                    error_message % {"limit": dressing_settings.max_credits_duration_seconds}
                 )
         return value
 
+    def validate_opening_credits(self, value):
+        """Validate that the opening credits video duration does not exceed the allowed limit."""
+        return self._validate_credits(
+            value,
+            _("Opening credits video duration exceeds the limit of %(limit)s seconds.")
+        )
+
     def validate_ending_credits(self, value):
         """Validate that the ending credits video duration does not exceed the allowed limit."""
-        if value and value.duration:
-            if value.duration > dressing_settings.max_credits_duration_seconds:
-                raise serializers.ValidationError(
-                    _(
-                        "Ending credits video duration exceeds the limit of %(limit)s seconds."
-                    )
-                    % {"limit": dressing_settings.max_credits_duration_seconds}
-                )
-        return value
+        return self._validate_credits(
+            value,
+            _("Ending credits video duration exceeds the limit of %(limit)s seconds.")
+        )
