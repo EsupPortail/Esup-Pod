@@ -5,9 +5,7 @@ from .GroupSite import GroupSite
 from .Owner import Owner
 from .utils import (
     AFFILIATION,
-    AFFILIATION_STAFF,
     AUTH_TYPE,
-    DEFAULT_AFFILIATION,
     ESTABLISHMENTS,
     HIDE_USERNAME,
 )
@@ -32,8 +30,6 @@ User.add_to_class("__str__", get_name)
 
 __all__ = [
     "AFFILIATION",
-    "AFFILIATION_STAFF",
-    "DEFAULT_AFFILIATION",
     "AUTH_TYPE",
     "ESTABLISHMENTS",
     "Owner",

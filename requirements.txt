@@ -17,4 +17,5 @@ django-redis>=5.4.0,<6.0
 django-redis-sessions>=0.6.2,<0.7
 django-tagulous>=2.1.0,<3.0
 django-filter>=24.2
-django-ipware
+django-ipware>=6.0.0,<7.0
+ijson>=3.2.0,<4.0

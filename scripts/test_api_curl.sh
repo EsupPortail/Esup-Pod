@@ -69,7 +69,7 @@ get_val() {
 
 get_val_at() {
   # Usage: get_val_at <index> <key>
-  python3 -c "import sys, json; data=json.load(sys.stdin); print(data[$1].get('$2', '') if isinstance(data, list) and len(data)>$1 else '')"
+  python3 -c "import sys, json; data=json.load(sys.stdin); items=data.get('results', data) if isinstance(data, dict) else data; print(items[$1].get('$2', '') if isinstance(items, list) and len(items)>$1 else '')"
 }
 
 # --- WAIT FOR SERVER ---
@@ -116,7 +116,7 @@ SITE_ID=$(echo "$SITES_RES" | get_val_at 0 "id")
 
 # Owner ID
 OWNER_RES=$(curl -s -X 'GET' "$BASE_URL/api/auth/owners/" -H "$AUTH_HEADER")
-OWNER_ID=$(echo "$OWNER_RES" | python3 -c "import sys, json; data=json.load(sys.stdin); print(next((o['id'] for o in data if str(o.get('user')) == '$USER_ID'), '1'))")
+OWNER_ID=$(echo "$OWNER_RES" | python3 -c "import sys, json; data=json.load(sys.stdin); items=data.get('results', data) if isinstance(data, dict) else data; print(next((o['id'] for o in items if str(o.get('user')) == '$USER_ID'), '1'))")
 
 if [ -z "$USER_ID" ] || [ -z "$SITE_ID" ]; then
     echo -e "${RED}FAILED${NC}"

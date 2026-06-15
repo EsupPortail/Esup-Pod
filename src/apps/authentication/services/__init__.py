@@ -2,7 +2,8 @@ from .providers import OIDCService, ShibbolethService, verify_cas_ticket
 from .tokens import get_tokens_for_user
 from .users import AccessGroupService, UserPopulator
 from ..conf import auth_settings
-from ..models.utils import AFFILIATION_STAFF as GROUP_STAFF
+
+GROUP_STAFF = auth_settings.affiliation_staff
 
 REMOTE_USER_HEADER = auth_settings.remote_user_header
 SHIBBOLETH_ATTRIBUTE_MAP = auth_settings.shibboleth_attribute_map
