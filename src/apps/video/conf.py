@@ -18,7 +18,7 @@ from src.config.defaults import video as defaults
 
 
 class VideoConfig(BaseSettings):
-    """Esup-Pod - Video app configuration with typed fields and validation."""
+    """Video app configuration with typed fields and validation."""
 
     # --- Feature Flags ---
     use_stats_view: bool = Field(
@@ -137,6 +137,11 @@ class VideoConfig(BaseSettings):
         description=_("Default cache timeout for video data in seconds."),
     )
 
+    site_url: str = Field(
+        default="http://localhost:8000",
+        description=_("Base URL of the site."),
+    )
+
     model_config = SettingsConfigDict(
         case_sensitive=False,
     )
@@ -151,6 +156,11 @@ class VideoConfig(BaseSettings):
     default_year_date_delete: int = Field(
         default=defaults.DEFAULT_YEAR_DATE_DELETE,
         description=_("Default number of years before a video is deleted."),
+    )
+    delete_source_on_video_delete: bool = Field(
+        default=defaults.DELETE_SOURCE_ON_VIDEO_DELETE,
+        description=_("Delete the original source video file when a video is deleted."),
+        json_schema_extra={"public": True},
     )
 
     # --- Metadata (Dublin Core) ---
@@ -183,16 +193,19 @@ class VideoConfig(BaseSettings):
     # The clean `languages` API is exposed via @property methods below.
     metadata_languages: list = Field(
         default_factory=lambda: defaults.METADATA_LANGUAGES,
+        validation_alias="metadata_languages",
         description=_("Available languages for videos."),
         json_schema_extra={"public": True},
     )
     metadata_licenses: list = Field(
         default_factory=lambda: defaults.METADATA_LICENSES,
+        validation_alias="metadata_licenses",
         description=_("Available content licenses."),
         json_schema_extra={"public": True},
     )
     metadata_cursus: list = Field(
         default_factory=lambda: defaults.METADATA_CURSUS,
+        validation_alias="metadata_cursus",
         description=_("Available educational levels."),
         json_schema_extra={"public": True},
     )

@@ -10,7 +10,7 @@ from .Video import Video
 
 class Subtitle(models.Model):
     """
-    Esup-Pod - Model representing a subtitle for a video.
+    Model representing a subtitle for a video.
     """
 
     video = models.ForeignKey(Video, related_name="subtitles", on_delete=models.CASCADE)

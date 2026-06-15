@@ -11,7 +11,7 @@ import requests.exceptions
 from celery import shared_task
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
-from django.conf import settings
+from .conf import encoding_settings
 from config.env import env
 
 from src.apps.video.models import Video
@@ -41,7 +41,7 @@ def trigger_runner_encoding_task(self, video_id: int, source_url: str):
 
     try:
         webhook_path = reverse("encoding:webhook")
-        site_url = getattr(settings, "SITE_URL", "http://api:8000")
+        site_url = encoding_settings.site_url
         webhook_secret = env("ENCODING_WEBHOOK_SECRET", default="")
         notify_url = f"{site_url.rstrip('/')}{webhook_path}?secret={webhook_secret}&video_id={video_id}"
 

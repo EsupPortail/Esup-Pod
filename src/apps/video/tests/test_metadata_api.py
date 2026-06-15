@@ -13,7 +13,7 @@ from src.apps.video.apps import sync_metadata
 
 class MetadataAPITests(APITestCase):
     """
-    Esup-Pod - Tests for the video metadata endpoints.
+    Tests for the video metadata endpoints.
     """
 
     def setUp(self):

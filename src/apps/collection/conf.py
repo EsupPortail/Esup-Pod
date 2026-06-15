@@ -16,7 +16,7 @@ from src.config.defaults import collection as defaults
 
 
 class CollectionConfig(BaseSettings):
-    """Esup-Pod - Collection app configuration with typed fields and validation."""
+    """Collection app configuration with typed fields and validation."""
 
     # --- Channels ---
     use_channels: bool = Field(

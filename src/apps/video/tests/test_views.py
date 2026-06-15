@@ -34,7 +34,7 @@ PWD = "password"
 )
 class VideoViewSetTests(APITestCase):
     """
-    Esup-Pod - Tests for the VideoViewSet.
+    Tests for the VideoViewSet.
     """
 
     @classmethod
@@ -271,11 +271,34 @@ class VideoViewSetTests(APITestCase):
         self.assertEqual(response.data["owner_first_name"], "Jean")
         self.assertEqual(response.data["owner_last_name"], "Dupont")
 
+    def test_thumbnail_serialization_fallback(self):
+        """Verifies that the serialized thumbnail field falls back to thumbnail_url when empty."""
+        self.client.force_authenticate(user=self.user)
+
+        url = reverse("video-detail", kwargs={"slug": self.video.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("default_thumbnail", response.data["thumbnail_url"])
+        self.assertEqual(response.data["thumbnail"], response.data["thumbnail_url"])
+
+        # Add overview file
+        overview_file = SimpleUploadedFile(
+            "overview.png", b"image_content", content_type="image/png"
+        )
+        self.video.overview = overview_file
+        self.video.save()
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("thumbnails", response.data["thumbnail_url"])
+        self.assertNotIn("default_thumbnail", response.data["thumbnail_url"])
+        self.assertEqual(response.data["thumbnail"], response.data["thumbnail_url"])
+
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class SubtitleViewSetTests(APITestCase):
     """
-    Esup-Pod - Tests for the SubtitleViewSet.
+    Tests for the SubtitleViewSet.
     """
 
     @classmethod
@@ -348,7 +371,7 @@ class SubtitleViewSetTests(APITestCase):
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class CommentBasicViewTests(APITestCase):
-    """Esup-Pod - Tests for the CommentViewSet."""
+    """Tests for the CommentViewSet."""
 
     def setUp(self):
         """Sets up user and video for comment API testing."""
@@ -367,16 +390,27 @@ class CommentBasicViewTests(APITestCase):
         response = self.client.post(url_add, {"content": "Hello API test"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # 2. List comment
+        self.assertIn("id", response.data)
+        self.assertIn("author_name", response.data)
+        self.assertIn("author_picture", response.data)
+        self.assertIn("content", response.data)
+        self.assertIn("added", response.data)
+        self.assertEqual(response.data["content"], "Hello API test")
+
+        # 2. List comments
         url_list = reverse("comment-list", kwargs={"video_slug": self.video.slug})
         response_list = self.client.get(url_list)
         self.assertEqual(len(response_list.data), 1)
-        self.assertEqual(response_list.data[0]["content"], "Hello API test")
+
+        comment_data = response_list.data[0]
+        self.assertEqual(comment_data["content"], "Hello API test")
+        self.assertIn("author_name", comment_data)
+        self.assertIn("author_picture", comment_data)
 
 
 class TagViewSetTests(APITestCase):
     """
-    Esup-Pod - Tests for the TagViewSet.
+    Tests for the TagViewSet.
     """
 
     def _get_results(self, response):

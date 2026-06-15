@@ -16,7 +16,7 @@ from django.http import FileResponse, Http404
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.contrib.auth.hashers import check_password
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 
 from src.apps.video.models import Video
 from src.apps.video.serializers import VideoSerializer
@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 class VideoViewSet(viewsets.ModelViewSet):
     """
-    Esup-Pod - API view set for the Video model.
+    API view set for the Video model.
     """
 
     queryset = Video.objects.all()
@@ -168,7 +168,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         if video.video_file:
             from src.apps.encoding.tasks import trigger_runner_encoding_task
 
-            site_url = getattr(settings, "SITE_URL", "http://api:8000").rstrip("/")
+            site_url = video_settings.site_url.rstrip("/")
             source_url = f"{site_url}{video.video_file.url}"
 
             logger.debug("source_url: %s", source_url)
@@ -242,9 +242,32 @@ class VideoViewSet(viewsets.ModelViewSet):
             return first_encoding.file
         return video.video_file
 
+    @extend_schema(
+        summary="Stream video file",
+        parameters=[
+            OpenApiParameter(
+                name="resolution",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Target resolution for streaming (e.g., '1080', '720p', '360'). If specified without 'p', the backend automatically appends it.",
+            )
+        ],
+        responses={
+            200: OpenApiResponse(
+                description="Video stream served successfully (progressive MP4 stream)."
+            ),
+            404: OpenApiResponse(
+                description="Video file or specified resolution not found on disk."
+            ),
+        },
+    )
     @action(detail=True, methods=["get"], permission_classes=[permissions.AllowAny])
     def stream(self, request, slug=None):
-        """Serves the video file as a stream."""
+        """
+        Serves the video file as a progressive stream. Supports optional resolution filtering (e.g., 360p, 720p, 1080p).
+        Falls back to the best available resolution if the requested one is not found.
+        """
         video = self.get_object()
         self._check_stream_permissions(request, video)
 
@@ -265,9 +288,26 @@ class VideoViewSet(viewsets.ModelViewSet):
         response["Content-Type"] = "video/mp4"
         return response
 
+    @extend_schema(
+        summary="Register a video view",
+        responses={
+            200: OpenApiResponse(
+                description="View registered successfully. Returns the updated total view count.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "status": {"type": "string", "example": "viewed"},
+                        "total_count": {"type": "integer", "example": 105},
+                    },
+                },
+            )
+        },
+    )
     @action(detail=True, methods=["post"], permission_classes=[permissions.AllowAny])
     def register_view(self, request, slug=None):
-        """Increments the view count for the video and daily statistics."""
+        """
+        Increments both the global view counter of the video and the daily views statistics (used for charts).
+        """
         video = self.get_object()
         video.view_count = F("view_count") + 1
         video.save(update_fields=["view_count"])
@@ -279,12 +319,73 @@ class VideoViewSet(viewsets.ModelViewSet):
         view_count_obj.save(update_fields=["count"])
         return Response({"status": "viewed", "total_count": video.view_count})
 
+    @extend_schema(
+        summary="Unlock restricted video",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "description": "Plain text password to unlock the video.",
+                        "example": "securePassword123",
+                    },
+                    "hash": {
+                        "type": "string",
+                        "description": "Legacy V4 SHA1 security hash to bypass the password prompt.",
+                        "example": "7c5a0c3b84138e1219b16828a2a7a409f584e03d",
+                    },
+                },
+            }
+        },
+        parameters=[
+            OpenApiParameter(
+                name="hash",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Optional legacy V4 SHA1 security hash passed via query parameters to unlock the stream.",
+            )
+        ],
+        responses={
+            200: OpenApiResponse(
+                description="Video unlocked successfully. Returns the absolute URL of the video source file.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "video_url": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "http://api.pod.univ.fr/media/video/sources/my-video.mp4",
+                        },
+                        "source": {
+                            "type": "string",
+                            "example": "legacy_hash",
+                            "nullable": True,
+                        },
+                    },
+                },
+            ),
+            403: OpenApiResponse(
+                description="Incorrect password or invalid legacy hash.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "error": {
+                            "type": "string",
+                            "example": "Incorrect password or hash",
+                        }
+                    },
+                },
+            ),
+        },
+    )
     @action(
         detail=True, methods=["get", "post"], permission_classes=[permissions.AllowAny]
     )
     def unlock(self, request, slug=None):
         """
-        Unlocks a RESTRICTED video with a password or legacy V4 hash.
+        Unlocks a restricted/password-protected video using either a raw password in JSON body or a legacy V4 hash.
         """
         video = self.get_object()
 
@@ -318,7 +419,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="List my videos",
-        description="Returns only videos owned or co-owned by the current user.",
         responses={200: VideoSerializer(many=True)},
     )
     @action(
@@ -326,7 +426,7 @@ class VideoViewSet(viewsets.ModelViewSet):
     )
     def me(self, request):
         """
-        Retrieves a filtered list of videos where the current user is either the owner or a co-owner.
+        Returns only videos owned or co-owned by the current user.
         """
         user = request.user
         queryset = (
@@ -343,13 +443,12 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Video metadata choices",
-        description="Returns available choices for License, Cursus, and Status.",
         responses={200: dict},
     )
     @action(detail=False, methods=["get"], permission_classes=[permissions.AllowAny])
     def metadata(self, request):
         """
-        Returns dynamic choices for video fields to help the frontend.
+        Returns available choices for License, Cursus, and Status to help the frontend.
         """
         from src.apps.video.models import License, Cursus, Language
 
@@ -374,7 +473,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Transfer video ownership",
-        description="Allows an admin to change the owner of a video.",
         request={
             "application/json": {
                 "type": "object",
@@ -386,7 +484,7 @@ class VideoViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"], permission_classes=[IsSuperUser])
     def transfer_ownership(self, request, slug=None):
         """
-        Transfers the ownership of a video to another user.
+        Allows an admin to change the owner of a video.
         Accessible only by administrators.
         """
         video = self.get_object()

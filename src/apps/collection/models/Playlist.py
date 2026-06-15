@@ -13,7 +13,7 @@ from src.apps.video.models.Video import Video
 
 class Playlist(BaseContainer):
     """
-    Esup-Pod - Model representing an ordered list of videos.
+    Model representing an ordered list of videos.
     """
 
     owner = models.ForeignKey(

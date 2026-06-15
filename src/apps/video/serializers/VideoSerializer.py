@@ -3,6 +3,7 @@ Esup-Pod - Video serializer.
 """
 
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
 from src.apps.video.models import Video, Type, Discipline
@@ -51,7 +52,7 @@ class TagListSerializerField(serializers.Field):
 
 class VideoSerializer(serializers.ModelSerializer):
     """
-    Esup-Pod - Serializer for the Video model.
+    Serializer for the Video model.
     """
 
     owner = serializers.ReadOnlyField(source="owner.username")
@@ -80,7 +81,18 @@ class VideoSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     date_to_delete = serializers.DateField(required=False, allow_null=True)
-    thumbnail_url = serializers.SerializerMethodField()
+    thumbnail = serializers.ImageField(
+        required=False,
+        allow_null=True,
+        help_text=_(
+            "The video thumbnail image. When serialized (read-only), if no manual thumbnail has been uploaded, this field dynamically falls back to the auto-generated storyboard preview ('overview') or the default static thumbnail URL."
+        ),
+    )
+    thumbnail_url = serializers.SerializerMethodField(
+        help_text=_(
+            "The absolute URL of the video thumbnail, automatically falling back to the overview preview or default static thumbnail if not explicitly uploaded."
+        )
+    )
     type_id = serializers.PrimaryKeyRelatedField(
         queryset=Type.objects.all(), source="type", write_only=True, required=False
     )
@@ -256,3 +268,13 @@ class VideoSerializer(serializers.ModelSerializer):
                     }
                 )
         return attrs
+
+    def to_representation(self, instance):
+        """
+        Customizes representation to return the overview URL or default thumbnail
+        as the 'thumbnail' field if no manual thumbnail has been uploaded.
+        """
+        data = super().to_representation(instance)
+        if not data.get("thumbnail"):
+            data["thumbnail"] = data.get("thumbnail_url")
+        return data

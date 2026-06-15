@@ -16,6 +16,7 @@ class CommentSerializer(serializers.ModelSerializer):
     """
 
     author_name = serializers.CharField(read_only=True)
+    author_picture = serializers.SerializerMethodField()
     nbr_vote = serializers.IntegerField(read_only=True)
     is_owner = serializers.BooleanField(read_only=True)
     children = serializers.SerializerMethodField()
@@ -30,6 +31,7 @@ class CommentSerializer(serializers.ModelSerializer):
             "direct_parent",
             "author",
             "author_name",
+            "author_picture",
             "content",
             "video",
             "added",
@@ -40,6 +42,7 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "author",
             "author_name",
+            "author_picture",
             "added",
             "nbr_vote",
             "is_owner",
@@ -60,6 +63,15 @@ class CommentSerializer(serializers.ModelSerializer):
             return obj.get_json_children(user_id)
         return []
 
+    @extend_schema_field(serializers.CharField(allow_null=True))
+    def get_author_picture(self, obj):
+        """
+        Retrieves the profile picture URL of the comment's author.
+        """
+        if hasattr(obj.author, "owner") and obj.author.owner.userpicture:
+            return obj.author.owner.userpicture.url
+        return None
+
     @classmethod
     def get_optimized_queryset(cls, video_slug, user_id=None):
         """
@@ -69,7 +81,7 @@ class CommentSerializer(serializers.ModelSerializer):
             Comment.objects.filter(video__slug=video_slug)
             .annotate(nbr_vote=Count("votes", distinct=True))
             .annotate(
-                author_name=Concat("author__first_name", Value(" "), "author__last_name")
+                author_name=Concat("author__last_name", Value(" "), "author__first_name")
             )
             .annotate(
                 is_owner=Case(
@@ -78,5 +90,5 @@ class CommentSerializer(serializers.ModelSerializer):
                     output_field=BooleanField(),
                 )
             )
-            .select_related("author", "video")
+            .select_related("author", "author__owner", "video")
         )

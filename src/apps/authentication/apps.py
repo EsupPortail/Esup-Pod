@@ -7,7 +7,7 @@ from django.apps import AppConfig
 
 class AuthenticationConfig(AppConfig):
     """
-    Esup-Pod - Application configuration for the authentication module.
+    Application configuration for the authentication module.
     """
 
     name = "src.apps.authentication"

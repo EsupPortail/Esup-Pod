@@ -10,12 +10,13 @@ import logging
 from django.contrib.auth.models import Permission, User
 from django.contrib.sites.models import Site
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from src.apps.encoding.services.storage import get_storage_path_user_picture
 from src.apps.authentication.conf import auth_settings
+from src.apps.utils.files import safe_remove_file
 
 from .utils import (
     AFFILIATION,
@@ -146,3 +147,11 @@ def create_owner_profile(sender, instance: User, created: bool, **kwargs) -> Non
                 f"Error creating owner profile for user {instance.username}: {e}",
                 exc_info=True,
             )
+
+
+@receiver(post_delete, sender=Owner)
+def auto_delete_owner_files_on_delete(sender, instance, **kwargs):
+    """
+    Deletes physical userpicture from disk when Owner object is deleted.
+    """
+    safe_remove_file(instance.userpicture)
