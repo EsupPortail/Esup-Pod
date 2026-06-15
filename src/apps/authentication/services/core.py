@@ -6,7 +6,7 @@ the different authentication providers.
 """
 
 from ..conf import auth_settings
-from ..models.utils import AFFILIATION_STAFF
+
 
 GROUP_STAFF = auth_settings.affiliation_staff
 
