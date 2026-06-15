@@ -22,8 +22,8 @@ Important notes:
   and recorder_recorder_tags. The virtual tag tables
   (video_tagging_tag_2_tagulous, recorder_tagging_tag_2_tagulous) are kept in the
   table list for forward-compatibility but will be silently skipped if absent.
-- The JSON output file is written to: BASE_DIR/../../data_from_v3_to_v4/v4_exported_to_v5.json
-  Example: /usr/local/django_projects/data_from_v3_to_v4/v4_exported_to_v5.json
+- The JSON output file is written to: BASE_DIR/../../data_from_v4_to_v5/v4_exported_to_v5.json
+  Example: /usr/local/django_projects/data_from_v4_to_v5/v4_exported_to_v5.json
 - This script can be rerun as many times as required; the JSON file is regenerated
   each time.
 
@@ -489,7 +489,7 @@ class Command(BaseCommand):
             options: The options dict passed by Django's management command framework.
         """
         # Output directory and file name for the exported JSON
-        output_directory = "../../data_from_v3_to_v4/"
+        output_directory = "../../data_from_v4_to_v5/"
         output_json_file = "v4_exported_to_v5.json"
 
         # Create output directory if it does not already exist
