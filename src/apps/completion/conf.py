@@ -42,7 +42,6 @@ class CompletionConfig(BaseSettings):
         description=_("Enable automatic conversion of URLs into links in overlays."),
     )
 
-
     use_speaker: bool = Field(
         default=defaults.USE_SPEAKER,
         description=_("Enable or disable the Speakers module."),

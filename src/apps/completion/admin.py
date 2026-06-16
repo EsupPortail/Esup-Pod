@@ -10,6 +10,7 @@ from src.apps.completion.models import (
     Overlay,
 )
 
+
 @admin.register(Contributor)
 class ContributorAdmin(admin.ModelAdmin):
     """Admin interface for Contributor model."""
@@ -42,5 +43,3 @@ class OverlayAdmin(admin.ModelAdmin):
 
     list_display = ("title", "video", "time_start", "time_end")
     search_fields = ("title", "video__title")
-
-

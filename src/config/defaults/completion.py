@@ -3,6 +3,7 @@ Esup-Pod - Completion default configuration.
 """
 
 from django.utils.translation import gettext_lazy as _
+
 # Contributor roles (can be overridden by the instance)
 ROLE_CHOICES = (
     ("actor", _("Actor")),
@@ -32,4 +33,3 @@ USE_SPEAKER = False
 
 # Make the first name of speakers mandatory
 REQUIRED_SPEAKER_FIRSTNAME = True
-

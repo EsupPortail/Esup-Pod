@@ -83,7 +83,9 @@ class DocumentViewSet(viewsets.ModelViewSet):
             ):
                 return Response(
                     {
-                        "detail": _("You do not have permission to access this private document.")
+                        "detail": _(
+                            "You do not have permission to access this private document."
+                        )
                     },
                     status=status.HTTP_403_FORBIDDEN,
                 )
