@@ -81,11 +81,8 @@ Managed via `CompletionConfig` (pydantic-settings in `src/apps/completion/conf.p
 | `KIND_CHOICES`               | (tuple)       | Available kinds for subtitle tracks.                        |
 | `DEFAULT_LANG_TRACK`         | `"fr"`        | Default language for new subtitle tracks.                   |
 | `LINK_SUPERPOSITION`         | `False`       | Enable automatic conversion of URLs into links in overlays. |
-| `ACTIVE_MODEL_ENRICH`        | `False`       | Enable voice recognition model enrichment (Kaldi/VOSK).     |
 | `USE_SPEAKER`                | `False`       | Enable or disable the Speakers module.                      |
 | `REQUIRED_SPEAKER_FIRSTNAME` | `True`        | Make the first name of a speaker mandatory.                 |
-| `TRANSCRIPTION_TYPE`         | `"WHISPER"`   | Type of transcription model (e.g. WHISPER, VOSK).           |
-| `MODEL_COMPILE_DIR`          | `""`          | Directory to compile the Kaldi/VOSK model.                  |
 
 ---
 
@@ -102,7 +99,6 @@ Key test files:
 - `test_models.py`: Unit tests for models (validation, logic).
 - `test_serializers.py`: Tests for specific validation (time checking, URL conversion).
 - `test_permissions.py`: Ensures only video owners can modify related completion objects.
-- `test_tasks.py`: Mocked tests for the Celery model enrichment queue processing.
 
 ---
 

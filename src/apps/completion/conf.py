@@ -42,10 +42,6 @@ class CompletionConfig(BaseSettings):
         description=_("Enable automatic conversion of URLs into links in overlays."),
     )
 
-    active_model_enrich: bool = Field(
-        default=defaults.ACTIVE_MODEL_ENRICH,
-        description=_("Enable voice recognition model enrichment (Kaldi/VOSK)."),
-    )
 
     use_speaker: bool = Field(
         default=defaults.USE_SPEAKER,
@@ -56,22 +52,6 @@ class CompletionConfig(BaseSettings):
         default=defaults.REQUIRED_SPEAKER_FIRSTNAME,
         description=_("Make the first name of a speaker mandatory."),
     )
-
-    transcription_type: str = Field(
-        default=defaults.TRANSCRIPTION_TYPE,
-        description=_("Type of transcription model (e.g. WHISPER, VOSK)."),
-    )
-
-    transcription_model_param: Dict[str, Any] = Field(
-        default_factory=lambda: defaults.TRANSCRIPTION_MODEL_PARAM,
-        description=_("Dictionary of parameters for the transcription model."),
-    )
-
-    model_compile_dir: str = Field(
-        default=defaults.MODEL_COMPILE_DIR,
-        description=_("Directory to compile the Kaldi model."),
-    )
-
     model_config = SettingsConfigDict(
         case_sensitive=False,
     )

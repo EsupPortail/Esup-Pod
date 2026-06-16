@@ -2,22 +2,23 @@
 Esup-Pod - Completion default configuration.
 """
 
+from django.utils.translation import gettext_lazy as _
 # Contributor roles (can be overridden by the instance)
 ROLE_CHOICES = (
-    ("actor", "Actor"),
-    ("author", "Author"),
-    ("consultant", "Consultant"),
-    ("contributor", "Contributor"),
-    ("director", "Director"),
-    ("speaker", "Speaker"),
-    ("technician", "Technician"),
-    ("voice-over", "Voice-over"),
+    ("actor", _("Actor")),
+    ("author", _("Author")),
+    ("consultant", _("Consultant")),
+    ("contributor", _("Contributor")),
+    ("director", _("Director")),
+    ("speaker", _("Speaker")),
+    ("technician", _("Technician")),
+    ("voice-over", _("Voice-over")),
 )
 
 # Subtitle track types
 KIND_CHOICES = (
-    ("subtitles", "Subtitles"),
-    ("captions", "Captions"),
+    ("subtitles", _("Subtitles")),
+    ("captions", _("Captions")),
 )
 
 # Default track language

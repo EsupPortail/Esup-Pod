@@ -7,3 +7,15 @@ Values defined here override the default values.
 To enable an option, uncomment the line and change the value.
 The configuration prefix (e.g., POD_ or COMPLETION_), previously required in older versions, is no longer necessary.
 """
+
+# Default track language
+# DEFAULT_LANG_TRACK = "fr"
+
+# Enable automatic conversion of URLs into links in overlays
+# LINK_SUPERPOSITION = False
+
+# Enable or disable the Speakers module
+# USE_SPEAKER = False
+
+# Make the first name of speakers mandatory
+# REQUIRED_SPEAKER_FIRSTNAME = True

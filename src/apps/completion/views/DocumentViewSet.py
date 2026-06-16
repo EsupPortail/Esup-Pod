@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from django.http import FileResponse
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 
 from src.apps.completion.models import Document
@@ -36,12 +37,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
         if video and not (
             user == video.owner
             or user.is_superuser
-            or user.is_staff
             or user in video.co_owners.all()
             or user.has_perm("completion.add_document")
         ):
             raise PermissionDenied(
-                "You do not have permission to add a document to this video."
+                _("You do not have permission to add a document to this video.")
             )
         serializer.save()
 
@@ -52,11 +52,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
         user = self.request.user
         qs = super().get_queryset()
 
-        if user.is_staff or user.is_superuser:
+        if user.is_superuser:
             return qs
 
         if user.is_authenticated:
-            # Can see public documents, OR documents of videos they own/co-own
+            # Can see public documents, AND documents of videos they own/co-own
             return qs.filter(
                 Q(is_private=False) | Q(video__owner=user) | Q(video__co_owners=user)
             ).distinct()
@@ -75,24 +75,22 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
         # Check privacy
         if document.is_private:
-            # Need to be owner, co-owner or staff
             user = request.user
             if not (
-                user.is_staff
-                or user.is_superuser
+                user.is_superuser
                 or user == document.video.owner
                 or user in document.video.co_owners.all()
             ):
                 return Response(
                     {
-                        "detail": "You do not have permission to access this private document."
+                        "detail": _("You do not have permission to access this private document.")
                     },
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
         if not document.file:
             return Response(
-                {"detail": "No file attached."}, status=status.HTTP_404_NOT_FOUND
+                {"detail": _("No file attached.")}, status=status.HTTP_404_NOT_FOUND
             )
 
         response = FileResponse(document.file)

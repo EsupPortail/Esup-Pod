@@ -4,6 +4,7 @@ Esup-Pod - Overlay viewset.
 
 from rest_framework import viewsets, permissions, filters
 from rest_framework.exceptions import PermissionDenied
+from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 
 from src.apps.completion.models import Overlay
@@ -32,11 +33,10 @@ class OverlayViewSet(viewsets.ModelViewSet):
         if video and not (
             user == video.owner
             or user.is_superuser
-            or user.is_staff
             or user in video.co_owners.all()
             or user.has_perm("completion.add_overlay")
         ):
             raise PermissionDenied(
-                "You do not have permission to add an overlay to this video."
+                _("You do not have permission to add an overlay to this video.")
             )
         serializer.save()
