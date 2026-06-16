@@ -27,7 +27,9 @@ class AdminActionTests(TestCase):
 
     def setUp(self):
         """Set up the test environment."""
-        self.user = User.objects.create_superuser(username="admin", password="password")
+        self.user = User.objects.create_superuser(
+            username="admin", password="password"  # nosec
+        )
         self.video = Video.objects.create(
             title="Test Video",
             owner=self.user,

@@ -20,16 +20,20 @@ class CompletionPermissionsTests(APITestCase):
     def setUp(self):
         """Set up test environment."""
         # Users
-        self.user_owner = User.objects.create_user(username="owner", password="password")
-        self.user_co_owner = User.objects.create_user(
-            username="co_owner", password="password"
+        self.user_owner = User.objects.create_user(
+            username="owner", password="password"  # nosec
         )
-        self.user_other = User.objects.create_user(username="other", password="password")
+        self.user_co_owner = User.objects.create_user(
+            username="co_owner", password="password"  # nosec
+        )
+        self.user_other = User.objects.create_user(
+            username="other", password="password"  # nosec
+        )
         self.user_staff = User.objects.create_user(
-            username="staff", password="password", is_staff=True
+            username="staff", password="password", is_staff=True  # nosec
         )
         self.user_superuser = User.objects.create_superuser(
-            username="admin", password="password"
+            username="admin", password="password"  # nosec
         )
 
         # Video

@@ -17,7 +17,9 @@ class OverlaySerializerTests(TestCase):
 
     def setUp(self):
         """Set up the test environment."""
-        self.user = User.objects.create_user(username="owner", password="password")
+        self.user = User.objects.create_user(
+            username="owner", password="password"  # nosec
+        )
         self.video = Video.objects.create(
             title="Test Video",
             owner=self.user,

@@ -10,7 +10,6 @@ The **Completion** application extends the Pod V5 video ecosystem by providing a
 | **Contributors**         | Manage individuals (speakers, directors, etc.) involved in video production.       |
 | **Contributions**        | Link contributors to specific videos with distinct roles (actor, author, etc.).    |
 | **Overlays**             | Add contextual time-based overlays (pop-ups, links) on top of the video player.    |
-| **Model Enrichment**     | Extract voice data from subtitles to train/enrich a Kaldi/VOSK transcription model.|
 
 ## Data Models
 
@@ -20,7 +19,6 @@ The **Completion** application extends the Pod V5 video ecosystem by providing a
 | **Contribution**     | Association between a Video and a Contributor, including the specific role.           |
 | **Document**         | An auxiliary file attached to a video for viewers to download.                        |
 | **Overlay**          | Content displayed at specific timestamps (`time_start` to `time_end`) over the video. |
-| **EnrichModelQueue** | A queue item for Kaldi/VOSK model enrichment tasks triggered from subtitles.          |
 
 ## API Endpoints
 

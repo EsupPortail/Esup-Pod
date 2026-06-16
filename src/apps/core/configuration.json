@@ -643,54 +643,6 @@
               },
               "pod_version_init": "3.1.0"
             },
-            "FFMPEG_CMD": {
-              "default_value": "ffmpeg",
-              "description": {
-                "en": [
-                  "System command for FFmpeg."
-                ],
-                "fr": [
-                  "Commande système pour FFmpeg."
-                ]
-              },
-              "pod_version_init": "3.1.0"
-            },
-            "FFPROBE_CMD": {
-              "default_value": "ffprobe",
-              "description": {
-                "en": [
-                  "System command for FFprobe."
-                ],
-                "fr": [
-                  "Commande système pour FFprobe."
-                ]
-              },
-              "pod_version_init": "3.1.0"
-            },
-            "FFMPEG_CRF": {
-              "default_value": 20,
-              "description": {
-                "en": [
-                  "FFmpeg Constant Rate Factor (quality)."
-                ],
-                "fr": [
-                  "Valeur CRF pour l’encodage FFmpeg (Qualité)."
-                ]
-              },
-              "pod_version_init": "3.1.0"
-            },
-            "FFMPEG_NB_THREADS": {
-              "default_value": "slow",
-              "description": {
-                "en": [
-                  "FFmpeg speed/quality preset."
-                ],
-                "fr": [
-                  "Preset de vitesse/qualité FFmpeg."
-                ]
-              },
-              "pod_version_init": "3.1.0"
-            },
             "FFPROBE_GET_INFO": {
               "default_value": "high",
               "description": {
@@ -1170,18 +1122,6 @@
               },
               "pod_version_init": "5.0.0"
             },
-            "ACTIVE_MODEL_ENRICH": {
-              "default_value": false,
-              "description": {
-                "en": [
-                  "Enable voice recognition model enrichment (Kaldi/VOSK)."
-                ],
-                "fr": [
-                  "Active l'enrichissement du modèle de reconnaissance vocale (Kaldi/VOSK)."
-                ]
-              },
-              "pod_version_init": "5.0.0"
-            },
             "USE_SPEAKER": {
               "default_value": false,
               "description": {
@@ -1202,42 +1142,6 @@
                 ],
                 "fr": [
                   "Rend le prénom des intervenants obligatoire."
-                ]
-              },
-              "pod_version_init": "5.0.0"
-            },
-            "TRANSCRIPTION_TYPE": {
-              "default_value": "WHISPER",
-              "description": {
-                "en": [
-                  "Type of transcription model (e.g. WHISPER, VOSK)."
-                ],
-                "fr": [
-                  "Type de modèle de transcription (par ex. WHISPER, VOSK)."
-                ]
-              },
-              "pod_version_init": "5.0.0"
-            },
-            "TRANSCRIPTION_MODEL_PARAM": {
-              "default_value": {},
-              "description": {
-                "en": [
-                  "Dictionary of parameters for the transcription model."
-                ],
-                "fr": [
-                  "Dictionnaire de paramètres pour le modèle de transcription."
-                ]
-              },
-              "pod_version_init": "5.0.0"
-            },
-            "MODEL_COMPILE_DIR": {
-              "default_value": "",
-              "description": {
-                "en": [
-                  "Directory to compile the Kaldi model."
-                ],
-                "fr": [
-                  "Répertoire de compilation du modèle Kaldi."
                 ]
               },
               "pod_version_init": "5.0.0"

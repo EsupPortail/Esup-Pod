@@ -147,18 +147,6 @@ Video application configuration
 * `DEFAULT_LICENSE`
   > default value: ``
   >> Default license for new videos.
-* `FFMPEG_CMD`
-  > default value: `ffmpeg`
-  >> System command for FFmpeg.
-* `FFMPEG_CRF`
-  > default value: `20`
-  >> FFmpeg Constant Rate Factor (quality).
-* `FFMPEG_NB_THREADS`
-  > default value: `slow`
-  >> FFmpeg speed/quality preset.
-* `FFPROBE_CMD`
-  > default value: `ffprobe`
-  >> System command for FFprobe.
 * `FFPROBE_GET_INFO`
   > default value: `high`
   >> Detail level for metadata extraction.
@@ -258,9 +246,7 @@ Core application configuration
 
 Completion application configuration
 
-* `ACTIVE_MODEL_ENRICH`
-  > default value: `False`
-  >> Enable voice recognition model enrichment (Kaldi/VOSK).
+
 * `DEFAULT_LANG_TRACK`
   > default value: `fr`
   >> Default language for new subtitle tracks.
@@ -270,21 +256,13 @@ Completion application configuration
 * `LINK_SUPERPOSITION`
   > default value: `False`
   >> Enable automatic conversion of URLs into links in overlays.
-* `MODEL_COMPILE_DIR`
-  > default value: ``
-  >> Directory to compile the Kaldi model.
 * `REQUIRED_SPEAKER_FIRSTNAME`
   > default value: `True`
   >> Make the first name of a speaker mandatory.
 * `ROLE_CHOICES`
   > default value: `[['actor', 'Actor'], ['author', 'Author'], ['consultant', 'Consultant'], ['contributor', 'Contributor'], ['director', 'Director'], ['speaker', 'Speaker'], ['technician', 'Technician'], ['voice-over', 'Voice-over']]`
   >> Available roles for contributors.
-* `TRANSCRIPTION_MODEL_PARAM`
-  > default value: `{}`
-  >> Dictionary of parameters for the transcription model.
-* `TRANSCRIPTION_TYPE`
-  > default value: `WHISPER`
-  >> Type of transcription model (e.g. WHISPER, VOSK).
+
 * `USE_SPEAKER`
   > default value: `False`
   >> Enable or disable the Speakers module.

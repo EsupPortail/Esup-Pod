@@ -26,16 +26,9 @@ DEFAULT_LANG_TRACK = "fr"
 # Enable automatic conversion of URLs into links in overlays
 LINK_SUPERPOSITION = False
 
-# Enable voice recognition model enrichment (Kaldi/VOSK)
-ACTIVE_MODEL_ENRICH = False
-
 # Enable or disable the Speakers module
 USE_SPEAKER = False
 
 # Make the first name of speakers mandatory
 REQUIRED_SPEAKER_FIRSTNAME = True
 
-# --- Transcription settings (only if ACTIVE_MODEL_ENRICH = True) ---
-TRANSCRIPTION_TYPE = "WHISPER"
-TRANSCRIPTION_MODEL_PARAM = {}
-MODEL_COMPILE_DIR = ""

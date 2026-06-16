@@ -51,17 +51,6 @@ A time-bound pop-up or textual overlay displayed over the video player (`src/app
 
 *Validation:* The `clean` and `save` methods ensure `time_end` is strictly greater than `time_start`. If `LINK_SUPERPOSITION` is enabled in the configuration, URLs within `content` are automatically converted to HTML links.
 
-### EnrichModelQueue
-
-Queue for Kaldi/VOSK transcription model enrichment (`src/apps/completion/models/EnrichModelQueue.py`).
-
-| Field          | Type         | Description                                            |
-| :------------- | :----------- | :----------------------------------------------------- |
-| `subtitle`     | FK → Subtitle| The subtitle providing the text data.                  |
-| `date_added`   | DateTimeField| When the item was added to the queue.                  |
-| `is_processed` | BooleanField | Flag indicating if processing is completed.            |
-| `info`         | CharField    | Processing outcome or error messages.                  |
-
 ---
 
 ## 2. Access Control & Permissions
@@ -82,24 +71,7 @@ Located in `src/apps/completion/serializers/`.
 
 ---
 
-## 4. Background Tasks (Celery)
-
-Located in `src/apps/completion/tasks.py`.
-
-### `process_enrich_model_queue`
-
-This Celery task runs asynchronously to process pending `EnrichModelQueue` items:
-
-1. Filters items where `is_processed=False`.
-2. Uses the `webvtt-py` library to parse `.vtt` subtitles.
-3. Cleans and extracts text segments.
-4. Generates a phonetic dictionary (e.g., using `espeak` and Python's `re` module).
-5. Appends the new words and their phonemes to the Kaldi/VOSK model dictionaries (`lexicon.txt` and `corpus.txt`).
-6. Triggers the Kaldi compilation script (`compile_graph.sh` or `vosk_compile.sh`) based on the `TRANSCRIPTION_TYPE`.
-
----
-
-## 5. Configuration Settings
+## 4. Configuration Settings
 
 Managed via `CompletionConfig` (pydantic-settings in `src/apps/completion/conf.py`).
 

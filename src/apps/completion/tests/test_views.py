@@ -18,7 +18,9 @@ class CompletionViewsTests(APITestCase):
 
     def setUp(self):
         """Set up the test environment."""
-        self.user = User.objects.create_user(username="owner", password="password")
+        self.user = User.objects.create_user(
+            username="owner", password="password"  # nosec
+        )
         self.client.force_authenticate(user=self.user)
 
         self.video1 = Video.objects.create(title="Video 1", owner=self.user)

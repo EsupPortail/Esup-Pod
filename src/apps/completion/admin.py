@@ -8,10 +8,7 @@ from src.apps.completion.models import (
     Contribution,
     Document,
     Overlay,
-    EnrichModelQueue,
 )
-from src.apps.video.admin import SubtitleAdmin
-
 
 @admin.register(Contributor)
 class ContributorAdmin(admin.ModelAdmin):
@@ -47,40 +44,3 @@ class OverlayAdmin(admin.ModelAdmin):
     search_fields = ("title", "video__title")
 
 
-@admin.register(EnrichModelQueue)
-class EnrichModelQueueAdmin(admin.ModelAdmin):
-    """Admin interface for EnrichModelQueue model."""
-
-    list_display = ("track", "status", "added_at")
-    list_filter = ("status",)
-    actions = ["trigger_processing"]
-
-    @admin.action(description="Trigger Processing (Celery)")
-    def trigger_processing(self, request, queryset):
-        """Action to trigger processing."""
-        from src.apps.completion.tasks import process_enrich_model_queue
-
-        queryset.update(status="pending")
-        process_enrich_model_queue.delay()
-        self.message_user(request, "Task triggered successfully.")
-
-
-@admin.action(description="Enrich with selected subtitles (Kaldi/VOSK)")
-def enrich_model_action(modeladmin, request, queryset):
-    """Action to queue selected subtitles for model enrichment."""
-    from src.apps.completion.models import EnrichModelQueue
-    from src.apps.completion.tasks import process_enrich_model_queue
-
-    count = 0
-    for track in queryset:
-        EnrichModelQueue.objects.get_or_create(
-            video=track.video, track=track, defaults={"status": "pending"}
-        )
-        count += 1
-    process_enrich_model_queue.delay()
-    modeladmin.message_user(request, f"{count} subtitles queued for model enrichment.")
-
-
-SubtitleAdmin.actions = list(getattr(SubtitleAdmin, "actions", [])) or []
-if enrich_model_action not in SubtitleAdmin.actions:
-    SubtitleAdmin.actions.append(enrich_model_action)
