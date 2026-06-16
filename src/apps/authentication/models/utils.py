@@ -8,20 +8,17 @@ configuration from conf.py.
 from django.contrib.auth.models import User
 
 from ..conf import auth_settings
-from ..constants import AFFILIATION, AUTH_TYPE, DEFAULT_AFFILIATION, ESTABLISHMENTS
+from ..constants import AFFILIATION, AUTH_TYPE, ESTABLISHMENTS
 
 __all__ = [
     "AUTH_TYPE",
     "AFFILIATION",
-    "DEFAULT_AFFILIATION",
-    "AFFILIATION_STAFF",
     "ESTABLISHMENTS",
     "HIDE_USERNAME",
     "get_name",
 ]
 
 HIDE_USERNAME = auth_settings.hide_username
-AFFILIATION_STAFF = auth_settings.affiliation_staff
 SECRET_KEY = ""
 
 

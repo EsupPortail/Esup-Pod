@@ -96,9 +96,7 @@ class FileCleanupTests(TestCase):
         subtitle_file = SimpleUploadedFile(
             "subtitle.vtt", b"WEBVTT\n\n00:00.000 --> 00:01.000\nHello"
         )
-        subtitle = Subtitle.objects.create(
-            video=video, language=Subtitle.Language.FRENCH, file=subtitle_file
-        )
+        subtitle = Subtitle.objects.create(video=video, language="fr", file=subtitle_file)
         file_path = subtitle.file.path
         self.assertTrue(os.path.exists(file_path))
 

@@ -23,6 +23,7 @@ Each application has its own dedicated documentation with overview and technical
 ### Infrastructure & Deployment
 
 - **[Deployment Guide](deployment/README.md)**: Docker architecture, environment setup, and deployment strategies.
+- **[Data Migration (V4 to V5)](deployment/migration_v4_to_v5.md)**: Instructions and SQL verification queries for migrating data from Pod V4 to V5.
 - **[CI/CD & Testing](CI_CD.md)**: GitHub Actions pipelines, local testing, and quality checks.
 
 ---
