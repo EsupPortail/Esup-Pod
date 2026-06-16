@@ -228,12 +228,12 @@ class CompletionPermissionsTests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_document_download_private_by_staff(self):
-        """Staff can download a private document."""
+    def test_document_download_private_by_staff_denied(self):
+        """Staff cannot download a private document (bypass removed)."""
         self.client.force_authenticate(user=self.user_staff)
         url = reverse("document-download", kwargs={"pk": self.private_document.id})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     # -----------------------
     # Overlay Tests

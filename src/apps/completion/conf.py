@@ -4,7 +4,7 @@ Esup-Pod - Completion configuration.
 Typed and validated configuration for the completion app using pydantic-settings.
 """
 
-from typing import Tuple, Type, Dict, Any
+from typing import Tuple, Type
 
 from django.utils.translation import gettext as _
 from pydantic import Field
