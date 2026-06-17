@@ -36,16 +36,16 @@ class IsVideoOwnerOrCoOwnerOrHasPerm(permissions.BasePermission):
 class CanManageContribution(IsVideoOwnerOrCoOwnerOrHasPerm):
     """Contribution: owner/co-owner + staff/superuser or has perm."""
 
-    perm_codename = "completion.add_contribution"
+    perm_codename = "completion.add_contribution_anywhere"
 
 
 class CanManageDocument(IsVideoOwnerOrCoOwnerOrHasPerm):
     """Document: owner/co-owner + staff/superuser or has perm."""
 
-    perm_codename = "completion.add_document"
+    perm_codename = "completion.add_document_anywhere"
 
 
 class CanManageOverlay(IsVideoOwnerOrCoOwnerOrHasPerm):
     """Overlay: owner/co-owner + staff/superuser or has perm."""
 
-    perm_codename = "completion.add_overlay"
+    perm_codename = "completion.add_overlay_anywhere"

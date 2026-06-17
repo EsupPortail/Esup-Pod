@@ -30,6 +30,9 @@ class Document(models.Model):
 
         verbose_name = _("Document")
         verbose_name_plural = _("Documents")
+        permissions = [
+            ("add_document_anywhere", _("Can add/manage documents on ANY video")),
+        ]
 
     def __str__(self):
         return f"{self.title} on {self.video}"

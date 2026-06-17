@@ -30,6 +30,9 @@ class Overlay(models.Model):
 
         verbose_name = _("Overlay")
         verbose_name_plural = _("Overlays")
+        permissions = [
+            ("add_overlay_anywhere", _("Can add/manage overlays on ANY video")),
+        ]
 
     def __str__(self):
         return f"{self.title} ({self.time_start}s - {self.time_end}s)"

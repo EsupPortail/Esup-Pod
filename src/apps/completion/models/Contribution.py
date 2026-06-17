@@ -47,6 +47,9 @@ class Contribution(models.Model):
         verbose_name = _("Contribution")
         verbose_name_plural = _("Contributions")
         unique_together = ("video", "contributor", "role")
+        permissions = [
+            ("add_contribution_anywhere", _("Can add/manage contributions on ANY video")),
+        ]
 
     def __str__(self):
         return f"{self.contributor} - {self.get_role_display()} on {self.video}"

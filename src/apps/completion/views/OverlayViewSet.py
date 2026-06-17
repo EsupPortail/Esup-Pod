@@ -34,7 +34,7 @@ class OverlayViewSet(viewsets.ModelViewSet):
             user == video.owner
             or user.is_superuser
             or user in video.co_owners.all()
-            or user.has_perm("completion.add_overlay")
+            or user.has_perm("completion.add_overlay_anywhere")
         ):
             raise PermissionDenied(
                 _("You do not have permission to add an overlay to this video.")

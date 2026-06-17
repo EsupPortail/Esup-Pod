@@ -38,7 +38,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
             user == video.owner
             or user.is_superuser
             or user in video.co_owners.all()
-            or user.has_perm("completion.add_document")
+            or user.has_perm("completion.add_document_anywhere")
         ):
             raise PermissionDenied(
                 _("You do not have permission to add a document to this video.")
