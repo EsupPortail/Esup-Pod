@@ -20,20 +20,20 @@ class VideoHyperlink(models.Model):
         "video.Video",
         on_delete=models.CASCADE,
         related_name="hyperlinks",
-        verbose_name=_("Vidéo"),
+        verbose_name=_("Video"),
     )
     url = models.URLField(max_length=500, verbose_name=_("URL"), default="")
-    text = models.CharField(max_length=255, verbose_name=_("Texte affiché"), default="")
-    icon = models.CharField(
-        max_length=100, blank=True, null=True, verbose_name=_("Icône")
-    )
+    text = models.CharField(max_length=255, verbose_name=_("Displayed text"), default="")
+    icon = models.CharField(max_length=100, blank=True, null=True, verbose_name=_("Icon"))
     position = models.CharField(
         max_length=50, blank=True, null=True, verbose_name=_("Position (CSS)")
     )
     time_start = models.PositiveIntegerField(
-        verbose_name=_("Début (secondes)"), default=0
+        verbose_name=_("Start time (seconds)"), default=0
     )
-    time_end = models.PositiveIntegerField(verbose_name=_("Fin (secondes)"), default=0)
+    time_end = models.PositiveIntegerField(
+        verbose_name=_("End time (seconds)"), default=0
+    )
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 

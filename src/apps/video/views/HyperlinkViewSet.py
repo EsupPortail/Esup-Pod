@@ -98,3 +98,18 @@ class VideoHyperlinkViewSet(viewsets.ModelViewSet):
         hyperlink = get_object_or_404(VideoHyperlink, id=hyperlink_id, video=video)
         hyperlink.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=["patch", "put"])
+    def edit_hyperlink(self, request, video_slug=None, hyperlink_id=None):
+        """Edits a specific hyperlink by UUID for the given video slug."""
+        video = get_object_or_404(Video, slug=video_slug)
+        self._check_video_permission(video, request)
+        hyperlink = get_object_or_404(VideoHyperlink, id=hyperlink_id, video=video)
+
+        # Determine if it's a partial update based on the HTTP method
+        partial = request.method == "PATCH"
+        serializer = self.get_serializer(hyperlink, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data)
