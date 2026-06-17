@@ -9,6 +9,7 @@ from .Comment import Comment
 from .Vote import Vote
 from .Type import Type
 from .Discipline import Discipline
+from .VideoHyperlink import VideoHyperlink
 from .Language import Language
 from .License import License
 from .Cursus import Cursus
@@ -21,6 +22,7 @@ __all__ = [
     "Vote",
     "Type",
     "Discipline",
+    "VideoHyperlink",
     "Language",
     "License",
     "Cursus",
