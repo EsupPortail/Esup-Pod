@@ -5,8 +5,25 @@ Esup-Pod - Detailed user serializer.
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
+from src.apps.authentication.models import PodRole
 
 User = get_user_model()
+
+
+class PodRoleSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the PodRole model.
+    """
+    class Meta:
+        model = PodRole
+        fields = [
+            "id",
+            "name",
+            "description",
+            "scope",
+            "can_delete_video",
+            "can_edit_video",
+        ]
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -17,6 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
     affiliation = serializers.SerializerMethodField(method_name="get_affiliation")
     establishment = serializers.SerializerMethodField(method_name="get_establishment")
     userpicture = serializers.SerializerMethodField(method_name="get_userpicture")
+    pod_roles = serializers.SerializerMethodField(method_name="get_pod_roles")
 
     class Meta:
         """User serializer metadata."""
@@ -33,6 +51,7 @@ class UserSerializer(serializers.ModelSerializer):
             "affiliation",
             "establishment",
             "userpicture",
+            "pod_roles",
         ]
 
     @extend_schema_field(serializers.CharField(allow_null=True))
@@ -54,3 +73,10 @@ class UserSerializer(serializers.ModelSerializer):
         if hasattr(obj, "owner") and obj.owner.userpicture:
             return obj.owner.userpicture.url
         return None
+
+    @extend_schema_field(PodRoleSerializer(many=True))
+    def get_pod_roles(self, obj):
+        """Retrieves the list of custom roles assigned to the user."""
+        if hasattr(obj, "owner"):
+            return PodRoleSerializer(obj.owner.pod_roles.all(), many=True).data
+        return []

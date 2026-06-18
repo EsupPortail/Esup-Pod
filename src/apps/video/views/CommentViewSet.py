@@ -131,17 +131,19 @@ class CommentViewSet(viewsets.GenericViewSet):
             parent=parent,
             direct_parent=direct_parent,
         )
+        author_picture = None
+        if comment.author and hasattr(comment.author, "owner") and comment.author.owner and comment.author.owner.userpicture:
+            try:
+                author_picture = comment.author.owner.userpicture.url
+            except ValueError:
+                pass
+
         return Response(
             {
                 "id": comment.id,
                 "author_name": f"{comment.author.last_name} {comment.author.first_name}".strip()
                 or comment.author.username,
-                "author_picture": (
-                    comment.author.owner.userpicture.url
-                    if hasattr(comment.author, "owner")
-                    and comment.author.owner.userpicture
-                    else None
-                ),
+                "author_picture": author_picture,
                 "content": comment.content,
                 "added": comment.added,
             },

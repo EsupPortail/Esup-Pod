@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from .AccessGroup import AccessGroup
 from .GroupSite import GroupSite
 from .Owner import Owner
+from .PodRole import PodRole
 from .utils import (
     AFFILIATION,
     AUTH_TYPE,
@@ -35,4 +36,5 @@ __all__ = [
     "Owner",
     "AccessGroup",
     "GroupSite",
+    "PodRole",
 ]

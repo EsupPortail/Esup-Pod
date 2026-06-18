@@ -55,6 +55,48 @@ class VideoAdmin(admin.ModelAdmin):
 
     file_size_mb.short_description = "Size (MB)"
 
+    def has_delete_permission(self, request, obj=None):
+        """
+        Dynamically checks for deletion rights based on PodRoles and Establishment.
+        """
+        if request.user.is_superuser:
+            return True
+
+        if obj:
+            try:
+                owner_profile = request.user.owner
+                for role in owner_profile.pod_roles.filter(can_delete_video=True):
+                    if role.scope == "GLOBAL":
+                        return True
+                    if role.scope == "ESTABLISHMENT" and hasattr(obj.owner, "owner"):
+                        if obj.owner.owner.establishment == owner_profile.establishment:
+                            return True
+            except Exception:
+                pass
+        
+        return super().has_delete_permission(request, obj)
+
+    def has_change_permission(self, request, obj=None):
+        """
+        Dynamically checks for editing rights based on PodRoles and Establishment.
+        """
+        if request.user.is_superuser:
+            return True
+
+        if obj:
+            try:
+                owner_profile = request.user.owner
+                for role in owner_profile.pod_roles.filter(can_edit_video=True):
+                    if role.scope == "GLOBAL":
+                        return True
+                    if role.scope == "ESTABLISHMENT" and hasattr(obj.owner, "owner"):
+                        if obj.owner.owner.establishment == owner_profile.establishment:
+                            return True
+            except Exception:
+                pass
+        
+        return super().has_change_permission(request, obj)
+
 
 @admin.register(Type)
 class TypeAdmin(admin.ModelAdmin):

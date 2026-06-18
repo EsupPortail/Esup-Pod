@@ -119,6 +119,11 @@ class CollectionConfig(BaseSettings):
         description="Number of collections per page for pagination.",
         json_schema_extra={"public": True},
     )
+    default_collection_order_field: str = Field(
+        default=defaults.DEFAULT_COLLECTION_ORDER_FIELD,
+        description="Default ordering field for collections.",
+        json_schema_extra={"public": True},
+    )
 
     model_config = SettingsConfigDict(
         case_sensitive=False,

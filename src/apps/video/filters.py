@@ -33,64 +33,75 @@ class VideoFilterSet(django_filters.FilterSet):
     owner__username = MultiValueCharFilter(
         field_name="owner__username",
         lookup_expr="in",
-        label="Owner username(s) — multi-value supported",
+        label="Owner username(s)",
+        help_text="Filter videos by one or more owner usernames. Multiple values can be comma-separated or repeated, e.g. ?owner__username=user1,user2",
     )
 
     # --- Status & Visibility ---
     status = django_filters.MultipleChoiceFilter(
         choices=Video.Status.choices,
-        label="Publication status — multi-value supported (PU, DR, RE)",
+        label="Publication status",
+        help_text="Filter videos by publication status. Multiple statuses can be specified. Choices are: PU (Public), DR (Draft), RE (Restricted).",
     )
     is_auth_required = django_filters.BooleanFilter(
         field_name="is_auth_required",
-        label="Requires authentication to view",
+        label="Authentication requirement",
+        help_text="Filter videos based on whether authentication is required to view them (true or false).",
     )
 
     # --- Classification ---
     type__slug = MultiValueCharFilter(
         field_name="type__slug",
         lookup_expr="in",
-        label="Video type slug(s) — multi-value supported",
+        label="Video type slug(s)",
+        help_text="Filter videos by type slug(s). Multiple values are supported, e.g. ?type__slug=course,conference",
     )
     cursus__slug = MultiValueCharFilter(
         field_name="cursus__slug",
         lookup_expr="in",
-        label="Cursus slug(s) — multi-value supported",
+        label="Cursus slug(s)",
+        help_text="Filter videos by cursus slug(s). Multiple values are supported, e.g. ?cursus__slug=l1,l2",
     )
     discipline = django_filters.ModelMultipleChoiceFilter(
         field_name="disciplines",
         queryset=Discipline.objects.all(),
-        label="Discipline ID(s) — multi-value supported",
+        label="Discipline ID(s)",
+        help_text="Filter videos by discipline database ID(s). Multiple values are supported, e.g. ?discipline=1,2",
     )
 
     # --- Tags ---
     tags__name = MultiValueCharFilter(
         field_name="tags__name",
         lookup_expr="in",
-        label="Tag name(s) — multi-value supported",
+        label="Tag name(s)",
+        help_text="Filter videos by tag name(s). Multiple tag names are supported, e.g. ?tags__name=python,django",
     )
     tags__slug = MultiValueCharFilter(
         field_name="tags__slug",
         lookup_expr="in",
-        label="Tag slug(s) — multi-value supported",
+        label="Tag slug(s)",
+        help_text="Filter videos by tag slug(s). Multiple tag slugs are supported, e.g. ?tags__slug=python,django",
     )
 
     # --- Collection ---
     channel = django_filters.NumberFilter(
         field_name="channel_id",
         label="Channel ID",
+        help_text="Filter videos belonging to a specific channel by its database ID.",
     )
 
     # --- Date range ---
     created_at__gte = django_filters.DateTimeFilter(
         field_name="created_at",
         lookup_expr="gte",
-        label="Created after (ISO 8601 datetime)",
+        label="Created after",
+        help_text="Filter videos created on or after this ISO 8601 datetime, e.g. 2026-06-18T10:00:00Z",
     )
     created_at__lte = django_filters.DateTimeFilter(
         field_name="created_at",
         lookup_expr="lte",
-        label="Created before (ISO 8601 datetime)",
+        label="Created before",
+        help_text="Filter videos created on or before this ISO 8601 datetime, e.g. 2026-06-18T12:00:00Z",
     )
 
     class Meta:

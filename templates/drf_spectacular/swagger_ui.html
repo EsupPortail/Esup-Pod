@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% block head %}
+    <title>{{ title|default:"Swagger" }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if favicon_href %}<link rel="icon" href="{{ favicon_href }}">{% endif %}
+    <link rel="stylesheet" href="{{ swagger_ui_css }}">
+    <style>
+      html { box-sizing: border-box; overflow-y: scroll; }
+      *, *:after, *:before { box-sizing: inherit; }
+      body { background: #fafafa; margin: 0; }
+      
+      /* Dev Utility Bar */
+      .dev-utility-bar {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 99999;
+        display: flex;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        padding: 8px 12px;
+        border-radius: 40px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      }
+      .utility-btn {
+        border: none;
+        padding: 8px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 30px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none !important;
+        transition: all 0.2s ease;
+      }
+      .auth-btn {
+        background: #10b981;
+        color: white !important;
+      }
+      .auth-btn:hover {
+        background: #059669;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      }
+      .admin-btn {
+        background: #3b82f6;
+        color: white !important;
+      }
+      .admin-btn:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      }
+      .btn-icon {
+        flex-shrink: 0;
+      }
+    </style>
+    {% endblock head %}
+  </head>
+  <body>
+    {% block body %}
+    <div id="swagger-ui"></div>
+    
+    <!-- Dev Utility Bar -->
+    <div class="dev-utility-bar">
+      <button id="auto-login-btn" class="utility-btn auth-btn">
+        <svg class="btn-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+        </svg>
+        Auto-Login
+      </button>
+      <a href="/admin/" target="_blank" class="utility-btn admin-btn">
+        <svg class="btn-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+        </svg>
+        Django Admin
+      </a>
+    </div>
+
+    <script src="{{ swagger_ui_bundle }}"></script>
+    <script src="{{ swagger_ui_standalone }}"></script>
+    {% if script_url %}
+    <script src="{{ script_url }}"></script>
+    {% else %}
+    <script>
+    {% include template_name_js %}
+    </script>
+    {% endif %}
+
+    <script>
+      function performAutoLogin() {
+        const btn = document.getElementById('auto-login-btn');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerText = 'Connecting...';
+        }
+        fetch('/api/auth/token/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: 'admin',
+            password: 'admin'
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+             throw new Error('Authentication failed');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.access) {
+            if (typeof ui !== 'undefined') {
+              ui.preauthorizeApiKey('jwtAuth', data.access);
+              console.log('Swagger UI authorized with JWT.');
+              if (btn) {
+                btn.style.background = '#059669';
+                btn.innerHTML = `<svg class="btn-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Connected`;
+                setTimeout(() => {
+                  btn.disabled = false;
+                  btn.style.background = '#10b981';
+                  btn.innerHTML = `<svg class="btn-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg> Auto-Login`;
+                }, 2000);
+              }
+            }
+          }
+        })
+        .catch(err => {
+          console.error('Auto-login failed:', err);
+          if (btn) {
+            btn.disabled = false;
+            btn.style.background = '#ef4444';
+            btn.innerText = 'Failed';
+            setTimeout(() => {
+              btn.style.background = '#10b981';
+              btn.innerHTML = `<svg class="btn-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg> Auto-Login`;
+            }, 2000);
+          }
+        });
+      }
+
+      // Auto-run on load after swagger UI is initialized
+      window.addEventListener('load', () => {
+        // Give Swagger UI a split second to setup the global ui variable
+        setTimeout(performAutoLogin, 500);
+        
+        const autoLoginBtn = document.getElementById('auto-login-btn');
+        if (autoLoginBtn) {
+          autoLoginBtn.addEventListener('click', performAutoLogin);
+        }
+      });
+    </script>
+    {% endblock %}
+  </body>
+</html>

@@ -30,6 +30,26 @@ class IsOwnerOrCoOwnerOrChannelCollaborator(permissions.BasePermission):
         if obj.owner == request.user:
             return True
 
+        # Check PodRole permissions dynamically
+        try:
+            owner_profile = request.user.owner
+            if request.method == "DELETE":
+                for role in owner_profile.pod_roles.filter(can_delete_video=True):
+                    if role.scope == "GLOBAL":
+                        return True
+                    if role.scope == "ESTABLISHMENT" and hasattr(obj.owner, "owner"):
+                        if obj.owner.owner.establishment == owner_profile.establishment:
+                            return True
+            elif request.method in ("PUT", "PATCH"):
+                for role in owner_profile.pod_roles.filter(can_edit_video=True):
+                    if role.scope == "GLOBAL":
+                        return True
+                    if role.scope == "ESTABLISHMENT" and hasattr(obj.owner, "owner"):
+                        if obj.owner.owner.establishment == owner_profile.establishment:
+                            return True
+        except Exception:
+            pass
+
         # 3. Restrict editing to staff only: non-staff users cannot edit (as co-owners/collaborators)
         if video_settings.restrict_edit_to_staff and not request.user.is_staff:
             return False

@@ -203,3 +203,13 @@ if not globals().get("CORS_ALLOWED_ORIGINS") and not globals().get(
     warnings.warn(
         "CORS_ALLOWED_ORIGINS is empty. Cross-origin requests will fail.", stacklevel=2
     )
+
+# ==============================================================================
+# TAGULOUS CONFIGURATION
+# ==============================================================================
+SERIALIZATION_MODULES = {
+    "xml": "tagulous.serializers.xml_serializer",
+    "json": "tagulous.serializers.json",
+    "python": "tagulous.serializers.python",
+    "yaml": "tagulous.serializers.pyyaml",
+}

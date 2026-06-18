@@ -76,6 +76,12 @@ class Owner(models.Model):
         related_name="users",
         verbose_name=_("Access Groups"),
     )
+    pod_roles = models.ManyToManyField(
+        "authentication.PodRole",
+        blank=True,
+        related_name="owners",
+        verbose_name=_("Pod Roles"),
+    )
     sites = models.ManyToManyField(Site, related_name="owners")
     accepts_notifications = models.BooleanField(
         verbose_name=_("Accept notifications"),
