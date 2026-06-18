@@ -303,4 +303,3 @@ class VideoSerializer(serializers.ModelSerializer):
             for theme in themes_data:
                 ThemeItem.objects.create(theme=theme, video=video)
         return video
-
