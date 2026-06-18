@@ -9307,7 +9307,7 @@ msgid "%(old)s replaced by %(new)s"
 msgstr "%(old)s remplacé(e) par %(new)s"
 
 #: pod/video/management/commands/check_video_owner_exists.py
-msgid "For information, you will find below the list of reaffected video."
+msgid "For information, you will find below the list of reaffected videos."
 msgstr ""
 "Pour information, vous trouverez ci-dessous la liste des vidéos réaffectées."
 

@@ -2782,7 +2782,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Nom de l’utilisateur propritétaire par défaut des vidéos dont le propriétaire",
+                                    "Nom de l’utilisateur propriétaire par défaut des vidéos dont le propriétaire",
                                     "existant aurait quitté l'établissement (cf. commande check_video_owner_exists)"
                                 ]
                             },

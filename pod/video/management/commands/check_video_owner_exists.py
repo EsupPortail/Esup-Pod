@@ -200,7 +200,7 @@ class Command(BaseCommand):
                     }
                 msg_html += (
                     "<br>\n<p>"
-                    + _("For information, you will find below the list of reaffected video.")
+                    + _("For information, you will find below the list of reaffected videos.")
                     + "</p>"
                 )
 
@@ -247,7 +247,7 @@ class Command(BaseCommand):
                     )
                 if MANAGERS:
                     print(
-                        _("Manager of “%(et)s” notified for %(nb)s reaffected video(s).")
+                        _("Manager(s) of “%(et)s” notified for %(nb)s reaffected video(s).")
                         % {"et": estab, "nb": len(self.all_reaffected_videos[estab])}
                     )
 
