@@ -6,7 +6,7 @@ import os
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from src.apps.video.models import Video, ViewCount, Comment, Subtitle
+from src.apps.video.models import Video, ViewCount, Comment, Subtitle, VideoHyperlink
 from src.apps.encoding.models.EncodingVideo import EncodingVideo
 from src.apps.collection.models.Channel import Channel
 import datetime
@@ -55,6 +55,71 @@ class VideoModelTests(TestCase):
         """Verifies the video's string representation."""
         self.assertEqual(str(self.video), "Model Test Video (Published (Public))")
 
+    def test_create_video_hyperlink(self):
+        """Verifies that a VideoHyperlink can be created and linked to a video."""
+        VideoHyperlink.objects.create(
+            video=self.video,
+            url="https://example.com",
+            text="Example",
+            time_start=10,
+            time_end=30,
+        )
+        self.assertEqual(self.video.hyperlinks.count(), 1)
+        self.assertEqual(self.video.hyperlinks.first().url, "https://example.com")
+        self.assertEqual(self.video.hyperlinks.first().text, "Example")
+
+    def test_video_hyperlink_str(self):
+        """Verifies the string representation of a VideoHyperlink."""
+        self.assertEqual(
+            str(
+                VideoHyperlink.objects.create(
+                    video=self.video,
+                    url="https://example.com",
+                    text="Example",
+                    time_start=10,
+                    time_end=30,
+                )
+            ),
+            "Model Test Video - Example (10s -> 30s)",
+        )
+
+    def test_video_hyperlink_optional_fields(self):
+        """Verifies that icon and position are optional."""
+        hyperlink = VideoHyperlink.objects.create(
+            video=self.video,
+            url="https://example.com",
+            text="No icon",
+            time_start=0,
+            time_end=10,
+        )
+        self.assertIsNone(hyperlink.icon)
+        self.assertIsNone(hyperlink.position)
+
+    def test_video_hyperlink_ordering(self):
+        """Verifies that hyperlinks are ordered by time_start."""
+        VideoHyperlink.objects.create(
+            video=self.video, url="https://b.com", text="B", time_start=20, time_end=40
+        )
+        VideoHyperlink.objects.create(
+            video=self.video, url="https://a.com", text="A", time_start=5, time_end=15
+        )
+        hyperlinks = list(self.video.hyperlinks.all())
+        self.assertEqual(hyperlinks[0].text, "A")
+        self.assertEqual(hyperlinks[1].text, "B")
+
+    def test_video_hyperlink_cascade_delete(self):
+        """Verifies that hyperlinks are deleted when the video is deleted."""
+        VideoHyperlink.objects.create(
+            video=self.video,
+            url="https://example.com",
+            text="Gone",
+            time_start=0,
+            time_end=5,
+        )
+        self.assertEqual(VideoHyperlink.objects.count(), 1)
+        self.video.delete()
+        self.assertEqual(VideoHyperlink.objects.count(), 0)
+
 
 class CommentBasicTests(TestCase):
     """Tests for the Comment model."""
@@ -96,9 +161,7 @@ class FileCleanupTests(TestCase):
         subtitle_file = SimpleUploadedFile(
             "subtitle.vtt", b"WEBVTT\n\n00:00.000 --> 00:01.000\nHello"
         )
-        subtitle = Subtitle.objects.create(
-            video=video, language=Subtitle.Language.FRENCH, file=subtitle_file
-        )
+        subtitle = Subtitle.objects.create(video=video, language="fr", file=subtitle_file)
         file_path = subtitle.file.path
         self.assertTrue(os.path.exists(file_path))
 

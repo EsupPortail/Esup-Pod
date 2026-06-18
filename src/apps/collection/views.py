@@ -231,10 +231,20 @@ class PlaylistViewSet(viewsets.ModelViewSet):
                     "password"
                 ) or self.request.headers.get("X-Playlist-Password")
                 if provided:
-                    from django.contrib.auth.hashers import check_password
+                    from django.contrib.auth.hashers import check_password, make_password
+                    import hashlib
 
                     if check_password(provided, instance.password):
                         context["password_verified"] = True
+                    else:
+                        hashed_provided = hashlib.sha256(
+                            provided.encode("utf-8")
+                        ).hexdigest()
+                        if hashed_provided == instance.password:
+                            context["password_verified"] = True
+                            # Upgrade the password to the Django standard hash format on successful verification
+                            instance.password = make_password(provided)
+                            instance.save(update_fields=["password"])
         return context
 
     def perform_create(self, serializer):

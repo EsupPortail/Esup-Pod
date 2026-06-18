@@ -46,6 +46,11 @@ class VideoConfig(BaseSettings):
         description=_("Enable video form duplication."),
         json_schema_extra={"public": True},
     )
+    use_hyperlinks: bool = Field(
+        default=defaults.USE_HYPERLINKS,
+        description=_("Enable video hyperlinks."),
+        json_schema_extra={"public": True},
+    )
     use_cut: bool = Field(
         default=defaults.USE_CUT,
         description=_("Enable video cutting feature."),
