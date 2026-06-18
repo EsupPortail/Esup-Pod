@@ -68,7 +68,12 @@ class CommentSerializer(serializers.ModelSerializer):
         """
         Retrieves the profile picture URL of the comment's author.
         """
-        if obj.author and hasattr(obj.author, "owner") and obj.author.owner and obj.author.owner.userpicture:
+        if (
+            obj.author
+            and hasattr(obj.author, "owner")
+            and obj.author.owner
+            and obj.author.owner.userpicture
+        ):
             try:
                 return obj.author.owner.userpicture.url
             except ValueError:

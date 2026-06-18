@@ -288,6 +288,9 @@ class VideoSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        """
+        Creates a Video instance and assigns the themes list.
+        """
         themes_data = validated_data.pop("themes", None)
         video = super().create(validated_data)
         if themes_data is not None:
@@ -296,6 +299,9 @@ class VideoSerializer(serializers.ModelSerializer):
         return video
 
     def update(self, instance, validated_data):
+        """
+        Updates a Video instance and updates its themes list.
+        """
         themes_data = validated_data.pop("themes", None)
         video = super().update(instance, validated_data)
         if themes_data is not None:
@@ -303,4 +309,3 @@ class VideoSerializer(serializers.ModelSerializer):
             for theme in themes_data:
                 ThemeItem.objects.create(theme=theme, video=video)
         return video
-

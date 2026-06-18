@@ -14,7 +14,10 @@ class PodRoleSerializer(serializers.ModelSerializer):
     """
     Serializer for the PodRole model.
     """
+
     class Meta:
+        """PodRoleSerializer metadata."""
+
         model = PodRole
         fields = [
             "id",

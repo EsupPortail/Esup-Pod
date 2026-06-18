@@ -264,18 +264,21 @@ class PodRoleAdmin(admin.ModelAdmin):
     """
     Admin interface for PodRole.
     """
+
     list_display = ("name", "scope", "can_delete_video", "can_edit_video")
     list_filter = ("scope", "can_delete_video", "can_edit_video")
     search_fields = ("name", "description")
     fieldsets = (
-        (_("Informations du rôle"), {
-            "fields": ("name", "description", "scope")
-        }),
-        (_("Permissions (Cocher les droits)"), {
-            "fields": ("can_delete_video", "can_edit_video"),
-            "description": _("Cochez les droits applicables à ce rôle.")
-        }),
+        (_("Informations du rôle"), {"fields": ("name", "description", "scope")}),
+        (
+            _("Permissions (Cocher les droits)"),
+            {
+                "fields": ("can_delete_video", "can_edit_video"),
+                "description": _("Cochez les droits applicables à ce rôle."),
+            },
+        ),
     )
+
 
 @admin.register(Owner)
 class OwnerAdmin(admin.ModelAdmin):

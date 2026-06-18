@@ -132,7 +132,12 @@ class CommentViewSet(viewsets.GenericViewSet):
             direct_parent=direct_parent,
         )
         author_picture = None
-        if comment.author and hasattr(comment.author, "owner") and comment.author.owner and comment.author.owner.userpicture:
+        if (
+            comment.author
+            and hasattr(comment.author, "owner")
+            and comment.author.owner
+            and comment.author.owner.userpicture
+        ):
             try:
                 author_picture = comment.author.owner.userpicture.url
             except ValueError:

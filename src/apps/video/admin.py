@@ -73,7 +73,7 @@ class VideoAdmin(admin.ModelAdmin):
                             return True
             except Exception:
                 pass
-        
+
         return super().has_delete_permission(request, obj)
 
     def has_change_permission(self, request, obj=None):
@@ -94,7 +94,7 @@ class VideoAdmin(admin.ModelAdmin):
                             return True
             except Exception:
                 pass
-        
+
         return super().has_change_permission(request, obj)
 
 

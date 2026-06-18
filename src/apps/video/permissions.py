@@ -31,24 +31,8 @@ class IsOwnerOrCoOwnerOrChannelCollaborator(permissions.BasePermission):
             return True
 
         # Check PodRole permissions dynamically
-        try:
-            owner_profile = request.user.owner
-            if request.method == "DELETE":
-                for role in owner_profile.pod_roles.filter(can_delete_video=True):
-                    if role.scope == "GLOBAL":
-                        return True
-                    if role.scope == "ESTABLISHMENT" and hasattr(obj.owner, "owner"):
-                        if obj.owner.owner.establishment == owner_profile.establishment:
-                            return True
-            elif request.method in ("PUT", "PATCH"):
-                for role in owner_profile.pod_roles.filter(can_edit_video=True):
-                    if role.scope == "GLOBAL":
-                        return True
-                    if role.scope == "ESTABLISHMENT" and hasattr(obj.owner, "owner"):
-                        if obj.owner.owner.establishment == owner_profile.establishment:
-                            return True
-        except Exception:
-            pass
+        if self._has_pod_role_permission(request, obj):
+            return True
 
         # 3. Restrict editing to staff only: non-staff users cannot edit (as co-owners/collaborators)
         if video_settings.restrict_edit_to_staff and not request.user.is_staff:
@@ -66,6 +50,30 @@ class IsOwnerOrCoOwnerOrChannelCollaborator(permissions.BasePermission):
             ).exists()
             return is_channel_owner or is_channel_collab
 
+        return False
+
+    def _check_role_scope(self, role, owner_profile, obj) -> bool:
+        """Helper to verify if a role scope is global or matches establishment."""
+        if role.scope == "GLOBAL":
+            return True
+        if role.scope == "ESTABLISHMENT" and hasattr(obj.owner, "owner"):
+            return obj.owner.owner.establishment == owner_profile.establishment
+        return False
+
+    def _has_pod_role_permission(self, request, obj) -> bool:
+        """Helper to check dynamic PodRole permissions."""
+        try:
+            owner_profile = request.user.owner
+            if request.method == "DELETE":
+                for role in owner_profile.pod_roles.filter(can_delete_video=True):
+                    if self._check_role_scope(role, owner_profile, obj):
+                        return True
+            elif request.method in ("PUT", "PATCH"):
+                for role in owner_profile.pod_roles.filter(can_edit_video=True):
+                    if self._check_role_scope(role, owner_profile, obj):
+                        return True
+        except Exception:
+            pass
         return False
 
 

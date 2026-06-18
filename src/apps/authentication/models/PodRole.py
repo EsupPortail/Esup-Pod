@@ -8,6 +8,7 @@ permissions (e.g., video deletion) per establishment or globally.
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+
 class PodRole(models.Model):
     """
     Custom role for Pod application.
@@ -18,7 +19,10 @@ class PodRole(models.Model):
     SCOPE_ESTABLISHMENT = "ESTABLISHMENT"
     SCOPE_CHOICES = [
         (SCOPE_GLOBAL, _("Global (All establishments)")),
-        (SCOPE_ESTABLISHMENT, _("Establishment specific (Restricted to user's establishment)")),
+        (
+            SCOPE_ESTABLISHMENT,
+            _("Establishment specific (Restricted to user's establishment)"),
+        ),
     ]
 
     name = models.CharField(_("Role Name"), max_length=100, unique=True)
@@ -45,6 +49,7 @@ class PodRole(models.Model):
 
     class Meta:
         """PodRole model metadata."""
+
         verbose_name = _("Pod Role")
         verbose_name_plural = _("Pod Roles")
         ordering = ["name"]
