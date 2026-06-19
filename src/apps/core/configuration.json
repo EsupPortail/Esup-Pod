@@ -1036,35 +1036,35 @@
               "default_value": [
                 [
                   "actor",
-                  "Actor"
+                  "_('Actor')"
                 ],
                 [
                   "author",
-                  "Author"
+                  "_('Author')"
                 ],
                 [
                   "consultant",
-                  "Consultant"
+                  "_('Consultant')"
                 ],
                 [
                   "contributor",
-                  "Contributor"
+                  "_('Contributor')"
                 ],
                 [
                   "director",
-                  "Director"
+                  "_('Director')"
                 ],
                 [
                   "speaker",
-                  "Speaker"
+                  "_('Speaker')"
                 ],
                 [
                   "technician",
-                  "Technician"
+                  "_('Technician')"
                 ],
                 [
                   "voice-over",
-                  "Voice-over"
+                  "_('Voice-over')"
                 ]
               ],
               "description": {
@@ -1081,11 +1081,11 @@
               "default_value": [
                 [
                   "subtitles",
-                  "Subtitles"
+                  "_('Subtitles')"
                 ],
                 [
                   "captions",
-                  "Captions"
+                  "_('Captions')"
                 ]
               ],
               "description": {
