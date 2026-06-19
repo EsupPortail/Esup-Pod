@@ -2,18 +2,20 @@
 
 import hashlib
 import os
-import re
 import shutil
 import time
 import uuid
+
 from defusedxml import minidom
-
 from django.conf import settings
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, SuspiciousFileOperation
 from django.http import HttpResponse
+from django.utils._os import safe_join
+from django.utils.text import get_valid_filename
+from django.utils.translation import gettext_lazy as _
 
-from .models import Recording, Recorder
 from ..settings import BASE_DIR
+from .models import Recorder, Recording
 
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
@@ -59,49 +61,24 @@ def handle_upload_file(request, element_name, mimetype, tag_name):
     Returns:
         HttpResponse: The HTTP response containing the generated XML content.
     """
-    id_media = ""
-    type_name = ""
     opencast_filename = None
-    # tags = "" # not actually used
     id_media = get_id_media(request)
-    if request.POST.get("flavor", "") != "":
-        type_name = request.POST.get("flavor")
+    type_name = request.POST.get("flavor", "")
     media_package_dir = os.path.join(MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % id_media)
 
     media_package_content, media_package_file = get_media_package_content(
         media_package_dir, id_media
     )
 
+    url_text = ""
     if element_name != "attachment":
-        file = ""
-        filename = ""
-
-        if "BODY" in request.FILES:
-            file = request.FILES["BODY"]
-            filename = file.name
-
-        if request.FILES.getlist("file"):
-            file = request.FILES.getlist("file")[0]
-            filename = file.name
-
-        if element_name == "track":
-            opencast_filename, ext = os.path.splitext(filename)
-            filename = "%s%s" % (type_name.replace("/", "_").replace(" ", ""), ext)
-
-        opencastMediaFile = os.path.join(media_package_dir, filename)
-        with open(opencastMediaFile, "wb+") as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
-
-        url_text = "%(http)s://%(host)s%(media)sopencast-files/%(id_media)s/%(fn)s" % {
-            "http": "https" if request.is_secure() else "http",
-            "host": request.get_host(),
-            "media": MEDIA_URL,
-            "id_media": "%s" % id_media,
-            "fn": filename,
-        }
-    else:
-        url_text = ""
+        upload_file, original_filename = _get_uploaded_file_from_request(request)
+        filename, opencast_filename = _build_storage_filename(
+            element_name, original_filename, type_name
+        )
+        destination_path = _resolve_upload_destination(media_package_dir, filename)
+        _write_uploaded_chunks(destination_path, upload_file)
+        url_text = _build_uploaded_file_url(request, id_media, filename)
     element = create_xml_element(
         media_package_content,
         element_name,
@@ -117,6 +94,69 @@ def handle_upload_file(request, element_name, mimetype, tag_name):
         f.write(media_package_content.toxml())
 
     return HttpResponse(media_package_content.toxml(), content_type="application/xml")
+
+
+def _get_uploaded_file_from_request(request):
+    """Extract uploaded file and sanitized original filename from the request."""
+    upload_file = None
+    filename = ""
+    if "BODY" in request.FILES:
+        upload_file = request.FILES["BODY"]
+        filename = upload_file.name
+    elif request.FILES.getlist("file"):
+        upload_file = request.FILES.getlist("file")[0]
+        filename = upload_file.name
+
+    if not upload_file:
+        raise PermissionDenied(_("Missing upload file."))
+
+    sanitized_name = get_valid_filename(os.path.basename(filename))
+    if not sanitized_name:
+        raise PermissionDenied(_("Invalid filename."))
+
+    return upload_file, sanitized_name
+
+
+def _build_storage_filename(element_name, filename, type_name):
+    """Return destination filename and track display filename when needed."""
+    if element_name != "track":
+        return filename, None
+
+    opencast_filename, ext = os.path.splitext(filename)
+    safe_flavor = get_valid_filename(type_name.replace("/", "_").replace(" ", ""))
+    if not safe_flavor:
+        safe_flavor = "track"
+    return "%s%s" % (safe_flavor, ext), opencast_filename
+
+
+def _resolve_upload_destination(media_package_dir, filename):
+    """Resolve and validate upload destination path under media_package_dir."""
+    try:
+        destination = os.path.realpath(safe_join(media_package_dir, filename))
+    except SuspiciousFileOperation as exc:
+        raise PermissionDenied(_("Invalid upload path.")) from exc
+    media_dir_real = os.path.realpath(media_package_dir)
+    if os.path.commonpath([destination, media_dir_real]) != media_dir_real:
+        raise PermissionDenied(_("Invalid upload path."))
+    return destination
+
+
+def _write_uploaded_chunks(destination_path, upload_file) -> None:
+    """Write uploaded file chunks to destination path."""
+    with open(destination_path, "wb+") as destination:
+        for chunk in upload_file.chunks():
+            destination.write(chunk)
+
+
+def _build_uploaded_file_url(request, id_media, filename):
+    """Build absolute URL for uploaded file."""
+    return "%(http)s://%(host)s%(media)sopencast-files/%(id_media)s/%(fn)s" % {
+        "http": "https" if request.is_secure() else "http",
+        "host": request.get_host(),
+        "media": MEDIA_URL,
+        "id_media": "%s" % id_media,
+        "fn": filename,
+    }
 
 
 def get_id_media(request):
@@ -140,7 +180,7 @@ def get_media_package_content(media_package_dir, id_media):
     media_package_content = minidom.parse(media_package_file)  # parse an open file
     mediapackage = media_package_content.getElementsByTagName("mediapackage")[0]
     if mediapackage.getAttribute("id") != id_media:
-        raise PermissionDenied("Access denied: ID mismatch.")
+        raise PermissionDenied(_("Access denied: ID mismatch."))
 
     return media_package_content, media_package_file
 
@@ -250,11 +290,19 @@ def get_auth_headers_as_dict(request) -> dict:
     """Return a dict with Authorization headers as a dict."""
     result = {}
     if "Authorization" in request.headers:
-        # Regex pattern that match key-value pairs
-        pattern = r'(\w+)="([^"]+)"'
+        auth_header = request.headers["Authorization"].strip()
+        if " " in auth_header:
+            scheme, params = auth_header.split(" ", 1)
+            auth_header = params if scheme.lower() == "digest" else auth_header
 
-        matches = re.findall(pattern, request.headers["Authorization"])
-        result = {key: value for key, value in matches}
+        for item in auth_header.split(","):
+            if "=" not in item:
+                continue
+            key, value = item.split("=", 1)
+            key = key.strip()
+            value = value.strip().strip('"')
+            if key:
+                result[key] = value
     return result
 
 

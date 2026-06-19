@@ -77,6 +77,10 @@ class RunnerManagerAdminTests(TestCase):
     def test_changelist_displays_activation_badge(self):
         """Display activation badge in runner manager changelist."""
         changelist_url = reverse("admin:video_encode_transcript_runnermanager_changelist")
+        source_app_url = reverse(
+            "admin:app_list",
+            kwargs={"app_label": "video_encode_transcript"},
+        )
 
         response = self.client.get(changelist_url)
         self.assertEqual(response.status_code, 200)
@@ -84,6 +88,8 @@ class RunnerManagerAdminTests(TestCase):
         self.assertContains(response, "Active")
         self.assertContains(response, "runner-admin-list-link")
         self.assertContains(response, "https://runner.example.com/admin")
+        self.assertContains(response, "Runner managers")
+        self.assertNotContains(response, f'href="{source_app_url}"')
 
         self.runner_manager.is_active = False
         self.runner_manager.save(update_fields=["is_active"])
@@ -91,6 +97,89 @@ class RunnerManagerAdminTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "bg-secondary")
         self.assertContains(response, "Inactive")
+
+    def test_task_changelist_uses_runner_manager_breadcrumb(self):
+        """Display a runner manager breadcrumb entry in task changelist."""
+        task_changelist_url = reverse("admin:video_encode_transcript_task_changelist")
+        runner_changelist_url = reverse(
+            "admin:video_encode_transcript_runnermanager_changelist"
+        )
+
+        response = self.client.get(task_changelist_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, runner_changelist_url)
+        self.assertContains(response, "Runner managers")
+
+    def test_priority_user_changelist_uses_runner_manager_breadcrumb(self):
+        """Display a runner manager breadcrumb entry in priority user changelist."""
+        priority_user_changelist_url = reverse(
+            "admin:video_encode_transcript_priorityuser_changelist"
+        )
+        runner_changelist_url = reverse(
+            "admin:video_encode_transcript_runnermanager_changelist"
+        )
+
+        response = self.client.get(priority_user_changelist_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, runner_changelist_url)
+        self.assertContains(response, "Runner managers")
+
+    def test_video_encode_transcript_app_index_hides_runner_models(self):
+        """Hide runner manager models from the source app index page."""
+        app_index_url = reverse(
+            "admin:app_list",
+            kwargs={"app_label": "video_encode_transcript"},
+        )
+        response = self.client.get(app_index_url)
+
+        self.assertEqual(response.status_code, 200)
+        app_list = response.context["app_list"]
+        self.assertEqual(len(app_list), 1)
+        self.assertEqual(app_list[0]["app_label"], "video_encode_transcript")
+
+        model_names = [model["object_name"] for model in app_list[0]["models"]]
+        self.assertNotIn("RunnerManager", model_names)
+        self.assertNotIn("PriorityUser", model_names)
+        self.assertNotIn("Task", model_names)
+
+    def test_admin_index_groups_runner_models_in_dedicated_section(self):
+        """Display runner manager admin entries in a dedicated dashboard section."""
+        response = self.client.get(reverse("admin:index"))
+        self.assertEqual(response.status_code, 200)
+
+        app_list = response.context["app_list"]
+        runner_app = next(
+            (
+                app
+                for app in app_list
+                if app["app_label"] == "runner_managers"
+                and app["name"] == "Runner managers"
+            ),
+            None,
+        )
+        self.assertIsNotNone(runner_app)
+
+        runner_model_names = [model["object_name"] for model in runner_app["models"]]
+        self.assertCountEqual(
+            runner_model_names,
+            ["RunnerManager", "PriorityUser", "Task"],
+        )
+        self.assertEqual(
+            runner_app["app_url"],
+            reverse("admin:video_encode_transcript_runnermanager_changelist"),
+        )
+
+        encode_app = next(
+            (app for app in app_list if app["app_label"] == "video_encode_transcript"),
+            None,
+        )
+        self.assertIsNotNone(encode_app)
+        encode_model_names = [model["object_name"] for model in encode_app["models"]]
+        self.assertNotIn("RunnerManager", encode_model_names)
+        self.assertNotIn("PriorityUser", encode_model_names)
+        self.assertNotIn("Task", encode_model_names)
 
     @patch("pod.video_encode_transcript.admin.requests.get")
     def test_test_connection_reports_unreachable_runner(self, mocked_get):

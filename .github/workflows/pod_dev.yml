@@ -78,7 +78,15 @@ jobs:
           sudo apt-get clean
           sudo rm -rf /var/lib/apt/lists/*
           python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
+          for i in 1 2 3; do
+            pip install -r requirements-dev.txt && break
+            if [ "$i" -eq 3 ]; then
+              echo "pip install failed after 3 attempts"
+              exit 1
+            fi
+            echo "pip install failed (attempt $i/3), retrying in 30s..."
+            sleep 30
+          done
           sudo npm install -g yarn
 
       # FLAKE 8 (see setup.cfg for configurations)
@@ -141,7 +149,12 @@ jobs:
 
       - name: Stop containers
         if: always()
-        run: docker compose -f ./docker-compose-full-dev-with-volumes-test.yml down
+        run: |
+          if [ -f .env.dev ]; then
+            docker compose -f ./docker-compose-full-dev-with-volumes-test.yml down
+          else
+            echo ".env.dev missing, skipping docker compose down"
+          fi
       - name: Delete unused file and change owner
         run: |
           sudo rm -f pod/custom/settings_local.py

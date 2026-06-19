@@ -5,17 +5,21 @@ import logging
 import os
 import threading
 from xml.dom.minidom import Text as Dom_text
-from defusedxml.minidom import parse as dom_parse
 
+from defusedxml.minidom import parse as dom_parse
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.exceptions import SuspiciousFileOperation
 from django.template.defaultfilters import slugify
+from django.utils._os import safe_join
+from django.utils.translation import gettext_lazy as _
 
 from pod.video.models import Video, get_storage_path_video
 from pod.video_encode_transcript import encode
-from ..utils import add_comment, studio_clean_old_entries
+
 from ...live.models import Event
 from ...settings import BASE_DIR
+from ..utils import add_comment, studio_clean_old_entries
 
 DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
@@ -27,6 +31,18 @@ OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
 OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mid")
 
 log = logging.getLogger(__name__)
+
+
+def _resolve_path_within(base_dir: str, target_path: str) -> str:
+    """Resolve a path and ensure it remains inside base_dir."""
+    base_real = os.path.realpath(base_dir)
+    try:
+        resolved_path = os.path.realpath(safe_join(base_real, target_path))
+        if os.path.commonpath([resolved_path, base_real]) != base_real:
+            raise SuspiciousFileOperation(_("Path traversal detected."))
+    except (SuspiciousFileOperation, ValueError) as exc:
+        raise ValueError(_("Unsafe recorder file path.")) from exc
+    return resolved_path
 
 
 def process(recording) -> None:
@@ -53,8 +69,17 @@ def save_basic_video(recording, video_src) -> Video:
         os.path.dirname(storage_path), slugify(name) + "_" + dt.replace(" ", "_") + ext
     )
     # Move source file to destination
-    os.makedirs(os.path.dirname(video.video.path), exist_ok=True)
-    os.rename(video_src, video.video.path)
+    source_file = _resolve_path_within(MEDIA_ROOT, os.path.relpath(video_src, MEDIA_ROOT))
+    destination_file = _resolve_path_within(
+        MEDIA_ROOT, os.path.relpath(video.video.path, MEDIA_ROOT)
+    )
+    media_root_real = os.path.realpath(MEDIA_ROOT)
+    if os.path.commonpath([source_file, media_root_real]) != media_root_real:
+        raise ValueError(_("Unsafe recorder file path."))
+    if os.path.commonpath([destination_file, media_root_real]) != media_root_real:
+        raise ValueError(_("Unsafe recorder file path."))
+    os.makedirs(os.path.dirname(destination_file), exist_ok=True)
+    os.rename(source_file, destination_file)
     video.save()
 
     # Add any additional owners
@@ -162,9 +187,15 @@ def encode_recording(recording):
         add_comment(recording.id, msg)
 
         # create Video using Recording properties
+        source_video_file = _resolve_path_within(
+            os.path.join(MEDIA_ROOT, OPENCAST_FILES_DIR), videos[0].get("src")
+        )
+        opencast_root = os.path.realpath(os.path.join(MEDIA_ROOT, OPENCAST_FILES_DIR))
+        if os.path.commonpath([source_video_file, opencast_root]) != opencast_root:
+            raise ValueError(_("Unsafe recorder file path."))
         video = save_basic_video(
             recording,
-            os.path.join(MEDIA_ROOT, OPENCAST_FILES_DIR, videos[0].get("src")),
+            source_video_file,
         )
 
         # link Video to Event
