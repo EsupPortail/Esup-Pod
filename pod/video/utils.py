@@ -118,6 +118,21 @@ def is_archiving_authorized(vid: Video) -> bool:
 ###############################################################
 
 
+def resolution_to_int(resolution: str | None) -> int:
+    """Convert a textual resolution like ``1080p`` or ``1080i`` into an integer."""
+    if not isinstance(resolution, str):
+        return 0
+
+    match = re.fullmatch(r"(\d+)[piPI]", resolution.strip())
+    if match is None:
+        return 0
+
+    try:
+        return int(match.group(1))
+    except ValueError:
+        return 0
+
+
 def pagination_data(request_path, offset, limit, total_count):
     """Get next, previous url and info about max number of page and current page.
 
