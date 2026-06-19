@@ -15,7 +15,7 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from .forms import GroupAdminForm, GroupSiteAdminForm, OwnerAdminForm
-from .models import AccessGroup, GroupSite, Owner, PodRole
+from .models import AccessGroup, GroupSite, Owner, ServerRole
 
 from .conf import auth_settings
 
@@ -259,22 +259,22 @@ class AccessGroupAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(PodRole)
-class PodRoleAdmin(admin.ModelAdmin):
+@admin.register(ServerRole)
+class ServerRoleAdmin(admin.ModelAdmin):
     """
-    Admin interface for PodRole.
+    Admin interface for ServerRole.
     """
 
     list_display = ("name", "scope", "can_delete_video", "can_edit_video")
     list_filter = ("scope", "can_delete_video", "can_edit_video")
     search_fields = ("name", "description")
     fieldsets = (
-        (_("Informations du rôle"), {"fields": ("name", "description", "scope")}),
+        (_("Role Information"), {"fields": ("name", "description", "scope")}),
         (
-            _("Permissions (Cocher les droits)"),
+            _("Permissions (Check rights)"),
             {
                 "fields": ("can_delete_video", "can_edit_video"),
-                "description": _("Cochez les droits applicables à ce rôle."),
+                "description": _("Check the rights applicable to this role."),
             },
         ),
     )

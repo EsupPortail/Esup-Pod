@@ -30,8 +30,8 @@ class IsOwnerOrCoOwnerOrChannelCollaborator(permissions.BasePermission):
         if obj.owner == request.user:
             return True
 
-        # Check PodRole permissions dynamically
-        if self._has_pod_role_permission(request, obj):
+        # Check ServerRole permissions dynamically
+        if self._has_server_role_permission(request, obj):
             return True
 
         # 3. Restrict editing to staff only: non-staff users cannot edit (as co-owners/collaborators)
@@ -60,16 +60,16 @@ class IsOwnerOrCoOwnerOrChannelCollaborator(permissions.BasePermission):
             return obj.owner.owner.establishment == owner_profile.establishment
         return False
 
-    def _has_pod_role_permission(self, request, obj) -> bool:
-        """Helper to check dynamic PodRole permissions."""
+    def _has_server_role_permission(self, request, obj) -> bool:
+        """Helper to check dynamic ServerRole permissions."""
         try:
             owner_profile = request.user.owner
             if request.method == "DELETE":
-                for role in owner_profile.pod_roles.filter(can_delete_video=True):
+                for role in owner_profile.server_roles.filter(can_delete_video=True):
                     if self._check_role_scope(role, owner_profile, obj):
                         return True
             elif request.method in ("PUT", "PATCH"):
-                for role in owner_profile.pod_roles.filter(can_edit_video=True):
+                for role in owner_profile.server_roles.filter(can_edit_video=True):
                     if self._check_role_scope(role, owner_profile, obj):
                         return True
         except Exception:

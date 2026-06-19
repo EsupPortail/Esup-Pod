@@ -5,20 +5,20 @@ Esup-Pod - Detailed user serializer.
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
-from src.apps.authentication.models import PodRole
+from src.apps.authentication.models import ServerRole
 
 User = get_user_model()
 
 
-class PodRoleSerializer(serializers.ModelSerializer):
+class ServerRoleSerializer(serializers.ModelSerializer):
     """
-    Serializer for the PodRole model.
+    Serializer for the ServerRole model.
     """
 
     class Meta:
-        """PodRoleSerializer metadata."""
+        """ServerRoleSerializer metadata."""
 
-        model = PodRole
+        model = ServerRole
         fields = [
             "id",
             "name",
@@ -37,7 +37,7 @@ class UserSerializer(serializers.ModelSerializer):
     affiliation = serializers.SerializerMethodField(method_name="get_affiliation")
     establishment = serializers.SerializerMethodField(method_name="get_establishment")
     userpicture = serializers.SerializerMethodField(method_name="get_userpicture")
-    pod_roles = serializers.SerializerMethodField(method_name="get_pod_roles")
+    server_roles = serializers.SerializerMethodField(method_name="get_server_roles")
 
     class Meta:
         """User serializer metadata."""
@@ -54,7 +54,7 @@ class UserSerializer(serializers.ModelSerializer):
             "affiliation",
             "establishment",
             "userpicture",
-            "pod_roles",
+            "server_roles",
         ]
 
     @extend_schema_field(serializers.CharField(allow_null=True))
@@ -77,9 +77,9 @@ class UserSerializer(serializers.ModelSerializer):
             return obj.owner.userpicture.url
         return None
 
-    @extend_schema_field(PodRoleSerializer(many=True))
-    def get_pod_roles(self, obj):
+    @extend_schema_field(ServerRoleSerializer(many=True))
+    def get_server_roles(self, obj):
         """Retrieves the list of custom roles assigned to the user."""
         if hasattr(obj, "owner"):
-            return PodRoleSerializer(obj.owner.pod_roles.all(), many=True).data
+            return ServerRoleSerializer(obj.owner.server_roles.all(), many=True).data
         return []

@@ -163,7 +163,7 @@ class VideoViewSetTests(APITestCase):
         self.assertEqual(len(results), 1)
 
     def test_filter_by_multiple_tags(self):
-        """Verifies that videos can be filtered by multiple tag names (OR behavior within the filter backend is fine, or AND depending on django-filters behavior, usually exact match IN)."""
+        """Verifies that videos can be filtered by multiple tag names (acts as an OR/IN behavior, matching videos containing any of the provided tags)."""
         url = f"{reverse('video-list')}?tags__name=python&tags__name=django"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

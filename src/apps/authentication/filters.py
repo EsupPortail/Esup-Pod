@@ -6,6 +6,7 @@ Provides generic, reusable FilterSet classes for User, Owner, and AccessGroup mo
 
 import django_filters
 from django_filters import rest_framework as filters
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
 from src.apps.authentication.models import AccessGroup
@@ -29,17 +30,17 @@ class UserFilterSet(django_filters.FilterSet):
 
     id = django_filters.BaseInFilter(
         field_name="id",
-        label="User ID(s) — multi-value supported",
+        label=_("User ID(s) — multi-value supported"),
     )
     username = MultiValueCharFilter(
         field_name="username",
         lookup_expr="in",
-        label="Username(s) — multi-value supported",
+        label=_("Username(s) — multi-value supported"),
     )
     email = MultiValueCharFilter(
         field_name="email",
         lookup_expr="in",
-        label="Email(s) — multi-value supported",
+        label=_("Email(s) — multi-value supported"),
     )
     is_staff = django_filters.BooleanFilter(field_name="is_staff")
     is_superuser = django_filters.BooleanFilter(field_name="is_superuser")
@@ -64,17 +65,17 @@ class AccessGroupFilterSet(django_filters.FilterSet):
 
     id = django_filters.BaseInFilter(
         field_name="id",
-        label="Group ID(s) — multi-value supported",
+        label=_("Group ID(s) — multi-value supported"),
     )
     code_name = MultiValueCharFilter(
         field_name="code_name",
         lookup_expr="in",
-        label="Code name(s) — multi-value supported",
+        label=_("Code name(s) — multi-value supported"),
     )
     display_name = filters.CharFilter(
         field_name="display_name",
         lookup_expr="icontains",
-        label="Display name contains",
+        label=_("Display name contains"),
     )
 
     class Meta:

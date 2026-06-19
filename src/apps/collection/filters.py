@@ -8,6 +8,7 @@ MultiValueCharFilter for all applicable fields.
 
 import django_filters
 from django_filters import rest_framework as filters
+from django.utils.translation import gettext_lazy as _
 
 from src.apps.collection.models import Channel, Playlist
 
@@ -31,21 +32,21 @@ class ChannelFilterSet(django_filters.FilterSet):
     owner__username = MultiValueCharFilter(
         field_name="owner__username",
         lookup_expr="in",
-        label="Owner username(s) — multi-value supported",
+        label=_("Owner username(s) — multi-value supported"),
     )
     is_public = django_filters.BooleanFilter(
         field_name="is_public",
-        label="Public channels only",
+        label=_("Public channels only"),
     )
     created_at__gte = django_filters.DateTimeFilter(
         field_name="created_at",
         lookup_expr="gte",
-        label="Created after (ISO 8601 datetime)",
+        label=_("Created after (ISO 8601 datetime)"),
     )
     created_at__lte = django_filters.DateTimeFilter(
         field_name="created_at",
         lookup_expr="lte",
-        label="Created before (ISO 8601 datetime)",
+        label=_("Created before (ISO 8601 datetime)"),
     )
 
     class Meta:
@@ -70,25 +71,25 @@ class PlaylistFilterSet(django_filters.FilterSet):
     owner__username = MultiValueCharFilter(
         field_name="owner__username",
         lookup_expr="in",
-        label="Owner username(s) — multi-value supported",
+        label=_("Owner username(s) — multi-value supported"),
     )
     is_public = django_filters.BooleanFilter(
         field_name="is_public",
-        label="Public playlists only",
+        label=_("Public playlists only"),
     )
     is_protected = django_filters.BooleanFilter(
         method="filter_is_protected",
-        label="Has password protection",
+        label=_("Has password protection"),
     )
     created_at__gte = django_filters.DateTimeFilter(
         field_name="created_at",
         lookup_expr="gte",
-        label="Created after (ISO 8601 datetime)",
+        label=_("Created after (ISO 8601 datetime)"),
     )
     created_at__lte = django_filters.DateTimeFilter(
         field_name="created_at",
         lookup_expr="lte",
-        label="Created before (ISO 8601 datetime)",
+        label=_("Created before (ISO 8601 datetime)"),
     )
 
     def filter_is_protected(self, queryset, name, value):
