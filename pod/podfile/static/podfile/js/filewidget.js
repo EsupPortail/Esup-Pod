@@ -29,6 +29,89 @@ var loader = `
 </div>
 `;
 
+/**
+ * Build a preview fragment for the selected file without HTML string interpolation.
+ * @param {HTMLElement} fileAnchor
+ * @returns {DocumentFragment}
+ */
+function buildFilePreview(fileAnchor) {
+  const fragment = document.createDocumentFragment();
+  const fileType = fileAnchor.dataset.filetype;
+  const fileTitle = fileAnchor.getAttribute("title") || "";
+  const fileHref = sanitizePreviewUrl(fileAnchor.getAttribute("href") || "#");
+
+  const image = document.createElement("img");
+  image.loading = "lazy";
+
+  if (fileType === "CustomImageModel") {
+    image.src = fileHref;
+    image.height = 34;
+    image.alt = fileTitle;
+  } else {
+    image.style.height = "26px";
+    image.style.verticalAlign = "middle";
+    image.src = static_url + "podfile/images/icons/default.svg";
+    image.alt = "";
+  }
+
+  const imgSpacer = document.createTextNode("\u00A0");
+  const linkSpacer = document.createTextNode("\u00A0");
+  const strong = document.createElement("strong");
+  const link = document.createElement("a");
+  link.href = fileHref;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.title = gettext("Open file in a new tab");
+  link.textContent = fileTitle;
+  strong.appendChild(link);
+
+  fragment.appendChild(image);
+  fragment.appendChild(imgSpacer);
+  fragment.appendChild(strong);
+  fragment.appendChild(linkSpacer);
+  return fragment;
+}
+
+/**
+ * Restrict preview links to standard web protocols.
+ * @param {string} url
+ * @returns {string}
+ */
+function sanitizePreviewUrl(url) {
+  try {
+    const parsed = new URL(url, window.location.origin);
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+      return parsed.href;
+    }
+  } catch (error) {
+    // Ignore malformed URLs and return a safe fallback.
+  }
+  return "#";
+}
+
+/**
+ * Build a loader node for "see more" blocks.
+ * @returns {HTMLElement}
+ */
+function createLoaderNode() {
+  const loaderNode = document.createElement("div");
+  loaderNode.id = "loader";
+  loaderNode.className =
+    "d-flex justify-content-center align-items-center d-none loaderSpinner";
+
+  const spinner = document.createElement("div");
+  spinner.className = "spinner-border";
+  spinner.setAttribute("role", "status");
+
+  const hiddenText = document.createElement("span");
+  hiddenText.className = "visually-hidden";
+  hiddenText.textContent = gettext("Loading…");
+
+  spinner.appendChild(hiddenText);
+  loaderNode.appendChild(spinner);
+  return loaderNode;
+}
+
 
 
 if (typeof loaded == "undefined") {
@@ -48,10 +131,10 @@ if (typeof loaded == "undefined") {
       document.getElementById(id_input).value = file.dataset.fileid;
       if (document.querySelector(".btn-fileinput_" + id_input)) {
         if (file.dataset.filetype == "CustomImageModel") {
-          document.querySelector(".btn-fileinput_" + id_input).innerHTML =
+          document.querySelector(".btn-fileinput_" + id_input).textContent =
             gettext("Change image");
         } else {
-          document.querySelector(".btn-fileinput_" + id_input).innerHTML =
+          document.querySelector(".btn-fileinput_" + id_input).textContent =
             gettext("Change file");
         }
       }
@@ -64,29 +147,11 @@ if (typeof loaded == "undefined") {
       document.getElementById("remove_file_" + id_input).style.display =
         "block";
 
-      let html = "";
-      if (file.dataset.filetype == "CustomImageModel") {
-        html +=
-          '<img src="' +
-          file.getAttribute("href") +
-          '" height="34" alt="' +
-          file.getAttribute("title") +
-          '" loading="lazy">&nbsp;';
-      } else {
-        html +=
-          '<img style="height: 26px;vertical-align: middle;" src="' +
-          static_url +
-          'podfile/images/icons/default.svg" alt="" loading="lazy">&nbsp;';
+      const fileInputContainer = document.getElementById("fileinput_" + id_input);
+      if (fileInputContainer) {
+        fileInputContainer.textContent = "";
+        fileInputContainer.appendChild(buildFilePreview(file));
       }
-      html +=
-        '<strong><a href="' +
-        file.getAttribute("href") +
-        '" target="_blank" title="' +
-        gettext("Open file in a new tab") +
-        '">' +
-        file.getAttribute("title") +
-        "</a></strong>&nbsp;";
-      document.getElementById("fileinput_" + id_input).innerHTML = html;
 
       document.getElementById("modal-folder_" + id_input).textContent = "";
 
@@ -866,6 +931,10 @@ if (typeof loaded == "undefined") {
   }
 
 
+  /**
+   * Retrieve paginated folders and render them in the modal list.
+   * @param {string} search Search query used to filter folders.
+   */
   function getFolders(search = "") {
     document.getElementById("list_folders_sub").textContent = "";
     let type = document.getElementById("list_folders_sub").dataset.type;
@@ -911,11 +980,12 @@ if (typeof loaded == "undefined") {
         });
         if (nextPage != -1) {
           search = data.search !== "" ? data.search : null;
-          document
-            .getElementById("list_folders_sub")
-            .innerHTML += (
+          const listFoldersSub = document.getElementById("list_folders_sub");
+          if (listFoldersSub) {
+            listFoldersSub.appendChild(
               seeMoreElement(nextPage, data.current_page + 1, data.total_pages, search)
             );
+          }
         }
         folder_searching = false;
       }).catch((error) => {
@@ -933,25 +1003,59 @@ if (typeof loaded == "undefined") {
   });
   /********************************** */
 
+  /**
+   * Build the "see more" pagination element for folder browsing.
+   * @param {number} nextPage Next page number to request.
+   * @param {number} curr_page Current page index displayed to users.
+   * @param {number} tot_page Total number of available pages.
+   * @param {?string} search Active search term.
+   * @returns {HTMLDivElement}
+   */
   var seeMoreElement = function (nextPage, curr_page, tot_page, search = null) {
-    search = search ? `&search=${search}` : "";
-    let seeMore = gettext("See more");
-    return `
-      <div class="view-more-container m-2">
-        <a id="more" class="btn btn-light href="#" data-next="/podfile/ajax_calls/user_folders?page=${nextPage}${search}">
-          <i class="bi bi-arrow-down-square" aria-hidden="true"></i>
-          <span class="text">${seeMore} (${curr_page}/${tot_page})</span>
-        </a>
-        ${loader}
-      </div>
-    `;
+    const container = document.createElement("div");
+    container.className = "view-more-container m-2";
+
+    const moreLink = document.createElement("a");
+    moreLink.id = "more";
+    moreLink.className = "btn btn-light";
+    moreLink.href = "#";
+
+    const queryParams = new URLSearchParams();
+    queryParams.set("page", String(nextPage));
+    if (search) {
+      queryParams.set("search", search);
+      moreLink.dataset.search = search;
+    }
+    moreLink.dataset.next = `/podfile/ajax_calls/user_folders?${queryParams.toString()}`;
+
+    const icon = document.createElement("i");
+    icon.className = "bi bi-arrow-down-square";
+    icon.setAttribute("aria-hidden", "true");
+
+    const textSpan = document.createElement("span");
+    textSpan.className = "text";
+    textSpan.textContent = `${gettext("See more")} (${curr_page}/${tot_page})`;
+
+    moreLink.appendChild(icon);
+    moreLink.appendChild(document.createTextNode(" "));
+    moreLink.appendChild(textSpan);
+
+    container.appendChild(moreLink);
+    container.appendChild(createLoaderNode());
+    return container;
   };
 
+  /**
+   * Load and append the next page of folders when users click "See more".
+   */
   function seemore() {
-    let parent_el = document.getElementById("more").parentNode;
+    const moreLink = document.getElementById("more");
+    if (!moreLink || !moreLink.parentNode) return;
+
+    let parent_el = moreLink.parentNode;
     showLoader(parent_el.querySelector("#loader"), true);
-    let next = document.getElementById("more").dataset.next;
-    let search = document.getElementById("more").dataset.search;
+    let next = moreLink.dataset.next;
+    let search = moreLink.dataset.search || null;
     let currentFolder = getCurrentSessionFolder();
     let type = document.getElementById("list_folders_sub").dataset.type;
     let url = next;
@@ -991,11 +1095,12 @@ if (typeof loaded == "undefined") {
         });
         if (nextPage != -1) {
           search = data.search !== "" ? data.search : null;
-          document
-            .getElementById("list_folders_sub")
-            .innerHTML += (
+          const listFoldersSub = document.getElementById("list_folders_sub");
+          if (listFoldersSub) {
+            listFoldersSub.appendChild(
               seeMoreElement(nextPage, data.current_page + 1, data.total_pages, search)
             );
+          }
         }
         folder_searching = false;
       });

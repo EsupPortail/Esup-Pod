@@ -3,24 +3,25 @@
 *  run with 'python manage.py test pod.main.tests.test_views'
 """
 
-from django.test import override_settings, TestCase, Client
+import importlib
+import os
+from datetime import datetime, timedelta
+from http import HTTPStatus
+from unittest.mock import patch
+
+from captcha.models import CaptchaStore
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.flatpages.models import FlatPage
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.contrib.flatpages.models import FlatPage
-from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
-from django.conf import settings
-from captcha.models import CaptchaStore
-from http import HTTPStatus
-from datetime import datetime, timedelta
-from pod.main import context_processors
-from pod.main.models import Configuration, Block
-from pod.playlist.models import Playlist
-from pod.video.models import Type, Video, Channel, ViewCount
-from pod.live.models import Building, Broadcaster, Event
 
-import os
-import importlib
+from pod.live.models import Broadcaster, Building, Event
+from pod.main import context_processors
+from pod.main.models import Block, Configuration
+from pod.playlist.models import Playlist
+from pod.video.models import Channel, Type, Video, ViewCount
 
 # ggignore-start
 # gitguardian:ignore
@@ -47,15 +48,15 @@ class MainViewsTestCase(TestCase):
 
         # GET method is used
         response = self.client.get("/download/")
-        self.assertRaises(PermissionDenied)
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
         # POST method is used
         # filename is not set
         response = self.client.post("/download/")
-        self.assertRaises(PermissionDenied)
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
         # Wrong filename --> not in MEDIA folder
-        with self.assertRaises(ValueError):
-            response = self.client.post("/download/", {"filename": "/etc/passwd"})
+        response = self.client.post("/download/", {"filename": "/etc/passwd"})
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
         # Good filename
         filename = os.path.join(settings.MEDIA_ROOT, "test/test_file.txt")
@@ -188,8 +189,13 @@ class XSSTests(TestCase):
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertFalse(self.XSS_detect in response.content)
 
-    def test_search_XSS(self) -> None:
+    @patch("pod.video_search.views.Elasticsearch")
+    def test_search_XSS(self, mocked_elasticsearch) -> None:
         """Test if /search/ is safe against some XSS."""
+        mocked_elasticsearch.return_value.search.return_value = {
+            "hits": {"hits": [], "total": {"value": 0}},
+            "aggregations": {},
+        }
         for param in ["q", "start_date", "end_date"]:
             response = self.client.get("/search/?%s=%s" % (param, self.XSS_inject))
 

@@ -9,15 +9,11 @@ from concurrent import futures
 from datetime import date
 from itertools import chain
 
-
 import pandas
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadCompleteView, ChunkedUploadView
 from dateutil.parser import parse
 from django.conf import settings
-
-from django.http import HttpResponsePermanentRedirect
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
@@ -50,6 +46,7 @@ from django.http import (
     HttpResponseBadRequest,
     HttpResponseForbidden,
     HttpResponseNotFound,
+    HttpResponsePermanentRedirect,
     JsonResponse,
     QueryDict,
 )
@@ -80,16 +77,17 @@ from pod.playlist.utils import (
     playlist_can_be_displayed,
     user_can_see_playlist_video,
 )
-
-
-from pod.video.forms import VideoForm, VideoVersionForm, ArchiveChoiceForm
-from pod.video.forms import ChannelForm
-from pod.video.forms import FrontThemeForm
-from pod.video.forms import VideoPasswordForm
-from pod.video.forms import VideoDeleteForm
-from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
-
-
+from pod.video.forms import (
+    AdvancedNotesForm,
+    ArchiveChoiceForm,
+    ChannelForm,
+    FrontThemeForm,
+    NoteCommentsForm,
+    VideoDeleteForm,
+    VideoForm,
+    VideoPasswordForm,
+    VideoVersionForm,
+)
 from pod.video.models import (
     NOTES_STATUS,
     AdvancedNotes,
@@ -109,11 +107,8 @@ from pod.video.models import (
     get_transcription_choices,
 )
 from pod.video.rest_views import ChannelSerializer
-from pod.video.utils import (
-    get_videos as video_get_videos,
-    archive_video,
-    archive_and_get_link,
-)
+from pod.video.utils import archive_and_get_link, archive_video
+from pod.video.utils import get_videos as video_get_videos
 
 from .context_processors import get_available_videos
 from .utils import (
@@ -2810,6 +2805,9 @@ def stats_view(request, slug=None, slug_t=None):
     " (videos, video, channel or theme)
     """
     target = request.GET.get("from", "videos")
+    allowed_targets = {"videos", "video", "channel", "theme"}
+    if target not in allowed_targets:
+        target = "videos"
     videos, title = get_videos(slug, target, slug_t)
     error_message = _(
         "The following “%(target)s” type target does not exist or contains no videos: %(slug)s."

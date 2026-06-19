@@ -1407,7 +1407,10 @@ function parseAndLoadWebVTT(vtt) {
   var rxTimeLine = /^([\d.:]+)\s+-->\s+([\d.:]+)(?:\s.*)?$/;
   var rxCaptionLine = /^(?:<v\s+([^>]+)>)?([^\r\n]+)$/;
   var rxBlankLine = /^\s*$/;
-  var rxMarkup = /<[^>]>/g;
+  var stripHtmlTags = function (line) {
+    const parsed = new DOMParser().parseFromString(line, "text/html");
+    return parsed.body.textContent || "";
+  };
 
   var cueStart = null,
     cueEnd = null,
@@ -1452,7 +1455,7 @@ function parseAndLoadWebVTT(vtt) {
     var captionMatch = rxCaptionLine.exec(vttLines[i]);
     if (captionMatch && cueStart && cueEnd) {
       // captionMatch[1] is the optional voice (speaker) we're ignoring
-      var capLine = captionMatch[2].replace(rxMarkup, "");
+      var capLine = stripHtmlTags(captionMatch[2]);
       if (cueText)
         cueText += "\n" + capLine; // Add a line break for new lines
       else {

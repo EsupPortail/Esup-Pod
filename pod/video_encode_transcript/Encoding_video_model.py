@@ -8,6 +8,7 @@ import time
 
 from django.conf import settings
 from django.core.files import File
+from django.utils.translation import gettext_lazy as _
 
 from pod.completion.models import Track
 from pod.video.models import LANG_CHOICES, Video
@@ -62,6 +63,21 @@ else:
 
 class Encoding_video_model(Encoding_video):
     """Encoding video model."""
+
+    def _safe_output_path(self, filepath: str) -> str:
+        """Return a normalized path constrained to the current encoding output dir."""
+        output_dir = os.path.realpath(self.get_output_dir())
+        candidate_path = os.path.realpath(filepath)
+        try:
+            is_in_output_dir = (
+                os.path.commonpath([candidate_path, output_dir]) == output_dir
+            )
+        except ValueError as err:
+            raise ValueError(_("Unsafe path for encoding output: %s") % filepath) from err
+
+        if not is_in_output_dir:
+            raise ValueError(_("Unsafe path for encoding output: %s") % filepath)
+        return candidate_path
 
     def remove_old_data(self) -> None:
         """Remove data from previous encoding."""
@@ -297,10 +313,14 @@ class Encoding_video_model(Encoding_video):
         return video
 
     def wait_for_file(self, filepath) -> None:
+        safe_filepath = self._safe_output_path(filepath)
+        output_dir = os.path.realpath(self.get_output_dir())
+        if os.path.commonpath([safe_filepath, output_dir]) != output_dir:
+            raise ValueError(_("Unsafe path for encoding output: %s") % filepath)
         time_to_wait = 40
         time_counter = 0
-        logger.info("wait_for_file: %s" % filepath)
-        while not os.path.exists(filepath):
+        logger.info("wait_for_file: %s" % safe_filepath)
+        while not os.path.exists(safe_filepath):
             time.sleep(1)
             time_counter += 1
             print(".", end="")
@@ -309,7 +329,14 @@ class Encoding_video_model(Encoding_video):
 
     def store_json_info(self) -> Video:
         """Open json file and store its data in current instance."""
-        infovideojsonfilepath = os.path.join(self.get_output_dir(), "info_video.json")
+        infovideojsonfilepath = self._safe_output_path(
+            os.path.join(self.get_output_dir(), "info_video.json")
+        )
+        output_dir = os.path.realpath(self.get_output_dir())
+        if os.path.commonpath([infovideojsonfilepath, output_dir]) != output_dir:
+            raise ValueError(
+                _("Unsafe path for encoding output: %s") % infovideojsonfilepath
+            )
         if not check_file(infovideojsonfilepath):
             self.wait_for_file(infovideojsonfilepath)
 

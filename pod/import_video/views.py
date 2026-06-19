@@ -3,52 +3,67 @@
 More information on this module at: https://www.esup-portail.org/wiki/x/BQCnSw
 """
 
+# For PeerTube download
+import json
 import logging
 import os
-import requests
 import subprocess
 import threading
 import time
-
-# For PeerTube download
-import json
-
-from .models import ExternalRecording
-from .forms import ExternalRecordingForm
-from .utils import StatelessRecording, download_video_file
-from .utils import manage_recording_url, check_source_url, parse_remote_file
-from .utils import save_video, secure_request_for_upload
-from .utils import check_video_size, verify_video_exists_and_size
-from .utils import define_dest_file_and_path, check_file_exists, move_file
-from .utils import check_url_format_presentation, check_url_need_token
-from .utils import get_playbacks_urls_with_token, TypeSourceURL
 from datetime import datetime
+from urllib.error import HTTPError
+
+import requests
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
-from django.contrib import messages
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import render, redirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.html import mark_safe
-from django.utils.translation import gettext_lazy as _
 from django.utils.text import get_valid_filename
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.csrf import ensure_csrf_cookie
-from pod.import_video.utils import manage_download
-from pod.main.views import in_maintenance
-from pod.main.utils import secure_post_request, display_message_with_icon, is_ajax
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
 # For Youtube download, use PyTubeFix in replacement of PyTube
 from pytubefix import YouTube
 from pytubefix.exceptions import PytubeFixError, VideoUnavailable
 
+from pod.import_video.utils import manage_download
+
 # To convert old BBB presentation
-from pod.main.tasks import task_start_bbb_presentation_encode_and_upload_to_pod
-from pod.main.tasks import task_start_bbb_presentation_encode_and_move_to_destination
+from pod.main.tasks import (
+    task_start_bbb_presentation_encode_and_move_to_destination,
+    task_start_bbb_presentation_encode_and_upload_to_pod,
+)
+from pod.main.utils import display_message_with_icon, is_ajax, secure_post_request
+from pod.main.views import in_maintenance
+from pod.video.utils import resolution_to_int
+
+from .forms import ExternalRecordingForm
+from .models import ExternalRecording
+from .utils import (
+    StatelessRecording,
+    TypeSourceURL,
+    check_file_exists,
+    check_source_url,
+    check_url_format_presentation,
+    check_url_need_token,
+    check_video_size,
+    define_dest_file_and_path,
+    download_video_file,
+    get_playbacks_urls_with_token,
+    manage_recording_url,
+    move_file,
+    parse_remote_file,
+    safe_request,
+    save_video,
+    secure_request_for_upload,
+    verify_video_exists_and_size,
+)
 
 RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY", True
@@ -425,12 +440,12 @@ def upload_recording_to_pod(request, record_id: int) -> bool:
 
         # Manage differents source types
         if recording.type == "youtube":
-            return upload_youtube_recording_to_pod(request, record_id)
+            return bool(upload_youtube_recording_to_pod(request, record_id))
         elif recording.type == "peertube":
-            return upload_peertube_recording_to_pod(request, record_id)
+            return bool(upload_peertube_recording_to_pod(request, record_id))
         else:
             # Upload a standard or BBB video file, or a BBB presentation
-            return upload_video_recording_to_pod(request, record_id)
+            return bool(upload_video_recording_to_pod(request, record_id))
     except Exception as exc:
         msg = {}
         proposition = ""
@@ -551,6 +566,7 @@ def upload_standard_video_recording_to_pod(record_id: int) -> bool:
         return True
     except Exception as exc:
         manage_standard_exception(exc)
+        return False
 
 
 def upload_bbb_esr_video_recording_to_pod(record_id: int, source_url: str) -> bool:
@@ -604,6 +620,7 @@ def upload_bbb_esr_video_recording_to_pod(record_id: int, source_url: str) -> bo
         return True
     except Exception as exc:
         manage_standard_exception(exc)
+        return False
 
 
 def upload_local_video_recording_to_pod(record_id: id, dest_file: str, dest_path: str):
@@ -708,7 +725,7 @@ def get_mediacad_api_description(type_source_url: TypeSourceURL) -> str:
     mc_video_desc = ""
     mc_video_title = ""
     try:
-        with requests.get(url_api_video, timeout=3, stream=True) as response:
+        with safe_request("get", url_api_video, timeout=3, stream=True) as response:
             if response.status_code == 200:
                 mc_video_json = json.loads(response.content.decode("utf-8"))
                 mc_video_title = mc_video_json["title"]
@@ -730,6 +747,113 @@ def get_mediacad_api_description(type_source_url: TypeSourceURL) -> str:
     return description
 
 
+def _log_youtube_adaptive_limit(yt_video, selected_stream, yt_client: str) -> None:
+    """Log when higher resolutions are only available through adaptive streams."""
+    try:
+        adaptive_best_stream = (
+            yt_video.streams.filter(
+                adaptive=True,
+                only_video=True,
+                file_extension="mp4",
+            )
+            .order_by("resolution")
+            .desc()
+            .first()
+        )
+        adaptive_best_resolution = resolution_to_int(
+            getattr(adaptive_best_stream, "resolution", None)
+        )
+        selected_resolution = resolution_to_int(
+            getattr(selected_stream, "resolution", None)
+        )
+        if adaptive_best_resolution > selected_resolution:
+            log.info(
+                "upload_youtube_recording_to_pod - %s client: progressive max is %sp; "
+                "adaptive video reaches %sp (requires audio/video merge, disabled)."
+                % (yt_client, selected_resolution, adaptive_best_resolution)
+            )
+    except Exception:
+        # This log must never block the upload flow.
+        return
+
+
+def _select_best_youtube_progressive_stream(yt_video):
+    """Select the best progressive stream, capped to 1080p when available."""
+    progressive_streams = (
+        yt_video.streams.filter(progressive=True).order_by("resolution").desc()
+    )
+    fallback_stream = None
+    for stream in progressive_streams:
+        if fallback_stream is None:
+            fallback_stream = stream
+        if resolution_to_int(getattr(stream, "resolution", None)) <= 1080:
+            return stream
+
+    if fallback_stream is not None:
+        return fallback_stream
+
+    return yt_video.streams.get_highest_resolution()
+
+
+def _get_youtube_video_and_stream(source_url: str):
+    """Return the first working YouTube object and best progressive stream."""
+    last_youtube_error = None
+    for yt_client in ("ANDROID_VR", "WEB"):
+        try:
+            yt_video = YouTube(source_url, yt_client)
+            selected_stream = _select_best_youtube_progressive_stream(yt_video)
+            _log_youtube_adaptive_limit(yt_video, selected_stream, yt_client)
+
+            if selected_stream is not None:
+                return yt_video, selected_stream
+        except (VideoUnavailable, PytubeFixError, HTTPError) as youtube_error:
+            last_youtube_error = youtube_error
+            log.warning(
+                "upload_youtube_recording_to_pod - client %s failed - %s"
+                % (yt_client, youtube_error)
+            )
+
+    if last_youtube_error is not None:
+        raise last_youtube_error
+    raise ValueError(_("YouTube content is inaccessible."))
+
+
+def _build_youtube_upload_error(exc: Exception) -> dict:
+    """Build user-facing error payload for YouTube upload failures."""
+    if isinstance(exc, PytubeFixError):
+        return {
+            "error": _("YouTube error “%s”" % (mark_safe(exc))),
+            "message": "%s\n%s"
+            % (
+                _("YouTube content is inaccessible."),
+                _("This content does not appear to be publicly available."),
+            ),
+            "proposition": _("Try changing the address of this recording."),
+        }
+
+    if isinstance(exc, HTTPError):
+        return {
+            "error": _("YouTube error"),
+            "message": "%s\n%s"
+            % (
+                _("YouTube content is inaccessible."),
+                _("This content does not appear to be publicly available."),
+            ),
+            "proposition": _("Try changing the address of this recording."),
+        }
+
+    return {
+        "error": _("YouTube error"),
+        "message": _(
+            "YouTube content is unavailable. "
+            "This content does not appear to be publicly available."
+        ),
+        "proposition": _(
+            "Try changing the access rights to the video directly in Youtube."
+        ),
+    }
+
+
 def upload_youtube_recording_to_pod(request, record_id: int):
     """Upload Youtube recording to Pod.
 
@@ -749,16 +873,14 @@ def upload_youtube_recording_to_pod(request, record_id: int):
         # Manage source URL from video playback
         source_url = request.POST.get("source_url")
 
-        # Use pytubefix to download Youtube file
-        # Manage Proof of Origin Token generation
-        # See https://pytubefix.readthedocs.io/en/latest/user/po_token.html
-        yt_video = YouTube(source_url, "WEB")
+        # Use pytubefix to download Youtube file.
+        # On some public videos, WEB client may return HTTP 403.
+        # Prefer ANDROID_VR and keep WEB as fallback.
+        yt_video, yt_stream = _get_youtube_video_and_stream(source_url)
+
         # Publish date (format: 2023-05-13 00:00:00)
         # Event date (format: 2023-05-13)
         date_evt = str(yt_video.publish_date)[0:10]
-
-        # Setting video resolution
-        yt_stream = yt_video.streams.get_highest_resolution()
 
         # Verify that video not oversized
         check_video_size(yt_stream.filesize)
@@ -779,7 +901,6 @@ def upload_youtube_recording_to_pod(request, record_id: int):
             request.user.owner.hashkey,
             filename,
         )
-
         # Download video
         yt_stream.download(dest_dir, filename=filename)
 
@@ -795,33 +916,17 @@ def upload_youtube_recording_to_pod(request, record_id: int):
         save_video(request.user, dest_path, recording_title, description, date_evt)
         return True
 
-    except VideoUnavailable as ptfvu:
-        log.error("upload_youtube_recording_to_pod - VideoUnavailable - %s" % ptfvu)
-        msg = {}
-        msg["error"] = _("YouTube error")
-        msg["message"] = _(
-            "YouTube content is unavailable. "
-            "This content does not appear to be publicly available."
+    except (VideoUnavailable, PytubeFixError, HTTPError) as youtube_error:
+        log.error(
+            "upload_youtube_recording_to_pod - %s - %s"
+            % (youtube_error.__class__.__name__, youtube_error)
         )
-        msg["proposition"] = _(
-            "Try changing the access rights to the video directly in Youtube."
-        )
-        raise ValueError(msg)
-    except PytubeFixError as ptferror:
-        log.error("upload_youtube_recording_to_pod - PytubeFixError - %s" % ptferror)
-        msg = {}
-        msg["error"] = _("YouTube error “%s”" % (mark_safe(ptferror)))
-        msg["message"] = "%s\n%s" % (
-            _("YouTube content is inaccessible."),
-            _("This content does not appear to be publicly available."),
-        )
-        msg["proposition"] = _("Try changing the address of this recording.")
-        raise ValueError(msg)
+        raise ValueError(_build_youtube_upload_error(youtube_error))
     except Exception as exc:
         manage_standard_exception(exc)
 
 
-def upload_peertube_recording_to_pod(request, record_id: int) -> bool:
+def upload_peertube_recording_to_pod(request, record_id: int) -> bool | None:
     """Upload Peertube recording to Pod.
 
     More information: https://docs.joinpeertube.org/api/rest-getting-started
@@ -874,7 +979,9 @@ def upload_peertube_recording_to_pod(request, record_id: int) -> bool:
             url_api_video = source_url.replace("/w/", "/api/v1/videos/")
             url_api_video = url_api_video.replace("/videos/watch/", "/api/v1/videos/")
 
-        with requests.get(url_api_video, timeout=(10, 180), stream=True) as response:
+        with safe_request(
+            "get", url_api_video, timeout=(10, 180), stream=True
+        ) as response:
             if response.status_code != 200:
                 msg = {}
                 msg["error"] = _("PeerTube error")
@@ -1183,11 +1290,11 @@ def get_stateless_recording(request, data: ExternalRecording):
 def get_status_recording(data: ExternalRecording) -> str:
     """Get the status of an external recording."""
     if data.uploaded_to_pod_by is None and data.state is None:
-        state = _("Video file not uploaded to Pod")
+        state = str(_("Video file not uploaded to Pod"))
     elif data.uploaded_to_pod_by is not None:
-        state = _("Video file already uploaded to Pod")
+        state = str(_("Video file already uploaded to Pod"))
     else:
-        state = data.state
+        state = str(data.state) if data.state is not None else ""
     return state
 
 
