@@ -1,29 +1,29 @@
 """Esup-Pod video utilities."""
 
-from django.db.models.functions import Lower
-import os
+import csv
+import importlib
 import json
+import logging
+import os
 import re
 import shutil
-import logging
-import importlib
-from math import ceil
-import csv
 from datetime import date
+from math import ceil
+
 from defusedxml import minidom
-from django.core.serializers import serialize
-
-from django.urls import reverse
 from django.conf import settings
-from django.http import JsonResponse
-from django.db.models import Q, Count
-from django.utils.translation import gettext_lazy as _
-from django.template.loader import render_to_string
-
-from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
-from pod.video_encode_transcript.models import PlaylistVideo
 from django.contrib.auth import get_user_model
-from pod.video.models import Video, Category, Type, Discipline, VideoToDelete
+from django.core.serializers import serialize
+from django.db.models import Count, Q
+from django.db.models.functions import Lower
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+
+from pod.video.models import Category, Discipline, Type, Video, VideoToDelete
+from pod.video_encode_transcript.models import (EncodingAudio, EncodingVideo,
+                                                PlaylistVideo)
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -116,6 +116,21 @@ def is_archiving_authorized(vid: Video) -> bool:
 ###############################################################
 # EMAIL
 ###############################################################
+
+
+def resolution_to_int(resolution: str | None) -> int:
+    """Convert a textual resolution like ``1080p`` or ``1080i`` into an integer."""
+    if not isinstance(resolution, str):
+        return 0
+
+    match = re.fullmatch(r"(\d+)[piPI]", resolution.strip())
+    if match is None:
+        return 0
+
+    try:
+        return int(match.group(1))
+    except ValueError:
+        return 0
 
 
 def pagination_data(request_path, offset, limit, total_count):
@@ -745,10 +760,10 @@ def archive_pack(
     dry_mode: bool = True,
 ) -> None:
     """Create a archive package for Video vid."""
-    from pod.video.models import Notes, AdvancedNotes, Comment, ViewCount
     from pod.chapter.models import Chapter
     from pod.completion.models import Contributor, Document, Overlay, Track
     from pod.enrichment.models import Enrichment
+    from pod.video.models import AdvancedNotes, Comment, Notes, ViewCount
 
     # Create directory to store all the data
     os.makedirs(media_package_dir, exist_ok=True)

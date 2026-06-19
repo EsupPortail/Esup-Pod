@@ -1,11 +1,15 @@
 """Esup-Pod forms handling."""
 
-from django import forms
-from django.utils.translation import gettext_lazy as _
-from django.conf import settings
-from captcha.fields import CaptchaField
-from .forms_utils import add_placeholder_and_asterisk
 import os
+
+from captcha.fields import CaptchaField
+from django import forms
+from django.conf import settings
+from django.core.exceptions import SuspiciousFileOperation, ValidationError
+from django.utils._os import safe_join
+from django.utils.translation import gettext_lazy as _
+
+from .forms_utils import add_placeholder_and_asterisk
 
 SUBJECT_CHOICES = getattr(
     settings,
@@ -35,15 +39,24 @@ class DownloadFileForm(forms.Form):
 
     def clean(self):
         """Clean "download file" form submission."""
-        clean_filename = self.cleaned_data["filename"]
-        fullname = os.path.join(settings.MEDIA_ROOT, clean_filename)
-        dirname = os.path.dirname(fullname)
-        if not os.path.isfile(clean_filename):
-            raise FileNotFoundError
-        elif not dirname.startswith(settings.MEDIA_ROOT):
-            raise ValueError("File not in media directory")
-        else:
-            return self.cleaned_data
+        cleaned_data = super(DownloadFileForm, self).clean()
+        clean_filename = cleaned_data.get("filename")
+        if not clean_filename:
+            return cleaned_data
+
+        media_root = os.path.realpath(settings.MEDIA_ROOT)
+        try:
+            fullname = os.path.realpath(safe_join(settings.MEDIA_ROOT, clean_filename))
+            if os.path.commonpath([fullname, media_root]) != media_root:
+                raise ValidationError(_("File not in media directory"))
+        except (SuspiciousFileOperation, ValueError):
+            raise ValidationError(_("File not in media directory"))
+
+        if not os.path.isfile(fullname):
+            raise ValidationError(_("File not found"))
+
+        cleaned_data["filename"] = fullname
+        return cleaned_data
 
 
 class ContactUsForm(forms.Form):

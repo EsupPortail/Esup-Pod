@@ -5,18 +5,15 @@
 
 import importlib
 from argparse import _
-from datetime import datetime, timedelta, date
+from datetime import date, datetime, timedelta
 
 from django.core.mail import mail_managers
+from django.core.management.base import BaseCommand, CommandError
 from django.template.defaultfilters import striptags
 
 from pod import settings
-from pod.video.models import Video, Channel, Comment, Type, Theme, Category
-
 from pod.playlist.models import Playlist
-
-from django.core.management.base import BaseCommand, CommandError
-
+from pod.video.models import Category, Channel, Comment, Theme, Type, Video
 from pod.video.tests.test_obsolescence import ARCHIVE_OWNER_USERNAME
 
 USE_RESPIT = getattr(settings, "USE_RESPIT", False)
@@ -218,6 +215,7 @@ class Command(BaseCommand):
         return data_to_add
 
     def _send_mail_to_managers(self, notif_list):
+        """Send a summary email to managers"""
         msg_html = (
             "Hello !</br></br>The deadline for the following videos has been postponed according to the model's guidelines : "
             + RESPIT_MODEL

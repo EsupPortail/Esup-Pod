@@ -5243,7 +5243,15 @@
                           "pod_version_init": "4.3.0"
                         },
                         "RESPIT_MODEL_PARAMETERS": {
-                          "default_value": "base",
+                          "default_value": [
+                                "{",
+                                "   'respit_criteria_parameter': [],",
+                                "   'archiving_criteria_parameter': {",
+                                "       'excluded_title_terms': [],",
+                                "       'excluded_discipline_terms': [],",
+                                "   }",
+                                "}"
+                            ],
                           "description": {
                             "en": [
                                 "All parameters that can be used by RESPIT_MODEL. These parameters are in",
@@ -5253,7 +5261,13 @@
                                 "   'respit_criteria_parameter': [...],",
                                 "   'archiving_criteria_parameter': {",
                                 "       'minimum_expected_score': value,",
-                                "       'attribute_scores': [...],",
+                                "       'attribute_scores': [",
+                                "           'title': 2,",
+                                "           'description',: 3,",
+                                "           'discipline',: 2,",
+                                "           'tags',: 2,",
+                                "           'date_evt',: 1,",
+                                "       ],",
                                 "       'excluded_title_terms': [...],",
                                 "       'excluded_discipline_terms': [...],",
                                 "   }",
@@ -5261,7 +5275,7 @@
                             ],
                             "fr": [
                                 "Ensemble des paramètres qui vont pouvoir être utilisés par RESPIT_MODEL.",
-                                "Ces paramètres sont au format JSON et dépendent de du modèle choisis.",
+                                "Ces paramètres sont au format JSON et dépendent du modèle choisis.",
                                 "Pour 'criteria_model' il sera de la forme : ",
                                 "{",
                                 "   'respit_criteria_parameter': [...],",
