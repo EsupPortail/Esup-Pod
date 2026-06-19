@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
+import contextlib
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from src.apps.video.models import Video
@@ -173,11 +174,13 @@ class EncodingWebhookView(APIView):
                 encoding_obj.file.save(
                     encoded_video_file.name, encoded_video_file, save=True
                 )
-                os.unlink(encoded_video_file.file.name)
+                with contextlib.suppress(FileNotFoundError):
+                    os.unlink(encoded_video_file.file.name)
 
         if thumbnail_path:
             if video.overview:
                 video.overview.delete(save=False)
             new_overview = client.download_task_file_to_temp(task_id, thumbnail_path)
             video.overview.save(new_overview.name, new_overview, save=False)
-            os.unlink(new_overview.file.name)
+            with contextlib.suppress(FileNotFoundError):
+                os.unlink(new_overview.file.name)
