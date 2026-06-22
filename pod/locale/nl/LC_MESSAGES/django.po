@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-09 11:02+0000\n"
+"POT-Creation-Date: 2026-06-22 11:46+0200\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -392,11 +392,9 @@ msgstr ""
 #: pod/live/templates/live/event-script.html pod/main/context_processors.py
 #: pod/main/templates/base.html pod/main/templates/navbar.html
 #: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
-#: pod/video/management/commands/check_obsolete_videos.py
-#: pod/video/management/commands/check_video_owner_exists.py
-#: pod/video/models.py pod/video/templates/videos/video-script.html
-#: pod/video/utils.py pod/video/views.py
-#: pod/video_encode_transcript/runner_manager.py
+#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
+#: pod/video/templates/videos/video-script.html pod/video/utils.py
+#: pod/video/views.py pod/video_encode_transcript/runner_manager.py
 #: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
 #: pod/video_encode_transcript/templates/admin_runnermanager_change_list.html
 #: pod/video_encode_transcript/templates/admin_task_change_list.html
@@ -1311,11 +1309,6 @@ msgstr ""
 msgid ""
 "There is an overlap with the overlay {0}, please change time start and/or "
 "time end values."
-msgstr ""
-
-#: pod/completion/permissions/video.py
-#, python-brace-format
-msgid "{func.__name__}: Permission denied for user {current_user.pk}."
 msgstr ""
 
 #: pod/completion/templates/contributor/form_contributor.html
@@ -2944,7 +2937,7 @@ msgstr ""
 
 #: pod/import_video/utils.py
 #, python-format
-msgid "The source file '%s' does not exist."
+msgid "The source file “%s” does not exist."
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -6641,13 +6634,6 @@ msgid "Private"
 msgstr ""
 
 #: pod/playlist/models.py
-#, python-brace-format
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
-msgstr ""
-
-#: pod/playlist/models.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
@@ -7022,6 +7008,10 @@ msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
+msgstr ""
+
+#: pod/playlist/views.py
+msgid "Delete the playlist"
 msgstr ""
 
 #: pod/playlist/views.py
@@ -7412,7 +7402,7 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr ""
 
@@ -7709,21 +7699,6 @@ msgstr ""
 
 #: pod/recorder/admin.py
 msgid "Encode selected recordings and create new video"
-msgstr ""
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Studio recording {item.id} encoding started"
-msgstr ""
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Recording {item.id} is not a studio recording and can’t be encoded"
-msgstr ""
-
-#: pod/recorder/admin.py
-#, python-brace-format
-msgid "Error for {item}: {e}"
 msgstr ""
 
 #: pod/recorder/admin.py
@@ -8623,34 +8598,6 @@ msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid ""
-"You can choose to extend the duration of your video, archive it (it will be "
-"unpublished and no longer accessible), download it along with all its "
-"associated data, or delete it (after saving it) by clicking here:"
-msgstr ""
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to extend the duration of your video, archive it (it will be "
-"unpublished and no longer accessible), or download it along with all its "
-"associated data by clicking here:"
-msgstr ""
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to archive your video (it will be unpublished and no longer "
-"accessible), download it along with all its associated data, or delete it "
-"(after saving it) by clicking here:"
-msgstr ""
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to archive your video (it will be unpublished and no longer "
-"accessible), or download it along with all its associated data by clicking "
-"here:"
-msgstr ""
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
 "Unless you take action, your video will be archived (unpublished) and may be "
 "deleted."
 msgstr ""
@@ -8698,6 +8645,30 @@ msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid "Your video will be obsolete soon"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "extend the duration of your video"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "archive it (it will be unpublished and no longer accessible)"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "delete it (after saving it)"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "You can choose to..."
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "download it along with all its associated data"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "...by clicking here:"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -10646,33 +10617,33 @@ msgstr ""
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Unable to reach runner manager '%(name)s' at %(url)s. Check the URL and "
+"Unable to reach runner manager “%(name)s” at %(url)s. Check the URL and "
 "network access. Error: %(error)s"
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Runner manager '%(name)s' responded but rejected authentication (HTTP "
+"Runner manager “%(name)s” responded but rejected authentication (HTTP "
 "%(status)s). Check the bearer token."
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
-msgid "Connection to runner manager '%(name)s' succeeded (HTTP %(status)s)."
+msgid "Connection to runner manager “%(name)s” succeeded (HTTP %(status)s)."
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Runner manager '%(name)s' is reachable but endpoint %(url)s was not found "
+"Runner manager “%(name)s” is reachable but endpoint %(url)s was not found "
 "(HTTP 404). Check the configured URL."
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Runner manager '%(name)s' is reachable but returned an unexpected response "
+"Runner manager “%(name)s” is reachable but returned an unexpected response "
 "(HTTP %(status)s)."
 msgstr ""
 

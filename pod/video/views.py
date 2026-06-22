@@ -120,6 +120,7 @@ from .utils import (
     get_filtered_types_for_videos,
     get_headband,
     get_id_from_request,
+    is_archiving_authorized,
     pagination_data,
     sort_videos_list,
 )
@@ -3940,9 +3941,11 @@ def video_respit(request, slug):
     The interface allows to extend, archive or delete a video in the appropriated context.
     """
     display_or_not = able_or_not_respit(slug, request.user)
-    form = ArchiveChoiceForm(request.POST)
-
     vid = get_object_or_404(Video, slug=slug)
+    form = ArchiveChoiceForm(
+        request.POST or None,
+        archiving_authorized=is_archiving_authorized(vid),
+    )
 
     return render(
         request,
@@ -3964,6 +3967,7 @@ def valid_form_respit(request, slug=None):
     user = request.user
     if request.method == "POST":
         if user.is_authenticated:
+            vid = get_object_or_404(Video, slug=slug)
             action = request.POST["action"]
             if (
                 action == "Delete"
@@ -3982,7 +3986,12 @@ def valid_form_respit(request, slug=None):
                     raise Exception("You can't extender your video more.")
 
             if action == "Archive":
-                return render(request, "videos/archive_or_not.html", {"slug": slug})
+                if is_archiving_authorized(vid):
+                    return render(request, "videos/archive_or_not.html", {"slug": slug})
+                return HttpResponseBadRequest(
+                    "Impossible to archive. This user is not authorized to archive this video."
+                )
+    return HttpResponseBadRequest("Impossible to process this form.")
 
 
 @login_required(redirect_field_name="referrer")
@@ -4056,12 +4065,18 @@ def go_archive(request, slug=None):
     """
     This function will launch a archive process and say if it has worked or not on an interface.
     """
-    if able_or_not_respit(slug, request.user) is True and ENABLE_PAGE_OBSO_MAIL:
-        archive_video(Video.objects.get(slug=slug))
+    vid = get_object_or_404(Video, slug=slug)
+
+    if (
+        able_or_not_respit(slug, request.user) is True
+        and ENABLE_PAGE_OBSO_MAIL
+        and is_archiving_authorized(vid)
+    ):
+        archive_video(vid)
         return HttpResponsePermanentRedirect("/video/well/archived/or/not/" + slug)
     else:
         return HttpResponseBadRequest(
-            "Impossible to archive. This service is not available."
+            "Impossible to archive. This service is not available for this video."
         )
 
 

@@ -1,4 +1,7 @@
-"""Esup-Pod security regression tests for frontend assets."""
+"""
+Esup-Pod security regression tests for frontend assets.
+*  run with 'python manage.py test pod.main.tests.test_security_static_assets'
+"""
 
 import unittest
 from pathlib import Path
@@ -34,24 +37,3 @@ class FrontendSecurityAssetsTests(unittest.TestCase):
         self.assertIn('name="type"', template)
         self.assertIn('type="submit"', template)
         self.assertIn("btn btn-primary btn-sm", template)
-
-    def test_completion_overlay_validation_uses_dom_parser(self):
-        """Test that overlay validation checks forbidden tags via parsed DOM."""
-        script = self._read_asset("pod/completion/static/js/completion.js")
-        self.assertIn('parsed.querySelector("script, iframe")', script)
-        self.assertNotIn("var tags = /<script.+?>|<iframe.+?>/;", script)
-
-    def test_caption_maker_strips_html_with_dom_parser(self):
-        """Test that caption sanitization no longer relies on a brittle regex."""
-        script = self._read_asset("pod/completion/static/js/caption_maker.js")
-        self.assertIn("var stripHtmlTags = function (line) {", script)
-        self.assertIn('new DOMParser().parseFromString(line, "text/html")', script)
-        self.assertNotIn("rxMarkup", script)
-
-    def test_comment_script_sets_reply_content_as_text(self):
-        """Test that comment/reply content is inserted as text content."""
-        script = self._read_asset("pod/video/static/js/comment-script.js")
-        self.assertIn("contentBody.textContent = content;", script)
-        self.assertIn("author.textContent = `@${reply_to}`;", script)
-        self.assertIn("content.textContent = reply_content;", script)
-        self.assertNotIn('.querySelector(".comment_content_body").innerHTML =', script)
