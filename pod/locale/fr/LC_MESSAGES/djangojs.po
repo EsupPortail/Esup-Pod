@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
 msgid "No discipline"
@@ -787,7 +787,7 @@ msgstr "Options de filtre pour %s"
 
 #: pod/video/static/js/FilterManager.js
 msgid "Filter: %(name)s - %(label)s"
-msgstr "Filtre : %(name)s - %(label)s"
+msgstr "Filtre : %(name)s - %(label)s"
 
 #: pod/video/static/js/FilterManager.js
 msgid "%(name)s: %(label)s"
