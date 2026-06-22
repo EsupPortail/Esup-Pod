@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-22 11:46+0200\n"
+"POT-Creation-Date: 2026-06-22 21:25+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -255,6 +255,10 @@ msgid "Import the quiz"
 msgstr "Importer le quiz"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Import transcript"
+msgstr "Importer la transcription"
+
+#: pod/ai_enhancement/templates/choose_video_element.html
 msgid "Remove this enhancement"
 msgstr "Supprimer cette amélioration"
 
@@ -405,9 +409,11 @@ msgstr ""
 #: pod/live/templates/live/event-script.html pod/main/context_processors.py
 #: pod/main/templates/base.html pod/main/templates/navbar.html
 #: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
-#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
-#: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/runner_manager.py
+#: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/videos/video-script.html
+#: pod/video/utils.py pod/video/views.py
+#: pod/video_encode_transcript/runner_manager.py
 #: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
 #: pod/video_encode_transcript/templates/admin_runnermanager_change_list.html
 #: pod/video_encode_transcript/templates/admin_task_change_list.html
@@ -537,6 +543,11 @@ msgstr "Supprimer l’amélioration de la vidéo"
 #: pod/ai_enhancement/views.py
 msgid "You cannot use AI to improve this video."
 msgstr "Vous ne pouvez pas utiliser l’IA pour améliorer cette vidéo."
+
+#: pod/ai_enhancement/views.py
+msgctxt "document filename"
+msgid "Transcript"
+msgstr "Transcription"
 
 #: pod/ai_enhancement/views.py
 msgid "Video Caption Maker - Aristote AI Version"
@@ -1358,6 +1369,11 @@ msgstr ""
 "Il y a un chevauchement avec la superposition {0}, veuillez changer son "
 "temps de début et/ou de fin."
 
+#: pod/completion/permissions/video.py
+#, python-brace-format
+msgid "{func.__name__}: Permission denied for user {current_user.pk}."
+msgstr ""
+
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
@@ -1411,6 +1427,19 @@ msgstr "Liste des documents complémentaires"
 #: pod/video/templates/videos/video-info.html
 msgid "Public document"
 msgstr "Document public"
+
+#: pod/completion/templates/document/list_document.html
+#, fuzzy, python-format
+#| msgid "Modify the additional resource “%(document_name)s”"
+msgid "Download the additional resource “%(document_name)s”"
+msgstr "Modifier le document complémentaire « %(document_name)s »"
+
+#: pod/completion/templates/document/list_document.html
+#: pod/live/templates/live/event-info.html
+#: pod/podfile/templates/podfile/list_folder_files.html
+#: pod/video/templates/videos/video-info.html
+msgid "Download"
+msgstr "Télécharger"
 
 #: pod/completion/templates/document/list_document.html
 #, python-format
@@ -1735,8 +1764,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format "
-"« .vtt »."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format « ."
+"vtt »."
 
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
@@ -3866,12 +3895,6 @@ msgstr "QR code pour ce lien :"
 msgid "Download this QR code"
 msgstr "Télécharger ce QR code"
 
-#: pod/live/templates/live/event-info.html
-#: pod/podfile/templates/podfile/list_folder_files.html
-#: pod/video/templates/videos/video-info.html
-msgid "Download"
-msgstr "Télécharger"
-
 #: pod/live/templates/live/event-script.html
 msgid "Recording not done: "
 msgstr "Impossible de commencer l’enregistrement : "
@@ -5355,6 +5378,7 @@ msgstr "Vous venez d’envoyer un message depuis"
 
 #: pod/main/templates/mail/mail_sender.html
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 msgid "Regards"
 msgstr "Cordialement"
 
@@ -7087,6 +7111,14 @@ msgid "Private"
 msgstr "Privé"
 
 #: pod/playlist/models.py
+#, fuzzy, python-brace-format
+#| msgid "Please choose a title between 1 and %(max)s characters."
+msgid ""
+"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"characters."
+msgstr "Veuillez entrer un titre contenant entre 1 et %(max)s caractères."
+
+#: pod/playlist/models.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
@@ -7483,10 +7515,6 @@ msgstr "Vous ne pouvez pas accéder à cette liste de lecture."
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
-
-#: pod/playlist/views.py
-msgid "Delete the playlist"
-msgstr "Supprimer la liste de lecture"
 
 #: pod/playlist/views.py
 #, python-format
@@ -7888,7 +7916,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py pod/quiz/tests/test_models.py
+#: pod/quiz/models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -8211,6 +8239,22 @@ msgstr "Modification du quiz pour la vidéo « %s »"
 #: pod/recorder/admin.py
 msgid "Encode selected recordings and create new video"
 msgstr "Encoder les enregistrements sélectionnés et créer une nouvelle vidéo"
+
+#: pod/recorder/admin.py
+#, fuzzy, python-brace-format
+#| msgid "Studio recording associated to the task"
+msgid "Studio recording {item.id} encoding started"
+msgstr "Enregistrement studio associé à la tâche"
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Recording {item.id} is not a studio recording and can’t be encoded"
+msgstr ""
+
+#: pod/recorder/admin.py
+#, python-brace-format
+msgid "Error for {item}: {e}"
+msgstr ""
 
 #: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
@@ -9222,6 +9266,7 @@ msgstr ""
 "être supprimée par un gestionnaire ou automatiquement"
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello %(name)s,"
 msgstr "Bonjour %(name)s,"
@@ -9266,6 +9311,7 @@ msgstr ""
 "charge de votre établissement à l’adresse suivante : %(email_address)s."
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Sending mail to %(to_email)s for video %(title)s."
 msgstr "Envoi d’un courriel à %(to_email)s pour la vidéo %(title)s."
@@ -9299,11 +9345,13 @@ msgid "...by clicking here:"
 msgstr "…en cliquant ici :"
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello manager(s) of %(estab)s on %(site_title)s,"
 msgstr "Bonjour le(s) gestionnaire(s) de %(estab)s sur %(site_title)s,"
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello manager(s) of %(site_title)s,"
 msgstr "Bonjour au(x) gestionnaire(s) de %(site_title)s,"
@@ -9364,6 +9412,54 @@ msgstr ""
 #, python-format
 msgid "In %(deadline)s days:"
 msgstr "Dans %(deadline)s jours :"
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, python-format
+msgid "%(old)s replaced by %(new)s"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, fuzzy
+#| msgid "For information, you will find below the list of deleted video."
+msgid "For information, you will find below the list of reaffected videos."
+msgstr ""
+"Pour information, vous trouverez ci-dessous la liste des vidéos supprimées."
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, fuzzy
+#| msgid "The deleted videos on Pod"
+msgid "The reaffected videos on Pod"
+msgstr "Les vidéos supprimées sur Pod"
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, fuzzy, python-format
+#| msgid "Manager of “%(et)s” notified for %(nb)s deleted video(s)."
+msgid "Manager(s) of “%(et)s” notified for %(nb)s reaffected video(s)."
+msgstr ""
+"Le(s) gestionnaire(s) de « %(et)s » ont été notifié(s) de %(nb)s vidéo(s) "
+"supprimée(s)."
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, fuzzy, python-format
+#| msgid ""
+#| "Your video entitled <a href=\"%(scheme)s:%(url)s\">“%(title)s”</a> will "
+#| "soon arrive at the deletion deadline."
+msgid ""
+"You are now the owner of the video <a href=\"%(scheme)s:"
+"%(url)s\">“%(title)s”</a>."
+msgstr ""
+"Votre vidéo intitulée « <a href=\"%(scheme)s:%(url)s\">%(title)s</a> » "
+"arrive bientôt à la date limite de suppression."
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid ""
+"You were automatically designated as the owner because the previous owner is "
+"no longer at the institution and you were previously an additional owner."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "You have been designated as the owner of a video"
+msgstr ""
 
 #: pod/video/management/commands/create_archive_package.py
 #: pod/video/management/commands/unarchive_video.py
@@ -11751,3 +11847,5 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#~ msgid "Delete the playlist"
+#~ msgstr "Supprimer la liste de lecture"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-22 11:46+0200\n"
+"POT-Creation-Date: 2026-06-22 21:25+0000\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -247,6 +247,10 @@ msgid "Import the quiz"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Import transcript"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
 msgid "Remove this enhancement"
 msgstr ""
 
@@ -392,9 +396,11 @@ msgstr ""
 #: pod/live/templates/live/event-script.html pod/main/context_processors.py
 #: pod/main/templates/base.html pod/main/templates/navbar.html
 #: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
-#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
-#: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/runner_manager.py
+#: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/videos/video-script.html
+#: pod/video/utils.py pod/video/views.py
+#: pod/video_encode_transcript/runner_manager.py
 #: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
 #: pod/video_encode_transcript/templates/admin_runnermanager_change_list.html
 #: pod/video_encode_transcript/templates/admin_task_change_list.html
@@ -514,6 +520,11 @@ msgstr ""
 
 #: pod/ai_enhancement/views.py
 msgid "You cannot use AI to improve this video."
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgctxt "document filename"
+msgid "Transcript"
 msgstr ""
 
 #: pod/ai_enhancement/views.py
@@ -1311,6 +1322,11 @@ msgid ""
 "time end values."
 msgstr ""
 
+#: pod/completion/permissions/video.py
+#, python-brace-format
+msgid "{func.__name__}: Permission denied for user {current_user.pk}."
+msgstr ""
+
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
@@ -1363,6 +1379,18 @@ msgstr ""
 #: pod/completion/templates/document/list_document.html
 #: pod/video/templates/videos/video-info.html
 msgid "Public document"
+msgstr ""
+
+#: pod/completion/templates/document/list_document.html
+#, python-format
+msgid "Download the additional resource “%(document_name)s”"
+msgstr ""
+
+#: pod/completion/templates/document/list_document.html
+#: pod/live/templates/live/event-info.html
+#: pod/podfile/templates/podfile/list_folder_files.html
+#: pod/video/templates/videos/video-info.html
+msgid "Download"
 msgstr ""
 
 #: pod/completion/templates/document/list_document.html
@@ -3626,12 +3654,6 @@ msgstr ""
 msgid "Download this QR code"
 msgstr ""
 
-#: pod/live/templates/live/event-info.html
-#: pod/podfile/templates/podfile/list_folder_files.html
-#: pod/video/templates/videos/video-info.html
-msgid "Download"
-msgstr ""
-
 #: pod/live/templates/live/event-script.html
 msgid "Recording not done: "
 msgstr ""
@@ -5084,6 +5106,7 @@ msgstr ""
 
 #: pod/main/templates/mail/mail_sender.html
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 msgid "Regards"
 msgstr ""
 
@@ -8616,39 +8639,12 @@ msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid ""
-"You can choose to extend the duration of your video, archive it (it will be "
-"unpublished and no longer accessible), download it along with all its "
-"associated data, or delete it (after saving it) by clicking here:"
-msgstr ""
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to extend the duration of your video, archive it (it will be "
-"unpublished and no longer accessible), or download it along with all its "
-"associated data by clicking here:"
-msgstr ""
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to archive your video (it will be unpublished and no longer "
-"accessible), download it along with all its associated data, or delete it "
-"(after saving it) by clicking here:"
-msgstr ""
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to archive your video (it will be unpublished and no longer "
-"accessible), or download it along with all its associated data by clicking "
-"here:"
-msgstr ""
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
 "Unless you take action, your video will be archived (unpublished) and may be "
 "deleted."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello %(name)s,"
 msgstr ""
@@ -8685,6 +8681,7 @@ msgid ""
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Sending mail to %(to_email)s for video %(title)s."
 msgstr ""
@@ -8694,11 +8691,37 @@ msgid "Your video will be obsolete soon"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+msgid "extend the duration of your video"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "archive it (it will be unpublished and no longer accessible)"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "delete it (after saving it)"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "You can choose to..."
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "download it along with all its associated data"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "...by clicking here:"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello manager(s) of %(estab)s on %(site_title)s,"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello manager(s) of %(site_title)s,"
 msgstr ""
@@ -8748,6 +8771,41 @@ msgstr ""
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid "In %(deadline)s days:"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, python-format
+msgid "%(old)s replaced by %(new)s"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "For information, you will find below the list of reaffected videos."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "The reaffected videos on Pod"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, python-format
+msgid "Manager(s) of “%(et)s” notified for %(nb)s reaffected video(s)."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, python-format
+msgid ""
+"You are now the owner of the video <a href=\"%(scheme)s:"
+"%(url)s\">“%(title)s”</a>."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid ""
+"You were automatically designated as the owner because the previous owner is "
+"no longer at the institution and you were previously an additional owner."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "You have been designated as the owner of a video"
 msgstr ""
 
 #: pod/video/management/commands/create_archive_package.py
@@ -10639,33 +10697,33 @@ msgstr ""
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Unable to reach runner manager '%(name)s' at %(url)s. Check the URL and "
+"Unable to reach runner manager “%(name)s” at %(url)s. Check the URL and "
 "network access. Error: %(error)s"
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Runner manager '%(name)s' responded but rejected authentication (HTTP "
+"Runner manager “%(name)s” responded but rejected authentication (HTTP "
 "%(status)s). Check the bearer token."
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
-msgid "Connection to runner manager '%(name)s' succeeded (HTTP %(status)s)."
+msgid "Connection to runner manager “%(name)s” succeeded (HTTP %(status)s)."
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Runner manager '%(name)s' is reachable but endpoint %(url)s was not found "
+"Runner manager “%(name)s” is reachable but endpoint %(url)s was not found "
 "(HTTP 404). Check the configured URL."
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
 #, python-format
 msgid ""
-"Runner manager '%(name)s' is reachable but returned an unexpected response "
+"Runner manager “%(name)s” is reachable but returned an unexpected response "
 "(HTTP %(status)s)."
 msgstr ""
 
