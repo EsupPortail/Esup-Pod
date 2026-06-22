@@ -53,8 +53,8 @@ class TestDressingViewSet:
 
         assert response.status_code == 200
         # Should only see Dressing 2 because user is owner
-        assert len(response.data) == 1
-        assert response.data[0]["title"] == "Dressing 2"
+        assert len(response.data["results"]) == 1
+        assert response.data["results"][0]["title"] == "Dressing 2"
 
     def test_create_dressing(self, api_client, user):
         """Test creating a dressing instance and verifying default ownership."""
@@ -78,7 +78,7 @@ class TestDressingViewSet:
         response = api_client.get("/api/dressing/dressing/")
 
         assert response.status_code == 200
-        assert len(response.data) == 2
+        assert len(response.data["results"]) == 2
 
     def test_dressing_disabled(self, api_client, user):
         """Test that if use_dressing is False, endpoints return 403."""
