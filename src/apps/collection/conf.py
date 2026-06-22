@@ -74,7 +74,9 @@ class CollectionConfig(BaseSettings):
     )
     owner_can_manage_themes: bool = Field(
         default=defaults.OWNER_CAN_MANAGE_THEMES,
-        description=_("Allow channel owners to create their own themes in their channels."),
+        description=_(
+            "Allow channel owners to create their own themes in their channels."
+        ),
         json_schema_extra={"public": True},
     )
 
