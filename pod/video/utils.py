@@ -1,28 +1,28 @@
 """Esup-Pod video utilities."""
 
-from django.db.models.functions import Lower
-import os
+import csv
+import importlib
 import json
+import logging
+import os
 import re
 import shutil
-import logging
-from math import ceil
-import csv
 from datetime import date
+from math import ceil
+
 from defusedxml import minidom
-from django.core.serializers import serialize
-
-from django.urls import reverse
 from django.conf import settings
-from django.http import JsonResponse
-from django.db.models import Q, Count
-from django.utils.translation import gettext_lazy as _
-from django.template.loader import render_to_string
-
-from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
-from pod.video_encode_transcript.models import PlaylistVideo
 from django.contrib.auth import get_user_model
-from pod.video.models import Video, Category, Type, Discipline, VideoToDelete
+from django.core.serializers import serialize
+from django.db.models import Count, Q
+from django.db.models.functions import Lower
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+
+from pod.video.models import Category, Discipline, Type, Video, VideoToDelete
+from pod.video_encode_transcript.models import EncodingAudio, EncodingVideo, PlaylistVideo
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -72,6 +72,46 @@ ARCHIVE_CSV = "%s/archived.csv" % settings.LOG_DIRECTORY
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 
 ARCHIVE_ROOT = getattr(settings, "ARCHIVE_ROOT", "/video_archiving")
+
+USE_RESPIT = getattr(settings, "USE_RESPIT", False)
+
+RESPIT_MODEL = getattr(settings, "RESPIT_MODEL", "base")
+
+
+def is_archiving_authorized(vid: Video) -> bool:
+    """Check if video owner's affiliation is allowed to archive."""
+    if vid is None:
+        return False
+
+    if not getattr(settings, "POD_ARCHIVE_AFFILIATION", []):
+        return False
+    allowed_affiliations = getattr(settings, "POD_ARCHIVE_AFFILIATION", [])
+
+    owner = getattr(vid.owner, "owner", None)
+    owner_affiliation = getattr(owner, "affiliation", "")
+    if not owner_affiliation:
+        return False
+
+    is_owner_affiliations_allowed = owner_affiliation.strip() in allowed_affiliations
+
+    # Check if the video can be archived.
+    if USE_RESPIT:
+        allowed_video = False
+        try:
+            mod = importlib.import_module(
+                "pod.video.management.commands.respit_model." + RESPIT_MODEL
+            )
+            allowed_video = mod.can_video_be_archived(vid)
+        except ModuleNotFoundError:
+            print("An Error occurred while processing.")
+        except ImportError:
+            print("An Error occurred while processing.")
+
+    else:
+        allowed_video = True
+
+    return bool(allowed_affiliations and is_owner_affiliations_allowed and allowed_video)
+
 
 ###############################################################
 # EMAIL
@@ -720,10 +760,10 @@ def archive_pack(
     dry_mode: bool = True,
 ) -> None:
     """Create a archive package for Video vid."""
-    from pod.video.models import Notes, AdvancedNotes, Comment, ViewCount
     from pod.chapter.models import Chapter
     from pod.completion.models import Contributor, Document, Overlay, Track
     from pod.enrichment.models import Enrichment
+    from pod.video.models import AdvancedNotes, Comment, Notes, ViewCount
 
     # Create directory to store all the data
     os.makedirs(media_package_dir, exist_ok=True)

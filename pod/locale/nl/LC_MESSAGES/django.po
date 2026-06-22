@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-02 15:01+0200\n"
+"POT-Creation-Date: 2026-06-02 13:57+0000\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -395,9 +395,6 @@ msgstr ""
 #: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
 #: pod/video/templates/videos/video-script.html pod/video/utils.py
 #: pod/video/views.py pod/video_encode_transcript/runner_manager.py
-#: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
-#: pod/video_encode_transcript/templates/admin_runnermanager_change_list.html
-#: pod/video_encode_transcript/templates/admin_task_change_list.html
 #: pod/video_encode_transcript/utils.py
 msgid "Home"
 msgstr ""
@@ -2513,7 +2510,6 @@ msgstr ""
 
 #: pod/import_video/models.py pod/meeting/models.py pod/playlist/models.py
 #: pod/recorder/models.py pod/video/models.py
-#: pod/video_encode_transcript/models.py
 msgid "User"
 msgstr ""
 
@@ -2837,37 +2833,6 @@ msgid ""
 msgstr ""
 
 #: pod/import_video/utils.py
-msgid "Forbidden address"
-msgstr ""
-
-#: pod/import_video/utils.py
-msgid ""
-"This address points to a local, private, or otherwise forbidden network "
-"resource."
-msgstr ""
-
-#: pod/import_video/utils.py
-msgid "Use a public URL or ask an administrator to authorize this host."
-msgstr ""
-
-#: pod/import_video/utils.py
-#, python-format
-msgid "The remote host could not be resolved: %(host)s"
-msgstr ""
-
-#: pod/import_video/utils.py
-msgid "Only HTTP and HTTPS addresses are allowed for remote imports."
-msgstr ""
-
-#: pod/import_video/utils.py
-msgid "Authenticated URLs are not allowed for remote imports."
-msgstr ""
-
-#: pod/import_video/utils.py
-msgid "Too many redirects were encountered for this address."
-msgstr ""
-
-#: pod/import_video/utils.py
 msgid "No URL found / No recording name"
 msgstr ""
 
@@ -2887,14 +2852,6 @@ msgstr ""
 msgid ""
 "In the case of a video from a Pod platform, please enter the source file "
 "address, available in the video edition."
-msgstr ""
-
-#: pod/import_video/utils.py pod/import_video/views.py
-msgid "Impossible to upload to Pod the video"
-msgstr ""
-
-#: pod/import_video/utils.py
-msgid "Forbidden destination path."
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -2926,30 +2883,6 @@ msgstr ""
 msgid "The video file for this recording was not found."
 msgstr ""
 
-#: pod/import_video/utils.py
-#, python-format
-msgid "Forbidden source path: %s"
-msgstr ""
-
-#: pod/import_video/utils.py
-#, python-format
-msgid "Forbidden destination path: %s"
-msgstr ""
-
-#: pod/import_video/utils.py
-msgid "Forbidden move path."
-msgstr ""
-
-#: pod/import_video/utils.py
-#, python-format
-msgid "The source file '%s' does not exist."
-msgstr ""
-
-#: pod/import_video/utils.py
-#, python-format
-msgid "Error moving the file: %s"
-msgstr ""
-
 #: pod/import_video/views.py
 msgid "You cannot view this recording."
 msgstr ""
@@ -2971,6 +2904,10 @@ msgstr ""
 
 #: pod/import_video/views.py
 msgid "Impossible to create the external recording"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Impossible to upload to Pod the video"
 msgstr ""
 
 #: pod/import_video/views.py pod/meeting/views.py
@@ -2995,15 +2932,9 @@ msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
-msgid "YouTube error “%s”"
-msgstr ""
-
-#: pod/import_video/views.py
-msgid "This content does not appear to be publicly available."
-msgstr ""
-
-#: pod/import_video/views.py
-msgid "Try changing the address of this recording."
+msgid ""
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -3022,9 +2953,15 @@ msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
-msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+msgid "YouTube error “%s”"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "This content does not appear to be publicly available."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Try changing the address of this recording."
 msgstr ""
 
 #: pod/import_video/views.py
@@ -4057,14 +3994,6 @@ msgstr ""
 
 #: pod/main/forms.py
 msgid "Other (please specify)"
-msgstr ""
-
-#: pod/main/forms.py
-msgid "File not in media directory"
-msgstr ""
-
-#: pod/main/forms.py
-msgid "File not found"
 msgstr ""
 
 #: pod/main/forms.py
@@ -5350,14 +5279,6 @@ msgstr ""
 
 #: pod/main/utils.py
 msgid "This view cannot be accessed directly."
-msgstr ""
-
-#: pod/main/views.py
-msgid "File does not exist or is outside media."
-msgstr ""
-
-#: pod/main/views.py
-msgid "Invalid file request."
 msgstr ""
 
 #: pod/main/views.py
@@ -8012,14 +7933,6 @@ msgstr ""
 msgid "Recording files"
 msgstr ""
 
-#: pod/recorder/plugins/type_studio.py pod/recorder/views.py
-msgid "Path traversal detected."
-msgstr ""
-
-#: pod/recorder/plugins/type_studio.py
-msgid "Unsafe recorder file path."
-msgstr ""
-
 #: pod/recorder/templates/recorder/add_recording.html
 msgid "Adding a new record"
 msgstr ""
@@ -8101,22 +8014,6 @@ msgstr ""
 msgid "Sorry, no record found"
 msgstr ""
 
-#: pod/recorder/utils.py
-msgid "Missing upload file."
-msgstr ""
-
-#: pod/recorder/utils.py
-msgid "Invalid filename."
-msgstr ""
-
-#: pod/recorder/utils.py
-msgid "Invalid upload path."
-msgstr ""
-
-#: pod/recorder/utils.py
-msgid "Access denied: ID mismatch."
-msgstr ""
-
 #: pod/recorder/views.py
 msgid "Recorder should be indicated."
 msgstr ""
@@ -8162,11 +8059,6 @@ msgstr ""
 
 #: pod/recorder/views.py
 msgid "Recorder for Studio not found."
-msgstr ""
-
-#: pod/recorder/views.py
-#, python-format
-msgid "%(name)s set to %(state)s"
 msgstr ""
 
 #: pod/speaker/forms.py
@@ -8482,10 +8374,6 @@ msgid ""
 "people who are in these groups."
 msgstr ""
 
-#: pod/video/forms.py
-msgid "Invalid media path."
-msgstr ""
-
 #: pod/video/forms.py pod/video/templates/videos/add_video.html
 msgid ""
 "Transcription is a speech recognition technology that transforms an oral "
@@ -8620,31 +8508,27 @@ msgid "%s video(s) archived."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to extend the duration of your video, archive it (it will be "
-"unpublished and no longer accessible), download it along with all its "
-"associated data, or delete it (after saving it) by clicking here:"
+msgid "extend the duration of your video"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to extend the duration of your video, archive it (it will be "
-"unpublished and no longer accessible), or download it along with all its "
-"associated data by clicking here:"
+msgid "archive it (it will be unpublished and no longer accessible)"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to archive your video (it will be unpublished and no longer "
-"accessible), download it along with all its associated data, or delete it "
-"(after saving it) by clicking here:"
+msgid "delete it (after saving it)"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid ""
-"You can choose to archive your video (it will be unpublished and no longer "
-"accessible), or download it along with all its associated data by clicking "
-"here:"
+msgid "You can choose to..."
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "download it along with all its associated data"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "...by clicking here:"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -10604,18 +10488,6 @@ msgstr ""
 msgid "Server error while processing filter."
 msgstr ""
 
-#: pod/video_encode_transcript/Encoding_video_model.py
-#, python-format
-msgid "Unsafe path for encoding output: %s"
-msgstr ""
-
-#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
-#: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
-#: pod/video_encode_transcript/templates/admin_runnermanager_change_list.html
-#: pod/video_encode_transcript/templates/admin_task_change_list.html
-msgid "Runner managers"
-msgstr ""
-
 #: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
 msgid "resolution"
 msgstr ""
@@ -10825,15 +10697,7 @@ msgid "Runner manager"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
-msgid "User with absolute task queue priority (priority 0)."
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Priority user"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Priority users"
+msgid "Runner managers"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
@@ -10922,25 +10786,6 @@ msgstr ""
 
 #: pod/video_encode_transcript/models.py
 msgid "Tasks"
-msgstr ""
-
-#: pod/video_encode_transcript/rest_views.py
-msgid "Unsafe temporary path."
-msgstr ""
-
-#: pod/video_encode_transcript/rest_views.py
-msgid "Video not being encoded."
-msgstr ""
-
-#: pod/video_encode_transcript/rest_views.py
-#, python-format
-msgid "Different video id: %(expected)s - %(received)s"
-msgstr ""
-
-#: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
-msgid ""
-"Users listed here are processed first in the task queue (priority 0), before "
-"normal and student priorities."
 msgstr ""
 
 #: pod/video_encode_transcript/templates/admin_test_connection.html

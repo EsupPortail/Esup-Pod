@@ -1499,6 +1499,18 @@ class ArchiveChoiceForm(forms.Form):
         label=False,
     )
 
+    def __init__(self, *args, **kwargs) -> None:
+        """Initialize choices according to archive authorization."""
+        archiving_authorized = kwargs.pop("archiving_authorized", True)
+        super().__init__(*args, **kwargs)
+
+        if not archiving_authorized:
+            self.fields["action"].choices = [
+                (value, label)
+                for value, label in self.fields["action"].choices
+                if value != "Archive"
+            ]
+
     def get_choices_with_help(self):
         return [
             {
@@ -1506,5 +1518,5 @@ class ArchiveChoiceForm(forms.Form):
                 "label": label,
                 "help": self.action_help_texts.get(value, ""),
             }
-            for value, label in self.CHOICES
+            for value, label in self.fields["action"].choices
         ]

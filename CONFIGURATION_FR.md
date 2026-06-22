@@ -542,6 +542,36 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> Liste de jours de délais avant l’obsolescence de la vidéo.<br>
   >> À chaque délai, le propriétaire reçoit un mail d’avertissement<br>
   >> pour éventuellement changer la date d’obsolescence de sa vidéo.<br>
+* `RESPIT_MODEL`
+  > valeur par défaut : `base`
+  >> Choix du mode de calcul pour le répit des vidéos obsolètes.<br>
+  >> C'est le script qui va être exécuté par la commande respit_launcher<br>
+  >> dans le but d’étendre la durée de vie de la vidéo avec un mode de calcul<br>
+  >> personnalisé. 'base' et 'criteria_model' sont des exemples dont vous<br>
+  >> pouvez vous inspirer pour proposer votre propre modèle de répit.<br>
+* `RESPIT_MODEL_PARAMETERS`
+  > valeur par défaut : `['{', "   'respit_criteria_parameter': [],", "   'archiving_criteria_parameter': {", "       'excluded_title_terms': [],", "       'excluded_discipline_terms': [],", '   }', '}']`
+  >> Ensemble des paramètres qui vont pouvoir être utilisés par RESPIT_MODEL.<br>
+  >> Ces paramètres sont au format JSON et dépendent du modèle choisis.<br>
+  >> Pour 'criteria_model' il sera de la forme :<br>
+  >> {<br>
+  >> 'respit_criteria_parameter': [...],<br>
+  >> 'archiving_criteria_parameter': {<br>
+  >> 'minimum_expected_score': value,<br>
+  >> 'attribute_scores': [...],<br>
+  >> 'excluded_title_terms': [...],<br>
+  >> 'excluded_discipline_terms': [...],<br>
+  >> }<br>
+  >> }<br>
+* `ENABLE_PAGE_OBSO_MAIL`
+  > valeur par défaut : `False`
+  >> Active l’envoi d’un lien pour prendre une décision sur le futur de la vidéo durant la campagne de rappel instanciée par check_obsolete_video.<br>
+* `PROLONGATION_GRANTED`
+  > valeur par défaut : `False`
+  >> Autorise l’utilisateur à étendre lui-même la durée de vie de ses vidéos à travers le courriel de rappel.<br>
+* `DELETION_GRANTED`
+  > valeur par défaut : `False`
+  >> Autorise l’utilisateur à supprimer lui-même ses vidéos à travers le courriel de rappel.<br>
 
 ### Modèle
 
@@ -2036,18 +2066,6 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
 * `VIEW_STATS_AUTH`
   > valeur par défaut : `False`
   >> Réserve l’accès aux statistiques des vidéos aux personnes authentifiées.<br>
-* `RESPIT_MODEL`
-  > valeur par défaut : `base`
-  >> Choix du mode de calcul pour le répit des vidéos obsolètes. C'est le script qui va être exécuté par la commande respit_launcher dans le but d’étendre la durée de vie de la vidéo avec un mode de calcul personnalisé. 'Base' est un exemple dont vous pouvez vous inspirer pour proposer votre propre modèle de répit.<br>
-* `ENABLE_PAGE_OBSO_MAIL`
-  > valeur par défaut : `False`
-  >> Active l’envoi d’un lien pour prendre une décision sur le futur de la vidéo durant la campagne de rappel instanciée par check_obsolete_video.<br>
-* `PROLONGATION_GRANTED`
-  > valeur par défaut : `False`
-  >> Autorise l’utilisateur à étendre lui-même la durée de vie de ses vidéos à travers le courriel de rappel.<br>
-* `DELETION_GRANTED`
-  > valeur par défaut : `False`
-  >> Autorise l’utilisateur à supprimer lui-même ses vidéos à travers le courriel de rappel.<br>
 
 ### Configuration de l’application encodage et transcription de vidéo
 
