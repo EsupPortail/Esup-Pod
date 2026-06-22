@@ -729,7 +729,7 @@ def move_file(source: str, destination: str) -> None:
 
         # Ensure that the source file exists
         if not check_file_exists(source):
-            print(_("The source file '%s' does not exist.") % source)
+            print(_("The source file “%s” does not exist.") % source)
             return
 
         # Move the file to the destination directory
