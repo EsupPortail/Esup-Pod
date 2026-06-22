@@ -212,11 +212,8 @@ class Comment extends HTMLElement {
       ".comment_content_body",
     );
     if (contentBody) {
-      if (content instanceof Node) {
-        contentBody.appendChild(content);
-      } else {
-        contentBody.textContent = content;
-      }
+      contentBody.textContent =
+        content instanceof Node ? (content.textContent ?? "") : String(content ?? "");
     }
     let svg_icon = [
       `<span class="unvoted"><i class="bi bi-star"></i></span>`,

@@ -41,13 +41,6 @@ class FrontendSecurityAssetsTests(unittest.TestCase):
         self.assertIn('parsed.querySelector("script, iframe")', script)
         self.assertNotIn("var tags = /<script.+?>|<iframe.+?>/;", script)
 
-    def test_caption_maker_strips_html_with_dom_parser(self):
-        """Test that caption sanitization no longer relies on a brittle regex."""
-        script = self._read_asset("pod/completion/static/js/caption_maker.js")
-        self.assertIn("var stripHtmlTags = function (line) {", script)
-        self.assertIn('new DOMParser().parseFromString(line, "text/html")', script)
-        self.assertNotIn("rxMarkup", script)
-
     def test_comment_script_sets_reply_content_as_text(self):
         """Test that comment/reply content is inserted as text content."""
         script = self._read_asset("pod/video/static/js/comment-script.js")

@@ -1388,6 +1388,16 @@ function processProxyVttResponse(obj) {
 }
 
 /**
+ * Strip Html tags from given line
+ * @param {*} line  - line to be stripped
+ * @returns stripped line
+ */
+function stripHtmlTags(line) {
+  return String(line).replace(/<[^>]*>/g, "").trim();
+};
+
+
+/**
  * Partial parser for WebVTT files based on the spec at http://dev.w3.org/html5/webvtt/
  * @param {[type]} vtt - VTT file content
  */
@@ -1407,10 +1417,6 @@ function parseAndLoadWebVTT(vtt) {
   var rxTimeLine = /^([\d.:]+)\s+-->\s+([\d.:]+)(?:\s.*)?$/;
   var rxCaptionLine = /^(?:<v\s+([^>]+)>)?([^\r\n]+)$/;
   var rxBlankLine = /^\s*$/;
-  var stripHtmlTags = function (line) {
-    const parsed = new DOMParser().parseFromString(line, "text/html");
-    return parsed.body.textContent || "";
-  };
 
   var cueStart = null,
     cueEnd = null,
