@@ -342,7 +342,7 @@ PROLONGATION_GRANTED = False
 DELETION_GRANTED = False
 
 RESPITE_MODEL_PARAMETERS = {
-    "respit_criteria_parameter": [],
+    "respite_criteria_parameter": [],
     "archiving_criteria_parameter": {
         "excluded_title_terms": [],
         "excluded_discipline_terms": [],

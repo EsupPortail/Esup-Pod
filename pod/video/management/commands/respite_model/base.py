@@ -7,8 +7,11 @@ We invite you to use this as a starting point to establish your own model.
 
 import json
 
+from pod.video.models import Video
+
 
 def calcul(parameters, dry_mode: bool = True):
+    """Calculate the number of days to add to date_delete"""
 
     # id: Id of the video (int)
     # title: Title of the video (string)
@@ -37,3 +40,7 @@ def calcul(parameters, dry_mode: bool = True):
         )
     print(json.dumps(parameters, sort_keys=True, indent=2, default=str))
     return 1
+
+def can_video_be_archived(vid: Video):
+    """Checks if a video can be archived"""
+    return True

@@ -46,7 +46,6 @@ from django.http import (
     HttpResponseBadRequest,
     HttpResponseForbidden,
     HttpResponseNotFound,
-    HttpResponsePermanentRedirect,
     JsonResponse,
     QueryDict,
 )

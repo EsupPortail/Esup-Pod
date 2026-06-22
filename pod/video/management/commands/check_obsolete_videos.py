@@ -208,24 +208,11 @@ class Command(BaseCommand):
             domain = get_current_site(request).domain
             base_url = f"{URL_SCHEME}://{domain}"
 
-            custom_message_page_obso_mail += "<p>%s</p><ul>" % _("You can choose to:")
-            custom_message_page_obso_mail += "<li>%s</li>" % (
-                _("archive your video (it will be unpublished and no longer accessible)"),
-            )
-            if PROLONGATION_GRANTED:
-                custom_message_page_obso_mail += "<li>%s</li> " % _(
-                    "postpone its deletion date"
-                )
-            if DELETION_GRANTED:
-                custom_message_page_obso_mail += "<li>%s</li> " % _(
-                    "delete it (after saving it)"
-                )
-            custom_message_page_obso_mail += "<li>%s</li>" % (
-                _("download it along with all its associated data"),
-            )
+            custom_message_page_obso_mail += "<p>%s</p>" % _("You can choose to do an action on your video:")
+            custom_message_page_obso_mail += self.html_options(video)
             respite_url = reverse("video:video_respite", args=(video.slug,))
             custom_message_page_obso_mail += (
-                '</ul><p style="margin:1em;font-size:1.2em"><a href="%s%s">%s</a></p>'
+                '<p style="margin:1em;font-size:1.2em"><a href="%s%s">%s</a></p>'
                 % (base_url, respite_url, _("Choose an action for my video"))
             )
 
@@ -305,29 +292,21 @@ class Command(BaseCommand):
             html_message=msg_html,
         )
 
-    def html_options(self, custom_message_page_obso_mail, video):
+    def html_options(self, video):
         options = []
-        if PROLONGATION_GRANTED:
-            options.append(_("extend the duration of your video"))
         if is_archiving_authorized(video):
             options.append(
                 _("archive it (it will be unpublished and no longer accessible)")
             )
+
+        if PROLONGATION_GRANTED:
+            options.append(_("postpone it’s deletion date"))
+
         if DELETION_GRANTED:
             options.append(_("delete it (after saving it)"))
-        custom_message_page_obso_mail += "<p>" + _("You can choose to...") + "</p><ul>"
-        if options:
-            custom_message_page_obso_mail += "".join(
-                f"<li>{option}</li>" for option in options
-            )
-        custom_message_page_obso_mail += (
-            "<li>"
-            + _("download it along with all its associated data")
-            + "</li></ul>"
-            + _("...by clicking here:")
-            + " "
-        )
-        return custom_message_page_obso_mail
+        options.append(_("download it along with all its associated data"))
+
+        return "<ul><li>%s</li>" % "</li><li>".join(options)
 
     def notify_manager_of_obsolete_video(self, list_video: dict) -> None:
         """Notify manager(s) with a list of obsolete videos."""
