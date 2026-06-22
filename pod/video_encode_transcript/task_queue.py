@@ -11,53 +11,78 @@ from typing import TypeAlias
 
 from pod.video.models import Video
 
-from .models import Task
+from .models import PriorityUser, Task
 
 log = logging.getLogger(__name__)
 
 QueuePriority: TypeAlias = int
-HIGH_PRIORITY: QueuePriority = 1
+HIGH_PRIORITY: QueuePriority = 0
+NORMAL_PRIORITY: QueuePriority = 1
 LOW_PRIORITY: QueuePriority = 2
 
 
-def get_user_priority(video: Video) -> QueuePriority:
+def get_priority_user_ids() -> set[int]:
+    """Return the set of users configured with absolute queue priority."""
+    return set(PriorityUser.objects.values_list("user_id", flat=True))
+
+
+def get_user_priority(
+    video: Video,
+    priority_user_ids: set[int] | None = None,
+) -> QueuePriority:
     """Return queue priority for a video owner."""
     try:
+        owner_id = getattr(video, "owner_id", None)
+        if owner_id:
+            if priority_user_ids is None:
+                if PriorityUser.objects.filter(user_id=owner_id).exists():
+                    return HIGH_PRIORITY
+            elif owner_id in priority_user_ids:
+                return HIGH_PRIORITY
+
         affiliation = video.owner.owner.affiliation
         if affiliation == "student":
             return LOW_PRIORITY
-        return HIGH_PRIORITY
+        return NORMAL_PRIORITY
     except AttributeError:
         log.warning(
-            "Cannot determine affiliation for video %s owner. Defaulting to high priority.",
+            "Cannot determine affiliation for video %s owner. Defaulting to normal priority.",
             video.id,
         )
-        return HIGH_PRIORITY
+        return NORMAL_PRIORITY
     except Exception as exc:
         log.warning(
-            "Error getting affiliation for video %s: %s. Defaulting to high priority.",
+            "Error getting affiliation for video %s: %s. Defaulting to normal priority.",
             video.id,
             str(exc),
         )
-        return HIGH_PRIORITY
+        return NORMAL_PRIORITY
 
 
-def _task_priority(task: Task) -> QueuePriority:
+def _task_priority(
+    task: Task,
+    priority_user_ids: set[int] | None = None,
+) -> QueuePriority:
     """Return priority for a pending task."""
     if not task.video_id or not task.video:
-        return HIGH_PRIORITY
-    return get_user_priority(task.video)
+        return NORMAL_PRIORITY
+    return get_user_priority(task.video, priority_user_ids=priority_user_ids)
 
 
 def get_sorted_pending_tasks() -> list[Task]:
     """Return all pending tasks sorted by queue priority and creation date."""
+    priority_user_ids = get_priority_user_ids()
     pending_tasks = list(
         Task.objects.filter(status="pending")
         .select_related("video", "video__owner", "video__owner__owner")
         .order_by("date_added", "id")
     )
     pending_tasks.sort(
-        key=lambda task: (_task_priority(task), task.date_added, task.id),
+        key=lambda task: (
+            _task_priority(task, priority_user_ids=priority_user_ids),
+            task.date_added,
+            task.id,
+        ),
     )
     return pending_tasks
 

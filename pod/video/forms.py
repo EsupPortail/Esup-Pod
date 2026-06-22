@@ -1,12 +1,25 @@
 """Forms for Esup-Pod video app."""
 
+import datetime
+import os
+import re
+from collections import OrderedDict
+
+from dateutil.relativedelta import relativedelta
 from django import forms
+from django.conf import settings
 from django.contrib.admin import widgets
 from django.contrib.auth.models import User
-from django.conf import settings
+from django.contrib.sites.models import Site
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import SuspiciousFileOperation, ValidationError
 from django.core.validators import FileExtensionValidator
-from django.core.exceptions import ValidationError
+from django.db.models.query import QuerySet
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.forms.widgets import ClearableFileInput, Media
+from django.template.defaultfilters import filesizeformat
+from django.utils._os import safe_join
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import filesizeformat
@@ -27,11 +40,24 @@ from pod.main.forms_utils import add_placeholder_and_asterisk, add_describedby_a
 from tinymce.widgets import TinyMCE
 from collections import OrderedDict
 from django_select2 import forms as s2forms
+from tinymce.widgets import TinyMCE
 
-import datetime
-from dateutil.relativedelta import relativedelta
-import os
-import re
+from pod.main.forms_utils import add_describedby_attr, add_placeholder_and_asterisk
+from pod.video_encode_transcript import encode
+from pod.video_encode_transcript.models import EncodingAudio, EncodingVideo, PlaylistVideo
+
+from .models import (
+    AdvancedNotes,
+    Channel,
+    Discipline,
+    NoteComments,
+    Notes,
+    Theme,
+    Type,
+    Video,
+    VideoVersion,
+    get_storage_path_video,
+)
 
 __FILEPICKER__ = False
 
@@ -323,6 +349,31 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
         ]
     ),
 )
+
+
+def safe_media_path(relative_path: str) -> str:
+    """Resolve a path under ``MEDIA_ROOT`` and block path traversal attempts.
+
+    Args:
+        relative_path (str): Relative file or directory path from ``MEDIA_ROOT``.
+
+    Returns:
+        str: Canonical absolute path inside ``MEDIA_ROOT``.
+
+    Raises:
+        ValidationError: If the path is invalid or escapes ``MEDIA_ROOT``.
+    """
+    media_root = os.path.realpath(settings.MEDIA_ROOT)
+    try:
+        full_path = os.path.realpath(
+            safe_join(settings.MEDIA_ROOT, os.fspath(relative_path))
+        )
+        if os.path.commonpath([full_path, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
+    except (SuspiciousFileOperation, TypeError, ValueError):
+        raise ValidationError(_("Invalid media path."))
+    return full_path
+
 
 if USE_TRANSCRIPTION:
     from ..video_encode_transcript import transcript
@@ -734,20 +785,26 @@ class VideoForm(forms.ModelForm):
     def move_video_source_file(self, new_path, new_dir, old_dir) -> None:
         """Move video source file in a new dir."""
         # create user repository
-        dest_file = os.path.join(settings.MEDIA_ROOT, new_path)
+        dest_file = safe_media_path(new_path)
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
+        source_file = safe_media_path(self.cleaned_data["video"].name)
+        media_root = os.path.realpath(settings.MEDIA_ROOT)
+        if os.path.commonpath([source_file, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
+        if os.path.commonpath([dest_file, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
         # move video
-        os.rename(
-            os.path.join(settings.MEDIA_ROOT, self.cleaned_data["video"].name),
-            dest_file,
-        )
+        os.rename(source_file, dest_file)
         # change path for video
         self.instance.video = new_path
         # Move Dir
-        os.rename(
-            os.path.join(settings.MEDIA_ROOT, old_dir),
-            os.path.join(settings.MEDIA_ROOT, new_dir),
-        )
+        old_dir_path = safe_media_path(old_dir)
+        new_dir_path = safe_media_path(new_dir)
+        if os.path.commonpath([old_dir_path, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
+        if os.path.commonpath([new_dir_path, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
+        os.rename(old_dir_path, new_dir_path)
         # Overview
         if self.instance.overview:
             self.instance.overview = self.instance.overview.name.replace(old_dir, new_dir)

@@ -340,4 +340,11 @@ RESPITE_MODEL = "base"
 ENABLE_PAGE_OBSO_MAIL = False
 PROLONGATION_GRANTED = False
 DELETION_GRANTED = False
-RESPITE_MODEL_PARAMETERS = []
+
+RESPITE_MODEL_PARAMETERS = {
+    "respit_criteria_parameter": [],
+    "archiving_criteria_parameter": {
+        "excluded_title_terms": [],
+        "excluded_discipline_terms": [],
+    },
+}
