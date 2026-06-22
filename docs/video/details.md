@@ -75,6 +75,22 @@ A subtitle file attached to a video (`src/apps/video/models/Subtitle.py`).
 
 ---
 
+### VideoHyperlink
+
+An interactive link displayed on top of the video during playback (`src/apps/video/models/VideoHyperlink.py`).
+
+| Field        | Type         | Description                                              |
+| :----------- | :----------- | :------------------------------------------------------- |
+| `video`      | FK → Video   | Parent video.                                            |
+| `text`       | CharField    | Display text for the link.                               |
+| `url`        | URLField     | Target URL.                                              |
+| `icon`       | CharField    | Name/class of the icon (e.g., `link`, `book`).           |
+| `position`   | CharField    | Position on screen: `top-left`, `bottom-right`, etc.     |
+| `time_start` | IntegerField | Start time in seconds.                                   |
+| `time_end`   | IntegerField | End time in seconds.                                     |
+
+---
+
 ### ViewCount
 
 Stores daily view statistics per video (`src/apps/video/models/ViewCount.py`).
@@ -124,6 +140,11 @@ The list of accessible videos depends on the user's authentication state:
 
 - Read: allowed for all.
 - Write/Delete: only the owner of the linked video.
+
+**`HyperlinkViewSet` Permissions** (inline logic via `_check_video_permission`):
+
+- Read: allowed for all.
+- Write/Delete: restricted to the video's owner, co-owners, or owners of the linked channel/playlist. Rejects with 403 Forbidden otherwise.
 
 ---
 
@@ -215,6 +236,7 @@ Managed via `VideoConfig` (pydantic-settings in `src/apps/video/conf.py`). Setti
 
 | Setting                      | Default       | Description                                                 |
 | :--------------------------- | :------------ | :---------------------------------------------------------- |
+| `USE_HYPERLINKS`             | `True`        | Enables the video hyperlinks system globally.               |
 | `WEBTV_MODE`                 | `False`       | If `True`, video file is optional (WebTV / channel mode).   |
 | `ALLOW_AUTHENTICATED_UPLOAD` | `True`        | Allow authenticated non-staff users to upload.              |
 | `RESTRICT_EDIT_TO_STAFF`     | `False`       | Locks write access to staff and admins only.                |
@@ -241,6 +263,7 @@ Key test files:
 
 - `test_models.py`: Unit tests for Video, Subtitle, and ViewCount models.
 - `test_views.py`: Integration tests for API endpoints (CRUD, stream, unlock, view counting).
+- `test_hyperlinks.py`: Specific API test suite for the `VideoHyperlink` endpoints and permission checks.
 - `test_scenarios.py`: End-to-end scenario tests (full upload → encoding → publish flow).
 - `test_signals.py`: Tests for file cleanup signals.
 

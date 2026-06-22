@@ -122,3 +122,7 @@ SHIB_NAME = env("SHIB_NAME", default="Identify Federation")
 
 USE_ESTABLISHMENT_FIELD = False
 REMOTE_USER_HEADER = "REMOTE_USER"
+
+# Defaults for affiliation and establishment
+DEFAULT_AFFILIATION = "student"
+DEFAULT_ESTABLISHMENT = "Etab_1"

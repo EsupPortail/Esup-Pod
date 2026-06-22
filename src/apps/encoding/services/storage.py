@@ -92,3 +92,16 @@ def get_storage_path_collection_image(instance, filename: str) -> str:
         timezone.now().strftime("%Y/%m/%d"),
         _hash_filename(filename),
     )
+
+
+def get_storage_path_document(instance, filename: str) -> str:
+    """
+    Generates the storage path for completion documents attached to a video.
+    Format: video/documents/%Y/%m/%d/hash.ext
+    """
+    return os.path.join(
+        "video",
+        "documents",
+        timezone.now().strftime("%Y/%m/%d"),
+        _hash_filename(filename),
+    )

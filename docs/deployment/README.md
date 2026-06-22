@@ -58,4 +58,5 @@ Selecting the wrong `.env` will load the wrong database configuration and cause 
 
 - ➡️ **[Development Environment](dev/dev.md)**: Local setup instructions and Docker workflow.
 - ➡️ **[Production Deployment](prod/prod.md)**: Production setup and deployment strategies (WIP).
+- ➡️ **[Data Migration (V4 to V5)](migration_v4_to_v5.md)**: Steps and scripts to migrate your existing database and media to V5.
 - ⬅️ **[Back to Index](../README.md)**

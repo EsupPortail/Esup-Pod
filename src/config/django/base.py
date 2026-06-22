@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     "src.apps.encoding",
     "tagulous",
     "src.apps.collection",
-    "src.apps.dressing",
+    "src.apps.completion",
 ]
 
 MIDDLEWARE = [
@@ -91,6 +91,8 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 20,
 }
 
 SPECTACULAR_SETTINGS = {
@@ -173,7 +175,7 @@ APPS_WITH_CUSTOM_SETTINGS = [
     "core",
     "encoding",
     "collection",
-    "dressing",
+    "completion",
 ]
 
 

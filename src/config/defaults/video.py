@@ -10,6 +10,7 @@ VIEW_STATS_AUTH = False
 USER_VIDEO_CATEGORY = False
 WEBTV_MODE = False
 USE_DUPLICATE = False
+USE_HYPERLINKS = False
 USE_CUT = False
 ALLOW_AUTHENTICATED_UPLOAD = True
 CHANNEL_MODE = False
@@ -59,6 +60,15 @@ METADATA_LANGUAGES = [
     {"value": "de", "label": "German"},
     {"value": "it", "label": "Italian"},
 ]
+
+# Subtitle languages choices
+SUBTITLE_LANGUAGES = [
+    {"value": "fr", "label": "French"},
+    {"value": "en", "label": "English"},
+    {"value": "es", "label": "Spanish"},
+    {"value": "de", "label": "German"},
+]
+DEFAULT_SUBTITLE_LANGUAGE = "fr"
 
 METADATA_LICENSES = [
     {"value": "CC-BY", "label": "Creative Commons BY"},

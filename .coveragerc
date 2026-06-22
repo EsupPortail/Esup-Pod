@@ -6,6 +6,8 @@ omit =
     */__init__.py
     manage.py
     src/config/*
+    src/apps/core/management/commands/import_data_*
+    src/apps/core/management/commands/export_data_*
 
 [report]
 exclude_lines =

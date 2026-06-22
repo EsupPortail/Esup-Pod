@@ -6,9 +6,8 @@ the different authentication providers.
 """
 
 from ..conf import auth_settings
-from ..models.utils import AFFILIATION_STAFF
 
-GROUP_STAFF = AFFILIATION_STAFF
+GROUP_STAFF = auth_settings.affiliation_staff
 
 CREATE_GROUP_FROM_AFFILIATION = auth_settings.create_group_from_affiliation
 
@@ -32,4 +31,4 @@ AUTH_LDAP_USER_SEARCH = (
 
 def is_staff_affiliation(affiliation) -> bool:
     """Check if user affiliation correspond to AFFILIATION_STAFF."""
-    return affiliation in AFFILIATION_STAFF
+    return affiliation in auth_settings.affiliation_staff

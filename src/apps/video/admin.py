@@ -21,7 +21,16 @@ from src.apps.video.models import (
     Language,
     License,
     Cursus,
+    VideoHyperlink,
 )
+
+
+class VideoHyperlinkInline(admin.TabularInline):
+    """Inline admin for VideoHyperlink inside Video."""
+
+    model = VideoHyperlink
+    extra = 1
+    fields = ("url", "text", "icon", "position", "time_start", "time_end")
 
 
 @admin.register(Video)
@@ -69,6 +78,16 @@ class SubtitleAdmin(admin.ModelAdmin):
 
     list_display = ("video", "language", "file")
     list_filter = ("language",)
+
+
+@admin.register(VideoHyperlink)
+class VideoHyperlinkAdmin(admin.ModelAdmin):
+    """Admin for VideoHyperlink."""
+
+    list_display = ("id", "video", "text", "url", "time_start", "time_end", "created_at")
+    list_filter = ("video",)
+    search_fields = ("text", "url", "video__title")
+    readonly_fields = ("id", "created_at", "updated_at")
 
 
 @admin.register(Language)
