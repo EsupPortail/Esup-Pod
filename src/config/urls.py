@@ -37,6 +37,7 @@ urlpatterns = [
     #   location ~ ^/media/videos/[^/]+/(\d{4})/\1_(\d+)\.mp4$ {
     #       return 301 /api/videos/$1/stream/?resolution=$2;
     #   }
+    path("api/", include("src.apps.completion.urls")),
     path("api/collections/", include("src.apps.collection.urls")),
     # SWAGGER
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
