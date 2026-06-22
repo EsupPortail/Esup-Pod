@@ -574,6 +574,15 @@ function generateWEBVTT() {
 }
 
 /**
+ * Count displayed caption characters without line breaks.
+ * @param {string} captionText - Caption content
+ * @return {number} character count without carriage returns/new lines
+ */
+function getCaptionVisibleLength(captionText) {
+  return captionText.replace(/[\r\n]/g, "").length;
+}
+
+/**
  * Check validity of every form and fires an invalid event on invalid elements.
  *
  * @return {bool} true if everything's fine
@@ -965,7 +974,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
       const nbCharsMsg = gettext("%s/%s characters");
       // Update numberCharactersDiv content
       const updateCharacterCount = () => {
-        let nbCharacters = this.captionTextInput.value.length;
+        let nbCharacters = getCaptionVisibleLength(this.captionTextInput.value);
         this.numberCharactersDiv.textContent = interpolate(nbCharsMsg, [
           nbCharacters,
           80,
@@ -1398,7 +1407,10 @@ function parseAndLoadWebVTT(vtt) {
   var rxTimeLine = /^([\d.:]+)\s+-->\s+([\d.:]+)(?:\s.*)?$/;
   var rxCaptionLine = /^(?:<v\s+([^>]+)>)?([^\r\n]+)$/;
   var rxBlankLine = /^\s*$/;
-  var rxMarkup = /<[^>]>/g;
+  var stripHtmlTags = function (line) {
+    const parsed = new DOMParser().parseFromString(line, "text/html");
+    return parsed.body.textContent || "";
+  };
 
   var cueStart = null,
     cueEnd = null,
@@ -1443,7 +1455,7 @@ function parseAndLoadWebVTT(vtt) {
     var captionMatch = rxCaptionLine.exec(vttLines[i]);
     if (captionMatch && cueStart && cueEnd) {
       // captionMatch[1] is the optional voice (speaker) we're ignoring
-      var capLine = captionMatch[2].replace(rxMarkup, "");
+      var capLine = stripHtmlTags(captionMatch[2]);
       if (cueText)
         cueText += "\n" + capLine; // Add a line break for new lines
       else {

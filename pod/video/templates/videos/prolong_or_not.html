@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_content %}
+    <div class="list-group">
+        <fieldset>
+            <legend>{% trans "Agreement required" %}</legend>
+            <div class="list-group-item">
+                <div class="form-group form-group-required ">
+                    <div>{% trans "Are you sure to want to extend this video life span?" %}</div>
+                    <small id="id_agreeHelp" class="form-text">
+                        {% blocktrans with rrd=RALLONGE_RESPIT_DAYS %}This will extend the video life span by {{ rrd }} days{% endblocktrans %}
+                    </small>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="text-center mt-1">
+        <a href="/video/go/prolong/{{ slug }}/"><button class="btn btn-danger">{% trans "Extend" %}</button></a>
+        <a href="/video/respit/{{ slug }}/" class="btn btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom">
+            {% trans "Back to choices" %}
+        </a>
+    </div>
+{% endblock page_content %}

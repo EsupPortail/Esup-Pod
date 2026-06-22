@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block page_content %}
+    <div class="list-group">
+        <fieldset>
+            <legend>{% trans "Video Archiving" %}</legend>
+            <div class="list-group-item">
+                <div class="form-group form-group-required ">
+                    {% if exist  == True %}
+                        {% trans "Your video has not been archived." %}
+                    {% else %}
+                        {% trans "Your video has been archived." %}
+                    {% endif %}
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="text-center mt-1">
+        <a href="/" class="btn btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Return to homepage" %}">
+            {% trans "Return to homepage" %}
+        </a>
+    </div>
+
+{% endblock page_content %}

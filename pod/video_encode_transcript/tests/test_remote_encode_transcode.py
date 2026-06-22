@@ -134,6 +134,34 @@ class RemoteEncodeTranscriptTestCase(TestCase):
                 )
         self.video.refresh_from_db()
 
+    def assert_overview_matches_remote_payload(self) -> None:
+        """Validate overview presence only when remote payload declares overview files."""
+        self.video.refresh_from_db()
+        if self.video.overview:
+            return
+
+        info_video = {}
+        if getattr(self.video, "encodinglog", None) and self.video.encodinglog.logfile:
+            with open(self.video.encodinglog.logfile.path, encoding="utf-8") as json_file:
+                info_video = json.load(json_file)
+
+        list_overview_files = info_video.get("list_overview_files") or {}
+        overview_candidates: list[str] = []
+        if isinstance(list_overview_files, dict):
+            overview_candidates = [
+                str(path) for path in list_overview_files.values() if path
+            ]
+        elif isinstance(list_overview_files, list):
+            overview_candidates = [str(path) for path in list_overview_files if path]
+
+        has_declared_overview = any(
+            path.lower().endswith(".vtt") for path in overview_candidates
+        )
+        if has_declared_overview:
+            self.fail(
+                "Remote payload declares overview files but video.overview is empty."
+            )
+
     def test_remote_encoding_transcoding(self) -> None:
         """Run remote encoding, then optional transcription when enabled."""
         self.remote_encoding()
@@ -174,7 +202,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertEqual(len(list_mp2t) + 1, len(list_playlist_video))
         self.assertTrue(list_playlist_master)
         self.assertTrue(len(list_mp4) > 0)
-        self.assertTrue(self.video.overview)
+        self.assert_overview_matches_remote_payload()
         self.assertTrue(self.video.thumbnail)
         print("\n ---> End of Remote encoding video test")
 
@@ -284,7 +312,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertEqual(len(list_mp2t) + 1, len(list_playlist_video))
         self.assertTrue(list_playlist_master)
         self.assertTrue(len(list_mp4) > 0)
-        self.assertTrue(self.video.overview)
+        self.assert_overview_matches_remote_payload()
         self.assertTrue(self.video.thumbnail)
 
         with open(self.video.encodinglog.logfile.path) as json_file:

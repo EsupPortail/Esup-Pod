@@ -4,9 +4,9 @@ Django global settings for pod_project.
 Django version: 4.2.
 """
 
+import importlib.util
 import os
 import sys
-import importlib.util
 
 # As a comment until a new version of django-chunked-upload is released on pypi
 # See requirements.txt (django-chunked-upload==2.0.0 replaced by
@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "4.2.0"
+VERSION = "4.3.0"
 
 ##
 # Installed applications list
@@ -187,7 +187,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAdminUser",),
-    "DEFAULT_PAGINATION_CLASS": ("rest_framework.pagination.PageNumberPagination"),
+    "DEFAULT_PAGINATION_CLASS": "pod.main.rest_pagination.CustomPagination",
     "PAGE_SIZE": 12,
 }
 
@@ -315,6 +315,15 @@ LOGGING = {
             "backupCount": 5,
             "formatter": "general",
         },
+        "video_encode_transcript": {
+            "level": "INFO",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "video_encode_transcript.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
     },
     "loggers": {
         "django": {
@@ -356,6 +365,11 @@ LOGGING = {
         "api": {
             "handlers": ["api"],
             "level": "ERROR",
+        },
+        "pod.video_encode_transcript": {
+            "handlers": ["video_encode_transcript"],
+            "level": "INFO",
+            "propagate": False,
         },
         "py.warnings": {
             "handlers": ["console"],

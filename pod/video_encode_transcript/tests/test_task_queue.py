@@ -12,7 +12,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from pod.video.models import Type, Video
-from pod.video_encode_transcript.models import Task
+from pod.video_encode_transcript.models import PriorityUser, Task
 from pod.video_encode_transcript.task_queue import (
     get_video_pending_encoding_queue_info,
     refresh_pending_task_ranks,
@@ -32,8 +32,11 @@ class TaskQueueTests(TestCase):
     def setUp(self) -> None:
         """Create users/videos with different affiliations used by ranking tests."""
         self.site = Site.objects.get(id=1)
-        self.teacher = User.objects.create(username="teacher", password=PWD)  # nosem
-        self.student = User.objects.create(username="student", password=PWD)  # nosem
+        self.teacher = User.objects.create(username="teacher", password=PWD)
+        self.student = User.objects.create(username="student", password=PWD)
+        self.priority_student = User.objects.create(
+            username="priority-student", password=PWD
+        )
 
         self.teacher.owner.affiliation = "faculty"
         self.teacher.owner.sites.add(Site.objects.get_current())
@@ -42,6 +45,10 @@ class TaskQueueTests(TestCase):
         self.student.owner.affiliation = "student"
         self.student.owner.sites.add(Site.objects.get_current())
         self.student.owner.save()
+
+        self.priority_student.owner.affiliation = "student"
+        self.priority_student.owner.sites.add(Site.objects.get_current())
+        self.priority_student.owner.save()
 
         video_type = Type.objects.get(id=1)
         self.teacher_video = Video.objects.create(
@@ -59,6 +66,14 @@ class TaskQueueTests(TestCase):
             type=video_type,
         )
         self.student_video.sites.add(self.site)
+
+        self.priority_student_video = Video.objects.create(
+            title="Priority student video",
+            owner=self.priority_student,
+            video="priority-student.mp4",
+            type=video_type,
+        )
+        self.priority_student_video.sites.add(self.site)
 
     def test_refresh_pending_task_ranks_applies_priority(self):
         """Order pending tasks using affiliation priority and creation time."""
@@ -89,6 +104,40 @@ class TaskQueueTests(TestCase):
 
         self.assertEqual(teacher_task.rank, 1)
         self.assertEqual(studio_task.rank, 2)
+        self.assertEqual(student_task.rank, 3)
+
+    def test_refresh_pending_task_ranks_prioritizes_priority_user(self):
+        """Always rank priority-user tasks first, even before non-students."""
+        PriorityUser.objects.create(user=self.priority_student)
+
+        base_time = timezone.now() - timedelta(hours=1)
+        student_task = Task.objects.create(
+            video=self.student_video,
+            type="encoding",
+            status="pending",
+            date_added=base_time,
+        )
+        teacher_task = Task.objects.create(
+            video=self.teacher_video,
+            type="encoding",
+            status="pending",
+            date_added=base_time + timedelta(minutes=5),
+        )
+        priority_student_task = Task.objects.create(
+            video=self.priority_student_video,
+            type="encoding",
+            status="pending",
+            date_added=base_time + timedelta(minutes=10),
+        )
+
+        refresh_pending_task_ranks()
+
+        priority_student_task.refresh_from_db()
+        teacher_task.refresh_from_db()
+        student_task.refresh_from_db()
+
+        self.assertEqual(priority_student_task.rank, 1)
+        self.assertEqual(teacher_task.rank, 2)
         self.assertEqual(student_task.rank, 3)
 
     def test_refresh_pending_task_ranks_clears_non_pending_rank(self):

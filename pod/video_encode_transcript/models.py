@@ -480,7 +480,7 @@ class RunnerManager(models.Model):
     url = models.CharField(
         max_length=250,
         verbose_name=_("URL of the runner manager"),
-        help_text=_("Example format: https://manager.univ.fr:port/"),
+        help_text=_("Example format: %(url)s") % {"url": "https://manager.univ.fr:port/"},
     )
 
     # Bearer token for the runner manager server (e.g. `6YqG_73xt-9s8v5aBz`)
@@ -524,6 +524,28 @@ def default_site_runner_manager(sender, instance, **kwargs):
     """Save default site for this runner manager."""
     if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
+
+
+class PriorityUser(models.Model):
+    """Hold users that should always be dequeued first (priority 0)."""
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name=_("User"),
+        help_text=_("User with absolute task queue priority (priority 0)."),
+    )
+    date_added = models.DateTimeField(
+        verbose_name=_("Date added"), default=timezone.now, editable=False
+    )
+
+    def __str__(self):
+        return str(self.user)
+
+    class Meta:
+        verbose_name = _("Priority user")
+        verbose_name_plural = _("Priority users")
+        ordering = ["user__username", "id"]
 
 
 class Task(models.Model):

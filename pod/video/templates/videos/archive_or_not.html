@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_content %}
+
+    <div class="list-group">
+        <fieldset>
+            <legend>{% trans "Agreement required" %}</legend>
+            <div class="list-group-item">
+                <div class="form-group form-group-required ">
+                    <div>{% trans "Are you sure you want to archive this video?" %}</div>
+                    <small id="id_agreeHelp" class="form-text">{% trans "The archiving is permanent." %}</small>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <div class="text-center mt-1">
+        <a href="/video/go/archive/{{ slug }}/"><button class="btn btn-danger">{% trans "Archive" %}</button></a>
+        <a href="/video/respit/{{ slug }}/" class="btn btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Back to choices" %}">
+            {% trans "Back to choices" %}
+        </a>
+    </div>
+
+
+{% endblock page_content %}

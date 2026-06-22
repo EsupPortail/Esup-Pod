@@ -38,6 +38,13 @@ from .views import (
     video_edit_access_tokens,
     available_filter_by_type,
     available_filters,
+    video_respit,
+    valid_form_respit,
+    well_archived_or_not,
+    well_prolonged_or_not,
+    archive_and_download,
+    go_archive,
+    go_prolong,
 )
 
 app_name = "video"
@@ -57,6 +64,29 @@ urlpatterns = [
     ),
     path("add/", video_add, name="video_add"),
     path("edit/", video_edit, name="video_edit"),
+    re_path(r"^respit/(?P<slug>[\-\d\w]+)/$", video_respit, name="video_respit"),
+    re_path(
+        r"^well/archived/or/not/(?P<slug>[\-\d\w]+)/$",
+        well_archived_or_not,
+        name="well_archived_or_not",
+    ),
+    re_path(
+        r"^well/prolonged/or/not/(?P<slug>[\-\d\w]+)/$",
+        well_prolonged_or_not,
+        name="well_prolonged_or_not",
+    ),
+    re_path(
+        r"^valid/form/respit/(?P<slug>[\-\d\w]+)/$",
+        valid_form_respit,
+        name="valid_form_respit",
+    ),
+    re_path(
+        r"^archive/and/download/(?P<slug>[\-\d\w]+)/$",
+        archive_and_download,
+        name="archive_and_download",
+    ),
+    re_path(r"^go/archive/(?P<slug>[\-\d\w]+)/$", go_archive, name="go_archive"),
+    re_path(r"^go/prolong/(?P<slug>[\-\d\w]+)/$", go_prolong, name="go_prolong"),
     re_path(r"^edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),
     re_path(
         r"^edit_access_tokens/(?P<slug>[\-\d\w]+)/$",

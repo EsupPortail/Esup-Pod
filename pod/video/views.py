@@ -46,6 +46,7 @@ from django.http import (
     HttpResponseBadRequest,
     HttpResponseForbidden,
     HttpResponseNotFound,
+    HttpResponsePermanentRedirect,
     JsonResponse,
     QueryDict,
 )
@@ -78,6 +79,7 @@ from pod.playlist.utils import (
 )
 from pod.video.forms import (
     AdvancedNotesForm,
+    ArchiveChoiceForm,
     ChannelForm,
     FrontThemeForm,
     NoteCommentsForm,
@@ -105,6 +107,7 @@ from pod.video.models import (
     get_transcription_choices,
 )
 from pod.video.rest_views import ChannelSerializer
+from pod.video.utils import archive_and_get_link, archive_video
 from pod.video.utils import get_videos as video_get_videos
 
 from .context_processors import get_available_videos
@@ -117,12 +120,15 @@ from .utils import (
     get_filtered_types_for_videos,
     get_headband,
     get_id_from_request,
+    is_archiving_authorized,
     pagination_data,
     sort_videos_list,
 )
 
-# from django.contrib.auth.hashers import check_password
+WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [60, 30, 7])
 
+RALLONGE_RESPIT_DAYS = getattr(settings, "RALLONGE_RESPIT_DAYS", 365)
+ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -2550,11 +2556,13 @@ def video_oembed(request):
             '<iframe src="%(provider)s%(video_url)s%(slug_private)s'
             + '?is_iframe=true" width="640" height="360" '
             + 'style="padding: 0; margin: 0; border:0" '
+            + 'title="%(title)s" '
             + "allowfullscreen loading='lazy'></iframe>"
         ) % {
             "provider": data["provider_url"],
             "video_url": video_url,
             "slug_private": "%s/" % slug_private if slug_private else "",
+            "title": video.title,
         }
         data["thumbnail_url"] = "%s:%s" % (protocole, video.get_thumbnail_url())
         if hasattr(video.thumbnail, "file"):
@@ -2798,6 +2806,9 @@ def stats_view(request, slug=None, slug_t=None):
     " (videos, video, channel or theme)
     """
     target = request.GET.get("from", "videos")
+    allowed_targets = {"videos", "video", "channel", "theme"}
+    if target not in allowed_targets:
+        target = "videos"
     videos, title = get_videos(slug, target, slug_t)
     error_message = _(
         "The following “%(target)s” type target does not exist or contains no videos: %(slug)s."
@@ -3921,3 +3932,165 @@ def get_owners_for_videos_on_dashboard(request):
     users_list = list(users_qs.values(*VALUES).order_by("last_name")[:20])
 
     return HttpResponse(json.dumps(users_list), content_type="application/json")
+
+
+@login_required(redirect_field_name="referrer")
+def video_respit(request, slug):
+    """
+    This function will render the interface which is reachable by the user from the reminder email with the concerned link.
+    The interface allows to extend, archive or delete a video in the appropriated context.
+    """
+    display_or_not = able_or_not_respit(slug, request.user)
+    vid = get_object_or_404(Video, slug=slug)
+    form = ArchiveChoiceForm(
+        request.POST or None,
+        archiving_authorized=is_archiving_authorized(vid),
+    )
+
+    return render(
+        request,
+        "videos/video_respist_choice.html",
+        {
+            "form": form,
+            "slug": slug,
+            "video": vid,
+            "ENABLE_PAGE_OBSO_MAIL": ENABLE_PAGE_OBSO_MAIL,
+            "display_or_not": display_or_not,
+        },
+    )
+
+
+def valid_form_respit(request, slug=None):
+    """
+    This function will launch the appropriate code and render the appropriate interface after the submission of the video respit form.
+    """
+    user = request.user
+    if request.method == "POST":
+        if user.is_authenticated:
+            vid = get_object_or_404(Video, slug=slug)
+            action = request.POST["action"]
+            if (
+                action == "Delete"
+            ):  # If the user choose the action "delete" in the interface.
+                return HttpResponsePermanentRedirect("/video/delete/" + slug)
+            if (
+                action == "Extend"
+            ):  # If the user choose the action "extend" in the interface.
+                if able_or_not_respit(slug, request.user) is True:
+                    return render(
+                        request,
+                        "videos/prolong_or_not.html",
+                        {"slug": slug, "RALLONGE_RESPIT_DAYS": RALLONGE_RESPIT_DAYS},
+                    )
+                else:
+                    raise Exception("You can't extender your video more.")
+
+            if action == "Archive":
+                if is_archiving_authorized(vid):
+                    return render(request, "videos/archive_or_not.html", {"slug": slug})
+                return HttpResponseBadRequest(
+                    "Impossible to archive. This user is not authorized to archive this video."
+                )
+    return HttpResponseBadRequest("Impossible to process this form.")
+
+
+@login_required(redirect_field_name="referrer")
+def well_archived_or_not(request, slug):
+    """
+    This function will say if the archive action has succeed or not and display this message in an interface.
+    """
+    try:
+        Video.objects.get(slug=slug)
+        exist = True
+    except Video.DoesNotExist:
+        exist = False
+
+    return render(request, "videos/well_archived.html", {"exist": exist})
+
+
+@login_required(redirect_field_name="referrer")
+def well_prolonged_or_not(request, slug):
+    """
+    This function will say if the extend action has succeed or not and display this message in an interface.
+    """
+    vid = Video.objects.get(slug=slug)
+
+    return render(
+        request, "videos/well_prolonged.html", {"new_date_delete": vid.date_delete}
+    )
+
+
+@login_required(redirect_field_name="referrer")
+def archive_and_download(request, slug):
+    """
+    This function will create a zip archive package and launch a download of it in the user browser.
+    """
+
+    url = archive_and_get_link(slug, "video_package")
+    return render(request, "videos/archive_download.html", {"url": url, "slug": slug})
+
+
+def able_or_not_respit(slug, user=None):
+    """
+    This function will say if we have the right conditions to display the respit form or not.
+    """
+
+    all_warn = WARN_DEADLINES
+    higher_warn = 0
+
+    for aw in all_warn:
+        if higher_warn <= aw:
+            higher_warn = aw
+
+    try:
+        vid = Video.objects.get(slug=slug)
+    except Exception:
+        return False
+
+    if user is not None:
+        if not user.is_authenticated:
+            return False
+        if user != vid.owner and user not in vid.additional_owners.all():
+            return False
+
+    # If we have more than the maximum DeadLine days before the date_delete
+    step_date = vid.date_delete - timedelta(days=higher_warn)
+    display_or_not = date.today() >= step_date
+
+    return display_or_not
+
+
+@login_required(redirect_field_name="referrer")
+def go_archive(request, slug=None):
+    """
+    This function will launch a archive process and say if it has worked or not on an interface.
+    """
+    vid = get_object_or_404(Video, slug=slug)
+
+    if (
+        able_or_not_respit(slug, request.user) is True
+        and ENABLE_PAGE_OBSO_MAIL
+        and is_archiving_authorized(vid)
+    ):
+        archive_video(vid)
+        return HttpResponsePermanentRedirect("/video/well/archived/or/not/" + slug)
+    else:
+        return HttpResponseBadRequest(
+            "Impossible to archive. This service is not available for this video."
+        )
+
+
+@login_required(redirect_field_name="referrer")
+def go_prolong(request, slug):
+    """
+    This function will extend a video about RALLONGE_RESPIT_DAYS days and display the new delete_date.
+    """
+    if able_or_not_respit(slug, request.user) is True and ENABLE_PAGE_OBSO_MAIL:
+        vivi = Video.objects.get(slug=slug)
+        vivi.date_delete = vivi.date_delete + timedelta(days=RALLONGE_RESPIT_DAYS)
+        vivi.save()
+        return HttpResponsePermanentRedirect("/video/well/prolonged/or/not/" + slug)
+    else:
+        return HttpResponseBadRequest(
+            "Impossible to extend. This service is not available."
+        )

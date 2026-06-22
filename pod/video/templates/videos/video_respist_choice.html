@@ -1,0 +1,46 @@
+<style>
+    #id_action * {
+        padding: 3px;
+    }
+
+    #id_action {
+        padding-bottom: 13px;
+    }
+
+    .help-text {
+        font-size: 12px;
+        font-style: italic;
+        color: var(--bs-secondary-color) !important;
+    }
+</style>
+{% extends 'base.html' %}
+{% load i18n %}
+{% block page_content %}
+    {% if ENABLE_PAGE_OBSO_MAIL  == True and display_or_not == True %}
+        <h1>{% trans "Your video is outdated, what do you want do?" %}</h1>
+        <small class="filter-info text-muted">{% trans "This interface allows you to specify your preferences regarding the future of your video on this platform." %}</small>
+        <p> <b>{% trans "Link to the video:" %}</b><a href="/video/{{ video.slug }}"> {{ video.title }}</a></p>
+
+        <form action="/video/valid/form/respit/{{ video.slug }}/" method="post">
+            {% csrf_token %}
+            {% for choice in form.get_choices_with_help %}
+                <div class="radio-option">
+                    <input type="radio" name="action" value="{{ choice.value }}">
+                    {{ choice.label }}
+
+                    <br>
+                    <small class="help-text">
+                        {{ choice.help }}
+                    </small>
+                </div>
+            {% endfor %}
+            <input type="submit" value="{% trans "Submit my choice" %}">
+        </form>
+        <a href="/video/archive/and/download/{{ video.slug }}/">{% trans "Export this video." %}</a>
+        <small class="filter-info text-muted">{% trans "This link allows you to export your video, along with its metadata and attached files, as a ZIP file so you can save them to your storage space. We strongly recommend using this option before permanently deleting your video from the server." %}</small>
+    {% else %}
+        <h1>{% trans "Access denied" %}</h1>
+        <p>{% trans "The video does not belong to you or has already been processed." %}</p>
+        <p> <b>{% trans "Link to the video:" %}</b><a href="/video/{{ video.slug }}"> {{ video.title }}</a></p>
+    {% endif %}
+{% endblock page_content %}

@@ -1,13 +1,18 @@
 """Esup-Pod Xapi views tests."""
 
+import json
+from http import HTTPStatus
+from pathlib import Path
+
+from django.conf import settings
+from django.test import Client  # , override_settings
 from django.test import TestCase
 from django.urls import reverse
-from django.test import Client  # , override_settings
-from http import HTTPStatus
-import json
 
 
 class xapi_statement_TestView(TestCase):
+    """Tests for Xapi statement endpoints and client-side helpers."""
+
     def setUp(self):
         """Initialize the Django test client."""
         self.client = Client()
@@ -37,5 +42,18 @@ class xapi_statement_TestView(TestCase):
         self.assertTrue(data["actor"]["name"] != "")
         print(
             " --->  test_xapi_statment_TestView_get_request ",
+            "of xapi_statement_TestView: OK!",
+        )
+
+    def test_xapi_script_uses_secure_uuid_randomness(self):
+        """Test that the xAPI script uses secure browser randomness for UUIDs."""
+        script_path = Path(settings.BASE_DIR) / "xapi" / "static" / "xapi" / "script.js"
+        script_content = script_path.read_text(encoding="utf-8")
+
+        self.assertIn("crypto.randomUUID", script_content)
+        self.assertIn("crypto.getRandomValues", script_content)
+        self.assertNotIn("Math.random", script_content)
+        print(
+            " --->  test_xapi_script_uses_secure_uuid_randomness ",
             "of xapi_statement_TestView: OK!",
         )

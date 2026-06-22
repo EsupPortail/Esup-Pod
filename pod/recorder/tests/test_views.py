@@ -3,18 +3,19 @@
 import hashlib
 import os
 from http import HTTPStatus
-from defusedxml import minidom
+from unittest.mock import patch
 
+from defusedxml import minidom
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client
-from django.test import TestCase
+from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 
 from pod.video.models import Type
+
 from .. import views
 from ..models import Recorder, Recording, RecordingFileTreatment
 
@@ -758,6 +759,10 @@ class StudioPodTestView(TestCase):
 class StudioDigestViews(TestCase):
     """Test case for Pod studio views with Digest auth."""
 
+    def setUp(self) -> None:
+        """Set up helper objects for digest view tests."""
+        self.factory = RequestFactory()
+
     def test_digest_presenter_post(self):
         """Test Digest restriction on view presenter_post."""
 
@@ -874,6 +879,66 @@ class StudioDigestViews(TestCase):
         response = self.client.post(url)
         self.assertEqual(response.status_code, 403)
         print(" --->  test_digest_capture_admin of StudioDigestViews: OK!")
+
+    @patch("pod.recorder.views.digest_is_valid", return_value=True)
+    def test_digest_capture_admin_escapes_response_content(self, mock_digest):
+        """Test that digest_capture_admin escapes user-controlled data."""
+        request = self.factory.post(
+            "/digest/studio/capture-admin/agents/test",
+            {"state": "idle"},
+        )
+        response = views.digest_capture_admin(
+            request,
+            '<script>alert("xss")</script>',
+        )
+
+        self.assertTrue(mock_digest.called)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        response_content = response.content.decode("utf-8")
+        self.assertNotIn('<script>alert("xss")</script>', response_content)
+        self.assertIn(
+            "&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;", response_content
+        )
+        self.assertEqual(response["Content-Type"], "text/plain; charset=utf-8")
+        print(
+            " --->  test_digest_capture_admin_escapes_response_content ",
+            "of StudioDigestViews: OK!",
+        )
+
+    def test_resolve_studio_asset_path_accepts_child_path(self):
+        """Test that studio assets can be resolved inside the base directory."""
+        base_dir = os.path.join(
+            settings.BASE_DIR,
+            "custom",
+            "static",
+            "opencast",
+            "studio",
+            "static",
+        )
+        resolved_path = views._resolve_studio_asset_path(base_dir, "assets/app.js")
+        base_real = os.path.realpath(base_dir)
+        self.assertEqual(os.path.commonpath([resolved_path, base_real]), base_real)
+        print(
+            " --->  test_resolve_studio_asset_path_accepts_child_path ",
+            "of StudioDigestViews: OK!",
+        )
+
+    def test_resolve_studio_asset_path_rejects_path_traversal(self):
+        """Test that studio assets reject parent-path traversal."""
+        base_dir = os.path.join(
+            settings.BASE_DIR,
+            "custom",
+            "static",
+            "opencast",
+            "studio",
+            "static",
+        )
+        with self.assertRaises(PermissionDenied):
+            views._resolve_studio_asset_path(base_dir, "../../secret.txt")
+        print(
+            " --->  test_resolve_studio_asset_path_rejects_path_traversal ",
+            "of StudioDigestViews: OK!",
+        )
 
     def test_digest_admin_ng_series(self):
         """Test Digest restriction on view admin_ng_series."""
