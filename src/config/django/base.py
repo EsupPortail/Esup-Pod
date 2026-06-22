@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "tagulous",
     "src.apps.collection",
     "src.apps.completion",
+    "src.apps.dressing",
 ]
 
 MIDDLEWARE = [
