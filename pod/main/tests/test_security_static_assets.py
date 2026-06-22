@@ -37,4 +37,3 @@ class FrontendSecurityAssetsTests(unittest.TestCase):
         self.assertIn('name="type"', template)
         self.assertIn('type="submit"', template)
         self.assertIn("btn btn-primary btn-sm", template)
-
