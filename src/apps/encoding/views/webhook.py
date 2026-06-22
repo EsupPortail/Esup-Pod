@@ -109,15 +109,22 @@ class EncodingWebhookView(APIView):
             logger.info("Manifest retrieved for task %s: %s", task_id, manifest)
 
             file_list = manifest.get("files", [])
-            thumbnail_candidates = [
-                "overview.png",
-                "overview.jpg",
-                "thumbnail.png",
-                "thumbnail.jpg",
-            ]
+            # Esup-Runner generates thumbnails like <filename>_0.png, <filename>_1.png...
+            # We pick the first one (_0) as the main thumbnail.
             thumbnail_path = next(
-                (name for name in file_list if name in thumbnail_candidates), None
+                (
+                    name
+                    for name in file_list
+                    if name.endswith("_0.png") or name.endswith("_0.jpg")
+                ),
+                None,
             )
+            # Fallback if no dynamic name is found
+            if not thumbnail_path:
+                fallback_candidates = ["thumbnail.png", "thumbnail.jpg"]
+                thumbnail_path = next(
+                    (name for name in file_list if name in fallback_candidates), None
+                )
 
             self._process_video_files(video, client, task_id, file_list, thumbnail_path)
 

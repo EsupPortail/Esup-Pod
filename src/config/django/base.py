@@ -162,7 +162,7 @@ if REDIS_SESSION_URL:
         "socket_timeout": 1,
     }
 
-INTERNAL_IPS = ["localhost", "127.0.0.1"]
+INTERNAL_IPS = env.list("INTERNAL_IPS", default=["localhost", "127.0.0.1"])
 
 # ==============================================================================
 # MODULAR SETTINGS LOADING
