@@ -1657,6 +1657,10 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
 * `DEFAULT_YEAR_DATE_DELETE`
   > valeur par défaut : `2`
   >> Durée d’obsolescence par défaut (en années après la date d’ajout).<br>
+* `DEFAULT_OWNER_USERNAME`
+  > valeur par défaut : `"default_owner"`
+  >> Nom de l’utilisateur propriétaire par défaut des vidéos dont le propriétaire<br>
+  >> existant aurait quitté l'établissement (cf. commande check_video_owner_exists)<br>
 * `FORCE_LOWERCASE_TAGS`
   > valeur par défaut : `True`
   >> Les mots clés saisis lors de l’ajout de vidéo sont convertis automatiquement en minuscule.<br>

@@ -348,3 +348,4 @@ RESPIT_MODEL_PARAMETERS = {
         "excluded_discipline_terms": [],
     },
 }
+DEFAULT_OWNER_USERNAME = "default_owner"

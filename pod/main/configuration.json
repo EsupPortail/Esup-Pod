@@ -2775,6 +2775,20 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "DEFAULT_OWNER_USERNAME": {
+                            "default_value": "\"default_owner\"",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Nom de l’utilisateur propriétaire par défaut des vidéos dont le propriétaire",
+                                    "existant aurait quitté l'établissement (cf. commande check_video_owner_exists)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.3.0"
+                        },
                         "FORCE_LOWERCASE_TAGS": {
                             "default_value": true,
                             "description": {
