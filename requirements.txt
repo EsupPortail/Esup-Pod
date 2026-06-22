@@ -27,7 +27,7 @@ django-honeypot==1.2.1
 qrcode
 ralph-malph==5.0.1
 pydantic==2.10.2
-bleach==6.2.0
+bleach==6.4.0
 pytubefix==9.4.1
 django-redis-sessions
 paramiko~=3.5.0
