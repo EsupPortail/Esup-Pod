@@ -3426,58 +3426,6 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
-                        },
-                        "RESPIT_MODEL": {
-                          "default_value": "base",
-                          "description": {
-                            "en": [
-                             "Choice of the calculation model for the video respit. That's the script that will be executed by the command 'respit_launcher' in the purpose of extand the video life span with a custom calculation process. 'Base' is an example on which you can inspire yourself to propose your own model."
-                            ],
-                            "fr": [
-                              "Choix du mode de calcul pour le répit des vidéos obsolètes. C'est le script qui va être exécuté par la commande respit_launcher dans le but d’étendre la durée de vie de la vidéo avec un mode de calcul personnalisé. 'Base' est un exemple dont vous pouvez vous inspirer pour proposer votre propre modèle de répit."
-                            ]
-                          },
-                          "pod_version_end": "",
-                          "pod_version_init": "4.3.0"
-                        },
-                        "ENABLE_PAGE_OBSO_MAIL": {
-                          "default_value": false,
-                          "description": {
-                            "en": [
-                              "Enables sending a link to make a decision on the future of the video during the recall campaign instantiated by check_obsolete_video."
-                            ],
-                            "fr": [
-                              "Active l’envoi d’un lien pour prendre une décision sur le futur de la vidéo durant la campagne de rappel instanciée par check_obsolete_video."
-                          ]
-                          },
-                          "pod_version_end": "",
-                          "pod_version_init": "4.3.0"
-                        },
-                        "PROLONGATION_GRANTED": {
-                          "default_value": false,
-                          "description": {
-                            "en": [
-                             "Allows the user to extend the lifespan of his videos himself via the reminder email."
-                           ],
-                            "fr": [
-                              "Autorise l’utilisateur à étendre lui-même la durée de vie de ses vidéos à travers le courriel de rappel."
-                            ]
-                          },
-                          "pod_version_end": "",
-                          "pod_version_init": "4.3.0"
-                        },
-                        "DELETION_GRANTED": {
-                          "default_value": false,
-                          "description": {
-                            "en": [
-                             "Allows the user to delete his videos himself via the reminder email."
-                           ],
-                            "fr": [
-                              "Autorise l’utilisateur à supprimer lui-même ses vidéos à travers le courriel de rappel."
-                            ]
-                          },
-                          "pod_version_end": "",
-                          "pod_version_init": "4.3.0"
                         }
                     },
                     "title": {
@@ -5273,6 +5221,114 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "RESPIT_MODEL": {
+                          "default_value": "base",
+                          "description": {
+                            "en": [
+                                "Choice of the calculation model for the video respit. That's the script that will",
+                                "be executed by the command 'respit_launcher' in the purpose of extand the video",
+                                "life span with a custom calculation process. 'base' and 'criteria_model' are some",
+                                "examples on which you can inspire yourself to propose your own model."
+                            ],
+                            "fr": [
+                                "Choix du mode de calcul pour le répit des vidéos obsolètes.",
+                                "C'est le script qui va être exécuté par la commande respit_launcher",
+                                "dans le but d’étendre la durée de vie de la vidéo avec un mode de calcul",
+                                "personnalisé. 'base' et 'criteria_model' sont des exemples dont vous",
+                                "pouvez vous inspirer pour proposer votre propre modèle de répit."
+                            ]
+                          },
+                          "pod_version_end": "",
+                          "pod_version_init": "4.3.0"
+                        },
+                        "RESPIT_MODEL_PARAMETERS": {
+                          "default_value": [
+                                "{",
+                                "   'respit_criteria_parameter': [],",
+                                "   'archiving_criteria_parameter': {",
+                                "       'excluded_title_terms': [],",
+                                "       'excluded_discipline_terms': [],",
+                                "   }",
+                                "}"
+                            ],
+                          "description": {
+                            "en": [
+                                "All parameters that can be used by RESPIT_MODEL. These parameters are in",
+                                "JSON format and depend on the selected model.",
+                                "For 'criteria_model' the format will be: ",
+                                "{",
+                                "   'respit_criteria_parameter': [...],",
+                                "   'archiving_criteria_parameter': {",
+                                "       'minimum_expected_score': value,",
+                                "       'attribute_scores': [",
+                                "           'title': 2,",
+                                "           'description',: 3,",
+                                "           'discipline',: 2,",
+                                "           'tags',: 2,",
+                                "           'date_evt',: 1,",
+                                "       ],",
+                                "       'excluded_title_terms': [...],",
+                                "       'excluded_discipline_terms': [...],",
+                                "   }",
+                                "}"
+                            ],
+                            "fr": [
+                                "Ensemble des paramètres qui vont pouvoir être utilisés par RESPIT_MODEL.",
+                                "Ces paramètres sont au format JSON et dépendent du modèle choisis.",
+                                "Pour 'criteria_model' il sera de la forme : ",
+                                "{",
+                                "   'respit_criteria_parameter': [...],",
+                                "   'archiving_criteria_parameter': {",
+                                "       'minimum_expected_score': value,",
+                                "       'attribute_scores': [...],",
+                                "       'excluded_title_terms': [...],",
+                                "       'excluded_discipline_terms': [...],",
+                                "   }",
+                                "}"
+                            ]
+                          },
+                          "pod_version_end": "",
+                          "pod_version_init": "4.3.0"
+                        },
+                        "ENABLE_PAGE_OBSO_MAIL": {
+                          "default_value": false,
+                          "description": {
+                            "en": [
+                              "Enables sending a link to make a decision on the future of the video during the recall campaign instantiated by check_obsolete_video."
+                            ],
+                            "fr": [
+                              "Active l’envoi d’un lien pour prendre une décision sur le futur de la vidéo durant la campagne de rappel instanciée par check_obsolete_video."
+                          ]
+                          },
+                          "pod_version_end": "",
+                          "pod_version_init": "4.3.0"
+                        },
+                        "PROLONGATION_GRANTED": {
+                          "default_value": false,
+                          "description": {
+                            "en": [
+                             "Allows the user to extend the lifespan of his videos himself via the reminder email."
+                           ],
+                            "fr": [
+                              "Autorise l’utilisateur à étendre lui-même la durée de vie de ses vidéos à travers le courriel de rappel."
+                            ]
+                          },
+                          "pod_version_end": "",
+                          "pod_version_init": "4.3.0"
+                        },
+                        "DELETION_GRANTED": {
+                          "default_value": false,
+                          "description": {
+                            "en": [
+                             "Allows the user to delete his videos himself via the reminder email."
+                           ],
+                            "fr": [
+                              "Autorise l’utilisateur à supprimer lui-même ses vidéos à travers le courriel de rappel."
+                            ]
+                          },
+                          "pod_version_end": "",
+                          "pod_version_init": "4.3.0"
                         }
                     },
                     "title": {

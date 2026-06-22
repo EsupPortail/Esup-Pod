@@ -432,7 +432,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             self.message_user(
                 request,
                 _(
-                    "Unable to reach runner manager '%(name)s' at %(url)s. "
+                    "Unable to reach runner manager “%(name)s” at %(url)s. "
                     "Check the URL and network access. Error: %(error)s"
                 )
                 % {
@@ -448,7 +448,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             self.message_user(
                 request,
                 _(
-                    "Runner manager '%(name)s' responded but rejected authentication "
+                    "Runner manager “%(name)s” responded but rejected authentication "
                     "(HTTP %(status)s). Check the bearer token."
                 )
                 % {"name": runner_manager.name, "status": response.status_code},
@@ -458,7 +458,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             self.message_user(
                 request,
                 _(
-                    "Connection to runner manager '%(name)s' succeeded "
+                    "Connection to runner manager “%(name)s” succeeded "
                     "(HTTP %(status)s)."
                 )
                 % {"name": runner_manager.name, "status": response.status_code},
@@ -468,7 +468,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             self.message_user(
                 request,
                 _(
-                    "Runner manager '%(name)s' is reachable but endpoint %(url)s "
+                    "Runner manager “%(name)s” is reachable but endpoint %(url)s "
                     "was not found (HTTP 404). Check the configured URL."
                 )
                 % {"name": runner_manager.name, "url": health_url},
@@ -478,7 +478,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             self.message_user(
                 request,
                 _(
-                    "Runner manager '%(name)s' is reachable but returned an "
+                    "Runner manager “%(name)s” is reachable but returned an "
                     "unexpected response (HTTP %(status)s)."
                 )
                 % {"name": runner_manager.name, "status": response.status_code},

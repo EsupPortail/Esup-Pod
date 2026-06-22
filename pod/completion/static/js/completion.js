@@ -623,11 +623,9 @@ function verify_fields(form) {
     }
   } else if (form == "form-overlay") {
     const id_content = document.getElementById("id_content");
-    const parsed = new DOMParser().parseFromString(
-      id_content.value,
-      "text/html",
-    );
-    if (parsed.querySelector("script, iframe")) {
+    const contentValue = id_content.value || "";
+    const hasForbiddenTags = /<\s*(script|iframe)\b/i.test(contentValue);
+    if (hasForbiddenTags) {
       id_content.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
