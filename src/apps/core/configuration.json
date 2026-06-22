@@ -643,54 +643,6 @@
               },
               "pod_version_init": "3.1.0"
             },
-            "FFMPEG_CMD": {
-              "default_value": "ffmpeg",
-              "description": {
-                "en": [
-                  "System command for FFmpeg."
-                ],
-                "fr": [
-                  "Commande système pour FFmpeg."
-                ]
-              },
-              "pod_version_init": "3.1.0"
-            },
-            "FFPROBE_CMD": {
-              "default_value": "ffprobe",
-              "description": {
-                "en": [
-                  "System command for FFprobe."
-                ],
-                "fr": [
-                  "Commande système pour FFprobe."
-                ]
-              },
-              "pod_version_init": "3.1.0"
-            },
-            "FFMPEG_CRF": {
-              "default_value": 20,
-              "description": {
-                "en": [
-                  "FFmpeg Constant Rate Factor (quality)."
-                ],
-                "fr": [
-                  "Valeur CRF pour l’encodage FFmpeg (Qualité)."
-                ]
-              },
-              "pod_version_init": "3.1.0"
-            },
-            "FFMPEG_NB_THREADS": {
-              "default_value": "slow",
-              "description": {
-                "en": [
-                  "FFmpeg speed/quality preset."
-                ],
-                "fr": [
-                  "Preset de vitesse/qualité FFmpeg."
-                ]
-              },
-              "pod_version_init": "3.1.0"
-            },
             "FFPROBE_GET_INFO": {
               "default_value": "high",
               "description": {
@@ -1080,6 +1032,136 @@
           "title": {
             "en": "Core Configuration",
             "fr": "Configuration Core"
+          }
+        },
+        "completion": {
+          "description": {
+            "en": [
+              "Completion application configuration"
+            ],
+            "fr": [
+              "Configuration de l’application completion"
+            ]
+          },
+          "settings": {
+            "ROLE_CHOICES": {
+              "default_value": [
+                [
+                  "actor",
+                  "_('Actor')"
+                ],
+                [
+                  "author",
+                  "_('Author')"
+                ],
+                [
+                  "consultant",
+                  "_('Consultant')"
+                ],
+                [
+                  "contributor",
+                  "_('Contributor')"
+                ],
+                [
+                  "director",
+                  "_('Director')"
+                ],
+                [
+                  "speaker",
+                  "_('Speaker')"
+                ],
+                [
+                  "technician",
+                  "_('Technician')"
+                ],
+                [
+                  "voice-over",
+                  "_('Voice-over')"
+                ]
+              ],
+              "description": {
+                "en": [
+                  "Available roles for contributors."
+                ],
+                "fr": [
+                  "Rôles disponibles pour les contributeurs."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "KIND_CHOICES": {
+              "default_value": [
+                [
+                  "subtitles",
+                  "_('Subtitles')"
+                ],
+                [
+                  "captions",
+                  "_('Captions')"
+                ]
+              ],
+              "description": {
+                "en": [
+                  "Available kinds for subtitle tracks."
+                ],
+                "fr": [
+                  "Types de pistes de sous-titres disponibles."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "DEFAULT_LANG_TRACK": {
+              "default_value": "fr",
+              "description": {
+                "en": [
+                  "Default language for new subtitle tracks."
+                ],
+                "fr": [
+                  "Langue par défaut des pistes de sous-titres."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "LINK_SUPERPOSITION": {
+              "default_value": false,
+              "description": {
+                "en": [
+                  "Enable automatic conversion of URLs into links in overlays."
+                ],
+                "fr": [
+                  "Active la conversion automatique des URLs en liens dans les overlays."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "USE_SPEAKER": {
+              "default_value": false,
+              "description": {
+                "en": [
+                  "Enable or disable the Speakers module."
+                ],
+                "fr": [
+                  "Active ou désactive le module Intervenants (Speakers)."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "REQUIRED_SPEAKER_FIRSTNAME": {
+              "default_value": true,
+              "description": {
+                "en": [
+                  "Make the first name of a speaker mandatory."
+                ],
+                "fr": [
+                  "Rend le prénom des intervenants obligatoire."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            }
+          },
+          "title": {
+            "en": "Completion Configuration",
+            "fr": "Configuration Completion"
           }
         }
       },
