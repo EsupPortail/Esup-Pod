@@ -3,18 +3,16 @@
 import json
 import logging
 import os
-import pandas
 import re
 import uuid
-
 from concurrent import futures
 from datetime import date
 from itertools import chain
 
+import pandas
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadCompleteView, ChunkedUploadView
 from dateutil.parser import parse
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -79,20 +77,17 @@ from pod.playlist.utils import (
     playlist_can_be_displayed,
     user_can_see_playlist_video,
 )
-
 from pod.video.forms import (
     AdvancedNotesForm,
     ArchiveChoiceForm,
     ChannelForm,
     FrontThemeForm,
     NoteCommentsForm,
-    VideoForm,
     VideoDeleteForm,
+    VideoForm,
     VideoPasswordForm,
     VideoVersionForm,
 )
-
-
 from pod.video.models import (
     NOTES_STATUS,
     AdvancedNotes,

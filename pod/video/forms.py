@@ -22,23 +22,6 @@ from django.template.defaultfilters import filesizeformat
 from django.utils._os import safe_join
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
-from django.template.defaultfilters import filesizeformat
-from .models import Video, VideoVersion, get_storage_path_video
-from .models import Channel, Theme, Type, Discipline
-from .models import Notes, AdvancedNotes, NoteComments
-from .widgets import HelpedRadioSelect
-from pod.video_encode_transcript import encode
-from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio, PlaylistVideo
-from django.contrib.sites.models import Site
-from django.db.models.query import QuerySet
-
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-from django.contrib.sites.shortcuts import get_current_site
-from pod.main.forms_utils import add_placeholder_and_asterisk, add_describedby_attr
-
-from tinymce.widgets import TinyMCE
-from collections import OrderedDict
 from django_select2 import forms as s2forms
 from tinymce.widgets import TinyMCE
 
@@ -58,6 +41,7 @@ from .models import (
     VideoVersion,
     get_storage_path_video,
 )
+from .widgets import HelpedRadioSelect
 
 __FILEPICKER__ = False
 

@@ -9,7 +9,7 @@ from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 
 # from django.core.mail import mail_admins
-from django.core.mail import send_mail, mail_managers
+from django.core.mail import mail_managers, send_mail
 from django.core.management.base import BaseCommand, CommandError
 from django.http import request
 from django.template.defaultfilters import striptags
@@ -19,8 +19,6 @@ from django.utils.translation import gettext as _
 
 from pod.video.models import Video
 from pod.video.utils import archive_video, is_archiving_authorized, write_in_csv
-
-from datetime import date, timedelta
 
 ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
