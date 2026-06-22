@@ -9428,7 +9428,7 @@ msgstr "Modèle de répit introuvable : %(error)s"
 #: pod/video/management/commands/respit_launcher.py
 #, python-format
 msgid "Respit model import error: %(error)s"
-msgstr "Erreur d’importation du modèle Respit : %(error)s"
+msgstr "Erreur d’importation du modèle répit : %(error)s"
 
 #: pod/video/models.py pod/video/views.py
 msgid "None / All"
@@ -11751,37 +11751,3 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
-#, fuzzy, python-brace-format
-#~| msgid "%(counter)s video found"
-#~| msgid_plural "%(counter)s videos found"
-#~ msgid ""
-#~ "Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-#~ "characters."
-#~ msgstr ""
-#~ "Veuillez entrer un titre contenant entre 1 et "
-#~ "{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
-
-#, python-brace-format
-#~ msgid "Studio recording {item.id} encoding started"
-#~ msgstr "Encodage de l’enregistrement en studio {item.id} démarré"
-
-#, python-brace-format
-#~ msgid "Recording {item.id} is not a studio recording and can’t be encoded"
-#~ msgstr ""
-#~ "L’enregistrement {item.id} n’est pas un enregistrement studio et ne peut "
-#~ "pas être encodé."
-
-#~ msgid "This service is not available."
-#~ msgstr "Ce service n’est pas disponible."
-
-#~ msgid "Apply my choice."
-#~ msgstr "Appliquez mon choix."
-
-#~ msgid "Dashboard Filters"
-#~ msgstr "Filtres du tableau de bord"
-
-#~ msgid "Search by title"
-#~ msgstr "Rechercher par titre"
-
-#~ msgid "Clear selection"
-#~ msgstr "Effacer la sélection"
