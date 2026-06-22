@@ -109,8 +109,15 @@ class EncodingWebhookView(APIView):
             logger.info("Manifest retrieved for task %s: %s", task_id, manifest)
 
             file_list = manifest.get("files", [])
-            thumbnail_candidates = ["overview.png", "overview.jpg", "thumbnail.png", "thumbnail.jpg"]
-            thumbnail_path = next((name for name in file_list if name in thumbnail_candidates), None)
+            thumbnail_candidates = [
+                "overview.png",
+                "overview.jpg",
+                "thumbnail.png",
+                "thumbnail.jpg",
+            ]
+            thumbnail_path = next(
+                (name for name in file_list if name in thumbnail_candidates), None
+            )
 
             self._process_video_files(video, client, task_id, file_list, thumbnail_path)
 
