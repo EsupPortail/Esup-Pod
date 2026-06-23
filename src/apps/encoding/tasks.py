@@ -51,12 +51,22 @@ def trigger_runner_encoding_task(self, video_id: int, source_url: str):
             "1080": {"resolution": "1920x1080", "encode_mp4": False},
         }
 
+        parameters = {"rendition": json.dumps(rendition_config)}
+
+        dressing = video.videos_dressing.first()
+        if dressing:
+            dressing_params = dressing.to_runner_parameters()
+            for key in ["watermark", "opening_credits_video", "ending_credits_video"]:
+                if key in dressing_params and dressing_params[key].startswith("/"):
+                    dressing_params[key] = f"{site_url.rstrip('/')}{dressing_params[key]}"
+            parameters["dressing"] = json.dumps(dressing_params)
+
         client = get_runner_client()
         response = client.execute_task(
             video_id=str(video.slug),
             source_url=source_url,
             notify_url=notify_url,
-            parameters={"rendition": json.dumps(rendition_config)},
+            parameters=parameters,
         )
 
         logger.info(
