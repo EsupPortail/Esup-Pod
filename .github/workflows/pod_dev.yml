@@ -93,6 +93,10 @@ jobs:
       - name: Flake8 compliance
         run: flake8
 
+      - name: Check French translations
+        run: |
+          python pod/main/management/commands/check_translations.py
+
       ## Start remote encoding and transcoding test ##
       - name: Create settings local file
         run: |
