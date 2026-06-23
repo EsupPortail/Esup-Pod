@@ -22,7 +22,7 @@ msgstr "Amélioration par l’intelligence artificielle"
 
 #: pod/ai_enhancement/forms.py
 msgid "Choose the title."
-msgstr "Choisissez le titre."
+msgstr ""
 
 #: pod/ai_enhancement/forms.py
 msgid "The initial title is loading…"
