@@ -1393,9 +1393,7 @@ function processProxyVttResponse(obj) {
  * @returns stripped line
  */
 function stripHtmlTags(line) {
-  return String(line)
-    .replace(/<[^>]*>/g, "")
-    .trim();
+  return String(line).replace(/[<>]/g, "").trim();
 }
 
 /**
