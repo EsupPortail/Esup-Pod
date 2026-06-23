@@ -109,19 +109,24 @@ class EncodingWebhookView(APIView):
             logger.info("Manifest retrieved for task %s: %s", task_id, manifest)
 
             file_list = manifest.get("files", [])
+            from pathlib import Path
+
+            image_extensions = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
             # Esup-Runner generates thumbnails like <filename>_0.png, <filename>_1.png...
-            # We pick the first one (_0) as the main thumbnail.
+            # We match any image file whose stem ends with "_0", regardless of extension,
+            # so that future runner output formats (e.g. .webp) are handled automatically.
             thumbnail_path = next(
                 (
                     name
                     for name in file_list
-                    if name.endswith("_0.png") or name.endswith("_0.jpg")
+                    if Path(name).suffix.lower() in image_extensions
+                    and Path(name).stem.endswith("_0")
                 ),
                 None,
             )
             # Fallback if no dynamic name is found
             if not thumbnail_path:
-                fallback_candidates = ["thumbnail.png", "thumbnail.jpg"]
+                fallback_candidates = {"thumbnail.png", "thumbnail.jpg", "thumbnail.webp"}
                 thumbnail_path = next(
                     (name for name in file_list if name in fallback_candidates), None
                 )

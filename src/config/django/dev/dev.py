@@ -202,6 +202,9 @@ if SHOW_SQL_QUERIES:
 if DEBUG:
     import sys
 
+    # Debug Toolbar and Silk add significant overhead and interfere with test runners
+    # (e.g. middleware injection breaks some pytest-django request handling).
+    # We skip them entirely when the process is launched by the test suite.
     is_testing = "test" in sys.argv or any("pytest" in arg for arg in sys.argv)
     if not is_testing:
         INSTALLED_APPS.append("debug_toolbar")
