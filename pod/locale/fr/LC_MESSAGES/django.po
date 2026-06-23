@@ -1363,7 +1363,7 @@ msgstr ""
 #: pod/completion/permissions/video.py
 #, python-format
 msgid "%(func_name)s: Permission denied for user %(user_pk)s."
-msgstr "%(func_name)s : Autorisation refusée pour l'utilisateur %(user_pk)s."
+msgstr "%(func_name)s : Autorisation refusée pour l’utilisateur %(user_pk)s."
 
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
@@ -9429,13 +9429,13 @@ msgid ""
 "You were automatically designated as the owner because the previous owner is "
 "no longer at the institution and you were previously an additional owner."
 msgstr ""
-"Vous avez été automatiquement désigné comme titulaire, car l'ancien "
-"titulaire ne fait plus partie de l'établissement et que vous étiez "
-"auparavant titulaire supplémentaire."
+"Vous avez été automatiquement désigné comme titulaire, car l’ancien "
+"titulaire ne fait plus partie de l’établissement et que vous étiez "
+"auparavant propriétaire additionnel."
 
 #: pod/video/management/commands/check_video_owner_exists.py
 msgid "You have been designated as the owner of a video"
-msgstr "Vous avez été désigné comme propriétaire d'une vidéo"
+msgstr "Vous avez été désigné comme propriétaire d’une vidéo"
 
 #: pod/video/management/commands/create_archive_package.py
 #: pod/video/management/commands/unarchive_video.py
