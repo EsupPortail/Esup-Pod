@@ -68,7 +68,8 @@ class RecordingAdmin(admin.ModelAdmin):
                     if item.type == "studio":
                         self.message_user(
                             request,
-                            _(f"Studio recording {item.id} encoding started"),
+                            _("Studio recording %(itemid)s encoding started")
+                            % {"itemid": item.id},
                             messages.SUCCESS,
                         )
                         # Encode studio recording via Runner Manager
@@ -78,13 +79,16 @@ class RecordingAdmin(admin.ModelAdmin):
                         self.message_user(
                             request,
                             _(
-                                f"Recording {item.id} is not a studio recording and can’t be encoded"
-                            ),
+                                "Recording %(itemid)s is not a studio recording and can’t be encoded"
+                            )
+                            % {"itemid": item.id},
                             messages.WARNING,
                         )
                 except Exception as e:
                     self.message_user(
-                        request, _(f"Error for {item}: {e}"), messages.ERROR
+                        request,
+                        _("Error for %(item)s: %(error)s") % {"item": item, "error": e},
+                        messages.ERROR,
                     )
 
 
