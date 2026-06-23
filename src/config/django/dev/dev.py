@@ -11,6 +11,7 @@ import re
 import sqlparse
 
 from ..base import *  # noqa: F401, F403
+from ..base import INSTALLED_APPS, MIDDLEWARE
 
 DEBUG = True
 SHOW_SQL_QUERIES = False
@@ -197,3 +198,17 @@ if SHOW_SQL_QUERIES:
         "level": "DEBUG",
         "propagate": False,
     }
+
+if DEBUG:
+    import sys
+
+    # Debug Toolbar and Silk add significant overhead and interfere with test runners
+    # (e.g. middleware injection breaks some pytest-django request handling).
+    # We skip them entirely when the process is launched by the test suite.
+    is_testing = "test" in sys.argv or any("pytest" in arg for arg in sys.argv)
+    if not is_testing:
+        INSTALLED_APPS.append("debug_toolbar")
+        INSTALLED_APPS.append("silk")
+        MIDDLEWARE.insert(0, "silk.middleware.SilkyMiddleware")
+        dt_middleware = "debug_toolbar.middleware.DebugToolbarMiddleware"
+        MIDDLEWARE.insert(1, dt_middleware)

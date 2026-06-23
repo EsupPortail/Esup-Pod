@@ -1,6 +1,6 @@
 # Completion: Overview
 
-The **Completion** application extends the Pod V5 video ecosystem by providing advanced metadata, documents, overlays, and automated enrichment capabilities.
+The **Completion** application extends the Esup-Pod video ecosystem by providing advanced metadata, documents, overlays, and automated enrichment capabilities.
 
 ## Key Features
 

@@ -12,6 +12,7 @@ from django.contrib.auth.hashers import make_password
 from src.apps.encoding.conf import encoding_settings
 from src.apps.video.conf import video_settings
 from src.apps.authentication.models import AccessGroup
+from src.apps.collection.models import Theme, ThemeItem
 from .DisciplineSerializer import DisciplineSerializer
 from .HyperlinkSerializer import VideoHyperlinkSerializer
 
@@ -77,6 +78,9 @@ class VideoSerializer(serializers.ModelSerializer):
     )
     restricted_groups = serializers.PrimaryKeyRelatedField(
         many=True, queryset=AccessGroup.objects.all(), required=False
+    )
+    themes = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Theme.objects.all(), required=False
     )
     date_of_event = serializers.DateField(required=False, allow_null=True)
     created_at = serializers.DateTimeField(read_only=True)
@@ -282,3 +286,26 @@ class VideoSerializer(serializers.ModelSerializer):
         if not data.get("thumbnail"):
             data["thumbnail"] = data.get("thumbnail_url")
         return data
+
+    def create(self, validated_data):
+        """
+        Creates a Video instance and assigns the themes list.
+        """
+        themes_data = validated_data.pop("themes", None)
+        video = super().create(validated_data)
+        if themes_data is not None:
+            for theme in themes_data:
+                ThemeItem.objects.create(theme=theme, video=video)
+        return video
+
+    def update(self, instance, validated_data):
+        """
+        Updates a Video instance and updates its themes list.
+        """
+        themes_data = validated_data.pop("themes", None)
+        video = super().update(instance, validated_data)
+        if themes_data is not None:
+            ThemeItem.objects.filter(video=video).delete()
+            for theme in themes_data:
+                ThemeItem.objects.create(theme=theme, video=video)
+        return video

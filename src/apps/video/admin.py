@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ObjectDoesNotExist
 
 from src.apps.video.models import (
     Video,
@@ -54,6 +55,48 @@ class VideoAdmin(admin.ModelAdmin):
         return "N/A"
 
     file_size_mb.short_description = "Size (MB)"
+
+    def has_delete_permission(self, request, obj=None):
+        """
+        Dynamically checks for deletion rights based on ServerRoles and Establishment.
+        """
+        if request.user.is_superuser:
+            return True
+
+        if obj:
+            try:
+                owner_profile = request.user.owner
+                for role in owner_profile.server_roles.filter(can_delete_video=True):
+                    if role.scope == "GLOBAL":
+                        return True
+                    if role.scope == "ESTABLISHMENT" and hasattr(obj.owner, "owner"):
+                        if obj.owner.owner.establishment == owner_profile.establishment:
+                            return True
+            except ObjectDoesNotExist:
+                pass
+
+        return super().has_delete_permission(request, obj)
+
+    def has_change_permission(self, request, obj=None):
+        """
+        Dynamically checks for editing rights based on ServerRoles and Establishment.
+        """
+        if request.user.is_superuser:
+            return True
+
+        if obj:
+            try:
+                owner_profile = request.user.owner
+                for role in owner_profile.server_roles.filter(can_edit_video=True):
+                    if role.scope == "GLOBAL":
+                        return True
+                    if role.scope == "ESTABLISHMENT" and hasattr(obj.owner, "owner"):
+                        if obj.owner.owner.establishment == owner_profile.establishment:
+                            return True
+            except ObjectDoesNotExist:
+                pass
+
+        return super().has_change_permission(request, obj)
 
 
 @admin.register(Type)

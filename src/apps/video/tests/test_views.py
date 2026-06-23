@@ -162,6 +162,42 @@ class VideoViewSetTests(APITestCase):
         results = self._get_results(response)
         self.assertEqual(len(results), 1)
 
+    def test_filter_by_multiple_tags(self):
+        """Verifies that videos can be filtered by multiple tag names (acts as an OR/IN behavior, matching videos containing any of the provided tags)."""
+        url = f"{reverse('video-list')}?tags__name=python&tags__name=django"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = self._get_results(response)
+        self.assertEqual(len(results), 1)
+
+    def test_filter_by_status(self):
+        """Verifies that videos can be filtered by status."""
+        self.client.force_authenticate(user=self.superuser)
+        url = f"{reverse('video-list')}?status=RE"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = self._get_results(response)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["title"], "Restricted Video")
+
+    def test_filter_by_owner_username(self):
+        """Verifies that videos can be filtered by owner username."""
+        self.client.force_authenticate(user=self.superuser)
+        url = f"{reverse('video-list')}?owner__username=testuser"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = self._get_results(response)
+        self.assertEqual(len(results), 2)  # My Video and Restricted Video
+
+    def test_search_includes_tags(self):
+        """Verifies that search works on tag names."""
+        url = f"{reverse('video-list')}?search=django"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = self._get_results(response)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], self.video.id)
+
     def test_access_restricted_group(self):
         """Verifies that user in restricted group can access video."""
         vip_user = User.objects.create_user(username="vip", password="password")

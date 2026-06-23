@@ -86,14 +86,16 @@ ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
+# In src/config/django/base.py
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
-    "PAGE_SIZE": 20,
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": env.int("API_PAGE_SIZE", default=20),
 }
 
 SPECTACULAR_SETTINGS = {
@@ -162,6 +164,7 @@ if REDIS_SESSION_URL:
         "socket_timeout": 1,
     }
 
+INTERNAL_IPS = env.list("INTERNAL_IPS", default=["localhost", "127.0.0.1"])
 
 # ==============================================================================
 # MODULAR SETTINGS LOADING
@@ -203,3 +206,13 @@ if not globals().get("CORS_ALLOWED_ORIGINS") and not globals().get(
     warnings.warn(
         "CORS_ALLOWED_ORIGINS is empty. Cross-origin requests will fail.", stacklevel=2
     )
+
+# ==============================================================================
+# TAGULOUS CONFIGURATION
+# ==============================================================================
+SERIALIZATION_MODULES = {
+    "xml": "tagulous.serializers.xml_serializer",
+    "json": "tagulous.serializers.json",
+    "python": "tagulous.serializers.python",
+    "yaml": "tagulous.serializers.pyyaml",
+}

@@ -51,7 +51,7 @@ class EncodingWebhookViewTests(APITestCase):
         mock_get_client.return_value = mock_client
         mock_client.get_task_manifest.return_value = {
             "task_id": "test-task-123",
-            "files": ["720p_video.mp4", "overview.png", "task_metadata.json"],
+            "files": ["720p_video.mp4", "test_0.png", "task_metadata.json"],
         }
 
         def mock_download(task_id, file_path):
