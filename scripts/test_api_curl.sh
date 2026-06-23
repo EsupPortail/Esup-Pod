@@ -116,7 +116,7 @@ SITE_ID=$(echo "$SITES_RES" | get_val_at 0 "id")
 
 # Owner ID
 OWNER_RES=$(curl -s -X 'GET' "$BASE_URL/api/auth/owners/" -H "$AUTH_HEADER")
-OWNER_ID=$(echo "$OWNER_RES" | python3 -c "import sys, json; data=json.load(sys.stdin); items=data.get('results', data) if isinstance(data, dict) else data; print(next((o['id'] for o in items if str(o.get('user')) == '$USER_ID'), '1'))")
+OWNER_ID=$(echo "$OWNER_RES" | python3 -c "import sys, json; data=json.load(sys.stdin); items=data.get('results', data) if isinstance(data, dict) else data; print(next((o['id'] for o in items if isinstance(o, dict) and str(o.get('user')) == '$USER_ID'), '1'))")
 
 if [ -z "$USER_ID" ] || [ -z "$SITE_ID" ]; then
     echo -e "${RED}FAILED${NC}"

@@ -16,7 +16,12 @@ from django.http import FileResponse, Http404
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.contrib.auth.hashers import check_password
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+    OpenApiParameter,
+    OpenApiResponse,
+)
 
 from src.apps.video.models import Video
 from src.apps.video.serializers import VideoSerializer
@@ -25,10 +30,17 @@ from src.apps.authentication.permissions import IsSuperUser
 from django_filters.rest_framework import DjangoFilterBackend
 from src.apps.video.conf import video_settings
 from src.apps.encoding.conf import encoding_settings
+from src.apps.video.filters import VideoFilterSet
 
 logger = logging.getLogger(__name__)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List videos",
+        description="Retrieve a list of videos. This endpoint supports advanced multi-value filtering. You can pass multiple values for the same parameter (e.g., `?tags__name=python&tags__name=django` or `?discipline=1&discipline=2`). Supported multi-value fields: `tags__name`, `tags__slug`, `type__slug`, `cursus__slug`, `discipline`, `status`, and `owner__username`.",
+    )
+)
 class VideoViewSet(viewsets.ModelViewSet):
     """
     API view set for the Video model.
@@ -47,9 +59,9 @@ class VideoViewSet(viewsets.ModelViewSet):
         filters.OrderingFilter,
         DjangoFilterBackend,
     ]
-    search_fields = ["title", "description", "owner__username"]
-    filterset_fields = ["channel", "themes"]
-    ordering_fields = ["created_at", "title"]
+    search_fields = ["title", "description", "owner__username", "tags__name"]
+    filterset_class = VideoFilterSet
+    ordering_fields = ["created_at", "title", "view_count", "duration"]
     ordering = ["-created_at"]
 
     def get_object(self):
@@ -74,47 +86,16 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         return super().get_object()
 
-    def _apply_query_filters(self, qs):
-        """Helper to apply GET query parameters filters."""
-        # Filters from Collection App
-        channel_id = self.request.query_params.get("channel")
-        if channel_id:
-            qs = qs.filter(channel_id=channel_id)
-
-        theme_id = self.request.query_params.get("themes")
-        if theme_id:
-            qs = qs.filter(themes__id=theme_id)
-
-        # Filters from Advanced Branch (Tags, Disciplines, etc.)
-        type_slug = self.request.query_params.get("type__slug")
-        if type_slug:
-            qs = qs.filter(type__slug=type_slug)
-
-        cursus_slug = self.request.query_params.get("cursus__slug")
-        if cursus_slug:
-            qs = qs.filter(cursus__slug=cursus_slug)
-
-        discipline_id = self.request.query_params.get("discipline")
-        if discipline_id:
-            qs = qs.filter(disciplines__id=discipline_id)
-
-        tags_slug = self.request.query_params.get("tags__slug")
-        if tags_slug:
-            qs = qs.filter(tags__slug=tags_slug)
-
-        tags_name = self.request.query_params.get("tags__name")
-        if tags_name:
-            qs = qs.filter(tags__name=tags_name)
-
-        return qs
-
     def get_queryset(self):
-        """Filters videos based on the current site, authentication, ownership and visibility."""
+        """
+        Filters videos based on the current site, authentication, ownership and visibility.
+        Additional query-param filters (type, tags, disciplines, status, owner, etc.) are
+        handled automatically by VideoFilterSet via DjangoFilterBackend.
+        """
         user = self.request.user
         current_site = get_current_site(self.request)
 
         qs = Video.objects.filter(sites=current_site)
-        qs = self._apply_query_filters(qs)
 
         if getattr(self, "action", None) in ["stream", "unlock", "register_view"]:
             return qs

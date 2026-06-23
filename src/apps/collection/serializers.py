@@ -38,6 +38,7 @@ class ChannelSerializer(serializers.ModelSerializer):
             "logo",
             "banner",
             "collaborators",
+            "default_order",
             "old_v4_id",
             "created_at",
             "updated_at",
@@ -77,6 +78,8 @@ class ThemeSerializer(serializers.ModelSerializer):
             "description",
             "parent",
             "channel",
+            "banner",
+            "default_order",
             "old_v4_id",
             "created_at",
             "updated_at",
@@ -107,6 +110,16 @@ class ThemeSerializer(serializers.ModelSerializer):
 
         visible_videos = Video.objects.visible_for(search_user)
         items = obj.themeitem_set.filter(video__in=visible_videos)
+
+        # Apply ordering based on theme default_order field
+        order_field = obj.default_order
+        if order_field:
+            if order_field.startswith("-"):
+                django_order = f"-video__{order_field[1:]}"
+            else:
+                django_order = f"video__{order_field}"
+            items = items.order_by(django_order)
+
         return ThemeItemSerializer(items, many=True, context=self.context).data
 
 
@@ -143,6 +156,7 @@ class PlaylistSerializer(serializers.ModelSerializer):
             "is_public",
             "password",
             "is_protected",
+            "default_order",
             "old_v4_id",
             "created_at",
             "updated_at",
@@ -178,6 +192,16 @@ class PlaylistSerializer(serializers.ModelSerializer):
 
         visible_videos = Video.objects.visible_for(search_user)
         items = obj.items.filter(video__in=visible_videos)
+
+        # Apply ordering based on playlist default_order field
+        order_field = obj.default_order
+        if order_field:
+            if order_field.startswith("-"):
+                django_order = f"-video__{order_field[1:]}"
+            else:
+                django_order = f"video__{order_field}"
+            items = items.order_by(django_order)
+
         return PlaylistItemSerializer(items, many=True, context=self.context).data
 
 

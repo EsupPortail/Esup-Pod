@@ -30,6 +30,10 @@ class IsOwnerOrCoOwnerOrChannelCollaborator(permissions.BasePermission):
         if obj.owner == request.user:
             return True
 
+        # Check ServerRole permissions dynamically
+        if self._has_server_role_permission(request, obj):
+            return True
+
         # 3. Restrict editing to staff only: non-staff users cannot edit (as co-owners/collaborators)
         if video_settings.restrict_edit_to_staff and not request.user.is_staff:
             return False
@@ -46,6 +50,30 @@ class IsOwnerOrCoOwnerOrChannelCollaborator(permissions.BasePermission):
             ).exists()
             return is_channel_owner or is_channel_collab
 
+        return False
+
+    def _check_role_scope(self, role, owner_profile, obj) -> bool:
+        """Helper to verify if a role scope is global or matches establishment."""
+        if role.scope == "GLOBAL":
+            return True
+        if role.scope == "ESTABLISHMENT" and hasattr(obj.owner, "owner"):
+            return obj.owner.owner.establishment == owner_profile.establishment
+        return False
+
+    def _has_server_role_permission(self, request, obj) -> bool:
+        """Helper to check dynamic ServerRole permissions."""
+        try:
+            owner_profile = request.user.owner
+            if request.method == "DELETE":
+                for role in owner_profile.server_roles.filter(can_delete_video=True):
+                    if self._check_role_scope(role, owner_profile, obj):
+                        return True
+            elif request.method in ("PUT", "PATCH"):
+                for role in owner_profile.server_roles.filter(can_edit_video=True):
+                    if self._check_role_scope(role, owner_profile, obj):
+                        return True
+        except Exception:
+            pass
         return False
 
 

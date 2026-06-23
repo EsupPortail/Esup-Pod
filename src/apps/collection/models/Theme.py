@@ -3,10 +3,14 @@ Esup-Pod - Theme model for taxonomy.
 """
 
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from src.apps.collection.models.base import BaseContainer
 from src.apps.collection.models.Channel import Channel
 from src.apps.video.models.Video import Video
+from src.apps.encoding.services.storage import get_storage_path_collection_image
+from src.apps.utils.files import safe_remove_file
 
 
 class Theme(BaseContainer):
@@ -40,6 +44,13 @@ class Theme(BaseContainer):
         related_name="themes",
         verbose_name=_("Videos"),
         blank=True,
+    )
+    banner = models.ImageField(
+        _("Banner"),
+        upload_to=get_storage_path_collection_image,
+        null=True,
+        blank=True,
+        help_text=_("Large banner for the theme page."),
     )
 
     class Meta(BaseContainer.Meta):
@@ -94,3 +105,11 @@ class ThemeItem(models.Model):
         verbose_name = _("Theme Item")
         verbose_name_plural = _("Theme Items")
         unique_together = ("theme", "video")
+
+
+@receiver(post_delete, sender=Theme)
+def auto_delete_theme_banner_on_delete(sender, instance, **kwargs):
+    """
+    Deletes physical banner file from disk when Theme object is deleted.
+    """
+    safe_remove_file(instance.banner)

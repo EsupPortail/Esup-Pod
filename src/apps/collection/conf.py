@@ -13,6 +13,7 @@ from pydantic_settings import (
 )
 from src.apps.utils.conf import DjangoSettingsSource
 from src.config.defaults import collection as defaults
+from django.utils.translation import gettext_lazy as _
 
 
 class CollectionConfig(BaseSettings):
@@ -21,102 +22,109 @@ class CollectionConfig(BaseSettings):
     # --- Channels ---
     use_channels: bool = Field(
         default=defaults.USE_CHANNELS,
-        description="Enable/disable globally channel functionality.",
+        description=_("Enable/disable globally channel functionality."),
         json_schema_extra={"public": True},
     )
     owner_can_manage_channels: bool = Field(
         default=defaults.OWNER_CAN_MANAGE_CHANNELS,
-        description="Allow video owners to manage their own channels.",
+        description=_("Allow video owners to manage their own channels."),
         json_schema_extra={"public": True},
     )
     user_can_create_channel: bool = Field(
         default=defaults.USER_CAN_CREATE_CHANNEL,
-        description="Allow standard users to create channels.",
+        description=_("Allow standard users to create channels."),
         json_schema_extra={"public": True},
     )
     can_change_channel_owner: bool = Field(
         default=defaults.CAN_CHANGE_CHANNEL_OWNER,
-        description="Allow administrators to transfer channel ownership.",
+        description=_("Allow administrators to transfer channel ownership."),
         json_schema_extra={"public": True},
     )
     default_channel_image: str = Field(
         default=defaults.DEFAULT_CHANNEL_IMAGE,
-        description="Default image for channels without logo.",
+        description=_("Default image for channels without logo."),
         json_schema_extra={"public": True},
     )
     default_channel_banner: str = Field(
         default=defaults.DEFAULT_CHANNEL_BANNER,
-        description="Default banner for channels.",
+        description=_("Default banner for channels."),
         json_schema_extra={"public": True},
     )
 
     # --- Themes / Categories ---
     use_categories: bool = Field(
         default=defaults.USE_CATEGORIES,
-        description="Enable/disable category/theme system.",
+        description=_("Enable/disable category/theme system."),
         json_schema_extra={"public": True},
     )
     theme_mandatory: bool = Field(
         default=defaults.THEME_MANDATORY,
-        description="Make theme assignment mandatory when adding a video.",
+        description=_("Make theme assignment mandatory when adding a video."),
         json_schema_extra={"public": True},
     )
     max_theme_depth: int = Field(
         default=defaults.MAX_THEME_DEPTH,
-        description="Maximum depth of theme hierarchy.",
+        description=_("Maximum depth of theme hierarchy."),
         json_schema_extra={"public": True},
     )
     show_empty_themes: bool = Field(
         default=defaults.SHOW_EMPTY_THEMES,
-        description="Show themes even if they contain no videos.",
+        description=_("Show themes even if they contain no videos."),
         json_schema_extra={"public": True},
     )
     owner_can_manage_themes: bool = Field(
         default=defaults.OWNER_CAN_MANAGE_THEMES,
-        description="Allow channel owners to create their own themes in their channels.",
+        description=_(
+            "Allow channel owners to create their own themes in their channels."
+        ),
         json_schema_extra={"public": True},
     )
 
     # --- Playlists ---
     use_playlists: bool = Field(
         default=defaults.USE_PLAYLISTS,
-        description="Enable/disable globally playlist module.",
+        description=_("Enable/disable globally playlist module."),
         json_schema_extra={"public": True},
     )
     playlist_max_videos: int = Field(
         default=defaults.PLAYLIST_MAX_VIDEOS,
-        description="Maximum number of videos in a single playlist.",
+        description=_("Maximum number of videos in a single playlist."),
         json_schema_extra={"public": True},
     )
     allow_public_playlists: bool = Field(
         default=defaults.ALLOW_PUBLIC_PLAYLISTS,
-        description="Allow users to make their playlists public.",
+        description=_("Allow users to make their playlists public."),
         json_schema_extra={"public": True},
     )
 
     # --- Favorites ---
     use_favorites: bool = Field(
         default=defaults.USE_FAVORITES,
-        description="Enable favorites functionality.",
+        description=_("Enable favorites functionality."),
         json_schema_extra={"public": True},
     )
 
     # --- Visibility & Protection ---
     default_visibility: str = Field(
         default=defaults.DEFAULT_VISIBILITY,
-        description="Default visibility for new collections.",
+        description=_("Default visibility for new collections."),
         json_schema_extra={"public": True},
     )
     use_password_protection: bool = Field(
         default=defaults.USE_PASSWORD_PROTECTION,
-        description="Enable password protection for collections.",
+        description=_("Enable password protection for collections."),
         json_schema_extra={"public": True},
     )
 
     # --- General ---
     collections_per_page: int = Field(
         default=defaults.COLLECTIONS_PER_PAGE,
-        description="Number of collections per page for pagination.",
+        description=_("Number of collections per page for pagination."),
+        json_schema_extra={"public": True},
+    )
+    default_collection_order_field: str = Field(
+        default=defaults.DEFAULT_COLLECTION_ORDER_FIELD,
+        description=_("Default ordering field for collections."),
         json_schema_extra={"public": True},
     )
 

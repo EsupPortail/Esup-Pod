@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
+import contextlib
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from src.apps.video.models import Video
@@ -108,7 +109,27 @@ class EncodingWebhookView(APIView):
             logger.info("Manifest retrieved for task %s: %s", task_id, manifest)
 
             file_list = manifest.get("files", [])
-            thumbnail_path = "overview.png" if "overview.png" in file_list else None
+            from pathlib import Path
+
+            image_extensions = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
+            # Esup-Runner generates thumbnails like <filename>_0.png, <filename>_1.png...
+            # We match any image file whose stem ends with "_0", regardless of extension,
+            # so that future runner output formats (e.g. .webp) are handled automatically.
+            thumbnail_path = next(
+                (
+                    name
+                    for name in file_list
+                    if Path(name).suffix.lower() in image_extensions
+                    and Path(name).stem.endswith("_0")
+                ),
+                None,
+            )
+            # Fallback if no dynamic name is found
+            if not thumbnail_path:
+                fallback_candidates = {"thumbnail.png", "thumbnail.jpg", "thumbnail.webp"}
+                thumbnail_path = next(
+                    (name for name in file_list if name in fallback_candidates), None
+                )
 
             self._process_video_files(video, client, task_id, file_list, thumbnail_path)
 
@@ -173,11 +194,13 @@ class EncodingWebhookView(APIView):
                 encoding_obj.file.save(
                     encoded_video_file.name, encoded_video_file, save=True
                 )
-                os.unlink(encoded_video_file.file.name)
+                with contextlib.suppress(FileNotFoundError):
+                    os.unlink(encoded_video_file.file.name)
 
         if thumbnail_path:
             if video.overview:
                 video.overview.delete(save=False)
             new_overview = client.download_task_file_to_temp(task_id, thumbnail_path)
             video.overview.save(new_overview.name, new_overview, save=False)
-            os.unlink(new_overview.file.name)
+            with contextlib.suppress(FileNotFoundError):
+                os.unlink(new_overview.file.name)
