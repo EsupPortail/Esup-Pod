@@ -1486,3 +1486,15 @@ class ArchiveChoiceForm(forms.Form):
             "Your preference regarding the future of your video on this platform."
         ),
     )
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Initialize the choices for a video, based on its archiving authorization status."""
+        archiving_authorized = kwargs.pop("archiving_authorized", True)
+        super().__init__(*args, **kwargs)
+
+        if not archiving_authorized:
+            self.fields["action"].choices = [
+                (value, label)
+                for value, label in self.fields["action"].choices
+                if value != "Archive"
+            ]

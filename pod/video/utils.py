@@ -68,49 +68,48 @@ BASE_DIR = getattr(settings, "BASE_DIR", "/")
 NUMBER_TAGS_CLOUD = getattr(settings, "NUMBER_TAGS_CLOUD", 20)
 
 ARCHIVE_CSV = "%s/archived.csv" % settings.LOG_DIRECTORY
-
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
-
 ARCHIVE_ROOT = getattr(settings, "ARCHIVE_ROOT", "/video_archiving")
+POD_ARCHIVE_AFFILIATION = getattr(settings, "POD_ARCHIVE_AFFILIATION", [])
 
-USE_RESPIT = getattr(settings, "USE_RESPIT", False)
-
-RESPIT_MODEL = getattr(settings, "RESPIT_MODEL", "base")
+USE_RESPITE = getattr(settings, "USE_RESPITE", False)
+RESPITE_MODEL = getattr(settings, "RESPITE_MODEL", "base")
 
 
 def is_archiving_authorized(vid: Video) -> bool:
     """Check if video owner's affiliation is allowed to archive."""
     if vid is None:
+        logger.error("[is_archiving_authorized] video is None.")
         return False
 
-    if not getattr(settings, "POD_ARCHIVE_AFFILIATION", []):
+    if not POD_ARCHIVE_AFFILIATION:
+        logger.error("[is_archiving_authorized] POD_ARCHIVE_AFFILIATION is empty.")
         return False
-    allowed_affiliations = getattr(settings, "POD_ARCHIVE_AFFILIATION", [])
 
     owner = getattr(vid.owner, "owner", None)
     owner_affiliation = getattr(owner, "affiliation", "")
     if not owner_affiliation:
+        logger.error("[is_archiving_authorized] owner %s has no affiliation." % owner)
         return False
 
-    is_owner_affiliations_allowed = owner_affiliation.strip() in allowed_affiliations
+    if owner_affiliation.strip() not in POD_ARCHIVE_AFFILIATION:
+        logger.error("[is_archiving_authorized] owner’s affiliation not in POD_ARCHIVE_AFFILIATION." % owner)
+        return False
 
+    allowed_video = False
     # Check if the video can be archived.
-    if USE_RESPIT:
-        allowed_video = False
+    if USE_RESPITE:
         try:
             mod = importlib.import_module(
-                "pod.video.management.commands.respit_model." + RESPIT_MODEL
+                "pod.video.management.commands.respite_model." + RESPITE_MODEL
             )
             allowed_video = mod.can_video_be_archived(vid)
-        except ModuleNotFoundError:
-            print("An Error occurred while processing.")
-        except ImportError:
-            print("An Error occurred while processing.")
-
+        except (ImportError, ModuleNotFoundError):
+            logger.error("An Error occurred while importing respite model `%s`." % RESPITE_MODEL)
     else:
         allowed_video = True
 
-    return bool(allowed_affiliations and is_owner_affiliations_allowed and allowed_video)
+    return allowed_video
 
 
 ###############################################################
@@ -426,13 +425,13 @@ def has_audio(video) -> bool:
             return False
 
     except FileNotFoundError:
-        print("Error: info_video.json file not found.")
+        logger.error("Error: info_video.json file not found.")
     except json.JSONDecodeError:
-        print("Error: Malformed JSON file.")
+        logger.error("Error: Malformed JSON file.")
     except KeyError:
-        print("Error: 'list_audio_track' key missing in JSON file.")
+        logger.error("Error: 'list_audio_track' key missing in JSON file.")
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        logger.error(f"Unexpected error: {e}")
 
     # Default to True if an error occurs
     return True
@@ -575,7 +574,7 @@ def check_csv_header(csv_file: str, fieldnames: list) -> None:
     with open(csv_file, "r") as f:
         lines = f.readlines()
     if len(lines[0].split(";")) < len(fieldnames):
-        print("Adding missing header columns in %s." % csv_file)
+        logger.info("Adding missing header columns in %s." % csv_file)
         lines[0] = ";".join(fieldnames) + "\n"
         with open(csv_file, "w") as f:
             f.writelines(lines)
@@ -712,7 +711,7 @@ def export_complement(
     """Store a video complement as json."""
     if len(export_objects) > 0:
         export_file = os.path.join(folder, "%s.json" % export_type)
-        print("  * Export %s %s." % (len(export_objects), export_type))
+        logger.debug("  * Export %s %s." % (len(export_objects), export_type))
         if not dry_mode:
             with open(export_file, "w") as out:
                 content = serialize("json", export_objects)
@@ -724,7 +723,7 @@ def move_video_to_archive(
 ) -> None:
     """Move video source file to mediaPackage_dir."""
     if os.access(vid.video.path, os.F_OK):
-        print(
+        logger.info(
             "  * Moving %s to " % vid.video.path,
             os.path.join(mediaPackage_dir, os.path.basename(vid.video.name)),
         )
@@ -738,7 +737,7 @@ def move_video_to_archive(
         # Deletes the video object and the associated folder (encoding, logs, etc.)
         # Remove thumbnails (x3)
     else:
-        print("ERROR: Cannot access to file '%s'." % vid.video.path)
+        logger.error("ERROR: Cannot access to file '%s'." % vid.video.path)
 
 
 def copy_archive_to(media_package_dir: str, vid: Video) -> None:
@@ -749,7 +748,7 @@ def copy_archive_to(media_package_dir: str, vid: Video) -> None:
             os.path.join(media_package_dir),
         )
     else:
-        print("ERROR: Cannot access to file '%s'." % vid.video.path)
+        logger.error("ERROR: Cannot access to file '%s'." % vid.video.path)
 
 
 def archive_pack(
@@ -792,20 +791,20 @@ def archive_pack(
     # Store also files linked to Enrichments
     for enrich in Enrichment.objects.filter(video=vid):
         if enrich.document:
-            print("  * Copying %s..." % enrich.document.file.path)
+            logger.info("  * Copying %s..." % enrich.document.file.path)
             shutil.copy(enrich.document.file.path, media_package_dir)
         if enrich.image:
-            print("  * Copying %s..." % enrich.image.file.path)
+            logger.info("  * Copying %s..." % enrich.image.file.path)
             shutil.copy(enrich.image.file.path, media_package_dir)
 
     # Store file complements.
     for file in Document.objects.filter(video=vid):
-        print("  * Copying %s..." % file.document.file.path)
+        logger.info("  * Copying %s..." % file.document.file.path)
         shutil.copy(file.document.file.path, media_package_dir)
 
     # Store additional tracks (caption / subtitles)
     for track in Track.objects.filter(video=vid):
-        print("  * Copying %s..." % track.src.file.path)
+        logger.info("  * Copying %s..." % track.src.file.path)
         shutil.copy(track.src.file.path, media_package_dir)
 
     # TODO:

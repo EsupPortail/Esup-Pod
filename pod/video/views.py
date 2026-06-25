@@ -3947,11 +3947,16 @@ def video_respite(request, slug):
         else:
             return redirect("video:video", slug=slug)
 
+    form = ArchiveChoiceForm(
+        request.POST or None,
+        archiving_authorized=is_archiving_authorized(vid),
+    )
+
     return render(
         request,
         "videos/video_respite_choice.html",
         {
-            "form": ArchiveChoiceForm(request.POST),
+            "form": form,
             "slug": slug,
             "video": vid,
             "ENABLE_PAGE_OBSO_MAIL": ENABLE_PAGE_OBSO_MAIL,
@@ -3983,11 +3988,21 @@ def valid_form_respite(request, slug=None):
                     },
                 )
             case "Archive":
-                return render(
-                    request,
-                    "videos/archive_or_not.html",
-                    {"video": vid},
-                )
+                if is_archiving_authorized(vid):
+                    return render(
+                        request,
+                        "videos/archive_or_not.html",
+                        {"video": vid},
+                    )
+                else:
+                    messages.add_message(
+                        request,
+                        messages.ERROR,
+                        _(
+                            "Impossible to archive. You are not authorized to archive video %(vid_title)s."
+                        )
+                        % {"vid_title": vid.title},
+                    )
 
     # When respite cannot be done (insufficient permissions, video already archived, etc.), we redirect to dashboard.
     return redirect("video:dashboard")
@@ -4065,7 +4080,15 @@ def go_archive(request, slug=None):
         )
         return redirect("video:dashboard")
     vid, display_or_not = able_or_not_respite(slug, request)
-    if slug is not None and display_or_not is True:
+    if slug is not None and is_archiving_authorized(vid) is False:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("Impossible action. Archiving the video '%(vid_title)s' is prohibited.")
+            % {"vid_title": vid.title},
+        )
+        return redirect("video:video", slug=vid.slug)
+    elif slug is not None and display_or_not is True:
         archive_video(vid)
         try:
             Video.objects.get(slug=slug)
@@ -4074,7 +4097,7 @@ def go_archive(request, slug=None):
                 messages.ERROR,
                 _("Your video “%(slug)s” has NOT been archived.") % {"slug": slug},
             )
-            return redirect("video:video", slug=video.slug)
+            return redirect("video:video", slug=vid.slug)
         except Video.DoesNotExist:
             messages.add_message(
                 request,

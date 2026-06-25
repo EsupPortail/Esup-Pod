@@ -41,6 +41,7 @@ def calcul(parameters, dry_mode: bool = True):
     print(json.dumps(parameters, sort_keys=True, indent=2, default=str))
     return 1
 
+
 def can_video_be_archived(vid: Video):
     """Checks if a video can be archived"""
     return True

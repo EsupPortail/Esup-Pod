@@ -124,7 +124,7 @@ class ObsolescenceTestCase(TestCase):
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
-        # On modifie la date après la création pour etre sur qu'elle soit bonne
+        # Modify the date after creation to ensure it is correct
         vid6.date_delete = date.today() - timedelta(days=1)
         vid6.is_draft = False
         vid6.save()
@@ -292,6 +292,7 @@ class ValidFormRespitTestCase(TestCase):
             username=ARCHIVE_OWNER_USERNAME,
         )
 
+    @override_settings(POD_ARCHIVE_AFFILIATION=["faculty"])
     def test_archive_action(self):
         """Test archive option in the form"""
         # Connect the user
@@ -316,6 +317,8 @@ class ValidFormRespitTestCase(TestCase):
             {"action": "Archive"},
             follow=True,
         )
+        from pod.video.utils import is_archiving_authorized
+        print("is_archiving_authorized = %s" % is_archiving_authorized(self.video1))
         self.assertContains(response, _("Are you sure you want to archive this video?"))
 
         print("--->  test_archive_action of ValidFormRespitTestCase: OK")
@@ -330,7 +333,7 @@ class ValidFormRespitTestCase(TestCase):
         self.user.owner.save()
         self.client.force_login(self.user)
 
-        response = self.client.get(f"/video/respit/{self.video1.slug}/")
+        response = self.client.get(f"/video/respite/{self.video1.slug}/")
 
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, 'value="Archive"')
@@ -343,10 +346,14 @@ class ValidFormRespitTestCase(TestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            f"/video/valid/form/respit/{self.video1.slug}/", {"action": "Archive"}
+            f"/video/valid/form/respite/{self.video1.slug}/", {"action": "Archive"}
         )
 
-        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            _("Impossible action. Archiving the video '%(vid_title)s' is prohibited.")
+            % {"vid_title": self.video1.title},
+        )
 
     @override_settings(PROLONGATION_GRANTED=True)
     def test_extend_action(self):

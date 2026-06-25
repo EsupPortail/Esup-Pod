@@ -20,7 +20,7 @@ RESPITE_MODEL_PARAMETERS = getattr(
             "excluded_title_terms": [],
             "excluded_discipline_terms": [],
         },
-    }
+    },
 )
 
 

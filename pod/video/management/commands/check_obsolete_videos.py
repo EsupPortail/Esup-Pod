@@ -208,7 +208,9 @@ class Command(BaseCommand):
             domain = get_current_site(request).domain
             base_url = f"{URL_SCHEME}://{domain}"
 
-            custom_message_page_obso_mail += "<p>%s</p>" % _("You can choose to do an action on your video:")
+            custom_message_page_obso_mail += "<p>%s</p>" % _(
+                "You can choose to do an action on your video:"
+            )
             custom_message_page_obso_mail += self.html_options(video)
             respite_url = reverse("video:video_respite", args=(video.slug,))
             custom_message_page_obso_mail += (
