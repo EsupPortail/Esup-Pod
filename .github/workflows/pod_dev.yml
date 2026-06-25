@@ -74,7 +74,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ffmpeg ffmpegthumbnailer
+          sudo apt-get install -y --no-install-recommends ffmpeg ffmpegthumbnailer gettext
           sudo apt-get clean
           sudo rm -rf /var/lib/apt/lists/*
           python -m pip install --upgrade pip
@@ -92,6 +92,11 @@ jobs:
       # FLAKE 8 (see setup.cfg for configurations)
       - name: Flake8 compliance
         run: flake8
+
+      - name: Check French translations
+        run: |
+          make lang
+          python pod/main/management/commands/check_translations.py
 
       ## Start remote encoding and transcoding test ##
       - name: Create settings local file
