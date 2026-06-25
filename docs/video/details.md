@@ -1,6 +1,5 @@
 # Video: Technical Details
 
->
 > **Navigation:** [Back to Overview](README.md) | [Back to Index](../README.md)
 
 ---
@@ -55,7 +54,7 @@ class Status(models.TextChoices):
 
 **Key methods:**
 
-- `thumbnail_url` *(property)*: Returns the thumbnail URL or the configured default.
+- `thumbnail_url` _(property)_: Returns the thumbnail URL or the configured default.
 - `get_dublin_core()`: Returns a Dublin Core metadata dictionary.
 - `set_password()`: Hashes the password field using PBKDF2-SHA256 (idempotent).
 - `save()`: Auto-generates the slug, hashes password, computes expiration date, and moves files on owner change.
@@ -66,12 +65,12 @@ class Status(models.TextChoices):
 
 A subtitle file attached to a video (`src/apps/video/models/Subtitle.py`).
 
-| Field        | Type         | Description                                            |
-| :----------- | :----------- | :----------------------------------------------------- |
-| `video`      | FK → Video   | Parent video.                                          |
-| `language`   | CharField    | Language code: `fr`, `en`, or `es`.                    |
-| `file`       | FileField    | Subtitle file (expected VTT/SRT). Path: `subtitles/`.  |
-| `is_default` | BooleanField | Marks this subtitle as the default track.              |
+| Field        | Type         | Description                                           |
+| :----------- | :----------- | :---------------------------------------------------- |
+| `video`      | FK → Video   | Parent video.                                         |
+| `language`   | CharField    | Language code: `fr`, `en`, or `es`.                   |
+| `file`       | FileField    | Subtitle file (expected VTT/SRT). Path: `subtitles/`. |
+| `is_default` | BooleanField | Marks this subtitle as the default track.             |
 
 ---
 
@@ -79,15 +78,15 @@ A subtitle file attached to a video (`src/apps/video/models/Subtitle.py`).
 
 An interactive link displayed on top of the video during playback (`src/apps/video/models/VideoHyperlink.py`).
 
-| Field        | Type         | Description                                              |
-| :----------- | :----------- | :------------------------------------------------------- |
-| `video`      | FK → Video   | Parent video.                                            |
-| `text`       | CharField    | Display text for the link.                               |
-| `url`        | URLField     | Target URL.                                              |
-| `icon`       | CharField    | Name/class of the icon (e.g., `link`, `book`).           |
-| `position`   | CharField    | Position on screen: `top-left`, `bottom-right`, etc.     |
-| `time_start` | IntegerField | Start time in seconds.                                   |
-| `time_end`   | IntegerField | End time in seconds.                                     |
+| Field        | Type         | Description                                          |
+| :----------- | :----------- | :--------------------------------------------------- |
+| `video`      | FK → Video   | Parent video.                                        |
+| `text`       | CharField    | Display text for the link.                           |
+| `url`        | URLField     | Target URL.                                          |
+| `icon`       | CharField    | Name/class of the icon (e.g., `link`, `book`).       |
+| `position`   | CharField    | Position on screen: `top-left`, `bottom-right`, etc. |
+| `time_start` | IntegerField | Start time in seconds.                               |
+| `time_end`   | IntegerField | End time in seconds.                                 |
 
 ---
 
@@ -179,11 +178,11 @@ Located in `src/apps/video/serializers/VideoSerializer.py`.
 
 Located in `src/apps/video/signals.py`. Three signals are registered on the `Video` model:
 
-| Signal                       | Trigger           | Action                                                                        |
-| :--------------------------- | :---------------- | :---------------------------------------------------------------------------- |
-| `auto_delete_file_on_delete` | `post_delete`     | Removes the physical files (video, thumbnail, overview) from disk.            |
-| `auto_delete_file_on_change` | `pre_save`        | Deletes the old file when a new video file is uploaded.                       |
-| `video_post_save`            | `post_save`       | On creation: extracts duration via `ffprobe`, leaves status as-is (ENCODING). |
+| Signal                       | Trigger       | Action                                                                        |
+| :--------------------------- | :------------ | :---------------------------------------------------------------------------- |
+| `auto_delete_file_on_delete` | `post_delete` | Removes the physical files (video, thumbnail, overview) from disk.            |
+| `auto_delete_file_on_change` | `pre_save`    | Deletes the old file when a new video file is uploaded.                       |
+| `video_post_save`            | `post_save`   | On creation: extracts duration via `ffprobe`, leaves status as-is (ENCODING). |
 
 > **Note:** The status transition to `PUBLISHED` is done by the Encoding webhook, not the signal.
 
@@ -234,20 +233,20 @@ Unlocks a password-protected restricted video.
 
 Managed via `VideoConfig` (pydantic-settings in `src/apps/video/conf.py`). Settings are read from Django settings or environment variables with the prefix `POD_VIDEO_`.
 
-| Setting                      | Default       | Description                                                 |
-| :--------------------------- | :------------ | :---------------------------------------------------------- |
-| `USE_HYPERLINKS`             | `True`        | Enables the video hyperlinks system globally.               |
-| `WEBTV_MODE`                 | `False`       | If `True`, video file is optional (WebTV / channel mode).   |
-| `ALLOW_AUTHENTICATED_UPLOAD` | `True`        | Allow authenticated non-staff users to upload.              |
-| `RESTRICT_EDIT_TO_STAFF`     | `False`       | Locks write access to staff and admins only.                |
-| `HOMEPAGE_SHOWS_PASSWORDED`  | `True`        | Show password-protected videos in public listing.           |
-| `DEFAULT_LICENSE`            | `"COPYRIGHT"` | Default license applied to newly created videos.            |
-| `DEFAULT_THUMBNAIL`          | (path)        | Path to the fallback thumbnail image.                       |
-| `DEFAULT_YEAR_DATE_DELETE`   | `2`           | Default years before expiration (if no affiliation match).  |
-| `ACCOMMODATION_YEARS`        | `{}`          | Dict mapping affiliation → nb years before deletion.        |
-| `CACHE_TIMEOUT`              | `600`         | Cache TTL in seconds for video data.                        |
-| `DEFAULT_DC_COVERAGE`        | (string)      | Dublin Core `coverage` metadata default.                    |
-| `DEFAULT_DC_RIGHTS`          | (string)      | Dublin Core `rights` metadata default.                      |
+| Setting                      | Default       | Description                                                |
+| :--------------------------- | :------------ | :--------------------------------------------------------- |
+| `USE_HYPERLINKS`             | `True`        | Enables the video hyperlinks system globally.              |
+| `WEBTV_MODE`                 | `False`       | If `True`, video file is optional (WebTV / channel mode).  |
+| `ALLOW_AUTHENTICATED_UPLOAD` | `True`        | Allow authenticated non-staff users to upload.             |
+| `RESTRICT_EDIT_TO_STAFF`     | `False`       | Locks write access to staff and admins only.               |
+| `HOMEPAGE_SHOWS_PASSWORDED`  | `True`        | Show password-protected videos in public listing.          |
+| `DEFAULT_LICENSE`            | `"COPYRIGHT"` | Default license applied to newly created videos.           |
+| `DEFAULT_THUMBNAIL`          | (path)        | Path to the fallback thumbnail image.                      |
+| `DEFAULT_YEAR_DATE_DELETE`   | `2`           | Default years before expiration (if no affiliation match). |
+| `ACCOMMODATION_YEARS`        | `{}`          | Dict mapping affiliation → nb years before deletion.       |
+| `CACHE_TIMEOUT`              | `600`         | Cache TTL in seconds for video data.                       |
+| `DEFAULT_DC_COVERAGE`        | (string)      | Dublin Core `coverage` metadata default.                   |
+| `DEFAULT_DC_RIGHTS`          | (string)      | Dublin Core `rights` metadata default.                     |
 
 ---
 
