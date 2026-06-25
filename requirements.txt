@@ -19,3 +19,5 @@ django-tagulous>=2.1.0,<3.0
 django-filter>=24.2
 django-ipware>=6.0.0,<7.0
 ijson>=3.2.0,<4.0
+yt-dlp>=2026.1.0
+beautifulsoup4>=4.12.0,<5.0

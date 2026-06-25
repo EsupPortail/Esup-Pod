@@ -46,6 +46,11 @@ class ServerRole(models.Model):
         default=False,
         help_text=_("Allows the user to edit any video within the role’s scope."),
     )
+    can_import_video = models.BooleanField(
+        _("Can import external videos"),
+        default=False,
+        help_text=_("Allows the user to import videos from external sources."),
+    )
 
     class Meta:
         """ServerRole model metadata."""
