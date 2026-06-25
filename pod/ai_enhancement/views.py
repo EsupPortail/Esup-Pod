@@ -343,7 +343,7 @@ def generate_transcript_file(request: WSGIRequest, video_slug: str) -> HttpRespo
     )
     transcript_text = latest_version.get("transcript", {}).get("text", "")
 
-    transcript_title = pgettext("document filename", "Transcript")
+    transcript_title = pgettext("document filename", "Transcription")
     transcript_filename = "%s.txt" % transcript_title
 
     if getattr(settings, "USE_PODFILE", False):
