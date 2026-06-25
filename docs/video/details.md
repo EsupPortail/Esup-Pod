@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD013 -->
 # Video: Technical Details
 
 >
@@ -111,6 +112,7 @@ Unique constraint on `(video, date)`. Ordered by `-date`.
 - **Discipline (`src/apps/video/models/Discipline.py`)**: Formal academic categories.
 - **Comment (`src/apps/video/models/Comment.py`)**: User remarks tied to a specific video with timestamp and user.
 - **Vote (`src/apps/video/models/Vote.py`)**: Tracks Up/Down votes on `Comment` items to calculate the net score.
+- **VideoCut (`src/apps/video/models/VideoCut.py`)**: Trimming definition (start/end in seconds) associated in a one-to-one relationship with a video.
 - **Tag**: Handled dynamically by the `django-tagulous` extension.
 
 ---
@@ -211,6 +213,14 @@ Unlocks a password-protected restricted video.
 - If `is_auth_required = True`: user must be authenticated.
 - Validates the provided `password` against the stored hash. (Alternatively accepts a legacy `hash` parameter for backward compatibility).
 - Returns the `video_url` on success and registers access in the session state.
+
+### `POST /api/cut/{slug}/` & `DELETE /api/cut/{slug}/delete/`
+
+Manages the video cut feature (trimming a video virtually):
+
+- **POST**: Creates or replaces a cut for the given video (payload: `time_start`, `time_end` in seconds). Automatically purges time-dependent objects (chapters, notes) attached to the video to avoid inconsistencies.
+- **DELETE**: Removes the cut definition.
+- **Permissions**: Requires owner, co-owner, or super-user rights. If `video_settings.restrict_edit_to_staff` is enabled, only staff members can manage cuts.
 
 ---
 
