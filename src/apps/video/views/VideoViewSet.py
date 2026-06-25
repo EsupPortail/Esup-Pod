@@ -3,18 +3,21 @@ Esup-Pod - Video viewset.
 """
 
 import os
-import logging
 import hashlib
+import logging
 
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, parsers, filters
 from django.db.models import Q, F
-from django.conf import settings
-from django.contrib.sites.shortcuts import get_current_site
-from django.utils.translation import gettext_lazy as _
 from django.http import FileResponse, Http404
+from django.utils.translation import gettext_lazy as _
+from django.contrib.sites.shortcuts import get_current_site
+from django.conf import settings
+
+from rest_framework import viewsets, permissions, parsers, filters, status
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied, ValidationError, NotFound
+
+from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth.hashers import check_password
 from drf_spectacular.utils import (
     extend_schema,
@@ -27,10 +30,12 @@ from src.apps.video.models import Video
 from src.apps.video.serializers import VideoSerializer
 from src.apps.video.permissions import IsOwnerOrCoOwnerOrChannelCollaborator
 from src.apps.authentication.permissions import IsSuperUser
-from django_filters.rest_framework import DjangoFilterBackend
 from src.apps.video.conf import video_settings
 from src.apps.encoding.conf import encoding_settings
 from src.apps.video.filters import VideoFilterSet
+
+from src.apps.video.services.duplicate import duplicate_video
+from django.db import transaction
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +89,10 @@ class VideoViewSet(viewsets.ModelViewSet):
                     self.check_object_permissions(self.request, obj)
                     return obj
 
-        return super().get_object()
+        try:
+            return super().get_object()
+        except Http404:
+            raise NotFound(_("Video not found."))
 
     def get_queryset(self):
         """
@@ -102,12 +110,16 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         return Video.objects.visible_for(user).filter(id__in=qs).distinct()
 
-    def perform_create(self, serializer):
+    @transaction.atomic
+    def perform_create(self, serializer):  # noqa: C901
         """Creates a new video, checking user quota and triggering encoding."""
+
         user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file="")
         total_bytes = sum(v.video_file.size for v in user_videos if v.video_file)
+
         incoming_file = self.request.FILES.get("video_file")
         incoming_size = incoming_file.size if incoming_file else 0
+
         max_quota_bytes = encoding_settings.user_quota_size_gb * 1024 * 1024 * 1024
 
         if total_bytes + incoming_size > max_quota_bytes:
@@ -143,9 +155,14 @@ class VideoViewSet(viewsets.ModelViewSet):
             license=target_license,
         )
 
-        current_site = get_current_site(self.request)
-        video.sites.add(current_site)
+        # ---- SITE ENFORCEMENT (IMPORTANT PART) ----
+        site = get_current_site(self.request)
+        if not site:
+            raise ValidationError({"sites": "Site could not be resolved."})
 
+        video.sites.set([site])
+
+        # ---- ENCODING TRIGGER ----
         if video.video_file:
             from src.apps.encoding.tasks import trigger_runner_encoding_task
 
@@ -487,3 +504,47 @@ class VideoViewSet(viewsets.ModelViewSet):
         video.save(update_fields=["owner"])
 
         return Response({"status": "ownership transferred"})
+
+    @extend_schema(
+        summary="Duplicate a video",
+        description="Creates a full duplicate of a video. The title is automatically set to 'Copy of <original title>'.",
+        request=None,
+        responses={201: VideoSerializer},
+    )
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[IsOwnerOrCoOwnerOrChannelCollaborator],
+    )
+    def duplicate(self, request, slug=None):
+        """
+        Creates a full duplicate of a video, including file copy and M2M relations.
+        Restricted to the video owner, co-owners, and superusers.
+        Only available when USE_DUPLICATE is enabled in settings.
+        """
+        original = self.get_object()
+
+        if not video_settings.use_duplicate:
+            raise PermissionDenied(_("Duplication is disabled."))
+
+        if not video_settings.allow_authenticated_upload and not request.user.is_staff:
+            raise PermissionDenied(_("You are not allowed to duplicate videos."))
+
+        if video_settings.restrict_edit_to_staff and not request.user.is_staff:
+            raise PermissionDenied(
+                _("Only staff members are allowed to duplicate videos.")
+            )
+
+        if original.video_file:
+            user_videos = Video.objects.filter(owner=request.user).exclude(video_file="")
+            total_bytes = sum(v.video_file.size for v in user_videos if v.video_file)
+            max_quota_bytes = encoding_settings.user_quota_size_gb * 1024 * 1024 * 1024
+
+            if total_bytes + original.video_file.size > max_quota_bytes:
+                raise ValidationError(
+                    {"detail": _("Quota exceeded. Cannot duplicate this video.")}
+                )
+
+        duplicated = duplicate_video(original, request.user)
+        serializer = self.get_serializer(duplicated)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

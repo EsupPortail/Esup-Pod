@@ -31,8 +31,16 @@ if video_settings.use_hyperlinks:
 
 urlpatterns = router.urls
 
-if video_settings.use_hyperlinks:
+if video_settings.use_duplicate:
+    urlpatterns += [
+        path(
+            "videos/<slug:slug>/duplicate/",
+            VideoViewSet.as_view({"post": "duplicate"}),
+            name="video-duplicate",
+        ),
+    ]
 
+if video_settings.use_hyperlinks:
     urlpatterns += [
         path(
             "hyperlink/<slug:video_slug>/hyperlinks/",
