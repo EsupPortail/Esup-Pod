@@ -33,7 +33,8 @@ def has_video_rights(permissions: list[str], message: str, prefetch_callback=Non
             ):
                 messages.add_message(request, messages.ERROR, _(message))
                 raise PermissionDenied(
-                    _(f"{func.__name__}: Permission denied for user {current_user.pk}.")
+                    _("%(func_name)s: Permission denied for user %(user_pk)s.")
+                    % {"func_name": func.__name__, "user_pk": current_user.pk}
                 )
 
             return func(request, slug, video, *args, **kwargs)

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-22 11:46+0200\n"
+"POT-Creation-Date: 2026-06-23 10:45+0200\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -101,8 +101,8 @@ msgstr ""
 msgid "Title"
 msgstr "Titel"
 
-#: pod/ai_enhancement/forms.py pod/playlist/forms.py pod/quiz/forms.py
-#: pod/quiz/models.py
+#: pod/ai_enhancement/forms.py pod/playlist/forms.py pod/playlist/models.py
+#: pod/quiz/forms.py pod/quiz/models.py
 #, python-format
 msgid "Please choose a title between 1 and %(max)s characters."
 msgstr ""
@@ -392,9 +392,11 @@ msgstr ""
 #: pod/live/templates/live/event-script.html pod/main/context_processors.py
 #: pod/main/templates/base.html pod/main/templates/navbar.html
 #: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
-#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
-#: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/runner_manager.py
+#: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/videos/video-script.html
+#: pod/video/utils.py pod/video/views.py
+#: pod/video_encode_transcript/runner_manager.py
 #: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
 #: pod/video_encode_transcript/templates/admin_runnermanager_change_list.html
 #: pod/video_encode_transcript/templates/admin_task_change_list.html
@@ -1309,6 +1311,11 @@ msgstr ""
 msgid ""
 "There is an overlap with the overlay {0}, please change time start and/or "
 "time end values."
+msgstr ""
+
+#: pod/completion/permissions/video.py
+#, python-format
+msgid "%(func_name)s: Permission denied for user %(user_pk)s."
 msgstr ""
 
 #: pod/completion/templates/contributor/form_contributor.html
@@ -5084,6 +5091,7 @@ msgstr ""
 
 #: pod/main/templates/mail/mail_sender.html
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 msgid "Regards"
 msgstr ""
 
@@ -7702,6 +7710,21 @@ msgid "Encode selected recordings and create new video"
 msgstr ""
 
 #: pod/recorder/admin.py
+#, python-format
+msgid "Studio recording %(itemid)s encoding started"
+msgstr ""
+
+#: pod/recorder/admin.py
+#, python-format
+msgid "Recording %(itemid)s is not a studio recording and can’t be encoded"
+msgstr ""
+
+#: pod/recorder/admin.py
+#, python-format
+msgid "Error for %(item)s: %(error)s"
+msgstr ""
+
+#: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
 msgstr ""
 
@@ -8603,6 +8626,7 @@ msgid ""
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello %(name)s,"
 msgstr ""
@@ -8639,6 +8663,7 @@ msgid ""
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Sending mail to %(to_email)s for video %(title)s."
 msgstr ""
@@ -8672,11 +8697,13 @@ msgid "...by clicking here:"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello manager(s) of %(estab)s on %(site_title)s,"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello manager(s) of %(site_title)s,"
 msgstr ""
@@ -8726,6 +8753,41 @@ msgstr ""
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid "In %(deadline)s days:"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, python-format
+msgid "%(old)s replaced by %(new)s"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "For information, you will find below the list of reaffected videos."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "The reaffected videos on Pod"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, python-format
+msgid "Manager(s) of “%(et)s” notified for %(nb)s reaffected video(s)."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, python-format
+msgid ""
+"You are now the owner of the video <a href=\"%(scheme)s:"
+"%(url)s\">“%(title)s”</a>."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid ""
+"You were automatically designated as the owner because the previous owner is "
+"no longer at the institution and you were previously an additional owner."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "You have been designated as the owner of a video"
 msgstr ""
 
 #: pod/video/management/commands/create_archive_package.py
