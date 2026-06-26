@@ -318,6 +318,7 @@ class ValidFormRespitTestCase(TestCase):
             follow=True,
         )
         from pod.video.utils import is_archiving_authorized
+
         print("is_archiving_authorized = %s" % is_archiving_authorized(self.video1))
         self.assertContains(response, _("Are you sure you want to archive this video?"))
 
@@ -349,11 +350,7 @@ class ValidFormRespitTestCase(TestCase):
             f"/video/valid/form/respite/{self.video1.slug}/", {"action": "Archive"}
         )
 
-        self.assertContains(
-            response,
-            _("Impossible action. Archiving the video '%(vid_title)s' is prohibited.")
-            % {"vid_title": self.video1.title},
-        )
+        self.assertContains(response, _("This action is forbidden."))
 
     @override_settings(PROLONGATION_GRANTED=True)
     def test_extend_action(self):
