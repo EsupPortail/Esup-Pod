@@ -495,7 +495,7 @@ class Encoding_video:
         output_file = self.get_dressing_file()
         dressing_cmd_parts.append(FFMPEG_DRESSING_OUTPUT % {"output": output_file})
 
-        return " ".join()
+        return " ".join(dressing_cmd_parts)
 
     def handle_dressing_credits(self) -> str:
         """
@@ -769,8 +769,8 @@ class Encoding_video:
             self.add_encoding_log("m4a_command", m4a_command, return_value, return_msg)
 
     def get_extract_thumbnail_command(self) -> str:
-        thumbnail_cmd_pats = [FFMPEG_CMD]
-        thumbnail_cmd_pats.append(
+        thumbnail_cmd_parts = [FFMPEG_CMD]
+        thumbnail_cmd_parts.append(
             FFMPEG_INPUT
             % {
                 "input": self.video_file,
@@ -779,7 +779,7 @@ class Encoding_video:
         )
         for img in self.list_image_track:
             output_file = os.path.join(self.output_dir, "thumbnail_%s.png" % img)
-            thumbnail_cmd_pats.append(
+            thumbnail_cmd_parts.append(
                 FFMPEG_EXTRACT_THUMBNAIL
                 % {
                     "index": img,
@@ -787,16 +787,16 @@ class Encoding_video:
                 }
             )
             self.list_thumbnail_files[img] = output_file
-        return " ".join(thumbnail_cmd_pats)
+        return " ".join(thumbnail_cmd_parts)
 
     def get_create_thumbnail_command(self) -> str:
-        thumbnail_cmd_lines = [FFMPEG_CMD]
+        thumbnail_cmd_parts = [FFMPEG_CMD]
         first_item = self.get_first_item()
         if not first_item or first_item[0] not in self.list_mp4_files:
             logger.error("No MP4 rendition available to create thumbnails.")
             return ""
         input_file = self.list_mp4_files[first_item[0]]
-        thumbnail_cmd_lines.append(
+        thumbnail_cmd_parts.append(
             FFMPEG_INPUT
             % {
                 "input": input_file,
@@ -804,7 +804,7 @@ class Encoding_video:
             }
         )
         output_file = os.path.join(self.output_dir, "thumbnail")
-        thumbnail_cmd_lines.append(
+        thumbnail_cmd_parts.append(
             FFMPEG_CREATE_THUMBNAIL
             % {
                 "duration": self.duration,
@@ -818,7 +818,7 @@ class Encoding_video:
                 output_file,
                 num_thumb,
             )
-        return " ".join(thumbnail_cmd_lines)
+        return " ".join(thumbnail_cmd_parts)
 
     def get_first_item(self):
         """Get the first mp4 render from setting."""
