@@ -372,16 +372,22 @@ class Encoding_video_model(Encoding_video):
             return ""
         video_mp4 = sorted(ev, key=lambda m: m.height)[0]
         input_file = video_mp4.source_file.path
-        thumbnail_cmd_lines.append(FFMPEG_INPUT % {
-            "input": input_file,
-            "nb_threads": FFMPEG_NB_THREADS,
-        })
+        thumbnail_cmd_lines.append(
+            FFMPEG_INPUT
+            % {
+                "input": input_file,
+                "nb_threads": FFMPEG_NB_THREADS,
+            }
+        )
         output_file = os.path.join(self.output_dir, "thumbnail")
-        thumbnail_cmd_lines.append(FFMPEG_CREATE_THUMBNAIL % {
-            "duration": self.duration,
-            "nb_thumbnail": FFMPEG_NB_THUMBNAIL,
-            "output": output_file,
-        })
+        thumbnail_cmd_lines.append(
+            FFMPEG_CREATE_THUMBNAIL
+            % {
+                "duration": self.duration,
+                "nb_thumbnail": FFMPEG_NB_THUMBNAIL,
+                "output": output_file,
+            }
+        )
         for nb in range(0, FFMPEG_NB_THUMBNAIL):
             num_thumb = str(nb + 1)
             self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (
