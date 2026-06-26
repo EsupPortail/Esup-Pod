@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-23 10:45+0200\n"
+"POT-Creation-Date: 2026-06-25 09:35+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -9222,6 +9222,14 @@ msgstr ""
 "doit être faite en toute connaissance de cause. Il est alors impératif de "
 "télécharger la vidéo et ses métadonnées."
 
+#: pod/video/forms.py
+msgid "Obsolescence choice"
+msgstr "Choix en matière d’obsolescence"
+
+#: pod/video/forms.py
+msgid "Your preference regarding the future of your video on this platform."
+msgstr "Vos préférences quant au futur de votre vidéo sur cette plateforme."
+
 #: pod/video/management/commands/check_obsolete_videos.py
 #: pod/video/management/commands/respite_launcher.py
 msgid "An Error occurred while processing."
@@ -9242,25 +9250,8 @@ msgid "%s video(s) archived."
 msgstr "%s vidéo(s) archivée(s)."
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "You can choose to:"
-msgstr "Vous pouvez choisir :"
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid "archive your video (it will be unpublished and no longer accessible)"
-msgstr ""
-"d’archiver votre vidéo (elle sera dépubliée et ne sera plus accessible)"
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid "postpone its deletion date"
-msgstr "de reporter sa date d’obsolescence"
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid "delete it (after saving it)"
-msgstr "de la supprimer (après l’avoir sauvegardée)"
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid "download it along with all its associated data"
-msgstr "de la télécharger avec toutes les données associées"
+msgid "You can choose to do an action on your video:"
+msgstr "Vous pouvez choisir d’effectuer une action sur votre vidéo :"
 
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid "Choose an action for my video"
@@ -9335,28 +9326,20 @@ msgid "Your video will be obsolete soon"
 msgstr "Votre vidéo sera bientôt obsolète"
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "extend the duration of your video"
-msgstr "prolonger votre vidéo"
-
-#: pod/video/management/commands/check_obsolete_videos.py
 msgid "archive it (it will be unpublished and no longer accessible)"
 msgstr "archiver votre vidéo (elle sera dépubliée et ne sera plus accessible)"
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "postpone it’s deletion date"
+msgstr "reporter sa date d’obsolescence"
 
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid "delete it (after saving it)"
 msgstr "la supprimer (après l’avoir sauvegardée)"
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "You can choose to..."
-msgstr "Vous pouvez décider de…"
-
-#: pod/video/management/commands/check_obsolete_videos.py
 msgid "download it along with all its associated data"
 msgstr "la télécharger avec toutes les données qui l’accompagnent"
-
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid "...by clicking here:"
-msgstr "…en cliquant ici :"
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #: pod/video/management/commands/check_video_owner_exists.py
@@ -10155,6 +10138,7 @@ msgid "Download video archive"
 msgstr "Télécharger l’archive vidéo"
 
 #: pod/video/templates/videos/archive_or_not.html
+#: pod/video/tests/test_obsolescence.py
 msgid "Are you sure you want to archive this video?"
 msgstr "Êtes-vous sûr·e de vouloir archiver cette vidéo ?"
 
@@ -10478,6 +10462,7 @@ msgid "Delete the video"
 msgstr "Supprimer la vidéo"
 
 #: pod/video/templates/videos/prolong_or_not.html
+#: pod/video/tests/test_obsolescence.py
 msgid "Are you sure to want to extend this video life span?"
 msgstr "Êtes vous sûr·e de vouloir prolonger cette vidéo ?"
 
@@ -11091,26 +11076,6 @@ msgstr "Modifier la période de visualisation"
 msgid "Show view statistics for all videos"
 msgstr "Afficher les statistiques de visualisation de toutes les vidéos"
 
-#: pod/video/templates/videos/well_archived.html
-msgid "Video Archiving"
-msgstr "Archivage Vidéo"
-
-#: pod/video/templates/videos/well_archived.html
-msgid "Your video has not been archived."
-msgstr "Votre video n’a pas été archivée."
-
-#: pod/video/templates/videos/well_archived.html
-msgid "Your video has been archived."
-msgstr "Votre video a bien été archivée."
-
-#: pod/video/templates/videos/well_prolonged.html
-msgid "Video extension"
-msgstr "Prolongation Vidéo"
-
-#: pod/video/templates/videos/well_prolonged.html
-msgid "The video life span was extended to"
-msgstr "La vidéo est prolongée jusqu’au"
-
 #: pod/video/templates/videos/widgets/customclearablefileinput.html
 msgid ": "
 msgstr " : "
@@ -11134,6 +11099,23 @@ msgstr "Ce contenu n’est pas chapitré."
 #: pod/video/tests/test_models.py pod/video/translation.py
 msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
+
+#: pod/video/tests/test_obsolescence.py pod/video/views.py
+msgid "This video is not approaching its obsolescence date."
+msgstr "Cette vidéo n’approche pas de sa date d’obsolescence."
+
+#: pod/video/tests/test_obsolescence.py
+#, python-format
+msgid "Impossible action. Archiving the video “%(vid_title)s” is prohibited."
+msgstr "Action impossible. Archiver la vidéo « %(vid_title)s » est interdit."
+
+#: pod/video/tests/test_obsolescence.py pod/video/views.py
+msgid "You cannot delete a media that is being encoded."
+msgstr "Vous ne pouvez pas supprimer un contenu en cours d’encodage."
+
+#: pod/video/tests/test_obsolescence.py pod/video/views.py
+msgid "You are not logged in. Please log in first."
+msgstr "Vous n’êtes pas connecté•e. Veuillez d’abord vous authentifier."
 
 #: pod/video/tests/test_views.py pod/video/views.py
 msgid "The note has been saved."
@@ -11245,10 +11227,6 @@ msgstr "Supprimer le média « %(vtitle)s »"
 #: pod/video/views.py
 msgid "You cannot delete this media."
 msgstr "Vous ne pouvez pas supprimer ce contenu."
-
-#: pod/video/views.py
-msgid "You cannot delete a media that is being encoded."
-msgstr "Vous ne pouvez pas supprimer un contenu en cours d’encodage."
 
 #: pod/video/views.py
 #, python-format
@@ -11452,6 +11430,47 @@ msgstr "Erreur serveur lors de la récupération des vidéos de l’utilisateur.
 #: pod/video/views.py
 msgid "Server error while processing filter."
 msgstr "Erreur serveur lors du traitement du filtre."
+
+#: pod/video/views.py
+#, python-format
+msgid "Impossible to archive video “%(slug)s”."
+msgstr "Impossible d’archiver la vidéo « %(slug)s »."
+
+#: pod/video/views.py
+msgid "This action is forbidden."
+msgstr "Cette action est interdite."
+
+#: pod/video/views.py
+msgid ""
+"This video does not exist on this site. Maybe it has already been deleted or "
+"archived."
+msgstr ""
+"Cette vidéo n’existe pas sur ce site. Elle a peut-être déjà été supprimée ou "
+"archivée."
+
+#: pod/video/views.py
+#, python-format
+msgid "Your video “%(slug)s” has NOT been archived."
+msgstr "Votre vidéo « %(slug)s » n’a PAS été archivée."
+
+#: pod/video/views.py
+#, python-format
+msgid "Your video “%(slug)s” has been archived."
+msgstr "Votre vidéo « %(slug)s » a bien été archivée."
+
+#: pod/video/views.py
+msgid "It may be already extended, archived or deleted."
+msgstr "Il se peut qu’elle ait déjà été prolongée, archivée ou supprimée."
+
+#: pod/video/views.py
+#, python-format
+msgid "Impossible to extend video %s."
+msgstr "Impossible de prolonger la vidéo %s."
+
+#: pod/video/views.py
+#, python-format
+msgid "The video life span was extended to %(date)s."
+msgstr "La vidéo a été prolongée jusqu’au %(date)s."
 
 #: pod/video_encode_transcript/Encoding_video_model.py
 #, python-format
@@ -11884,3 +11903,28 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "You can choose to:"
+#~ msgstr "Vous pouvez choisir :"
+
+#~ msgid "archive your video (it will be unpublished and no longer accessible)"
+#~ msgstr ""
+#~ "d’archiver votre vidéo (elle sera dépubliée et ne sera plus accessible)"
+
+#~ msgid "extend the duration of your video"
+#~ msgstr "prolonger votre vidéo"
+
+#~ msgid "You can choose to..."
+#~ msgstr "Vous pouvez décider de…"
+
+#~ msgid "...by clicking here:"
+#~ msgstr "…en cliquant ici :"
+
+#~ msgid "Video Archiving"
+#~ msgstr "Archivage Vidéo"
+
+#~ msgid "Your video has not been archived."
+#~ msgstr "Votre video n’a pas été archivée."
+
+#~ msgid "Video extension"
+#~ msgstr "Prolongation Vidéo"
