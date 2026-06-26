@@ -358,7 +358,7 @@ class Encoding_video_model(Encoding_video):
 
     def get_create_thumbnail_command_from_video(self, video_to_encode):
         """Create command line to generate thumbnails from video."""
-        thumbnail_cmd_lines = [FFMPEG_CMD]
+        thumbnail_cmd_parts = [FFMPEG_CMD]
         ev = EncodingVideo.objects.filter(
             video=video_to_encode, encoding_format="video/mp4"
         )
@@ -372,7 +372,7 @@ class Encoding_video_model(Encoding_video):
             return ""
         video_mp4 = sorted(ev, key=lambda m: m.height)[0]
         input_file = video_mp4.source_file.path
-        thumbnail_cmd_lines.append(
+        thumbnail_cmd_parts.append(
             FFMPEG_INPUT
             % {
                 "input": input_file,
@@ -380,7 +380,7 @@ class Encoding_video_model(Encoding_video):
             }
         )
         output_file = os.path.join(self.output_dir, "thumbnail")
-        thumbnail_cmd_lines.append(
+        thumbnail_cmd_parts.append(
             FFMPEG_CREATE_THUMBNAIL
             % {
                 "duration": self.duration,
@@ -394,7 +394,7 @@ class Encoding_video_model(Encoding_video):
                 output_file,
                 num_thumb,
             )
-        thumbnail_command = " ".join(thumbnail_cmd_lines)
+        thumbnail_command = " ".join(thumbnail_cmd_parts)
         encoding_log.log += "\n %s" % thumbnail_command
         encoding_log.save()
         return thumbnail_command
