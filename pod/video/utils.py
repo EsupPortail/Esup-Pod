@@ -79,21 +79,24 @@ RESPITE_MODEL = getattr(settings, "RESPITE_MODEL", "base")
 def is_archiving_authorized(vid: Video) -> bool:
     """Check if video owner's affiliation is allowed to archive."""
     if vid is None:
-        logger.error("[is_archiving_authorized] video is None.")
+        logger.info("[is_archiving_authorized] video is None.")
         return False
 
     if not POD_ARCHIVE_AFFILIATION:
-        logger.error("[is_archiving_authorized] POD_ARCHIVE_AFFILIATION is empty.")
+        logger.info("[is_archiving_authorized] POD_ARCHIVE_AFFILIATION is empty.")
         return False
 
     owner = getattr(vid.owner, "owner", None)
     owner_affiliation = getattr(owner, "affiliation", "")
     if not owner_affiliation:
-        logger.error("[is_archiving_authorized] owner %s has no affiliation." % owner)
+        logger.info("[is_archiving_authorized] owner %s has no affiliation." % owner)
         return False
 
     if owner_affiliation.strip() not in POD_ARCHIVE_AFFILIATION:
-        logger.error("[is_archiving_authorized] owner’s affiliation not in POD_ARCHIVE_AFFILIATION." % owner)
+        logger.info(
+            "[is_archiving_authorized] owner’s affiliation not in POD_ARCHIVE_AFFILIATION."
+            % owner
+        )
         return False
 
     allowed_video = False
@@ -105,7 +108,9 @@ def is_archiving_authorized(vid: Video) -> bool:
             )
             allowed_video = mod.can_video_be_archived(vid)
         except (ImportError, ModuleNotFoundError):
-            logger.error("An Error occurred while importing respite model `%s`." % RESPITE_MODEL)
+            logger.error(
+                "An Error occurred while importing respite model `%s`." % RESPITE_MODEL
+            )
     else:
         allowed_video = True
 

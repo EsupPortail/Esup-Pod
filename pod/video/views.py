@@ -3998,10 +3998,9 @@ def valid_form_respite(request, slug=None):
                     messages.add_message(
                         request,
                         messages.ERROR,
-                        _(
-                            "Impossible to archive. You are not authorized to archive video %(vid_title)s."
-                        )
-                        % {"vid_title": vid.title},
+                        _("Impossible to archive video “%(slug)s”.") % {"slug": vid.slug}
+                        + " "
+                        + _("This action is forbidden."),
                     )
 
     # When respite cannot be done (insufficient permissions, video already archived, etc.), we redirect to dashboard.
@@ -4084,8 +4083,9 @@ def go_archive(request, slug=None):
         messages.add_message(
             request,
             messages.ERROR,
-            _("Impossible action. Archiving the video '%(vid_title)s' is prohibited.")
-            % {"vid_title": vid.title},
+            _("Impossible to archive video “%(slug)s”.") % {"slug": vid.slug}
+            + " "
+            + _("This action is forbidden."),
         )
         return redirect("video:video", slug=vid.slug)
     elif slug is not None and display_or_not is True:
