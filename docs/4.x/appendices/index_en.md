@@ -17,3 +17,7 @@ lang: en
 * [Regenerate thumbnails for videos](regenerate-thumbnail_en)
 * [Delete obsolete content in Pod](delete-obsolete-content_en)
 * [Delete videos from recorders that have not been claimed for a defined period of time](delete-videos-from-recorders_en)
+
+## Other
+
+* [Elasticsearch Replacement Study](elasticsearch-replacement-study_en) ![New](https://img.shields.io/badge/New-f39c12?style=flat-square)
