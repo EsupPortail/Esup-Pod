@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "src.apps.info",
     "src.apps.core",
     "src.apps.video",
+    "src.apps.notes",
     "src.apps.encoding",
     "tagulous",
     "src.apps.collection",
