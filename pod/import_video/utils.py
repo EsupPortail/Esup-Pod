@@ -167,7 +167,9 @@ def validate_remote_import_url(source_url: str):
     return url, addresses
 
 
-def get_secure_response(parsed_url, requester, selected_ip, method, user_headers, **kwargs):
+def get_secure_response(
+    parsed_url, requester, selected_ip, method, user_headers, **kwargs
+):
     """Makes a secure HTTP request to the selected IP address while preserving the Host header."""
     host_header = parsed_url.hostname
     if parsed_url.port:
@@ -189,6 +191,7 @@ def get_secure_response(parsed_url, requester, selected_ip, method, user_headers
         **kwargs,
     )
 
+
 def safe_request(method: str, source_url: str, session: Session = None, **kwargs):
     """Perform an HTTP request after validating the target and redirects."""
     requester = session.request if session else requests.request
@@ -199,7 +202,9 @@ def safe_request(method: str, source_url: str, session: Session = None, **kwargs
     user_headers = kwargs.pop("headers", {}) or {}
     while True:
         selected_ip = next(iter(addresses))
-        response = get_secure_response(parsed_url, requester, selected_ip, method,user_headers, **kwargs)
+        response = get_secure_response(
+            parsed_url, requester, selected_ip, method, user_headers, **kwargs
+        )
         redirect_url = response.headers.get("Location")
         if response.is_redirect and redirect_url:
             if remaining_redirects <= 0:
