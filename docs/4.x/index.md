@@ -23,3 +23,7 @@ lang: fr
 * [Relancer la génération de vignettes pour des vidéos](appendices/regenerate-thumbnail_fr)
 * [Suppression de contenus obsolètes dans Pod](appendices/delete-obsolete-content_fr)
 * [Supprimer les vidéos, des enregistreurs, non revendiquées depuis un temps défini](appendices/delete-videos-from-recorders_fr)
+
+## Autres
+
+* [Étude de remplacement d’Elasticsearch](appendices/elasticsearch-replacement-study_fr) ![Nouveauté](https://img.shields.io/badge/Nouveaut%C3%A9-f39c12?style=flat-square)
