@@ -30,6 +30,7 @@ Redis 8 intègre désormais RediSearch / Redis Search comme composant de Redis O
 |        3 | **Recherche native base de données** | Solution légère pour petites instances ou mode minimal                                             |
 |        4 | **Typesense**                        | Alternative spécialisée open source, mais moins cohérente avec l’objectif de capitaliser sur Redis |
 |        5 | **OpenSearch**                       | Open source, mais trop proche d’Elasticsearch en complexité ; non recommandé dans ce contexte      |
+{: .table .table-striped}
 
 Meilisearch n’est pas retenu comme solution principale dans cette étude afin d’éviter toute ambiguïté liée à son modèle de licence actuel.
 
@@ -217,6 +218,7 @@ Légende :
 | Complexité globale                          |                        Faible à moyenne |                        Faible à moyenne |                               Faible |     Moyenne |           Élevée |
 | Adapté à 50 000 – 100 000 vidéos            |                                     Oui |                      Oui, à benchmarker |                      Oui, selon base |         Oui |              Oui |
 | Solution recommandée pour Pod               |                **Oui, choix principal** |                        Oui, alternative |                    Oui, mode minimal | Alternative |   Non recommandé |
+{: .table .table-striped}
 
 ---
 
@@ -230,6 +232,7 @@ Légende :
 | MariaDB FULLTEXT            | GPLv2                                       |     Oui |                 Oui | Très cohérent si MariaDB reste la base principale  |
 | Typesense                   | GPLv3                                       |     Oui |                 Oui | Bon moteur spécialisé, mais service supplémentaire |
 | OpenSearch                  | Apache 2.0                                  |     Oui |                 Oui | Trop proche d’Elasticsearch en complexité          |
+{: .table .table-striped}
 
 ---
 
