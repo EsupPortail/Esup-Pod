@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-26 11:51+0200\n"
+"POT-Creation-Date: 2026-07-01 17:18+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -11756,6 +11756,18 @@ msgstr "La vidéo n’est pas en cours d’encodage."
 #, python-format
 msgid "Different video id: %(expected)s - %(received)s"
 msgstr "Identifiants de vidéo différents : %(expected)s - %(received)s"
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "Missing video output path."
+msgstr "Chemin de sortie vidéo manquant."
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "Invalid video output path."
+msgstr "Chemin de sortie vidéo invalide."
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "No safe base directory configured."
+msgstr "Aucun répertoire de base sécurisé n’a été configuré."
 
 #: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
 msgid ""

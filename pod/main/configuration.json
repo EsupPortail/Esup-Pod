@@ -4662,7 +4662,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "prefix url utilisé pour accéder aux fichiers du répertoire media"
+                                    "préfixe d’url utilisé pour accéder aux fichiers du répertoire media"
                                 ]
                             },
                             "pod_version_end": "",
