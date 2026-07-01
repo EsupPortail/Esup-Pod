@@ -57,9 +57,9 @@ class ImportVideoUtilsSecurityTest(SimpleTestCase):
         mock_getaddrinfo.return_value = [
             (2, 1, 6, "", ("93.184.216.34", 0)),
         ]
-
+        url, addresses = validate_remote_import_url("https://example.org/video.mp4")
         self.assertEqual(
-            validate_remote_import_url("https://example.org/video.mp4"),
+            url,
             "https://example.org/video.mp4",
         )
 
