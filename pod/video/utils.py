@@ -834,7 +834,12 @@ def archive_and_get_link(slug, sub_fold="tmp"):
     media_url = getattr(settings, "MEDIA_URL", "/media/")
     media_root = getattr(settings, "MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 
-    media_package_dir = _safe_join_under_root(media_root, sub_fold, slug)
+    archive_base_dir = os.path.realpath(os.path.join(media_root, sub_fold))
+    media_package_dir = os.path.realpath(os.path.join(archive_base_dir, slug))
+    # Check that user-provided value does not let directory traversal
+    if os.path.commonpath([archive_base_dir, media_package_dir]) != archive_base_dir:
+        raise SuspiciousOperation("Invalid archive path.")
+
     vid = Video.objects.filter(slug=slug).first()
     if vid is None:
         raise ValueError("Video %(slug)s not found" % {"slug": slug})
@@ -844,4 +849,6 @@ def archive_and_get_link(slug, sub_fold="tmp"):
 
     # remove old temp folder
     shutil.rmtree(media_package_dir)
-    return "%s%s/%s.zip" % (media_url, sub_fold, slug)
+    # get a safe slug, by getting leaf of media_package_dir
+    safe_slug = os.path.basename(media_package_dir)
+    return "%s%s/%s.zip" % (media_url, sub_fold, safe_slug)
