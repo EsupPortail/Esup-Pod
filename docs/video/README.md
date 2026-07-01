@@ -11,6 +11,7 @@ The **Video** application is the core module of Pod V5. It manages the full life
 | **Co-ownership**       | Multiple users can share edit rights on the same video.                            |
 | **Subtitles**          | Attach subtitle files (VTT/SRT) per language (FR, EN, ES).                         |
 | **Streaming**          | Direct file streaming via a dedicated API endpoint.                                |
+| **Marker Time**        | Automatically saves and retrieves the user's video playback position.              |
 | **Hyperlinks**         | Add interactive links (timecodes, external resources) to videos.                   |
 | **Categorization**     | Organize videos with Types, Disciplines, and Tags.                                 |
 | **Comments & Votes**   | Engage users with a commenting and upvote/downvote system.                         |
@@ -50,6 +51,7 @@ A video passes through the following states:
 | **Comment**   | User comments left on a video.                                               |
 | **Vote**      | Upvotes and downvotes for comments.                                          |
 | **Subtitle**  | A subtitle file attached to a video, for a given language.                   |
+| **UserMarkerTime** | Stores the last playback position for a user on a specific video.           |
 | **VideoHyperlink** | Interactive links attached to a video at specific time intervals.       |
 | **ViewCount** | Stores the number of views per day, per video.                               |
 
@@ -76,6 +78,9 @@ A video passes through the following states:
 | **GET**      | `/api/subtitles/`                     | List subtitles (filterable by `?video_id=`).      |
 | **POST**     | `/api/subtitles/`                     | Attach a subtitle to a video.                     |
 | **DELETE**   | `/api/subtitles/{id}/`                | Delete a subtitle (video owner only).             |
+| **GET**      | `/api/marker/{video_slug}/`           | Retrieve the playback position for the user.      |
+| **POST**     | `/api/marker/{video_slug}/save/`      | Save the playback position for the user.          |
+| **DELETE**   | `/api/marker/{video_slug}/reset/`     | Delete the playback position marker.              |
 
 ## Further Reading
 

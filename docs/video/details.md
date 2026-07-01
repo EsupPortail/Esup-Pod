@@ -112,6 +112,7 @@ Unique constraint on `(video, date)`. Ordered by `-date`.
 - **Comment (`src/apps/video/models/Comment.py`)**: User remarks tied to a specific video with timestamp and user.
 - **Vote (`src/apps/video/models/Vote.py`)**: Tracks Up/Down votes on `Comment` items to calculate the net score.
 - **Tag**: Handled dynamically by the `django-tagulous` extension.
+- **UserMarkerTime (`src/apps/video/models/UserMarkerTime.py`)**: Tracks the last watched position in seconds for a specific user and video.
 
 ---
 
@@ -237,6 +238,7 @@ Managed via `VideoConfig` (pydantic-settings in `src/apps/video/conf.py`). Setti
 | Setting                      | Default       | Description                                                 |
 | :--------------------------- | :------------ | :---------------------------------------------------------- |
 | `USE_HYPERLINKS`             | `True`        | Enables the video hyperlinks system globally.               |
+| `USE_MARKER_TIME`            | `True`        | Enables the video playback resume (marker time) feature.    |
 | `WEBTV_MODE`                 | `False`       | If `True`, video file is optional (WebTV / channel mode).   |
 | `ALLOW_AUTHENTICATED_UPLOAD` | `True`        | Allow authenticated non-staff users to upload.              |
 | `RESTRICT_EDIT_TO_STAFF`     | `False`       | Locks write access to staff and admins only.                |

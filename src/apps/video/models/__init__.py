@@ -10,6 +10,7 @@ from .Vote import Vote
 from .Type import Type
 from .Discipline import Discipline
 from .VideoHyperlink import VideoHyperlink
+from .UserMarkerTime import UserMarkerTime
 from .Language import Language
 from .License import License
 from .Cursus import Cursus
@@ -23,6 +24,7 @@ __all__ = [
     "Type",
     "Discipline",
     "VideoHyperlink",
+    "UserMarkerTime",
     "Language",
     "License",
     "Cursus",
