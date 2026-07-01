@@ -66,6 +66,17 @@ class VideoConfig(BaseSettings):
         description=_("Enable video commenting system."),
         json_schema_extra={"public": True},
     )
+    use_bulk_actions: bool = Field(
+        default=defaults.USE_BULK_ACTIONS,
+        description=_("Enable bulk update/delete on videos."),
+        json_schema_extra={"public": True},
+    )
+    bulk_async_threshold: int = Field(
+        default=defaults.BULK_ASYNC_THRESHOLD,
+        description=_(
+            "Number of videos above which bulk operations are processed asynchronously via Celery."
+        ),
+    )
 
     # --- Licensing ---
     default_license: str = Field(

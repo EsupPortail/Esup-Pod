@@ -212,7 +212,32 @@ Unlocks a password-protected restricted video.
 - Validates the provided `password` against the stored hash. (Alternatively accepts a legacy `hash` parameter for backward compatibility).
 - Returns the `video_url` on success and registers access in the session state.
 
----
+### `PATCH|DELETE /api/videos/bulk/`
+
+Applies an update or deletion to **multiple videos in one request**.
+
+**Request body:**
+
+```json
+{
+  "video_ids": [1, 2, 3],
+  "fields": { "allow_downloading": true }
+}
+```
+
+**Behaviour:**
+
+- `PATCH`: updates only the fields listed in `fields`. Fields in `BULK_EXCLUDED_FIELDS`
+  (`title`, `slug`, `owner`, `video_file`, `created_at`, `updated_at`, `duration`,
+  `encoding_status`) are rejected with `400 Bad Request`.
+- `DELETE`: deletes all listed videos. Returns `{ "deleted": N }`.
+- **Async threshold**: if the number of selected videos exceeds `BULK_ASYNC_THRESHOLD`
+  (default `20`, configurable), the operation is delegated to a Celery task and
+  the response is `202 Accepted` with `{ "status": "queued" }`.
+- **Permission check**: every video must be owned or co-owned by the requester.
+  A `403 Forbidden` is raised on the first video that fails the check.
+- **Feature flag**: returns `400` if `USE_BULK_ACTIONS = False`.
+
 
 ## 6. Upload & Encoding Flow
 
@@ -248,6 +273,8 @@ Managed via `VideoConfig` (pydantic-settings in `src/apps/video/conf.py`). Setti
 | `CACHE_TIMEOUT`              | `600`         | Cache TTL in seconds for video data.                        |
 | `DEFAULT_DC_COVERAGE`        | (string)      | Dublin Core `coverage` metadata default.                    |
 | `DEFAULT_DC_RIGHTS`          | (string)      | Dublin Core `rights` metadata default.                      |
+| `USE_BULK_ACTIONS`           | `True`        | Enable bulk update/delete endpoint (`/api/videos/bulk/`).   |
+| `BULK_ASYNC_THRESHOLD`       | `20`          | Videos above this count are processed async via Celery.     |
 
 ---
 
@@ -266,6 +293,7 @@ Key test files:
 - `test_hyperlinks.py`: Specific API test suite for the `VideoHyperlink` endpoints and permission checks.
 - `test_scenarios.py`: End-to-end scenario tests (full upload → encoding → publish flow).
 - `test_signals.py`: Tests for file cleanup signals.
+- `test_bulk_actions.py`: Tests for the bulk update/delete endpoint (permissions, async, feature flag).
 
 ---
 
