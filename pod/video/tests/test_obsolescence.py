@@ -458,6 +458,7 @@ class ValidFormRespitTestCase(TestCase):
         print("--->  test_go_prolong_action of ValidFormRespitTestCase: OK")
 
     @patch("pod.video.views.ENABLE_PAGE_OBSO_MAIL", True)
+    @override_settings(POD_ARCHIVE_AFFILIATION=["faculty"])
     def test_go_archive_action(self):
         """Test archive confirmation by the form"""
         self.video1.date_delete = date.today() + timedelta(days=50)

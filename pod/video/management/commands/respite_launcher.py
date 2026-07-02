@@ -53,7 +53,8 @@ class Command(BaseCommand):
             for vid in videos:
                 self.process_video(vid, higher_warn)
 
-            self.notify_results()
+            if not options["dry"]:
+                self.notify_results()
 
         else:
             raise CommandError("USE_RESPITE is FALSE")

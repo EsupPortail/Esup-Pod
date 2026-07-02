@@ -4,12 +4,15 @@ Esup-Pod - Criteria Respite model.
 This model allows for the calculation of an additional delay based on various criteria.
 """
 
+import logging
 from os.path import basename
 
 from django.conf import settings
 
 from pod.main.utils import to_date
 from pod.video.models import Video
+
+DEBUG = getattr(settings, "DEBUG", True)
 
 RESPITE_MODEL_PARAMETERS = getattr(
     settings,
@@ -60,6 +63,9 @@ PARAM_MATCHERS = {
     "categories.id": "INTERSECT",
 }
 
+logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
 
 def match_criterion(
     param_name: str, param_value, criterion_value, dry_mode: bool = True
@@ -70,7 +76,7 @@ def match_criterion(
         return False
     matcher = MATCHERS[matcher_type]
     if dry_mode:
-        print(
+        logger.info(
             "\tCheck criterion “%s”=“%s” %s “%s”\t=> %s"
             % (
                 param_name,
@@ -111,18 +117,18 @@ def match_criteria_row(video_data: dict, criteria: dict, dry_mode: bool = True) 
 def calcul(video_data: dict, dry_mode: bool = True) -> int:
     """Compute the respite delay in days based on a matched criteria rule."""
     if dry_mode:
-        print(
+        logger.info(
             "Compute delete respite for video %s - %s"
             % (video_data["id"], video_data["title"])
         )
     respite_criteria = RESPITE_MODEL_PARAMETERS.get("respite_criteria_parameter", [])
     if len(respite_criteria) == 0:
-        print("respite_criteria_parameter is empty. Setup your criteria first.")
+        logger.info("respite_criteria_parameter is empty. Setup your criteria first.")
     row_num = 0
     for row in respite_criteria:
         row_num += 1
         if dry_mode:
-            print(" * Processing criteria set #%s..." % row_num)
+            logger.info(" * Processing criteria set #%s..." % row_num)
         if match_criteria_row(video_data, row["criteria"], dry_mode):
             date_added = video_data["date_added"]
             date_delete = video_data["date_delete"]
@@ -179,5 +185,5 @@ def can_video_be_archived(vid: Video):
     if getattr(vid, "date_evt", None):
         score += attribute_scores.get("date_evt", 0)
 
-    print("Metadata score completion = %s." % score)
+    logger.debug("[Video %s] Metadata score completion = %s." % (vid.id, score))
     return score >= minimum_expected_score

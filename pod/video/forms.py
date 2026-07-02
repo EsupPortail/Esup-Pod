@@ -1468,7 +1468,9 @@ class ArchiveChoiceForm(forms.Form):
         )
         % {"rrd": EXTEND_RESPITE_DAYS},
         "Archive": _("Select this option if you want to archive your video.")
+        + " "
         + _("It will then be unpublished and will no longer be accessible to the public.")
+        + " "
         + _(
             "However, it will remain on the video server for a certain period, during which time a publication can be reactivated upon request to a manager."
         ),

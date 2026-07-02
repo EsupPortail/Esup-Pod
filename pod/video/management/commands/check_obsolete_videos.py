@@ -218,8 +218,7 @@ class Command(BaseCommand):
                 % (base_url, respite_url, _("Choose an action for my video"))
             )
 
-            custom_message_page_obso_mail += "<br>\n"
-            custom_message_page_obso_mail += _(
+            custom_message_page_obso_mail += "<p>%s</p>" % _(
                 "Unless you take action, your video will be archived (unpublished) and may be deleted."
             )
 
@@ -308,7 +307,7 @@ class Command(BaseCommand):
             options.append(_("delete it (after saving it)"))
         options.append(_("download it along with all its associated data"))
 
-        return "<ul><li>%s</li>" % "</li><li>".join(options)
+        return "<ul><li>%s</li></ul>" % "</li><li>".join(options)
 
     def notify_manager_of_obsolete_video(self, list_video: dict) -> None:
         """Notify manager(s) with a list of obsolete videos."""

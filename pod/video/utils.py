@@ -70,7 +70,6 @@ NUMBER_TAGS_CLOUD = getattr(settings, "NUMBER_TAGS_CLOUD", 20)
 ARCHIVE_CSV = "%s/archived.csv" % settings.LOG_DIRECTORY
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 ARCHIVE_ROOT = getattr(settings, "ARCHIVE_ROOT", "/video_archiving")
-POD_ARCHIVE_AFFILIATION = getattr(settings, "POD_ARCHIVE_AFFILIATION", [])
 
 USE_RESPITE = getattr(settings, "USE_RESPITE", False)
 RESPITE_MODEL = getattr(settings, "RESPITE_MODEL", "base")
@@ -82,6 +81,7 @@ def is_archiving_authorized(vid: Video) -> bool:
         logger.info("[is_archiving_authorized] video is None.")
         return False
 
+    POD_ARCHIVE_AFFILIATION = getattr(settings, "POD_ARCHIVE_AFFILIATION", [])
     if not POD_ARCHIVE_AFFILIATION:
         logger.info("[is_archiving_authorized] POD_ARCHIVE_AFFILIATION is empty.")
         return False
@@ -94,8 +94,8 @@ def is_archiving_authorized(vid: Video) -> bool:
 
     if owner_affiliation.strip() not in POD_ARCHIVE_AFFILIATION:
         logger.info(
-            "[is_archiving_authorized] owner’s affiliation not in POD_ARCHIVE_AFFILIATION."
-            % owner
+            "[is_archiving_authorized] owner’s affiliation (%s) not in POD_ARCHIVE_AFFILIATION."
+            % owner_affiliation.strip()
         )
         return False
 
