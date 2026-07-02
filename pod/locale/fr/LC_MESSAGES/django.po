@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-25 09:35+0200\n"
+"POT-Creation-Date: 2026-07-02 09:37+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -11104,10 +11104,9 @@ msgstr "-- désolé, aucune traduction fournie --"
 msgid "This video is not approaching its obsolescence date."
 msgstr "Cette vidéo n’approche pas de sa date d’obsolescence."
 
-#: pod/video/tests/test_obsolescence.py
-#, python-format
-msgid "Impossible action. Archiving the video “%(vid_title)s” is prohibited."
-msgstr "Action impossible. Archiver la vidéo « %(vid_title)s » est interdit."
+#: pod/video/tests/test_obsolescence.py pod/video/views.py
+msgid "This action is forbidden."
+msgstr "Cette action est interdite."
 
 #: pod/video/tests/test_obsolescence.py pod/video/views.py
 msgid "You cannot delete a media that is being encoded."
@@ -11435,10 +11434,6 @@ msgstr "Erreur serveur lors du traitement du filtre."
 #, python-format
 msgid "Impossible to archive video “%(slug)s”."
 msgstr "Impossible d’archiver la vidéo « %(slug)s »."
-
-#: pod/video/views.py
-msgid "This action is forbidden."
-msgstr "Cette action est interdite."
 
 #: pod/video/views.py
 msgid ""

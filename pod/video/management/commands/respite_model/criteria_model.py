@@ -4,11 +4,11 @@ Esup-Pod - Criteria Respite model.
 This model allows for the calculation of an additional delay based on various criteria.
 """
 
-from datetime import date, datetime
 from os.path import basename
 
 from django.conf import settings
 
+from pod.main.utils import to_date
 from pod.video.models import Video
 
 RESPITE_MODEL_PARAMETERS = getattr(
@@ -22,15 +22,6 @@ RESPITE_MODEL_PARAMETERS = getattr(
         },
     },
 )
-
-
-def to_date(v):
-    """Convert a datetime or date to a date object."""
-    if isinstance(v, datetime):
-        return v.date()
-    if isinstance(v, date):
-        return v
-    raise TypeError(f"Unexpected date type : {type(v)}")
 
 
 # Signature (bool): lambda v=real_value, c=criterion_value: condition

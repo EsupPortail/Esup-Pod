@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-25 09:35+0200\n"
+"POT-Creation-Date: 2026-07-02 09:36+0200\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -10363,9 +10363,8 @@ msgstr ""
 msgid "This video is not approaching its obsolescence date."
 msgstr ""
 
-#: pod/video/tests/test_obsolescence.py
-#, python-format
-msgid "Impossible action. Archiving the video “%(vid_title)s” is prohibited."
+#: pod/video/tests/test_obsolescence.py pod/video/views.py
+msgid "This action is forbidden."
 msgstr ""
 
 #: pod/video/tests/test_obsolescence.py pod/video/views.py
@@ -10682,10 +10681,6 @@ msgstr ""
 #: pod/video/views.py
 #, python-format
 msgid "Impossible to archive video “%(slug)s”."
-msgstr ""
-
-#: pod/video/views.py
-msgid "This action is forbidden."
 msgstr ""
 
 #: pod/video/views.py
