@@ -67,6 +67,7 @@ logger = logging.getLogger(__name__)
 if DEBUG:
     logger.setLevel(logging.DEBUG)
 
+
 def match_criterion(
     param_name: str, param_value, criterion_value, dry_mode: bool = True
 ) -> bool:

@@ -22,6 +22,7 @@ ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
 if DEBUG:
     logger.setLevel(logging.DEBUG)
 
+
 def index_es(video):
     """Get ElasticSearch index."""
     translation.activate(settings.LANGUAGE_CODE)

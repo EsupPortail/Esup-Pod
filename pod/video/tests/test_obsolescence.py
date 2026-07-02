@@ -347,7 +347,9 @@ class ValidFormRespitTestCase(TestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            f"/video/valid/form/respite/{self.video1.slug}/", {"action": "Archive"}, follow=True
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Archive"},
+            follow=True,
         )
         self.assertContains(
             response, _("This video is not approaching its obsolescence date.")
@@ -356,7 +358,9 @@ class ValidFormRespitTestCase(TestCase):
         self.video1.date_delete = date.today() + timedelta(days=30)
         self.video1.save(update_fields=["date_delete"])
         response = self.client.post(
-            f"/video/valid/form/respite/{self.video1.slug}/", {"action": "Archive"}, follow=True
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Archive"},
+            follow=True,
         )
         self.assertContains(response, _("This action is forbidden."))
 
