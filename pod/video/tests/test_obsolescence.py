@@ -1,28 +1,23 @@
 """Esup-Pod - Test Obsolete videos.
 
-Test with `python manage.py test pod.video.tests.test_obsolescence`
+Test with `python manage.py test pod.video.tests.test_obsolescence  --settings=pod.main.test_settings`
 """
 
+import os
 import tempfile
+from datetime import date, timedelta
+from unittest.mock import patch
 
-from django.test import override_settings
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.test import RequestFactory, TestCase, override_settings
 from django.utils.translation import gettext as _
 
-from ..models import Video, Type, VideoToDelete
 from pod.authentication.models import Owner
 
-from datetime import date, timedelta
-import os
-from django.contrib.sites.models import Site
-
-from ..utils import check_csv_header, read_archived_csv, archive_pack
-
-from django.test import RequestFactory
-from django.contrib.auth.models import User
-from django.test import TestCase
-
-from unittest.mock import patch
+from ..models import Type, Video, VideoToDelete
+from ..utils import archive_pack, check_csv_header, read_archived_csv
 
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
@@ -367,7 +362,9 @@ class ValidFormRespitTestCase(TestCase):
     @override_settings(PROLONGATION_GRANTED=True)
     def test_extend_action(self):
         """Test extend option in the form"""
-        date1 = date.today() + timedelta(days=DEFAULT_YEAR_DATE_DELETE * 365)
+        ACCOMMODATION_YEARS = getattr(settings, "ACCOMMODATION_YEARS", {"faculty": 1})
+        add_year = self.video1.get_date_delete_for_affiliation(ACCOMMODATION_YEARS)
+        date1 = date.today() + timedelta(days=add_year * 365)
         self.assertEqual(self.video1.date_delete, date1)
 
         # Connect the user
