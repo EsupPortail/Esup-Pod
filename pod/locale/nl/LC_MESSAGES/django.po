@@ -247,6 +247,10 @@ msgid "Import the quiz"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Import transcript"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
 msgid "Remove this enhancement"
 msgstr ""
 
@@ -514,6 +518,11 @@ msgstr ""
 
 #: pod/ai_enhancement/views.py
 msgid "You cannot use AI to improve this video."
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgctxt "document filename"
+msgid "Transcription"
 msgstr ""
 
 #: pod/ai_enhancement/views.py
@@ -1368,6 +1377,18 @@ msgstr ""
 #: pod/completion/templates/document/list_document.html
 #: pod/video/templates/videos/video-info.html
 msgid "Public document"
+msgstr ""
+
+#: pod/completion/templates/document/list_document.html
+#, python-format
+msgid "Download the additional resource “%(document_name)s”"
+msgstr ""
+
+#: pod/completion/templates/document/list_document.html
+#: pod/live/templates/live/event-info.html
+#: pod/podfile/templates/podfile/list_folder_files.html
+#: pod/video/templates/videos/video-info.html
+msgid "Download"
 msgstr ""
 
 #: pod/completion/templates/document/list_document.html
@@ -3629,12 +3650,6 @@ msgstr ""
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
 msgid "Download this QR code"
-msgstr ""
-
-#: pod/live/templates/live/event-info.html
-#: pod/podfile/templates/podfile/list_folder_files.html
-#: pod/video/templates/videos/video-info.html
-msgid "Download"
 msgstr ""
 
 #: pod/live/templates/live/event-script.html

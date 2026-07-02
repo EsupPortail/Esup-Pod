@@ -92,6 +92,10 @@ class CustomFileModel(models.Model):
     )
 
     @property
+    def file_ext(self) -> str:
+        return self.file.path.rpartition(".")[-1].lower()
+
+    @property
     def file_type(self) -> str:
         filetype = mimetypes.guess_type(self.file.path)[0]
         if filetype is None:

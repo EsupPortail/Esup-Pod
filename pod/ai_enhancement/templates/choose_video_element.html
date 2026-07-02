@@ -47,6 +47,11 @@
   </span>
   {% endif %}
   <span>
+    <a href="{% url 'ai_enhancement:enhance_video_transcript_json' video_slug=video.slug %}" class="btn btn-primary btn-sm m-2">
+      <i class="bi bi-file-text" aria-hidden="true"></i>&nbsp;{% trans "Import transcript" %}
+    </a>
+  </span>
+  <span>
     <a href="{% url 'ai_enhancement:delete_enhance_video' video_slug=video.slug %}" class="btn btn-danger btn-sm m-2">
       <i class="bi bi-trash" aria-hidden="true"></i>&nbsp;{% trans "Remove this enhancement" %}
     </a>

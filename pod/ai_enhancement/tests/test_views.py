@@ -7,8 +7,10 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
+from django.utils.translation import override
 
 from pod.ai_enhancement.models import AIEnhancement
+from pod.completion.models import Document
 from pod.ai_enhancement.views import toggle_webhook
 from pod.main.models import Configuration
 from pod.video.models import Video, Type
@@ -258,6 +260,68 @@ class EnhanceVideoViewTest(TestCase):
         self.assertTemplateUsed(response, "footer.html")
         self.assertTemplateUsed(response, "create_enhancement.html")
         print(" --->  test_enhance_video__success ok")
+
+
+class GenerateTranscriptFileViewTest(TestCase):
+    """Test the generate_transcript_file view."""
+
+    fixtures = ["initial_data.json"]
+
+    def setUp(self) -> None:
+        """Set up the test."""
+        self.user = User.objects.create_user(username="test_user")
+        self.user.is_staff = True
+        self.user.save()
+        self.video = Video.objects.create(
+            slug="test-video",
+            owner=self.user,
+            video="test_video.mp4",
+            title="Test video",
+            description="This is a test video.",
+            type=Type.objects.get(id=1),
+        )
+        self.enhancement = AIEnhancement.objects.create(
+            video=self.video, ai_enhancement_id_in_aristote="123"
+        )
+        self.client.force_login(self.user)
+
+    @patch("pod.ai_enhancement.views.AristoteAI")
+    def test_generate_transcript_file__success(self, mock_aristote_ai) -> None:
+        """Test transcript import and completion document creation."""
+        transcript_text = "First line.\nSecond line."
+        json_data = {
+            "transcript": {
+                "text": transcript_text,
+            }
+        }
+        mock_aristote_instance = mock_aristote_ai.return_value
+        mock_aristote_instance.get_latest_enhancement_version.return_value = json_data
+
+        url = reverse(
+            "ai_enhancement:enhance_video_transcript_json", args=[self.video.slug]
+        )
+        with override("en"):
+            response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response,
+            reverse(
+                "video:completion:video_completion_document",
+                kwargs={"slug": self.video.slug},
+            ),
+            fetch_redirect_response=False,
+        )
+        mock_aristote_instance.get_latest_enhancement_version.assert_called_once_with(
+            self.enhancement.ai_enhancement_id_in_aristote,
+        )
+
+        document = Document.objects.get(video=self.video)
+        self.assertTrue(document.document.file.name.endswith(".txt"))
+        self.assertTrue(document.document.file)
+        document.document.file.open("rb")
+        self.assertEqual(document.document.file.read().decode("utf-8"), transcript_text)
+        document.document.file.close()
 
     def test_enhance_video__video_not_exists(self) -> None:
         """Test the enhance_video view when the video not exists."""

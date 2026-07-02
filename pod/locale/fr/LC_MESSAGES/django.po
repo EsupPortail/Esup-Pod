@@ -244,6 +244,10 @@ msgid "Import the quiz"
 msgstr "Importer le quiz"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Import transcript"
+msgstr "Importer la transcription"
+
+#: pod/ai_enhancement/templates/choose_video_element.html
 msgid "Remove this enhancement"
 msgstr "Supprimer cette amélioration"
 
@@ -496,6 +500,11 @@ msgstr "Supprimer l’amélioration de la vidéo"
 #: pod/ai_enhancement/views.py
 msgid "You cannot use AI to improve this video."
 msgstr "Vous ne pouvez pas utiliser l’IA pour améliorer cette vidéo."
+
+#: pod/ai_enhancement/views.py
+msgctxt "document filename"
+msgid "Transcription"
+msgstr "Transcription"
 
 #: pod/ai_enhancement/views.py
 msgid "Video Caption Maker - Aristote AI Version"
@@ -1337,6 +1346,18 @@ msgstr "Liste des documents complémentaires"
 #: pod/video/templates/videos/video-info.html
 msgid "Public document"
 msgstr "Document public"
+
+#: pod/completion/templates/document/list_document.html
+#, python-format
+msgid "Download the additional resource “%(document_name)s”"
+msgstr "Télécharger le document complémentaire « %(document_name)s »"
+
+#: pod/completion/templates/document/list_document.html
+#: pod/live/templates/live/event-info.html
+#: pod/podfile/templates/podfile/list_folder_files.html
+#: pod/video/templates/videos/video-info.html
+msgid "Download"
+msgstr "Télécharger"
 
 #: pod/completion/templates/document/list_document.html
 #, python-format
@@ -3661,12 +3682,6 @@ msgstr "QR code pour ce lien :"
 #: pod/live/templates/live/event-info.html pod/video/templates/videos/video-info.html
 msgid "Download this QR code"
 msgstr "Télécharger ce QR code"
-
-#: pod/live/templates/live/event-info.html
-#: pod/podfile/templates/podfile/list_folder_files.html
-#: pod/video/templates/videos/video-info.html
-msgid "Download"
-msgstr "Télécharger"
 
 #: pod/live/templates/live/event-script.html
 msgid "Recording not done: "
