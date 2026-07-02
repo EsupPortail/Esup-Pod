@@ -243,6 +243,14 @@ def _attach_video_metadata(parameters: ParametersDict, video: Video) -> None:
         parameters["video_title"] = str(video_title)
 
 
+def _resolve_source_language(video: Video) -> str:
+    """Return the video's source language or auto-detection fallback."""
+    source_language = getattr(video, "main_lang", None)
+    if isinstance(source_language, str) and source_language:
+        return source_language.strip() or "auto"
+    return "auto"
+
+
 def _prepare_encoding_parameters(
     video: Optional[Video] = None,
     base_url: Optional[str] = None,
@@ -751,6 +759,7 @@ def _prepare_transcription_parameters(video: Video) -> ParametersDict:
     Returns:
         Parameter dictionary for the Runner Manager.
     """
+    source_language = _resolve_source_language(video)
     try:
         from .transcript import resolve_transcription_language
 
@@ -762,7 +771,10 @@ def _prepare_transcription_parameters(video: Video) -> ParametersDict:
         normalize = bool(getattr(settings, "TRANSCRIPTION_NORMALIZE", False))
 
         params: ParametersDict = {
+            # Final subtitle/VTT language requested by the user
             "language": lang,
+            # Main audio/source language, supported by Esup-Runner since version 1.5
+            "source_language": source_language,
             # Duration may help runner to tune/optimize
             "duration": float(getattr(video, "duration", 0) or 0),
             # Text normalization (punctuation/casing) on runner side if supported
@@ -778,7 +790,10 @@ def _prepare_transcription_parameters(video: Video) -> ParametersDict:
         return params
     except Exception:
         # Keep legacy key name for backward compatibility with older runners.
-        params: ParametersDict = {"lang": getattr(video, "transcript", "") or ""}
+        params: ParametersDict = {
+            "lang": getattr(video, "transcript", "") or "",
+            "source_language": source_language,
+        }
         _attach_video_metadata(params, video)
         return params
 

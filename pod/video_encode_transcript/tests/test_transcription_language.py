@@ -119,6 +119,7 @@ class TranscriptionLanguageResolutionTests(TestCase):
         params = _prepare_transcription_parameters(self.video)
 
         self.assertEqual(params["language"], "es")
+        self.assertEqual(params["source_language"], "fr")
         self.assertEqual(params["duration"], 12.5)
         self.assertTrue(params["normalize"])
         self.assertEqual(params["model_type"], "whisper")
@@ -133,13 +134,14 @@ class TranscriptionLanguageResolutionTests(TestCase):
     def test_prepare_transcription_parameters_falls_back_to_legacy_lang_key(
         self, mock_resolve_transcription_language
     ) -> None:
-        """Keep the legacy payload shape when language resolution fails."""
+        """Keep the legacy language key when final-language resolution fails."""
         self.video.transcript = "en"
         self.video.save(update_fields=["transcript"])
 
         params = _prepare_transcription_parameters(self.video)
 
         self.assertEqual(params["lang"], "en")
+        self.assertEqual(params["source_language"], "fr")
         self.assertEqual(params["video_id"], self.video.id)
         self.assertEqual(params["video_slug"], self.video.slug)
         self.assertEqual(params["video_title"], self.video.title)

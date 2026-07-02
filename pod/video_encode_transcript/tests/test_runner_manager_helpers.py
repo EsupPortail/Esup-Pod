@@ -29,6 +29,7 @@ from pod.video_encode_transcript.runner_manager import (
     _prepare_transcription_parameters,
     _prestore_encoding_if_needed,
     _rotate_same_priority_runner_managers,
+    _resolve_source_language,
     _send_task_to_runner_manager,
     _submit_to_runner_manager,
     _try_send_to_rm,
@@ -366,6 +367,7 @@ class RunnerManagerHelperTests(SimpleTestCase):
             slug="transcript-video",
             title="Transcript video",
             transcript="fr",
+            main_lang="en",
             duration=12.5,
             video="videos/transcript.mp4",
         )
@@ -385,6 +387,7 @@ class RunnerManagerHelperTests(SimpleTestCase):
         self.assertTrue(result)
         payload = mock_submit_to_runner_managers.call_args.kwargs["data"]
         self.assertEqual(payload["parameters"]["language"], "fr")
+        self.assertEqual(payload["parameters"]["source_language"], "en")
         self.assertEqual(payload["parameters"]["duration"], 12.5)
         self.assertTrue(payload["parameters"]["normalize"])
         self.assertEqual(payload["parameters"]["model_type"], "whisper")
@@ -555,6 +558,7 @@ class RunnerManagerHelperTests(SimpleTestCase):
         """Build transcription params with resolved language or legacy fallback."""
         video = SimpleNamespace(
             transcript="fr",
+            main_lang="de",
             duration=12.5,
             id=3,
             slug="video-slug",
@@ -575,6 +579,7 @@ class RunnerManagerHelperTests(SimpleTestCase):
             params,
             {
                 "language": "en",
+                "source_language": "de",
                 "duration": 12.5,
                 "normalize": True,
                 "video_id": 3,
@@ -594,11 +599,18 @@ class RunnerManagerHelperTests(SimpleTestCase):
             legacy_params,
             {
                 "lang": "fr",
+                "source_language": "de",
                 "video_id": 3,
                 "video_slug": "video-slug",
                 "video_title": "Video title",
             },
         )
+
+    def test_resolve_source_language_uses_auto_when_missing(self) -> None:
+        """Fallback to runner auto-detection when no source language is defined."""
+        self.assertEqual(_resolve_source_language(SimpleNamespace(main_lang="fr")), "fr")
+        self.assertEqual(_resolve_source_language(SimpleNamespace(main_lang="")), "auto")
+        self.assertEqual(_resolve_source_language(SimpleNamespace()), "auto")
 
     def test_execute_url_normalizes_trailing_slash(self) -> None:
         """Always target the task execute endpoint."""
