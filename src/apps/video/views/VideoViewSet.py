@@ -102,6 +102,13 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         return Video.objects.visible_for(user).filter(id__in=qs).distinct()
 
+    def get_authenticators(self):
+        authenticators = super().get_authenticators()
+        if getattr(self, "action", None) == "stream":
+            from src.apps.authentication.authentication import QueryParameterJWTAuthentication
+            authenticators = [QueryParameterJWTAuthentication()] + authenticators
+        return authenticators
+
     def perform_create(self, serializer):
         """Creates a new video, checking user quota and triggering encoding."""
         user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file="")
@@ -250,6 +257,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         Falls back to the best available resolution if the requested one is not found.
         """
         video = self.get_object()
+
         self._check_stream_permissions(request, video)
 
         resolution = request.query_params.get("resolution")
