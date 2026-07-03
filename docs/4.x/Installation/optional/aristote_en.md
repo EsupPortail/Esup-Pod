@@ -29,7 +29,7 @@ To enable the feature, the following variables must be set in the file `pod/cust
 - `USE_AI_ENHANCEMENT = True` # Activation of the feature
 - `AI_ENHANCEMENT_API_URL = 'https://stt.ilaas.fr/api'` # URL to contact the Aristote API
 - `AI_ENHANCEMENT_CLIENT_ID = 'univ_client_id'`
-- `AI_ENHANCEMENT_CLIENT_SECRET = 'xxx-xxx-xxx'` # Make a request on https://www.ilaas.fr/demande-dacces/ in order to retreive the login and the acces token
+- `AI_ENHANCEMENT_CLIENT_SECRET = 'xxx-xxx-xxx'` # Submit a request at https://www.ilaas.fr/demande-dacces/ to obtain the identifier and access token.
 - `AI_ENHANCEMENT_API_VERSION = 'v1'` # Version of the Aristote API used for enrichment
 
 To obtain the values to set for the variables `AI_ENHANCEMENT_CLIENT_ID` and `AI_ENHANCEMENT_CLIENT_SECRET`, a request for access to the Aristote API must be made through Centrale Supelec (contact.aristote [at] centralesupelec.fr).
