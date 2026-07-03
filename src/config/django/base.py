@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "src.apps.collection",
     "src.apps.completion",
     "src.apps.dressing",
+    "src.apps.migration",
 ]
 
 MIDDLEWARE = [

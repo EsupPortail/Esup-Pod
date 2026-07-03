@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from src.apps.migration.utils.userMigrate import userMigrate
-#from src.apps.migration.utils.videoMigrate import videoMigrate
+from src.apps.migration.utils.videoMigrate import videoMigrate
 #from src.apps.migration.utils.speakerMigrate import speakerMigrate
 #from src.apps.migration.utils.commentMigrate import commentMigrate
 #from src.apps.migration.utils.hyperlinkMigrate import hyperlinkMigrate
@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         userMigrate(self, *args, **kwargs) #Normalement bon
-        #videoMigrate(self, *args, **kwargs) #Normalement bon
+        videoMigrate(self, *args, **kwargs) #Normalement bon
         #commentMigrate(self, *args, **kwargs) #verifier et avoir des données AVANT D'UTILISER
         #speakerMigrate(self, *args, **kwargs) #FINIR/VERIFIER AVANT D'UTILISER
         #hyperlinkMigrate(self, *args, **kwargs) #Normalement bon
