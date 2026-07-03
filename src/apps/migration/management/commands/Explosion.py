@@ -46,3 +46,5 @@ class Command(BaseCommand):
 
 # Exemple : les collections côté WebTV peuvent être multiples alors que Pod ne
 # permet qu'une seule collection. -> la on conserve uniquement la première.
+
+#pour tester: make enter puis Python3 manage.py Explosion
