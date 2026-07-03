@@ -350,28 +350,36 @@ class Command(BaseCommand):
 
     def delete_old_tag_data(self, cursor, table: str) -> None:
         """Delete old tag data for the given table."""
-        if table == "video_tagging_tag_2_tagulous":
-            self.stdout.write(self.style.SUCCESS(" - Delete old tags for videos"))
-            cursor.execute(
-                f"DELETE FROM {self.quote_identifier('video_tagulous_video_tags')}"
-            )
-            self.reset_auto_increment(cursor, "video_video_tags", "id")
-            cursor.execute(f"DELETE FROM {self.quote_identifier('video_video_tags')}")
-            cursor.execute(
-                f"ALTER TABLE {self.quote_identifier('video_video_tags')} AUTO_INCREMENT = 1"
-            )
-        elif table == "recorder_tagging_tag_2_tagulous":
-            self.stdout.write(self.style.SUCCESS(" - Delete old tags for recorders"))
-            cursor.execute(
-                f"DELETE FROM {self.quote_identifier('recorder_tagulous_recorder_tags')}"
-            )
-            self.reset_auto_increment(cursor, "recorder_recorder_tags", "id")
-            cursor.execute(
-                f"DELETE FROM {self.quote_identifier('recorder_recorder_tags')}"
-            )
-            cursor.execute(
-                f"ALTER TABLE {self.quote_identifier('recorder_recorder_tags')} AUTO_INCREMENT = 1"
-            )
+        backend = connection.vendor
+        if backend == "mysql":
+            cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
+
+        try:
+            if table == "video_tagging_tag_2_tagulous":
+                self.stdout.write(self.style.SUCCESS(" - Delete old tags for videos"))
+                cursor.execute(f"DELETE FROM {self.quote_identifier('video_video_tags')}")
+                self.reset_auto_increment(cursor, "video_video_tags", "id")
+                cursor.execute(
+                    f"DELETE FROM {self.quote_identifier('video_tagulous_video_tags')}"
+                )
+                cursor.execute(
+                    f"ALTER TABLE {self.quote_identifier('video_video_tags')} AUTO_INCREMENT = 1"
+                )
+            elif table == "recorder_tagging_tag_2_tagulous":
+                self.stdout.write(self.style.SUCCESS(" - Delete old tags for recorders"))
+                cursor.execute(
+                    f"DELETE FROM {self.quote_identifier('recorder_recorder_tags')}"
+                )
+                self.reset_auto_increment(cursor, "recorder_recorder_tags", "id")
+                cursor.execute(
+                    f"DELETE FROM {self.quote_identifier('recorder_tagulous_recorder_tags')}"
+                )
+                cursor.execute(
+                    f"ALTER TABLE {self.quote_identifier('recorder_recorder_tags')} AUTO_INCREMENT = 1"
+                )
+        finally:
+            if backend == "mysql":
+                cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
 
     def reset_auto_increment(self, cursor, table: str, id_column="id") -> None:
         """Reset auto increment for a table (manage for for Postgre or Mysql/MariaDB)."""
