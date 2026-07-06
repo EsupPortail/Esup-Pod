@@ -323,6 +323,9 @@ class Video(models.Model):
             ),
             "coverage": video_settings.default_dc_coverage,
             "subject": ", ".join([d.title for d in self.disciplines.all()]),
+            "type": self.type.title if self.type else "",
+            "language": self.language.name if self.language else "",
+            "identifier": self.get_absolute_url(),
         }
 
     def set_password(self) -> None:

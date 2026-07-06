@@ -9,6 +9,7 @@ from .DisciplineViewSet import DisciplineViewSet  # noqa: F401
 from .TagViewSet import TagViewSet  # noqa: F401
 from .TypeViewSet import TypeViewSet  # noqa: F401
 from .HyperlinkViewSet import VideoHyperlinkViewSet  # noqa: F401
+from .DublinCoreViewSet import DublinCoreViewSet  # noqa: F401
 
 __all__ = [
     "VideoViewSet",
@@ -18,4 +19,5 @@ __all__ = [
     "TagViewSet",
     "TypeViewSet",
     "VideoHyperlinkViewSet",
+    "DublinCoreViewSet",
 ]

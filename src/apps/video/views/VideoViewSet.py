@@ -7,7 +7,7 @@ import logging
 import hashlib
 
 from rest_framework.response import Response
-from rest_framework import viewsets, permissions, parsers, filters
+from rest_framework import viewsets, permissions, parsers, filters, status
 from django.db.models import Q, F
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -24,7 +24,7 @@ from drf_spectacular.utils import (
 )
 
 from src.apps.video.models import Video
-from src.apps.video.serializers import VideoSerializer
+from src.apps.video.serializers import VideoSerializer, DublinCoreSerializer
 from src.apps.video.permissions import IsOwnerOrCoOwnerOrChannelCollaborator
 from src.apps.authentication.permissions import IsSuperUser
 from django_filters.rest_framework import DjangoFilterBackend
@@ -486,3 +486,40 @@ class VideoViewSet(viewsets.ModelViewSet):
         video.save(update_fields=["owner"])
 
         return Response({"status": "ownership transferred"})
+
+    @extend_schema(
+        summary="Dublin Core metadata for a video",
+        description="Returns Dublin Core metadata for a single published video.",
+        responses={
+            200: DublinCoreSerializer,
+            400: OpenApiResponse(description="Dublin Core feature is disabled."),
+            403: OpenApiResponse(description="Video is not publicly available."),
+        },
+    )
+    @action(
+        detail=True,
+        methods=["get"],
+        url_path="dublin-core",
+        permission_classes=[permissions.AllowAny],
+    )
+    def dublin_core(self, request, slug=None):
+        """
+        GET /api/videos/{slug}/dublin-core/
+        Returns Dublin Core metadata for a single video.
+        The video must be publicly visible.
+        """
+        if not video_settings.use_dublin_core:
+            return Response(
+                {"detail": _("Dublin Core feature is disabled.")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        video = self.get_object()
+
+        if video.status != Video.Status.PUBLISHED:
+            return Response(
+                {"detail": _("This video is not publicly available.")},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        return Response(video.get_dublin_core())

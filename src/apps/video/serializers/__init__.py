@@ -9,6 +9,7 @@ from .DisciplineSerializer import DisciplineSerializer  # noqa: F401
 from .TagSerializer import TagSerializer  # noqa: F401
 from .TypeSerializer import TypeSerializer  # noqa: F401
 from .HyperlinkSerializer import VideoHyperlinkSerializer  # noqa: F401
+from .DublinCoreSerializer import DublinCoreSerializer  # noqa: F401
 
 __all__ = [
     "VideoSerializer",
@@ -18,4 +19,5 @@ __all__ = [
     "TagSerializer",
     "TypeSerializer",
     "VideoHyperlinkSerializer",
+    "DublinCoreSerializer",
 ]
