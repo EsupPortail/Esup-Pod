@@ -156,8 +156,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         if video.video_file:
             from src.apps.encoding.tasks import trigger_runner_encoding_task
 
-            site_url = video_settings.site_url.rstrip("/")
-            source_url = f"{site_url}{video.video_file.url}"
+            source_url = self.request.build_absolute_uri(video.video_file.url)
 
             logger.debug("source_url: %s", source_url)
 
@@ -418,7 +417,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         Returns only videos owned or co-owned by the current user.
         """
         user = request.user
-        queryset = (
+        queryset = self.filter_queryset(
             self.get_queryset().filter(Q(owner=user) | Q(co_owners=user)).distinct()
         )
 
