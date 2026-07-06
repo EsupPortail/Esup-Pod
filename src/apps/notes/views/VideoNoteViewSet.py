@@ -82,11 +82,6 @@ class VideoNoteViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="List video notes",
-        description=(
-            "Returns notes for a given video slug. "
-            "Public notes and the current user's own notes are returned. "
-            "Filter by ?video=<slug>."
-        ),
         parameters=[
             OpenApiParameter(
                 name="video",
@@ -98,5 +93,9 @@ class VideoNoteViewSet(viewsets.ModelViewSet):
         responses={200: VideoNoteSerializer(many=True)},
     )
     def list(self, request, *args, **kwargs):
-        """Lists notes filtered by video and privacy."""
+        """
+        Returns notes for a given video slug.
+        Public notes and the current user's own notes are returned.
+        Filter by ?video=<slug>.
+        """
         return super().list(request, *args, **kwargs)

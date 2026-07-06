@@ -25,7 +25,9 @@ class VideoNoteModelTests(APITestCase):
         """Sets up a user and a video for model testing."""
         sync_metadata(sender=None)
         self.site = Site.objects.get_current()
-        self.user = User.objects.create_user(username="noter", password="password")
+        self.user = User.objects.create_user(
+            username="noter", password="password"
+        )  # nosec
         self.video = Video.objects.create(
             title="Note Test Video",
             owner=self.user,
@@ -86,8 +88,12 @@ class VideoNoteViewSetTests(APITestCase):
         self.factory = APIRequestFactory()
         self.site = Site.objects.get_current()
 
-        self.owner = User.objects.create_user(username="owner", password="password")
-        self.other_user = User.objects.create_user(username="other", password="password")
+        self.owner = User.objects.create_user(
+            username="owner", password="password"
+        )  # nosec
+        self.other_user = User.objects.create_user(
+            username="other", password="password"
+        )  # nosec
 
         self.video = Video.objects.create(
             title="Test Video",
