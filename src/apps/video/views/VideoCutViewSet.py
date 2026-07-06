@@ -20,8 +20,7 @@ class VideoCutViewSet(CreateModelMixin, DestroyModelMixin, viewsets.GenericViewS
     """
 
     @extend_schema(
-        summary="Create or replace a video cut",
-        description="Creates or replaces a cut for the given video. time_start and time_end are in seconds.",
+        summary=_("Create or replace a video cut"),
         request=VideoCutSerializer,
         responses={
             201: VideoCutSerializer,
@@ -31,7 +30,8 @@ class VideoCutViewSet(CreateModelMixin, DestroyModelMixin, viewsets.GenericViewS
         },
     )
     def create(self, request, video_slug=None):
-        """Create or replace a cut for the given video.
+        """
+        Creates or replaces a cut for the given video. time_start and time_end are in seconds.
 
         The method validates permissions, validates the payload, removes any existing cut,
         deletes time‑dependent objects (chapters, notes) and then creates the new cut.
@@ -73,8 +73,7 @@ class VideoCutViewSet(CreateModelMixin, DestroyModelMixin, viewsets.GenericViewS
         )
 
     @extend_schema(
-        summary="Delete a video cut",
-        description="Deletes the cut associated with the given video.",
+        summary=_("Delete a video cut"),
         responses={
             204: None,
             403: "Forbidden",
@@ -82,7 +81,7 @@ class VideoCutViewSet(CreateModelMixin, DestroyModelMixin, viewsets.GenericViewS
         },
     )
     def destroy(self, request, video_slug=None):
-        """Delete the cut associated with the given video."""
+        """Deletes the cut associated with the given video."""
         # Check configuration
         if not video_settings.use_cut:
             return Response(

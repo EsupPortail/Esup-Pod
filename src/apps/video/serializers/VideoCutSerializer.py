@@ -6,6 +6,9 @@ from rest_framework import serializers
 from src.apps.video.models import VideoCut
 
 
+from django.utils.translation import gettext_lazy as _
+
+
 class VideoCutSerializer(serializers.ModelSerializer):
     """Serializer for the VideoCut model."""
 
@@ -20,6 +23,6 @@ class VideoCutSerializer(serializers.ModelSerializer):
         """Ensures time_start is strictly less than time_end."""
         if data.get("time_start", 0) >= data.get("time_end", 0):
             raise serializers.ValidationError(
-                "Start time must be strictly less than end time."
+                _("Start time must be strictly less than end time.")
             )
         return data
