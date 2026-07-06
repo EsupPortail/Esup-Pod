@@ -20,7 +20,9 @@ class VideoCompletionLinkTests(APITestCase):
         """Sets up a video with linked contribution, overlay, and document."""
         sync_metadata(sender=None)
         self.site = Site.objects.get_current()
-        self.user = User.objects.create_user(username="owner", password="password")
+        self.user = User.objects.create_user(
+            username="owner", password="password"
+        )  # nosec
         self.video = Video.objects.create(
             title="Completion Test Video",
             owner=self.user,
