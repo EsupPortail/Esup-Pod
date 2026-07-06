@@ -117,7 +117,9 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Creates a new video, checking user quota and triggering encoding."""
-        user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file="")
+        user_videos = Video.objects.filter(owner=self.request.user).exclude(
+            video_file=""
+        )
         total_bytes = sum(v.video_file.size for v in user_videos if v.video_file)
         incoming_file = self.request.FILES.get("video_file")
         incoming_size = incoming_file.size if incoming_file else 0
@@ -136,7 +138,9 @@ class VideoViewSet(viewsets.ModelViewSet):
             from src.apps.video.models import License
 
             try:
-                target_license = License.objects.get(slug=video_settings.default_license)
+                target_license = License.objects.get(
+                    slug=video_settings.default_license
+                )
             except License.DoesNotExist:
                 target_license = None
 
@@ -473,7 +477,9 @@ class VideoViewSet(viewsets.ModelViewSet):
                 "properties": {"owner_id": {"type": "integer"}},
             }
         },
-        responses={200: {"type": "object", "properties": {"status": {"type": "string"}}}},
+        responses={
+            200: {"type": "object", "properties": {"status": {"type": "string"}}}
+        },
     )
     @action(detail=True, methods=["post"], permission_classes=[IsSuperUser])
     def transfer_ownership(self, request, slug=None):
@@ -553,12 +559,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Bulk update or delete videos",
-        description=(
-            "Applies a PATCH or DELETE operation to multiple videos at once. "
-            "Requires ownership or co-ownership of every selected video. "
-            "If more than BULK_ASYNC_THRESHOLD videos are selected (configurable, default 20), "
-            "the operation is processed asynchronously and returns 202 Accepted."
-        ),
         request={
             "application/json": {
                 "type": "object",
@@ -593,9 +593,11 @@ class VideoViewSet(viewsets.ModelViewSet):
     )
     def bulk_actions(self, request):
         """
-        Applies a PATCH or DELETE to multiple videos.
+        Applies a PATCH or DELETE operation to multiple videos at once.
+        Requires ownership or co-ownership of every selected video.
         Checks ownership on every video before processing.
-        Delegates to Celery if more than bulk_async_threshold videos are selected.
+        If more than BULK_ASYNC_THRESHOLD videos are selected (configurable, default 20),
+        the operation is processed asynchronously and returns 202 Accepted.
         Returns 400 if the feature is disabled via USE_BULK_ACTIONS setting.
         """
         if not video_settings.use_bulk_actions:
