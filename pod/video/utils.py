@@ -716,7 +716,7 @@ def export_complement(
     """Store a video complement as json."""
     if len(export_objects) > 0:
         export_file = os.path.join(folder, "%s.json" % export_type)
-        logger.debug("  * Export %s %s." % (len(export_objects), export_type))
+        logger.debug(" * Export %s %s(s)." % (len(export_objects), export_type))
         if not dry_mode:
             with open(export_file, "w") as out:
                 content = serialize("json", export_objects)
@@ -837,4 +837,4 @@ def archive_and_get_link(slug, sub_fold="tmp"):
     # remove old temp folder
     shutil.rmtree(media_package_dir)
 
-    return media_url + sub_fold + "/" + slug + ".zip"
+    return vid, "%s%s/%s.zip" % (media_url, sub_fold, slug)

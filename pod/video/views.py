@@ -4013,8 +4013,8 @@ def archive_and_download(request, slug):
     Create a zip archive package and launch a download of it in the user browser.
     """
 
-    url = archive_and_get_link(slug, "video_package")
-    return render(request, "videos/archive_download.html", {"url": url, "slug": slug})
+    vid, url = archive_and_get_link(slug, "video_package")
+    return render(request, "videos/archive_download.html", {"url": url, "video": vid})
 
 
 def able_or_not_respite(slug, request):
