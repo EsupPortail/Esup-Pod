@@ -22,7 +22,6 @@ from pod.video_encode_transcript.models import EncodingVideo, VideoRendition
 # from django.contrib.auth.hashers import make_password
 
 
-
 TODAY = date.today()
 USE_STATS_VIEW = getattr(settings, "USE_STATS_VIEW", False)
 

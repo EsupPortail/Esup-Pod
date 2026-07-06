@@ -152,8 +152,8 @@ class Command(BaseCommand):
         use_estab = bool(USE_ESTABLISHMENT and managers)
 
         # "0" is for the WARN DEADLINE "now"
-        list_video_deleted_by_establishment = {"other": {"0":[]}}
-        list_video_archived_by_establishment = {"other": {"0":[]}}
+        list_video_deleted_by_establishment = {"other": {"0": []}}
+        list_video_archived_by_establishment = {"other": {"0": []}}
         nb_deleted = 0
         nb_archived = 0
 
@@ -166,12 +166,12 @@ class Command(BaseCommand):
                     archive_video(vid)
 
                 nb_archived += 1
-                if not(use_estab and estab in managers):
+                if not (use_estab and estab in managers):
                     estab = "other"
                 list_video_archived_by_establishment.setdefault(estab, {})
-                list_video_archived_by_establishment[estab].setdefault(
-                        str(0), []
-                    ).append(vid)
+                list_video_archived_by_establishment[estab].setdefault(str(0), []).append(
+                    vid
+                )
 
             else:
                 if not self.dry_mode:
@@ -180,12 +180,12 @@ class Command(BaseCommand):
                 else:
                     print("Video %s would have been deleted." % vid)
                 nb_deleted += 1
-                if not(use_estab and estab in managers):
+                if not (use_estab and estab in managers):
                     estab = "other"
                 list_video_deleted_by_establishment.setdefault(estab, {})
-                list_video_deleted_by_establishment[estab].setdefault(
-                        str(0), []
-                    ).append(title)
+                list_video_deleted_by_establishment[estab].setdefault(str(0), []).append(
+                    title
+                )
 
         print(_("%s video(s) deleted.") % nb_deleted)
         print(_("%s video(s) archived.") % nb_archived)
