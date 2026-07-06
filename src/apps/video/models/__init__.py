@@ -13,6 +13,7 @@ from .VideoHyperlink import VideoHyperlink
 from .Language import Language
 from .License import License
 from .Cursus import Cursus
+from .VideoAccessToken import VideoAccessToken
 
 __all__ = [
     "Video",
@@ -26,4 +27,5 @@ __all__ = [
     "Language",
     "License",
     "Cursus",
+    "VideoAccessToken",
 ]

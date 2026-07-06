@@ -12,6 +12,7 @@ from src.apps.video.views import (
     TagViewSet,
     TypeViewSet,
     VideoHyperlinkViewSet,
+    VideoAccessTokenViewSet,
 )
 from src.apps.video.conf import video_settings
 
@@ -29,10 +30,12 @@ if video_settings.use_hyperlinks:
         r"video-hyperlinks", VideoHyperlinkViewSet, basename="video-hyperlink"
     )
 
+if video_settings.use_video_access_token:
+    router.register(r"tokens", VideoAccessTokenViewSet, basename="video-token")
+
 urlpatterns = router.urls
 
 if video_settings.use_hyperlinks:
-
     urlpatterns += [
         path(
             "hyperlink/<slug:video_slug>/hyperlinks/",
