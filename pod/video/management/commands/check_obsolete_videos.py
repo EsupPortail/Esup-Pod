@@ -112,31 +112,33 @@ class Command(BaseCommand):
 
     def get_video_treatment_and_notify_user(self) -> dict:
         """Check video with close deadlines to send email to each owner."""
-        list_video_notified_by_establishment = {}
-        list_video_notified_by_establishment.setdefault("other", {})
+        list_video_notified_by_establishment = {"other": {}}
+
+        site = get_current_site(settings.SITE_ID)
+        managers = dict(MANAGERS) if MANAGERS else {}
+        use_estab = bool(USE_ESTABLISHMENT and managers)
+
         for step_day in sorted(WARN_DEADLINES):
             step_date = date.today() + timedelta(days=step_day)
-            videos = Video.objects.filter(
-                date_delete=step_date, sites=get_current_site(settings.SITE_ID)
-            )
+            videos = Video.objects.filter(date_delete=step_date, sites=site)
+
             for video in videos:
                 if not self.dry_mode:
                     self.notify_user(video, step_day)
-                if (
-                    USE_ESTABLISHMENT
-                    and MANAGERS
-                    and video.owner.owner.establishment.lower() in dict(MANAGERS)
-                ):
-                    list_video_notified_by_establishment.setdefault(
-                        video.owner.owner.establishment.lower(), {}
-                    )
-                    list_video_notified_by_establishment[
-                        video.owner.owner.establishment.lower()
-                    ].setdefault(str(step_day), []).append(video)
-                else:
-                    list_video_notified_by_establishment["other"].setdefault(
-                        str(step_day), []
-                    ).append(video)
+
+                estab_key = "other"
+                if use_estab:
+                    try:
+                        estab = video.owner.owner.establishment.lower()
+                    except Exception:
+                        estab = ""
+                    if estab in managers:
+                        estab_key = estab
+
+                list_video_notified_by_establishment.setdefault(estab_key, {})
+                list_video_notified_by_establishment[estab_key].setdefault(
+                    str(step_day), []
+                ).append(video)
 
         return list_video_notified_by_establishment
 
@@ -146,12 +148,13 @@ class Command(BaseCommand):
             sites=get_current_site(None), date_delete__lt=date.today()
         ).exclude(owner__username=ARCHIVE_OWNER_USERNAME)
 
-        list_video_deleted_by_establishment = {}
-        list_video_deleted_by_establishment.setdefault("other", {})
-        nb_deleted = 0
+        managers = dict(MANAGERS) if MANAGERS else {}
+        use_estab = bool(USE_ESTABLISHMENT and managers)
 
-        list_video_archived_by_establishment = {}
-        list_video_archived_by_establishment.setdefault("other", {})
+        # "0" is for the WARN DEADLINE "now"
+        list_video_deleted_by_establishment = {"other": {"0":[]}}
+        list_video_archived_by_establishment = {"other": {"0":[]}}
+        nb_deleted = 0
         nb_archived = 0
 
         for vid in vids:
@@ -163,13 +166,10 @@ class Command(BaseCommand):
                     archive_video(vid)
 
                 nb_archived += 1
-                if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
-                    list_video_archived_by_establishment.setdefault(estab, {})
-                    list_video_archived_by_establishment[estab].setdefault(
-                        str(0), []
-                    ).append(vid)
-                else:
-                    list_video_archived_by_establishment["other"].setdefault(
+                if not(use_estab and estab in managers):
+                    estab = "other"
+                list_video_archived_by_establishment.setdefault(estab, {})
+                list_video_archived_by_establishment[estab].setdefault(
                         str(0), []
                     ).append(vid)
 
@@ -180,13 +180,10 @@ class Command(BaseCommand):
                 else:
                     print("Video %s would have been deleted." % vid)
                 nb_deleted += 1
-                if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
-                    list_video_deleted_by_establishment.setdefault(estab, {})
-                    list_video_deleted_by_establishment[estab].setdefault(
-                        str(0), []
-                    ).append(title)
-                else:
-                    list_video_deleted_by_establishment["other"].setdefault(
+                if not(use_estab and estab in managers):
+                    estab = "other"
+                list_video_deleted_by_establishment.setdefault(estab, {})
+                list_video_deleted_by_establishment[estab].setdefault(
                         str(0), []
                     ).append(title)
 
@@ -361,6 +358,7 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
+                    # list_video[estab] has entries for each WARN_DEADLINE
                     total = sum(len(videos) for videos in list_video[estab].values())
                     print(
                         _(
@@ -422,9 +420,11 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
+                    # list_video[estab] has entries for each WARN_DEADLINE
+                    total = sum(len(videos) for videos in list_video[estab].values())
                     print(
                         _("Manager of “%(et)s” notified for %(nb)s deleted video(s).")
-                        % {"et": estab, "nb": len(list_video[estab])}
+                        % {"et": estab, "nb": total}
                     )
 
     def notify_manager_of_archived_video(self, list_video: dict) -> None:
@@ -480,9 +480,11 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
+                    # list_video[estab] has entries for each WARN_DEADLINE
+                    total = sum(len(videos) for videos in list_video[estab].values())
                     print(
                         _("Manager of “%(estab)s” notified for %(nb)s archived video(s).")
-                        % {"estab": estab, "nb": len(list_video[estab])}
+                        % {"estab": estab, "nb": total}
                     )
 
     def get_list_video_html(self, list_video: dict, deleted: bool) -> str:
