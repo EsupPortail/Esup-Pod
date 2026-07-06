@@ -35,7 +35,7 @@
           <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "View the video" %}
         </a>
         {% if form.instance.encoded and form.instance.encoding_in_progress is False %}
-        <a href="{% url 'video:video_delete' slug=form.instance.slug %}" class="btn btn btn-danger btn-sm m-2">
+        <a href="{% url 'video:video_delete' slug=form.instance.slug %}" class="btn btn-danger btn-sm m-2">
           <i class="bi bi-trash" aria-hidden="true"></i>&nbsp;{% trans "Delete the video" %}
         </a>
         {% endif %}

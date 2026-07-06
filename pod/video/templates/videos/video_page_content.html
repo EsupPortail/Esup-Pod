@@ -30,7 +30,7 @@
         {% endif %}
         {{channel.title}}
       </a>
-      {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans 'Edit the channel' %}</a></span>{% endif %}
+      {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans 'Edit the channel' %}</a></span>{% endif %}
     </h2>
     {% if channel.description %}
       {% if channel.description|length > 140 %}
