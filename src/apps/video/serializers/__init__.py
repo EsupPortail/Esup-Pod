@@ -13,6 +13,8 @@ from .VideoAccessTokenSerializer import VideoAccessTokenSerializer  # noqa: F401
 from .DublinCoreSerializer import DublinCoreSerializer  # noqa: F401
 from .UserMarkerTimeSerializer import UserMarkerTimeSerializer  # noqa: F401
 from .VideoCutSerializer import VideoCutSerializer  # noqa: F401
+from .ViewCountSerializer import ViewCountSerializer  # noqa: F401
+from .VideoStatsSerializer import VideoStatsSerializer  # noqa: F401
 
 __all__ = [
     "VideoSerializer",
@@ -26,4 +28,6 @@ __all__ = [
     "DublinCoreSerializer",
     "UserMarkerTimeSerializer",
     "VideoCutSerializer",
+    "ViewCountSerializer",
+    "VideoStatsSerializer",
 ]

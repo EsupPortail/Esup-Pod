@@ -7,7 +7,13 @@ import hashlib
 import logging
 
 
-from django.db.models import Q, F
+from datetime import date, timedelta
+from rest_framework.response import Response
+from rest_framework import viewsets, permissions, parsers, filters, status
+from django.db.models import Q, F, Sum
+from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.translation import gettext_lazy as _
 from django.http import FileResponse, Http404
 from django.utils.translation import gettext_lazy as _
 from django.contrib.sites.shortcuts import get_current_site
@@ -27,7 +33,7 @@ from drf_spectacular.utils import (
     OpenApiResponse,
 )
 
-from src.apps.video.models import Video
+from src.apps.video.models import Video, ViewCount
 from src.apps.video.serializers import VideoSerializer, DublinCoreSerializer
 from src.apps.video.permissions import IsOwnerOrCoOwnerOrChannelCollaborator
 from src.apps.video.tasks import task_bulk_update_videos, task_bulk_delete_videos
@@ -331,7 +337,6 @@ class VideoViewSet(viewsets.ModelViewSet):
         video.view_count = F("view_count") + 1
         video.save(update_fields=["view_count"])
         video.refresh_from_db()
-        from datetime import date
 
         view_count_obj, created = video.view_counts.get_or_create(date=date.today())
         view_count_obj.count = F("count") + 1
@@ -527,6 +532,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         return Response({"status": "ownership transferred"})
 
     @extend_schema(
+
         summary="Dublin Core metadata for a video",
         responses={
             200: DublinCoreSerializer,
@@ -733,3 +739,88 @@ class VideoViewSet(viewsets.ModelViewSet):
         duplicated = duplicate_video(original, request.user)
         serializer = self.get_serializer(duplicated)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    @extend_schema(
+        summary="Video view statistics",
+        description="Returns aggregated view statistics for a video (total, 7-day, 30-day, peak, daily breakdown).",
+        parameters=[
+            OpenApiParameter(
+                name="days",
+                type=int,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Number of days for the daily breakdown (default: 30, max: 365).",
+            )
+        ],
+        responses={
+            200: OpenApiResponse(description="Aggregated statistics."),
+            400: OpenApiResponse(description="Statistics feature is disabled."),
+            403: OpenApiResponse(description="Authentication or ownership required."),
+        },
+    )
+    @action(detail=True, methods=["get"], permission_classes=[permissions.AllowAny])
+    def stats(self, request, slug=None):
+        """
+        GET /api/videos/{slug}/stats/
+        Returns aggregated view statistics for a video.
+        Authentication requirement depends on VIEW_STATS_AUTH setting.
+        """
+        if not video_settings.use_stats_view:
+            return Response(
+                {"detail": _("Statistics feature is disabled.")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if video_settings.view_stats_auth and not request.user.is_authenticated:
+            return Response(
+                {"detail": _("Authentication required to view statistics.")},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        video = self.get_object()
+
+        is_owner = video.owner == request.user
+        is_co_owner = (
+            request.user.is_authenticated
+            and video.co_owners.filter(pk=request.user.pk).exists()
+        )
+        if not (
+            is_owner or is_co_owner or request.user.is_staff or request.user.is_superuser
+        ):
+            return Response(
+                {"detail": _("You do not have permission to view these statistics.")},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        days = min(int(request.query_params.get("days", 30)), 365)
+        since = date.today() - timedelta(days=days)
+        qs = ViewCount.objects.filter(video=video)
+
+        daily_qs = qs.filter(date__gte=since).order_by("-date")
+        views_7d = (
+            qs.filter(date__gte=date.today() - timedelta(days=7)).aggregate(
+                total=Sum("count")
+            )["total"]
+            or 0
+        )
+        views_30d = (
+            qs.filter(date__gte=date.today() - timedelta(days=30)).aggregate(
+                total=Sum("count")
+            )["total"]
+            or 0
+        )
+        peak = qs.order_by("-count").first()
+
+        return Response(
+            {
+                "video_slug": video.slug,
+                "total_views": video.view_count,
+                "views_last_7_days": views_7d,
+                "views_last_30_days": views_30d,
+                "peak_day": peak.date if peak else None,
+                "peak_count": peak.count if peak else None,
+                "daily_breakdown": [
+                    {"date": str(vc.date), "count": vc.count} for vc in daily_qs
+                ],
+            }
+        )
+
