@@ -22,8 +22,12 @@ class UserMarkerTimeTests(APITestCase):
         """Sets up a video and a user for marker time testing."""
         sync_metadata(sender=None)
         self.site = Site.objects.get_current()
-        self.user = User.objects.create_user(username="viewer", password="password")
-        self.other_user = User.objects.create_user(username="other", password="password")
+        self.user = User.objects.create_user(
+            username="viewer", password="password"
+        )  # nosec
+        self.other_user = User.objects.create_user(
+            username="other", password="password"
+        )  # nosec
         self.video = Video.objects.create(
             title="Marker Test Video",
             owner=self.user,

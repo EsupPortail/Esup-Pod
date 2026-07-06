@@ -41,14 +41,13 @@ class UserMarkerTimeViewSet(viewsets.GenericViewSet):
 
     @extend_schema(
         summary="Get playback marker",
-        description="Returns the current playback position for the authenticated user. Returns 0 if no marker exists yet.",
         responses={200: UserMarkerTimeSerializer},
     )
     @action(detail=False, methods=["get"], url_path=r"(?P<video_slug>[\w-]+)")
     def get_marker(self, request, video_slug=None):
         """
         GET /api/marker/{video_slug}/
-        Returns the current playback position for the authenticated user.
+        Returns the current playback position for the authenticated user. Returns 0 if no marker exists yet.
         """
         disabled = self._check_feature_enabled()
         if disabled:
@@ -64,7 +63,6 @@ class UserMarkerTimeViewSet(viewsets.GenericViewSet):
 
     @extend_schema(
         summary="Save playback marker",
-        description="Saves or updates the playback position for the authenticated user.",
         request={
             "application/json": {
                 "type": "object",
@@ -95,7 +93,6 @@ class UserMarkerTimeViewSet(viewsets.GenericViewSet):
 
     @extend_schema(
         summary="Reset playback marker",
-        description="Resets (deletes) the marker for the authenticated user on this video.",
         responses={204: None},
     )
     @action(detail=False, methods=["delete"], url_path=r"(?P<video_slug>[\w-]+)/reset")
