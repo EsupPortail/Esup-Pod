@@ -2,6 +2,8 @@
 Esup-Pod - ExternalRecording serializer.
 """
 
+import re
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from src.apps.import_video.models import ExternalRecording
 
@@ -51,7 +53,7 @@ class ExternalRecordingSerializer(serializers.ModelSerializer):
     def validate_source_url(self, value):
         """Ensures the source URL is not empty."""
         if not value:
-            raise serializers.ValidationError("Source URL is required.")
+            raise serializers.ValidationError(_("Source URL is required."))
         return value
 
     def validate(self, data):
@@ -60,15 +62,17 @@ class ExternalRecordingSerializer(serializers.ModelSerializer):
         source_url = data.get("source_url", "")
 
         if source_type == ExternalRecording.SourceType.YOUTUBE:
-            is_youtube = "youtube.com/watch?v=" in source_url or "youtu.be/" in source_url
+            is_youtube = re.match(
+                r"^https?://([^/]+\.)?(youtube\.[a-z]+|youtu\.be|yt\.be)/", source_url
+            )
             if not is_youtube:
                 raise serializers.ValidationError(
-                    {"source_url": "URL must be a valid YouTube URL."}
+                    {"source_url": _("URL must be a valid YouTube URL.")}
                 )
         elif source_type == ExternalRecording.SourceType.PEERTUBE:
             if "/videos/watch/" not in source_url and "/w/" not in source_url:
                 raise serializers.ValidationError(
-                    {"source_url": "URL must be a valid PeerTube video URL."}
+                    {"source_url": _("URL must be a valid PeerTube video URL.")}
                 )
         elif source_type == ExternalRecording.SourceType.BBB:
             if (
@@ -76,7 +80,7 @@ class ExternalRecordingSerializer(serializers.ModelSerializer):
                 and "recordID=" not in source_url
             ):
                 raise serializers.ValidationError(
-                    {"source_url": "URL must be a valid BigBlueButton recording URL."}
+                    {"source_url": _("URL must be a valid BigBlueButton recording URL.")}
                 )
 
         return data

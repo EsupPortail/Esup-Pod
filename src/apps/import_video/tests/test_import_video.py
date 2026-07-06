@@ -22,7 +22,7 @@ class ExternalRecordingModelTests(APITestCase):
         self.site = Site.objects.get_current()
         self.user = User.objects.create_user(
             username="staff_user",
-            password="password",
+            password="password",  # nosec
             is_staff=True,
         )
         self.recording = ExternalRecording.objects.create(
@@ -132,12 +132,12 @@ class ExternalRecordingViewSetTests(APITestCase):
         self.site = Site.objects.get_current()
         self.staff_user = User.objects.create_user(
             username="staff",
-            password="password",
+            password="password",  # nosec
             is_staff=True,
         )
         self.other_user = User.objects.create_user(
             username="other",
-            password="password",
+            password="password",  # nosec
             is_staff=False,
         )
         self.recording = ExternalRecording.objects.create(

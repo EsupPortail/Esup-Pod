@@ -5,6 +5,7 @@ Esup-Pod - Mediacad import service.
 import logging
 import re
 import requests
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,9 @@ def _extract_mediacad_id(source_url: str) -> str:
     """
     match = re.search(r"/media/([a-zA-Z0-9_-]+)", source_url)
     if not match:
-        raise ValueError(f"Cannot extract Mediacad video ID from URL: {source_url}")
+        raise ValueError(
+            _("Cannot extract Mediacad video ID from URL: %(url)s") % {"url": source_url}
+        )
     return match.group(1)
 
 
@@ -24,7 +27,7 @@ def _get_mediacad_base_url(source_url: str) -> str:
     """Extracts the base URL from a Mediacad URL."""
     match = re.match(r"(https?://[^/]+)", source_url)
     if not match:
-        raise ValueError(f"Cannot extract base URL from: {source_url}")
+        raise ValueError(_("Cannot extract base URL from: %(url)s") % {"url": source_url})
     return match.group(1)
 
 
@@ -45,7 +48,7 @@ def get_mediacad_metadata(source_url: str) -> dict:
 
         download_url = data.get("download_url") or data.get("url")
         if not download_url:
-            raise ValueError("Cannot find download URL in Mediacad API response.")
+            raise ValueError(_("Cannot find download URL in Mediacad API response."))
 
         return {
             "title": data.get("title", ""),
@@ -54,11 +57,16 @@ def get_mediacad_metadata(source_url: str) -> dict:
         }
 
     except requests.exceptions.HTTPError as e:
-        raise ValueError(f"HTTP error while fetching Mediacad metadata: {e}")
+        raise ValueError(
+            _("HTTP error while fetching Mediacad metadata: %(error)s") % {"error": e}
+        )
     except requests.exceptions.ConnectionError as e:
-        raise ValueError(f"Connection error while fetching Mediacad metadata: {e}")
+        raise ValueError(
+            _("Connection error while fetching Mediacad metadata: %(error)s")
+            % {"error": e}
+        )
     except requests.exceptions.Timeout:
-        raise ValueError("Mediacad API request timed out.")
+        raise ValueError(_("Mediacad API request timed out."))
 
 
 def download_mediacad_video(source_url: str, dest_path: str) -> str:

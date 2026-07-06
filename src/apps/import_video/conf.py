@@ -5,7 +5,11 @@ Esup-Pod - Import Video configuration.
 from typing import Tuple, Type
 from django.utils.translation import gettext as _
 from pydantic import Field
-from pydantic_settings import BaseSettings, PydanticBaseSettingsSource, SettingsConfigDict
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+)
 from src.apps.utils.conf import DjangoSettingsSource
 from src.config.defaults import import_video as defaults
 
@@ -21,6 +25,11 @@ class ImportVideoConfig(BaseSettings):
     restrict_to_staff: bool = Field(
         default=defaults.RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY,
         description=_("Restrict video import to staff users only."),
+        json_schema_extra={"public": True},
+    )
+    max_video_size_gb: int = Field(
+        default=getattr(defaults, "MAX_VIDEO_SIZE_GB", 4),
+        description=_("Maximum allowed size (in GB) for imported videos."),
         json_schema_extra={"public": True},
     )
 

@@ -4,6 +4,7 @@ Esup-Pod - YouTube import service.
 
 import logging
 import os
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ def get_youtube_metadata(source_url: str) -> dict:
     try:
         import yt_dlp
     except ImportError:
-        raise ValueError("yt-dlp is not installed. Cannot import YouTube videos.")
+        raise ValueError(_("yt-dlp is not installed. Cannot import YouTube videos."))
 
     ydl_opts = {"quiet": True, "skip_download": True}
     try:
@@ -29,7 +30,7 @@ def get_youtube_metadata(source_url: str) -> dict:
                 "filesize": info.get("filesize") or info.get("filesize_approx", 0),
             }
     except Exception as e:
-        raise ValueError(f"Failed to fetch YouTube metadata: {e}")
+        raise ValueError(_("Failed to fetch YouTube metadata: %(error)s") % {"error": e})
 
 
 def download_youtube_video(source_url: str, dest_dir: str) -> str:
@@ -41,7 +42,7 @@ def download_youtube_video(source_url: str, dest_dir: str) -> str:
     try:
         import yt_dlp
     except ImportError:
-        raise ValueError("yt-dlp is not installed. Cannot import YouTube videos.")
+        raise ValueError(_("yt-dlp is not installed. Cannot import YouTube videos."))
 
     from src.apps.import_video.services.downloader import check_video_size
 
@@ -61,4 +62,4 @@ def download_youtube_video(source_url: str, dest_dir: str) -> str:
             logger.info("YouTube video downloaded to %s", filename)
             return filename
     except Exception as e:
-        raise ValueError(f"Failed to download YouTube video: {e}")
+        raise ValueError(_("Failed to download YouTube video: %(error)s") % {"error": e})

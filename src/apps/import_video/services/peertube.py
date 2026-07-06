@@ -5,6 +5,7 @@ Esup-Pod - PeerTube import service.
 import logging
 import re
 import requests
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)
 
@@ -23,14 +24,16 @@ def _extract_peertube_uuid(source_url: str) -> str:
         match = re.search(pattern, source_url)
         if match:
             return match.group(1)
-    raise ValueError(f"Cannot extract PeerTube video UUID from URL: {source_url}")
+    raise ValueError(
+        _("Cannot extract PeerTube video UUID from URL: %(url)s") % {"url": source_url}
+    )
 
 
 def _get_peertube_base_url(source_url: str) -> str:
     """Extracts the base URL (scheme + host) from a PeerTube URL."""
     match = re.match(r"(https?://[^/]+)", source_url)
     if not match:
-        raise ValueError(f"Cannot extract base URL from: {source_url}")
+        raise ValueError(_("Cannot extract base URL from: %(url)s") % {"url": source_url})
     return match.group(1)
 
 
@@ -56,11 +59,11 @@ def get_peertube_metadata(source_url: str) -> dict:
                 files = streaming_playlists[0].get("files", [])
 
         if not files:
-            raise ValueError("No downloadable files found for this PeerTube video.")
+            raise ValueError(_("No downloadable files found for this PeerTube video."))
 
         download_url = files[0].get("fileDownloadUrl") or files[0].get("fileUrl")
         if not download_url:
-            raise ValueError("Cannot find download URL in PeerTube API response.")
+            raise ValueError(_("Cannot find download URL in PeerTube API response."))
 
         return {
             "title": data.get("name", ""),
@@ -71,11 +74,16 @@ def get_peertube_metadata(source_url: str) -> dict:
         }
 
     except requests.exceptions.HTTPError as e:
-        raise ValueError(f"HTTP error while fetching PeerTube metadata: {e}")
+        raise ValueError(
+            _("HTTP error while fetching PeerTube metadata: %(error)s") % {"error": e}
+        )
     except requests.exceptions.ConnectionError as e:
-        raise ValueError(f"Connection error while fetching PeerTube metadata: {e}")
+        raise ValueError(
+            _("Connection error while fetching PeerTube metadata: %(error)s")
+            % {"error": e}
+        )
     except requests.exceptions.Timeout:
-        raise ValueError("PeerTube API request timed out.")
+        raise ValueError(_("PeerTube API request timed out."))
 
 
 def download_peertube_video(source_url: str, dest_path: str) -> str:

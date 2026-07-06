@@ -6,6 +6,7 @@ import logging
 import re
 import requests
 from bs4 import BeautifulSoup
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,9 @@ def _extract_bbb_record_id(source_url: str) -> str:
     """
     match = re.search(r"recordID=([a-zA-Z0-9_-]+)", source_url)
     if not match:
-        raise ValueError(f"Cannot extract BBB recording ID from URL: {source_url}")
+        raise ValueError(
+            _("Cannot extract BBB recording ID from URL: %(url)s") % {"url": source_url}
+        )
     return match.group(1)
 
 
@@ -38,11 +41,11 @@ def get_bbb_standard_metadata(source_url: str) -> dict:
 
         video_tag = soup.find("video")
         if not video_tag:
-            raise ValueError("No video element found in BBB playback page.")
+            raise ValueError(_("No video element found in BBB playback page."))
 
         source_tag = video_tag.find("source")
         if not source_tag or not source_tag.get("src"):
-            raise ValueError("No video source found in BBB playback page.")
+            raise ValueError(_("No video source found in BBB playback page."))
 
         download_url = source_tag["src"]
         if not download_url.startswith("http"):
@@ -57,11 +60,16 @@ def get_bbb_standard_metadata(source_url: str) -> dict:
         }
 
     except requests.exceptions.HTTPError as e:
-        raise ValueError(f"HTTP error while fetching BBB recording page: {e}")
+        raise ValueError(
+            _("HTTP error while fetching BBB recording page: %(error)s") % {"error": e}
+        )
     except requests.exceptions.ConnectionError as e:
-        raise ValueError(f"Connection error while fetching BBB recording page: {e}")
+        raise ValueError(
+            _("Connection error while fetching BBB recording page: %(error)s")
+            % {"error": e}
+        )
     except requests.exceptions.Timeout:
-        raise ValueError("BBB recording page request timed out.")
+        raise ValueError(_("BBB recording page request timed out."))
 
 
 def get_bbb_esr_metadata(source_url: str, meeting_api_url: str = None) -> dict:
@@ -71,8 +79,10 @@ def get_bbb_esr_metadata(source_url: str, meeting_api_url: str = None) -> dict:
     Raises NotImplementedError until Meeting module is migrated to V5.
     """
     raise NotImplementedError(
-        "BBB ESR import requires the Meeting module which is not yet migrated to V5. "
-        "This feature will be available once the Meeting module is integrated."
+        _(
+            "BBB ESR import requires the Meeting module which is not yet migrated to V5. "
+            "This feature will be available once the Meeting module is integrated."
+        )
     )
 
 

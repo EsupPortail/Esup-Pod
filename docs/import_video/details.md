@@ -29,7 +29,7 @@ Stores the declaration of an external video source and tracks its import lifecyc
 
 ```python
 class SourceType(models.TextChoices):
-    YOUTUBE    = "youtube"        # YouTube via pytubefix
+    YOUTUBE    = "youtube"        # YouTube via yt-dlp
     PEERTUBE   = "peertube"       # PeerTube REST API
     BBB        = "bigbluebutton"  # BigBlueButton (standard only)
     VIDEO_FILE = "video"          # Direct MP4/video URL
@@ -61,10 +61,10 @@ Generic HTTP downloader used by all services.
 
 ### `youtube.py`
 
-- `get_youtube_metadata(source_url)` — fetches title, publish date, stream object, and file size via `pytubefix`.
+- `get_youtube_metadata(source_url)` — fetches title, publish date, stream object, and file size via `yt-dlp`.
 - `download_youtube_video(source_url, dest_dir)` — checks size and downloads the highest resolution stream.
 
-> **⚠️ Risk**: `pytubefix` is a community fork. YouTube API changes may break this service without notice.
+> **⚠️ Risk**: YouTube API changes may break this service if `yt-dlp` is not kept up to date.
 
 ### `peertube.py`
 

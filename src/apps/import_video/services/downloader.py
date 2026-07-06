@@ -6,19 +6,26 @@ import os
 import logging
 import requests
 
-logger = logging.getLogger(__name__)
+from django.utils.translation import gettext_lazy as _
+from src.apps.import_video.conf import import_video_settings
 
-MAX_VIDEO_SIZE_BYTES = 4 * 1024 * 1024 * 1024  # 4 GB default
+logger = logging.getLogger(__name__)
 
 
 def check_video_size(size_bytes: int) -> None:
     """
     Raises ValueError if the file size exceeds the allowed maximum.
     """
-    if size_bytes > MAX_VIDEO_SIZE_BYTES:
+    max_bytes = import_video_settings.max_video_size_gb * 1024 * 1024 * 1024
+    if max_bytes > 0 and size_bytes > max_bytes:
         raise ValueError(
-            f"File size ({size_bytes / (1024**3):.2f} GB) exceeds the maximum allowed size "
-            f"({MAX_VIDEO_SIZE_BYTES / (1024**3):.2f} GB)."
+            _(
+                "File size (%(size).2f GB) exceeds the maximum allowed size (%(max).2f GB)."
+            )
+            % {
+                "size": size_bytes / (1024**3),
+                "max": import_video_settings.max_video_size_gb,
+            }
         )
 
 
@@ -43,10 +50,14 @@ def download_file(url: str, dest_path: str) -> str:
         return dest_path
 
     except requests.exceptions.HTTPError as e:
-        raise ValueError(f"HTTP error while downloading file: {e}")
+        raise ValueError(_("HTTP error while downloading file: %(error)s") % {"error": e})
     except requests.exceptions.ConnectionError as e:
-        raise ValueError(f"Connection error while downloading file: {e}")
+        raise ValueError(
+            _("Connection error while downloading file: %(error)s") % {"error": e}
+        )
     except requests.exceptions.Timeout:
-        raise ValueError("Download timed out.")
+        raise ValueError(_("Download timed out."))
     except OSError as e:
-        raise ValueError(f"File system error while saving download: {e}")
+        raise ValueError(
+            _("File system error while saving download: %(error)s") % {"error": e}
+        )

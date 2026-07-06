@@ -19,7 +19,7 @@ The **Import Video** application enables staff users to declare external video s
 
 | Type              | Engine                        | Status         |
 | :---------------- | :---------------------------- | :------------- |
-| **YouTube**       | `pytubefix`                   | ✅ Implemented  |
+| **YouTube**       | `yt-dlp`                      | ✅ Implemented  |
 | **PeerTube**      | PeerTube REST API             | ✅ Implemented  |
 | **BigBlueButton** | HTML parsing (standard only)  | ✅ Implemented  |
 | **BBB ESR**       | Meeting module (not migrated) | ⏳ Pending      |

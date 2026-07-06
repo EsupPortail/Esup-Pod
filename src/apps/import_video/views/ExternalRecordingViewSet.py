@@ -86,12 +86,7 @@ class ExternalRecordingViewSet(viewsets.ModelViewSet):
         instance.delete()
 
     @extend_schema(
-        summary="Import recording to Pod",
-        description=(
-            "Triggers an asynchronous import of the external recording into Pod. "
-            "Returns 202 Accepted immediately. "
-            "Track progress via the import_status field."
-        ),
+        summary=_("Import recording to Pod"),
         request=None,
         responses={
             202: {"type": "object", "properties": {"status": {"type": "string"}}},
@@ -101,8 +96,9 @@ class ExternalRecordingViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"], url_path="import")
     def import_to_pod(self, request, id=None):
         """
-        Triggers an asynchronous Celery task to import the recording into Pod.
-        Returns 202 immediately — track progress via import_status.
+        Triggers an asynchronous import of the external recording into Pod.
+        Returns 202 Accepted immediately.
+        Track progress via the import_status field.
         """
         recording = self.get_object()
 
@@ -135,8 +131,7 @@ class ExternalRecordingViewSet(viewsets.ModelViewSet):
         )
 
     @extend_schema(
-        summary="Reset import status",
-        description="Resets the import status to PENDING, allowing a new import attempt.",
+        summary=_("Reset import status"),
         request=None,
         responses={
             200: {"type": "object", "properties": {"status": {"type": "string"}}},
@@ -145,8 +140,7 @@ class ExternalRecordingViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"], url_path="reset")
     def reset_import(self, request, id=None):
         """
-        Resets the import status to PENDING and clears the error message.
-        Allows retrying a failed import.
+        Resets the import status to PENDING, allowing a new import attempt.
         """
         recording = self.get_object()
 

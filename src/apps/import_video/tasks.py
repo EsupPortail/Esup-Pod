@@ -8,6 +8,7 @@ import os
 from celery import shared_task
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from src.apps.import_video.models import ExternalRecording
 
@@ -165,5 +166,5 @@ def task_import_external_recording(recording_id: int, user_id: int) -> None:
     except Exception as e:
         logger.exception("Unexpected error importing recording %s", recording_id)
         recording.import_status = ExternalRecording.ImportStatus.ERROR
-        recording.error_message = f"Unexpected error: {e}"
+        recording.error_message = _("Unexpected error: %(error)s") % {"error": e}
         recording.save(update_fields=["import_status", "error_message"])
