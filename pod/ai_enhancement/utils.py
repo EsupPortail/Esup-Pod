@@ -1,21 +1,21 @@
 """Util functions and classes for ai_enhancement module."""
 
 import json
+import logging
+
 import bleach
 import requests
-import logging
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
-from django.core.mail import mail_managers
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives, mail_managers, send_mail
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from requests import Response
+from webpush.models import PushInformation
+
 from pod.ai_enhancement.models import AIEnhancement
 from pod.main.utils import extract_json_from_str
 from pod.progressive_web_app.utils import notify_user as pwa_notify_user
 from pod.video.models import Discipline, Video
-from requests import Response
-from webpush.models import PushInformation
 
 DEBUG = getattr(settings, "DEBUG", True)
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
@@ -75,7 +75,7 @@ class AristoteAI:
             self.connect_to_api()
         return self.token
 
-    def connect_to_api(self) -> Response or None:
+    def connect_to_api(self) -> Response | None:
         """Connect to the API."""
         path = "/token"
         data = {
@@ -103,7 +103,7 @@ class AristoteAI:
             logger.error(f"Request Exception: {e}")
             return None
 
-    def get_response(self, path: str) -> dict or None:
+    def get_response(self, path: str) -> dict | None:
         """
         Get the AI response.
 
@@ -128,12 +128,12 @@ class AristoteAI:
             logger.error(f"Request Exception: {e}")
             return None
 
-    def get_ai_enhancements(self) -> dict or None:
+    def get_ai_enhancements(self) -> dict | None:
         """Get the AI enhancements."""
         path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments"
         return self.get_response(path)
 
-    def get_specific_ai_enhancement(self, enhancement_id: str) -> dict or None:
+    def get_specific_ai_enhancement(self, enhancement_id: str) -> dict | None:
         """
         Get a specific AI enhancement.
 
@@ -149,7 +149,7 @@ class AristoteAI:
         media_types: list,
         end_user_identifier: str,
         notification_webhook_url: str,
-    ) -> dict or None:
+    ) -> dict | None:
         """Create an enhancement from a file."""
         if Discipline.objects.count() > 0:
             path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/url"
@@ -191,7 +191,7 @@ class AristoteAI:
         else:
             raise ValueError("No discipline in the database.")
 
-    def get_latest_enhancement_version(self, enhancement_id: str) -> dict or None:
+    def get_latest_enhancement_version(self, enhancement_id: str) -> dict | None:
         """Get the latest enhancement version."""
         path = (
             f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions/latest"
@@ -200,19 +200,19 @@ class AristoteAI:
 
     def get_enhancement_versions(
         self, enhancement_id: str, with_transcript: bool = True
-    ) -> dict or None:
+    ) -> dict | None:
         """Get the enhancement versions."""
         path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions?withTranscript={with_transcript}"
         return self.get_response(path)
 
     def get_specific_enhancement_version(
         self, enhancement_id: str, version_id: str
-    ) -> dict or None:
+    ) -> dict | None:
         """Get a specific version."""
         path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions/{version_id}"
         return self.get_response(path)
 
-    def delete_request(self, path: str) -> dict or None:
+    def delete_request(self, path: str) -> dict | None:
         """
         Send delete request.
 
@@ -237,7 +237,7 @@ class AristoteAI:
             logger.error(f"Request Exception: {e}")
             return None
 
-    def delete_enhancement(self, enhancement_id: str) -> dict or None:
+    def delete_enhancement(self, enhancement_id: str) -> dict | None:
         """Delete the specific enhancement."""
         path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}"
         return self.delete_request(path)
