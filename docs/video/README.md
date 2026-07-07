@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD013 -->
 # Video: Overview
 
 The **Video** application is the core module of Pod V5. It manages the full lifecycle of video content — from upload and metadata management to access control and streaming.
@@ -11,6 +12,7 @@ The **Video** application is the core module of Pod V5. It manages the full life
 | **Co-ownership**       | Multiple users can share edit rights on the same video.                            |
 | **Subtitles**          | Attach subtitle files (VTT/SRT) per language (FR, EN, ES).                         |
 | **Streaming**          | Direct file streaming via a dedicated API endpoint.                                |
+| **Video Cut**          | Trim a video virtually using a start and end time (clears chapters/notes).         |
 | **Marker Time**        | Automatically saves and retrieves the user's video playback position.              |
 | **Hyperlinks**         | Add interactive links (timecodes, external resources) to videos.                   |
 | **Completion Data**    | Contributions, overlays, and documents are embedded in the video response.         |
@@ -43,17 +45,18 @@ A video passes through the following states:
 
 ## Data Models
 
-| Model         | Role                                                                         |
-| :------------ | :--------------------------------------------------------------------------- |
-| **Video**     | Central model containing all metadata, access settings, and site isolation.  |
-| **Type**      | General categorization type for videos.                                      |
-| **Discipline**| Academic disciplines associated with videos.                                 |
-| **Tag**       | Free-form tags for better searchability.                                     |
-| **Comment**   | User comments left on a video.                                               |
-| **Vote**      | Upvotes and downvotes for comments.                                          |
-| **Subtitle**  | A subtitle file attached to a video, for a given language.                   |
-| **VideoHyperlink** | Interactive links attached to a video at specific time intervals.       |
-| **ViewCount** | Stores the number of views per day, per video.                               |
+| Model              | Role                                                                         |
+| :----------------- | :--------------------------------------------------------------------------- |
+| **Video**          | Central model containing all metadata, access settings, and site isolation.  |
+| **Type**           | General categorization type for videos.                                      |
+| **Discipline**     | Academic disciplines associated with videos.                                 |
+| **Tag**            | Free-form tags for better searchability.                                     |
+| **Comment**        | User comments left on a video.                                               |
+| **Vote**           | Upvotes and downvotes for comments.                                          |
+| **Subtitle**       | A subtitle file attached to a video, for a given language.                   |
+| **VideoCut**       | Trimming definition (start/end in seconds) associated with a video.          |
+| **VideoHyperlink** | Interactive links attached to a video at specific time intervals.            |
+| **ViewCount**      | Stores the number of views per day, per video.                               |
 
 ## API Endpoints
 
@@ -73,6 +76,8 @@ A video passes through the following states:
 | **GET/POST** | `/api/videos/{slug}/comments/`        | Manage comments for a video.                      |
 | **POST/DEL** | `/api/comments/{id}/vote/`            | Upvote/downvote or remove vote on a comment.      |
 | **GET**      | `/api/hyperlinks/`                    | List video hyperlinks.                            |
+| **POST**     | `/api/cut/{slug}/`                    | Create or replace a video cut.                    |
+| **DELETE**   | `/api/cut/{slug}/delete/`             | Delete the cut associated with the video.         |
 | **POST**     | `/api/hyperlinks/`                    | Create a hyperlink (video owner/co-owner only).   |
 | **PATCH/DEL**| `/api/hyperlinks/{id}/`               | Modify or delete a hyperlink.                     |
 | **GET**      | `/api/subtitles/`                     | List subtitles (filterable by `?video_id=`).      |
