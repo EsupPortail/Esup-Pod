@@ -1,42 +1,37 @@
 """Esup-Pod completion views."""
 
+import json
+import re
+
 from django.conf import settings
 from django.contrib import messages
-from django.http import HttpResponse, JsonResponse
-from django.template.loader import render_to_string
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext as _
-from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.core.handlers.wsgi import WSGIRequest
-from pod.video.models import Video
-from pod.main.utils import is_ajax
-from .models import Contributor
-from .forms import ContributorForm
-from .models import Document
-from .forms import DocumentForm
-from .models import Track
-from .forms import TrackForm
-from .models import Overlay
-from .forms import OverlayForm
-from .models import CustomFileModel
-from pod.speaker.models import JobVideo
-from pod.speaker.forms import JobVideoForm
-from pod.podfile.views import get_current_session_folder, file_edit_save
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.template.loader import render_to_string
+from django.utils.translation import gettext as _
+from django.views.decorators.csrf import csrf_protect
+
+from pod.completion.permissions.video import has_video_rights
+from pod.hyperlinks.forms import HyperlinkForm, VideoHyperlinkForm
+from pod.hyperlinks.models import VideoHyperlink
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.settings import LANGUAGE_CODE
-import re
-import json
-from django.contrib.sites.shortcuts import get_current_site
-from .utils import get_video_completion_context
+from pod.main.utils import is_ajax
+from pod.podfile.views import file_edit_save, get_current_session_folder
+from pod.speaker.forms import JobVideoForm
+from pod.speaker.models import JobVideo
 from pod.speaker.utils import get_video_speakers
-from pod.hyperlinks.models import VideoHyperlink
-from pod.hyperlinks.forms import VideoHyperlinkForm, HyperlinkForm
-from pod.completion.permissions.video import has_video_rights
+from pod.video.models import Video
 from pod.video.queryset.utils import prefetch_video_completion_hyperlink
+
+from .forms import ContributorForm, DocumentForm, OverlayForm, TrackForm
+from .models import Contributor, CustomFileModel, Document, Overlay, Track
+from .utils import get_video_completion_context
 
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTIVE_MODEL_ENRICH = getattr(settings, "ACTIVE_MODEL_ENRICH", False)

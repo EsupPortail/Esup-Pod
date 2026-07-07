@@ -41,13 +41,13 @@ from .models import (
     VideoVersion,
     get_storage_path_video,
 )
+from .widgets import HelpedRadioSelect
 
 __FILEPICKER__ = False
 
-# from ..custom.settings_local import PROLONGATION_GRANTED, RALLONGE_RESPIT_DAYS
 PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
 DELETION_GRANTED = getattr(settings, "DELETION_GRANTED", False)
-RALLONGE_RESPIT_DAYS = getattr(settings, "RALLONGE_RESPIT_DAYS", 365)
+EXTEND_RESPITE_DAYS = getattr(settings, "EXTEND_RESPITE_DAYS", 365)
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
@@ -1448,44 +1448,31 @@ class NoteCommentsForm(forms.ModelForm):
 
 
 class ArchiveChoiceForm(forms.Form):
-    if PROLONGATION_GRANTED:
-        if DELETION_GRANTED:
-            CHOICES = [
-                (
-                    "Extend",
-                    _("Extend (Automatically by %(rrd)s days)")
-                    % {"rrd": RALLONGE_RESPIT_DAYS},
-                ),
-                ("Archive", _("Archive")),
-                ("Delete", _("Delete")),
-            ]
-        else:
-            CHOICES = [
-                (
-                    "Extend",
-                    _("Extend (Automatically by %(rrd)s days)")
-                    % {"rrd": RALLONGE_RESPIT_DAYS},
-                ),
-                ("Archive", _("Archive")),
-            ]
-    else:
-        if DELETION_GRANTED:
-            CHOICES = [
-                ("Archive", _("Archive")),
-                ("Delete", _("Delete")),
-            ]
-        else:
-            CHOICES = [
-                ("Archive", _("Archive")),
-            ]
+    """Video respite management form."""
 
-    action_help_texts = {
+    CHOICES = [("Archive", _("Archive"))]
+    if PROLONGATION_GRANTED:
+        CHOICES += [
+            (
+                "Extend",
+                _("Extend (Automatically by %(rrd)s days)")
+                % {"rrd": EXTEND_RESPITE_DAYS},
+            )
+        ]
+    if DELETION_GRANTED:
+        CHOICES += [("Delete", _("Delete"))]
+
+    choices_help_texts = {
         "Extend": _(
             "Select this option if you want to extend the publication of your video by %(rrd)s days."
         )
-        % {"rrd": RALLONGE_RESPIT_DAYS},
-        "Archive": _(
-            "Select this option if you want to archive your video. It will then be unpublished and will no longer be accessible to the public. However, it will remain on the video server, along with its metadata, and its publication can be reactivated if necessary."
+        % {"rrd": EXTEND_RESPITE_DAYS},
+        "Archive": _("Select this option if you want to archive your video.")
+        + " "
+        + _("It will then be unpublished and will no longer be accessible to the public.")
+        + " "
+        + _(
+            "However, it will remain on the video server for a certain period, during which time a publication can be reactivated upon request to a manager."
         ),
         "Delete": _(
             "Select this option if you decide to permanently delete your video from the server, along with its metadata. You should only do this after careful consideration. It is therefore essential that you download the video and its metadata first."
@@ -1494,13 +1481,16 @@ class ArchiveChoiceForm(forms.Form):
 
     action = forms.ChoiceField(
         choices=CHOICES,
-        widget=forms.RadioSelect(attrs={"required": "True", "class": "choice_video"}),
-        required=False,
-        label=False,
+        widget=HelpedRadioSelect(help_texts=choices_help_texts),
+        required=True,
+        label=_("Obsolescence choice"),
+        help_text=_(
+            "Your preference regarding the future of your video on this platform."
+        ),
     )
 
     def __init__(self, *args, **kwargs) -> None:
-        """Initialize choices according to archive authorization."""
+        """Initialize the choices for a video, based on its archiving authorization status."""
         archiving_authorized = kwargs.pop("archiving_authorized", True)
         super().__init__(*args, **kwargs)
 
@@ -1510,13 +1500,3 @@ class ArchiveChoiceForm(forms.Form):
                 for value, label in self.fields["action"].choices
                 if value != "Archive"
             ]
-
-    def get_choices_with_help(self):
-        return [
-            {
-                "value": value,
-                "label": label,
-                "help": self.action_help_texts.get(value, ""),
-            }
-            for value, label in self.fields["action"].choices
-        ]

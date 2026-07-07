@@ -2,16 +2,17 @@
 
 import base64
 
-from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
+from django.db import models
 from django.template.defaultfilters import slugify
+from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
+
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+from pod.main.models import get_nextautoincrement
 from pod.video.models import Video
 from pod.video.utils import verify_field_length
-from pod.main.models import get_nextautoincrement
-from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomFileModel

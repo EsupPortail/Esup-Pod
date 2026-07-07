@@ -305,7 +305,7 @@
                                 "fr": [
                                     "Forcer la casse (minuscules ou majuscules) du nom d’utilisateur CAS",
                                     "(permet de prévenir des doubles créations de comptes dans certains cas).",
-                                    "Valeurs possibles : `lower`, `upper`, `False`."
+                                    "Valeurs possibles : `lower`, `upper`, `False`."
                                 ]
                             },
                             "pod_version_end": "",
@@ -5202,7 +5202,7 @@
                                     "Elles sont mises en mode brouillon et le mot \"archived\" est ajouté à leur titre.",
                                     "Enfin, elles sont également ajoutées à l’ensemble `Vidéo à Supprimer`",
                                     "(accessible via l’interface d’admin).",
-                                    "```python",
+                                    "```py",
                                     "POD_ARCHIVE_AFFILIATION = ['faculty',",
                                     "                           'staff',",
                                     "                           'employee',",
@@ -5236,18 +5236,18 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
-                        "RESPIT_MODEL": {
+                        "RESPITE_MODEL": {
                           "default_value": "base",
                           "description": {
                             "en": [
-                                "Choice of the calculation model for the video respit. That's the script that will",
-                                "be executed by the command 'respit_launcher' in the purpose of extand the video",
-                                "life span with a custom calculation process. 'base' and 'criteria_model' are some",
+                                "Choice of the calculation model for the video respit. That’s the script that will ",
+                                "be executed by the `respit_launcher` command in the purpose of extend the video ",
+                                "life span with a custom calculation process. 'base' and 'criteria_model' are some ",
                                 "examples on which you can inspire yourself to propose your own model."
                             ],
                             "fr": [
                                 "Choix du mode de calcul pour le répit des vidéos obsolètes.",
-                                "C'est le script qui va être exécuté par la commande respit_launcher",
+                                "C’est le script qui va être exécuté par la commande `respit_launcher`",
                                 "dans le but d’étendre la durée de vie de la vidéo avec un mode de calcul",
                                 "personnalisé. 'base' et 'criteria_model' sont des exemples dont vous",
                                 "pouvez vous inspirer pour proposer votre propre modèle de répit."
@@ -5256,23 +5256,18 @@
                           "pod_version_end": "",
                           "pod_version_init": "4.3.0"
                         },
-                        "RESPIT_MODEL_PARAMETERS": {
-                          "default_value": [
-                                "{",
-                                "   'respit_criteria_parameter': [],",
-                                "   'archiving_criteria_parameter': {",
-                                "       'excluded_title_terms': [],",
-                                "       'excluded_discipline_terms': [],",
-                                "   }",
-                                "}"
-                            ],
+                        "RESPITE_MODEL_PARAMETERS": {
+                          "default_value":
+                                "{'respite_criteria_parameter': [], 'archiving_criteria_parameter': {'excluded_title_terms': [],'excluded_discipline_terms': []}}"
+                            ,
                           "description": {
                             "en": [
-                                "All parameters that can be used by RESPIT_MODEL. These parameters are in",
+                                "All parameters that can be used by RESPITE_MODEL. These parameters are in",
                                 "JSON format and depend on the selected model.",
                                 "For 'criteria_model' the format will be: ",
+                                "```json",
                                 "{",
-                                "   'respit_criteria_parameter': [...],",
+                                "   'respite_criteria_parameter': [...],",
                                 "   'archiving_criteria_parameter': {",
                                 "       'minimum_expected_score': value,",
                                 "       'attribute_scores': [",
@@ -5285,21 +5280,24 @@
                                 "       'excluded_title_terms': [...],",
                                 "       'excluded_discipline_terms': [...],",
                                 "   }",
-                                "}"
+                                "}",
+                                "```"
                             ],
                             "fr": [
-                                "Ensemble des paramètres qui vont pouvoir être utilisés par RESPIT_MODEL.",
-                                "Ces paramètres sont au format JSON et dépendent du modèle choisis.",
-                                "Pour 'criteria_model' il sera de la forme : ",
+                                "Ensemble des paramètres qui vont pouvoir être utilisés par RESPITE_MODEL.",
+                                "Ces paramètres sont au format JSON et dépendent du modèle choisi.",
+                                "Pour `criteria_model`, il sera de la forme :",
+                                "```json",
                                 "{",
-                                "   'respit_criteria_parameter': [...],",
+                                "   'respite_criteria_parameter': [...],",
                                 "   'archiving_criteria_parameter': {",
                                 "       'minimum_expected_score': value,",
                                 "       'attribute_scores': [...],",
                                 "       'excluded_title_terms': [...],",
                                 "       'excluded_discipline_terms': [...],",
                                 "   }",
-                                "}"
+                                "}",
+                                "```"
                             ]
                           },
                           "pod_version_end": "",

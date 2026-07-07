@@ -3,25 +3,24 @@
 *  run with 'python manage.py test pod.video.tests.test_stats_view'
 """
 
-from unittest import skipUnless
-from django.http import JsonResponse
+import json
+import logging
 from datetime import date
+from unittest import skipUnless
+
 from django.conf import settings
-from django.test import TestCase, Client
-from django.urls import reverse, NoReverseMatch
-from pod.authentication.models import User
-from pod.video.models import Channel, Theme, Video, Type
-from pod.video.views import get_all_views_count, stats_view
 from django.contrib.sites.models import Site
-from pod.authentication.models import AccessGroup
+from django.http import JsonResponse
+from django.test import Client, TestCase
+from django.urls import NoReverseMatch, reverse
+
+from pod.authentication.models import AccessGroup, User
+from pod.video.models import Channel, Theme, Type, Video
+from pod.video.views import get_all_views_count, stats_view
+from pod.video_encode_transcript.models import EncodingVideo, VideoRendition
 
 # from django.contrib.auth.hashers import make_password
 
-from pod.video_encode_transcript.models import EncodingVideo
-from pod.video_encode_transcript.models import VideoRendition
-
-import json
-import logging
 
 TODAY = date.today()
 USE_STATS_VIEW = getattr(settings, "USE_STATS_VIEW", False)

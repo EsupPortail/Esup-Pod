@@ -1,26 +1,23 @@
-"""Test the Obsolete videos."""
+"""Esup-Pod - Test Obsolete videos.
 
+Test with `python manage.py test pod.video.tests.test_obsolescence  --settings=pod.main.test_settings`
+"""
+
+import os
 import tempfile
+from datetime import date, timedelta
+from unittest.mock import patch
 
-from django.test import override_settings
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.test import RequestFactory, TestCase, override_settings
 from django.utils.translation import gettext as _
 
-from ..models import Video, Type, VideoToDelete
 from pod.authentication.models import Owner
 
-from datetime import date, timedelta
-import os
-from django.contrib.sites.models import Site
-
-from ..utils import check_csv_header, read_archived_csv, archive_pack
-from ..views import valid_form_respit
-
-from django.test import RequestFactory
-from django.contrib.auth.models import User
-from django.test import TestCase
-
-from unittest.mock import patch
+from ..models import Type, Video, VideoToDelete
+from ..utils import archive_pack, check_csv_header, read_archived_csv
 
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
@@ -49,8 +46,6 @@ class ObsolescenceTestCase(TestCase):
         owner.affiliation = "faculty"
         owner.save()
 
-        user_faculty = User.objects.get(username="pod_faculty")
-
         user1 = User.objects.create(
             username="pod1", password="pod1234pod", email="pod@univ.fr"
         )
@@ -64,6 +59,7 @@ class ObsolescenceTestCase(TestCase):
             username="pod4", password="pod1234pod", email="pod@univ.fr"
         )
 
+        # Video 1
         Video.objects.create(
             title="Video_default",
             owner=user,
@@ -71,6 +67,7 @@ class ObsolescenceTestCase(TestCase):
             type=Type.objects.get(id=1),
         )
 
+        # Video 2
         Video.objects.create(
             title="Video_faculty_with_accomodation_year",
             owner=user_faculty,
@@ -80,18 +77,22 @@ class ObsolescenceTestCase(TestCase):
 
         # pour les 3 vidéos suivantes, la date n'est pas changée à la création
         # car l'affiliation du prop n'est pas dans ACCOMMODATION_YEARS
+
+        # Video 3
         Video.objects.create(
             title="Video1_60",
             owner=user1,
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
+        # Video 4
         Video.objects.create(
             title="Video2_30",
             owner=user2,
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
+        # Video 5
         Video.objects.create(
             title="Video3_7",
             owner=user3,
@@ -101,50 +102,62 @@ class ObsolescenceTestCase(TestCase):
 
         video60 = Video.objects.get(pk=3)
         video60.date_delete = date.today() + timedelta(days=60)
-        video60.save()
+        video60.save(update_fields=["date_delete"])
 
         video30 = Video.objects.get(pk=4)
         video30.date_delete = date.today() + timedelta(days=30)
-        video30.save()
+        video30.save(update_fields=["date_delete"])
 
         video7 = Video.objects.get(pk=5)
         video7.date_delete = date.today() + timedelta(days=7)
-        video7.save()
+        video7.save(update_fields=["date_delete"])
 
-        # On modifie la date après la création pour etre sur qu'elle soit bonne
-        vid1 = Video.objects.create(
+        # Video 6
+        vid6 = Video.objects.create(
             title="Video_to_archive",
             owner=user_faculty,
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
-        vid1.date_delete = date.today() - timedelta(days=1)
-        vid1.is_draft = False
-        vid1.save()
+        # Modify the date after creation to ensure it is correct
+        vid6.date_delete = date.today() - timedelta(days=1)
+        vid6.is_draft = False
+        vid6.save()
 
-        vid2 = Video.objects.create(
+        # Video 7
+        vid7 = Video.objects.create(
             title="Video_to_delete",
             owner=user4,
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
-        vid2.date_delete = date.today() - timedelta(days=1)
-        vid2.save()
+        vid7.date_delete = date.today() - timedelta(days=1)
+        vid7.save(update_fields=["date_delete"])
 
         for vid in Video.objects.all():
             vid.sites.add(site)
 
         print(" --->  SetUp of ObsolescenceTestCase: OK!")
 
+    @override_settings(ACCOMMODATION_YEARS={"faculty": 1})
     def test_check_video_date_delete(self) -> None:
         """Check that the videos deletion date complies with the settings."""
-        video = Video.objects.get(id=1)
+        ACCOMMODATION_YEARS = getattr(settings, "ACCOMMODATION_YEARS", {"faculty": 1})
+        video1 = Video.objects.get(id=1)
         date1 = date.today() + timedelta(days=DEFAULT_YEAR_DATE_DELETE * 365)
-        self.assertEqual(video.date_delete, date1)
+        self.assertEqual(video1.date_delete, date1)
 
-        video2 = Video.objects.get(id=2)
+        user_faculty = User.objects.get(username="pod_faculty")
+        video2 = Video.objects.create(
+            title="faculty_video",
+            owner=user_faculty,
+            video="test.mp4",
+            type=Type.objects.get(id=1),
+        )
+        owner_affiliation = video2.owner.owner.affiliation
+        self.assertEqual(owner_affiliation, "faculty")
         date2 = date.today() + timedelta(
-            days=settings.ACCOMMODATION_YEARS[video2.owner.owner.affiliation] * 365
+            days=ACCOMMODATION_YEARS[owner_affiliation] * 365
         )
         self.assertEqual(video2.date_delete, date2)
 
@@ -183,6 +196,7 @@ class ObsolescenceTestCase(TestCase):
         self.assertTrue(video7 in list_video["other"]["7"])
         print("--->  test_obsolete_video of ObsolescenceTestCase: OK")
 
+    @override_settings(POD_ARCHIVE_AFFILIATION=["faculty"])
     def test_delete_obsolete_video(self):
         """Check that obsolete videos are deleted."""
         from pod.video.management.commands import check_obsolete_videos
@@ -269,7 +283,11 @@ class ValidFormRespitTestCase(TestCase):
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
+        self.archive_user, created = User.objects.get_or_create(
+            username=ARCHIVE_OWNER_USERNAME,
+        )
 
+    @override_settings(POD_ARCHIVE_AFFILIATION=["faculty"])
     def test_archive_action(self):
         """Test archive option in the form"""
         # Connect the user
@@ -277,10 +295,27 @@ class ValidFormRespitTestCase(TestCase):
 
         # Simulates the submission of the form with archive action
         response = self.client.post(
-            f"/video/valid/form/respit/{self.video1.slug}/", {"action": "Archive"}
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Archive"},
+            follow=True,
         )
-        # Check that HTTP code is 200
-        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, _("This video is not approaching its obsolescence date.")
+        )
+
+        self.video1.date_delete = date.today() + timedelta(days=30)
+        self.video1.save(update_fields=["date_delete"])
+
+        # Simulates the submission of the form with extend action
+        response = self.client.post(
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Archive"},
+            follow=True,
+        )
+        from pod.video.utils import is_archiving_authorized
+
+        print("is_archiving_authorized = %s" % is_archiving_authorized(self.video1))
+        self.assertContains(response, _("Are you sure you want to archive this video?"))
 
         print("--->  test_archive_action of ValidFormRespitTestCase: OK")
 
@@ -294,7 +329,7 @@ class ValidFormRespitTestCase(TestCase):
         self.user.owner.save()
         self.client.force_login(self.user)
 
-        response = self.client.get(f"/video/respit/{self.video1.slug}/")
+        response = self.client.get(f"/video/respite/{self.video1.slug}/")
 
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, 'value="Archive"')
@@ -307,73 +342,145 @@ class ValidFormRespitTestCase(TestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            f"/video/valid/form/respit/{self.video1.slug}/", {"action": "Archive"}
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Archive"},
+            follow=True,
+        )
+        self.assertContains(
+            response, _("This video is not approaching its obsolescence date.")
         )
 
-        self.assertEqual(response.status_code, 400)
+        self.video1.date_delete = date.today() + timedelta(days=30)
+        self.video1.save(update_fields=["date_delete"])
+        response = self.client.post(
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Archive"},
+            follow=True,
+        )
+        self.assertContains(response, _("This action is forbidden."))
 
     @override_settings(PROLONGATION_GRANTED=True)
     def test_extend_action(self):
         """Test extend option in the form"""
+        ACCOMMODATION_YEARS = getattr(settings, "ACCOMMODATION_YEARS", {"faculty": 1})
+        add_year = self.video1.get_date_delete_for_affiliation(ACCOMMODATION_YEARS)
+        date1 = date.today() + timedelta(days=add_year * 365)
+        self.assertEqual(self.video1.date_delete, date1)
+
         # Connect the user
         self.client.force_login(self.user)
 
         # Simulates the submission of the form with extend action
         response = self.client.post(
-            f"/video/respit/{self.video1.slug}/", {"action": "Extend"}
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Extend"},
+            follow=True,
         )
-        # Check that HTTP code is 200
-        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, _("This video is not approaching its obsolescence date.")
+        )
+
+        self.video1.date_delete = date.today() + timedelta(days=30)
+        self.video1.save(update_fields=["date_delete"])
+
+        # Simulates the submission of the form with extend action
+        response = self.client.post(
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Extend"},
+            follow=True,
+        )
+        self.assertContains(
+            response, _("Are you sure to want to extend this video life span?")
+        )
 
         print("--->  test_extend_action of ValidFormRespitTestCase: OK")
 
     def test_delete_action(self):
         """Test delete option in the form"""
-        # Simulates the submission of the form with archive delete
-        request = self.factory.post(
-            f"/video/respit/{self.video1.slug}/", {"action": "Delete"}
+        # Connect the user
+        self.client.force_login(self.user)
+
+        # Simulates the submission of the form with delete action
+        response = self.client.post(
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Delete"},
+            follow=True,
         )
-        request.user = self.user
-        response = valid_form_respit(request, self.video1.slug)
-        # Check that HTTP code is 301
-        self.assertEqual(response.status_code, 301)
-        self.assertEqual(response.get("Location"), f"/video/delete/{self.video1.slug}")
+        self.assertContains(
+            response, _("This video is not approaching its obsolescence date.")
+        )
+
+        self.video1.date_delete = date.today() + timedelta(days=30)
+        self.video1.save(update_fields=["date_delete"])
+
+        # Simulates the submission of the form with delete action
+        response = self.client.post(
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Delete"},
+            follow=True,
+        )
+
+        self.assertContains(
+            response, _("You cannot delete a media that is being encoded.")
+        )
 
         print("--->  test_delete_action of ValidFormRespitTestCase: OK")
+
+    def test_anonymous_action(self):
+        """Test do respite actions when user is not connected."""
+        # Simulates the submission of the form with delete action
+        response = self.client.post(
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Archive"},
+            follow=True,
+        )
+        self.assertContains(response, _("You are not logged in. Please log in first."))
+        response = self.client.post(
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Extend"},
+            follow=True,
+        )
+        self.assertContains(response, _("You are not logged in. Please log in first."))
+        response = self.client.post(
+            f"/video/valid/form/respite/{self.video1.slug}/",
+            {"action": "Delete"},
+            follow=True,
+        )
+        self.assertContains(response, _("You are not logged in. Please log in first."))
+        print("--->  test_anonymous_action of ValidFormRespitTestCase: OK")
 
     @patch("pod.video.views.ENABLE_PAGE_OBSO_MAIL", True)
     def test_go_prolong_action(self):
         """Test extend confirmation by the form"""
         self.video1.date_delete = date.today() + timedelta(days=50)
-        self.video1.save()
+        self.video1.save(update_fields=["date_delete"])
 
         # Connect the user
         self.client.force_login(self.user)
 
         response = self.client.post(f"/video/go/prolong/{self.video1.slug}/")
-        # Check that HTTP code is 301
-        self.assertEqual(response.status_code, 301)
-        self.assertEqual(
-            response.get("Location"), f"/video/well/prolonged/or/not/{self.video1.slug}"
-        )
+        self.assertEqual(response.get("Location"), f"/video/{self.video1.slug}/")
+        vid = Video.objects.get(id=1)
+
+        self.assertEqual(vid.date_delete, date.today() + timedelta(days=365 + 50))
 
         print("--->  test_go_prolong_action of ValidFormRespitTestCase: OK")
 
     @patch("pod.video.views.ENABLE_PAGE_OBSO_MAIL", True)
+    @override_settings(POD_ARCHIVE_AFFILIATION=["faculty"])
     def test_go_archive_action(self):
         """Test archive confirmation by the form"""
         self.video1.date_delete = date.today() + timedelta(days=50)
-        self.video1.save()
+        self.video1.save(update_fields=["date_delete"])
 
+        self.assertEqual(self.video1.owner, self.user)
         # Connect the user
         self.client.force_login(self.user)
 
         response = self.client.post(f"/video/go/archive/{self.video1.slug}/")
-        # Check that HTTP code is 301
-        self.assertEqual(response.status_code, 301)
-        self.assertEqual(
-            response.get("Location"), f"/video/well/archived/or/not/{self.video1.slug}"
-        )
+        self.assertEqual(response.get("Location"), "/video/dashboard/")
+        vid = Video.objects.get(id=1)
+        self.assertEqual(vid.owner, self.archive_user)
 
         print("--->  test_go_archive_action of ValidFormRespitTestCase: OK")
 

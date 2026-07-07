@@ -111,13 +111,13 @@
         </tbody>
       </table>
     </fieldset>
-    <button type="button" onclick="resetRadioButtons()" class="btn btn btn-secondary btn-sm">{% trans "Reset" %}</button>
+    <button type="button" onclick="resetRadioButtons()" class="btn btn-secondary btn-sm">{% trans "Reset" %}</button>
   </form>
 
   <span class="float-end">
     <button type="submit" form="apply_dressing" class="btn btn-primary btn-sm m-2">{% trans "Apply" %}</button>
-    <a class="btn btn btn-secondary btn-sm" href="{% url 'dressing:my_dressings' %}"><i class="bi bi-palette" aria-hidden="true"></i>&nbsp;{% trans 'My dressings' %}</a>
-    <a href="{% url 'video:video' slug=video.slug %}" class="btn btn btn-secondary btn-sm">
+    <a class="btn btn-secondary btn-sm" href="{% url 'dressing:my_dressings' %}"><i class="bi bi-palette" aria-hidden="true"></i>&nbsp;{% trans 'My dressings' %}</a>
+    <a href="{% url 'video:video' slug=video.slug %}" class="btn btn-secondary btn-sm">
       <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans 'Back to the video' %}
     </a>
   </span>

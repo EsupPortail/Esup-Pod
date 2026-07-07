@@ -3,22 +3,22 @@
 *  run with 'python manage.py check_obsolete_videos [--dry]'
 """
 
+from datetime import date, timedelta
+
 from django.conf import settings
-from django.http import request
-from django.utils import translation
-from django.core.management.base import BaseCommand, CommandError
-from django.utils.translation import gettext as _
-from django.template.defaultfilters import striptags
-from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
 
 # from django.core.mail import mail_admins
-from django.core.mail import mail_managers
-from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import mail_managers, send_mail
+from django.core.management.base import BaseCommand, CommandError
+from django.http import request
+from django.template.defaultfilters import striptags
+from django.urls import reverse
+from django.utils import translation
+from django.utils.translation import gettext as _
 
 from pod.video.models import Video
 from pod.video.utils import archive_video, is_archiving_authorized, write_in_csv
-
-from datetime import date, timedelta
 
 ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
@@ -66,7 +66,7 @@ __TITLE_SITE__ = (
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 # number of step in days defore deletion
-WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [])
+WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [60, 30, 7])
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 
 
@@ -112,31 +112,33 @@ class Command(BaseCommand):
 
     def get_video_treatment_and_notify_user(self) -> dict:
         """Check video with close deadlines to send email to each owner."""
-        list_video_notified_by_establishment = {}
-        list_video_notified_by_establishment.setdefault("other", {})
+        list_video_notified_by_establishment = {"other": {}}
+
+        site = get_current_site(settings.SITE_ID)
+        managers = dict(MANAGERS) if MANAGERS else {}
+        use_estab = bool(USE_ESTABLISHMENT and managers)
+
         for step_day in sorted(WARN_DEADLINES):
             step_date = date.today() + timedelta(days=step_day)
-            videos = Video.objects.filter(
-                date_delete=step_date, sites=get_current_site(settings.SITE_ID)
-            )
+            videos = Video.objects.filter(date_delete=step_date, sites=site)
+
             for video in videos:
                 if not self.dry_mode:
                     self.notify_user(video, step_day)
-                if (
-                    USE_ESTABLISHMENT
-                    and MANAGERS
-                    and video.owner.owner.establishment.lower() in dict(MANAGERS)
-                ):
-                    list_video_notified_by_establishment.setdefault(
-                        video.owner.owner.establishment.lower(), {}
-                    )
-                    list_video_notified_by_establishment[
-                        video.owner.owner.establishment.lower()
-                    ].setdefault(str(step_day), []).append(video)
-                else:
-                    list_video_notified_by_establishment["other"].setdefault(
-                        str(step_day), []
-                    ).append(video)
+
+                estab_key = "other"
+                if use_estab:
+                    try:
+                        estab = video.owner.owner.establishment.lower()
+                    except Exception:
+                        estab = ""
+                    if estab in managers:
+                        estab_key = estab
+
+                list_video_notified_by_establishment.setdefault(estab_key, {})
+                list_video_notified_by_establishment[estab_key].setdefault(
+                    str(step_day), []
+                ).append(video)
 
         return list_video_notified_by_establishment
 
@@ -146,12 +148,13 @@ class Command(BaseCommand):
             sites=get_current_site(None), date_delete__lt=date.today()
         ).exclude(owner__username=ARCHIVE_OWNER_USERNAME)
 
-        list_video_deleted_by_establishment = {}
-        list_video_deleted_by_establishment.setdefault("other", {})
-        nb_deleted = 0
+        managers = dict(MANAGERS) if MANAGERS else {}
+        use_estab = bool(USE_ESTABLISHMENT and managers)
 
-        list_video_archived_by_establishment = {}
-        list_video_archived_by_establishment.setdefault("other", {})
+        # "0" is for the WARN DEADLINE "now"
+        list_video_deleted_by_establishment = {"other": {"0": []}}
+        list_video_archived_by_establishment = {"other": {"0": []}}
+        nb_deleted = 0
         nb_archived = 0
 
         for vid in vids:
@@ -163,15 +166,12 @@ class Command(BaseCommand):
                     archive_video(vid)
 
                 nb_archived += 1
-                if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
-                    list_video_archived_by_establishment.setdefault(estab, {})
-                    list_video_archived_by_establishment[estab].setdefault(
-                        str(0), []
-                    ).append(vid)
-                else:
-                    list_video_archived_by_establishment["other"].setdefault(
-                        str(0), []
-                    ).append(vid)
+                if not (use_estab and estab in managers):
+                    estab = "other"
+                list_video_archived_by_establishment.setdefault(estab, {})
+                list_video_archived_by_establishment[estab].setdefault(str(0), []).append(
+                    vid
+                )
 
             else:
                 if not self.dry_mode:
@@ -180,15 +180,12 @@ class Command(BaseCommand):
                 else:
                     print("Video %s would have been deleted." % vid)
                 nb_deleted += 1
-                if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
-                    list_video_deleted_by_establishment.setdefault(estab, {})
-                    list_video_deleted_by_establishment[estab].setdefault(
-                        str(0), []
-                    ).append(title)
-                else:
-                    list_video_deleted_by_establishment["other"].setdefault(
-                        str(0), []
-                    ).append(title)
+                if not (use_estab and estab in managers):
+                    estab = "other"
+                list_video_deleted_by_establishment.setdefault(estab, {})
+                list_video_deleted_by_establishment[estab].setdefault(str(0), []).append(
+                    title
+                )
 
         print(_("%s video(s) deleted.") % nb_deleted)
         print(_("%s video(s) archived.") % nb_archived)
@@ -208,25 +205,17 @@ class Command(BaseCommand):
             domain = get_current_site(request).domain
             base_url = f"{URL_SCHEME}://{domain}"
 
-            custom_message_page_obso_mail += "<br>\n"
-
-            custom_message_page_obso_mail = self.html_options(
-                custom_message_page_obso_mail, video
+            custom_message_page_obso_mail += "<p>%s</p>" % _(
+                "You can choose to do an action on your video:"
             )
-
+            custom_message_page_obso_mail += self.html_options(video)
+            respite_url = reverse("video:video_respite", args=(video.slug,))
             custom_message_page_obso_mail += (
-                "<a href='"
-                + base_url
-                + "/video/respit/"
-                + video.slug
-                + "'>"
-                + base_url
-                + "/video/respit/"
-                + video.slug
-                + "</a></p>"
+                '<p style="margin:1em;font-size:1.2em"><a href="%s%s">%s</a></p>'
+                % (base_url, respite_url, _("Choose an action for my video"))
             )
-            custom_message_page_obso_mail += "<br>\n"
-            custom_message_page_obso_mail += _(
+
+            custom_message_page_obso_mail += "<p>%s</p>" % _(
                 "Unless you take action, your video will be archived (unpublished) and may be deleted."
             )
 
@@ -239,9 +228,9 @@ class Command(BaseCommand):
             ) % {"scheme": URL_SCHEME, "url": video.get_full_url(), "title": video.title}
 
             msg_html += "<br>\n"
-            msg_html += _("It will be deleted on %(date_delete)s.") % {
-                "date_delete": video.date_delete
-            }
+            msg_html += _(
+                "It will be unpublished on <strong>%(date_delete)s</strong>."
+            ) % {"date_delete": video.date_delete}
 
             if not ENABLE_PAGE_OBSO_MAIL:
                 msg_html += "</p>\n<p>"
@@ -301,29 +290,21 @@ class Command(BaseCommand):
             html_message=msg_html,
         )
 
-    def html_options(self, custom_message_page_obso_mail, video):
+    def html_options(self, video):
         options = []
-        if PROLONGATION_GRANTED:
-            options.append(_("extend the duration of your video"))
         if is_archiving_authorized(video):
             options.append(
                 _("archive it (it will be unpublished and no longer accessible)")
             )
+
+        if PROLONGATION_GRANTED:
+            options.append(_("postpone it’s deletion date"))
+
         if DELETION_GRANTED:
             options.append(_("delete it (after saving it)"))
-        custom_message_page_obso_mail += "<p>" + _("You can choose to...") + "</p><ul>"
-        if options:
-            custom_message_page_obso_mail += "".join(
-                f"<li>{option}</li>" for option in options
-            )
-        custom_message_page_obso_mail += (
-            "<li>"
-            + _("download it along with all its associated data")
-            + "</li></ul>"
-            + _("...by clicking here:")
-            + " "
-        )
-        return custom_message_page_obso_mail
+        options.append(_("download it along with all its associated data"))
+
+        return "<ul><li>%s</li></ul>" % "</li><li>".join(options)
 
     def notify_manager_of_obsolete_video(self, list_video: dict) -> None:
         """Notify manager(s) with a list of obsolete videos."""
@@ -377,6 +358,7 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
+                    # list_video[estab] has entries for each WARN_DEADLINE
                     total = sum(len(videos) for videos in list_video[estab].values())
                     print(
                         _(
@@ -438,9 +420,11 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
+                    # list_video[estab] has entries for each WARN_DEADLINE
+                    total = sum(len(videos) for videos in list_video[estab].values())
                     print(
                         _("Manager of “%(et)s” notified for %(nb)s deleted video(s).")
-                        % {"et": estab, "nb": len(list_video[estab])}
+                        % {"et": estab, "nb": total}
                     )
 
     def notify_manager_of_archived_video(self, list_video: dict) -> None:
@@ -496,9 +480,11 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
+                    # list_video[estab] has entries for each WARN_DEADLINE
+                    total = sum(len(videos) for videos in list_video[estab].values())
                     print(
                         _("Manager of “%(estab)s” notified for %(nb)s archived video(s).")
-                        % {"estab": estab, "nb": len(list_video[estab])}
+                        % {"estab": estab, "nb": total}
                     )
 
     def get_list_video_html(self, list_video: dict, deleted: bool) -> str:
