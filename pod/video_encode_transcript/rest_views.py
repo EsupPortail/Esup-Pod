@@ -24,6 +24,7 @@ if USE_TRANSCRIPTION:
     from pod.video_encode_transcript.transcript import start_transcript
 
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
+DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "")
 
 DEBUG = getattr(settings, "DEBUG", True)
 logger = logging.getLogger(__name__)
@@ -215,7 +216,7 @@ def store_remote_encoded_video(request):
             % {"expected": video_id, "received": data["video_id"]}
         )
     encoding_video = Encoding_video_model(
-        video_id, data["video_path"], data["cut_start"], data["cut_end"]
+        video_id, video.video.path, data["cut_start"], data["cut_end"]
     )
     encoding_video.start = data["start"]
     encoding_video.stop = data["stop"]
@@ -232,8 +233,29 @@ def store_remote_encoded_video_studio(request):
     recording_id = request.GET.get("recording_id", 0)
     get_object_or_404(Recording, id=recording_id)
     data = json.loads(request.body.decode("utf-8"))
-    store_encoding_studio_info(recording_id, data["video_output"], data["msg"])
+    safe_video_output = _get_safe_video_output(data)
+    store_encoding_studio_info(recording_id, safe_video_output, data["msg"])
     return Response("ok")
+
+
+def _get_safe_video_output(data):
+    """Return a safe absolute video output path within allowed base dirs."""
+    raw_video_output = str(data.get("video_output", ""))
+    if not raw_video_output:
+        raise SuspiciousOperation(_("Missing video output path."))
+    normalized_video_output = os.path.normpath(raw_video_output)
+    if os.path.isabs(normalized_video_output) or normalized_video_output.startswith(".."):
+        raise SuspiciousFileOperation(_("Invalid video output path."))
+    base_output_dir = DEFAULT_RECORDER_PATH or MEDIA_ROOT
+    if not base_output_dir:
+        raise SuspiciousOperation(_("No safe base directory configured."))
+    try:
+        safe_video_output = safe_join(base_output_dir, normalized_video_output)
+    except SuspiciousFileOperation:
+        raise SuspiciousFileOperation(_("Invalid video output path."))
+    if not safe_video_output:
+        raise SuspiciousFileOperation(_("Invalid video output path."))
+    return safe_video_output
 
 
 @csrf_exempt

@@ -1,4 +1,7 @@
-"""Esup-Pod tests for SSRF protections in import_video utils."""
+"""Esup-Pod tests for SSRF protections in import_video utils.
+
+test with `python manage.py test pod.import_video.tests.test_utils`
+"""
 
 from unittest.mock import Mock, patch
 
@@ -57,9 +60,9 @@ class ImportVideoUtilsSecurityTest(SimpleTestCase):
         mock_getaddrinfo.return_value = [
             (2, 1, 6, "", ("93.184.216.34", 0)),
         ]
-
+        url, addresses = validate_remote_import_url("https://example.org/video.mp4")
         self.assertEqual(
-            validate_remote_import_url("https://example.org/video.mp4"),
+            url.geturl(),
             "https://example.org/video.mp4",
         )
 

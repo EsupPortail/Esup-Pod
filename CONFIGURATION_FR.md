@@ -323,7 +323,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-MEDIA_ROOT)_<br>
 * `MEDIA_URL`
   > valeur par défaut : `/media/`
-  >> prefix url utilisé pour accéder aux fichiers du répertoire media<br>
+  >> préfixe d’url utilisé pour accéder aux fichiers du répertoire media<br>
 * `STATICFILES_STORAGE`
   > valeur par défaut : ``
   >> Indique à django de compresser automatiquement les fichiers css/js<br>

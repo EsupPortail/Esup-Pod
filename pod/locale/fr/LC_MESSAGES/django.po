@@ -11348,6 +11348,18 @@ msgstr "La vidéo n’est pas en cours d’encodage."
 msgid "Different video id: %(expected)s - %(received)s"
 msgstr "Identifiants de vidéo différents : %(expected)s - %(received)s"
 
+#: pod/video_encode_transcript/rest_views.py
+msgid "Missing video output path."
+msgstr "Chemin de sortie vidéo manquant."
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "Invalid video output path."
+msgstr "Chemin de sortie vidéo invalide."
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "No safe base directory configured."
+msgstr "Aucun répertoire de base sécurisé n’a été configuré."
+
 #: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
 msgid ""
 "Users listed here are processed first in the task queue (priority 0), before normal and "

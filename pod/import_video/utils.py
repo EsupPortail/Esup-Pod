@@ -126,7 +126,7 @@ def _resolve_remote_addresses(hostname: str):
     return addresses
 
 
-def validate_remote_import_url(source_url: str) -> str:
+def validate_remote_import_url(source_url: str):
     """Validate a remote import URL against SSRF constraints."""
     if not isinstance(source_url, str):
         raise ValueError(
@@ -159,21 +159,52 @@ def validate_remote_import_url(source_url: str) -> str:
     ):
         raise ValueError(get_remote_url_error_message())
 
-    for address in _resolve_remote_addresses(hostname):
+    addresses = _resolve_remote_addresses(hostname)
+    for address in addresses:
         if not address.is_global:
             raise ValueError(get_remote_url_error_message())
 
-    return source_url
+    return url, addresses
+
+
+def get_secure_response(
+    parsed_url, requester, selected_ip, method, user_headers, **kwargs
+):
+    """Makes a secure HTTP request to the selected IP address while preserving the Host header."""
+    host_header = parsed_url.hostname
+    if parsed_url.port:
+        host_header = f"{host_header}:{parsed_url.port}"
+    if selected_ip.version == 6:
+        netloc_ip = f"[{selected_ip.compressed}]"
+    else:
+        netloc_ip = selected_ip.compressed
+    if parsed_url.port:
+        netloc_ip = f"{netloc_ip}:{parsed_url.port}"
+    request_url = parsed_url._replace(netloc=netloc_ip).geturl()
+    request_headers = dict(user_headers)
+    request_headers["Host"] = host_header
+    return requester(
+        method,
+        request_url,
+        allow_redirects=False,
+        headers=request_headers,
+        **kwargs,
+    )
 
 
 def safe_request(method: str, source_url: str, session: Session = None, **kwargs):
     """Perform an HTTP request after validating the target and redirects."""
     requester = session.request if session else requests.request
-    current_url = validate_remote_import_url(source_url)
+    parsed_url, addresses = validate_remote_import_url(source_url)
+    current_url = parsed_url.geturl()
     remaining_redirects = 5
 
+    user_headers = kwargs.pop("headers", {}) or {}
     while True:
-        response = requester(method, current_url, allow_redirects=False, **kwargs)
+        selected_ip = next(iter(addresses))
+        response = get_secure_response(
+            parsed_url, requester, selected_ip, method, user_headers, **kwargs
+        )
         redirect_url = response.headers.get("Location")
         if response.is_redirect and redirect_url:
             if remaining_redirects <= 0:
@@ -185,7 +216,8 @@ def safe_request(method: str, source_url: str, session: Session = None, **kwargs
                 )
             next_url = urljoin(current_url, redirect_url)
             response.close()
-            current_url = validate_remote_import_url(next_url)
+            parsed_url, addresses = validate_remote_import_url(next_url)
+            current_url = parsed_url.geturl()
             remaining_redirects -= 1
             continue
         return response
