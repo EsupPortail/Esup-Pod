@@ -126,9 +126,7 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Creates a new video, checking user quota and triggering encoding."""
-        user_videos = Video.objects.filter(owner=self.request.user).exclude(
-            video_file=""
-        )
+        user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file="")
         total_bytes = sum(v.video_file.size for v in user_videos if v.video_file)
         incoming_file = self.request.FILES.get("video_file")
         incoming_size = incoming_file.size if incoming_file else 0
@@ -147,9 +145,7 @@ class VideoViewSet(viewsets.ModelViewSet):
             from src.apps.video.models import License
 
             try:
-                target_license = License.objects.get(
-                    slug=video_settings.default_license
-                )
+                target_license = License.objects.get(slug=video_settings.default_license)
             except License.DoesNotExist:
                 target_license = None
 
@@ -485,9 +481,7 @@ class VideoViewSet(viewsets.ModelViewSet):
                 "properties": {"owner_id": {"type": "integer"}},
             }
         },
-        responses={
-            200: {"type": "object", "properties": {"status": {"type": "string"}}}
-        },
+        responses={200: {"type": "object", "properties": {"status": {"type": "string"}}}},
     )
     @action(detail=True, methods=["post"], permission_classes=[IsSuperUser])
     def transfer_ownership(self, request, slug=None):
