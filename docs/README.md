@@ -16,6 +16,7 @@ Each application has its own dedicated documentation with overview and technical
 - **[Video](video/README.md)**: Video lifecycle, upload, access control, streaming, and subtitle management.
 - **[Completion](completion/README.md)**: Additional metadata, documents, contributors, overlays, and model enrichment.
 - **[Collection](collection/README.md)**: Organize videos into Channels, Themes, and Playlists.
+- **[Import Video](import_video/README.md)**: Import external videos from YouTube, PeerTube, BigBlueButton, Mediacad, and direct URLs.
 - **[Encoding](encoding/README.md)**: Video transcoding with Celery, Redis, and external Runner Manager.
 - **[API & Swagger](api/README.md)**: REST API usage and documentation guide.
 - **[Core & Management](core/README.md)**: CLI commands for audit and maintenance.
@@ -47,6 +48,7 @@ Pod_V5_Back/
 │   │   ├── authentication/
 │   │   ├── video/
 │   │   ├── collection/
+│   │   ├── import_video/
 │   │   ├── encoding/
 │   │   └── core/
 │   └── config/         # Configuration & Settings
