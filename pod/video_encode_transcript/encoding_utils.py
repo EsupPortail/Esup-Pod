@@ -81,20 +81,31 @@ def get_renditions():
 def _is_safe_file_path(path_file) -> bool:
     """Return whether a path resolves inside an authorized local root.
 
-    Authorized roots are ``MEDIA_ROOT``, ``DEFAULT_RECORDER_PATH`` and ``/tmp``.
+    Authorized roots are `MEDIA_ROOT` & `DEFAULT_RECORDER_PATH`.
     """
     if not path_file:
         return False
     try:
-        candidate = os.path.realpath(os.fspath(path_file))
+        candidate = os.path.abspath(os.path.realpath(os.fspath(path_file)))
     except (TypeError, ValueError, OSError):
         return False
 
-    allowed_roots = [MEDIA_ROOT, DEFAULT_RECORDER_PATH, "/tmp"]
+    if not os.path.isabs(candidate):
+        return False
+
+    return _is_safe_candidate(candidate, [MEDIA_ROOT, DEFAULT_RECORDER_PATH])
+
+
+def _is_safe_candidate(candidate, allowed_roots) -> bool:
+    """Return whether candidate path is inside any allowed root."""
     for root in allowed_roots:
         if not root:
             continue
-        root_real = os.path.realpath(root)
+
+        try:
+            root_real = os.path.abspath(os.path.realpath(os.fspath(root)))
+        except (TypeError, ValueError, OSError):
+            continue
         try:
             if os.path.commonpath([candidate, root_real]) == root_real:
                 return True

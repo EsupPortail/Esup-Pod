@@ -13,6 +13,7 @@ from math import ceil
 from defusedxml import minidom
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.exceptions import SuspiciousOperation
 from django.core.serializers import serialize
 from django.db.models import Count, Q
 from django.db.models.functions import Lower
@@ -719,19 +720,28 @@ def export_complement(
                 out.write(content)
 
 
+def _safe_join_under_root(root_path: str, *parts: str) -> str:
+    """Join path parts and ensure resulting path stays under root_path."""
+    normalized_root = os.path.realpath(root_path)
+    candidate = os.path.realpath(os.path.join(normalized_root, *parts))
+    if os.path.commonpath([normalized_root, candidate]) != normalized_root:
+        raise SuspiciousOperation("Unsafe path detected outside allowed root.")
+    return str(candidate)
+
+
 def move_video_to_archive(
     mediaPackage_dir: str, vid: Video, dry_mode: bool = True
 ) -> None:
     """Move video source file to mediaPackage_dir."""
     if os.access(vid.video.path, os.F_OK):
-        print(
-            "  * Moving %s to " % vid.video.path,
-            os.path.join(mediaPackage_dir, os.path.basename(vid.video.name)),
+        destination = _safe_join_under_root(
+            mediaPackage_dir, os.path.basename(vid.video.name)
         )
+        print("  * Moving %s to %s" % (vid.video.path, destination))
         if not dry_mode:
             shutil.move(
                 vid.video.path,
-                os.path.join(mediaPackage_dir, os.path.basename(vid.video.name)),
+                destination,
             )
             # Delete Video object
             vid.delete()
@@ -824,13 +834,21 @@ def archive_and_get_link(slug, sub_fold="tmp"):
     media_url = getattr(settings, "MEDIA_URL", "/media/")
     media_root = getattr(settings, "MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 
-    media_package_dir = os.path.join(media_root, sub_fold, slug)
-    vid = Video.objects.filter(slug=slug).first()
-    archive_pack(str(media_package_dir), "", vid, only_copy=True, dry_mode=False)
+    archive_base_dir = os.path.realpath(os.path.join(media_root, sub_fold))
+    media_package_dir = os.path.realpath(os.path.join(archive_base_dir, slug))
+    # Check that user-provided value does not let directory traversal
+    if os.path.commonpath([archive_base_dir, media_package_dir]) != archive_base_dir:
+        raise SuspiciousOperation("Invalid archive path.")
 
-    shutil.make_archive(str(media_package_dir), "zip", str(media_package_dir))
+    vid = Video.objects.filter(slug=slug).first()
+    if vid is None:
+        raise ValueError("Video %(slug)s not found" % {"slug": slug})
+    archive_pack(media_package_dir, "", vid, only_copy=True, dry_mode=False)
+
+    shutil.make_archive(media_package_dir, "zip", media_package_dir)
 
     # remove old temp folder
     shutil.rmtree(media_package_dir)
-
-    return media_url + sub_fold + "/" + slug + ".zip"
+    # get a safe slug, by getting leaf of media_package_dir
+    safe_slug = os.path.basename(media_package_dir)
+    return "%s%s/%s.zip" % (media_url, sub_fold, safe_slug)

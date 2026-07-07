@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-26 11:51+0200\n"
+"POT-Creation-Date: 2026-07-01 17:18+0200\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -10985,6 +10985,18 @@ msgstr ""
 #: pod/video_encode_transcript/rest_views.py
 #, python-format
 msgid "Different video id: %(expected)s - %(received)s"
+msgstr ""
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "Missing video output path."
+msgstr ""
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "Invalid video output path."
+msgstr ""
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "No safe base directory configured."
 msgstr ""
 
 #: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
