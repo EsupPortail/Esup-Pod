@@ -118,6 +118,10 @@ msgid "Not a valid time track file."
 msgstr "Fichier de traduction invalide."
 
 #: pod/completion/static/js/caption_maker.js
+msgid "Creating new track…"
+msgstr "Création d’une nouvelle piste…"
+
+#: pod/completion/static/js/caption_maker.js
 msgid "error during exchange"
 msgstr "erreur durant le téléversement"
 
