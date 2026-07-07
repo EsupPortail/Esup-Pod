@@ -13,7 +13,9 @@ The **Video** application is the core module of Pod V5. It manages the full life
 | **Subtitles**          | Attach subtitle files (VTT/SRT) per language (FR, EN, ES).                         |
 | **Streaming**          | Direct file streaming via a dedicated API endpoint.                                |
 | **Video Cut**          | Trim a video virtually using a start and end time (clears chapters/notes).         |
+| **Marker Time**        | Automatically saves and retrieves the user's video playback position.              |
 | **Hyperlinks**         | Add interactive links (timecodes, external resources) to videos.                   |
+| **Completion Data**    | Contributions, overlays, and documents are embedded in the video response.         |
 | **Categorization**     | Organize videos with Types, Disciplines, and Tags.                                 |
 | **Comments & Votes**   | Engage users with a commenting and upvote/downvote system.                         |
 | **Multi-tenancy**      | Videos are linked to specific Sites (portals) for data isolation.                  |
@@ -81,6 +83,11 @@ A video passes through the following states:
 | **GET**      | `/api/subtitles/`                     | List subtitles (filterable by `?video_id=`).      |
 | **POST**     | `/api/subtitles/`                     | Attach a subtitle to a video.                     |
 | **DELETE**   | `/api/subtitles/{id}/`                | Delete a subtitle (video owner only).             |
+| **GET**      | `/api/marker/{video_slug}/`           | Retrieve the playback position for the user.      |
+| **POST**     | `/api/marker/{video_slug}/save/`      | Save the playback position for the user.          |
+| **DELETE**   | `/api/marker/{video_slug}/reset/`     | Delete the playback position marker.              |
+
+> **Note:** Completion data (contributions, overlays, documents) is automatically embedded in the `GET /api/videos/{slug}/` and `GET /api/videos/` responses. To create or modify these elements, use the dedicated [`/api/completion/`](../completion/README.md) endpoints.
 
 ## Further Reading
 

@@ -25,6 +25,7 @@ urlpatterns = [
     path("", RedirectView.as_view(url="api/docs/", permanent=False)),
     path("admin/", admin.site.urls),
     path("api/", include("src.apps.video.urls")),
+    path("api/", include("src.apps.import_video.urls")),
     path("api/info/", include("src.apps.info.urls")),
     path("api/auth/", include("src.apps.authentication.urls")),
     path("api/encoding/", include("src.apps.encoding.urls")),

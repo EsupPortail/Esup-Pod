@@ -86,6 +86,16 @@ Managed via `CompletionConfig` (pydantic-settings in `src/apps/completion/conf.p
 
 ---
 
+## 5. Integration with Video API
+
+Contributions, overlays, and documents are **automatically embedded** in the `VideoSerializer` response (read-only nested fields). This means:
+
+- A single `GET /api/videos/{slug}/` request returns all completion data for the player.
+- The `VideoViewSet.get_queryset()` uses `prefetch_related("contributions__contributor", "overlays", "documents")` to prevent N+1 query issues on list endpoints.
+- **Writing** completion data (creating/editing contributions, documents, overlays) is done via the dedicated `/api/completion/` endpoints — not through `PATCH /api/videos/`.
+
+---
+
 ## 6. Testing
 
 Run tests for the completion application:
