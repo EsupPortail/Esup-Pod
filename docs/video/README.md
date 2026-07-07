@@ -70,6 +70,7 @@ A video passes through the following states:
 | **GET**      | `/api/videos/{slug}/stream/`          | Stream the video file directly.                   |
 | **POST**     | `/api/videos/{slug}/register_view/`   | Increment the view counter.                       |
 | **POST**     | `/api/videos/{slug}/unlock/`          | Unlock a password-protected restricted video.     |
+| **POST**     | `/api/videos/{slug}/duplicate/`       | Duplicate a video (creates a full copy).          |
 | **GET**      | `/api/types/`                         | List available video types.                       |
 | **GET**      | `/api/disciplines/`                   | List available disciplines.                       |
 | **GET**      | `/api/tags/`                          | List available tags.                              |
