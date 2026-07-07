@@ -1862,8 +1862,8 @@ msgid "The file has been saved."
 msgstr "Le fichier a été sauvegardé."
 
 #: pod/completion/views.py
-msgid "The file has not been saved."
-msgstr "Le fichier n’a pas été enregistré."
+msgid "The file has NOT been saved."
+msgstr "Le fichier n’a PAS été enregistré."
 
 #: pod/completion/views.py
 #, python-format
@@ -11917,4 +11917,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-

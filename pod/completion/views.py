@@ -160,7 +160,7 @@ def video_caption_maker_save(request, video):
                 )
         else:
             messages.add_message(
-                request, messages.WARNING, _("The file has not been saved.")
+                request, messages.WARNING, _("The file has NOT been saved.")
             )
     form_caption = TrackForm(initial={"video": video})
 

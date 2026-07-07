@@ -313,7 +313,12 @@ class Track(models.Model):
         return msg
 
     def __str__(self) -> str:
-        return "{0} - File: {1} - Video: {2}".format(self.kind, self.src.name, self.video)
+        # Be defensive: `src` can be None (no file attached yet),
+        # so use getattr to avoid AttributeError during logging.
+        src_name = ""
+        if getattr(self, "src", None):
+            src_name = getattr(self.src, "name", "")
+        return "{0} - File: {1} - Video: {2}".format(self.kind, src_name, self.video)
 
 
 class Overlay(models.Model):

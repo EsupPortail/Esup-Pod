@@ -199,13 +199,28 @@ const send_form_save_captions = function () {
       let parser = new DOMParser();
       let htmlDoc = parser.parseFromString(data, "text/html");
 
-      document.body.append(htmlDoc.getElementById("base-message-alert"));
-      if (data.track_id != undefined) {
-        var url = new URL(window.location.href);
-        var url_params = url.searchParams;
-        url_params.set("src", data.track_id);
-        url.search = url_params.toString();
-        location.href = url.toString();
+      // Append any server-provided alerts (base-message-alert)
+      const baseAlert = htmlDoc.getElementById("base-message-alert");
+      if (baseAlert) {
+        document.body.append(baseAlert);
+      }
+
+      // If server returned a JSON-like response containing track_id, redirect
+      try {
+        const json = JSON.parse(data);
+        if (json && json.track_id != undefined) {
+          showalert(gettext("Creating new track…"), "alert-info");
+          var url = new URL(window.location.href);
+          var url_params = url.searchParams;
+          url_params.set("src", json.track_id);
+          url.search = url_params.toString();
+          setTimeout(() => {
+            location.href = url.toString();
+          }, 1000);
+          return;
+        }
+      } catch (e) {
+        // not JSON — ignore
       }
     })
 
