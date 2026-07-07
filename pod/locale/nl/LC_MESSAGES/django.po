@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-02 09:36+0200\n"
+"POT-Creation-Date: 2026-07-07 12:13+0200\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -8867,6 +8867,16 @@ msgid "Packaging %s archived videos on Pod"
 msgstr ""
 
 #: pod/video/management/commands/respite_launcher.py
+#, python-format
+msgid "Respite model not found: %(error)s"
+msgstr ""
+
+#: pod/video/management/commands/respite_launcher.py
+#, python-format
+msgid "Respite model import error: %(error)s"
+msgstr ""
+
+#: pod/video/management/commands/respite_launcher.py
 msgid "DRY MODE. This is only a simulation of what would be done."
 msgstr ""
 
@@ -8885,16 +8895,6 @@ msgstr ""
 
 #: pod/video/management/commands/respite_launcher.py
 msgid "Have a good day."
-msgstr ""
-
-#: pod/video/management/commands/respite_launcher.py
-#, python-format
-msgid "Respite model not found: %(error)s"
-msgstr ""
-
-#: pod/video/management/commands/respite_launcher.py
-#, python-format
-msgid "Respite model import error: %(error)s"
 msgstr ""
 
 #: pod/video/models.py pod/video/views.py
@@ -9443,36 +9443,13 @@ msgid "Archive Download"
 msgstr ""
 
 #: pod/video/templates/videos/archive_download.html
-msgid "Your archive download gonna start."
-msgstr ""
-
-#: pod/video/templates/videos/archive_download.html
-#, fuzzy
-#| msgid "Please enter a title."
-msgid "Please Wait."
-msgstr "Voer een titel in."
-
-#: pod/video/templates/videos/archive_download.html
-#: pod/video/templates/videos/archive_or_not.html
-#: pod/video/templates/videos/prolong_or_not.html
-msgid "Back to choices"
-msgstr ""
-
-#: pod/video/templates/videos/archive_download.html
-msgid "Download video archive"
-msgstr ""
-
-#: pod/video/templates/videos/archive_or_not.html
-#: pod/video/tests/test_obsolescence.py
-msgid "Are you sure you want to archive this video?"
-msgstr ""
-
 #: pod/video/templates/videos/archive_or_not.html
 #: pod/video/templates/videos/prolong_or_not.html
 #: pod/video/templates/videos/video_respite_choice.html
 msgid "Link to the video:"
 msgstr ""
 
+#: pod/video/templates/videos/archive_download.html
 #: pod/video/templates/videos/archive_or_not.html
 #: pod/video/templates/videos/prolong_or_not.html
 #: pod/video/templates/videos/video_respite_choice.html
@@ -9480,6 +9457,21 @@ msgstr ""
 #| msgid "Date email sent"
 msgid "Date to delete:"
 msgstr "Datum verzonden e-mail"
+
+#: pod/video/templates/videos/archive_download.html
+msgid "Download video archive"
+msgstr ""
+
+#: pod/video/templates/videos/archive_download.html
+#: pod/video/templates/videos/archive_or_not.html
+#: pod/video/templates/videos/prolong_or_not.html
+msgid "Back to choices"
+msgstr ""
+
+#: pod/video/templates/videos/archive_or_not.html
+#: pod/video/tests/test_obsolescence.py
+msgid "Are you sure you want to archive this video?"
+msgstr ""
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
@@ -11061,6 +11053,18 @@ msgstr ""
 msgid "Different video id: %(expected)s - %(received)s"
 msgstr ""
 
+#: pod/video_encode_transcript/rest_views.py
+msgid "Missing video output path."
+msgstr ""
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "Invalid video output path."
+msgstr ""
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "No safe base directory configured."
+msgstr ""
+
 #: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
 msgid ""
 "Users listed here are processed first in the task queue (priority 0), before "
@@ -11137,6 +11141,11 @@ msgstr ""
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Please enter a title."
+#~ msgid "Please Wait."
+#~ msgstr "Voer een titel in."
 
 #~ msgid "category title"
 #~ msgstr "categorie titel"
