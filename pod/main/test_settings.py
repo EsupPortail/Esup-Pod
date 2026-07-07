@@ -2,17 +2,18 @@
 
 # test_settings.py
 # from ..settings import *
-from ..settings import BASE_DIR as settings_base_dir
-from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
-from ..settings import LOCALE_PATHS, STATICFILES_DIRS, DEFAULT_AUTO_FIELD
-from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N
-from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
-from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
-from ..settings import SERIALIZATION_MODULES, TAGULOUS_NAME_MAX_LENGTH
-
 import os
-from bs4 import BeautifulSoup
+
 import requests
+from bs4 import BeautifulSoup
+
+from ..settings import AUTH_PASSWORD_VALIDATORS, AUTHENTICATION_BACKENDS
+from ..settings import BASE_DIR as settings_base_dir
+from ..settings import (DEFAULT_AUTO_FIELD, INSTALLED_APPS, LOCALE_PATHS,
+                        LOG_DIRECTORY, LOGGING, MIDDLEWARE, REST_FRAMEWORK,
+                        ROOT_URLCONF, SERIALIZATION_MODULES, STATICFILES_DIRS,
+                        TAGULOUS_NAME_MAX_LENGTH, TEMPLATES, USE_I18N, USE_TZ,
+                        WSGI_APPLICATION)
 
 USE_OPENCAST_STUDIO = True
 

@@ -210,7 +210,7 @@ const send_form_save_captions = function () {
         const json = JSON.parse(data);
         if (json && json.track_id != undefined) {
           showalert(
-            gettext("Creating new track..."),
+            gettext("Creating new track…"),
             "alert-info",
           );
           var url = new URL(window.location.href);

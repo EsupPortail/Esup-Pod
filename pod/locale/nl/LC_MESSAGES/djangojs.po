@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-28 17:23+0200\n"
+"POT-Creation-Date: 2026-07-07 11:07+0200\n"
 "PO-Revision-Date: 2025-04-25 10:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -106,6 +106,10 @@ msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Not a valid time track file."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+msgid "Creating new track…"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
