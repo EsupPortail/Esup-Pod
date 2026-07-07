@@ -4,11 +4,13 @@ Esup-Pod - Video duplication service.
 
 from django.db import transaction
 from django.utils.text import slugify
-from src.apps.video.models import Video
-from .slug import generate_unique_slug
-from .files import duplicate_source_file
-from src.apps.video.services.sites import assign_default_site
 from django.utils.translation import gettext_lazy as _
+
+from src.apps.video.models import Video
+from src.apps.video.services.sites import assign_default_site
+
+from .files import duplicate_source_file
+from .slug import generate_unique_slug
 
 
 @transaction.atomic
@@ -25,7 +27,7 @@ def duplicate_video(original: Video, user, request=None):
     new_slug = generate_unique_slug(slugify(base_slug))
 
     duplicated = Video.objects.create(
-        title=f"{_('Copy of')} {original.title}",
+        title=_("Copy of %(title)s") % {"title": original.title},
         slug=new_slug,
         type=original.type,
         owner=user,

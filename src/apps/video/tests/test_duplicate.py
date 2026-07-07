@@ -2,14 +2,16 @@
 Esup-Pod - Tests for Video duplication.
 """
 
-import tempfile
 import os
-from django.urls import reverse
-from rest_framework.test import APITestCase
-from rest_framework import status
-from django.core.files.uploadedfile import SimpleUploadedFile
+import tempfile
+
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
+
 from src.apps.video.models import Video
 
 User = get_user_model()

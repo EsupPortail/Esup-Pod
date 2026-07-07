@@ -507,9 +507,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary=_("Duplicate a video"),
-        description=_(
-            "Creates a full duplicate of a video. The title is automatically set to 'Copy of <original title>'."
-        ),
         request=None,
         responses={201: VideoSerializer},
     )
@@ -521,6 +518,7 @@ class VideoViewSet(viewsets.ModelViewSet):
     def duplicate(self, request, slug=None):
         """
         Creates a full duplicate of a video, including file copy and M2M relations.
+        The title is automatically set to 'Copy of <original title>'.
         Restricted to the video owner, co-owners, and superusers.
         Only available when USE_DUPLICATE is enabled in settings.
         """
