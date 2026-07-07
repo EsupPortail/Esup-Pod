@@ -13,6 +13,11 @@ from src.apps.encoding.conf import encoding_settings
 from src.apps.video.conf import video_settings
 from src.apps.authentication.models import AccessGroup
 from src.apps.collection.models import Theme, ThemeItem
+from src.apps.completion.serializers import (
+    ContributionSerializer,
+    OverlaySerializer,
+    DocumentSerializer,
+)
 from .DisciplineSerializer import DisciplineSerializer
 from .HyperlinkSerializer import VideoHyperlinkSerializer
 
@@ -110,6 +115,9 @@ class VideoSerializer(serializers.ModelSerializer):
     )
 
     hyperlinks = VideoHyperlinkSerializer(many=True, read_only=True)
+    contributions = ContributionSerializer(many=True, read_only=True)
+    overlays = OverlaySerializer(many=True, read_only=True)
+    documents = DocumentSerializer(many=True, read_only=True)
 
     class Meta:
         """Video serializer metadata."""
@@ -159,6 +167,9 @@ class VideoSerializer(serializers.ModelSerializer):
             "discipline_details",
             "tags",
             "hyperlinks",
+            "contributions",
+            "overlays",
+            "documents",
         ]
         extra_kwargs = {
             "video_file": {"write_only": True},

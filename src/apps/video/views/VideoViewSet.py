@@ -100,7 +100,16 @@ class VideoViewSet(viewsets.ModelViewSet):
         if getattr(self, "action", None) in ["stream", "unlock", "register_view"]:
             return qs
 
-        return Video.objects.visible_for(user).filter(id__in=qs).distinct()
+        return (
+            Video.objects.visible_for(user)
+            .filter(id__in=qs)
+            .prefetch_related(
+                "contributions__contributor",
+                "overlays",
+                "documents",
+            )
+            .distinct()
+        )
 
     def perform_create(self, serializer):
         """Creates a new video, checking user quota and triggering encoding."""
