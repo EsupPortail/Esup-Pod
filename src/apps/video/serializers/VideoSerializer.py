@@ -13,6 +13,11 @@ from src.apps.encoding.conf import encoding_settings
 from src.apps.video.conf import video_settings
 from src.apps.authentication.models import AccessGroup
 from src.apps.collection.models import Theme, ThemeItem
+from src.apps.completion.serializers import (
+    ContributionSerializer,
+    OverlaySerializer,
+    DocumentSerializer,
+)
 from .DisciplineSerializer import DisciplineSerializer
 from .HyperlinkSerializer import VideoHyperlinkSerializer
 
@@ -66,7 +71,7 @@ class VideoSerializer(serializers.ModelSerializer):
     encoding_status_label = serializers.CharField(
         source="get_encoding_status_display", read_only=True
     )
-    has_password = serializers.BooleanField(source="password", read_only=True)
+    has_password = serializers.SerializerMethodField()
     password = serializers.CharField(
         write_only=True, required=False, allow_blank=True, allow_null=True
     )
@@ -110,6 +115,9 @@ class VideoSerializer(serializers.ModelSerializer):
     )
 
     hyperlinks = VideoHyperlinkSerializer(many=True, read_only=True)
+    contributions = ContributionSerializer(many=True, read_only=True)
+    overlays = OverlaySerializer(many=True, read_only=True)
+    documents = DocumentSerializer(many=True, read_only=True)
 
     class Meta:
         """Video serializer metadata."""
@@ -159,6 +167,9 @@ class VideoSerializer(serializers.ModelSerializer):
             "discipline_details",
             "tags",
             "hyperlinks",
+            "contributions",
+            "overlays",
+            "documents",
         ]
         extra_kwargs = {
             "video_file": {"write_only": True},
@@ -178,6 +189,11 @@ class VideoSerializer(serializers.ModelSerializer):
             "subtitles",
             "encodings",
         ]
+
+    @extend_schema_field(serializers.BooleanField())
+    def get_has_password(self, obj):
+        """Returns True if the video has a password, False otherwise."""
+        return bool(obj.password)
 
     @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_encodings(self, obj):
@@ -291,6 +307,10 @@ class VideoSerializer(serializers.ModelSerializer):
         """
         Creates a Video instance and assigns the themes list.
         """
+        has_pw_flag = self.initial_data.get("has_password")
+        if str(has_pw_flag).lower() == "false":
+            validated_data["password"] = ""
+
         themes_data = validated_data.pop("themes", None)
         video = super().create(validated_data)
         if themes_data is not None:
@@ -302,6 +322,10 @@ class VideoSerializer(serializers.ModelSerializer):
         """
         Updates a Video instance and updates its themes list.
         """
+        has_pw_flag = self.initial_data.get("has_password")
+        if str(has_pw_flag).lower() == "false":
+            validated_data["password"] = ""
+
         themes_data = validated_data.pop("themes", None)
         video = super().update(instance, validated_data)
         if themes_data is not None:
