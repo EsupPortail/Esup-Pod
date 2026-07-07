@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-07 12:13+0200\n"
+"POT-Creation-Date: 2026-07-07 12:41+0200\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1784,7 +1784,7 @@ msgid "The file has been saved."
 msgstr ""
 
 #: pod/completion/views.py
-msgid "The file has not been saved."
+msgid "The file has NOT been saved."
 msgstr ""
 
 #: pod/completion/views.py
