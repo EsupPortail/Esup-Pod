@@ -6,7 +6,6 @@ import os
 import hashlib
 import logging
 
-from django.db import transaction
 from django.db.models import Q, F
 from django.http import FileResponse, Http404
 from django.utils.translation import gettext_lazy as _
