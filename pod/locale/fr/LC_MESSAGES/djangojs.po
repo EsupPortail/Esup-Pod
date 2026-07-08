@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-04 12:24+0100\n"
+"POT-Creation-Date: 2026-05-28 17:23+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
 msgid "No discipline"
@@ -116,6 +116,10 @@ msgstr "Il n’y a aucun sous-titre/légende à sauvegarder."
 #: pod/completion/static/js/caption_maker.js
 msgid "Not a valid time track file."
 msgstr "Fichier de traduction invalide."
+
+#: pod/completion/static/js/caption_maker.js
+msgid "Creating new track…"
+msgstr "Création d’une nouvelle piste…"
 
 #: pod/completion/static/js/caption_maker.js
 msgid "error during exchange"
@@ -598,16 +602,16 @@ msgid "Loading…"
 msgstr "Chargement en cours…"
 
 #: pod/podfile/static/podfile/js/filewidget.js
+msgid "Open file in a new tab"
+msgstr "Ouvrir le fichier dans un nouvel onglet"
+
+#: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
 msgstr "Changer d’image"
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change file"
 msgstr "Changer de fichier"
-
-#: pod/podfile/static/podfile/js/filewidget.js
-msgid "Open file in a new tab"
-msgstr "Ouvrir le fichier dans un nouvel onglet"
 
 #: pod/podfile/static/podfile/js/filewidget.js
 #, javascript-format
@@ -787,7 +791,7 @@ msgstr "Options de filtre pour %s"
 
 #: pod/video/static/js/FilterManager.js
 msgid "Filter: %(name)s - %(label)s"
-msgstr "Filtre : %(name)s - %(label)s"
+msgstr "Filtre : %(name)s - %(label)s"
 
 #: pod/video/static/js/FilterManager.js
 msgid "%(name)s: %(label)s"

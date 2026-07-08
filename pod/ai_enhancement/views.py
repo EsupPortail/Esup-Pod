@@ -6,10 +6,12 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.handlers.wsgi import WSGIRequest
+from django.core.files.base import ContentFile
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext as _
+from django.utils.translation import pgettext
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import PermissionDenied
@@ -21,12 +23,17 @@ from pod.ai_enhancement.forms import (
 )
 from pod.ai_enhancement.models import AIEnhancement
 from pod.ai_enhancement.utils import AristoteAI, enhancement_is_already_asked, notify_user
-from pod.completion.models import Track
+from pod.completion.models import Document, Track
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.utils import json_to_web_vtt
 from pod.main.views import in_maintenance
 from pod.video.models import Video, Discipline
 from pod.video_encode_transcript.transcript import save_vtt
+
+if getattr(settings, "USE_PODFILE", False):
+    from pod.podfile.models import CustomFileModel
+else:
+    from pod.main.models import CustomFileModel
 
 USE_QUIZ = getattr(settings, "USE_QUIZ", False)
 if USE_QUIZ:
@@ -303,6 +310,58 @@ def enhance_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
         enhancement.ai_enhancement_id_in_aristote
     )
     return JsonResponse(latest_version)
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def generate_transcript_file(request: WSGIRequest, video_slug: str) -> HttpResponse:
+    """The view to import Aristote transcript text as a completion document."""
+    video = get_object_or_404(Video, slug=video_slug)
+    if AI_ENHANCEMENT_TO_STAFF_ONLY and request.user.is_staff is False:
+        messages.add_message(
+            request, messages.ERROR, _("You cannot use AI to improve this video.")
+        )
+        raise PermissionDenied
+
+    if (
+        video
+        and request.user != video.owner
+        and (
+            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+        )
+        and (request.user not in video.additional_owners.all())
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot use AI to improve this video.")
+        )
+        raise PermissionDenied
+    aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
+    enhancement = AIEnhancement.objects.filter(video=video).first()
+    latest_version = aristote.get_latest_enhancement_version(
+        enhancement.ai_enhancement_id_in_aristote
+    )
+    transcript_text = latest_version.get("transcript", {}).get("text", "")
+
+    transcript_title = pgettext("document filename", "Transcription")
+    transcript_filename = "%s.txt" % transcript_title
+
+    if getattr(settings, "USE_PODFILE", False):
+        video_folder = video.get_or_create_video_folder()
+        transcript_file = CustomFileModel(folder=video_folder, created_by=request.user)
+    else:
+        transcript_file = CustomFileModel()
+
+    transcript_file.file.save(
+        transcript_filename,
+        ContentFile(transcript_text.encode("utf-8")),
+        save=True,
+    )
+    Document.objects.create(video=video, document=transcript_file)
+
+    return redirect(
+        reverse("video:completion:video_completion_document", kwargs={"slug": video.slug})
+    )
 
 
 @csrf_protect

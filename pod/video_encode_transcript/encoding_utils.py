@@ -16,8 +16,12 @@ try:
 
     VIDEO_RENDITIONS = getattr(settings, "VIDEO_RENDITIONS", VIDEO_RENDITIONS)
     DEBUG = getattr(settings, "DEBUG", True)
+    MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
+    DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "")
 except ImportError:  # pragma: no cover
     DEBUG = True
+    MEDIA_ROOT = ""
+    DEFAULT_RECORDER_PATH = ""
 
 logger = logging.getLogger(__name__)
 if DEBUG:
@@ -74,10 +78,55 @@ def get_renditions():
         return VIDEO_RENDITIONS
 
 
-def check_file(path_file) -> bool:
-    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
-        return True
+def _is_safe_file_path(path_file) -> bool:
+    """Return whether a path resolves inside an authorized local root.
+
+    Authorized roots are `MEDIA_ROOT` & `DEFAULT_RECORDER_PATH`.
+    """
+    if not path_file:
+        return False
+    try:
+        candidate = os.path.abspath(os.path.realpath(os.fspath(path_file)))
+    except (TypeError, ValueError, OSError):
+        return False
+
+    if not os.path.isabs(candidate):
+        return False
+
+    return _is_safe_candidate(candidate, [MEDIA_ROOT, DEFAULT_RECORDER_PATH])
+
+
+def _is_safe_candidate(candidate, allowed_roots) -> bool:
+    """Return whether candidate path is inside any allowed root."""
+    for root in allowed_roots:
+        if not root:
+            continue
+
+        try:
+            root_real = os.path.abspath(os.path.realpath(os.fspath(root)))
+        except (TypeError, ValueError, OSError):
+            continue
+        try:
+            if os.path.commonpath([candidate, root_real]) == root_real:
+                return True
+        except ValueError:
+            continue
     return False
+
+
+def check_file(path_file) -> bool:
+    """Return whether a path is authorized, existing, and non-empty."""
+    if not _is_safe_file_path(path_file):
+        return False
+    safe_path = os.path.realpath(os.fspath(path_file))
+    try:
+        return (
+            os.path.isfile(safe_path)
+            and os.access(safe_path, os.F_OK)
+            and os.stat(safe_path).st_size > 0
+        )
+    except (OSError, ValueError):
+        return False
 
 
 def get_list_rendition():

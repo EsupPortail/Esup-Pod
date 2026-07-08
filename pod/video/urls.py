@@ -38,6 +38,11 @@ from .views import (
     video_edit_access_tokens,
     available_filter_by_type,
     available_filters,
+    video_respite,
+    valid_form_respite,
+    archive_and_download,
+    go_archive,
+    go_prolong,
 )
 
 app_name = "video"
@@ -57,6 +62,19 @@ urlpatterns = [
     ),
     path("add/", video_add, name="video_add"),
     path("edit/", video_edit, name="video_edit"),
+    re_path(r"^respite/(?P<slug>[\-\d\w]+)/$", video_respite, name="video_respite"),
+    re_path(
+        r"^valid/form/respite/(?P<slug>[\-\d\w]+)/$",
+        valid_form_respite,
+        name="valid_form_respite",
+    ),
+    re_path(
+        r"^archive/and/download/(?P<slug>[\-\d\w]+)/$",
+        archive_and_download,
+        name="archive_and_download",
+    ),
+    re_path(r"^go/archive/(?P<slug>[\-\d\w]+)/$", go_archive, name="go_archive"),
+    re_path(r"^go/prolong/(?P<slug>[\-\d\w]+)/$", go_prolong, name="go_prolong"),
     re_path(r"^edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),
     re_path(
         r"^edit_access_tokens/(?P<slug>[\-\d\w]+)/$",

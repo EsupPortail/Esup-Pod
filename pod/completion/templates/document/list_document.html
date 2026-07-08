@@ -19,6 +19,11 @@
             {% endif %}
           </td>
           <td>
+            <form class="d-inline-block" method="post" action="{% url 'download_file' %}">
+              {% csrf_token %}
+              <input type="hidden" name="filename" value="{{doc.document.file.name}}">
+              <input type="submit" title="{% blocktrans with document_name=doc.document.name %}Download the additional resource “{{ document_name }}”{% endblocktrans %}" value="{% trans 'Download' %}" class="btn btn-secondary btn-sm">
+            </form>
             <form class="form_modif completion d-inline-block" action="{% url 'video:completion:video_completion_document' slug=video.slug %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="action" value="modify">

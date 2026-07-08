@@ -78,6 +78,7 @@ from pod.playlist.utils import (
 )
 from pod.video.forms import (
     AdvancedNotesForm,
+    ArchiveChoiceForm,
     ChannelForm,
     FrontThemeForm,
     NoteCommentsForm,
@@ -105,6 +106,7 @@ from pod.video.models import (
     get_transcription_choices,
 )
 from pod.video.rest_views import ChannelSerializer
+from pod.video.utils import archive_and_get_link, archive_video
 from pod.video.utils import get_videos as video_get_videos
 
 from .context_processors import get_available_videos
@@ -117,12 +119,15 @@ from .utils import (
     get_filtered_types_for_videos,
     get_headband,
     get_id_from_request,
+    is_archiving_authorized,
     pagination_data,
     sort_videos_list,
 )
 
-# from django.contrib.auth.hashers import check_password
+WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [60, 30, 7])
 
+EXTEND_RESPITE_DAYS = getattr(settings, "EXTEND_RESPITE_DAYS", 365)
+ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -1428,7 +1433,7 @@ def render_video(
 def video_edit(request, slug=None):
     """Video Edit View."""
     if in_maintenance():
-        return redirect(reverse("maintenance"))
+        return redirect("maintenance")
     video = (
         get_object_or_404(Video, slug=slug, sites=get_current_site(request))
         if slug
@@ -1475,9 +1480,9 @@ def video_edit(request, slug=None):
                 request, messages.INFO, _("The changes have been saved.")
             )
             if request.POST.get("_saveandsee"):
-                return redirect(reverse("video:video", args=(video.slug,)))
+                return redirect("video:video", slug=video.slug)
             else:
-                return redirect(reverse("video:video_edit", args=(video.slug,)))
+                return redirect("video:video_edit", slug=video.slug)
         else:
             messages.add_message(
                 request,
@@ -1559,7 +1564,7 @@ def video_delete(request, slug=None):
                 messages.add_message(
                     request, messages.INFO, _("The media has been deleted.")
                 )
-                return redirect(reverse("video:dashboard"))
+                return redirect("video:dashboard")
             else:
                 messages.add_message(
                     request,
@@ -1575,7 +1580,7 @@ def video_delete(request, slug=None):
     else:
         # If the video is not deletable, the video_is_deletable function will raise
         # a PermissionDenied exception or an error message will be displayed.
-        return redirect(reverse("video:dashboard"))
+        return redirect("video:dashboard")
 
 
 def video_is_deletable(request, video) -> bool:
@@ -1645,7 +1650,7 @@ def video_edit_access_tokens(request: WSGIRequest, slug: str = None):
                 request, messages.ERROR, _("An action must be specified.")
             )
         # redirect to remove post data
-        return redirect(reverse("video:video_edit_access_tokens", args=(video.slug,)))
+        return redirect("video:video_edit_access_tokens", slug=video.slug)
     tokens = VideoAccessToken.objects.filter(video=video)
     page_title = _('Manage access tokens for the video "%(vtitle)s"') % {
         "vtitle": video.title
@@ -1707,7 +1712,7 @@ def video_transcript(request, slug=None):
             messages.ERROR,
             _("You cannot launch transcript for a video that is being encoded."),
         )
-        return redirect(reverse("video:video_edit", args=(video.slug,)))
+        return redirect("video:video_edit", slug=video.slug)
 
     if video.get_video_mp3():
         available_transcript_lang = [lang[0] for lang in get_transcription_choices()]
@@ -1735,7 +1740,7 @@ def video_transcript(request, slug=None):
             messages.ERROR,
             _("No audio file found."),
         )
-    return redirect(reverse("video:video_edit", args=(video.slug,)))
+    return redirect("video:video_edit", slug=video.slug)
 
 
 def get_adv_note_list(request, video):
@@ -2800,6 +2805,9 @@ def stats_view(request, slug=None, slug_t=None):
     " (videos, video, channel or theme)
     """
     target = request.GET.get("from", "videos")
+    allowed_targets = {"videos", "video", "channel", "theme"}
+    if target not in allowed_targets:
+        target = "videos"
     videos, title = get_videos(slug, target, slug_t)
     error_message = _(
         "The following “%(target)s” type target does not exist or contains no videos: %(slug)s."
@@ -2859,7 +2867,7 @@ def stats_view(request, slug=None, slug_t=None):
 def video_add(request):
     """Video add view."""
     if in_maintenance():
-        return redirect(reverse("maintenance"))
+        return redirect("maintenance")
     allow_extension = ".%s" % ", .".join(map(str, VIDEO_ALLOWED_EXTENSIONS))
     slug = request.GET.get("slug", "")
     if slug != "":
@@ -3923,3 +3931,221 @@ def get_owners_for_videos_on_dashboard(request):
     users_list = list(users_qs.values(*VALUES).order_by("last_name")[:20])
 
     return HttpResponse(json.dumps(users_list), content_type="application/json")
+
+
+@login_required(redirect_field_name="referrer")
+def video_respite(request, slug):
+    """
+    Render the interface which is reachable by the user from the reminder email with the concerned link.
+    The interface allows to extend, archive or delete a video in the appropriated context.
+    """
+    vid, display_or_not = able_or_not_respite(slug, request)
+
+    if display_or_not is False:
+        if vid is None:
+            return redirect("video:dashboard")
+        else:
+            return redirect("video:video", slug=slug)
+
+    form = ArchiveChoiceForm(
+        request.POST or None,
+        archiving_authorized=is_archiving_authorized(vid),
+    )
+
+    return render(
+        request,
+        "videos/video_respite_choice.html",
+        {
+            "form": form,
+            "slug": slug,
+            "video": vid,
+            "ENABLE_PAGE_OBSO_MAIL": ENABLE_PAGE_OBSO_MAIL,
+            "display_or_not": display_or_not,
+        },
+    )
+
+
+def valid_form_respite(request, slug=None):
+    """
+    Launch the appropriate code and render the appropriate interface after the submission of the video respite form.
+    """
+    if request.method != "POST":
+        return redirect("video:video", slug=slug)
+
+    vid, display_or_not = able_or_not_respite(slug, request)
+    if display_or_not is True:
+        match request.POST["action"]:
+            case "Delete":
+                return redirect("video:video_delete", slug=vid.slug)
+            case "Extend":
+                return render(
+                    request,
+                    "videos/prolong_or_not.html",
+                    {
+                        "video": vid,
+                        "slug": slug,
+                        "EXTEND_RESPITE_DAYS": EXTEND_RESPITE_DAYS,
+                    },
+                )
+            case "Archive":
+                if is_archiving_authorized(vid):
+                    return render(
+                        request,
+                        "videos/archive_or_not.html",
+                        {"video": vid},
+                    )
+                else:
+                    messages.add_message(
+                        request,
+                        messages.ERROR,
+                        _("Impossible to archive video “%(slug)s”.") % {"slug": vid.slug}
+                        + " "
+                        + _("This action is forbidden."),
+                    )
+
+    # When respite cannot be done (insufficient permissions, video already archived, etc.), we redirect to dashboard.
+    return redirect("video:dashboard")
+
+
+@login_required(redirect_field_name="referrer")
+def archive_and_download(request, slug):
+    """
+    Create a zip archive package and launch a download of it in the user browser.
+    """
+
+    vid, url = archive_and_get_link(slug, "video_package")
+    return render(request, "videos/archive_download.html", {"url": url, "video": vid})
+
+
+def able_or_not_respite(slug, request):
+    """
+    Check if we have the right conditions to display the respite form or not.
+    """
+
+    all_warn = WARN_DEADLINES
+    higher_warn = 0
+
+    for aw in all_warn:
+        if higher_warn <= aw:
+            higher_warn = aw
+
+    try:
+        vid = Video.objects.get(slug=slug)
+    except ObjectDoesNotExist:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _(
+                "This video does not exist on this site. Maybe it has already been deleted or archived."
+            ),
+        )
+        return (None, False)
+
+    if request.user is None or not request.user.is_authenticated:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("You are not logged in. Please log in first."),
+        )
+        return (None, False)
+    else:
+        if request.user != vid.owner and request.user not in vid.additional_owners.all():
+            return (None, False)
+
+    # If we have more than the maximum DeadLine days before the date_delete
+    step_date = vid.date_delete - timedelta(days=higher_warn)
+    display_or_not = date.today() >= step_date
+    if display_or_not is False:
+        messages.add_message(
+            request,
+            messages.WARNING,
+            _("This video is not approaching its obsolescence date."),
+        )
+    return (vid, display_or_not)
+
+
+@login_required(redirect_field_name="referrer")
+def go_archive(request, slug=None):
+    """
+    Launch an archive process and say if it has worked or not on an interface.
+    """
+    if not ENABLE_PAGE_OBSO_MAIL:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("Impossible to archive video “%(slug)s”.") % {"slug": slug}
+            + " "
+            + _("This service is not available."),
+        )
+        return redirect("video:dashboard")
+    vid, display_or_not = able_or_not_respite(slug, request)
+    if slug is not None and is_archiving_authorized(vid) is False:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("Impossible to archive video “%(slug)s”.") % {"slug": vid.slug}
+            + " "
+            + _("This action is forbidden."),
+        )
+        return redirect("video:video", slug=vid.slug)
+    elif slug is not None and display_or_not is True:
+        archive_video(vid)
+        try:
+            Video.objects.get(slug=slug)
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("Your video “%(slug)s” has NOT been archived.") % {"slug": slug},
+            )
+            return redirect("video:video", slug=vid.slug)
+        except Video.DoesNotExist:
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                _("Your video “%(slug)s” has been archived.") % {"slug": slug},
+            )
+    else:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("Impossible to archive video “%(slug)s”.") % {"slug": slug}
+            + " "
+            + _("It may be already extended, archived or deleted."),
+        )
+    return redirect("video:dashboard")
+
+
+@login_required(redirect_field_name="referrer")
+def go_prolong(request, slug):
+    """
+    Extend a video about EXTEND_RESPITE_DAYS days and display the new delete_date.
+    """
+    if not ENABLE_PAGE_OBSO_MAIL:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("Impossible to extend video %s.") % slug
+            + " "
+            + _("This service is not available."),
+        )
+        return redirect("video:dashboard")
+    vid, display_or_not = able_or_not_respite(slug, request)
+    if vid is not None and display_or_not is True:
+        vid.date_delete = vid.date_delete + timedelta(days=EXTEND_RESPITE_DAYS)
+        vid.save()
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            _("The video life span was extended to %(date)s.")
+            % {"date": vid.date_delete},
+        )
+        return redirect("video:video", slug=slug)
+    else:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("Impossible to extend video %s.") % slug
+            + " "
+            + _("It may be already extended, archived or deleted."),
+        )
+        return redirect("video:dashboard")

@@ -18,11 +18,145 @@ from .models import (
     EncodingStep,
     EncodingVideo,
     PlaylistVideo,
+    PriorityUser,
     RunnerManager,
     Task,
     VideoRendition,
 )
 from .task_queue import refresh_pending_task_ranks
+
+RUNNER_MANAGER_SOURCE_APP_LABEL = "video_encode_transcript"
+RUNNER_MANAGER_SECTION_APP_LABEL = "runner_managers"
+RUNNER_MANAGER_SECTION_MODEL_NAMES = {"RunnerManager", "Task", "PriorityUser"}
+RUNNER_MANAGER_PRIMARY_MODEL_NAME = "RunnerManager"
+
+
+def _admin_or_add_url(model):
+    """Return a model admin URL fallbacking to the add URL."""
+    return model.get("admin_url") or model.get("add_url")
+
+
+def _extract_runner_manager_models_from_app(app, section_url):
+    """Split a source app into remaining models and runner manager models."""
+    runner_manager_models = []
+    remaining_models = []
+    extracted_section_url = section_url
+
+    for model in app["models"]:
+        if model["object_name"] in RUNNER_MANAGER_SECTION_MODEL_NAMES:
+            runner_manager_models.append(model)
+            if extracted_section_url is None:
+                extracted_section_url = _admin_or_add_url(model)
+            continue
+        remaining_models.append(model)
+
+    extracted_section_url = extracted_section_url or app.get("app_url")
+    remaining_app = {**app, "models": remaining_models} if remaining_models else None
+    return remaining_app, runner_manager_models, extracted_section_url
+
+
+def _resolve_runner_manager_section_url(runner_manager_models, fallback_url):
+    """Prefer the RunnerManager changelist URL for the section header link."""
+    primary_model = next(
+        (
+            model
+            for model in runner_manager_models
+            if model["object_name"] == RUNNER_MANAGER_PRIMARY_MODEL_NAME
+        ),
+        None,
+    )
+    if primary_model is None:
+        return fallback_url
+    return _admin_or_add_url(primary_model) or fallback_url
+
+
+def _build_runner_manager_section_entry(runner_manager_models, section_url):
+    """Create the synthetic admin section for runner manager objects."""
+    return {
+        "name": _("Runner managers"),
+        "app_label": RUNNER_MANAGER_SECTION_APP_LABEL,
+        "app_url": section_url or reverse("admin:index"),
+        "has_module_perms": True,
+        "models": runner_manager_models,
+    }
+
+
+def _remove_runner_manager_models_from_source_app_list(app_list):
+    """Remove runner manager models from the source app section."""
+    filtered_app_list = []
+    for app in app_list:
+        if app["app_label"] != RUNNER_MANAGER_SOURCE_APP_LABEL:
+            filtered_app_list.append(app)
+            continue
+
+        remaining_models = [
+            model
+            for model in app["models"]
+            if model["object_name"] not in RUNNER_MANAGER_SECTION_MODEL_NAMES
+        ]
+        if remaining_models:
+            filtered_app_list.append({**app, "models": remaining_models})
+    return filtered_app_list
+
+
+def _build_runner_manager_admin_section(app_list):
+    """Move runner manager models from video encoding app to a dedicated section."""
+    reorganized_apps = []
+    runner_manager_models = []
+    runner_manager_section_url = None
+
+    for app in app_list:
+        if app["app_label"] != RUNNER_MANAGER_SOURCE_APP_LABEL:
+            reorganized_apps.append(app)
+            continue
+
+        (
+            remaining_app,
+            extracted_models,
+            runner_manager_section_url,
+        ) = _extract_runner_manager_models_from_app(app, runner_manager_section_url)
+        runner_manager_models.extend(extracted_models)
+        if remaining_app:
+            reorganized_apps.append(remaining_app)
+
+    if not runner_manager_models:
+        return app_list
+
+    runner_manager_models.sort(key=lambda model: model["name"])
+    runner_manager_section_url = _resolve_runner_manager_section_url(
+        runner_manager_models,
+        runner_manager_section_url,
+    )
+    reorganized_apps.append(
+        _build_runner_manager_section_entry(
+            runner_manager_models,
+            runner_manager_section_url,
+        )
+    )
+    reorganized_apps.sort(key=lambda app: app["name"].lower())
+    return reorganized_apps
+
+
+if not hasattr(admin.AdminSite, "_runner_manager_original_get_app_list"):
+    # Keep a stable pointer to Django's original implementation so this
+    # module can safely wrap it without losing baseline admin behavior.
+    # The hasattr guard also prevents stacking wrappers on autoreload/imports.
+    admin.AdminSite._runner_manager_original_get_app_list = admin.AdminSite.get_app_list
+
+    def _runner_manager_grouped_get_app_list(self, request, app_label=None):
+        """Customize admin sections on dashboard and source app index."""
+        app_list = self._runner_manager_original_get_app_list(request, app_label)
+        # On the source app page, hide runner-manager-related models from the
+        # original section to avoid duplicate navigation entries.
+        if app_label == RUNNER_MANAGER_SOURCE_APP_LABEL:
+            return _remove_runner_manager_models_from_source_app_list(app_list)
+        # For other app-specific pages, keep Django's default app list.
+        if app_label:
+            return app_list
+        # On the admin index, build the synthetic "Runner managers" section.
+        return _build_runner_manager_admin_section(app_list)
+
+    admin.AdminSite.get_app_list = _runner_manager_grouped_get_app_list
 
 
 @admin.register(EncodingVideo)
@@ -183,6 +317,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
         admin (ModelAdmin): admin model
     """
 
+    change_list_template = "admin_runnermanager_change_list.html"
     change_form_template = "admin_test_connection.html"
 
     list_display = (
@@ -210,6 +345,20 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             ),
         ]
         return custom_urls + super().get_urls()
+
+    def changelist_view(self, request, extra_context=None):
+        """Hide the source app index link from the runner manager changelist sidebar."""
+        response = super().changelist_view(request, extra_context=extra_context)
+        context_data = getattr(response, "context_data", None)
+        if context_data is None:
+            return response
+
+        context_data["available_apps"] = [
+            app
+            for app in context_data.get("available_apps", [])
+            if app.get("app_label") != RUNNER_MANAGER_SOURCE_APP_LABEL
+        ]
+        return response
 
     def _health_url(self, runner_manager: RunnerManager) -> str:
         """Build runner manager health endpoint URL."""
@@ -283,7 +432,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             self.message_user(
                 request,
                 _(
-                    "Unable to reach runner manager '%(name)s' at %(url)s. "
+                    "Unable to reach runner manager “%(name)s” at %(url)s. "
                     "Check the URL and network access. Error: %(error)s"
                 )
                 % {
@@ -299,7 +448,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             self.message_user(
                 request,
                 _(
-                    "Runner manager '%(name)s' responded but rejected authentication "
+                    "Runner manager “%(name)s” responded but rejected authentication "
                     "(HTTP %(status)s). Check the bearer token."
                 )
                 % {"name": runner_manager.name, "status": response.status_code},
@@ -309,7 +458,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             self.message_user(
                 request,
                 _(
-                    "Connection to runner manager '%(name)s' succeeded "
+                    "Connection to runner manager “%(name)s” succeeded "
                     "(HTTP %(status)s)."
                 )
                 % {"name": runner_manager.name, "status": response.status_code},
@@ -319,7 +468,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             self.message_user(
                 request,
                 _(
-                    "Runner manager '%(name)s' is reachable but endpoint %(url)s "
+                    "Runner manager “%(name)s” is reachable but endpoint %(url)s "
                     "was not found (HTTP 404). Check the configured URL."
                 )
                 % {"name": runner_manager.name, "url": health_url},
@@ -329,7 +478,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             self.message_user(
                 request,
                 _(
-                    "Runner manager '%(name)s' is reachable but returned an "
+                    "Runner manager “%(name)s” is reachable but returned an "
                     "unexpected response (HTTP %(status)s)."
                 )
                 % {"name": runner_manager.name, "status": response.status_code},
@@ -337,6 +486,24 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             )
 
         return HttpResponseRedirect(self._change_url(runner_manager))
+
+
+@admin.register(PriorityUser)
+class PriorityUserAdmin(admin.ModelAdmin):
+    """Administration for users with absolute queue priority."""
+
+    change_list_template = "admin_priorityuser_change_list.html"
+    autocomplete_fields = ("user",)
+    list_display = ("id", "user", "date_added")
+    search_fields = (
+        "user__username",
+        "user__email",
+        "user__first_name",
+        "user__last_name",
+    )
+    readonly_fields = ("date_added",)
+    list_select_related = ("user",)
+    ordering = ("user__username", "id")
 
 
 @admin.register(Task)
@@ -347,6 +514,7 @@ class TaskAdmin(admin.ModelAdmin):
         admin (ModelAdmin): admin model
     """
 
+    change_list_template = "admin_task_change_list.html"
     list_display = (
         "id",
         "video_id_display",

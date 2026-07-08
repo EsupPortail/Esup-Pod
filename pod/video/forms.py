@@ -1,38 +1,54 @@
 """Forms for Esup-Pod video app."""
 
-from django import forms
-from django.contrib.admin import widgets
-from django.contrib.auth.models import User
-from django.conf import settings
-from django.core.validators import FileExtensionValidator
-from django.core.exceptions import ValidationError
-from django.forms.widgets import ClearableFileInput, Media
-from django.utils.deconstruct import deconstructible
-from django.utils.translation import gettext_lazy as _
-from django.template.defaultfilters import filesizeformat
-from .models import Video, VideoVersion, get_storage_path_video
-from .models import Channel, Theme, Type, Discipline
-from .models import Notes, AdvancedNotes, NoteComments
-from pod.video_encode_transcript import encode
-from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio, PlaylistVideo
-from django.contrib.sites.models import Site
-from django.db.models.query import QuerySet
-
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-from django.contrib.sites.shortcuts import get_current_site
-from pod.main.forms_utils import add_placeholder_and_asterisk, add_describedby_attr
-
-from tinymce.widgets import TinyMCE
-from collections import OrderedDict
-from django_select2 import forms as s2forms
-
 import datetime
-from dateutil.relativedelta import relativedelta
 import os
 import re
+from collections import OrderedDict
+
+from dateutil.relativedelta import relativedelta
+from django import forms
+from django.conf import settings
+from django.contrib.admin import widgets
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import SuspiciousFileOperation, ValidationError
+from django.core.validators import FileExtensionValidator
+from django.db.models.query import QuerySet
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.forms.widgets import ClearableFileInput, Media
+from django.template.defaultfilters import filesizeformat
+from django.utils._os import safe_join
+from django.utils.deconstruct import deconstructible
+from django.utils.translation import gettext_lazy as _
+from django_select2 import forms as s2forms
+from tinymce.widgets import TinyMCE
+
+from pod.main.forms_utils import add_describedby_attr, add_placeholder_and_asterisk
+from pod.video_encode_transcript import encode
+from pod.video_encode_transcript.models import EncodingAudio, EncodingVideo, PlaylistVideo
+
+from .models import (
+    AdvancedNotes,
+    Channel,
+    Discipline,
+    NoteComments,
+    Notes,
+    Theme,
+    Type,
+    Video,
+    VideoVersion,
+    get_storage_path_video,
+)
+from .widgets import HelpedRadioSelect
 
 __FILEPICKER__ = False
+
+PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
+DELETION_GRANTED = getattr(settings, "DELETION_GRANTED", False)
+EXTEND_RESPITE_DAYS = getattr(settings, "EXTEND_RESPITE_DAYS", 365)
+
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
     from pod.podfile.widgets import CustomFileWidget
@@ -317,6 +333,31 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
         ]
     ),
 )
+
+
+def safe_media_path(relative_path: str) -> str:
+    """Resolve a path under ``MEDIA_ROOT`` and block path traversal attempts.
+
+    Args:
+        relative_path (str): Relative file or directory path from ``MEDIA_ROOT``.
+
+    Returns:
+        str: Canonical absolute path inside ``MEDIA_ROOT``.
+
+    Raises:
+        ValidationError: If the path is invalid or escapes ``MEDIA_ROOT``.
+    """
+    media_root = os.path.realpath(settings.MEDIA_ROOT)
+    try:
+        full_path = os.path.realpath(
+            safe_join(settings.MEDIA_ROOT, os.fspath(relative_path))
+        )
+        if os.path.commonpath([full_path, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
+    except (SuspiciousFileOperation, TypeError, ValueError):
+        raise ValidationError(_("Invalid media path."))
+    return full_path
+
 
 if USE_TRANSCRIPTION:
     from ..video_encode_transcript import transcript
@@ -728,20 +769,26 @@ class VideoForm(forms.ModelForm):
     def move_video_source_file(self, new_path, new_dir, old_dir) -> None:
         """Move video source file in a new dir."""
         # create user repository
-        dest_file = os.path.join(settings.MEDIA_ROOT, new_path)
+        dest_file = safe_media_path(new_path)
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
+        source_file = safe_media_path(self.cleaned_data["video"].name)
+        media_root = os.path.realpath(settings.MEDIA_ROOT)
+        if os.path.commonpath([source_file, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
+        if os.path.commonpath([dest_file, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
         # move video
-        os.rename(
-            os.path.join(settings.MEDIA_ROOT, self.cleaned_data["video"].name),
-            dest_file,
-        )
+        os.rename(source_file, dest_file)
         # change path for video
         self.instance.video = new_path
         # Move Dir
-        os.rename(
-            os.path.join(settings.MEDIA_ROOT, old_dir),
-            os.path.join(settings.MEDIA_ROOT, new_dir),
-        )
+        old_dir_path = safe_media_path(old_dir)
+        new_dir_path = safe_media_path(new_dir)
+        if os.path.commonpath([old_dir_path, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
+        if os.path.commonpath([new_dir_path, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
+        os.rename(old_dir_path, new_dir_path)
         # Overview
         if self.instance.overview:
             self.instance.overview = self.instance.overview.name.replace(old_dir, new_dir)
@@ -1398,3 +1445,58 @@ class NoteCommentsForm(forms.ModelForm):
 
         model = NoteComments
         fields = ["comment", "status"]
+
+
+class ArchiveChoiceForm(forms.Form):
+    """Video respite management form."""
+
+    CHOICES = [("Archive", _("Archive"))]
+    if PROLONGATION_GRANTED:
+        CHOICES += [
+            (
+                "Extend",
+                _("Extend (Automatically by %(rrd)s days)")
+                % {"rrd": EXTEND_RESPITE_DAYS},
+            )
+        ]
+    if DELETION_GRANTED:
+        CHOICES += [("Delete", _("Delete"))]
+
+    choices_help_texts = {
+        "Extend": _(
+            "Select this option if you want to extend the publication of your video by %(rrd)s days."
+        )
+        % {"rrd": EXTEND_RESPITE_DAYS},
+        "Archive": _("Select this option if you want to archive your video.")
+        + " "
+        + _("It will then be unpublished and will no longer be accessible to the public.")
+        + " "
+        + _(
+            "However, it will remain on the video server for a certain period, during which time a publication can be reactivated upon request to a manager."
+        ),
+        "Delete": _(
+            "Select this option if you decide to permanently delete your video from the server, along with its metadata. You should only do this after careful consideration. It is therefore essential that you download the video and its metadata first."
+        ),
+    }
+
+    action = forms.ChoiceField(
+        choices=CHOICES,
+        widget=HelpedRadioSelect(help_texts=choices_help_texts),
+        required=True,
+        label=_("Obsolescence choice"),
+        help_text=_(
+            "Your preference regarding the future of your video on this platform."
+        ),
+    )
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Initialize the choices for a video, based on its archiving authorization status."""
+        archiving_authorized = kwargs.pop("archiving_authorized", True)
+        super().__init__(*args, **kwargs)
+
+        if not archiving_authorized:
+            self.fields["action"].choices = [
+                (value, label)
+                for value, label in self.fields["action"].choices
+                if value != "Archive"
+            ]

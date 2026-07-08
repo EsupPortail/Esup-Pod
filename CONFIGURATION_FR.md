@@ -323,7 +323,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-MEDIA_ROOT)_<br>
 * `MEDIA_URL`
   > valeur par défaut : `/media/`
-  >> prefix url utilisé pour accéder aux fichiers du répertoire media<br>
+  >> préfixe d’url utilisé pour accéder aux fichiers du répertoire media<br>
 * `STATICFILES_STORAGE`
   > valeur par défaut : ``
   >> Indique à django de compresser automatiquement les fichiers css/js<br>
@@ -522,7 +522,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> Enfin, elles sont également ajoutées à l’ensemble `Vidéo à Supprimer`<br>
   >> (accessible via l’interface d’admin).<br>
   >>
-  >> ```python
+  >> ```py
   >> POD_ARCHIVE_AFFILIATION = ['faculty',
   >>                            'staff',
   >>                            'employee',
@@ -542,6 +542,40 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> Liste de jours de délais avant l’obsolescence de la vidéo.<br>
   >> À chaque délai, le propriétaire reçoit un mail d’avertissement<br>
   >> pour éventuellement changer la date d’obsolescence de sa vidéo.<br>
+* `RESPITE_MODEL`
+  > valeur par défaut : `base`
+  >> Choix du mode de calcul pour le répit des vidéos obsolètes.<br>
+  >> C’est le script qui va être exécuté par la commande `respit_launcher`<br>
+  >> dans le but d’étendre la durée de vie de la vidéo avec un mode de calcul<br>
+  >> personnalisé. 'base' et 'criteria_model' sont des exemples dont vous<br>
+  >> pouvez vous inspirer pour proposer votre propre modèle de répit.<br>
+* `RESPITE_MODEL_PARAMETERS`
+  > valeur par défaut : `{'respite_criteria_parameter': [], 'archiving_criteria_parameter': {'excluded_title_terms': [],'excluded_discipline_terms': []}}`
+  >> Ensemble des paramètres qui vont pouvoir être utilisés par RESPITE_MODEL.<br>
+  >> Ces paramètres sont au format JSON et dépendent du modèle choisi.<br>
+  >> Pour `criteria_model`, il sera de la forme :<br>
+  >>
+  >> ```json
+  >> {
+  >>    'respite_criteria_parameter': [...],
+  >>    'archiving_criteria_parameter': {
+  >>        'minimum_expected_score': value,
+  >>        'attribute_scores': [...],
+  >>        'excluded_title_terms': [...],
+  >>        'excluded_discipline_terms': [...],
+  >>    }
+  >> }
+  >> ```
+  >>
+* `ENABLE_PAGE_OBSO_MAIL`
+  > valeur par défaut : `False`
+  >> Active l’envoi d’un lien pour prendre une décision sur le futur de la vidéo durant la campagne de rappel instanciée par check_obsolete_video.<br>
+* `PROLONGATION_GRANTED`
+  > valeur par défaut : `False`
+  >> Autorise l’utilisateur à étendre lui-même la durée de vie de ses vidéos à travers le courriel de rappel.<br>
+* `DELETION_GRANTED`
+  > valeur par défaut : `False`
+  >> Autorise l’utilisateur à supprimer lui-même ses vidéos à travers le courriel de rappel.<br>
 
 ### Modèle
 
@@ -838,7 +872,7 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
   > valeur par défaut : `False`
   >> Forcer la casse (minuscules ou majuscules) du nom d’utilisateur CAS<br>
   >> (permet de prévenir des doubles créations de comptes dans certains cas).<br>
-  >> Valeurs possibles : `lower`, `upper`, `False`.<br>
+  >> Valeurs possibles : `lower`, `upper`, `False`.<br>
 * `CAS_GATEWAY`
   > valeur par défaut : `False`
   >> Si True, authentifie automatiquement l’individu<br>
@@ -1627,6 +1661,10 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
 * `DEFAULT_YEAR_DATE_DELETE`
   > valeur par défaut : `2`
   >> Durée d’obsolescence par défaut (en années après la date d’ajout).<br>
+* `DEFAULT_OWNER_USERNAME`
+  > valeur par défaut : `"default_owner"`
+  >> Nom de l’utilisateur propriétaire par défaut des vidéos dont le propriétaire<br>
+  >> existant aurait quitté l'établissement (cf. commande check_video_owner_exists)<br>
 * `FORCE_LOWERCASE_TAGS`
   > valeur par défaut : `True`
   >> Les mots clés saisis lors de l’ajout de vidéo sont convertis automatiquement en minuscule.<br>

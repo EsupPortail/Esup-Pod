@@ -335,3 +335,17 @@ TINYMCE_DEFAULT_CONFIG = {
     "removeformat | help",
     "relative_urls": False,
 }
+
+RESPITE_MODEL = "base"
+ENABLE_PAGE_OBSO_MAIL = False
+PROLONGATION_GRANTED = False
+DELETION_GRANTED = False
+
+RESPITE_MODEL_PARAMETERS = {
+    "respite_criteria_parameter": [],
+    "archiving_criteria_parameter": {
+        "excluded_title_terms": [],
+        "excluded_discipline_terms": [],
+    },
+}
+DEFAULT_OWNER_USERNAME = "default_owner"

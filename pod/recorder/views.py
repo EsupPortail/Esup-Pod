@@ -8,51 +8,53 @@ import re
 import uuid
 from datetime import datetime, timedelta
 
-# import urllib
 from urllib.parse import unquote
-from defusedxml import minidom
 
 import bleach
+from defusedxml import minidom
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.admin.views.decorators import user_passes_test
+from django.contrib.admin.views.decorators import staff_member_required, user_passes_test
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import (
+    ObjectDoesNotExist,
+    PermissionDenied,
+    SuspiciousFileOperation,
+)
 from django.core.mail import EmailMultiAlternatives
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.http import HttpResponseRedirect, JsonResponse
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.http import (
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseRedirect,
+    JsonResponse,
+)
 
-# import urllib.parse
-from django.shortcuts import get_object_or_404
-
-# from django.core.exceptions import SuspiciousOperation
-from django.shortcuts import redirect
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.defaultfilters import truncatechars
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils._os import safe_join
+from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_http_methods
 
-from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
 from pod.main.utils import is_ajax
+from pod.main.views import TEMPLATE_VISIBLE_SETTINGS, in_maintenance
 from pod.recorder.models import Recorder, Recording, RecordingFileTreatment
-from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
+
+from .forms import RecordingFileTreatmentDeleteForm, RecordingForm
 from .models import __REVATSO__
 from .utils import (
-    get_id_media,
-    handle_upload_file,
-    create_xml_element,
-    get_media_package_content,
-    digest_is_valid,
     create_digest_auth_response,
+    create_xml_element,
+    digest_is_valid,
+    get_id_media,
+    get_media_package_content,
+    handle_upload_file,
 )
 
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
@@ -82,6 +84,18 @@ OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mi
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 
 logger = logging.getLogger("pod.recorder.view")
+
+
+def _resolve_studio_asset_path(base_dir: str, file: str):
+    """Resolve an opencast studio asset path and ensure it stays under base_dir."""
+    base_real = os.path.realpath(base_dir)
+    try:
+        resolved_path = os.path.realpath(safe_join(base_real, file))
+        if os.path.commonpath([resolved_path, base_real]) != base_real:
+            raise SuspiciousFileOperation(_("Path traversal detected."))
+    except (SuspiciousFileOperation, ValueError) as exc:
+        raise PermissionDenied from exc
+    return resolved_path
 
 
 def check_recorder(recorder_id, request):
@@ -179,7 +193,7 @@ def add_recording(request):
             )
 
             messages.add_message(request, messages.INFO, message)
-            return redirect(reverse("video:dashboard"))
+            return redirect("video:dashboard")
         else:
             message = _("One or more errors have been found in the form.")
             messages.add_message(request, messages.ERROR, message)
@@ -456,16 +470,23 @@ def open_presenter_post(request):
 
 def open_studio_static(request, file):
     """Redirect to all static files inside Opencast studio static subfolder."""
+    base_dir = os.path.join(settings.BASE_DIR, "custom", "static", "opencast", "studio")
+    static_dir = os.path.join(base_dir, "static")
+    path_file = _resolve_studio_asset_path(static_dir, file)
+    static_dir_real = os.path.realpath(static_dir)
+    if os.path.commonpath([path_file, static_dir_real]) != static_dir_real:
+        raise PermissionDenied
     extension = file.split(".")[-1]
     if extension == "js":
-        path_file = os.path.join(
-            settings.BASE_DIR, "custom", "static", "opencast", "studio/static/%s" % file
-        )
-        f = open(path_file, "r")
-        content_file = f.read()
+        try:
+            with open(path_file, "r") as f:
+                content_file = f.read()
+        except OSError:
+            return HttpResponseBadRequest()
         content_file = content_file.replace("Opencast", "Pod")
         return HttpResponse(content_file, content_type="application/javascript")
-    return HttpResponseRedirect("/static/opencast/studio/static/%s" % file)
+    relative_path = os.path.relpath(path_file, static_dir).replace(os.sep, "/")
+    return HttpResponseRedirect("/static/opencast/studio/static/%s" % relative_path)
 
 
 def open_info_me_json(request):
@@ -676,16 +697,22 @@ def studio_static(request, file):
 @login_required(redirect_field_name="referrer")
 def studio_root_file(request, file):
     """Redirect to root static files of Opencast studio folder."""
+    base_dir = os.path.join(settings.BASE_DIR, "custom", "static", "opencast", "studio")
+    path_file = _resolve_studio_asset_path(base_dir, file)
+    base_dir_real = os.path.realpath(base_dir)
+    if os.path.commonpath([path_file, base_dir_real]) != base_dir_real:
+        raise PermissionDenied
     extension = file.split(".")[-1]
     if extension == "js":
-        path_file = os.path.join(
-            settings.BASE_DIR, "custom", "static", "opencast", "studio/%s" % file
-        )
-        f = open(path_file, "r")
-        content_file = f.read()
+        try:
+            with open(path_file, "r") as f:
+                content_file = f.read()
+        except OSError:
+            return HttpResponseBadRequest()
         content_file = content_file.replace("Opencast", "Pod")
         return HttpResponse(content_file, content_type="application/javascript")
-    return HttpResponseRedirect("/static/opencast/studio/%s" % file)
+    relative_path = os.path.relpath(path_file, base_dir).replace(os.sep, "/")
+    return HttpResponseRedirect("/static/opencast/studio/%s" % relative_path)
 
 
 @login_required(redirect_field_name="referrer")
@@ -905,7 +932,11 @@ def digest_capture_admin(request, name):
     if request.POST.get("state", "") not in known_states:
         return HttpResponseBadRequest()
 
-    return HttpResponse(name + " set to " + request.POST.get("state"))
+    state = request.POST.get("state")
+    return HttpResponse(
+        _("%(name)s set to %(state)s") % {"name": escape(name), "state": escape(state)},
+        content_type="text/plain; charset=utf-8",
+    )
 
 
 @csrf_exempt

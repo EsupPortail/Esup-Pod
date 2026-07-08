@@ -1,7 +1,7 @@
 """
-Export data from Pod v3.8.x to a JSON file for Pod v4.0.x.
+Export data from Pod v3.8.x to a JSON file for Pod v4.x.
 
-This script is designed to export data from a Pod v3.8.x database to a JSON file, which can then be used to migrate the data to a Pod v4.0.x database.
+This script is designed to export data from a Pod v3.8.x database to a JSON file, which can then be used to migrate the data to a Pod v4.x database.
 The script handles both MariaDB/MySQL and PostgreSQL databases, adapting SQL queries as needed.
 
 Key Features:
@@ -38,10 +38,11 @@ Functions:
 import json
 import os
 from datetime import date, datetime, time
+from typing import Any, Dict, List, Tuple
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connection
-from typing import List, Tuple, Dict, Any
 
 # Base directory
 BASE_DIR = getattr(settings, "BASE_DIR", "/home/pod/django_projects/podv3/pod")
@@ -52,7 +53,7 @@ VERSION = getattr(settings, "VERSION", "undefined")
 class Command(BaseCommand):
     """Main command class."""
 
-    help = "Export data from Pod v3.8.x to Pod v4.0.x"
+    help = "Export data from Pod v3.8.x to Pod v4.x"
 
     def handle(self, *args: Any, **options: Any) -> None:
         """Handle the command call."""

@@ -183,7 +183,7 @@ def get_entry(conn, username, list_value):
 
 def assign_accessgroups(groups_element, user) -> None:
     """Assign access groups to the user."""
-    # print("assign_accessgroups / groups_element : %s " % groups_element)
+    # print("assign_accessgroups / groups_element: %s " % groups_element)
     CREATE_GROUP_FROM_GROUPS = getattr(settings, "CREATE_GROUP_FROM_GROUPS", False)
     for group in groups_element:
 

@@ -19,6 +19,9 @@ ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
 ES_VERSION = getattr(settings, "ES_VERSION", 8)
 ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
 
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
+
 
 def index_es(video):
     """Get ElasticSearch index."""
@@ -35,8 +38,7 @@ def index_es(video):
             data = video.get_json_to_index()
             if data != "{}":
                 res = es.index(index=ES_INDEX, id=video.id, body=data, refresh=True)
-                if DEBUG:
-                    logger.info(res)
+                logger.debug(res)
                 return res
         except TransportError as e:
             logger.error(
@@ -66,8 +68,7 @@ def delete_es(video_id):
             es = es.options(ignore_status=[400, 404])
             # Do the deletion
             delete = es.delete(index=ES_INDEX, id=video_id, refresh=True)
-            if DEBUG:
-                logger.info(delete)
+            logger.debug(delete)
             return delete
         except TransportError as e:
             logger.error(

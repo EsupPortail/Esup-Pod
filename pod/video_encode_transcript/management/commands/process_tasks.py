@@ -15,7 +15,8 @@ Execution flow:
 3. Refresh rank metadata for pending tasks.
 4. Load pending tasks by type:
    - `encoding` and `transcription` are sorted by user priority
-     (non-students first), then by submission date.
+     (priority-0 users first, then non-students, then students), then by
+     submission date.
    - `studio` tasks are processed by submission date.
    - Each type is capped by `--max-tasks`.
 5. Submit tasks to available active runner managers (ordered by manager priority):
@@ -53,16 +54,15 @@ from pod.recorder.models import Recording
 from pod.video.models import Video
 from pod.video_encode_transcript.models import RunnerManager, Task
 from pod.video_encode_transcript.runner_manager import (
-    _build_base_url as build_runner_base_url,
-    _build_studio_source_url as build_runner_studio_source_url,
-    _build_transcription_source_url as build_runner_transcription_source_url,
-    _build_video_source_url as build_runner_video_source_url,
-    _prepare_encoding_parameters as prepare_runner_encoding_parameters,
-    _prepare_task_data as build_runner_task_data,
-    _prepare_transcription_parameters as prepare_runner_transcription_parameters,
-    _submit_to_runner_managers as submit_runner_task_to_managers,
+    submit_encoding_task,
+    submit_studio_task,
+    submit_transcription_task,
 )
 from pod.video_encode_transcript.task_queue import (
+    HIGH_PRIORITY,
+    LOW_PRIORITY,
+    NORMAL_PRIORITY,
+    get_priority_user_ids,
     get_user_priority,
     refresh_pending_task_ranks,
 )
@@ -152,9 +152,17 @@ class Command(BaseCommand):
         """
         self.stdout.write(self.style.SUCCESS(message))
 
+    def _format_priority_label(self, priority: int) -> str:
+        """Return a human readable queue-priority label for logs."""
+        if priority == HIGH_PRIORITY:
+            return "HIGH"
+        if priority == LOW_PRIORITY:
+            return "LOW (student)"
+        return "NORMAL"
+
     def _sort_tasks_by_priority(self, all_pending_tasks, max_tasks: int) -> list:
         """
-        Sort encoding tasks by priority (non-students first) and limit to max_tasks.
+        Sort tasks by queue priority and limit to max_tasks.
 
         Args:
             all_pending_tasks: QuerySet of all pending tasks
@@ -163,17 +171,22 @@ class Command(BaseCommand):
         Returns:
             list: List of tasks sorted by priority and limited to max_tasks
         """
+        priority_user_ids = get_priority_user_ids()
         tasks_with_priority = []
         for task in all_pending_tasks:
             try:
-                priority = get_user_priority(task.video) if task.video else 1
+                priority = (
+                    get_user_priority(task.video, priority_user_ids=priority_user_ids)
+                    if task.video
+                    else NORMAL_PRIORITY
+                )
                 tasks_with_priority.append((priority, task))
             except Video.DoesNotExist:
                 log.warning(f"Video {task.video_id} not found for task {task.id}")
                 # Still add the task with default priority to avoid skipping it
-                tasks_with_priority.append((1, task))
+                tasks_with_priority.append((NORMAL_PRIORITY, task))
 
-        # Sort by priority (1 first, then 2) and date_added, then limit
+        # Sort by priority (0 first, then 1, then 2) and date_added, then limit
         tasks_with_priority.sort(key=lambda x: (x[0], x[1].date_added))
         return [task for _, task in tasks_with_priority[:max_tasks]]
 
@@ -317,11 +330,12 @@ class Command(BaseCommand):
             int: Number of successfully submitted tasks
         """
         success_count = 0
+        priority_user_ids = get_priority_user_ids()
         for task in pending_tasks:
             try:
                 video = Video.objects.get(id=task.video_id)
-                priority = get_user_priority(video)
-                priority_label = "LOW (student)" if priority == 2 else "HIGH"
+                priority = get_user_priority(video, priority_user_ids=priority_user_ids)
+                priority_label = self._format_priority_label(priority)
                 self.print_log(
                     f"Processing task {task.id} for video {video.id} - Priority: {priority_label}"
                 )
@@ -399,11 +413,12 @@ class Command(BaseCommand):
             int: Number of successfully submitted tasks
         """
         success_count = 0
+        priority_user_ids = get_priority_user_ids()
         for task in pending_tasks:
             try:
                 video = Video.objects.get(id=task.video_id)
-                priority = get_user_priority(video)
-                priority_label = "LOW (student)" if priority == 2 else "HIGH"
+                priority = get_user_priority(video, priority_user_ids=priority_user_ids)
+                priority_label = self._format_priority_label(priority)
                 self.print_log(
                     f"Processing transcription task {task.id} for video {video.id} - Priority: {priority_label}"
                 )
@@ -535,7 +550,7 @@ class Command(BaseCommand):
             f"Found {all_pending_transcription_tasks.count()} pending transcription task(s)"
         )
 
-        # Sort tasks by priority (students last) and limit to max_tasks
+        # Sort tasks by queue priority (priority-0 first) and limit to max_tasks
         pending_tasks = self._sort_tasks_by_priority(all_pending_tasks, max_tasks)
         pending_studio_tasks = list(all_pending_studio_tasks[:max_tasks])
         pending_transcription_tasks = self._sort_tasks_by_priority(
@@ -572,79 +587,26 @@ class Command(BaseCommand):
             f"studio {success_count_studio}/{len(pending_studio_tasks)} successfully submitted"
         )
 
-    def _submit_task_to_runner_managers(
-        self,
-        *,
-        task_type: str,
-        source_type: str,
-        source_id: int,
-        source_url: str,
-        base_url: str,
-        parameters: dict,
-        runner_managers: list,
-    ) -> bool:
-        """Build the runner payload and submit it using shared runner helpers."""
-        data = build_runner_task_data(
-            source_url=source_url,
-            base_url=base_url,
-            parameters=parameters,
-            task_type=task_type,
-        )
-        return submit_runner_task_to_managers(
-            runner_managers=runner_managers,
-            data=data,
-            task_type=task_type,
-            source_type=source_type,
-            source_id=source_id,
-        )
-
     def _submit_encoding_task(
         self, video: Video, site: Site, runner_managers: list
     ) -> bool:
         """Submit an encoding task using shared runner manager helpers."""
-        base_url = build_runner_base_url(site)
-        source_url = build_runner_video_source_url(video, base_url)
-        parameters = prepare_runner_encoding_parameters(video=video, base_url=base_url)
-        return self._submit_task_to_runner_managers(
-            task_type="encoding",
-            source_type="video",
-            source_id=video.id,
-            source_url=source_url,
-            base_url=base_url,
-            parameters=parameters,
-            runner_managers=runner_managers,
+        return submit_encoding_task(
+            video=video, site=site, runner_managers=runner_managers
         )
 
     def _submit_transcription_task(
         self, video: Video, site: Site, runner_managers: list
     ) -> bool:
         """Submit a transcription task using shared runner manager helpers."""
-        base_url = build_runner_base_url(site)
-        source_url = build_runner_transcription_source_url(video, base_url)
-        parameters = prepare_runner_transcription_parameters(video=video)
-        return self._submit_task_to_runner_managers(
-            task_type="transcription",
-            source_type="video",
-            source_id=video.id,
-            source_url=source_url,
-            base_url=base_url,
-            parameters=parameters,
-            runner_managers=runner_managers,
+        return submit_transcription_task(
+            video=video, site=site, runner_managers=runner_managers
         )
 
     def _submit_studio_task(
         self, recording: Recording, site: Site, runner_managers: list
     ) -> bool:
         """Submit a studio task using shared runner manager helpers."""
-        base_url = build_runner_base_url(site)
-        source_url = build_runner_studio_source_url(recording, base_url)
-        parameters = prepare_runner_encoding_parameters(video=None)
-        return self._submit_task_to_runner_managers(
-            task_type="studio",
-            source_type="recording",
-            source_id=recording.id,
-            source_url=source_url,
-            base_url=base_url,
-            parameters=parameters,
-            runner_managers=runner_managers,
+        return submit_studio_task(
+            recording=recording, site=site, runner_managers=runner_managers
         )

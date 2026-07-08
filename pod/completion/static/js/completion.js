@@ -622,9 +622,10 @@ function verify_fields(form) {
       });
     }
   } else if (form == "form-overlay") {
-    var tags = /<script.+?>|<iframe.+?>/;
-    if (tags.exec(document.getElementById("id_content").value) != null) {
-      let id_content = document.getElementById("id_content");
+    const id_content = document.getElementById("id_content");
+    const contentValue = id_content.value || "";
+    const hasForbiddenTags = /<\s*(script|iframe)\b/i.test(contentValue);
+    if (hasForbiddenTags) {
       id_content.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
@@ -632,9 +633,9 @@ function verify_fields(form) {
           "</span>",
       );
       let form_group = id_content.closest("div.form-group");
-      form_group.forEach(function (element) {
-        element.classList.add("has-error");
-      });
+      if (form_group) {
+        form_group.classList.add("has-error");
+      }
       error = true;
     }
   } else if (form == "form-speaker") {

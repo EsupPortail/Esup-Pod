@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block page_content %}
+  {% if ENABLE_PAGE_OBSO_MAIL  == True and display_or_not == True %}
+    <h1 class="h2">{% trans "Your video will soon be deleted, what do you want do?" %}</h1>
+    <ul>
+      <li>
+      {% trans "Link to the video:" %}
+      <a href="{% url 'video:video' slug=video.slug %}">{{ video.title }}</a>
+      </li><li>
+      {% trans "Date to delete:" %}
+      <strong>{{ video.date_delete }}</strong>
+      </li>
+    </ul>
+
+    <form action="/video/valid/form/respite/{{ video.slug }}/" method="post">
+      {% csrf_token %}
+      <fieldset class="border rounded-3 p-3 mb-3">
+        <legend>{{ form.action.label }}</legend>
+        <div class="form-text mt-0 mb-2">{{ form.action.help_text }}</div>
+        {% for radio in form.action %}
+          <div class="form-check">
+            {{ radio }}
+            <div class="form-text">{{ radio.data.help_text}}</div>
+          </div>
+        {% endfor %}
+      </fieldset>
+      <div class="text-center m-3">
+        <input type="submit" value="{% trans "Apply my choice" %}" class="btn btn-primary">
+      </div>
+    </form>
+    <p class="mt-3 mb-0">
+      <a href="/video/archive/and/download/{{ video.slug }}/">
+        <i class="bi bi-archive" aria-hidden="true"></i>
+        {% trans "Export this video" %}</a>
+    </p>
+    <p class="form-text">
+      {% trans "This link allows you to export your video, along with its metadata and attached files, as a ZIP file so you can save them to your storage space. We strongly recommend using this option before permanently deleting your video from the server." %}
+    </p>
+  {% else %}
+    {% if ENABLE_PAGE_OBSO_MAIL  == False %}
+      <h1>{% trans "This service is not available." %}</h1>
+    {% endif %}
+    {% if display_or_not == False %}
+      <h1>{% trans "Access denied" %}</h1>
+      <p>{% trans "The video does not belong to you or has already been processed." %}</p>
+    {% endif %}
+    <p>
+      <b>{% trans "Link to the video:" %}</b>
+      <a href="/video/{{ video.slug }}"> {{ video.title }}</a>
+    </p>
+  {% endif %}
+{% endblock page_content %}
