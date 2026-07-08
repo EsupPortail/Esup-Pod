@@ -24,6 +24,7 @@ The **Video** application is the core module of Pod V5. It manages the full life
 | **View Tracking**      | Daily view count per video, accessible via the API.                                |
 | **Auto-expiration**    | Deletion date computed automatically based on the owner's affiliation.             |
 | **Encoding Pipeline**  | On upload, triggers an asynchronous encoding task via the Encoding app.            |
+| **Bulk Actions**       | Update or delete multiple videos in one request (async via Celery above threshold). |
 
 ## Video Status Lifecycle
 
@@ -85,6 +86,8 @@ A video passes through the following states:
 | **GET**      | `/api/subtitles/`                     | List subtitles (filterable by `?video_id=`).      |
 | **POST**     | `/api/subtitles/`                     | Attach a subtitle to a video.                     |
 | **DELETE**   | `/api/subtitles/{id}/`                | Delete a subtitle (video owner only).             |
+| **PATCH**    | `/api/videos/bulk/`                   | Bulk update fields on multiple videos.            |
+| **DELETE**   | `/api/videos/bulk/`                   | Bulk delete multiple videos.                      |
 | **GET**      | `/api/marker/{video_slug}/`           | Retrieve the playback position for the user.      |
 | **POST**     | `/api/marker/{video_slug}/save/`      | Save the playback position for the user.          |
 | **DELETE**   | `/api/marker/{video_slug}/reset/`     | Delete the playback position marker.              |
