@@ -29,10 +29,10 @@ Pour activer la fonctionnalité il faut renseigner les variables suivantes dans 
 - `USE_AI_ENHANCEMENT = True` # Activation de la fonctionnalité
 - `AI_ENHANCEMENT_API_URL = 'https://stt.ilaas.fr/api'` # URL pour contacter l’API d’Aristote
 - `AI_ENHANCEMENT_CLIENT_ID = 'univ_client_id'`
-- `AI_ENHANCEMENT_CLIENT_SECRET = 'xxx-xxx-xxx'` # Faire une demande sur https://www.ilaas.fr/demande-dacces/ pour obtenir l'identifiant et le jeton d'accès
+- `AI_ENHANCEMENT_CLIENT_SECRET = 'xxx-xxx-xxx'`
 - `AI_ENHANCEMENT_API_VERSION = 'v1'` # Version de l’API d’Aristote utilisée pour l’enrichissement
 
-Pour obtenir les valeurs à renseigner pour les variables `AI_ENHANCEMENT_CLIENT_ID` et `AI_ENHANCEMENT_CLIENT_SECRET`, il faut faire une demande d’accès à l’API d’Aristote auprès de Centrale Supelec (contact.aristote [at] centralesupelec.fr).
+Pour obtenir les valeurs à renseigner pour les variables `AI_ENHANCEMENT_CLIENT_ID` et `AI_ENHANCEMENT_CLIENT_SECRET`, il faut faire une demande d’accès à l’API d’Aristote auprès d'ILaaS à l'adresse : https://www.ilaas.fr/demande-dacces/.
 
 D’autres variables (utiles mais non nécessaires au fonctionnement) peuvent également être ajoutées :
 
