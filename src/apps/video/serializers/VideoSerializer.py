@@ -12,7 +12,7 @@ from django.contrib.auth.hashers import make_password
 from src.apps.encoding.conf import encoding_settings
 from src.apps.video.conf import video_settings
 from src.apps.authentication.models import AccessGroup
-from src.apps.collection.models import Theme, ThemeItem
+from src.apps.collection.models import Theme, ThemeItem, Channel
 from src.apps.completion.serializers import (
     ContributionSerializer,
     OverlaySerializer,
@@ -86,6 +86,9 @@ class VideoSerializer(serializers.ModelSerializer):
     )
     themes = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Theme.objects.all(), required=False
+    )
+    channel = serializers.SlugRelatedField(
+        queryset=Channel.objects.all(), slug_field="slug", required=False, allow_null=True
     )
     date_of_event = serializers.DateField(required=False, allow_null=True)
     created_at = serializers.DateTimeField(read_only=True)
