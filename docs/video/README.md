@@ -12,6 +12,7 @@ The **Video** application is the core module of Pod V5. It manages the full life
 | **Co-ownership**       | Multiple users can share edit rights on the same video.                            |
 | **Subtitles**          | Attach subtitle files (VTT/SRT) per language (FR, EN, ES).                         |
 | **Streaming**          | Direct file streaming via a dedicated API endpoint.                                |
+| **Video Duplication**  | Duplicate a video completely (ISO V4: copies files, metadata, links).              |
 | **Video Cut**          | Trim a video virtually using a start and end time (clears chapters/notes).         |
 | **Marker Time**        | Automatically saves and retrieves the user's video playback position.              |
 | **Hyperlinks**         | Add interactive links (timecodes, external resources) to videos.                   |
@@ -35,13 +36,13 @@ A video passes through the following states:
                     (manual) → RESTRICTED
 ```
 
-| Status          | Code | Description                                         |
-| :-------------- | :--- | :-------------------------------------------------- |
-| **Encoding**    | `EN` | Transcoding in progress (default after upload).     |
-| **Published**   | `PU` | Public — visible to all users.                      |
-| **Draft**       | `DR` | Private — only visible to the owner.                |
-| **Restricted**  | `RE` | Access controlled (password and/or login required). |
-| **Error**       | `ER` | Encoding failed.                                    |
+| Status         | Code | Description                                         |
+| :------------- | :--- | :-------------------------------------------------- |
+| **Encoding**   | `EN` | Transcoding in progress (default after upload).     |
+| **Published**  | `PU` | Public — visible to all users.                      |
+| **Draft**      | `DR` | Private — only visible to the owner.                |
+| **Restricted** | `RE` | Access controlled (password and/or login required). |
+| **Error**      | `ER` | Encoding failed.                                    |
 
 ## Data Models
 
@@ -68,9 +69,9 @@ A video passes through the following states:
 | **PATCH**    | `/api/videos/{slug}/`                 | Update a video (owner/co-owner only).             |
 | **DELETE**   | `/api/videos/{slug}/`                 | Delete a video (owner/admin only).                |
 | **GET**      | `/api/videos/{slug}/stream/`          | Stream the video file directly.                   |
+| **POST**     | `/api/videos/{slug}/duplicate/`       | Duplicate the video completely (files & metadata).|
 | **POST**     | `/api/videos/{slug}/register_view/`   | Increment the view counter.                       |
 | **POST**     | `/api/videos/{slug}/unlock/`          | Unlock a password-protected restricted video.     |
-| **POST**     | `/api/videos/{slug}/duplicate/`       | Duplicate a video (creates a full copy).          |
 | **GET**      | `/api/types/`                         | List available video types.                       |
 | **GET**      | `/api/disciplines/`                   | List available disciplines.                       |
 | **GET**      | `/api/tags/`                          | List available tags.                              |

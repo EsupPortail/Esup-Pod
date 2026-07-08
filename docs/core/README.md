@@ -12,10 +12,10 @@ The Core app ensures that:
 
 ## Key Components
 
-| Component              | Role                                                                            |
-| :--------------------- | :------------------------------------------------------------------------------ |
-| **configuration.json** | Single source of truth containing metadata for all configurable settings.       |
-| **Management Commands**| CLI tools for auditing, documenting, and maintaining the platform.              |
+| Component               | Role                                                                      |
+| :---------------------- | :------------------------------------------------------------------------ |
+| **configuration.json**  | Single source of truth containing metadata for all configurable settings. |
+| **Management Commands** | CLI tools for auditing, documenting, and maintaining the platform.        |
 
 ## Supported Commands
 
