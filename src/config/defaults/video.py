@@ -15,6 +15,9 @@ USE_CUT = False
 ALLOW_AUTHENTICATED_UPLOAD = True
 CHANNEL_MODE = False
 ACTIVE_VIDEO_COMMENT = True
+USE_BULK_ACTIONS = True  # Enable bulk update/delete on videos
+BULK_ASYNC_THRESHOLD = 20  # Above this count, processing is delegated to Celery
+
 
 # UI / Display Flags
 HIDE_USER_FILTER = False

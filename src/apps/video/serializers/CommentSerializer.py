@@ -4,7 +4,7 @@ Esup-Pod - Comment serializer.
 
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
-from django.db.models import Count, Case, When, Value, BooleanField
+from django.db.models import Count, Case, When, Value, BooleanField, F
 from django.db.models.functions import Concat
 from src.apps.video.models import Comment
 
@@ -16,6 +16,7 @@ class CommentSerializer(serializers.ModelSerializer):
     """
 
     author_name = serializers.CharField(read_only=True)
+    author_username = serializers.CharField(source="author.username", read_only=True)
     author_picture = serializers.SerializerMethodField()
     nbr_vote = serializers.IntegerField(read_only=True)
     is_owner = serializers.BooleanField(read_only=True)
@@ -31,6 +32,7 @@ class CommentSerializer(serializers.ModelSerializer):
             "direct_parent",
             "author",
             "author_name",
+            "author_username",
             "author_picture",
             "content",
             "video",
@@ -42,6 +44,7 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "author",
             "author_name",
+            "author_username",
             "author_picture",
             "added",
             "nbr_vote",
@@ -91,6 +94,7 @@ class CommentSerializer(serializers.ModelSerializer):
             .annotate(
                 author_name=Concat("author__last_name", Value(" "), "author__first_name")
             )
+            .annotate(author_username=F("author__username"))
             .annotate(
                 is_owner=Case(
                     When(author__id=user_id, then=Value(True)),
