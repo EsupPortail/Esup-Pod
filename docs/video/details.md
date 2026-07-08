@@ -213,7 +213,6 @@ Unlocks a password-protected restricted video.
 - Validates the provided `password` against the stored hash. (Alternatively accepts a legacy `hash` parameter for backward compatibility).
 - Returns the `video_url` on success and registers access in the session state.
 
-<<<<<<< HEAD
 ### `PATCH|DELETE /api/videos/bulk/`
 
 Applies an update or deletion to **multiple videos in one request**.
@@ -240,7 +239,6 @@ Applies an update or deletion to **multiple videos in one request**.
   A `403 Forbidden` is raised on the first video that fails the check.
 - **Feature flag**: returns `400` if `USE_BULK_ACTIONS = False`.
 
-=======
 ### `POST /api/cut/{slug}/` & `DELETE /api/cut/{slug}/delete/`
 
 Manages the video cut feature (trimming a video virtually):
@@ -250,7 +248,6 @@ Manages the video cut feature (trimming a video virtually):
 - **Permissions**: Requires owner, co-owner, or super-user rights. If `video_settings.restrict_edit_to_staff` is enabled, only staff members can manage cuts.
 
 ---
->>>>>>> upstream/dev_v5
 
 ## 6. Upload & Encoding Flow
 
@@ -272,7 +269,6 @@ Manages the video cut feature (trimming a video virtually):
 
 Managed via `VideoConfig` (pydantic-settings in `src/apps/video/conf.py`). Settings are read from Django settings or environment variables with the prefix `POD_VIDEO_`.
 
-<<<<<<< HEAD
 | Setting                      | Default       | Description                                                 |
 | :--------------------------- | :------------ | :---------------------------------------------------------- |
 | `USE_HYPERLINKS`             | `True`        | Enables the video hyperlinks system globally.               |
@@ -289,22 +285,6 @@ Managed via `VideoConfig` (pydantic-settings in `src/apps/video/conf.py`). Setti
 | `DEFAULT_DC_RIGHTS`          | (string)      | Dublin Core `rights` metadata default.                      |
 | `USE_BULK_ACTIONS`           | `True`        | Enable bulk update/delete endpoint (`/api/videos/bulk/`).   |
 | `BULK_ASYNC_THRESHOLD`       | `20`          | Videos above this count are processed async via Celery.     |
-=======
-| Setting                      | Default       | Description                                                |
-| :--------------------------- | :------------ | :--------------------------------------------------------- |
-| `USE_HYPERLINKS`             | `True`        | Enables the video hyperlinks system globally.              |
-| `WEBTV_MODE`                 | `False`       | If `True`, video file is optional (WebTV / channel mode).  |
-| `ALLOW_AUTHENTICATED_UPLOAD` | `True`        | Allow authenticated non-staff users to upload.             |
-| `RESTRICT_EDIT_TO_STAFF`     | `False`       | Locks write access to staff and admins only.               |
-| `HOMEPAGE_SHOWS_PASSWORDED`  | `True`        | Show password-protected videos in public listing.          |
-| `DEFAULT_LICENSE`            | `"COPYRIGHT"` | Default license applied to newly created videos.           |
-| `DEFAULT_THUMBNAIL`          | (path)        | Path to the fallback thumbnail image.                      |
-| `DEFAULT_YEAR_DATE_DELETE`   | `2`           | Default years before expiration (if no affiliation match). |
-| `ACCOMMODATION_YEARS`        | `{}`          | Dict mapping affiliation → nb years before deletion.       |
-| `CACHE_TIMEOUT`              | `600`         | Cache TTL in seconds for video data.                       |
-| `DEFAULT_DC_COVERAGE`        | (string)      | Dublin Core `coverage` metadata default.                   |
-| `DEFAULT_DC_RIGHTS`          | (string)      | Dublin Core `rights` metadata default.                     |
->>>>>>> upstream/dev_v5
 
 ---
 
