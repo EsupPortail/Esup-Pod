@@ -1,6 +1,5 @@
 # Notes: Technical Details
 
->
 > **Navigation:** [Back to Overview](README.md) | [Back to Index](../README.md)
 
 ---
@@ -11,15 +10,15 @@
 
 Stores a user note attached to a video (`src/apps/notes/models/VideoNote.py`).
 
-| Field        | Type                | Description                                                        |
-| :----------- | :------------------ | :----------------------------------------------------------------- |
-| `video`      | FK → Video          | The video the note is attached to.                                 |
-| `owner`      | FK → User           | The user who created the note.                                     |
-| `content`    | TextField           | The note content.                                                  |
-| `timestamp`  | PositiveIntegerField| Optional video time in seconds. Null for global notes.             |
-| `privacy`    | CharField (choices) | Privacy level: `private` or `public`.                              |
-| `created_at` | DateTimeField       | Creation timestamp (auto).                                         |
-| `updated_at` | DateTimeField       | Last update timestamp (auto).                                      |
+| Field        | Type                 | Description                                            |
+| :----------- | :------------------- | :----------------------------------------------------- |
+| `video`      | FK → Video           | The video the note is attached to.                     |
+| `owner`      | FK → User            | The user who created the note.                         |
+| `content`    | TextField            | The note content.                                      |
+| `timestamp`  | PositiveIntegerField | Optional video time in seconds. Null for global notes. |
+| `privacy`    | CharField (choices)  | Privacy level: `private` or `public`.                  |
+| `created_at` | DateTimeField        | Creation timestamp (auto).                             |
+| `updated_at` | DateTimeField        | Last update timestamp (auto).                          |
 
 **PrivacyStatus choices:**
 
@@ -37,11 +36,11 @@ class PrivacyStatus(models.TextChoices):
 
 ### `IsNoteOwner` (`src/apps/notes/permissions.py`)
 
-| Method             | Rule                                     |
-| :----------------- | :--------------------------------------- |
-| Safe (`GET`)       | Any authenticated user.                  |
-| Write (`PATCH`)    | Owner only.                              |
-| Delete (`DELETE`)  | Owner only.                              |
+| Method            | Rule                    |
+| :---------------- | :---------------------- |
+| Safe (`GET`)      | Any authenticated user. |
+| Write (`PATCH`)   | Owner only.             |
+| Delete (`DELETE`) | Owner only.             |
 
 ### Visibility Logic (`get_queryset`)
 
@@ -63,11 +62,11 @@ Before creating a note, the viewset verifies that the target video is visible to
 
 Located in `src/apps/notes/serializers/VideoNoteSerializer.py`.
 
-| Field           | Behavior                                                        |
-| :-------------- | :-------------------------------------------------------------- |
-| `owner`         | Read-only — automatically set to `request.user` on create.     |
-| `privacy_label` | Read-only — human-readable privacy status.                      |
-| `timestamp`     | Optional — validated to be positive if provided.                |
+| Field           | Behavior                                                   |
+| :-------------- | :--------------------------------------------------------- |
+| `owner`         | Read-only — automatically set to `request.user` on create. |
+| `privacy_label` | Read-only — human-readable privacy status.                 |
+| `timestamp`     | Optional — validated to be positive if provided.           |
 
 ---
 
@@ -75,9 +74,9 @@ Located in `src/apps/notes/serializers/VideoNoteSerializer.py`.
 
 Managed via `NotesConfig` (`src/apps/notes/conf.py`). Defaults in `src/config/defaults/notes.py`.
 
-| Setting      | Default | Description                              |
-| :----------- | :------ | :--------------------------------------- |
-| `USE_NOTES`  | `True`  | Enable/disable the notes feature entirely.|
+| Setting     | Default | Description                                |
+| :---------- | :------ | :----------------------------------------- |
+| `USE_NOTES` | `True`  | Enable/disable the notes feature entirely. |
 
 ---
 

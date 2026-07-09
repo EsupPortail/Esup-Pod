@@ -6,7 +6,7 @@ Typed and validated configuration for the video app using pydantic-settings.
 
 from typing import Tuple, Type, Dict
 
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
@@ -55,6 +55,23 @@ class VideoConfig(BaseSettings):
         default=defaults.USE_CUT,
         description=_("Enable video cutting feature."),
         json_schema_extra={"public": True},
+    )
+    use_dublin_core: bool = Field(
+        default=defaults.USE_DUBLIN_CORE,
+        description=_("Enable Dublin Core metadata endpoint."),
+        json_schema_extra={"public": True},
+    )
+    oai_pmh_repository_name: str = Field(
+        default=defaults.OAI_PMH_REPOSITORY_NAME,
+        description=_("OAI-PMH repository name for Identify verb."),
+    )
+    oai_pmh_admin_email: str = Field(
+        default=defaults.OAI_PMH_ADMIN_EMAIL,
+        description=_("OAI-PMH administrator email for Identify verb."),
+    )
+    oai_pmh_page_size: int = Field(
+        default=defaults.OAI_PMH_PAGE_SIZE,
+        description=_("Number of records per page in OAI-PMH ListRecords response."),
     )
     use_marker_time: bool = Field(
         default=defaults.USE_MARKER_TIME,

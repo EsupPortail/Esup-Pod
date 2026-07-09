@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD013 -->
+
 # Import Video: Technical Details
 
->
 > **Navigation:** [Back to Overview](README.md) | [Back to Index](../README.md)
 
 ---
@@ -12,18 +12,18 @@
 
 Stores the declaration of an external video source and tracks its import lifecycle (`src/apps/import_video/models/ExternalRecording.py`).
 
-| Field            | Type                  | Description                                                      |
-| :--------------- | :-------------------- | :--------------------------------------------------------------- |
-| `name`           | CharField             | Display name for the recording.                                  |
-| `owner`          | FK → User             | Staff user who declared the recording.                           |
-| `site`           | FK → Site             | Site the recording belongs to (multi-tenancy).                   |
-| `source_type`    | CharField (choices)   | Source platform (see SourceType below).                          |
-| `source_url`     | URLField              | URL of the external video.                                       |
-| `import_status`  | CharField (choices)   | Current import pipeline status (see ImportStatus below).         |
-| `video`          | OneToOne → Video      | Linked Pod Video after successful import. Null until then.       |
-| `error_message`  | TextField             | Error detail if import failed. Empty otherwise.                  |
-| `start_at`       | DateTimeField         | Timestamp when the recording was declared.                       |
-| `imported_at`    | DateTimeField         | Timestamp when the import completed successfully.                |
+| Field           | Type                | Description                                                |
+| :-------------- | :------------------ | :--------------------------------------------------------- |
+| `name`          | CharField           | Display name for the recording.                            |
+| `owner`         | FK → User           | Staff user who declared the recording.                     |
+| `site`          | FK → Site           | Site the recording belongs to (multi-tenancy).             |
+| `source_type`   | CharField (choices) | Source platform (see SourceType below).                    |
+| `source_url`    | URLField            | URL of the external video.                                 |
+| `import_status` | CharField (choices) | Current import pipeline status (see ImportStatus below).   |
+| `video`         | OneToOne → Video    | Linked Pod Video after successful import. Null until then. |
+| `error_message` | TextField           | Error detail if import failed. Empty otherwise.            |
+| `start_at`      | DateTimeField       | Timestamp when the recording was declared.                 |
+| `imported_at`   | DateTimeField       | Timestamp when the import completed successfully.          |
 
 **SourceType choices:**
 
@@ -116,11 +116,11 @@ Asynchronous Celery task triggered by `POST /api/external-recordings/{id}/import
 
 **Error handling:**
 
-| Exception             | Outcome                                      |
-| :-------------------- | :------------------------------------------- |
-| `NotImplementedError` | status → ERROR, message logged as WARNING    |
-| `ValueError`          | status → ERROR, message stored               |
-| `Exception`           | status → ERROR, full traceback logged        |
+| Exception             | Outcome                                   |
+| :-------------------- | :---------------------------------------- |
+| `NotImplementedError` | status → ERROR, message logged as WARNING |
+| `ValueError`          | status → ERROR, message stored            |
+| `Exception`           | status → ERROR, full traceback logged     |
 
 ---
 
@@ -150,12 +150,12 @@ Located in `src/apps/import_video/serializers/ExternalRecordingSerializer.py`.
 
 **Validations:**
 
-| Rule                        | Description                                                        |
-| :-------------------------- | :----------------------------------------------------------------- |
-| `validate_source_url`       | Source URL must not be empty.                                      |
-| `validate` (YouTube)        | URL must contain `youtube.com` or `youtu.be`.                      |
-| `validate` (PeerTube)       | URL must contain `/videos/watch/` or `/w/`.                        |
-| `validate` (BBB)            | URL must contain `playback` or `recording`.                        |
+| Rule                  | Description                                   |
+| :-------------------- | :-------------------------------------------- |
+| `validate_source_url` | Source URL must not be empty.                 |
+| `validate` (YouTube)  | URL must contain `youtube.com` or `youtu.be`. |
+| `validate` (PeerTube) | URL must contain `/videos/watch/` or `/w/`.   |
+| `validate` (BBB)      | URL must contain `playback` or `recording`.   |
 
 ---
 
@@ -163,10 +163,10 @@ Located in `src/apps/import_video/serializers/ExternalRecordingSerializer.py`.
 
 Managed via `ImportVideoConfig` (`src/apps/import_video/conf.py`). Defaults in `src/config/defaults/import_video.py`.
 
-| Setting               | Default | Description                                          |
-| :-------------------- | :------ | :--------------------------------------------------- |
-| `USE_IMPORT_VIDEO`    | `False` | Enable/disable the import video feature entirely.    |
-| `RESTRICT_TO_STAFF`   | `True`  | Restrict import creation to staff users only.        |
+| Setting             | Default | Description                                       |
+| :------------------ | :------ | :------------------------------------------------ |
+| `USE_IMPORT_VIDEO`  | `False` | Enable/disable the import video feature entirely. |
+| `RESTRICT_TO_STAFF` | `True`  | Restrict import creation to staff users only.     |
 
 ---
 
