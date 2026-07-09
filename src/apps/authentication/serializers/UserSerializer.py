@@ -38,6 +38,8 @@ class UserSerializer(serializers.ModelSerializer):
     establishment = serializers.SerializerMethodField(method_name="get_establishment")
     userpicture = serializers.SerializerMethodField(method_name="get_userpicture")
     server_roles = serializers.SerializerMethodField(method_name="get_server_roles")
+    is_superuser = serializers.BooleanField(read_only=True)
+    is_staff = serializers.BooleanField(read_only=True)
 
     class Meta:
         """User serializer metadata."""

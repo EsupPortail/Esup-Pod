@@ -13,6 +13,7 @@ from src.apps.video.views import (
     TypeViewSet,
     VideoHyperlinkViewSet,
     UserMarkerTimeViewSet,
+    VideoCutViewSet,
 )
 from src.apps.video.conf import video_settings
 
@@ -29,7 +30,24 @@ if video_settings.use_hyperlinks:
         r"video-hyperlinks", VideoHyperlinkViewSet, basename="video-hyperlink"
     )
 
+if video_settings.use_cut:
+    router.register(
+        r"video-cuts",
+        VideoCutViewSet,
+        basename="video-cut",
+    )
+
 urlpatterns = router.urls
+
+if video_settings.use_duplicate:
+    urlpatterns += [
+        path(
+            "videos/<slug:slug>/duplicate/",
+            VideoViewSet.as_view({"post": "duplicate"}),
+            name="video-duplicate",
+        ),
+    ]
+
 
 if video_settings.use_hyperlinks:
     urlpatterns += [
@@ -72,6 +90,20 @@ if video_settings.use_marker_time:
             "marker/<slug:video_slug>/reset/",
             UserMarkerTimeViewSet.as_view({"delete": "reset_marker"}),
             name="marker-reset",
+        ),
+    ]
+
+if video_settings.use_cut:
+    urlpatterns += [
+        path(
+            "cut/<slug:video_slug>/",
+            VideoCutViewSet.as_view({"post": "create"}),
+            name="video-cut-create",
+        ),
+        path(
+            "cut/<slug:video_slug>/delete/",
+            VideoCutViewSet.as_view({"delete": "destroy"}),
+            name="video-cut-delete",
         ),
     ]
 
