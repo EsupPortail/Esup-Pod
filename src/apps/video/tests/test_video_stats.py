@@ -46,8 +46,12 @@ class VideoStatsTests(APITestCase):
         reload_urlconf()
 
         self.site = Site.objects.get_current()
-        self.owner = User.objects.create_user(username="owner", password="password")  # nosec
-        self.other_user = User.objects.create_user(username="other", password="password")  # nosec
+        self.owner = User.objects.create_user(
+            username="owner", password="password"
+        )  # nosec
+        self.other_user = User.objects.create_user(
+            username="other", password="password"
+        )  # nosec
         self.video = Video.objects.create(
             title="Stats Test Video",
             owner=self.owner,
@@ -118,15 +122,15 @@ class VideoStatsTests(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_stats_allowed_for_staff(self):
-        """Staff users can view stats even if not owner."""
+    def test_stats_forbidden_for_staff(self):
+        """Staff users cannot view stats if not owner (restricted)."""
         self.other_user.is_staff = True
         self.other_user.save()
 
         self.client.force_authenticate(user=self.other_user)
         response = self.client.get(f"/api/videos/{self.video.slug}/stats/")
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
 
     def test_view_count_list_filtered_by_video(self):
         """Verifies ViewCountViewSet filters by video slug."""

@@ -8,16 +8,11 @@ import logging
 
 
 from datetime import date, timedelta
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, parsers, filters, status
 from django.db.models import Q, F, Sum
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import gettext_lazy as _
 from django.http import FileResponse, Http404
-from django.utils.translation import gettext_lazy as _
-from django.contrib.sites.shortcuts import get_current_site
-from django.conf import settings
 
 from rest_framework import viewsets, permissions, parsers, filters, status
 from rest_framework.decorators import action
@@ -532,8 +527,6 @@ class VideoViewSet(viewsets.ModelViewSet):
         return Response({"status": "ownership transferred"})
 
     @extend_schema(
-<<<<<<< HEAD
-
         summary="Dublin Core metadata for a video",
         responses={
             200: DublinCoreSerializer,
@@ -740,10 +733,10 @@ class VideoViewSet(viewsets.ModelViewSet):
         duplicated = duplicate_video(original, request.user)
         serializer = self.get_serializer(duplicated)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     @extend_schema(
         summary="Video view statistics",
         description="Returns aggregated view statistics for a video (total, 7-day, 30-day, peak, daily breakdown).",
-
         parameters=[
             OpenApiParameter(
                 name="days",
@@ -785,9 +778,7 @@ class VideoViewSet(viewsets.ModelViewSet):
             request.user.is_authenticated
             and video.co_owners.filter(pk=request.user.pk).exists()
         )
-        if not (
-            is_owner or is_co_owner or request.user.is_superuser
-        ):
+        if not (is_owner or is_co_owner or request.user.is_superuser):
             return Response(
                 {"detail": _("You do not have permission to view these statistics.")},
                 status=status.HTTP_403_FORBIDDEN,
@@ -825,4 +816,3 @@ class VideoViewSet(viewsets.ModelViewSet):
                 ],
             }
         )
-
