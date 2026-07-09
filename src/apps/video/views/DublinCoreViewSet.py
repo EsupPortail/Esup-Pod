@@ -39,7 +39,6 @@ class DublinCoreViewSet(viewsets.GenericViewSet):
 
     @extend_schema(
         summary="List Dublin Core metadata",
-        description="Returns a paginated list of Dublin Core metadata for all published videos.",
         responses={200: DublinCoreSerializer(many=True)},
     )
     def list(self, request):
@@ -61,7 +60,6 @@ class DublinCoreViewSet(viewsets.GenericViewSet):
 
     @extend_schema(
         summary="Retrieve Dublin Core metadata",
-        description="Returns Dublin Core metadata for a single published video.",
         responses={200: DublinCoreSerializer},
     )
     def retrieve(self, request, slug=None):

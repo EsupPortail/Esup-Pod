@@ -489,7 +489,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Dublin Core metadata for a video",
-        description="Returns Dublin Core metadata for a single published video.",
         responses={
             200: DublinCoreSerializer,
             400: OpenApiResponse(description="Dublin Core feature is disabled."),
