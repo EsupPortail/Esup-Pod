@@ -1,6 +1,6 @@
+<!-- markdownlint-disable MD013 -->
 # Video: Technical Details
 
->
 > **Navigation:** [Back to Overview](README.md) | [Back to Index](../README.md)
 
 ---
@@ -55,7 +55,7 @@ class Status(models.TextChoices):
 
 **Key methods:**
 
-- `thumbnail_url` *(property)*: Returns the thumbnail URL or the configured default.
+- `thumbnail_url` _(property)_: Returns the thumbnail URL or the configured default.
 - `get_dublin_core()`: Returns a Dublin Core metadata dictionary.
 - `set_password()`: Hashes the password field using PBKDF2-SHA256 (idempotent).
 - `save()`: Auto-generates the slug, hashes password, computes expiration date, and moves files on owner change.
@@ -66,12 +66,12 @@ class Status(models.TextChoices):
 
 A subtitle file attached to a video (`src/apps/video/models/Subtitle.py`).
 
-| Field        | Type         | Description                                            |
-| :----------- | :----------- | :----------------------------------------------------- |
-| `video`      | FK → Video   | Parent video.                                          |
-| `language`   | CharField    | Language code: `fr`, `en`, or `es`.                    |
-| `file`       | FileField    | Subtitle file (expected VTT/SRT). Path: `subtitles/`.  |
-| `is_default` | BooleanField | Marks this subtitle as the default track.              |
+| Field        | Type         | Description                                           |
+| :----------- | :----------- | :---------------------------------------------------- |
+| `video`      | FK → Video   | Parent video.                                         |
+| `language`   | CharField    | Language code: `fr`, `en`, or `es`.                   |
+| `file`       | FileField    | Subtitle file (expected VTT/SRT). Path: `subtitles/`. |
+| `is_default` | BooleanField | Marks this subtitle as the default track.             |
 
 ---
 
@@ -79,15 +79,15 @@ A subtitle file attached to a video (`src/apps/video/models/Subtitle.py`).
 
 An interactive link displayed on top of the video during playback (`src/apps/video/models/VideoHyperlink.py`).
 
-| Field        | Type         | Description                                              |
-| :----------- | :----------- | :------------------------------------------------------- |
-| `video`      | FK → Video   | Parent video.                                            |
-| `text`       | CharField    | Display text for the link.                               |
-| `url`        | URLField     | Target URL.                                              |
-| `icon`       | CharField    | Name/class of the icon (e.g., `link`, `book`).           |
-| `position`   | CharField    | Position on screen: `top-left`, `bottom-right`, etc.     |
-| `time_start` | IntegerField | Start time in seconds.                                   |
-| `time_end`   | IntegerField | End time in seconds.                                     |
+| Field        | Type         | Description                                          |
+| :----------- | :----------- | :--------------------------------------------------- |
+| `video`      | FK → Video   | Parent video.                                        |
+| `text`       | CharField    | Display text for the link.                           |
+| `url`        | URLField     | Target URL.                                          |
+| `icon`       | CharField    | Name/class of the icon (e.g., `link`, `book`).       |
+| `position`   | CharField    | Position on screen: `top-left`, `bottom-right`, etc. |
+| `time_start` | IntegerField | Start time in seconds.                               |
+| `time_end`   | IntegerField | End time in seconds.                                 |
 
 ---
 
@@ -111,6 +111,7 @@ Unique constraint on `(video, date)`. Ordered by `-date`.
 - **Discipline (`src/apps/video/models/Discipline.py`)**: Formal academic categories.
 - **Comment (`src/apps/video/models/Comment.py`)**: User remarks tied to a specific video with timestamp and user.
 - **Vote (`src/apps/video/models/Vote.py`)**: Tracks Up/Down votes on `Comment` items to calculate the net score.
+- **VideoCut (`src/apps/video/models/VideoCut.py`)**: Trimming definition (start/end in seconds) associated in a one-to-one relationship with a video.
 - **Tag**: Handled dynamically by the `django-tagulous` extension.
 
 ---
@@ -179,11 +180,11 @@ Located in `src/apps/video/serializers/VideoSerializer.py`.
 
 Located in `src/apps/video/signals.py`. Three signals are registered on the `Video` model:
 
-| Signal                       | Trigger           | Action                                                                        |
-| :--------------------------- | :---------------- | :---------------------------------------------------------------------------- |
-| `auto_delete_file_on_delete` | `post_delete`     | Removes the physical files (video, thumbnail, overview) from disk.            |
-| `auto_delete_file_on_change` | `pre_save`        | Deletes the old file when a new video file is uploaded.                       |
-| `video_post_save`            | `post_save`       | On creation: extracts duration via `ffprobe`, leaves status as-is (ENCODING). |
+| Signal                       | Trigger       | Action                                                                        |
+| :--------------------------- | :------------ | :---------------------------------------------------------------------------- |
+| `auto_delete_file_on_delete` | `post_delete` | Removes the physical files (video, thumbnail, overview) from disk.            |
+| `auto_delete_file_on_change` | `pre_save`    | Deletes the old file when a new video file is uploaded.                       |
+| `video_post_save`            | `post_save`   | On creation: extracts duration via `ffprobe`, leaves status as-is (ENCODING). |
 
 > **Note:** The status transition to `PUBLISHED` is done by the Encoding webhook, not the signal.
 
@@ -211,6 +212,40 @@ Unlocks a password-protected restricted video.
 - If `is_auth_required = True`: user must be authenticated.
 - Validates the provided `password` against the stored hash. (Alternatively accepts a legacy `hash` parameter for backward compatibility).
 - Returns the `video_url` on success and registers access in the session state.
+
+### `PATCH|DELETE /api/videos/bulk/`
+
+Applies an update or deletion to **multiple videos in one request**.
+
+**Request body:**
+
+```json
+{
+  "video_ids": [1, 2, 3],
+  "fields": { "allow_downloading": true }
+}
+```
+
+**Behaviour:**
+
+- `PATCH`: updates only the fields listed in `fields`. Fields in `BULK_EXCLUDED_FIELDS`
+  (`title`, `slug`, `owner`, `video_file`, `created_at`, `updated_at`, `duration`,
+  `encoding_status`) are rejected with `400 Bad Request`.
+- `DELETE`: deletes all listed videos. Returns `{ "deleted": N }`.
+- **Async threshold**: if the number of selected videos exceeds `BULK_ASYNC_THRESHOLD`
+  (default `20`, configurable), the operation is delegated to a Celery task and
+  the response is `202 Accepted` with `{ "status": "queued" }`.
+- **Permission check**: every video must be owned or co-owned by the requester.
+  A `403 Forbidden` is raised on the first video that fails the check.
+- **Feature flag**: returns `400` if `USE_BULK_ACTIONS = False`.
+
+### `POST /api/cut/{slug}/` & `DELETE /api/cut/{slug}/delete/`
+
+Manages the video cut feature (trimming a video virtually):
+
+- **POST**: Creates or replaces a cut for the given video (payload: `time_start`, `time_end` in seconds). Automatically purges time-dependent objects (chapters, notes) attached to the video to avoid inconsistencies.
+- **DELETE**: Removes the cut definition.
+- **Permissions**: Requires owner, co-owner, or super-user rights. If `video_settings.restrict_edit_to_staff` is enabled, only staff members can manage cuts.
 
 ---
 
@@ -248,6 +283,8 @@ Managed via `VideoConfig` (pydantic-settings in `src/apps/video/conf.py`). Setti
 | `CACHE_TIMEOUT`              | `600`         | Cache TTL in seconds for video data.                        |
 | `DEFAULT_DC_COVERAGE`        | (string)      | Dublin Core `coverage` metadata default.                    |
 | `DEFAULT_DC_RIGHTS`          | (string)      | Dublin Core `rights` metadata default.                      |
+| `USE_BULK_ACTIONS`           | `True`        | Enable bulk update/delete endpoint (`/api/videos/bulk/`).   |
+| `BULK_ASYNC_THRESHOLD`       | `20`          | Videos above this count are processed async via Celery.     |
 
 ---
 
@@ -266,6 +303,7 @@ Key test files:
 - `test_hyperlinks.py`: Specific API test suite for the `VideoHyperlink` endpoints and permission checks.
 - `test_scenarios.py`: End-to-end scenario tests (full upload → encoding → publish flow).
 - `test_signals.py`: Tests for file cleanup signals.
+- `test_bulk_actions.py`: Tests for the bulk update/delete endpoint (permissions, async, feature flag).
 
 ---
 

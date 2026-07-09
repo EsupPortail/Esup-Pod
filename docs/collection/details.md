@@ -1,6 +1,5 @@
 # Collection: Technical Details
 
->
 > **Navigation:** [Back to Overview](README.md) | [Back to Index](../README.md)
 
 ---
@@ -11,14 +10,14 @@
 
 All primary collection models (`Channel`, `Theme`, `Playlist`) inherit from `BaseContainer` (`src/apps/collection/models/base.py`).
 
-| Field         | Type      | Description                                               |
-| :------------ | :-------- | :-------------------------------------------------------- |
-| `title`       | CharField | Display name (max 250).                                   |
-| `slug`        | SlugField | Unique URL identifier (auto-generated from title).        |
-| `description` | TextField | Full description (optional).                              |
-| `old_v4_id`   | Integer   | Legacy ID for backward compatibility.                     |
-| `created_at`  | DateTime  | Creation timestamp.                                       |
-| `updated_at`  | DateTime  | Last update timestamp.                                    |
+| Field         | Type      | Description                                        |
+| :------------ | :-------- | :------------------------------------------------- |
+| `title`       | CharField | Display name (max 250).                            |
+| `slug`        | SlugField | Unique URL identifier (auto-generated from title). |
+| `description` | TextField | Full description (optional).                       |
+| `old_v4_id`   | Integer   | Legacy ID for backward compatibility.              |
+| `created_at`  | DateTime  | Creation timestamp.                                |
+| `updated_at`  | DateTime  | Last update timestamp.                             |
 
 ---
 
@@ -26,13 +25,13 @@ All primary collection models (`Channel`, `Theme`, `Playlist`) inherit from `Bas
 
 Represents a portal or a user-specific space (`src/apps/collection/models/Channel.py`).
 
-| Field           | Type       | Description                                              |
-| :-------------- | :--------- | :------------------------------------------------------- |
-| `owner`         | FK → User  | Primary owner and manager.                               |
-| `is_public`     | Boolean    | If False, hidden from anonymous users.                   |
-| `image`         | ImageField | Channel logo/avatar.                                     |
-| `banner`        | ImageField | Large header image.                                      |
-| `collaborators` | M2M → User | Users with management rights (except deletion).          |
+| Field           | Type       | Description                                     |
+| :-------------- | :--------- | :---------------------------------------------- |
+| `owner`         | FK → User  | Primary owner and manager.                      |
+| `is_public`     | Boolean    | If False, hidden from anonymous users.          |
+| `image`         | ImageField | Channel logo/avatar.                            |
+| `banner`        | ImageField | Large header image.                             |
+| `collaborators` | M2M → User | Users with management rights (except deletion). |
 
 ---
 
@@ -40,11 +39,11 @@ Represents a portal or a user-specific space (`src/apps/collection/models/Channe
 
 Hierarchical taxonomy for organizing videos (`src/apps/collection/models/Theme.py`).
 
-| Field     | Type        | Description                                                 |
-| :-------- | :---------- | :---------------------------------------------------------- |
-| `channel` | FK → Channel| Optional link to a specific channel (private taxonomy).     |
-| `parent`  | FK → self   | Parent theme for nesting.                                   |
-| `videos`  | M2M → Video | Associated videos (via `ThemeItem`).                        |
+| Field     | Type         | Description                                             |
+| :-------- | :----------- | :------------------------------------------------------ |
+| `channel` | FK → Channel | Optional link to a specific channel (private taxonomy). |
+| `parent`  | FK → self    | Parent theme for nesting.                               |
+| `videos`  | M2M → Video  | Associated videos (via `ThemeItem`).                    |
 
 **Hierarchy Validation (`clean()`):**
 
@@ -58,12 +57,12 @@ Hierarchical taxonomy for organizing videos (`src/apps/collection/models/Theme.p
 
 Curated and ordered lists of videos (`src/apps/collection/models/Playlist.py`).
 
-| Field       | Type        | Description                                                 |
-| :---------- | :---------- | :---------------------------------------------------------- |
-| `owner`     | FK → User   | Creator of the playlist.                                    |
-| `is_public` | Boolean     | Visibility toggle.                                          |
-| `password`  | CharField   | Optional hashed password for access protection.             |
-| `videos`    | M2M → Video | Ordered videos (via `PlaylistItem`).                        |
+| Field       | Type        | Description                                     |
+| :---------- | :---------- | :---------------------------------------------- |
+| `owner`     | FK → User   | Creator of the playlist.                        |
+| `is_public` | Boolean     | Visibility toggle.                              |
+| `password`  | CharField   | Optional hashed password for access protection. |
+| `videos`    | M2M → Video | Ordered videos (via `PlaylistItem`).            |
 
 **Ordering Logic (`PlaylistItem.save()`):**
 
@@ -93,11 +92,11 @@ Curated and ordered lists of videos (`src/apps/collection/models/Playlist.py`).
 
 ### Custom Permissions
 
-| Permission Class                          | Scope       | Rule                                                                 |
-| :---------------------------------------- | :---------- | :------------------------------------------------------------------- |
-| `IsOwnerOrReadOnly`                       | Playlist    | Read for all (if public), Write/Delete for owner.                    |
-| `IsChannelOwnerOrCollaboratorOrReadOnly`  | Channel     | Read for public, Write for owner/collab, Delete for owner/staff.     |
-| `IsAdminOrThemeOwner`                     | Theme       | Admin: Full access. Owner: Allowed if `OWNER_CAN_MANAGE_THEMES=True`.|
+| Permission Class                         | Scope    | Rule                                                                  |
+| :--------------------------------------- | :------- | :-------------------------------------------------------------------- |
+| `IsOwnerOrReadOnly`                      | Playlist | Read for all (if public), Write/Delete for owner.                     |
+| `IsChannelOwnerOrCollaboratorOrReadOnly` | Channel  | Read for public, Write for owner/collab, Delete for owner/staff.      |
+| `IsAdminOrThemeOwner`                    | Theme    | Admin: Full access. Owner: Allowed if `OWNER_CAN_MANAGE_THEMES=True`. |
 
 ---
 
@@ -114,7 +113,7 @@ Password-protected playlists can be unlocked by:
 
 1. Providing `?password=...` in the query string.
 2. Providing `X-Playlist-Password` in the request headers.
-The `PlaylistViewSet.get_serializer_context` injects a `password_verified` flag used by the serializer to determine whether to expose items.
+   The `PlaylistViewSet.get_serializer_context` injects a `password_verified` flag used by the serializer to determine whether to expose items.
 
 ### Secure Serialization
 
@@ -126,15 +125,15 @@ Both `ThemeSerializer` and `PlaylistSerializer` filter their nested `items` to e
 
 Managed via `CollectionConfig` (`src/apps/collection/conf.py`).
 
-| Setting                     | Default | Description                                              |
-| :-------------------------- | :------ | :------------------------------------------------------- |
-| `USE_CHANNELS`              | `True`  | Enable/disable the channel system.                       |
-| `OWNER_CAN_MANAGE_CHANNELS` | `True`  | Allow users to manage their own channels.                |
-| `USE_CATEGORIES`            | `True`  | Enable the Theme/Taxonomy system.                        |
-| `OWNER_CAN_MANAGE_THEMES`   | `False` | Allow channel owners to create private themes.           |
-| `MAX_THEME_DEPTH`           | `3`     | Max depth for theme nesting.                             |
-| `USE_PLAYLISTS`             | `True`  | Enable the playlist module.                              |
-| `USE_PASSWORD_PROTECTION`   | `True`  | Allow passwords on playlists.                            |
+| Setting                     | Default | Description                                    |
+| :-------------------------- | :------ | :--------------------------------------------- |
+| `USE_CHANNELS`              | `True`  | Enable/disable the channel system.             |
+| `OWNER_CAN_MANAGE_CHANNELS` | `True`  | Allow users to manage their own channels.      |
+| `USE_CATEGORIES`            | `True`  | Enable the Theme/Taxonomy system.              |
+| `OWNER_CAN_MANAGE_THEMES`   | `False` | Allow channel owners to create private themes. |
+| `MAX_THEME_DEPTH`           | `3`     | Max depth for theme nesting.                   |
+| `USE_PLAYLISTS`             | `True`  | Enable the playlist module.                    |
+| `USE_PASSWORD_PROTECTION`   | `True`  | Allow passwords on playlists.                  |
 
 ---
 
