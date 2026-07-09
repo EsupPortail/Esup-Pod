@@ -1,6 +1,5 @@
 # Encoding: Technical Details & Configuration
 
->
 > **Navigation:** [Back to Overview](README.md) | [Back to Index](../README.md)
 
 ---
@@ -123,18 +122,18 @@ response = client.execute_task(
 
 ```json
 {
-    "etab_name": "Pod",
-    "app_name": "Pod",
-    "app_version": "5.0.0",
-    "task_type": "encoding",
-    "source_url": "https://example.org/video.mp4",
-    "notify_url": "https://pod.example.org/api/encoding/webhook/",
-    "parameters": {
-        "video_id": 123,
-        "slug": "video-slug",
-        "title": "My Video",
-        "encoding_choices": ["360p", "720p", "1080p", "audio", "playlist"]
-    }
+  "etab_name": "Pod",
+  "app_name": "Pod",
+  "app_version": "5.0.0",
+  "task_type": "encoding",
+  "source_url": "https://example.org/video.mp4",
+  "notify_url": "https://pod.example.org/api/encoding/webhook/",
+  "parameters": {
+    "video_id": 123,
+    "slug": "video-slug",
+    "title": "My Video",
+    "encoding_choices": ["360p", "720p", "1080p", "audio", "playlist"]
+  }
 }
 ```
 
@@ -169,14 +168,14 @@ If `ENCODING_WEBHOOK_SECRET` is set and the header does not match, the request i
 
 ```json
 {
-    "status": "success",
-    "video_id": "123",
-    "duration": "142.5",
-    "results": {
-        "overview_path": "video/thumbnails/2026/03/18/abc123.jpg",
-        "output_video_360p": "video/encoded/2026/03/18/360.mp4",
-        "output_video_720p": "video/encoded/2026/03/18/720.mp4"
-    }
+  "status": "success",
+  "video_id": "123",
+  "duration": "142.5",
+  "results": {
+    "overview_path": "video/thumbnails/2026/03/18/abc123.jpg",
+    "output_video_360p": "video/encoded/2026/03/18/360.mp4",
+    "output_video_720p": "video/encoded/2026/03/18/720.mp4"
+  }
 }
 ```
 
@@ -187,9 +186,9 @@ If `ENCODING_WEBHOOK_SECRET` is set and the header does not match, the request i
 
 ```json
 {
-    "status": "error",
-    "video_id": "123",
-    "error": "FFmpeg process failed"
+  "status": "error",
+  "video_id": "123",
+  "error": "FFmpeg process failed"
 }
 ```
 

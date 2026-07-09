@@ -80,6 +80,7 @@ class Comment(models.Model):
             .annotate(
                 author_name=Concat("author__last_name", Value(" "), "author__first_name")
             )
+            .annotate(author_username=models.F("author__username"))
             .annotate(author_picture=models.F("author__owner__userpicture"))
             .annotate(
                 is_owner=Case(
@@ -94,6 +95,7 @@ class Comment(models.Model):
                 "direct_parent__id",
                 "is_owner",
                 "author_name",
+                "author_username",
                 "author_picture",
                 "added",
                 "content",

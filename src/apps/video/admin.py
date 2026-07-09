@@ -23,6 +23,7 @@ from src.apps.video.models import (
     License,
     Cursus,
     VideoHyperlink,
+    VideoCut,
 )
 
 
@@ -131,6 +132,16 @@ class VideoHyperlinkAdmin(admin.ModelAdmin):
     list_filter = ("video",)
     search_fields = ("text", "url", "video__title")
     readonly_fields = ("id", "created_at", "updated_at")
+
+
+@admin.register(VideoCut)
+class VideoCutAdmin(admin.ModelAdmin):
+    """Admin for Video Cuts."""
+
+    list_display = ("video", "time_start", "time_end", "created_at")
+    search_fields = ("video__title",)
+    readonly_fields = ("id", "created_at")
+    raw_id_fields = ("video",)
 
 
 @admin.register(Language)

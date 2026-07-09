@@ -43,10 +43,10 @@ Pod can encode videos into the following outputs:
 
 ## API Endpoints
 
-| Method   | Endpoint                 | Description                                                   |
-| :------- | :----------------------- | :------------------------------------------------------------ |
-| **POST** | `/api/encoding/webhook/` | Receives encoding completion notification from Runner Manager.|
->
+| Method   | Endpoint                 | Description                                                    |
+| :------- | :----------------------- | :------------------------------------------------------------- |
+| **POST** | `/api/encoding/webhook/` | Receives encoding completion notification from Runner Manager. |
+
 > The webhook endpoint is public but secured by the `ENCODING_WEBHOOK_SECRET` environment variable via the `X-Webhook-Secret` header.
 
 ## File Storage

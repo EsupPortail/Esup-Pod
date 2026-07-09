@@ -13,6 +13,7 @@ from src.apps.video.views import (
     TypeViewSet,
     VideoHyperlinkViewSet,
     DublinCoreViewSet,
+    VideoCutViewSet,
 )
 from src.apps.video.conf import video_settings
 
@@ -23,8 +24,6 @@ router.register(r"disciplines", DisciplineViewSet, basename="discipline")
 router.register(r"tags", TagViewSet, basename="tag")
 router.register(r"types", TypeViewSet, basename="type")
 
-urlpatterns = router.urls
-
 if video_settings.use_hyperlinks:
     router.register(
         r"video-hyperlinks", VideoHyperlinkViewSet, basename="video-hyperlink"
@@ -33,10 +32,25 @@ if video_settings.use_hyperlinks:
 if video_settings.use_dublin_core:
     router.register(r"dublin-core", DublinCoreViewSet, basename="dublin-core")
 
+if video_settings.use_cut:
+    router.register(
+        r"video-cuts",
+        VideoCutViewSet,
+        basename="video-cut",
+    )
+
 urlpatterns = router.urls
 
-if video_settings.use_hyperlinks:
+if video_settings.use_duplicate:
+    urlpatterns += [
+        path(
+            "videos/<slug:slug>/duplicate/",
+            VideoViewSet.as_view({"post": "duplicate"}),
+            name="video-duplicate",
+        ),
+    ]
 
+if video_settings.use_hyperlinks:
     urlpatterns += [
         path(
             "hyperlink/<slug:video_slug>/hyperlinks/",
@@ -58,6 +72,20 @@ if video_settings.use_hyperlinks:
                 }
             ),
             name="video-hyperlink-detail",
+        ),
+    ]
+
+if video_settings.use_cut:
+    urlpatterns += [
+        path(
+            "cut/<slug:video_slug>/",
+            VideoCutViewSet.as_view({"post": "create"}),
+            name="video-cut-create",
+        ),
+        path(
+            "cut/<slug:video_slug>/delete/",
+            VideoCutViewSet.as_view({"delete": "destroy"}),
+            name="video-cut-delete",
         ),
     ]
 

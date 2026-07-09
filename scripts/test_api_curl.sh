@@ -286,7 +286,7 @@ echo -e "${GREEN}OK${NC}"
 # 15. FINAL VERIFICATION (Ensure deletion)
 echo -n ">>> [15/15] Verifying Deletion... "
 VIDEO_CHECK=$(curl -s -X 'GET' "$BASE_URL/api/videos/$VIDEO_SLUG/" -H "$AUTH_HEADER")
-if [[ "$VIDEO_CHECK" != *"No Video matches"* ]]; then
+if [[ "$VIDEO_CHECK" != *"Video not found"* ]]; then
     echo -e "${RED}FAILED${NC}"
     echo "Error: Video still exists or unexpected response. Response: $VIDEO_CHECK"
     exit 1
