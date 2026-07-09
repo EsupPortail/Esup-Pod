@@ -309,7 +309,9 @@ class Command(BaseCommand):
     def notify_manager_of_obsolete_video(self, list_video: dict) -> None:
         """Notify manager(s) with a list of obsolete videos."""
         for estab in list_video:
-            if len(list_video[estab]) > 0:
+            # list_video[estab] has entries for each WARN_DEADLINE
+            total = sum(len(videos) for videos in list_video[estab].values())
+            if total > 0:
                 if estab != "other":
                     msg_html = _("Hello manager(s) of %(estab)s on %(site_title)s,") % {
                         "estab": estab,
@@ -358,8 +360,6 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
-                    # list_video[estab] has entries for each WARN_DEADLINE
-                    total = sum(len(videos) for videos in list_video[estab].values())
                     print(
                         _(
                             "Manager of “%(estab)s” notified for"
@@ -371,7 +371,9 @@ class Command(BaseCommand):
     def notify_manager_of_deleted_video(self, list_video: dict) -> None:
         """Notify manager(s) with a list of deleted videos."""
         for estab in list_video:
-            if len(list_video[estab]) > 0:
+            # list_video[estab] has entries for each WARN_DEADLINE
+            total = sum(len(videos) for videos in list_video[estab].values())
+            if total > 0:
                 if estab != "other":
                     msg_html = _("Hello manager(s) of %(estab)s on %(site_title)s,") % {
                         "estab": estab,
@@ -420,8 +422,6 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
-                    # list_video[estab] has entries for each WARN_DEADLINE
-                    total = sum(len(videos) for videos in list_video[estab].values())
                     print(
                         _("Manager of “%(et)s” notified for %(nb)s deleted video(s).")
                         % {"et": estab, "nb": total}
@@ -430,7 +430,9 @@ class Command(BaseCommand):
     def notify_manager_of_archived_video(self, list_video: dict) -> None:
         """Notify manager(s) with a list of archived videos."""
         for estab in list_video:
-            if len(list_video[estab]) > 0:
+            # list_video[estab] has entries for each WARN_DEADLINE
+            total = sum(len(videos) for videos in list_video[estab].values())
+            if total > 0:
                 if estab != "other":
                     msg_html = _("Hello manager(s) of %(estab)s on %(site_title)s,") % {
                         "estab": estab,
@@ -480,8 +482,6 @@ class Command(BaseCommand):
                         html_message=msg_html,
                     )
                 if MANAGERS:
-                    # list_video[estab] has entries for each WARN_DEADLINE
-                    total = sum(len(videos) for videos in list_video[estab].values())
                     print(
                         _("Manager of “%(estab)s” notified for %(nb)s archived video(s).")
                         % {"estab": estab, "nb": total}
