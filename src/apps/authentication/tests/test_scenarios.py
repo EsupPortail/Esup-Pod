@@ -46,7 +46,7 @@ class AuthenticationScenariosTests(TestCase):
 
     @patch.object(auth_settings, "use_cas", True)
     @patch.object(auth_settings, "use_local_auth", False)
-    def test_university_mode_cas_only(self):
+    def test_cas_only_mode(self):
         """
         Scenario: University / Production Mode
         - CAS is Enabled
