@@ -56,6 +56,11 @@ class VideoConfig(BaseSettings):
         description=_("Enable video cutting feature."),
         json_schema_extra={"public": True},
     )
+    use_marker_time: bool = Field(
+        default=defaults.USE_MARKER_TIME,
+        description=_("Enable video playback resume (marker time) feature."),
+        json_schema_extra={"public": True},
+    )
     allow_authenticated_upload: bool = Field(
         default=defaults.ALLOW_AUTHENTICATED_UPLOAD,
         description=_("Allow authenticated users to upload videos."),

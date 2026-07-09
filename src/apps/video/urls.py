@@ -12,6 +12,7 @@ from src.apps.video.views import (
     TagViewSet,
     TypeViewSet,
     VideoHyperlinkViewSet,
+    UserMarkerTimeViewSet,
     VideoCutViewSet,
 )
 from src.apps.video.conf import video_settings
@@ -22,6 +23,7 @@ router.register(r"subtitles", SubtitleViewSet, basename="subtitle")
 router.register(r"disciplines", DisciplineViewSet, basename="discipline")
 router.register(r"tags", TagViewSet, basename="tag")
 router.register(r"types", TypeViewSet, basename="type")
+
 
 if video_settings.use_hyperlinks:
     router.register(
@@ -46,6 +48,7 @@ if video_settings.use_duplicate:
         ),
     ]
 
+
 if video_settings.use_hyperlinks:
     urlpatterns += [
         path(
@@ -68,6 +71,25 @@ if video_settings.use_hyperlinks:
                 }
             ),
             name="video-hyperlink-detail",
+        ),
+    ]
+
+if video_settings.use_marker_time:
+    urlpatterns += [
+        path(
+            "marker/<slug:video_slug>/",
+            UserMarkerTimeViewSet.as_view({"get": "get_marker"}),
+            name="marker-get",
+        ),
+        path(
+            "marker/<slug:video_slug>/save/",
+            UserMarkerTimeViewSet.as_view({"post": "save_marker"}),
+            name="marker-save",
+        ),
+        path(
+            "marker/<slug:video_slug>/reset/",
+            UserMarkerTimeViewSet.as_view({"delete": "reset_marker"}),
+            name="marker-reset",
         ),
     ]
 

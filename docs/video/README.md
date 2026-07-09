@@ -56,6 +56,7 @@ A video passes through the following states:
 | **Comment**        | User comments left on a video.                                               |
 | **Vote**           | Upvotes and downvotes for comments.                                          |
 | **Subtitle**       | A subtitle file attached to a video, for a given language.                   |
+| **UserMarkerTime** | Stores the last playback position for a user on a specific video.            |
 | **VideoCut**       | Trimming definition (start/end in seconds) associated with a video.          |
 | **VideoHyperlink** | Interactive links attached to a video at specific time intervals.            |
 | **ViewCount**      | Stores the number of views per day, per video.                               |
