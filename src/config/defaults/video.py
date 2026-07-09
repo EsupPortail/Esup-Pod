@@ -17,6 +17,7 @@ OAI_PMH_REPOSITORY_NAME = ""  # Nom du dépôt OAI (ex: "Pod - Université de Li
 OAI_PMH_ADMIN_EMAIL = ""  # Email administrateur du dépôt OAI
 OAI_PMH_BASE_URL = ""  # URL de base du endpoint OAI (/api/oai-pmh/)
 OAI_PMH_PAGE_SIZE = 50  # Nombre de résultats par page (ListRecords)
+USE_MARKER_TIME = True
 ALLOW_AUTHENTICATED_UPLOAD = True
 CHANNEL_MODE = False
 ACTIVE_VIDEO_COMMENT = True

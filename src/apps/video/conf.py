@@ -73,6 +73,11 @@ class VideoConfig(BaseSettings):
         default=defaults.OAI_PMH_PAGE_SIZE,
         description=_("Number of records per page in OAI-PMH ListRecords response."),
     )
+    use_marker_time: bool = Field(
+        default=defaults.USE_MARKER_TIME,
+        description=_("Enable video playback resume (marker time) feature."),
+        json_schema_extra={"public": True},
+    )
     allow_authenticated_upload: bool = Field(
         default=defaults.ALLOW_AUTHENTICATED_UPLOAD,
         description=_("Allow authenticated users to upload videos."),
