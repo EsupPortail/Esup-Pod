@@ -532,6 +532,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         return Response({"status": "ownership transferred"})
 
     @extend_schema(
+<<<<<<< HEAD
 
         summary="Dublin Core metadata for a video",
         responses={
@@ -742,6 +743,7 @@ class VideoViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary="Video view statistics",
         description="Returns aggregated view statistics for a video (total, 7-day, 30-day, peak, daily breakdown).",
+
         parameters=[
             OpenApiParameter(
                 name="days",
@@ -784,7 +786,7 @@ class VideoViewSet(viewsets.ModelViewSet):
             and video.co_owners.filter(pk=request.user.pk).exists()
         )
         if not (
-            is_owner or is_co_owner or request.user.is_staff or request.user.is_superuser
+            is_owner or is_co_owner or request.user.is_superuser
         ):
             return Response(
                 {"detail": _("You do not have permission to view these statistics.")},
