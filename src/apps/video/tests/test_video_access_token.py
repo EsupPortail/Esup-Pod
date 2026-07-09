@@ -45,8 +45,8 @@ class VideoAccessTokenTests(APITestCase):
         reload_urlconf()
 
         self.site = Site.objects.get_current()
-        self.owner = User.objects.create_user(username="owner", password="password")
-        self.other_user = User.objects.create_user(username="other", password="password")
+        self.owner = User.objects.create_user(username="owner", password="password")  # nosec
+        self.other_user = User.objects.create_user(username="other", password="password")  # nosec
         self.video = Video.objects.create(
             title="Token Test Video",
             owner=self.owner,

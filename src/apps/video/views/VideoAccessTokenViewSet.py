@@ -45,10 +45,6 @@ class VideoAccessTokenViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Resolve an access token",
-        description=(
-            "Public endpoint. Validates a token and returns video access info. "
-            "Returns 200 with video slug if valid, 403 if invalid/expired."
-        ),
         responses={
             200: {
                 "type": "object",
@@ -98,7 +94,6 @@ class VideoAccessTokenViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Revoke an access token",
-        description="Deactivates a token without deleting it (audit trail preserved).",
         request=None,
         responses={200: {"type": "object", "properties": {"status": {"type": "string"}}}},
     )
