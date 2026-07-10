@@ -82,13 +82,6 @@ class Command(BaseCommand):
 
         return False
 
-    def format_owner(self, user):
-        """Format the owner name."""
-        full_name = f"{user.first_name} {user.last_name}".strip()
-        if full_name:
-            return f"{full_name} ({user.username})"
-        return f"({user.username})"
-
     def handle(self, *args, **options):
         """Handle the check_video_owner_exists command call."""
         dry_mode = options["dry"]
@@ -157,13 +150,23 @@ class Command(BaseCommand):
 
             if dry_mode:
                 self.stdout.write(
-                    f"[DRY-MODE] Would promote {valid_additional_owner.username} "
-                    f"as owner of video {video.id}"
+                    "[DRY-MODE] `%(previous)s` not in LDAP. Would promote %(new)s "
+                    "as owner of video %(vid_id)s"
+                    % {
+                        "previous": old_owner,
+                        "new": valid_additional_owner.username,
+                        "vid_id": video.id,
+                    }
                 )
             else:
                 self.stdout.write(
-                    f"Promoting {valid_additional_owner.username} "
-                    f"as owner of video {video.id}"
+                    "`%(previous)s` not in LDAP. Promoting %(new)s "
+                    "as owner of video %(vid_id)s"
+                    % {
+                        "previous": old_owner,
+                        "new": valid_additional_owner.username,
+                        "vid_id": video.id,
+                    }
                 )
 
                 with transaction.atomic():
@@ -173,24 +176,16 @@ class Command(BaseCommand):
                 if valid_additional_owner != default_owner:
                     self.notify_user(video)
 
-            if (
+            if not (
                 USE_ESTABLISHMENT
                 and MANAGERS
                 and video.owner.owner.establishment.lower() in dict(MANAGERS)
             ):
-                self.all_reaffected_videos.setdefault(estab, {})[video] = _(
-                    "%(old)s replaced by %(new)s"
-                ) % {
-                    "old": self.format_owner(old_owner),
-                    "new": self.format_owner(valid_additional_owner),
-                }
-            else:
-                self.all_reaffected_videos.setdefault("other", {})[video] = _(
-                    "%(old)s replaced by %(new)s"
-                ) % {
-                    "old": self.format_owner(old_owner),
-                    "new": self.format_owner(valid_additional_owner),
-                }
+                estab = "other"
+            self.all_reaffected_videos.setdefault(estab, {})[video] = {
+                "old": old_owner,
+                "new": valid_additional_owner,
+            }
         return promoted_count
 
     def notify_manager(self):
@@ -213,22 +208,28 @@ class Command(BaseCommand):
                     )
                     + "</p>"
                 )
-
-                msg_html += "\n<p><ul>"
+                msg_html += "<style>td,th{border:1px solid #999;padding:.5em}table{border-collapse: collapse;}</style>"
+                msg_html += '\n<table><thead><tr><th scope="col">'
+                table_row = [_("id"), _("Title"), _("URL"), _("Owner"), _("Replaced by")]
+                msg_html += '</th><th scope="col">'.join(table_row)
+                msg_html += "</th></tr></thead><tbody>"
                 for video, info in self.all_reaffected_videos[estab].items():
-                    msg_html += "<li>"
-                    msg_html += (
-                        "%(title)s ("
-                        + "<a href='%(scheme)s:%(url)s' rel='noopener'"
-                        + " target='_blank'>%(scheme)s:%(url)s</a>) : "
-                    ) % {
-                        "scheme": URL_SCHEME,
-                        "url": video.get_full_url(),
-                        "title": video,
-                    }
-                    msg_html += f"{info}</li>"
+                    msg_html += "<tr><td>"
+                    table_row = [
+                        str(video.id),
+                        video.title,
+                        "<a href='%(scheme)s:%(url)s' rel='noopener' target='_blank'>%(scheme)s:%(url)s</a>"
+                        % {
+                            "scheme": URL_SCHEME,
+                            "url": video.get_full_url(),
+                        },
+                        str(info["old"]),
+                        str(info["new"]),
+                    ]
+                    msg_html += "</td><td>".join(table_row)
+                    msg_html += "</td></tr>"
 
-                msg_html += "\n</ul></p>"
+                msg_html += "\n</tbody></table>"
                 msg_html += "\n<p>" + _("Regards") + "</p>\n"
 
                 subject = _("The reaffected videos on Pod")
