@@ -50,7 +50,7 @@ Donc si vous mettez à jour votre Pod et que vous ne touchez à rien, toutes vos
 
 Nous avons ajouté une commande qui permet de recalculer la valeur de `date_delete` grâce à la commande `respite_launcher` en fonction de critères de la vidéo (type, nombre de vues etc.).
 
-Cette commande peut faire appel à différentes "méthodes de calcul" implémentée dans les fichiers du répertoire `/pod/video/managment/commands/reste_model`
+Cette commande peut faire appel à différentes "méthodes de calcul" implémentée dans les fichiers du répertoire `/pod/video/managment/commands/respite_model`
 
 * base.py (par defaut) : ne fait rien
 * criteria_model : calcule un age de vidéo en fonction des critères potentiels suivants 

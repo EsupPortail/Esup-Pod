@@ -53,7 +53,7 @@ So, if you update your Pod and change nothing, all your videos will have a delet
 
 We have added a command that allows you to recalculate the value of `date_delete` using the `respite_launcher` command based on video criteria (type, number of views, etc.).
 
-This command can use different “calculation methods” implemented in the files in the `/pod/video/management/commands/reste_model` directory
+This command can use different “calculation methods” implemented in the files in the `/pod/video/management/commands/respite_model` directory
 
 * base.py (default): does nothing
 * criteria_model: calculates a video’s age based on the following potential criteria 
