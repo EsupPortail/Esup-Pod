@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-07 12:41+0200\n"
+"POT-Creation-Date: 2026-07-10 15:39+0200\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -95,8 +95,9 @@ msgstr ""
 #: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
 #: pod/main/models.py pod/main/views.py pod/playlist/forms.py
 #: pod/playlist/models.py pod/quiz/forms.py pod/quiz/models.py
-#: pod/speaker/models.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
+#: pod/speaker/models.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Title"
 msgstr "Titel"
@@ -632,8 +633,9 @@ msgid "Receive push notifications on your devices."
 msgstr ""
 
 #: pod/authentication/models.py pod/live/models.py pod/meeting/models.py
-#: pod/podfile/models.py pod/video/admin.py pod/video/models.py
-#: pod/video/templates/videos/dashboard.html
+#: pod/podfile/models.py pod/video/admin.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/videos/dashboard.html
 #: pod/video_search/templates/search/search.html
 msgid "Owner"
 msgstr ""
@@ -2476,7 +2478,7 @@ msgstr ""
 
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
 #: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
-#: pod/live/models.py
+#: pod/live/models.py pod/video/management/commands/check_video_owner_exists.py
 msgid "URL"
 msgstr ""
 
@@ -8787,12 +8789,15 @@ msgid "In %(deadline)s days:"
 msgstr ""
 
 #: pod/video/management/commands/check_video_owner_exists.py
-#, python-format
-msgid "%(old)s replaced by %(new)s"
+msgid "For information, you will find below the list of reaffected videos."
 msgstr ""
 
 #: pod/video/management/commands/check_video_owner_exists.py
-msgid "For information, you will find below the list of reaffected videos."
+msgid "id"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "Replaced by"
 msgstr ""
 
 #: pod/video/management/commands/check_video_owner_exists.py

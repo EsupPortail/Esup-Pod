@@ -5175,14 +5175,27 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "ARCHIVE_ROOT":  {
+                            "default_value": "'/video_archiving'",
+                            "description": {
+                                "en": [
+                                    "Folder where videos are moved after ARCHIVE_HOW_MANY_DAYS days."
+                                ],
+                                "fr": [
+                                    "Dossier dans lequel sont déplacées les vidéos après ARCHIVE_HOW_MANY_DAYS jours."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.0"
+                        },
                         "ARCHIVE_HOW_MANY_DAYS": {
                             "default_value": "365",
                             "description": {
                                 "en": [
-                                    "Delay before an archived video is moved to archive_ROOT."
+                                    "Delay before an archived video is moved to ARCHIVE_ROOT."
                                 ],
                                 "fr": [
-                                    "Délai avant qu'une vidéo archivée ne soit déplacée vers archive_ROOT."
+                                    "Délai avant qu'une vidéo archivée ne soit déplacée vers ARCHIVE_ROOT."
                                 ]
                             },
                             "pod_version_end": "",
@@ -5292,7 +5305,13 @@
                                 "   'respite_criteria_parameter': [...],",
                                 "   'archiving_criteria_parameter': {",
                                 "       'minimum_expected_score': value,",
-                                "       'attribute_scores': [...],",
+                                "       'attribute_scores': [",
+                                "           'title': 2,",
+                                "           'description',: 3,",
+                                "           'discipline',: 2,",
+                                "           'tags',: 2,",
+                                "           'date_evt',: 1,",
+                                "       ],",
                                 "       'excluded_title_terms': [...],",
                                 "       'excluded_discipline_terms': [...],",
                                 "   }",
