@@ -48,18 +48,19 @@ A video passes through the following states:
 
 ## Data Models
 
-| Model              | Role                                                                        |
-| :----------------- | :-------------------------------------------------------------------------- |
-| **Video**          | Central model containing all metadata, access settings, and site isolation. |
-| **Type**           | General categorization type for videos.                                     |
-| **Discipline**     | Academic disciplines associated with videos.                                |
-| **Tag**            | Free-form tags for better searchability.                                    |
-| **Comment**        | User comments left on a video.                                              |
-| **Vote**           | Upvotes and downvotes for comments.                                         |
-| **Subtitle**       | A subtitle file attached to a video, for a given language.                  |
-| **VideoCut**       | Trimming definition (start/end in seconds) associated with a video.         |
-| **VideoHyperlink** | Interactive links attached to a video at specific time intervals.           |
-| **ViewCount**      | Stores the number of views per day, per video.                              |
+| Model              | Role                                                                         |
+| :----------------- | :--------------------------------------------------------------------------- |
+| **Video**          | Central model containing all metadata, access settings, and site isolation.  |
+| **Type**           | General categorization type for videos.                                      |
+| **Discipline**     | Academic disciplines associated with videos.                                 |
+| **Tag**            | Free-form tags for better searchability.                                     |
+| **Comment**        | User comments left on a video.                                               |
+| **Vote**           | Upvotes and downvotes for comments.                                          |
+| **Subtitle**       | A subtitle file attached to a video, for a given language.                   |
+| **UserMarkerTime** | Stores the last playback position for a user on a specific video.            |
+| **VideoCut**       | Trimming definition (start/end in seconds) associated with a video.          |
+| **VideoHyperlink** | Interactive links attached to a video at specific time intervals.            |
+| **ViewCount**      | Stores the number of views per day, per video.                               |
 
 ## API Endpoints
 

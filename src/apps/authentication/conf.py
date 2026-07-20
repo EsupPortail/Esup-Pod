@@ -6,7 +6,7 @@ Typed and validated configuration for the authentication app using pydantic-sett
 
 from typing import Dict, List, Optional, Tuple, Type
 
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 from pydantic import Field

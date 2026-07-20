@@ -6,7 +6,7 @@ Typed and validated configuration for the completion app using pydantic-settings
 
 from typing import Tuple, Type
 
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from pydantic import Field
 from pydantic_settings import (
     BaseSettings,

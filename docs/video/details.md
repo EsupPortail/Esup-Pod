@@ -114,6 +114,7 @@ Unique constraint on `(video, date)`. Ordered by `-date`.
 - **Vote (`src/apps/video/models/Vote.py`)**: Tracks Up/Down votes on `Comment` items to calculate the net score.
 - **VideoCut (`src/apps/video/models/VideoCut.py`)**: Trimming definition (start/end in seconds) associated in a one-to-one relationship with a video.
 - **Tag**: Handled dynamically by the `django-tagulous` extension.
+- **UserMarkerTime (`src/apps/video/models/UserMarkerTime.py`)**: Tracks the last watched position in seconds for a specific user and video.
 
 ---
 
@@ -270,22 +271,23 @@ Manages the video cut feature (trimming a video virtually):
 
 Managed via `VideoConfig` (pydantic-settings in `src/apps/video/conf.py`). Settings are read from Django settings or environment variables with the prefix `POD_VIDEO_`.
 
-| Setting                      | Default       | Description                                                |
-| :--------------------------- | :------------ | :--------------------------------------------------------- |
-| `USE_HYPERLINKS`             | `True`        | Enables the video hyperlinks system globally.              |
-| `WEBTV_MODE`                 | `False`       | If `True`, video file is optional (WebTV / channel mode).  |
-| `ALLOW_AUTHENTICATED_UPLOAD` | `True`        | Allow authenticated non-staff users to upload.             |
-| `RESTRICT_EDIT_TO_STAFF`     | `False`       | Locks write access to staff and admins only.               |
-| `HOMEPAGE_SHOWS_PASSWORDED`  | `True`        | Show password-protected videos in public listing.          |
-| `DEFAULT_LICENSE`            | `"COPYRIGHT"` | Default license applied to newly created videos.           |
-| `DEFAULT_THUMBNAIL`          | (path)        | Path to the fallback thumbnail image.                      |
-| `DEFAULT_YEAR_DATE_DELETE`   | `2`           | Default years before expiration (if no affiliation match). |
-| `ACCOMMODATION_YEARS`        | `{}`          | Dict mapping affiliation → nb years before deletion.       |
-| `CACHE_TIMEOUT`              | `600`         | Cache TTL in seconds for video data.                       |
-| `DEFAULT_DC_COVERAGE`        | (string)      | Dublin Core `coverage` metadata default.                   |
-| `DEFAULT_DC_RIGHTS`          | (string)      | Dublin Core `rights` metadata default.                     |
-| `USE_BULK_ACTIONS`           | `True`        | Enable bulk update/delete endpoint (`/api/videos/bulk/`).  |
-| `BULK_ASYNC_THRESHOLD`       | `20`          | Videos above this count are processed async via Celery.    |
+| Setting                      | Default       | Description                                                 |
+| :--------------------------- | :------------ | :---------------------------------------------------------- |
+| `USE_HYPERLINKS`             | `True`        | Enables the video hyperlinks system globally.               |
+| `USE_MARKER_TIME`            | `True`        | Enables the video playback resume (marker time) feature.    |
+| `WEBTV_MODE`                 | `False`       | If `True`, video file is optional (WebTV / channel mode).   |
+| `ALLOW_AUTHENTICATED_UPLOAD` | `True`        | Allow authenticated non-staff users to upload.              |
+| `RESTRICT_EDIT_TO_STAFF`     | `False`       | Locks write access to staff and admins only.                |
+| `HOMEPAGE_SHOWS_PASSWORDED`  | `True`        | Show password-protected videos in public listing.           |
+| `DEFAULT_LICENSE`            | `"COPYRIGHT"` | Default license applied to newly created videos.            |
+| `DEFAULT_THUMBNAIL`          | (path)        | Path to the fallback thumbnail image.                       |
+| `DEFAULT_YEAR_DATE_DELETE`   | `2`           | Default years before expiration (if no affiliation match).  |
+| `ACCOMMODATION_YEARS`        | `{}`          | Dict mapping affiliation → nb years before deletion.        |
+| `CACHE_TIMEOUT`              | `600`         | Cache TTL in seconds for video data.                        |
+| `DEFAULT_DC_COVERAGE`        | (string)      | Dublin Core `coverage` metadata default.                    |
+| `DEFAULT_DC_RIGHTS`          | (string)      | Dublin Core `rights` metadata default.                      |
+| `USE_BULK_ACTIONS`           | `True`        | Enable bulk update/delete endpoint (`/api/videos/bulk/`).   |
+| `BULK_ASYNC_THRESHOLD`       | `20`          | Videos above this count are processed async via Celery.     |
 
 ---
 

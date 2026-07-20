@@ -13,6 +13,8 @@ from src.apps.video.views import (
     TypeViewSet,
     VideoHyperlinkViewSet,
     VideoAccessTokenViewSet,
+    DublinCoreViewSet,
+    UserMarkerTimeViewSet,
     VideoCutViewSet,
 )
 from src.apps.video.conf import video_settings
@@ -24,6 +26,7 @@ router.register(r"disciplines", DisciplineViewSet, basename="discipline")
 router.register(r"tags", TagViewSet, basename="tag")
 router.register(r"types", TypeViewSet, basename="type")
 
+
 if video_settings.use_hyperlinks:
     router.register(
         r"video-hyperlinks", VideoHyperlinkViewSet, basename="video-hyperlink"
@@ -31,6 +34,9 @@ if video_settings.use_hyperlinks:
 
 if video_settings.use_video_access_token:
     router.register(r"tokens", VideoAccessTokenViewSet, basename="video-token")
+
+if video_settings.use_dublin_core:
+    router.register(r"dublin-core", DublinCoreViewSet, basename="dublin-core")
 
 if video_settings.use_cut:
     router.register(
@@ -49,6 +55,7 @@ if video_settings.use_duplicate:
             name="video-duplicate",
         ),
     ]
+
 
 if video_settings.use_hyperlinks:
     urlpatterns += [
@@ -72,6 +79,25 @@ if video_settings.use_hyperlinks:
                 }
             ),
             name="video-hyperlink-detail",
+        ),
+    ]
+
+if video_settings.use_marker_time:
+    urlpatterns += [
+        path(
+            "marker/<slug:video_slug>/",
+            UserMarkerTimeViewSet.as_view({"get": "get_marker"}),
+            name="marker-get",
+        ),
+        path(
+            "marker/<slug:video_slug>/save/",
+            UserMarkerTimeViewSet.as_view({"post": "save_marker"}),
+            name="marker-save",
+        ),
+        path(
+            "marker/<slug:video_slug>/reset/",
+            UserMarkerTimeViewSet.as_view({"delete": "reset_marker"}),
+            name="marker-reset",
         ),
     ]
 
