@@ -12,6 +12,7 @@ from src.apps.video.views import (
     TagViewSet,
     TypeViewSet,
     VideoHyperlinkViewSet,
+    VideoAccessTokenViewSet,
     DublinCoreViewSet,
     UserMarkerTimeViewSet,
     VideoCutViewSet,
@@ -30,6 +31,9 @@ if video_settings.use_hyperlinks:
     router.register(
         r"video-hyperlinks", VideoHyperlinkViewSet, basename="video-hyperlink"
     )
+
+if video_settings.use_video_access_token:
+    router.register(r"tokens", VideoAccessTokenViewSet, basename="video-token")
 
 if video_settings.use_dublin_core:
     router.register(r"dublin-core", DublinCoreViewSet, basename="dublin-core")

@@ -51,6 +51,19 @@ class VideoConfig(BaseSettings):
         description=_("Enable video hyperlinks."),
         json_schema_extra={"public": True},
     )
+    use_video_access_token: bool = Field(
+        default=defaults.USE_VIDEO_ACCESS_TOKEN,
+        description=_("Enable secure video sharing via access tokens."),
+        json_schema_extra={"public": True},
+    )
+    video_token_default_validity_days: int = Field(
+        default=defaults.VIDEO_TOKEN_DEFAULT_VALIDITY_DAYS,
+        description=_("Default token validity duration in days."),
+    )
+    video_token_max_validity_days: int = Field(
+        default=defaults.VIDEO_TOKEN_MAX_VALIDITY_DAYS,
+        description=_("Maximum allowed token validity in days."),
+    )
     use_cut: bool = Field(
         default=defaults.USE_CUT,
         description=_("Enable video cutting feature."),

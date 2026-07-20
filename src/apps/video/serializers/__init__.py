@@ -9,6 +9,7 @@ from .DisciplineSerializer import DisciplineSerializer  # noqa: F401
 from .TagSerializer import TagSerializer  # noqa: F401
 from .TypeSerializer import TypeSerializer  # noqa: F401
 from .HyperlinkSerializer import VideoHyperlinkSerializer  # noqa: F401
+from .VideoAccessTokenSerializer import VideoAccessTokenSerializer  # noqa: F401
 from .DublinCoreSerializer import DublinCoreSerializer  # noqa: F401
 from .UserMarkerTimeSerializer import UserMarkerTimeSerializer  # noqa: F401
 from .VideoCutSerializer import VideoCutSerializer  # noqa: F401
@@ -21,6 +22,7 @@ __all__ = [
     "TagSerializer",
     "TypeSerializer",
     "VideoHyperlinkSerializer",
+    "VideoAccessTokenSerializer",
     "DublinCoreSerializer",
     "UserMarkerTimeSerializer",
     "VideoCutSerializer",
