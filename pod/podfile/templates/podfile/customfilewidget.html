@@ -116,7 +116,7 @@ document.addEventListener('show.bs.modal',  (event) => {
   if (!event.target.matches('#fileModal_{{id}}')) return;
   event.stopPropagation();
   id_input = event.target.dataset.id;
-  send_form_data("{% if type %}{% url "podfile:home" type=type %}{% else %}{% url "podfile:home" %}{% endif %}", {}, "append_folder_html_in_modal", "get");
+  send_form_data("{% if type == "image" or type == "file" %}{% url "podfile:home" type=type %}{% else %}{% url "podfile:home" %}{% endif %}", {}, "append_folder_html_in_modal", "get");
 });
 
 document.addEventListener("click", (event) => {
