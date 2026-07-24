@@ -1,0 +1,25 @@
+"""
+Esup-Pod - Override Live defaults.
+
+Copy this file to `live.py` to customize the live streaming settings.
+For the complete list of available settings, see `src/config/defaults/live.py`.
+"""
+
+# Enable or disable the live module globally
+USE_LIVE = True
+
+# List of Shibb/CAS affiliations allowed to create/manage events
+AFFILIATION_EVENT = ("faculty", "employee", "staff")
+
+# Group name whose members can manage all events globally
+EVENT_GROUP_ADMIN = "event admin"
+
+# How often (in seconds) the frontend sends a viewer ping to count viewers
+HEARTBEAT_DELAY = 45
+
+# Default path where recording servers (Wowza/SMP) will write video files
+# Leave empty or set to the absolute path mounted on the encoder.
+DEFAULT_EVENT_PATH = ""
+
+# Enable Live transcribing if using transcription engine
+USE_LIVE_TRANSCRIPTION = False
