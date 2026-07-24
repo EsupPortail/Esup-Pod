@@ -250,13 +250,16 @@ class AccessGroupAdmin(admin.ModelAdmin):
     Admin configuration for managing AccessGroups.
     """
 
-    autocomplete_fields = ["users"]
+    autocomplete_fields = []
     search_fields = ["id", "code_name", "display_name"]
     list_display = (
         "id",
         "code_name",
         "display_name",
+        "auto_sync",
     )
+    list_filter = ("auto_sync", "sites")
+    filter_horizontal = ("sites",)
 
 
 @admin.register(ServerRole)
