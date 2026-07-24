@@ -735,8 +735,6 @@ class VideoViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @extend_schema(
-        summary="Video view statistics",
-        description="Returns aggregated view statistics for a video (total, 7-day, 30-day, peak, daily breakdown).",
         parameters=[
             OpenApiParameter(
                 name="days",
