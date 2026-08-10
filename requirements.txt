@@ -1,5 +1,5 @@
 -r requirements-encode.txt
-Django==4.2.30
+Django==5.2.16
 Pillow==12.2.0
 django-tinymce==4.1.0
 django-tagulous==2.1.0
