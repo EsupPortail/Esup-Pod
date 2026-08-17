@@ -22,9 +22,7 @@ def safe_remove_file(field) -> None:
             pass
 
 
-def check_size_not_changing(
-    resource_path: str, max_attempt: int = 10
-) -> None:
+def check_size_not_changing(resource_path: str, max_attempt: int = 10) -> None:
     """
     Check if the size of a resource remains unchanged over a number of attempts.
 
@@ -57,9 +55,7 @@ def check_size_not_changing(
             size_match = True
 
 
-def check_exists(
-    resource_path: str, is_dir: bool, max_attempt: int = 10
-) -> None:
+def check_exists(resource_path: str, is_dir: bool, max_attempt: int = 10) -> None:
     """
     Check whether a file or directory exists, retrying up to max_attempt times.
 
