@@ -38,6 +38,8 @@ class BroadcasterAdmin(admin.ModelAdmin):
     filter_horizontal = ("manage_groups",)
 
     class Media:
+        """Include custom admin CSS for the BroadcasterAdmin interface."""
+
         css = {"all": ("live/css/admin.css",)}
 
     def recording_status_display(self, obj: Broadcaster):
