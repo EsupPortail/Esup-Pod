@@ -3,20 +3,35 @@ Esup-Pod - Live utilities.
 
 Utility functions for the live module:
 - Model defaults for Event dates
-- File system checks (port from V4)
 - Email notification on event scheduling (port from V4)
+
+File system check utilities (check_size_not_changing, check_exists,
+check_dir_exists, check_file_exists) have been moved to src.apps.utils.files
+and are re-exported here for backward compatibility.
 """
 
 import logging
-import os
 import re
 from datetime import datetime
-from time import sleep
 
 from django.conf import settings
 from django.core.mail import mail_managers, EmailMultiAlternatives
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
+from src.apps.utils.files import (
+    check_size_not_changing,
+    check_exists,
+    check_dir_exists,
+    check_file_exists,
+)
+
+__all__ = [
+    "check_size_not_changing",
+    "check_exists",
+    "check_dir_exists",
+    "check_file_exists",
+]
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +45,9 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings, "TEMPLATE_VISIBLE_SETTINGS", {"TITLE_SITE": "Pod"}
 )
 EVENT_CHECK_MAX_ATTEMPT = getattr(settings, "EVENT_CHECK_MAX_ATTEMPT", 10)
+
+# Note: EVENT_CHECK_MAX_ATTEMPT is kept for settings consistency; the actual
+# file-check functions now live in src.apps.utils.files.
 
 
 # ---------------------------------------------------------------------------
@@ -45,86 +63,6 @@ def current_time():
 def one_hour_hence():
     """Return the current datetime + 1 hour, rounded to the minute."""
     return current_time() + timezone.timedelta(hours=1)
-
-
-# ---------------------------------------------------------------------------
-# File system checks (ported from V4)
-# ---------------------------------------------------------------------------
-
-
-def check_size_not_changing(
-    resource_path: str, max_attempt: int = EVENT_CHECK_MAX_ATTEMPT
-) -> None:
-    """
-    Check if the size of a resource remains unchanged over a number of attempts.
-
-    Raises:
-        Exception: if the file size keeps changing after max_attempt retries.
-        OSError: if the resource does not exist or is inaccessible.
-    """
-    file_size = os.path.getsize(resource_path)
-    size_match = False
-    attempt_number = 0
-
-    while not size_match and attempt_number <= max_attempt:
-        sleep(1)
-        new_size = os.path.getsize(resource_path)
-        if file_size != new_size:
-            logger.warning(
-                "File size of %s changing from %s to %s, attempt number %s",
-                resource_path,
-                file_size,
-                new_size,
-                attempt_number,
-            )
-            file_size = new_size
-            attempt_number += 1
-            if attempt_number == max_attempt:
-                logger.error("File: %s is still changing", resource_path)
-                raise Exception("checkFileSize aborted")
-        else:
-            logger.info("Size checked for %s: %s", resource_path, new_size)
-            size_match = True
-
-
-def check_exists(
-    resource_path: str, is_dir: bool, max_attempt: int = EVENT_CHECK_MAX_ATTEMPT
-) -> None:
-    """
-    Check whether a file or directory exists, retrying up to max_attempt times.
-
-    Args:
-        resource_path: resource path and name.
-        is_dir: True for a dir, False for a file.
-        max_attempt: number of attempts before raising.
-    Raises:
-        Exception: if the resource doesn't exist after max_attempt retries.
-    """
-    fct = os.path.isdir if is_dir else os.path.exists
-    r_type = "Dir" if is_dir else "File"
-    attempt_number = 1
-
-    while not fct(resource_path) and attempt_number <= max_attempt:
-        logger.warning("%s does not exist, attempt number %s", r_type, attempt_number)
-        if attempt_number == max_attempt:
-            logger.error("Impossible to get %s: %s", r_type, resource_path)
-            raise Exception(f"{r_type}: {resource_path} does not exist")
-        attempt_number += 1
-        sleep(1)
-
-
-def check_dir_exists(
-    dest_dir_name: str, max_attempt: int = EVENT_CHECK_MAX_ATTEMPT
-) -> None:
-    """Check a directory exists, retrying if needed."""
-    return check_exists(dest_dir_name, True, max_attempt)
-
-
-def check_file_exists(
-    full_file_name: str, max_attempt: int = EVENT_CHECK_MAX_ATTEMPT
-) -> None:
-    """Check a file exists, retrying if needed."""
-    return check_exists(full_file_name, False, max_attempt)
 
 
 # ---------------------------------------------------------------------------

@@ -87,7 +87,7 @@ class Command(BaseCommand):
                 continue
 
             if self.debug_mode:
-                self.stdout.write("should be stopped ... but not tried (debug mode)")
+                self.stdout.write("should be stopped... but not tried (debug mode)")
                 continue
 
             self.stdout.write("should be stopped")
@@ -131,7 +131,7 @@ class Command(BaseCommand):
                 continue
 
             if self.debug_mode:
-                self.stdout.write(" should be started ... but not tried (debug mode)")
+                self.stdout.write(" should be started... but not tried (debug mode)")
                 continue
 
             self.stdout.write(" should be started")

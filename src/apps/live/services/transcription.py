@@ -1,7 +1,10 @@
 """
 Esup-Pod - Live transcription service.
 
-Provides real-time transcription using Vosk and FFmpeg.
+Provides real-time transcription using Vosk (a local speech recognition engine)
+and FFmpeg. Whisper (OpenAI) is an alternative engine available via the optional
+requirements-transcription.txt dependencies.
+
 Ported from V4 pod/live/live_transcript.py
 """
 
@@ -57,12 +60,115 @@ def handle_last_caption(last_caption: Caption, caption_text: str) -> str:
     return caption_text
 
 
-def transcribe(url: str, slug: str, model_path: str, filepath: str) -> None:  # noqa: C901
+def _build_ffmpeg_command(url: str) -> list:
+    """Build the FFmpeg command used to extract audio from the live stream."""
+    return [
+        "ffmpeg",
+        "-y",
+        "-loglevel",
+        "quiet",
+        "-i",
+        url,
+        "-ss",
+        "00:00:00.005",
+        "-t",
+        "00:00:05",
+        "-acodec",
+        "pcm_s16le",
+        "-ac",
+        "1",
+        "-ar",
+        str(__SAMPLE_RATE__),
+        "-f",
+        "s16le",
+        "-",
+    ]
+
+
+def _recognize_audio(rec: KaldiRecognizer, process) -> list:
+    """
+    Read audio chunks from the FFmpeg process and collect Vosk recognition results.
+
+    Returns a list of JSON result strings.
+    """
+    results = []
+    data = process.stdout.read(4000)
+    while True:
+        if len(data) == 0:
+            break
+        data = process.stdout.read(4000)
+        if rec.AcceptWaveform(data):
+            results.append(rec.Result())
+    results.append(rec.FinalResult())
+    return results
+
+
+def _build_caption_text(results: list) -> str:
+    """
+    Aggregate Vosk word-level results into a single caption string.
+
+    Returns the combined text of all recognised words.
+    """
+    caption_text = ""
+    for res in results:
+        words = json.loads(res).get("result")
+        if not words:
+            continue
+        content = " ".join([w["word"] for w in words])
+        caption_text += content + " "
+    return caption_text
+
+
+def _save_caption(vtt: WebVTT, caption_text: str, last_caption: Caption, filepath: str):
+    """
+    Append a new caption to the VTT file if caption_text is non-empty.
+
+    Returns the new last Caption, or the previous one if nothing was written.
+    """
+    if caption_text:
+        caption = Caption(timestring(0), timestring(86400), caption_text)
+        vtt.captions.append(caption)
+        vtt.save(filepath)
+        return caption
+    return last_caption
+
+
+def _run_transcription_cycle(
+    rec: KaldiRecognizer,
+    url: str,
+    slug: str,
+    filepath: str,
+    last_caption: Caption,
+) -> Caption:
+    """
+    Run one 5-second transcription cycle: capture audio, recognise speech, save caption.
+
+    Returns the updated last Caption (or the previous one on error).
+    """
+    command = _build_ffmpeg_command(url)
+    try:
+        with subprocess.Popen(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        ) as process:
+            results = _recognize_audio(rec, process)
+
+        vtt = WebVTT()
+        caption_text = _build_caption_text(results)
+        caption_text = handle_last_caption(last_caption, caption_text)
+        last_caption = _save_caption(vtt, caption_text, last_caption, filepath)
+    except Exception as exc:
+        logger.error("Transcription error for %s: %s", slug, exc)
+    return last_caption
+
+
+def transcribe(url: str, slug: str, model_path: str, filepath: str) -> None:
     """
     Transcribe a live video stream.
 
-    Connects to the stream using ffmpeg, decodes audio, and passes
+    Connects to the stream using FFmpeg, decodes audio, and passes
     it to Vosk for speech-to-text generation.
+    Runs in a loop until the transcription setting is disabled or the thread
+    is explicitly stopped via ``threads_to_stop``.
     """
     logger.info("Starting transcription for %s using model %s", slug, model_path)
     try:
@@ -78,73 +184,15 @@ def transcribe(url: str, slug: str, model_path: str, filepath: str) -> None:  # 
 
     while live_settings.use_live_transcription or thread_id not in threads_to_stop:
         start = time.time()
-        command = [
-            "ffmpeg",
-            "-y",
-            "-loglevel",
-            "quiet",
-            "-i",
-            url,
-            "-ss",
-            "00:00:00.005",
-            "-t",
-            "00:00:05",
-            "-acodec",
-            "pcm_s16le",
-            "-ac",
-            "1",
-            "-ar",
-            str(__SAMPLE_RATE__),
-            "-f",
-            "s16le",
-            "-",
-        ]
-        try:
-            with subprocess.Popen(
-                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-            ) as process:
-                results = []
-                data = process.stdout.read(4000)
-                while True:
-                    if len(data) == 0:
-                        break
-                    else:
-                        data = process.stdout.read(4000)
-                    if rec.AcceptWaveform(data):
-                        results.append(rec.Result())
-                results.append(rec.FinalResult())
-
-                vtt = WebVTT()
-                caption_text = ""
-                for res in results:
-                    words = json.loads(res).get("result")
-                    if not words:
-                        continue
-                    content = " ".join([w["word"] for w in words])
-                    caption_text += content + " "
-
-                caption_text = handle_last_caption(last_caption, caption_text)
-
-                current_start = timestring(0)
-                current_end = timestring(86400)
-                if caption_text != "":
-                    caption = Caption(current_start, current_end, caption_text)
-                    last_caption = caption
-                    vtt.captions.append(caption)
-                    vtt.save(filepath)
-
-        except Exception as exc:
-            logger.error("Transcription error for %s: %s", slug, exc)
-
-        now = time.time() - start
-        if now < 5:
-            time.sleep(5 - now)
+        last_caption = _run_transcription_cycle(rec, url, slug, filepath, last_caption)
+        elapsed = time.time() - start
+        if elapsed < 5:
+            time.sleep(5 - elapsed)
 
     logger.info("Stopped transcription for %s", slug)
     if thread_id in threads_to_stop:
         threads_to_stop.remove(thread_id)
-    vtt = WebVTT()
-    vtt.save(filepath)
+    WebVTT().save(filepath)
 
 
 def transcribe_live(url: str, slug: str, status: bool, lang: str, filepath: str) -> None:
@@ -168,8 +216,7 @@ def transcribe_live(url: str, slug: str, status: bool, lang: str, filepath: str)
         if status:
             start_live_transcription_task.delay(url, slug, model_path, filepath)
         else:
-            vtt = WebVTT()
-            vtt.save(filepath)
+            WebVTT().save(filepath)
             end_live_transcription_task.delay(slug)
     else:
         # Fallback to threading if Celery isn't specifically enforcing
@@ -181,8 +228,7 @@ def transcribe_live(url: str, slug: str, status: bool, lang: str, filepath: str)
             t.start()
             threads[slug] = t.ident
         else:
-            vtt = WebVTT()
-            vtt.save(filepath)
+            WebVTT().save(filepath)
             stop_thread = threads.get(slug, None)
             if stop_thread:
                 threads_to_stop.append(stop_thread)

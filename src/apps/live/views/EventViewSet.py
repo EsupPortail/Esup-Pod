@@ -168,10 +168,7 @@ class EventViewSet(viewsets.ModelViewSet):
             except Exception as exc:
                 logger.warning("Failed to send event scheduling email: %s", exc)
 
-    @extend_schema(
-        summary="My events",
-        description="Returns all events the authenticated user owns or co-owns (past and upcoming).",
-    )
+    @extend_schema(summary="My events")
     @action(
         detail=False,
         methods=["get"],
@@ -179,21 +176,26 @@ class EventViewSet(viewsets.ModelViewSet):
         permission_classes=[permissions.IsAuthenticated],
     )
     def my_events(self, request):
-        """GET /api/live/my-events/"""
+        """
+        GET /api/live/my-events/
+
+        Returns all events the authenticated user owns or co-owns (past and upcoming).
+        """
         qs = self.get_queryset()
         page = self.paginate_queryset(qs)
         if page is not None:
             return self.get_paginated_response(self.get_serializer(page, many=True).data)
         return Response(self.get_serializer(qs, many=True).data)
 
-    @extend_schema(
-        summary="Get video cards for event",
-        description="Return the list of videos linked to this event (as serialized data). "
-        "Mirrors the V4 `event_get_video_cards` endpoint.",
-    )
+    @extend_schema(summary="Get video cards for event")
     @action(detail=True, methods=["get"], url_path="video-cards")
     def video_cards(self, request, slug=None):
-        """GET /api/live/events/{slug}/video-cards/"""
+        """
+        GET /api/live/events/{slug}/video-cards/
+
+        Return the list of videos linked to this event (as serialized data).
+        Mirrors the V4 ``event_get_video_cards`` endpoint.
+        """
         event = self.get_object()
         from src.apps.video.serializers import VideoSerializer
 
@@ -203,7 +205,6 @@ class EventViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Unlock event",
-        description="Validate the password for a password-protected event. Returns 200 on success.",
         request={
             "application/json": {
                 "type": "object",
@@ -214,7 +215,11 @@ class EventViewSet(viewsets.ModelViewSet):
     )
     @action(detail=True, methods=["post"], url_path="unlock")
     def unlock(self, request, slug=None):
-        """POST /api/live/events/{slug}/unlock/"""
+        """
+        POST /api/live/events/{slug}/unlock/
+
+        Validate the password for a password-protected event. Returns 200 on success.
+        """
         event = self.get_object()
         if not event.password:
             return Response({"detail": _("This event is not password-protected.")})
@@ -228,11 +233,6 @@ class EventViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Send heartbeat",
-        description=(
-            "Send a periodic heartbeat ping to register this viewer as active. "
-            f"Should be called every {live_settings.heartbeat_delay} seconds. "
-            "Requires a unique `viewkey` string in the request body."
-        ),
         request={
             "application/json": {
                 "type": "object",
@@ -256,9 +256,10 @@ class EventViewSet(viewsets.ModelViewSet):
         """
         POST /api/live/events/{slug}/heartbeat/
 
-        The frontend must send a ping every HEARTBEAT_DELAY seconds with a
-        stable unique `viewkey` (e.g. a UUID generated client-side).
-        Stale heartbeats (2x the delay) are purged before counting.
+        Send a periodic heartbeat ping to register this viewer as active.
+        Should be called every HEARTBEAT_DELAY seconds with a stable unique
+        ``viewkey`` (e.g. a UUID generated client-side).
+        Stale heartbeats (2× the delay) are purged before counting.
         """
         event = self.get_object()
         viewkey = request.data.get("viewkey")

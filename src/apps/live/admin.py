@@ -37,19 +37,27 @@ class BroadcasterAdmin(admin.ModelAdmin):
     readonly_fields = ("slug", "qrcode_display")
     filter_horizontal = ("manage_groups",)
 
+    class Media:
+        css = {"all": ("live/css/admin.css",)}
+
     def recording_status_display(self, obj: Broadcaster):
         """Display a coloured indicator of the current recording state."""
         try:
             recording = obj.is_recording()
             if recording:
                 return format_html(
-                    '<img src="/static/admin/img/icon-yes.svg" alt="Recording">'
+                    '<img src="/static/admin/img/icon-yes.svg" alt="{}">',
+                    _("Recording"),
                 )
             return format_html(
-                '<img src="/static/admin/img/icon-no.svg" alt="Not recording">'
+                '<img src="/static/admin/img/icon-no.svg" alt="{}">',
+                _("Not recording"),
             )
         except Exception:
-            return format_html('<img src="/static/admin/img/icon-alert.svg" alt="Error">')
+            return format_html(
+                '<img src="/static/admin/img/icon-alert.svg" alt="{}">',
+                _("Error"),
+            )
 
     recording_status_display.short_description = _("Recording?")
 
@@ -59,7 +67,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
         if not data_uri:
             return _("QR code unavailable (install the 'qrcode' library).")
         return format_html(
-            '<img src="{}" alt="{}" style="width:150px;height:150px;" />',
+            '<img src="{}" alt="{}" class="qrcode-preview" />',
             data_uri,
             _("QR code to create an immediate event"),
         )

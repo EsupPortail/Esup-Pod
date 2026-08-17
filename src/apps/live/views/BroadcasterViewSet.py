@@ -189,10 +189,6 @@ class BroadcasterViewSet(
 
     @extend_schema(
         summary="Is available to record",
-        description=(
-            "Check if the broadcaster is available to start a new recording AND "
-            "whether it is currently recording. Mirrors the V4 `ajax_is_stream_available_to_record`."
-        ),
         responses={
             200: {
                 "type": "object",
@@ -210,7 +206,12 @@ class BroadcasterViewSet(
         permission_classes=[permissions.IsAuthenticated],
     )
     def available(self, request, slug=None):
-        """GET /api/live/broadcasters/{slug}/available/"""
+        """
+        GET /api/live/broadcasters/{slug}/available/
+
+        Check if the broadcaster is available to start a new recording AND
+        whether it is currently recording. Mirrors the V4 ``ajax_is_stream_available_to_record``.
+        """
         broadcaster = self.get_object()
         impl, err = self._get_piloting_or_error(broadcaster)
         if err:
@@ -228,7 +229,6 @@ class BroadcasterViewSet(
 
     @extend_schema(
         summary="Current record info",
-        description="Return metadata about the current recording (filename, duration in seconds, segment number).",
         responses={
             200: {
                 "type": "object",
@@ -248,7 +248,12 @@ class BroadcasterViewSet(
         permission_classes=[permissions.IsAuthenticated],
     )
     def record_info(self, request, slug=None):
-        """GET /api/live/broadcasters/{slug}/record_info/"""
+        """
+        GET /api/live/broadcasters/{slug}/record_info/
+
+        Return metadata about the current recording: filename, duration in seconds,
+        and segment number.
+        """
         broadcaster = self.get_object()
         impl, err = self._get_piloting_or_error(broadcaster)
         if err:
@@ -288,14 +293,18 @@ class BroadcasterViewSet(
 
     @extend_schema(
         summary="Start recording",
-        description="Start the recording on the broadcaster (requires piloting rights). Provide `event_id` in the request body.",
         responses={
             200: {"type": "object", "properties": {"success": {"type": "boolean"}}}
         },
     )
     @action(detail=True, methods=["post"], url_path="start_record")
     def start_record(self, request, slug=None):
-        """POST /api/live/broadcasters/{slug}/start_record/"""
+        """
+        POST /api/live/broadcasters/{slug}/start_record/
+
+        Start the recording on the broadcaster (requires piloting rights).
+        Provide ``event_id`` in the request body.
+        """
         broadcaster = self.get_object()
         self.check_object_permissions(request, broadcaster)
         event_id = request.data.get("event_id")
@@ -322,14 +331,17 @@ class BroadcasterViewSet(
 
     @extend_schema(
         summary="Stop recording",
-        description="Stop the current recording. Creates the video via Celery after stopping.",
         responses={
             200: {"type": "object", "properties": {"success": {"type": "boolean"}}}
         },
     )
     @action(detail=True, methods=["post"], url_path="stop_record")
     def stop_record(self, request, slug=None):
-        """POST /api/live/broadcasters/{slug}/stop_record/"""
+        """
+        POST /api/live/broadcasters/{slug}/stop_record/
+
+        Stop the current recording. Creates the video via Celery after stopping.
+        """
         broadcaster = self.get_object()
         self.check_object_permissions(request, broadcaster)
         event_id = request.data.get("event_id")
@@ -356,14 +368,17 @@ class BroadcasterViewSet(
 
     @extend_schema(
         summary="Split recording",
-        description="Split the current recording segment (Wowza only). Creates an intermediate video.",
         responses={
             200: {"type": "object", "properties": {"success": {"type": "boolean"}}}
         },
     )
     @action(detail=True, methods=["post"], url_path="split_record")
     def split_record(self, request, slug=None):
-        """POST /api/live/broadcasters/{slug}/split_record/"""
+        """
+        POST /api/live/broadcasters/{slug}/split_record/
+
+        Split the current recording segment (Wowza only). Creates an intermediate video.
+        """
         broadcaster = self.get_object()
         self.check_object_permissions(request, broadcaster)
         event_id = request.data.get("event_id")
@@ -394,10 +409,14 @@ class BroadcasterViewSet(
 
         return Response({"success": success}, status=status.HTTP_200_OK)
 
-    @extend_schema(summary="Start stream", description="Start RTMP stream (SMP only).")
+    @extend_schema(summary="Start stream")
     @action(detail=True, methods=["post"], url_path="start_stream")
     def start_stream(self, request, slug=None):
-        """POST /api/live/broadcasters/{slug}/start_stream/"""
+        """
+        POST /api/live/broadcasters/{slug}/start_stream/
+
+        Start the RTMP stream (SMP only).
+        """
         broadcaster = self.get_object()
         self.check_object_permissions(request, broadcaster)
         impl, err = self._get_piloting_or_error(broadcaster)
@@ -414,10 +433,14 @@ class BroadcasterViewSet(
             return Response({"success": True, "already_streaming": True})
         return Response({"success": impl.start_stream()})
 
-    @extend_schema(summary="Stop stream", description="Stop RTMP stream (SMP only).")
+    @extend_schema(summary="Stop stream")
     @action(detail=True, methods=["post"], url_path="stop_stream")
     def stop_stream(self, request, slug=None):
-        """POST /api/live/broadcasters/{slug}/stop_stream/"""
+        """
+        POST /api/live/broadcasters/{slug}/stop_stream/
+
+        Stop the RTMP stream (SMP only).
+        """
         broadcaster = self.get_object()
         self.check_object_permissions(request, broadcaster)
         impl, err = self._get_piloting_or_error(broadcaster)
@@ -436,7 +459,6 @@ class BroadcasterViewSet(
 
     @extend_schema(
         summary="RTMP config",
-        description="Return the RTMP stream configuration for this broadcaster (SMP only).",
         responses={
             200: {
                 "type": "object",
@@ -454,7 +476,11 @@ class BroadcasterViewSet(
         permission_classes=[permissions.IsAuthenticated],
     )
     def rtmp_config(self, request, slug=None):
-        """GET /api/live/broadcasters/{slug}/rtmp_config/"""
+        """
+        GET /api/live/broadcasters/{slug}/rtmp_config/
+
+        Return the RTMP stream configuration for this broadcaster (SMP only).
+        """
         broadcaster = self.get_object()
         impl, err = self._get_piloting_or_error(broadcaster)
         if err:
@@ -466,7 +492,6 @@ class BroadcasterViewSet(
 
     @extend_schema(
         summary="Recording status",
-        description="Return whether the broadcaster is currently recording.",
         responses={
             200: {"type": "object", "properties": {"is_recording": {"type": "boolean"}}}
         },
@@ -478,7 +503,11 @@ class BroadcasterViewSet(
         permission_classes=[permissions.IsAuthenticated],
     )
     def record_status(self, request, slug=None):
-        """GET /api/live/broadcasters/{slug}/record_status/"""
+        """
+        GET /api/live/broadcasters/{slug}/record_status/
+
+        Return whether the broadcaster is currently recording.
+        """
         broadcaster = self.get_object()
         impl, err = self._get_piloting_or_error(broadcaster)
         if err:
