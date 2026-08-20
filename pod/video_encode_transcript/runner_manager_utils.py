@@ -279,10 +279,14 @@ def remote_video_part(
         overview_vtt = os.path.join(output_dir, "overview.vtt")
         if check_file(overview_vtt):
             try:
-                video_to_encode.overview = overview_vtt.replace(
+                overview_name = overview_vtt.replace(
                     os.path.join(settings.MEDIA_ROOT, ""), ""
                 )
-                video_to_encode.save()
+                # The encoding callback may overlap another save of the same video.
+                # Only update the overview so a stale Video instance cannot clear a
+                # thumbnail that has just been attached by another callback.
+                Video.objects.filter(id=video_id).update(overview=overview_name)
+                video_to_encode.overview = overview_name
                 msg += "\n- existing overview:\n%s" % overview_vtt
                 add_encoding_log(video_id, "attach existing overview: %s" % overview_vtt)
             except Exception as err:
