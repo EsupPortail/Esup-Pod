@@ -44,6 +44,7 @@ USE_RUNNER_MANAGER = True
 RM_TASKS_DELETED_AFTER_DAYS = 60
 SECURE_SSL_REDIRECT = True
 ENCODE_VIDEO = "start_encode"
+FILE_UPLOAD_PERMISSIONS = 0o644
 ```
 
 ### `USE_RUNNER_MANAGER = True`
@@ -68,6 +69,12 @@ ENCODE_VIDEO = "start_encode"
 
 - Fonction appelée pour lancer l’encodage des vidéos.
 - Il s'agit de la valeur par défaut, donc ce paramètre peut être absent de votre `settings_local.py`.
+
+### `FILE_UPLOAD_PERMISSIONS = 0o644`
+
+- Définit les permissions appliquées par Django aux fichiers téléversés une fois qu'ils sont enregistrés sur le disque.
+- La valeur octale `0o644` autorise le propriétaire à lire et modifier le fichier, tandis que le groupe et les autres utilisateurs peuvent uniquement le lire.
+- Ce réglage permet notamment au serveur web de lire et de servir les fichiers créés par Pod. Il doit être cohérent avec la configuration de Nginx, en particulier avec l'utilisateur défini par la directive `user` dans `/etc/pod/nginx.conf` (ou dans `/etc/nginx/nginx.conf`, selon l'installation). Consultez la section [Frontal Web Nginx / uWSGI et fichiers statiques](../production-mode_fr#frontal-web-nginx--uwsgi-et-fichiers-statiques).
 
 ## Configuration via l'administration
 
