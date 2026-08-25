@@ -27,12 +27,12 @@ Up to POD version 3.8.1, these URLs begin with the domain name of the POD server
 To enable the feature, the following variables must be set in the file `pod/custom/settings_local.py`:
 
 - `USE_AI_ENHANCEMENT = True` # Activation of the feature
-- `AI_ENHANCEMENT_API_URL = 'https://api.aristote.education/api'` # URL to contact the Aristote API
+- `AI_ENHANCEMENT_API_URL = 'https://stt.ilaas.fr/api'` # URL to contact the Aristote API
 - `AI_ENHANCEMENT_CLIENT_ID = 'univ_client_id'`
 - `AI_ENHANCEMENT_CLIENT_SECRET = 'xxx-xxx-xxx'`
 - `AI_ENHANCEMENT_API_VERSION = 'v1'` # Version of the Aristote API used for enrichment
 
-To obtain the values to set for the variables `AI_ENHANCEMENT_CLIENT_ID` and `AI_ENHANCEMENT_CLIENT_SECRET`, a request for access to the Aristote API must be made through Centrale Supelec (contact.aristote [at] centralesupelec.fr).
+To obtain the values to set for the variables `AI_ENHANCEMENT_CLIENT_ID` and `AI_ENHANCEMENT_CLIENT_SECRET`, a request for access to the Aristote API must be made through ILaaS at the adress: https://www.ilaas.fr/demande-dacces/.
 
 Additional variables (useful but not required for operation) can also be added:
 

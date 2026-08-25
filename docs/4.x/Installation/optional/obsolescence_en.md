@@ -12,6 +12,8 @@ Starting from version 3.1.0 of Pod, a deletion date has been added for each vide
 This date field is created by default with 2 years added to the upload date.
 These 2 years can be configured using the `DEFAULT_YEAR_DATE_DELETE` setting.
 
+In version 4.3 of Pod, we added the ability to recalculate a video's deletion date using the `respite_launcher` command, as well as the ability for a video's owner to decide whether to extend, archive, or delete their video using a dedicated interface. 
+
 ## 1/ Attribute `date_delete`
 
 When adding a video, once the upload is complete and the video is saved, this date is adjusted if the owner’s affiliation is specified in the `ACCOMMODATION_YEARS` variable.
@@ -47,7 +49,77 @@ AFFILIATION = getattr(
 
 So, if you update your Pod and change nothing, all your videos will have a deletion date set to two years after the update date of your platform.
 
-## 2/ Obsolescence Management and Notifications
+## 2/ Calculating a Grace Period
+
+We have added a command that allows you to recalculate the value of `date_delete` using the `respite_launcher` command based on video criteria (type, number of views, etc.).
+
+This command can use different “calculation methods” implemented in the files in the `/pod/video/management/commands/respite_model` directory
+
+* base.py (default): does nothing
+* criteria_model: calculates a video’s age based on the following potential criteria 
+  * id: Id of the video (int)
+  * title: Title of the video (string)
+  * view_count: count the views of the video (int)
+  * view_count_year: Views during the last year (int))
+  * is_draft: Tell if it is in draft or not (bool)
+  * is_restricted: Tell if video is restricted or not (bool)
+  * date_added: upload date of the video (datetime)
+  * days_on_platform: number of days on the platforme (int)
+  * date_delete: scheduled date of suppression (datetime.date)
+  * description: description of the video (string)
+  * channels: list of channels where the video is (list)
+  * nb_fav: number of favorite the video belong (int)
+  * nb_comment: amount of comment on the video (int)
+  * duration: 'duration of the video in sec (int)
+  * disciplines: Video disciplines (list)
+  * type: Video type (Type)
+  * themes: themes of the video (list)
+  * owner: owner of the video (User)
+  * additional_owners: Additional owner of the video (list)
+  * categories: categories of the video (list)
+
+To enable this command, you must:
+
+```sh
+USE_RESPITE = True
+RESPITE_MODEL = “criteria_model”
+```
+And, if necessary, specify the settings to be used for the calculation.
+For example, for the criteria-based model (criteria_model), if I want to: 
+* set a lifespan of 5 years for type 2 and 4 videos with more than 500 views 
+* and set a lifespan of 7 years for type 3 and 4 videos with more than 1,000 total views and more than 100 views in the last year
+... I would write:
+```sh
+RESPITE_MODEL_PARAMETERS = {
+    "respite_criteria_parameter": [
+        {
+            "age": 5,
+            "criteria": {
+                "type.id": [2], 
+                "view_count": 500,
+            }
+        },
+        {
+            "age": 7,
+            "criteria": {
+                "type.id": [3, 4],  
+                "view_count": 1000,
+                "view_count_year": 100,
+            }
+        }
+    ],
+    "archiving_criteria_parameter": {
+        ...
+    }
+}
+```
+
+Finally, run the command in `--dry` mode first, just to be safe
+```sh
+python manage.py respite_launcher --dry
+```
+
+## 3/ Obsolescence Management and Notifications
 
 We have added a variable `WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [])`. It is therefore empty by default.
 
@@ -55,14 +127,44 @@ This variable must contain the number of days before the deletion date when the 
 
 For example, if you set `WARN_DEADLINES = [60, 30, 7]`, video owners will receive an email 60 days, 30 days, and 7 days before deletion.
 
-Then:
+There are then two options: either allow the owner to choose how to proceed via a dedicated interface, or do not allow it. To do this, set the variable `ENABLE_PAGE_OBSO_MAIL = True/False` (False by default).
 
-* if they are “staff,” the email will inform them that their video will soon be deleted but that they can modify the date in the edit interface (a link will be included).
-* if they are “non-staff” (students), the email will invite them to contact the platform managers (`CONTACT_US_EMAIL` or the institution’s `MANAGER` if `USE_ESTABLISHMENT_FIELD` is set to True).
+### If the owner is not allowed to decide (`ENABLE_PAGE_OBSO_MAIL = False`)
+* If they are “staff,” the email sent to them will inform them that their video will soon be deleted but that they can change the date in the editing interface, with a link to take them there.
+* If they are “non-staff” (students), the email will invite them to contact the platform managers (`CONTACT_US_EMAIL` or the institution’s `MANAGER` if `USE_ESTABLISHMENT_FIELD` is set to True)
 
-Managers will also receive a summary with the list of videos about to be deleted.
-For videos whose deletion date has passed, a variable `POD_ARCHIVE_AFFILIATION` has been added. This variable is an array containing all affiliations for which videos should be archived instead of deleted. In Lille, `POD_ARCHIVE_AFFILIATION` contains the following values:
-`['faculty', 'staff', 'employee', 'affiliate', 'alum', 'library-walk-in', 'researcher', 'retired', 'emeritus', 'teacher', 'registered-reader']`
+Managers will receive a summary list of videos scheduled for deletion.
+For videos whose deletion date has passed, we’ve added a variable `POD_ARCHIVE_AFFILIATION`. This variable is an array containing all the affiliations for which we want to archive the video rather than delete it. In Lille, `POD_ARCHIVE_AFFILIATION` contains the following values:
+`[‘faculty’, ‘staff’, ‘employee’, ‘affiliate’, ‘alum’, ‘library-walk-in’, ‘researcher’, ‘retired’, ‘emeritus’, ‘teacher’, ‘registered-reader’]`
+
+### If the owner is allowed to set `ENABLE_PAGE_OBSO_MAIL = True`
+An email will be sent to owners inviting them to make their choice via the provided link. They can specify what they authorize and the duration of the extension in days:
+
+Finally, if a model is used to calculate the grace period, the archiving authorization can be refined by specifying conditions that must be met in order to archive. 
+For example, in `criteria_model`, you might want to allow archiving only for videos that have sufficient metadata. 
+To do this, you calculate a score and set a minimum threshold by “scoring” the presence or absence of each metadata field, which you configure as follows: 
+
+```sh
+RESPITE_MODEL_PARAMETERS = {
+    "respite_criteria_parameter": [
+        ...
+    ],
+        "archiving_criteria_parameter": {
+        "minimum_expected_score": 7,
+        "attribute_scores": {
+            "title": 2,
+            "description": 3,
+            "discipline": 2,
+            "tags": 2,
+            "date_evt": 1,
+        },
+        "excluded_title_terms": ["test"],
+        "excluded_discipline_terms": ["discipline-2"],
+    }
+}
+```
+
+If archiving is not allowed, the option is not available.
 
 ### Archiving
 
