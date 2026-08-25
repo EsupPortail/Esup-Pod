@@ -37,9 +37,7 @@ class RunnerManagerArtifactPersistenceTests(TestCase):
         return CustomImageModel.objects.create(**kwargs)
 
     @override_settings(MEDIA_ROOT="/tmp/media")
-    @patch(
-        "pod.video_encode_transcript.runner_manager_utils.add_encoding_log"
-    )
+    @patch("pod.video_encode_transcript.runner_manager_utils.add_encoding_log")
     @patch(
         "pod.video_encode_transcript.runner_manager_utils.import_remote_video",
         return_value="",
@@ -76,9 +74,7 @@ class RunnerManagerArtifactPersistenceTests(TestCase):
         self.video.refresh_from_db()
         self.assertEqual(self.video.thumbnail_id, thumbnail.id)
         self.assertEqual(self.video.overview.name, "videos/0001/overview.vtt")
-        mock_check_file.assert_called_once_with(
-            "/tmp/media/videos/0001/overview.vtt"
-        )
+        mock_check_file.assert_called_once_with("/tmp/media/videos/0001/overview.vtt")
         mock_import_remote_video.assert_called_once()
         mock_add_encoding_log.assert_any_call(
             self.video.id,
