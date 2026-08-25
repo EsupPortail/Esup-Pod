@@ -35,7 +35,13 @@ the next configured runner.
 
 CLI:
 - `python manage.py process_tasks`
+- `python manage.py process_tasks --verbose`
+- `python manage.py process_tasks -v 0`
 - `python manage.py process_tasks --max-tasks 20 --site example.org`
+
+By default, the command writes one timestamped summary line. Use `--verbose`
+(or Django's `--verbosity 2`) to display the detailed processing steps. Use
+`-v 0` (or `--verbosity 0`) to disable command output completely.
 
 Example cron (every 3 minutes):
 `*/3 * * * * /usr/bin/bash -c 'export WORKON_HOME=/home/pod/.virtualenvs; export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3; cd /usr/local/django_projects/podv4; source /usr/local/bin/virtualenvwrapper.sh; workon django_pod4; python manage.py process_tasks >> /usr/local/django_projects/podv4/pod/log/process_tasks.log 2>&1'`
@@ -88,9 +94,17 @@ def handle_stalled_task(task: Task, status: str) -> None:
 
 
 class Command(BaseCommand):
+    """Process queued Runner Manager tasks and report the execution result."""
+
     help = "Process encoding tasks: check running tasks and submit pending tasks to runner managers"
 
     def add_arguments(self, parser) -> None:
+        """
+        Register command-specific command-line arguments.
+
+        Args:
+            parser: Django command argument parser to configure.
+        """
         parser.add_argument(
             "--max-tasks",
             type=int,
@@ -103,10 +117,50 @@ class Command(BaseCommand):
             default=None,
             help="Site domain to filter tasks (default: current site)",
         )
+        parser.add_argument(
+            "--verbose",
+            action="store_true",
+            help="Display detailed, timestamped processing information",
+        )
+
+    def _configure_output_logger(self, *, verbose: bool, quiet: bool) -> None:
+        """
+        Configure timestamped command output on the current stdout stream.
+
+        Args:
+            verbose: Whether detailed processing messages must be displayed.
+            quiet: Whether all command output must be suppressed.
+        """
+        self.verbose = verbose
+        self.quiet = quiet
+        self.output_logger = logging.Logger(f"{__name__}.output", logging.DEBUG)
+        handler = logging.StreamHandler(self.stdout)
+        handler.setFormatter(
+            logging.Formatter(
+                "[%(asctime)s] %(levelname)s %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S",
+            )
+        )
+        self.output_logger.addHandler(handler)
+
+    def _write_output(
+        self, level: int, message: str, *, verbose_only: bool = True
+    ) -> None:
+        """
+        Write a timestamped message when the selected verbosity allows it.
+
+        Args:
+            level: Standard-library logging level for the message.
+            message: Message to write to the command output stream.
+            verbose_only: Only display the message in detailed output mode.
+        """
+        if self.quiet or (verbose_only and not self.verbose):
+            return
+        self.output_logger.log(level, message)
 
     def print_log(self, message: str) -> None:
         """
-        Print a plain log message to command stdout.
+        Print a detailed informational message to command stdout.
 
         Args:
             message: Message to display
@@ -114,11 +168,11 @@ class Command(BaseCommand):
         Returns:
             None
         """
-        self.stdout.write(message)
+        self._write_output(logging.INFO, message)
 
     def print_warning(self, message: str) -> None:
         """
-        Print a warning-styled message to command stdout.
+        Print a detailed warning message to command stdout.
 
         Args:
             message: Warning message to display
@@ -126,11 +180,11 @@ class Command(BaseCommand):
         Returns:
             None
         """
-        self.stdout.write(self.style.WARNING(message))
+        self._write_output(logging.WARNING, message)
 
     def print_error(self, message: str) -> None:
         """
-        Print an error-styled message to command stdout.
+        Print an error message to command stdout.
 
         Args:
             message: Error message to display
@@ -138,11 +192,11 @@ class Command(BaseCommand):
         Returns:
             None
         """
-        self.stdout.write(self.style.ERROR(message))
+        self._write_output(logging.ERROR, message, verbose_only=False)
 
     def print_success(self, message: str) -> None:
         """
-        Print a success-styled message to command stdout.
+        Print a detailed success message to command stdout.
 
         Args:
             message: Success message to display
@@ -150,10 +204,28 @@ class Command(BaseCommand):
         Returns:
             None
         """
-        self.stdout.write(self.style.SUCCESS(message))
+        self._write_output(logging.INFO, message)
+
+    def print_summary(self, message: str, level: int = logging.INFO) -> None:
+        """
+        Print the summary line emitted by a normal command run.
+
+        Args:
+            message: Summary message to display.
+            level: Standard-library logging level for the summary.
+        """
+        self._write_output(level, message, verbose_only=False)
 
     def _format_priority_label(self, priority: int) -> str:
-        """Return a human readable queue-priority label for logs."""
+        """
+        Return a human-readable queue-priority label for logs.
+
+        Args:
+            priority: Numeric queue priority to format.
+
+        Returns:
+            str: Label describing the supplied queue priority.
+        """
         if priority == HIGH_PRIORITY:
             return "HIGH"
         if priority == LOW_PRIORITY:
@@ -209,7 +281,15 @@ class Command(BaseCommand):
         return Site.objects.get_current()
 
     def _get_available_runner_managers(self, site: Site) -> list[RunnerManager]:
-        """Return active runner managers for a site, ordered by priority."""
+        """
+        Return active runner managers for a site, ordered by priority.
+
+        Args:
+            site: Site whose runner managers must be selected.
+
+        Returns:
+            list[RunnerManager]: Active managers ordered by priority, then ID.
+        """
         return list(
             RunnerManager.objects.filter(site=site, is_active=True).order_by(
                 "priority", "id"
@@ -268,12 +348,15 @@ class Command(BaseCommand):
             log.error(f"Error checking status for task {task.id}: {str(exc)}")
             return None
 
-    def _check_running_tasks(self, site: Site) -> None:
+    def _check_running_tasks(self, site: Site) -> int:
         """
         Check running tasks that have been running for more than 2 hours.
 
         Args:
             site: Site object to filter tasks
+
+        Returns:
+            int: Number of stalled tasks checked
         """
         two_hours_ago = timezone.now() - timedelta(hours=2)
 
@@ -286,11 +369,10 @@ class Command(BaseCommand):
 
         if not stalled_tasks:
             self.print_log("No stalled running tasks found")
-            return
+            return 0
 
-        self.print_log(
-            f"Found {stalled_tasks.count()} task(s) running for more than 2 hours"
-        )
+        stalled_count = stalled_tasks.count()
+        self.print_log(f"Found {stalled_count} task(s) running for more than 2 hours")
 
         for task in stalled_tasks:
             self.print_log(f"Checking status of task {task.id}...")
@@ -314,6 +396,8 @@ class Command(BaseCommand):
                 self.print_warning(f"Task {task.id} is still {status}, no action taken")
             else:
                 self.print_error(f"Could not verify status of task {task.id}")
+
+        return stalled_count
 
     def _process_tasks(
         self, pending_tasks: list, site: Site, runner_managers: list
@@ -483,8 +567,24 @@ class Command(BaseCommand):
         return deleted_count
 
     def handle(self, *args, **options) -> None:
+        """
+        Check stalled tasks, submit pending work, and clean completed tasks.
+
+        The command emits a single summary in normal mode, detailed processing
+        messages in verbose mode, and no output at verbosity level zero.
+
+        Args:
+            *args: Positional arguments supplied by Django (unused).
+            **options: Parsed command options, including site and verbosity.
+        """
         max_tasks = options["max_tasks"]
         site_domain = options["site"]
+        verbosity = options.get("verbosity", 1)
+        verbose = options.get("verbose", False) or verbosity >= 2
+        self._configure_output_logger(
+            verbose=verbose,
+            quiet=verbosity == 0 and not options.get("verbose", False),
+        )
 
         # Get site
         site = self._get_site(site_domain)
@@ -495,11 +595,11 @@ class Command(BaseCommand):
         self.print_log("=" * 60)
 
         # First, check running tasks that might be stalled
-        self.print_log("\n1. Checking running tasks...")
-        self._check_running_tasks(site)
+        self.print_log("1. Checking running tasks...")
+        stalled_count = self._check_running_tasks(site)
 
         # Then, process pending tasks
-        self.print_log("\n2. Processing pending encoding tasks...")
+        self.print_log("2. Processing pending encoding tasks...")
         refresh_pending_task_ranks()
 
         # Get pending encoding tasks (without limiting to max_tasks yet)
@@ -540,12 +640,19 @@ class Command(BaseCommand):
             self.print_success(
                 "No pending tasks found (encoding, transcription or studio)"
             )
-            self.print_log("\n3. Cleaning completed tasks...")
-            self._delete_old_completed_tasks()
+            self.print_log("3. Cleaning completed tasks...")
+            deleted_count = self._delete_old_completed_tasks()
+            self.print_summary(
+                f"process_tasks completed for site {site.domain}: "
+                f"checked {stalled_count} stalled task(s); pending 0; submitted 0; "
+                f"deleted {deleted_count} old completed task(s)"
+            )
             return
 
         self.print_log(f"Found {all_pending_tasks.count()} pending encoding task(s)")
-        self.print_log(f"Found {all_pending_studio_tasks.count()} pending studio task(s)")
+        self.print_log(
+            f"Found {all_pending_studio_tasks.count()} pending studio task(s)"
+        )
         self.print_log(
             f"Found {all_pending_transcription_tasks.count()} pending transcription task(s)"
         )
@@ -557,7 +664,9 @@ class Command(BaseCommand):
             all_pending_transcription_tasks, max_tasks
         )
 
-        self.print_log(f"Processing {len(pending_tasks)} task(s) after priority sorting")
+        self.print_log(
+            f"Processing {len(pending_tasks)} task(s) after priority sorting"
+        )
 
         # Get available active runner managers for this site
         runner_managers = self._get_available_runner_managers(site)
@@ -566,10 +675,21 @@ class Command(BaseCommand):
             self.print_warning(
                 f"No active runner manager defined for site {site.domain}. Cannot process tasks."
             )
+            self.print_summary(
+                f"process_tasks completed for site {site.domain}: "
+                f"checked {stalled_count} stalled task(s); "
+                f"pending encoding={len(pending_tasks)}, "
+                f"transcription={len(pending_transcription_tasks)}, "
+                f"studio={len(pending_studio_tasks)}; "
+                "submitted 0; no active runner manager",
+                level=logging.WARNING,
+            )
             return
 
         # Process each pending task
-        success_count_encoding = self._process_tasks(pending_tasks, site, runner_managers)
+        success_count_encoding = self._process_tasks(
+            pending_tasks, site, runner_managers
+        )
         success_count_studio = self._process_studio_tasks(
             pending_studio_tasks, site, runner_managers
         )
@@ -578,19 +698,32 @@ class Command(BaseCommand):
         )
         refresh_pending_task_ranks()
 
-        self.print_log("\n3. Cleaning completed tasks...")
-        self._delete_old_completed_tasks()
+        self.print_log("3. Cleaning completed tasks...")
+        deleted_count = self._delete_old_completed_tasks()
 
-        self.print_success(
-            f"Completed: encoding {success_count_encoding}/{len(pending_tasks)}; "
-            f"transcription {success_count_transcription}/{len(pending_transcription_tasks)}; "
-            f"studio {success_count_studio}/{len(pending_studio_tasks)} successfully submitted"
+        self.print_summary(
+            f"process_tasks completed for site {site.domain}: "
+            f"checked {stalled_count} stalled task(s); "
+            f"submitted encoding={success_count_encoding}/{len(pending_tasks)}, "
+            f"transcription={success_count_transcription}/{len(pending_transcription_tasks)}; "
+            f"studio={success_count_studio}/{len(pending_studio_tasks)}; "
+            f"deleted {deleted_count} old completed task(s)"
         )
 
     def _submit_encoding_task(
         self, video: Video, site: Site, runner_managers: list
     ) -> bool:
-        """Submit an encoding task using shared runner manager helpers."""
+        """
+        Submit an encoding task using shared runner manager helpers.
+
+        Args:
+            video: Video to encode.
+            site: Site that owns the task.
+            runner_managers: Ordered runner managers available for submission.
+
+        Returns:
+            bool: Whether a runner manager accepted the task.
+        """
         return submit_encoding_task(
             video=video, site=site, runner_managers=runner_managers
         )
@@ -598,7 +731,17 @@ class Command(BaseCommand):
     def _submit_transcription_task(
         self, video: Video, site: Site, runner_managers: list
     ) -> bool:
-        """Submit a transcription task using shared runner manager helpers."""
+        """
+        Submit a transcription task using shared runner manager helpers.
+
+        Args:
+            video: Video to transcribe.
+            site: Site that owns the task.
+            runner_managers: Ordered runner managers available for submission.
+
+        Returns:
+            bool: Whether a runner manager accepted the task.
+        """
         return submit_transcription_task(
             video=video, site=site, runner_managers=runner_managers
         )
@@ -606,7 +749,17 @@ class Command(BaseCommand):
     def _submit_studio_task(
         self, recording: Recording, site: Site, runner_managers: list
     ) -> bool:
-        """Submit a studio task using shared runner manager helpers."""
+        """
+        Submit a studio task using shared runner manager helpers.
+
+        Args:
+            recording: Studio recording to encode.
+            site: Site that owns the task.
+            runner_managers: Ordered runner managers available for submission.
+
+        Returns:
+            bool: Whether a runner manager accepted the task.
+        """
         return submit_studio_task(
             recording=recording, site=site, runner_managers=runner_managers
         )
