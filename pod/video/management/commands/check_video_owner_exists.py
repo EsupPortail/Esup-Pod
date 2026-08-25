@@ -114,6 +114,7 @@ class Command(BaseCommand):
             if (
                 owner.username == ARCHIVE_OWNER_USERNAME
                 or owner.username == DEFAULT_OWNER_USERNAME
+                or owner.username == "admin"
             ):
                 continue
 
