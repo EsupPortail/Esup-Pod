@@ -483,6 +483,16 @@ class RunnerManager(models.Model):
         help_text=_("Example format: %(url)s") % {"url": "https://manager.univ.fr:port/"},
     )
 
+    # Optional URL of the runner administration interface
+    admin_url = models.CharField(
+        max_length=250,
+        blank=True,
+        verbose_name=_("URL of the runner administration"),
+        help_text=_(
+            "Leave blank to use the runner manager URL followed by /admin."
+        ),
+    )
+
     # Bearer token for the runner manager server (e.g. `6YqG_73xt-9s8v5aBz`)
     token = models.CharField(
         max_length=50,
@@ -503,6 +513,11 @@ class RunnerManager(models.Model):
 
     def __str__(self):
         return "%s (%s)" % (self.name, self.site.id)
+
+    @property
+    def runner_admin_url(self) -> str:
+        """Return the configured administration URL or its default value."""
+        return self.admin_url or f"{self.url.rstrip('/')}/admin"
 
     def save(self, *args, **kwargs):
         super(RunnerManager, self).save(*args, **kwargs)

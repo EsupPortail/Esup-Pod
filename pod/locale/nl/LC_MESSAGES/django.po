@@ -10934,6 +10934,14 @@ msgid "URL of the runner manager"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
+msgid "URL of the runner administration"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Leave blank to use the runner manager URL followed by /admin."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
 msgid "Bearer token for the runner manager."
 msgstr ""
 
