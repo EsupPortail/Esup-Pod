@@ -419,8 +419,9 @@ button.close {
   box-shadow: 0 1px 3px rgb(0 0 0 / 35%);
 }
 
-#podfile #listfiles .file {
+#listfiles .file {
   position: absolute;
+  z-index: 1;
   bottom: 4px;
   left: 0;
   right: 0;
