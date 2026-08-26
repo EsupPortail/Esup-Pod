@@ -127,7 +127,7 @@ button.close {
   overflow: hidden;
 }
 
-#podfile #listfiles {
+#listfiles {
   max-height: 600px;
   overflow: auto;
 }
@@ -140,7 +140,7 @@ button.close {
   padding-bottom: 0 !important;
 }
 
-#shareModalCenter #shared-people.list-group .list-group-item {
+#shared-people.list-group .list-group-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -148,17 +148,16 @@ button.close {
   padding: 0.8em;
 }
 
-#shareModalCenter #shared-people.list-group .list-group-item:not(:last-child) {
+#shared-people.list-group .list-group-item:not(:last-child) {
   border-bottom: none;
 }
 
-#shareModalCenter #shared-people.list-group .list-group-item .username, #user-search .list-group-item .empty-user-text {
+#shared-people.list-group .list-group-item .username, #user-search .list-group-item .empty-user-text {
   color: var(--bs-gray-dark);
   font-weight: 700;
 }
 
-#shareModalCenter
-  #shared-people.list-group
+#shared-people.list-group
   .list-group-item
   .btn-share.btn-remove {
   order: 1;
@@ -169,16 +168,16 @@ button.close {
   flex: none;
 }
 
-#shareModalCenter #shareFormName .form-group {
+#shareFormName .form-group {
   position: relative;
 }
 
-#shareModalCenter #shareFormName .form-group .form-control {
+#shareFormName .form-group .form-control {
   outline: none !important;
   box-shadow: none !important;
 }
 
-#shareModalCenter #user-search.list-group {
+#user-search.list-group {
   padding: 0.8em 0;
   width: 400px;
   max-width: 100%;
@@ -188,7 +187,7 @@ button.close {
   top: 100%;
 }
 
-#shareModalCenter #user-search.list-group .list-group-item {
+#user-search.list-group .list-group-item {
   border: none !important;
   display: flex;
   justify-content: space-between;
@@ -197,13 +196,13 @@ button.close {
   line-height: 1;
 }
 
-#shareModalCenter #user-search.list-group .list-group-item .btn-share.btn-add {
+#user-search.list-group .list-group-item .btn-share.btn-add {
   padding: 0.4em 0.8em;
   line-height: 1;
   flex: none;
 }
 
-#shareModalCenter #user-search.list-group .list-group-item .username {
+#user-search.list-group .list-group-item .username {
   font-weight: 700;
   color: var(--bs-gray);
 }
@@ -236,14 +235,14 @@ button.close {
   justify-content: space-between;
 }
 
-#podfile #dirs .dirs-nav {
+#dirs .dirs-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-left: 0;
 }
 
-#podfile #dirs .dirs-nav .dirs-nav-container {
+#dirs .dirs-nav .dirs-nav-container {
   display: flex;
 }
 
@@ -259,7 +258,7 @@ button.close {
 
 #podfile .list_folders .folder,
 #podfile .list_folders_sub .folder
-/*#podfile #dirs .dirs-nav a.folder*/ {
+/* #dirs .dirs-nav a.folder */ {
   display: flex;
   align-items: flex-end;
   margin-right: 1em;
@@ -278,7 +277,7 @@ button.close {
 }
 
 #podfile .share-folders,
-#podfile #list_folders_sub {
+#list_folders_sub {
   overflow-y: auto;
 }
 
@@ -302,7 +301,7 @@ button.close {
   margin-right: 3px;
 }
 
-#podfile #dirs .dirs-nav + * {
+#dirs .dirs-nav + * {
   /* display: -ms-grid;
   display: grid;
   -ms-grid-columns: 1fr;
@@ -312,20 +311,20 @@ button.close {
   overflow: auto;
 }
 
-#podfile #dirs .dirs-nav + * > *:nth-child(1) {
+#dirs .dirs-nav + * > *:nth-child(1) {
   -ms-grid-row: 1;
   -ms-grid-column: 1;
 }
 
-#podfile #dirs .dirs-nav + * > *:nth-child(2) {
+#dirs .dirs-nav + * > *:nth-child(2) {
   -ms-grid-row: 2;
   -ms-grid-column: 1;
 }
 
 /*
-#podfile #dirs .share-folder span.home-directory{ color: var(--pod-primary); }
+#dirs .share-folder span.home-directory{ color: var(--pod-primary); }
 */
-#podfile #dirs .folder-search {
+#dirs .folder-search {
   border: 1px solid #ccc;
   font-size: 14px;
   padding: 0.4em;
@@ -338,16 +337,16 @@ button.close {
   text-align: center;
 }
 
-#podfile #files #currentfolder {
+#currentfolder {
   flex-grow: unset;
   flex-basis: auto;
 }
 
-#podfile #currentfolder .nav-item:not(:last-child) {
+#currentfolder .nav-item:not(:last-child) {
   margin-right: 0.8em;
 }
 
-#podfile #currentfolder .nav-item {
+#currentfolder .nav-item {
   display: flex;
   align-items: center;
 }
@@ -359,26 +358,26 @@ button.close {
   min-height: 100%;
 }
 
-#podfile #listfiles {
+#listfiles {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   grid-gap: 5px;
 }
 
-#podfile #files.loading .container-loader {
+#files.loading .container-loader {
   position: relative;
   margin: 0 auto;
   margin-top: 4em;
   width: 75px;
 }
 
-#podfile #files.loading .lds-ellipsis {
+#files.loading .lds-ellipsis {
   display: block;
   transform: translateX(-50%);
   width: 75px;
 }
 
-#podfile #listfiles .empty-folder-warning {
+#listfiles .empty-folder-warning {
   grid-column: 1/-1;
   grid-row: 10;
   text-align: center;
@@ -387,28 +386,28 @@ button.close {
   font-weight: 600;
 }
 
-#podfile #listfiles .navbar-toggler-icon {
+#listfiles .navbar-toggler-icon {
   background: none;
 }
 
-#podfile #listfiles .col-sm-2 {
+#listfiles .col-sm-2 {
   max-width: unset;
 }
 
-#podfile #listfiles .navbar {
+#listfiles .navbar {
   justify-content: flex-end;
 }
 
-#podfile #listfiles .card {
+#listfiles .card {
   overflow: unset;
 }
 
-#podfile #listfiles .card-image {
+#listfiles .card-image {
   position: relative;
   display: block;
 }
 
-#podfile #listfiles .podfile-extension-badge {
+#listfiles .podfile-extension-badge {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
@@ -430,26 +429,26 @@ button.close {
   transition: 0.1s all;
 }
 
-#podfile #listfiles .file-navbar {
+#listfiles .file-navbar {
   justify-content: space-around;
   align-items: flex-end;
   flex-flow: row wrap;
   overflow-y: auto;
 }
 
-#podfile #listfiles .file-navbar .nav-item {
+#listfiles .file-navbar .nav-item {
   width: 25px;
   display: inline-block;
   height: 25px;
   margin: 0 0.4em 0.4em !important;
 }
 
-#podfile #listfiles .card-body {
+#listfiles .card-body {
   overflow: hidden;
 }
 
 @media only screen and (max-width: 992px) {
-  #podfile #currentfolder {
+  #currentfolder {
     position: absolute;
     right: 0;
     bottom: 0;
@@ -459,14 +458,14 @@ button.close {
     transition: all 0.1s linear 0s;
   }
 
-  #podfile #currentfolder .navbar-nav {
+  #currentfolder .navbar-nav {
     margin: 0 !important;
     width: 100%;
     display: flex;
     flex-direction: row;
   }
 
-  #podfile #currentfolder .custom-file label {
+  #currentfolder .custom-file label {
     margin: 0;
   }
 }
@@ -477,7 +476,7 @@ button.close {
     line-height: 1.2;
   }
 
-  #podfile #dirs .dirs-nav .dirs-nav-container {
+  #dirs .dirs-nav .dirs-nav-container {
     flex-direction: column;
     align-items: flex-start;
   }
