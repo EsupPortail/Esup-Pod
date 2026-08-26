@@ -403,6 +403,22 @@ button.close {
   overflow: unset;
 }
 
+#podfile #listfiles .card-image {
+  position: relative;
+  display: block;
+}
+
+#podfile #listfiles .podfile-extension-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  max-width: calc(100% - 1.5rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 35%);
+}
+
 #podfile #listfiles .file {
   position: absolute;
   bottom: 4px;
