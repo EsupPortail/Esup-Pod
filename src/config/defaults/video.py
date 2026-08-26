@@ -12,9 +12,20 @@ WEBTV_MODE = False
 USE_DUPLICATE = False
 USE_HYPERLINKS = False
 USE_CUT = False
+USE_DUBLIN_CORE = True
+OAI_PMH_REPOSITORY_NAME = ""  # Nom du dépôt OAI (ex: "Pod - Université de Lille")
+OAI_PMH_ADMIN_EMAIL = ""  # Email administrateur du dépôt OAI
+OAI_PMH_BASE_URL = ""  # URL de base du endpoint OAI (/api/oai-pmh/)
+OAI_PMH_PAGE_SIZE = 50  # Nombre de résultats par page (ListRecords)
+USE_MARKER_TIME = True
 ALLOW_AUTHENTICATED_UPLOAD = True
 CHANNEL_MODE = False
 ACTIVE_VIDEO_COMMENT = True
+USE_VIDEO_ACCESS_TOKEN = False
+VIDEO_TOKEN_DEFAULT_VALIDITY_DAYS = 30
+VIDEO_TOKEN_MAX_VALIDITY_DAYS = 365
+USE_BULK_ACTIONS = True  # Enable bulk update/delete on videos
+BULK_ASYNC_THRESHOLD = 20  # Above this count, processing is delegated to Celery
 
 # UI / Display Flags
 HIDE_USER_FILTER = False

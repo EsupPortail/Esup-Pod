@@ -3,18 +3,23 @@ Esup-Pod - Video viewset.
 """
 
 import os
-import logging
 import hashlib
+import logging
 
-from rest_framework.response import Response
-from rest_framework import viewsets, permissions, parsers, filters
-from django.db.models import Q, F
+
+from datetime import date, timedelta
+from django.db.models import Q, F, Sum
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import gettext_lazy as _
 from django.http import FileResponse, Http404
+
+from rest_framework import viewsets, permissions, parsers, filters, status
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied, ValidationError, NotFound
+
+from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth.hashers import check_password
 from drf_spectacular.utils import (
     extend_schema,
@@ -23,14 +28,17 @@ from drf_spectacular.utils import (
     OpenApiResponse,
 )
 
-from src.apps.video.models import Video
-from src.apps.video.serializers import VideoSerializer
+from src.apps.video.models import Video, ViewCount
+from src.apps.video.serializers import VideoSerializer, DublinCoreSerializer
 from src.apps.video.permissions import IsOwnerOrCoOwnerOrChannelCollaborator
+from src.apps.video.tasks import task_bulk_update_videos, task_bulk_delete_videos
 from src.apps.authentication.permissions import IsSuperUser
-from django_filters.rest_framework import DjangoFilterBackend
 from src.apps.video.conf import video_settings
 from src.apps.encoding.conf import encoding_settings
 from src.apps.video.filters import VideoFilterSet
+
+from src.apps.video.services.duplicate import duplicate_video
+from django.db import transaction
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +53,17 @@ class VideoViewSet(viewsets.ModelViewSet):
     """
     API view set for the Video model.
     """
+
+    BULK_EXCLUDED_FIELDS = {
+        "title",
+        "video_file",
+        "slug",
+        "owner",
+        "created_at",
+        "updated_at",
+        "duration",
+        "encoding_status",
+    }
 
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
@@ -84,7 +103,10 @@ class VideoViewSet(viewsets.ModelViewSet):
                     self.check_object_permissions(self.request, obj)
                     return obj
 
-        return super().get_object()
+        try:
+            return super().get_object()
+        except Http404:
+            raise NotFound(_("Video not found."))
 
     def get_queryset(self):
         """
@@ -100,14 +122,35 @@ class VideoViewSet(viewsets.ModelViewSet):
         if getattr(self, "action", None) in ["stream", "unlock", "register_view"]:
             return qs
 
-        return Video.objects.visible_for(user).filter(id__in=qs).distinct()
+        return (
+            Video.objects.visible_for(user)
+            .filter(id__in=qs)
+            .prefetch_related(
+                "contributions__contributor",
+                "overlays",
+                "documents",
+            )
+            .distinct()
+        )
+
+    def get_authenticators(self):
+        authenticators = super().get_authenticators()
+        if getattr(self, "action", None) == "stream":
+            from src.apps.authentication.authentication import QueryParameterJWTAuthentication
+            authenticators = [QueryParameterJWTAuthentication()] + authenticators
+        return authenticators
 
     def perform_create(self, serializer):
+    @transaction.atomic
+    def perform_create(self, serializer):  # noqa: C901
         """Creates a new video, checking user quota and triggering encoding."""
+
         user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file="")
         total_bytes = sum(v.video_file.size for v in user_videos if v.video_file)
+
         incoming_file = self.request.FILES.get("video_file")
         incoming_size = incoming_file.size if incoming_file else 0
+
         max_quota_bytes = encoding_settings.user_quota_size_gb * 1024 * 1024 * 1024
 
         if total_bytes + incoming_size > max_quota_bytes:
@@ -143,14 +186,18 @@ class VideoViewSet(viewsets.ModelViewSet):
             license=target_license,
         )
 
-        current_site = get_current_site(self.request)
-        video.sites.add(current_site)
+        # ---- SITE ENFORCEMENT (IMPORTANT PART) ----
+        site = get_current_site(self.request)
+        if not site:
+            raise ValidationError({"sites": "Site could not be resolved."})
 
+        video.sites.set([site])
+
+        # ---- ENCODING TRIGGER ----
         if video.video_file:
             from src.apps.encoding.tasks import trigger_runner_encoding_task
 
-            site_url = video_settings.site_url.rstrip("/")
-            source_url = f"{site_url}{video.video_file.url}"
+            source_url = self.request.build_absolute_uri(video.video_file.url)
 
             logger.debug("source_url: %s", source_url)
 
@@ -250,6 +297,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         Falls back to the best available resolution if the requested one is not found.
         """
         video = self.get_object()
+
         self._check_stream_permissions(request, video)
 
         resolution = request.query_params.get("resolution")
@@ -293,7 +341,6 @@ class VideoViewSet(viewsets.ModelViewSet):
         video.view_count = F("view_count") + 1
         video.save(update_fields=["view_count"])
         video.refresh_from_db()
-        from datetime import date
 
         view_count_obj, created = video.view_counts.get_or_create(date=date.today())
         view_count_obj.count = F("count") + 1
@@ -410,7 +457,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         Returns only videos owned or co-owned by the current user.
         """
         user = request.user
-        queryset = (
+        queryset = self.filter_queryset(
             self.get_queryset().filter(Q(owner=user) | Q(co_owners=user)).distinct()
         )
 
@@ -487,3 +534,292 @@ class VideoViewSet(viewsets.ModelViewSet):
         video.save(update_fields=["owner"])
 
         return Response({"status": "ownership transferred"})
+
+    @extend_schema(
+        summary="Dublin Core metadata for a video",
+        responses={
+            200: DublinCoreSerializer,
+            400: OpenApiResponse(description="Dublin Core feature is disabled."),
+            403: OpenApiResponse(description="Video is not publicly available."),
+        },
+    )
+    @action(
+        detail=True,
+        methods=["get"],
+        url_path="dublin-core",
+        permission_classes=[permissions.AllowAny],
+    )
+    def dublin_core(self, request, slug=None):
+        """
+        GET /api/videos/{slug}/dublin-core/
+        Returns Dublin Core metadata for a single video.
+        The video must be publicly visible.
+        """
+        if not video_settings.use_dublin_core:
+            return Response(
+                {"detail": _("Dublin Core feature is disabled.")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        video = self.get_object()
+
+        if video.status != Video.Status.PUBLISHED:
+            return Response(
+                {"detail": _("This video is not publicly available.")},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        return Response(video.get_dublin_core())
+
+    def _bulk_delete(self, request, video_ids, videos):
+        """Handles bulk deletion of videos, async if above threshold."""
+        threshold = video_settings.bulk_async_threshold
+        if len(video_ids) > threshold:
+            task_bulk_delete_videos.delay(video_ids, request.user.id)
+            return Response(
+                {"status": "queued", "detail": _("Bulk delete is being processed.")},
+                status=status.HTTP_202_ACCEPTED,
+            )
+        with transaction.atomic():
+            deleted_count, _deleted_types = videos.delete()
+        return Response({"deleted": deleted_count}, status=status.HTTP_200_OK)
+
+    def _bulk_patch(self, request, video_ids, videos):
+        """Handles bulk patch of videos, async if above threshold."""
+        fields = request.data.get("fields", {})
+        if not fields:
+            raise ValidationError({"detail": _("No fields provided for update.")})
+
+        invalid_fields = set(fields.keys()) & self.BULK_EXCLUDED_FIELDS
+        if invalid_fields:
+            raise ValidationError(
+                {
+                    "detail": _("Fields not allowed in bulk update: %(fields)s.")
+                    % {"fields": ", ".join(invalid_fields)}
+                }
+            )
+
+        threshold = video_settings.bulk_async_threshold
+        if len(video_ids) > threshold:
+            task_bulk_update_videos.delay(video_ids, fields, request.user.id)
+            return Response(
+                {"status": "queued", "detail": _("Bulk update is being processed.")},
+                status=status.HTTP_202_ACCEPTED,
+            )
+
+        allowed_fields = set(fields.keys()) - self.BULK_EXCLUDED_FIELDS
+        update_data = {k: v for k, v in fields.items() if k in allowed_fields}
+
+        # Capture count before save to return accurate number (queryset count is stable)
+        updated_count = videos.count()
+        with transaction.atomic():
+            for video in videos:
+                for attr, value in update_data.items():
+                    if hasattr(video, attr):
+                        setattr(video, attr, value)
+                video.save(update_fields=list(update_data.keys()))
+
+        return Response({"updated": updated_count}, status=status.HTTP_200_OK)
+
+    @extend_schema(
+        summary="Bulk update or delete videos",
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "video_ids": {
+                        "type": "array",
+                        "items": {"type": "integer"},
+                        "description": "List of video IDs to process.",
+                    },
+                    "fields": {
+                        "type": "object",
+                        "description": "Fields to update (PATCH only).",
+                    },
+                },
+                "required": ["video_ids"],
+            }
+        },
+        responses={
+            200: {"type": "object", "properties": {"updated": {"type": "integer"}}},
+            202: {"type": "object", "properties": {"status": {"type": "string"}}},
+            400: {"type": "object", "properties": {"detail": {"type": "string"}}},
+            403: {"type": "object", "properties": {"detail": {"type": "string"}}},
+            404: {"type": "object", "properties": {"detail": {"type": "string"}}},
+        },
+    )
+    @action(
+        detail=False,
+        methods=["patch", "delete"],
+        url_path="bulk",
+        permission_classes=[permissions.IsAuthenticated],
+        parser_classes=[parsers.JSONParser],
+    )
+    def bulk_actions(self, request):
+        """
+        Applies a PATCH or DELETE operation to multiple videos at once.
+        Requires ownership or co-ownership of every selected video.
+        Checks ownership on every video before processing.
+        If more than BULK_ASYNC_THRESHOLD videos are selected (configurable, default 20),
+        the operation is processed asynchronously and returns 202 Accepted.
+        Returns 400 if the feature is disabled via USE_BULK_ACTIONS setting.
+        """
+        if not video_settings.use_bulk_actions:
+            return Response(
+                {"detail": _("Bulk actions feature is disabled.")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        video_ids = request.data.get("video_ids", [])
+
+        if not video_ids:
+            raise ValidationError({"detail": _("No videos selected.")})
+
+        videos = self.get_queryset().filter(id__in=video_ids)
+
+        if videos.count() != len(video_ids):
+            raise NotFound(_("One or more videos not found."))
+
+        for video in videos:
+            if (
+                not request.user.is_superuser
+                and video.owner != request.user
+                and not video.co_owners.filter(pk=request.user.pk).exists()
+            ):
+                raise PermissionDenied(
+                    _("You do not have permission to modify video: %(title)s.")
+                    % {"title": video.title}
+                )
+
+        if request.method == "DELETE":
+            return self._bulk_delete(request, video_ids, videos)
+
+        return self._bulk_patch(request, video_ids, videos)
+
+    @extend_schema(
+        summary=_("Duplicate a video"),
+        request=None,
+        responses={201: VideoSerializer},
+    )
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[IsOwnerOrCoOwnerOrChannelCollaborator],
+    )
+    def duplicate(self, request, slug=None):
+        """
+        Creates a full duplicate of a video, including file copy and M2M relations.
+        The title is automatically set to 'Copy of <original title>'.
+        Restricted to the video owner, co-owners, and superusers.
+        Only available when USE_DUPLICATE is enabled in settings.
+        """
+        original = self.get_object()
+
+        if not video_settings.use_duplicate:
+            raise PermissionDenied(_("Duplication is disabled."))
+
+        if not video_settings.allow_authenticated_upload and not request.user.is_staff:
+            raise PermissionDenied(_("You are not allowed to duplicate videos."))
+
+        if video_settings.restrict_edit_to_staff and not request.user.is_staff:
+            raise PermissionDenied(
+                _("Only staff members are allowed to duplicate videos.")
+            )
+
+        if original.video_file:
+            user_videos = Video.objects.filter(owner=request.user).exclude(video_file="")
+            total_bytes = sum(v.video_file.size for v in user_videos if v.video_file)
+            max_quota_bytes = encoding_settings.user_quota_size_gb * 1024 * 1024 * 1024
+
+            if (
+                max_quota_bytes > 0
+                and total_bytes + original.video_file.size > max_quota_bytes
+            ):
+                raise ValidationError(
+                    {"detail": _("Quota exceeded. Cannot duplicate this video.")}
+                )
+
+        duplicated = duplicate_video(original, request.user)
+        serializer = self.get_serializer(duplicated)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="days",
+                type=int,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Number of days for the daily breakdown (default: 30, max: 365).",
+            )
+        ],
+        responses={
+            200: OpenApiResponse(description="Aggregated statistics."),
+            400: OpenApiResponse(description="Statistics feature is disabled."),
+            403: OpenApiResponse(description="Authentication or ownership required."),
+        },
+    )
+    @action(detail=True, methods=["get"], permission_classes=[permissions.AllowAny])
+    def stats(self, request, slug=None):
+        """
+        GET /api/videos/{slug}/stats/
+        Returns aggregated view statistics for a video.
+        Authentication requirement depends on VIEW_STATS_AUTH setting.
+        """
+        if not video_settings.use_stats_view:
+            return Response(
+                {"detail": _("Statistics feature is disabled.")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if video_settings.view_stats_auth and not request.user.is_authenticated:
+            return Response(
+                {"detail": _("Authentication required to view statistics.")},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        video = self.get_object()
+
+        is_owner = video.owner == request.user
+        is_co_owner = (
+            request.user.is_authenticated
+            and video.co_owners.filter(pk=request.user.pk).exists()
+        )
+        if not (is_owner or is_co_owner or request.user.is_superuser):
+            return Response(
+                {"detail": _("You do not have permission to view these statistics.")},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        days = min(int(request.query_params.get("days", 30)), 365)
+        since = date.today() - timedelta(days=days)
+        qs = ViewCount.objects.filter(video=video)
+
+        daily_qs = qs.filter(date__gte=since).order_by("-date")
+        views_7d = (
+            qs.filter(date__gte=date.today() - timedelta(days=7)).aggregate(
+                total=Sum("count")
+            )["total"]
+            or 0
+        )
+        views_30d = (
+            qs.filter(date__gte=date.today() - timedelta(days=30)).aggregate(
+                total=Sum("count")
+            )["total"]
+            or 0
+        )
+        peak = qs.order_by("-count").first()
+
+        return Response(
+            {
+                "video_slug": video.slug,
+                "total_views": video.view_count,
+                "views_last_7_days": views_7d,
+                "views_last_30_days": views_30d,
+                "peak_day": peak.date if peak else None,
+                "peak_count": peak.count if peak else None,
+                "daily_breakdown": [
+                    {"date": str(vc.date), "count": vc.count} for vc in daily_qs
+                ],
+            }
+        )

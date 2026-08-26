@@ -20,14 +20,14 @@ services:
       - pod-network
 
   api:
+    user: "${USER_UID:-1000}:${USER_GID:-1000}"
     build:
       context: ../../
       dockerfile: deployment/dev/Dockerfile
     container_name: pod-api
-    user: "${USER_UID:-1000}:${USER_GID:-1000}"
     volumes:
       - ../../:/app
-      - ../../media:/app/media
+      - ${MEDIA_PATH:-../../media}:/app/media
       - esup-runner-storage:/tmp/esup-runner
     ports:
       - "${EXPOSITION_PORT:-8000}:8000"
@@ -63,14 +63,14 @@ services:
       - pod-network
 
   celery:
+    user: "${USER_UID:-1000}:${USER_GID:-1000}"
     build:
       context: ../../
       dockerfile: deployment/dev/Dockerfile
     container_name: pod-celery
-    user: "${USER_UID:-1000}:${USER_GID:-1000}"
     volumes:
       - ../../:/app
-      - ../../media:/app/media
+      - ${MEDIA_PATH:-../../media}:/app/media
       - esup-runner-storage:/tmp/esup-runner
     depends_on:
       db:

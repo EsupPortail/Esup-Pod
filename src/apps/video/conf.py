@@ -6,7 +6,7 @@ Typed and validated configuration for the video app using pydantic-settings.
 
 from typing import Tuple, Type, Dict
 
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
@@ -51,9 +51,44 @@ class VideoConfig(BaseSettings):
         description=_("Enable video hyperlinks."),
         json_schema_extra={"public": True},
     )
+    use_video_access_token: bool = Field(
+        default=defaults.USE_VIDEO_ACCESS_TOKEN,
+        description=_("Enable secure video sharing via access tokens."),
+        json_schema_extra={"public": True},
+    )
+    video_token_default_validity_days: int = Field(
+        default=defaults.VIDEO_TOKEN_DEFAULT_VALIDITY_DAYS,
+        description=_("Default token validity duration in days."),
+    )
+    video_token_max_validity_days: int = Field(
+        default=defaults.VIDEO_TOKEN_MAX_VALIDITY_DAYS,
+        description=_("Maximum allowed token validity in days."),
+    )
     use_cut: bool = Field(
         default=defaults.USE_CUT,
         description=_("Enable video cutting feature."),
+        json_schema_extra={"public": True},
+    )
+    use_dublin_core: bool = Field(
+        default=defaults.USE_DUBLIN_CORE,
+        description=_("Enable Dublin Core metadata endpoint."),
+        json_schema_extra={"public": True},
+    )
+    oai_pmh_repository_name: str = Field(
+        default=defaults.OAI_PMH_REPOSITORY_NAME,
+        description=_("OAI-PMH repository name for Identify verb."),
+    )
+    oai_pmh_admin_email: str = Field(
+        default=defaults.OAI_PMH_ADMIN_EMAIL,
+        description=_("OAI-PMH administrator email for Identify verb."),
+    )
+    oai_pmh_page_size: int = Field(
+        default=defaults.OAI_PMH_PAGE_SIZE,
+        description=_("Number of records per page in OAI-PMH ListRecords response."),
+    )
+    use_marker_time: bool = Field(
+        default=defaults.USE_MARKER_TIME,
+        description=_("Enable video playback resume (marker time) feature."),
         json_schema_extra={"public": True},
     )
     allow_authenticated_upload: bool = Field(
@@ -65,6 +100,17 @@ class VideoConfig(BaseSettings):
         default=defaults.ACTIVE_VIDEO_COMMENT,
         description=_("Enable video commenting system."),
         json_schema_extra={"public": True},
+    )
+    use_bulk_actions: bool = Field(
+        default=defaults.USE_BULK_ACTIONS,
+        description=_("Enable bulk update/delete on videos."),
+        json_schema_extra={"public": True},
+    )
+    bulk_async_threshold: int = Field(
+        default=defaults.BULK_ASYNC_THRESHOLD,
+        description=_(
+            "Number of videos above which bulk operations are processed asynchronously via Celery."
+        ),
     )
 
     # --- Licensing ---
