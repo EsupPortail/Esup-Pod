@@ -1,4 +1,4 @@
-"""
+"""Esup-Pod -
 Migration des intervenants webtv -> Pod (Speakers -> Contributors).
 
 Ze4fg_speaker devient un Contributor, Ze4fg_speakerfunction fournit son
@@ -15,6 +15,7 @@ from src.apps.migration.models import VideoMapping, CompletionMapping
 
 
 def _migrate_contributors(self, speakers, contributor_mapping):
+    """Migration helper."""
     created = 0
     errors = 0
 
@@ -47,6 +48,7 @@ def _migrate_contributors(self, speakers, contributor_mapping):
 
 
 def _build_function_mapping(functions, contributor_mapping):
+    """Migration helper."""
     function_mapping = {}
 
     for old_id, description, old_speaker_id in functions:
@@ -64,6 +66,7 @@ def _build_function_mapping(functions, contributor_mapping):
 
 
 def _migrate_contributions(self, links, function_mapping, video_mapping):
+    """Migration helper."""
     created = skipped = errors = 0
 
     for old_video_id, old_function_id in links:
@@ -101,6 +104,7 @@ def _migrate_contributions(self, links, function_mapping, video_mapping):
 
 
 def speakerMigrate(self, *args, **kwargs):
+    """Migration helper."""
     limit = kwargs.get("limit", 0)
 
     video_mapping = {m.old_id: m.new_id for m in VideoMapping.objects.all()}

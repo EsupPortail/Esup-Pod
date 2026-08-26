@@ -1,13 +1,18 @@
-# src/apps/migration/models.py
+"""Esup-Pod - Models for mapping legacy IDs to new IDs during migration."""
+
 from django.db import models
 
 
 class UserMapping(models.Model):
+    """Map legacy WebTV user IDs to new Django User IDs."""
+
     old_id = models.IntegerField(unique=True, help_text="ID dans l'ancienne BDD webtv")
     new_id = models.IntegerField(unique=True, help_text="ID dans la nouvelle BDD pod")
     username = models.CharField(max_length=150)
 
     class Meta:
+        """Meta options for UserMapping."""
+
         verbose_name = "User Mapping"
 
     def __str__(self):
@@ -15,10 +20,14 @@ class UserMapping(models.Model):
 
 
 class VideoMapping(models.Model):
+    """Map legacy WebTV video IDs to new Video IDs."""
+
     old_id = models.IntegerField(unique=True, help_text="ID dans l'ancienne BDD webtv")
     new_id = models.IntegerField(unique=True, help_text="ID dans la nouvelle BDD pod")
 
     class Meta:
+        """Meta options for VideoMapping."""
+
         verbose_name = "Video Mapping"
 
     def __str__(self):
@@ -26,10 +35,14 @@ class VideoMapping(models.Model):
 
 
 class CommentMapping(models.Model):
+    """Map legacy WebTV comment IDs to new Comment IDs."""
+
     old_id = models.IntegerField(unique=True, help_text="ID dans l'ancienne BDD webtv")
     new_id = models.IntegerField(unique=True, help_text="ID dans la nouvelle BDD pod")
 
     class Meta:
+        """Meta options for CommentMapping."""
+
         verbose_name = "Comment Mapping"
 
     def __str__(self):
@@ -37,30 +50,29 @@ class CommentMapping(models.Model):
 
 
 class CompletionMapping(models.Model):
-    """
-    Speaker mapping webtv
-    """
+    """Speaker mapping webtv."""
 
     old_id = models.IntegerField(unique=True, help_text="ID dans l'ancienne BDD webtv")
     new_id = models.IntegerField(unique=True, help_text="ID dans la nouvelle BDD pod")
 
     class Meta:
+        """Meta options for CompletionMapping."""
+
         verbose_name = "Completion Mapping"
 
     def __str__(self):
         return f"{self.old_id} → {self.new_id}"
 
 
-"""
-collectionMappings:
-"""
-
-
 class ChannelMapping(models.Model):
+    """Map legacy WebTV channel IDs to new Channel IDs."""
+
     old_id = models.IntegerField(unique=True, db_index=True)
     new_id = models.IntegerField()
 
     class Meta:
+        """Meta options for ChannelMapping."""
+
         verbose_name = "Channel Mapping"
         verbose_name_plural = "Channel Mappings"
 
@@ -69,10 +81,14 @@ class ChannelMapping(models.Model):
 
 
 class PlaylistMapping(models.Model):
+    """Map legacy WebTV playlist IDs to new Playlist IDs."""
+
     old_id = models.IntegerField(unique=True, db_index=True)
     new_id = models.IntegerField()
 
     class Meta:
+        """Meta options for PlaylistMapping."""
+
         verbose_name = "Playlist Mapping"
         verbose_name_plural = "Playlist Mappings"
 
@@ -81,10 +97,14 @@ class PlaylistMapping(models.Model):
 
 
 class ThemeMapping(models.Model):
+    """Map legacy WebTV theme/category IDs to new Theme IDs."""
+
     old_id = models.IntegerField(unique=True, db_index=True)
     new_id = models.IntegerField()
 
     class Meta:
+        """Meta options for ThemeMapping."""
+
         verbose_name = "Theme Mapping"
         verbose_name_plural = "Theme Mappings"
 
@@ -112,6 +132,8 @@ class GroupingMapping(models.Model):
     target_type = models.CharField(max_length=10, choices=TARGET_CHOICES)
 
     class Meta:
+        """Meta options for GroupingMapping."""
+
         verbose_name = "Grouping Mapping"
         verbose_name_plural = "Grouping Mappings"
 
@@ -131,6 +153,8 @@ class DocumentMapping(models.Model):
     new_id = models.IntegerField()
 
     class Meta:
+        """Meta options for DocumentMapping."""
+
         verbose_name = "Document Mapping"
         verbose_name_plural = "Document Mappings"
 

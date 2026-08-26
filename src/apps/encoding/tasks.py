@@ -62,7 +62,7 @@ def trigger_runner_encoding_task(self, video_id: int, source_url: str):
             parameters["dressing"] = json.dumps(dressing_params)
 
         logger.error(f"DEBUG: sending notify_url={notify_url}")
-        
+
         client = get_runner_client()
         response = client.execute_task(
             video_id=str(video.slug),

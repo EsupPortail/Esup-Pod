@@ -1,4 +1,4 @@
-"""
+"""Esup-Pod -
 Migration des groupings webtv -> Pod (Channels et Themes).
 
 Ze4fg_vdogrouping est le vrai système de classification de webtv (bien plus
@@ -36,6 +36,7 @@ def _fetch_grouping_type_ids(cursor):
 
 
 def _fetch_groupings(cursor):
+    """Migration helper."""
     cursor.execute("""
         SELECT id, grouping_type_id, name, description, private
         FROM Ze4fg_vdogrouping
@@ -45,11 +46,13 @@ def _fetch_groupings(cursor):
 
 
 def _fetch_video_groupings(cursor):
+    """Migration helper."""
     cursor.execute("SELECT video_id, vdogrouping_id FROM Ze4fg_video_grouping")
     return cursor.fetchall()
 
 
 def _group_videos_by_grouping(video_groupings):
+    """Migration helper."""
     grouping_videos = {}
     for video_id, grouping_id in video_groupings:
         grouping_videos.setdefault(grouping_id, []).append(video_id)
@@ -71,6 +74,7 @@ def _resolve_channel_owner(old_video_ids, video_mapping, fallback_owner_id):
 
 
 def _migrate_channels(self, groupings, grouping_videos, video_mapping, fallback_owner_id):
+    """Migration helper."""
     created = skipped = errors = 0
     grouping_map = {}
 
@@ -114,6 +118,7 @@ def _migrate_channels(self, groupings, grouping_videos, video_mapping, fallback_
 
 
 def _migrate_themes(self, groupings):
+    """Migration helper."""
     created = skipped = errors = 0
     grouping_map = {}
 
@@ -191,6 +196,7 @@ def _assign_video_channels(
 
 
 def _assign_video_themes(self, video_groupings, theme_map, video_mapping):
+    """Migration helper."""
     created = 0
 
     for old_video_id, old_grouping_id in video_groupings:
@@ -220,6 +226,7 @@ def _assign_video_themes(self, video_groupings, theme_map, video_mapping):
 
 
 def groupingMigrate(self, *args, **kwargs):
+    """Migration helper."""
     video_mapping = {m.old_id: m.new_id for m in VideoMapping.objects.all()}
     self.stdout.write(f"Videos mappées: {len(video_mapping)}")
 

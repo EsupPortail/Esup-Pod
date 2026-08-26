@@ -1,4 +1,4 @@
-"""
+"""Esup-Pod -
 Migration des collections webtv -> Pod (Channels, Themes, Favoris, Playlists).
 
 Ze4fg_collections/Ze4fg_collection_categories sont quasi vides sur ce dump
@@ -26,6 +26,7 @@ from src.apps.migration.models import (
 
 
 def _migrate_channels(self, collections, contributors_by_collection, user_mapping):
+    """Migration helper."""
     created = skipped = errors = 0
 
     for data in collections:
@@ -97,6 +98,7 @@ def _resolve_or_recreate_theme_mapping(self, old_cat_id):
 
 
 def _migrate_themes(self, categories):
+    """Migration helper."""
     created = skipped = errors = 0
     theme_map = {}  # old_cat_id -> Theme (pour relier les parents ensuite)
 
@@ -152,6 +154,7 @@ def _migrate_themes(self, categories):
 
 
 def _migrate_favorites(self, favorites, user_mapping, video_mapping):
+    """Migration helper."""
     created = skipped = errors = 0
 
     for data in favorites:
@@ -196,6 +199,7 @@ def _migrate_favorites(self, favorites, user_mapping, video_mapping):
 def _migrate_playlists(
     self, playlists, playlist_items_by_playlist, user_mapping, video_mapping
 ):
+    """Migration helper."""
     created = skipped = errors = 0
 
     for data in playlists:
@@ -260,6 +264,7 @@ def _migrate_playlists(
 
 
 def _fetch_collections(cursor, limit):
+    """Migration helper."""
     query = """
         SELECT
             collection_id, collection_name, collection_description,
@@ -274,6 +279,7 @@ def _fetch_collections(cursor, limit):
 
 
 def _fetch_contributors_by_collection(cursor):
+    """Migration helper."""
     cursor.execute("""
         SELECT collection_id, userid, can_edit
         FROM Ze4fg_collection_contributors
@@ -287,6 +293,7 @@ def _fetch_contributors_by_collection(cursor):
 
 
 def _fetch_categories(cursor):
+    """Migration helper."""
     cursor.execute("""
         SELECT category_id, parent_id, category_name, category_desc
         FROM Ze4fg_collection_categories
@@ -296,6 +303,7 @@ def _fetch_categories(cursor):
 
 
 def _fetch_favorites(cursor):
+    """Migration helper."""
     cursor.execute("""
         SELECT videoid, userid, date_added
         FROM Ze4fg_video_favourites
@@ -305,6 +313,7 @@ def _fetch_favorites(cursor):
 
 
 def _fetch_playlists(cursor):
+    """Migration helper."""
     cursor.execute("""
         SELECT playlist_id, playlist_name, userid,
                description, privacy, allow_comments, date_added
@@ -315,6 +324,7 @@ def _fetch_playlists(cursor):
 
 
 def _fetch_playlist_items_by_playlist(cursor):
+    """Migration helper."""
     cursor.execute("""
         SELECT object_id, playlist_id, date_added
         FROM Ze4fg_playlist_items
@@ -329,6 +339,7 @@ def _fetch_playlist_items_by_playlist(cursor):
 
 
 def collectionMigrate(self, *args, **kwargs):
+    """Migration helper."""
     limit = kwargs.get("limit", 0)
 
     user_mapping = {m.old_id: m.new_id for m in UserMapping.objects.all()}

@@ -18,13 +18,11 @@ LEVEL_MAP = {
 def userMigrate(self, *args, **kwargs):
     """Migrates WebTV V4 users (Ze4fg_users + Ze4fg_user_profile) into Django Users."""
     with connections["webtv"].cursor() as cursor:
-        cursor.execute(
-            """
+        cursor.execute("""
             SELECT u.*, p.first_name, p.last_name
             FROM Ze4fg_users u
             LEFT JOIN Ze4fg_user_profile p ON p.userid = u.userid
-            """
-        )
+            """)
         columns = [col[0] for col in cursor.description]
         rows = cursor.fetchall()
         users_tmp = {
@@ -63,8 +61,8 @@ def userMigrate(self, *args, **kwargs):
 
             owner = Owner.objects.get(user=user)
             owner.auth_type = "CAS"
-            #owner.affiliation = "member"
-            #owner.establishment = "Etab_1"
+            # owner.affiliation = "member"
+            # owner.establishment = "Etab_1"
             owner.accepts_notifications = data.get("msg_notify") == "yes"
             owner.save()
 

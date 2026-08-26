@@ -1,4 +1,4 @@
-"""
+"""Esup-Pod -
 Migration des documents webtv -> Pod (métadonnées uniquement, pas de copie
 physique des fichiers).
 
@@ -16,17 +16,20 @@ from src.apps.migration.models import DocumentMapping, VideoMapping
 
 
 def _fetch_documents(cursor):
+    """Migration helper."""
     cursor.execute("SELECT id, title, storedfilename FROM Ze4fg_documents")
     cols = [c[0] for c in cursor.description]
     return {row[0]: dict(zip(cols, row)) for row in cursor.fetchall()}
 
 
 def _fetch_video_documents(cursor):
+    """Migration helper."""
     cursor.execute("SELECT id, video_id, document_id FROM Ze4fg_video_documents")
     return cursor.fetchall()
 
 
 def _migrate_documents(self, video_documents, documents_by_id, video_mapping):
+    """Migration helper."""
     created = skipped = errors = 0
 
     for old_id, old_video_id, old_document_id in video_documents:
@@ -68,6 +71,7 @@ def _migrate_documents(self, video_documents, documents_by_id, video_mapping):
 
 
 def documentMigrate(self, *args, **kwargs):
+    """Migration helper."""
     video_mapping = {m.old_id: m.new_id for m in VideoMapping.objects.all()}
     self.stdout.write(f"Videos mappées: {len(video_mapping)}")
 

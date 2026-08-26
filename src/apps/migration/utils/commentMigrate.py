@@ -1,4 +1,4 @@
-"""
+"""Esup-Pod -
 Migration des commentaires webtv -> Pod.
 
 - `direct_parent` est le commentaire auquel on répond directement ;
@@ -17,6 +17,7 @@ from src.apps.migration.models import UserMapping, VideoMapping, CommentMapping
 
 
 def _parse_added_date(date_added):
+    """Migration helper."""
     if not date_added:
         return timezone.now()
     try:
@@ -54,6 +55,7 @@ def _resolve_parents(self, old_comment_id, old_parent_id, comment_mapping):
 
 
 def _migrate_comment_row(self, data, user_mapping, video_mapping, comment_mapping):
+    """Migration helper."""
     old_comment_id = data["comment_id"]
 
     if CommentMapping.objects.filter(old_id=old_comment_id).exists():
@@ -100,6 +102,7 @@ def _migrate_comment_row(self, data, user_mapping, video_mapping, comment_mappin
 
 
 def commentMigrate(self, *args, **kwargs):
+    """Migration helper."""
     limit = kwargs.get("limit", 0)
 
     user_mapping = {m.old_id: m.new_id for m in UserMapping.objects.all()}

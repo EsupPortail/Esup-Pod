@@ -1,3 +1,5 @@
+"""Esup-Pod - Migration command to import legacy data."""
+
 from django.core.management.base import BaseCommand
 
 from src.apps.migration.utils.userMigrate import userMigrate
@@ -11,8 +13,10 @@ from src.apps.migration.utils.commentMigrate import commentMigrate
 
 
 class Command(BaseCommand):
+    """Migration command to run all legacy data import steps in order."""
 
     def add_arguments(self, parser):
+        """Define CLI arguments for the migration command."""
         parser.add_argument(
             "--limit",
             type=int,
@@ -21,6 +25,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **kwargs):
+        """Execute each migration step sequentially."""
         userMigrate(self, *args, **kwargs)
         videoMigrate(self, *args, **kwargs)
         speakerMigrate(self, *args, **kwargs)
@@ -36,7 +41,7 @@ class Command(BaseCommand):
 
 
 # Essayer d'abord avec une petite limite. J'ai testé sans limite et la migration
-# complète a pris environ 20 minutes 
+# complète a pris environ 20 minutes
 
 # Aussi, chaque fichier src/apps/migration/utils/...Migrate.py contient des explications et des
 # remarques importantes dans les commentaires en haut du fichier.
@@ -47,4 +52,4 @@ class Command(BaseCommand):
 # Exemple : les collections côté WebTV peuvent être multiples alors que Pod ne
 # permet qu'une seule collection. -> la on conserve uniquement la première.
 
-#pour tester: make enter puis Python3 manage.py Explosion
+# pour tester: make enter puis Python3 manage.py Explosion

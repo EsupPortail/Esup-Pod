@@ -1,5 +1,4 @@
-"""
-Migration des liens (hyperliens) webtv -> Pod.
+"""Esup-Pod - Migration des liens (hyperliens) webtv -> Pod.
 
 - Les entités HTML du titre sont décodées (ex: "&#8217;" -> apostrophe).
 - Une transaction par lien : une erreur sur une ligne ne doit pas faire
@@ -14,6 +13,7 @@ from src.apps.migration.models import VideoMapping
 
 
 def hyperlinkMigrate(self, *args, **kwargs):
+    """Migrate hyperlinks from the legacy webtv database to the current database."""
 
     video_mapping = {m.old_id: m.new_id for m in VideoMapping.objects.all()}
 

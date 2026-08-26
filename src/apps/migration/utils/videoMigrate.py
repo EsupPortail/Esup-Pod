@@ -1,4 +1,4 @@
-"""
+"""Esup-Pod -
 Migration des vidéos webtv -> Pod (métadonnées uniquement, pas de copie
 physique des fichiers).
 
@@ -45,7 +45,10 @@ DEFAULT_ENCODING_STATUS = "ER"
 
 
 class _HTMLStripper(HTMLParser):
+    """Migration helper."""
+
     def __init__(self):
+        """Migration helper."""
         super().__init__()
         self._parts = []
 
@@ -57,6 +60,7 @@ class _HTMLStripper(HTMLParser):
 
 
 def strip_html(text: str) -> str:
+    """Migration helper."""
     if not text:
         return ""
     text = unescape(text)
@@ -71,6 +75,7 @@ def strip_html(text: str) -> str:
 
 
 def _parse_created_date(data):
+    """Migration helper."""
     now = timezone.now()
 
     datecreated = data.get("datecreated")
@@ -96,6 +101,7 @@ def _parse_created_date(data):
 
 
 def _build_legacy_video_path(file_directory, file_name, resolution="1080"):
+    """Migration helper."""
     # La copie physique devra vérifier l'existence réelle du fichier et
     # retomber sur 720/480/240 si le 1080p est absent.
     if not file_directory or not file_name:
@@ -152,6 +158,7 @@ def _parse_video_fields(data):
 
 
 def videoMigrate(self, *args, **kwargs):
+    """Migration helper."""
     limit = kwargs.get("limit", 0)
 
     user_mapping = {m.old_id: m.new_id for m in UserMapping.objects.all()}

@@ -19,7 +19,6 @@ DATABASES = {
             "charset": "utf8mb4",
         },
     },
-
     "webtv": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "webtv",
