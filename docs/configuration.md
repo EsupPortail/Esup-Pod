@@ -8,9 +8,9 @@ The project adheres to the [Twelve-Factor App](https://12factor.net/config) meth
 1. **Environment Variables (`.env`)**: The source of truth.
 2. **`src/config/env.py`**: Loads the `.env` file using the `django-environ` library.
 3. **Django Settings (`src/config/django/`)**:
-    - `base.py`: Core settings shared by all environments.
-    - `dev/docker.py`: Development overrides (consumes `.env` defaults).
-    - `test/docker.py`: Test-specific overrides (forces feature flags).
+   - `base.py`: Core settings shared by all environments.
+   - `dev/docker.py`: Development overrides (consumes `.env` defaults).
+   - `test/docker.py`: Test-specific overrides (forces feature flags).
 
 ## 1. Configuration Hierarchy
 
@@ -28,7 +28,7 @@ To modify behavior (upload limits, colors, module activation):
 
 1. **Identify the application** concerned in `docs/` (e.g., `docs/authentication/`).
 2. **Create the override file** in `src/config/settings/` if it does not exist (e.g., `src/config/settings/video.py`).
-    - You can take inspiration from the `.example` files present in this folder.
+   - You can take inspiration from the `.example` files present in this folder.
 
 3. **Add your variables** in UPPERCASE. They will overwrite the default values when the application starts.
 

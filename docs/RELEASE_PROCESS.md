@@ -1,4 +1,5 @@
 <!-- markdownlint-disable-file MD029 -->
+
 # EsupPod V5 Release Process
 
 This document describes the consensus procedure for publishing a new version of the **Pod_V5_Back** application to the GitHub Container Registry (GHCR).
@@ -40,4 +41,5 @@ Adding a tag starting with `v` triggers the [Publish Docker Image to GHCR](.gith
 You can monitor the progress in the **Actions** tab of the GitHub repository. Once completed, the image will be available in the **Packages** section.
 
 ---
-*See also: [Contributing Guide](../CONTRIBUTING.md)*
+
+_See also: [Contributing Guide](../CONTRIBUTING.md)_

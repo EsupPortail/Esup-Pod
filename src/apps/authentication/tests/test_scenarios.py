@@ -15,7 +15,7 @@ from django.test import TestCase
 from django.urls import clear_url_caches, resolve
 from django_cas_ng import views as cas_views
 
-from ..conf import AuthConfig
+from src.apps.authentication.conf import auth_settings
 
 
 def reload_urlconf():
@@ -42,17 +42,11 @@ class AuthenticationScenariosTests(TestCase):
         """
         Cleans up URL caches and reloads the URL configuration after each test.
         """
-        clear_url_caches()
         reload_urlconf()
 
-    @patch(
-        "src.apps.authentication.conf.auth_settings",
-        new_callable=lambda: AuthConfig(
-            use_cas=True,
-            use_local_auth=False,
-        ),
-    )
-    def test_university_mode_cas_only(self, mock_settings):
+    @patch.object(auth_settings, "use_cas", True)
+    @patch.object(auth_settings, "use_local_auth", False)
+    def test_cas_only_mode(self):
         """
         Scenario: University / Production Mode
         - CAS is Enabled
@@ -69,14 +63,9 @@ class AuthenticationScenariosTests(TestCase):
         resolver_match_logout = resolve("/accounts/logout")
         self.assertEqual(resolver_match_logout.func.view_class, cas_views.LogoutView)
 
-    @patch(
-        "src.apps.authentication.conf.auth_settings",
-        new_callable=lambda: AuthConfig(
-            use_cas=False,
-            use_local_auth=True,
-        ),
-    )
-    def test_local_mode_default(self, mock_settings):
+    @patch.object(auth_settings, "use_cas", False)
+    @patch.object(auth_settings, "use_local_auth", True)
+    def test_local_mode_default(self):
         """
         Scenario: Local Development Mode
         - CAS is Disabled

@@ -6,7 +6,14 @@ import os
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from src.apps.video.models import Video, ViewCount, Comment, Subtitle, VideoHyperlink
+from src.apps.video.models import (
+    Video,
+    ViewCount,
+    Comment,
+    Subtitle,
+    VideoHyperlink,
+    VideoCut,
+)
 from src.apps.encoding.models.EncodingVideo import EncodingVideo
 from src.apps.collection.models.Channel import Channel
 import datetime
@@ -119,6 +126,72 @@ class VideoModelTests(TestCase):
         self.assertEqual(VideoHyperlink.objects.count(), 1)
         self.video.delete()
         self.assertEqual(VideoHyperlink.objects.count(), 0)
+
+
+class VideoCutTests(TestCase):
+    """Tests for VideoCut model."""
+
+    def setUp(self):
+        """Sets up a video for cut testing."""
+        sync_metadata(sender=None)
+
+        self.user = User.objects.create_user(
+            username="cut_owner",
+            password="password",
+        )
+
+        self.video = Video.objects.create(
+            title="Cut Test Video",
+            owner=self.user,
+            status=Video.Status.PUBLISHED,
+        )
+
+    def test_create_video_cut(self):
+        """Verifies that a VideoCut can be created and linked to a video."""
+        cut = VideoCut.objects.create(
+            video=self.video,
+            time_start=10,
+            time_end=50,
+        )
+
+        self.assertEqual(cut.video, self.video)
+        self.assertEqual(cut.time_start, 10)
+        self.assertEqual(cut.time_end, 50)
+
+        # reverse relation
+        self.assertEqual(self.video.cut, cut)
+
+    def test_video_cut_str(self):
+        """Verifies the string representation of VideoCut."""
+        cut = VideoCut.objects.create(
+            video=self.video,
+            time_start=5,
+            time_end=20,
+        )
+
+        self.assertIn("Cut Test Video", str(cut))
+        self.assertIn("5", str(cut))
+        self.assertIn("20", str(cut))
+
+    def test_one_cut_per_video(self):
+        """Ensures OneToOne constraint replaces existing cut logic (manual simulation)."""
+        VideoCut.objects.create(
+            video=self.video,
+            time_start=10,
+            time_end=30,
+        )
+
+        # simulate replacement like API does
+        VideoCut.objects.filter(video=self.video).delete()
+
+        new_cut = VideoCut.objects.create(
+            video=self.video,
+            time_start=40,
+            time_end=80,
+        )
+
+        self.assertEqual(VideoCut.objects.filter(video=self.video).count(), 1)
+        self.assertEqual(new_cut.time_start, 40)
 
 
 class CommentBasicTests(TestCase):

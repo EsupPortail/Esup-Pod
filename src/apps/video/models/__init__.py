@@ -10,9 +10,12 @@ from .Vote import Vote
 from .Type import Type
 from .Discipline import Discipline
 from .VideoHyperlink import VideoHyperlink
+from .UserMarkerTime import UserMarkerTime
+from .VideoCut import VideoCut
 from .Language import Language
 from .License import License
 from .Cursus import Cursus
+from .VideoAccessToken import VideoAccessToken
 
 __all__ = [
     "Video",
@@ -23,7 +26,10 @@ __all__ = [
     "Type",
     "Discipline",
     "VideoHyperlink",
+    "UserMarkerTime",
+    "VideoCut",
     "Language",
     "License",
     "Cursus",
+    "VideoAccessToken",
 ]
