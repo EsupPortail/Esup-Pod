@@ -18,11 +18,13 @@ class ProcessTasksCommandOutputTests(SimpleTestCase):
     """Verify the command's concise and verbose output modes."""
 
     def setUp(self) -> None:
+        """Create a command with captured output and a representative site."""
         self.output = StringIO()
         self.command = Command(stdout=self.output)
         self.site = SimpleNamespace(domain="example.com")
 
     def _run_empty_command(self, *, verbose: bool = False, verbosity: int = 1) -> None:
+        """Run the command against an empty task queue."""
         empty_queryset = MagicMock()
         empty_queryset.__bool__.return_value = False
         empty_queryset.select_related.return_value.order_by.return_value = (
@@ -49,6 +51,7 @@ class ProcessTasksCommandOutputTests(SimpleTestCase):
             )
 
     def test_default_empty_run_writes_one_timestamped_summary(self) -> None:
+        """Write one timestamped summary when verbose output is disabled."""
         self._run_empty_command()
 
         lines = self.output.getvalue().splitlines()
@@ -63,6 +66,7 @@ class ProcessTasksCommandOutputTests(SimpleTestCase):
         self.assertIn("pending 0; submitted 0", lines[0])
 
     def test_verbose_empty_run_writes_timestamped_details(self) -> None:
+        """Write timestamped progress details when verbose output is enabled."""
         self._run_empty_command(verbose=True)
 
         lines = self.output.getvalue().splitlines()
