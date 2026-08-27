@@ -4,6 +4,7 @@ omit =
     */migrations/*
     */tests/*
     */__init__.py
+    */admin.py
     manage.py
     src/config/*
     src/apps/core/management/commands/import_data_*
