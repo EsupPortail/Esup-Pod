@@ -27,7 +27,7 @@ services:
     container_name: pod-api
     volumes:
       - ../../:/app
-      - ../../media:/app/media
+      - ${MEDIA_PATH:-../../media}:/app/media
       - esup-runner-storage:/tmp/esup-runner
     ports:
       - "${EXPOSITION_PORT:-8000}:8000"
@@ -70,7 +70,7 @@ services:
     container_name: pod-celery
     volumes:
       - ../../:/app
-      - ../../media:/app/media
+      - ${MEDIA_PATH:-../../media}:/app/media
       - esup-runner-storage:/tmp/esup-runner
     depends_on:
       db:

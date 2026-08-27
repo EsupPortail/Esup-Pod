@@ -8,6 +8,7 @@ from django import forms
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -24,6 +25,8 @@ from src.apps.video.models import (
     Cursus,
     VideoHyperlink,
     VideoCut,
+    VideoAccessToken,
+    UserMarkerTime,
 )
 
 
@@ -31,26 +34,129 @@ class VideoHyperlinkInline(admin.TabularInline):
     """Inline admin for VideoHyperlink inside Video."""
 
     model = VideoHyperlink
-    extra = 1
+    extra = 0
     fields = ("url", "text", "icon", "position", "time_start", "time_end")
+    show_change_link = True
+
+
+class SubtitleInline(admin.TabularInline):
+    """Inline admin for Subtitle inside Video."""
+
+    model = Subtitle
+    extra = 0
+    fields = ("language", "file")
+    show_change_link = True
 
 
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
     """
     Admin interface for the Video model.
+
+    Provides full control over visibility, encoding status, ownership, access
+    control, and content classification.
     """
 
-    list_display = ("title", "owner", "status", "created_at", "file_size_mb")
-    list_filter = ("status", "created_at", "sites")
-    filter_horizontal = ("sites",)
-    search_fields = ("title", "description", "owner__username", "owner__email")
-    readonly_fields = ("slug", "duration", "created_at", "updated_at")
+    list_display = (
+        "title",
+        "owner",
+        "status",
+        "encoding_status",
+        "is_360",
+        "created_at",
+        "file_size_mb",
+    )
+    list_filter = ("status", "encoding_status", "is_360", "created_at", "sites")
+    filter_horizontal = ("sites", "disciplines", "restricted_groups", "co_owners")
+    search_fields = ("title", "description", "owner__username", "owner__email", "slug")
+    readonly_fields = (
+        "slug",
+        "duration",
+        "view_count",
+        "is_video",
+        "created_at",
+        "updated_at",
+    )
+    raw_id_fields = ("owner", "channel", "license", "cursus", "language", "type")
+    date_hierarchy = "created_at"
+    inlines = [VideoHyperlinkInline, SubtitleInline]
+    fieldsets = (
+        (
+            _("Core"),
+            {
+                "fields": (
+                    "title",
+                    "slug",
+                    "description",
+                    "video_file",
+                    "thumbnail",
+                    "tags",
+                )
+            },
+        ),
+        (
+            _("Status & Encoding"),
+            {
+                "fields": (
+                    "status",
+                    "encoding_status",
+                    "is_video",
+                    "is_360",
+                    "duration",
+                    "view_count",
+                    "date_to_delete",
+                )
+            },
+        ),
+        (
+            _("Ownership & Access"),
+            {
+                "fields": (
+                    "owner",
+                    "channel",
+                    "co_owners",
+                    "sites",
+                    "password",
+                    "is_auth_required",
+                    "restricted_groups",
+                )
+            },
+        ),
+        (
+            _("Classification"),
+            {
+                "fields": (
+                    "type",
+                    "disciplines",
+                    "language",
+                    "cursus",
+                    "license",
+                    "date_of_event",
+                    "transcript_language",
+                )
+            },
+        ),
+        (
+            _("Settings"),
+            {
+                "fields": (
+                    "allow_downloading",
+                    "disable_comment",
+                    "order",
+                )
+            },
+        ),
+        (
+            _("Timestamps"),
+            {
+                "fields": ("created_at", "updated_at"),
+                "classes": ("collapse",),
+            },
+        ),
+    )
 
     def file_size_mb(self, obj):
-        """
-        Calculates and returns the file size of the video in Megabytes.
-        """
+        """Calculates and returns the file size of the video in Megabytes."""
         if obj.video_file and hasattr(obj.video_file, "size"):
             return f"{obj.video_file.size / (1024 * 1024):.2f} MB"
         return "N/A"
@@ -58,9 +164,7 @@ class VideoAdmin(admin.ModelAdmin):
     file_size_mb.short_description = "Size (MB)"
 
     def has_delete_permission(self, request, obj=None):
-        """
-        Dynamically checks for deletion rights based on ServerRoles and Establishment.
-        """
+        """Dynamically checks for deletion rights based on ServerRoles and Establishment."""
         if request.user.is_superuser:
             return True
 
@@ -79,9 +183,7 @@ class VideoAdmin(admin.ModelAdmin):
         return super().has_delete_permission(request, obj)
 
     def has_change_permission(self, request, obj=None):
-        """
-        Dynamically checks for editing rights based on ServerRoles and Establishment.
-        """
+        """Dynamically checks for editing rights based on ServerRoles and Establishment."""
         if request.user.is_superuser:
             return True
 
@@ -106,6 +208,7 @@ class TypeAdmin(admin.ModelAdmin):
 
     list_display = ("title", "slug")
     search_fields = ("title",)
+    prepopulated_fields = {"slug": ("title",)}
 
 
 @admin.register(Discipline)
@@ -114,6 +217,7 @@ class DisciplineAdmin(admin.ModelAdmin):
 
     list_display = ("title", "slug")
     search_fields = ("title",)
+    prepopulated_fields = {"slug": ("title",)}
 
 
 @admin.register(Subtitle)
@@ -122,6 +226,8 @@ class SubtitleAdmin(admin.ModelAdmin):
 
     list_display = ("video", "language", "file")
     list_filter = ("language",)
+    search_fields = ("video__title",)
+    raw_id_fields = ("video",)
 
 
 @admin.register(VideoHyperlink)
@@ -129,8 +235,9 @@ class VideoHyperlinkAdmin(admin.ModelAdmin):
     """Admin for VideoHyperlink."""
 
     list_display = ("id", "video", "text", "url", "time_start", "time_end", "created_at")
-    list_filter = ("video",)
+    list_filter = ("position",)
     search_fields = ("text", "url", "video__title")
+    raw_id_fields = ("video",)
     readonly_fields = ("id", "created_at", "updated_at")
 
 
@@ -142,6 +249,36 @@ class VideoCutAdmin(admin.ModelAdmin):
     search_fields = ("video__title",)
     readonly_fields = ("id", "created_at")
     raw_id_fields = ("video",)
+
+
+@admin.register(VideoAccessToken)
+class VideoAccessTokenAdmin(admin.ModelAdmin):
+    """Admin for Video Access Tokens."""
+
+    list_display = (
+        "video",
+        "created_by",
+        "label",
+        "is_active",
+        "expires_at",
+        "use_count",
+        "last_used_at",
+        "created_at",
+    )
+    list_filter = ("is_active", "created_at", "expires_at")
+    search_fields = ("video__title", "created_by__username", "label", "token")
+    raw_id_fields = ("video", "created_by")
+    readonly_fields = ("token", "use_count", "last_used_at", "created_at")
+
+
+@admin.register(UserMarkerTime)
+class UserMarkerTimeAdmin(admin.ModelAdmin):
+    """Admin for User Marker Times (last playback position per user per video)."""
+
+    list_display = ("user", "video", "marker", "updated_at")
+    search_fields = ("user__username", "video__title")
+    raw_id_fields = ("user", "video")
+    readonly_fields = ("updated_at",)
 
 
 @admin.register(Language)
@@ -190,15 +327,24 @@ class ViewCountAdmin(admin.ModelAdmin):
     list_filter = ("date",)
     search_fields = ("video__title",)
     raw_id_fields = ("video",)
+    date_hierarchy = "date"
 
 
 @admin.register(Vote)
 class VoteAdmin(admin.ModelAdmin):
     """Admin for Votes on Comments."""
 
-    list_display = ("id", "user", "comment")
+    list_display = ("id", "user", "comment", "vote_display")
     search_fields = ("user__username", "comment__content")
     raw_id_fields = ("user", "comment")
+
+    def vote_display(self, obj):
+        """Renders an icon for the vote value."""
+        return format_html(
+            '<span style="color:{};">&#9679;</span>', "green" if obj.value else "red"
+        )
+
+    vote_display.short_description = _("Vote")
 
 
 # Register Tagulous dynamic tag model with custom merge to delete merged tags

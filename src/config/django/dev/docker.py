@@ -18,5 +18,16 @@ DATABASES = {
         "OPTIONS": {
             "charset": "utf8mb4",
         },
-    }
+    },
+    "webtv": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "webtv",
+        "USER": "root",
+        "PASSWORD": env("MYSQL_ROOT_PASSWORD", default="root_password"),
+        "HOST": env("MYSQL_HOST", default="db"),
+        "PORT": env("MYSQL_PORT", default="3306"),
+        "OPTIONS": {
+            "charset": "utf8mb4",
+        },
+    },
 }
