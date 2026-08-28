@@ -1,7 +1,7 @@
+import os
+
 from django import template
 from django.core.files.storage import default_storage
-
-# import os
 
 ICON_LISTE = [
     "css",
@@ -15,6 +15,9 @@ ICON_LISTE = [
     "mkv",
     "mp3",
     "mp4",
+    "odp",
+    "ods",
+    "odt",
     "pdf",
     "png",
     "ppt",
@@ -22,6 +25,7 @@ ICON_LISTE = [
     "psd",
     "swf",
     "txt",
+    "vtt",
     "xls",
     "xlsx",
     "zip",
@@ -40,10 +44,21 @@ def file_exists(filepath):
         return new_filepath
 
 
+@register.filter(name="file_extension")
+def file_extension(filename):
+    """Return a normalized extension without the leading dot."""
+    return os.path.splitext(str(filename))[1].removeprefix(".").lower()
+
+
+@register.filter(name="file_basename")
+def file_basename(filename):
+    """Return the complete file name, including its extension."""
+    return os.path.basename(str(filename))
+
+
 @register.filter(name="icon_exists")
 def icon_exists(filename):
-    fname, dot, extension = filename.rpartition(".")
-    # print(fname, extension)
+    extension = file_extension(filename)
     if extension in ICON_LISTE:
         return extension
     else:
