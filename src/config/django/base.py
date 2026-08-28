@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     "src.apps.collection",
     "src.apps.completion",
     "src.apps.dressing",
+    "src.apps.live",
+    "src.apps.migration",
     "src.apps.import_video",
 ]
 
