@@ -29,6 +29,9 @@ RUNNER_MANAGER_SOURCE_APP_LABEL = "video_encode_transcript"
 RUNNER_MANAGER_SECTION_APP_LABEL = "runner_managers"
 RUNNER_MANAGER_SECTION_MODEL_NAMES = {"RunnerManager", "Task", "PriorityUser"}
 RUNNER_MANAGER_PRIMARY_MODEL_NAME = "RunnerManager"
+# The health endpoint depends on the Esup-Runner manager version:
+# /api/health since 1.8.0, /manager/health for older versions.
+RUNNER_MANAGER_HEALTH_ENDPOINTS = ("api/health", "manager/health")
 
 
 def _admin_or_add_url(model):
@@ -360,12 +363,12 @@ class RunnerManagerAdmin(admin.ModelAdmin):
         ]
         return response
 
-    def _health_url(self, runner_manager: RunnerManager) -> str:
-        """Build runner manager health endpoint URL."""
-        return (
-            runner_manager.url + "manager/health"
-            if runner_manager.url.endswith("/")
-            else runner_manager.url + "/manager/health"
+    def _health_urls(self, runner_manager: RunnerManager) -> tuple[str, ...]:
+        """Build health URLs for current and pre-1.8.0 manager versions."""
+        base_url = runner_manager.url.rstrip("/")
+        return tuple(
+            f"{base_url}/{endpoint}"
+            for endpoint in RUNNER_MANAGER_HEALTH_ENDPOINTS
         )
 
     def _auth_headers(self, runner_manager: RunnerManager) -> dict[str, str]:
@@ -375,6 +378,24 @@ class RunnerManagerAdmin(admin.ModelAdmin):
             "Authorization": f"Bearer {runner_manager.token}",
         }
 
+    def _request_health(
+        self, runner_manager: RunnerManager
+    ) -> tuple[str, requests.Response]:
+        """Try health endpoints from the current one to the legacy one."""
+        current_health_url, legacy_health_url = self._health_urls(runner_manager)
+        response = requests.get(
+            current_health_url,
+            headers=self._auth_headers(runner_manager),
+            timeout=15,
+        )
+        if response.status_code != 404:
+            return current_health_url, response
+        return legacy_health_url, requests.get(
+            legacy_health_url,
+            headers=self._auth_headers(runner_manager),
+            timeout=15,
+        )
+
     def _change_url(self, runner_manager: RunnerManager) -> str:
         """Build the admin change URL for a runner manager instance."""
         return reverse(
@@ -383,8 +404,8 @@ class RunnerManagerAdmin(admin.ModelAdmin):
         )
 
     def _runner_admin_url(self, runner_manager: RunnerManager) -> str:
-        """Build runner manager admin URL, handling optional trailing slash."""
-        return f"{runner_manager.url.rstrip('/')}/admin"
+        """Return the runner manager administration URL."""
+        return runner_manager.runner_admin_url
 
     @admin.display(description=_("Status"), ordering="is_active")
     def active_badge(self, obj):
@@ -421,13 +442,8 @@ class RunnerManagerAdmin(admin.ModelAdmin):
         if not self.has_change_permission(request, runner_manager):
             raise PermissionDenied
 
-        health_url = self._health_url(runner_manager)
         try:
-            response = requests.get(
-                health_url,
-                headers=self._auth_headers(runner_manager),
-                timeout=15,
-            )
+            health_url, response = self._request_health(runner_manager)
         except requests.RequestException as exc:
             self.message_user(
                 request,
