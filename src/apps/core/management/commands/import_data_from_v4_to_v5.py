@@ -36,6 +36,7 @@ from src.apps.collection.models import (
     Playlist,
     PlaylistItem,
 )
+from src.apps.layout.models import BlockConfig
 from src.apps.encoding.conf import encoding_settings
 from src.apps.encoding.models import EncodingVideo
 from src.apps.video.models import (
@@ -309,6 +310,7 @@ class Command(BaseCommand):
         self.import_disciplines(data.get("video_discipline", []), batch_size)
         self.import_channels(data.get("video_channel", []), data, batch_size)
         self.import_themes(data.get("video_theme", []), batch_size)
+        self.import_blocks(data.get("main_block", []), batch_size)
 
         # 3. Videos
         self.import_video_tags(data)
@@ -2163,4 +2165,81 @@ class Command(BaseCommand):
                 error_count += len(batch)
         self.stdout.write(
             f"Encoded Videos imported: {success_count} success, " f"{error_count} errors."
+        )
+
+    # ------------------------------------------------------------------
+    # Blocks Configuration
+    # ------------------------------------------------------------------
+
+    def import_blocks(self, items, batch_size):
+        """Import main_block from V4 to BlockConfig in V5."""
+        self.stdout.write("Importing Block Configurations...")
+        items_to_process = self._get_unprocessed_items("BlockConfig", items)
+        if not items_to_process:
+            self.stdout.write("All Blocks already migrated.")
+            return
+
+        success_count = 0
+        error_count = 0
+
+        for i in range(0, len(items_to_process), batch_size):
+            batch = items_to_process[i : i + batch_size]
+            try:
+                with transaction.atomic():
+                    instances = []
+                    mappings = []
+                    for item in batch:
+                        t = item.get("type", "unknown")
+                        dt = item.get("data_type", "unknown")
+                        frontend_id = f"v4-{t}-{dt}-{item['id']}"
+
+                        extra_config = {
+                            "order": item.get("order"),
+                            "type": t,
+                            "data_type": dt,
+                            "no_cache": item.get("no_cache"),
+                            "show_restricted": item.get("show_restricted"),
+                            "must_be_auth": item.get("must_be_auth"),
+                            "auto_slide": item.get("auto_slide"),
+                            "multi_carousel_nb": item.get("multi_carousel_nb"),
+                            "view_videos_from_non_visible_channels": item.get(
+                                "view_videos_from_non_visible_channels"
+                            ),
+                            "shows_passworded": item.get("shows_passworded"),
+                        }
+
+                        instances.append(
+                            BlockConfig(
+                                id=item["id"],
+                                frontend_id=frontend_id,
+                                admin_name=item.get("title", f"Block {item['id']}")[:150],
+                                is_active=bool(item.get("visible", True)),
+                                display_title=item.get("display_title", "")[:200],
+                                subtitle_or_text="",
+                                item_limit=(
+                                    item.get("nb_element", 10)
+                                    if item.get("nb_element") is not None
+                                    else 10
+                                ),
+                                extra_config=extra_config,
+                            )
+                        )
+                        mappings.append(
+                            MigrationMapping(
+                                model_name="BlockConfig",
+                                v4_id=item["id"],
+                                v5_id=item["id"],
+                                status=MigrationMapping.Status.SUCCESS,
+                            )
+                        )
+
+                    BlockConfig.objects.bulk_create(instances, ignore_conflicts=True)
+                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    success_count += len(instances)
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f"Error in BlockConfig batch: {e}"))
+                self._record_batch_errors("BlockConfig", batch, e)
+                error_count += len(batch)
+        self.stdout.write(
+            f"Blocks imported: {success_count} success, {error_count} errors."
         )
