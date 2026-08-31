@@ -14,6 +14,7 @@ Each application has its own dedicated documentation with overview and technical
 
 - **[Authentication](authentication/README.md)**: Local login, CAS, LDAP, OIDC, and user management.
 - **[Video](video/README.md)**: Video lifecycle, upload, access control, streaming, and subtitle management.
+- **[Search](search/README.md)**: Full-text search with Redis Search, cache strategy, and index management.
 - **[Completion](completion/README.md)**: Additional metadata, documents, contributors, overlays, and model enrichment.
 - **[Collection](collection/README.md)**: Organize videos into Channels, Themes, and Playlists.
 - **[Notes](notes/README.md)**: Timestamped and global user notes attached to videos.
@@ -22,12 +23,13 @@ Each application has its own dedicated documentation with overview and technical
 - **[Dressing](dressing/README.md)**: Automated video branding with watermarks and intros/outros.
 - **[API & Swagger](api/README.md)**: REST API usage and documentation guide.
 - **[Core & Management](core/README.md)**: CLI commands for audit and maintenance.
+- **[Maintenance & Commands](core/details.md)**: All `manage.py` commands for maintaining a Pod instance (search reindex, cache, migration, config).
 - **[Info](info/README.md)**: System status and public dynamic configuration flags.
 - **[Utils](utils/README.md)**: Core utilities, internal paths, and base models.
 
 ### Infrastructure & Deployment
 
-- **[Deployment Guide](deployment/README.md)**: Docker architecture, environment setup, and deployment strategies.
+- **[Deployment Guide](deployment/README.md)**: Docker architecture, Redis infrastructure, environment setup, and deployment strategies.
 - **[Data Migration (V4 to V5)](deployment/migration_v4_to_v5.md)**: Instructions and SQL verification queries for migrating data from Pod V4 to V5.
 - **[CI/CD & Testing](CI_CD.md)**: GitHub Actions pipelines, local testing, and quality checks.
 

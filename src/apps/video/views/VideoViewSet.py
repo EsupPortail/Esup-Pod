@@ -134,7 +134,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         )
 
     def get_authenticators(self):
-        """Return the list of authenticators that this view can use."""
+        """Get authenticators for the view, adding custom query param JWT if needed."""
         authenticators = super().get_authenticators()
         if getattr(self, "action", None) == "stream":
             from src.apps.authentication.authentication import (
@@ -480,11 +480,20 @@ class VideoViewSet(viewsets.ModelViewSet):
     def metadata(self, request):
         """
         Returns available choices for License, Cursus, and Status to help the frontend.
-        """
-        from src.apps.video.models import License, Cursus, Language
+        Equivalent V4 : context_video_data() — types, disciplines, cursus, licences.
 
-        return Response(
-            {
+        Mis en cache Redis (TTL=600s) car ces données sont quasi-statiques.
+        Même pattern que V4 : cache.get("TYPES") / cache.set("TYPES", ..., timeout=600).
+        """
+        from django.core.cache import cache
+
+        CACHE_KEY = "pod:video:metadata"
+        data = cache.get(CACHE_KEY)
+
+        if data is None:
+            from src.apps.video.models import License, Cursus, Language
+
+            data = {
                 "licenses": [
                     {"value": lic.slug, "label": lic.name}
                     for lic in License.objects.all()
@@ -500,7 +509,12 @@ class VideoViewSet(viewsets.ModelViewSet):
                     for lang in Language.objects.all()
                 ],
             }
-        )
+            cache.set(CACHE_KEY, data, timeout=600)
+            logger.debug("Cache SET video:metadata (TTL=600s)")
+        else:
+            logger.debug("Cache HIT video:metadata")
+
+        return Response(data)
 
     @extend_schema(
         summary="Transfer video ownership",

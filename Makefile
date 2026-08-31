@@ -120,7 +120,7 @@ test-cov: start ## Run tests with coverage report
 
 test-api-curl: start ## Run curl-based API tests inside the container
 	$(call info,Running curl-based API tests...)
-	@$(DOCKER_COMPOSE_CMD) exec -T $(DOCKER_SERVICE_NAME) bash /app/scripts/test_api_curl.sh
+	@$(DOCKER_COMPOSE_CMD) exec -T $(DOCKER_SERVICE_NAME) bash -c "for script in /app/scripts/test_*.sh; do if [ \"\$$script\" != \"/app/scripts/test_base.sh\" ]; then echo \"Running \$$script...\"; bash \"\$$script\" || exit 1; fi; done"
 
 check-django-env: ## Environment checks (DJANGO_SETTINGS_MODULE must end with .docker)
 	$(call info,Checking DJANGO_SETTINGS_MODULE...)

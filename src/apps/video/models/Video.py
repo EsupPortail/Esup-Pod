@@ -314,23 +314,12 @@ class Video(models.Model):
         if self.thumbnail and hasattr(self.thumbnail, "url"):
             return self.thumbnail.url
 
-        if self.overview and hasattr(self.overview, "url"):
-            url = self.overview.url
-            if url.endswith(".vtt"):
-                from pathlib import Path
+        if self.overview:
+            from src.apps.utils.files import resolve_file_field_image_url
 
-                # We check which image format actually exists alongside the .vtt file
-                base_url = Path(url)
-                base_name = Path(self.overview.name)
-                storage = self.overview.storage
-
-                for ext in [".png", ".jpg", ".jpeg", ".webp"]:
-                    if storage.exists(str(base_name.with_suffix(ext))):
-                        return str(base_url.with_suffix(ext))
-
-                # Fallback to .png if nothing was found
-                return str(base_url.with_suffix(".png"))
-            return url
+            overview_url = resolve_file_field_image_url(self.overview)
+            if overview_url:
+                return overview_url
 
         from django.templatetags.static import static
 

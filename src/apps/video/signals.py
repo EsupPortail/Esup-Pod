@@ -6,6 +6,7 @@ import logging
 import os
 
 from django.contrib.sites.models import Site
+from django.core.cache import cache
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
@@ -14,6 +15,27 @@ from src.apps.video.services.metadata import extract_video_duration
 from src.apps.utils.files import safe_remove_file
 
 logger = logging.getLogger(__name__)
+
+# Cache keys to invalidate when a video changes (same logic as V4 cache.delete_many)
+_VIDEO_CACHE_KEYS = ["pod:video:metadata"]
+
+
+def _invalidate_video_caches():
+    """
+    Invalidates all application caches related to video data.
+    V4 equivalent: cache.delete_many(["DISCIPLINES", "VIDEOS_COUNT", ...])
+    + pattern-based deletion of all search caches.
+    """
+    cache.delete_many(_VIDEO_CACHE_KEYS)
+    logger.debug("Cache invalidated: %s", _VIDEO_CACHE_KEYS)
+
+    # Pattern-based search cache invalidation (requires django-redis)
+    try:
+        cache.delete_pattern("pod:search:*")
+        logger.debug("Cache invalidated: pod:search:*")
+    except AttributeError:
+        # If the backend is not django-redis (e.g., locmem in test), fail silently
+        logger.debug("delete_pattern not supported on current cache backend — ignored")
 
 
 @receiver(post_save, sender=Video)
@@ -131,3 +153,21 @@ def auto_assign_site_to_type(sender, instance, created, **kwargs):
                 instance.sites.add(current_site)
         except Exception as e:
             logger.warning("Could not auto-assign site to type %s: %s", instance.pk, e)
+
+
+@receiver(post_save, sender=Video)
+def invalidate_cache_on_video_save(sender, instance, **kwargs):
+    """
+    Invalidates application caches after any video update.
+    V4 equivalent: the `cache_video_data` command was called by cron
+    — here we invalidate directly upon change.
+    """
+    _invalidate_video_caches()
+
+
+@receiver(post_delete, sender=Video)
+def invalidate_cache_on_video_delete(sender, instance, **kwargs):
+    """
+    Invalidates application caches after a video is deleted.
+    """
+    _invalidate_video_caches()

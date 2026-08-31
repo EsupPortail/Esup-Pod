@@ -118,6 +118,9 @@ jobs:
         # Runs against the running docker container from the host
         run: python src/config/django/test/e2e_scenario.py
 
+      - name: Run API Curl Tests (Per App)
+        run: make test-api-curl
+
       - name: Basic Load Test
         run: |
           fail=0
