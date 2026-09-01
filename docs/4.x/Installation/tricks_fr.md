@@ -71,3 +71,42 @@ Si vous rencontrez un problème avec l’application _django-shibboleth-remoteus
 (django_pod4) pod@pod:~/django_projects/podv4$ pip uninstall django-shibboleth-remoteuser
 (django_pod4) pod@pod:~/django_projects/podv4$ pip install -r requirements.txt
 ```
+
+## Astuce #4 : erreur lors de l’exécution de `make updatedb`
+
+Lors d’une mise à jour de la base de données avec `make updatedb` (ou de la
+création de migrations avec `python3 manage.py makemigrations`), une erreur de
+ce type peut survenir :
+
+```log
+Running migrations:
+Applying flatpages.0002_flatpage_content_en_flatpage_content_fr_and_more...Traceback (most recent call last):
+...
+MySQLdb.OperationalError: (1060, "Duplicate column name 'content_en'")
+```
+
+Cette erreur est liée à l’utilisation de l’application Django `flatpages`
+lors d’un changement de version de Django.
+
+Pour la corriger :
+
+1. Effectuez une sauvegarde complète de la base de données, ainsi qu’une
+   sauvegarde spécifique de la table `django_flatpage`.
+2. Dans cette table, supprimez les quatre colonnes concernées :
+   `content_en`, `content_fr`, `title_en` et `title_fr`.
+3. Supprimez toutes les lignes de la table `django_flatpage`.
+4. Relancez `make updatedb`.
+5. Réinsérez les lignes de la table à partir de la sauvegarde.
+
+> ⚠️ Ne modifiez pas la table `django_flatpage` sans avoir préalablement
+> vérifié vos sauvegardes.
+
+## Astuce #5 : anciens liens de vidéos en mode brouillon invalides
+
+Si les liens d’anciennes vidéos en mode brouillon ne fonctionnent plus après
+une migration d’un serveur Esup-Pod v3 vers un serveur v4, cela provient
+généralement d’un changement de la valeur de `SECRET_KEY` dans le fichier
+`settings_local.py`.
+
+Rétablissez l’ancienne valeur de `SECRET_KEY` pour rendre ces liens de nouveau
+fonctionnels.

@@ -71,3 +71,39 @@ If you encounter an issue with the _django-shibboleth-remoteuser_ application, d
 (django_pod4) pod@pod:~/django_projects/podv4$ pip uninstall django-shibboleth-remoteuser
 (django_pod4) pod@pod:~/django_projects/podv4$ pip install -r requirements.txt
 ```
+
+## Tip #4: Error when running `make updatedb`
+
+When updating the database with `make updatedb` (or creating migrations with
+`python3 manage.py makemigrations`), an error like the following may occur:
+
+```log
+Running migrations:
+Applying flatpages.0002_flatpage_content_en_flatpage_content_fr_and_more...Traceback (most recent call last):
+...
+MySQLdb.OperationalError: (1060, "Duplicate column name 'content_en'")
+```
+
+This error is related to the use of the Django `flatpages` application when
+upgrading Django to a different version.
+
+To fix it:
+
+1. Back up the entire database, as well as the `django_flatpage` table
+   separately.
+2. Remove the four affected columns from this table: `content_en`, `content_fr`,
+   `title_en`, and `title_fr`.
+3. Delete all rows from the `django_flatpage` table.
+4. Run `make updatedb` again.
+5. Restore the table rows from the backup.
+
+> ⚠️ Do not modify the `django_flatpage` table until you have verified your
+> backups.
+
+## Tip #5: Invalid links to older draft videos
+
+If links to older draft videos no longer work after migrating from an Esup-Pod
+v3 server to a v4 server, this is usually caused by a change to the `SECRET_KEY`
+value in `settings_local.py`.
+
+Restore the previous `SECRET_KEY` value to make these links work again.
