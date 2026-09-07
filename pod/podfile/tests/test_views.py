@@ -256,9 +256,7 @@ class FileViewTestCase(TestCase):
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         image = SimpleUploadedFile(
             name="thumbnail.webp",
-            content=open(
-                os.path.join(currentdir, "tests", "testimage.jpg"), "rb"
-            ).read(),
+            content=open(os.path.join(currentdir, "tests", "testimage.jpg"), "rb").read(),
             content_type="image/webp",
         )
         folder = UserFolder.objects.get(owner=user, name="home")
