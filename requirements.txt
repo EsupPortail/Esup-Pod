@@ -1,6 +1,6 @@
 -r requirements-encode.txt
 Django==4.2.30
-Pillow==12.2.0
+Pillow==12.3.0
 django-tinymce==4.1.0
 django-tagulous==2.1.0
 django-modeltranslation==0.19.11

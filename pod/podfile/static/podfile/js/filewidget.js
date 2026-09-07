@@ -717,10 +717,13 @@ if (typeof loaded == "undefined") {
     if (!isJson(data)) data = JSON.parse(data);
     if (data.list_element) {
       var folder_id = data.folder_id;
+      // Keep folder reloads on the unfiltered endpoint when the widget has no valid type.
+      const listFoldersSub = document.getElementById("list_folders_sub");
+      let type = getValidFolderType(
+        listFoldersSub ? listFoldersSub.dataset.type : undefined
+      );
 
       if (data.new_folder === true && document.getElementById("list_folders_sub")) {
-        let type = document.getElementById("list_folders_sub").dataset.type;
-
         let string_html =
           '<div class="folder_container text-truncate">' +
           createFolder(
@@ -868,7 +871,22 @@ if (typeof loaded == "undefined") {
   var folder_open_icon = `<i class="folder-open bi bi-folder2-open" id="folder-open-icon"></i>`;
   var folder_icon = `<i class="folder-close bi bi-folder2"></i>`;
 
+  /**
+   * Return a safe Podfile type for URL generation.
+   *
+   * Only "image" and "file" are accepted by the Django Podfile views; any
+   * other value must be ignored to avoid generating invalid URLs such as
+   * /podfile/undefined.
+   *
+   * @param {string|undefined} type - Candidate folder type.
+   * @returns {string|undefined} A valid type, or undefined when unfiltered.
+   */
+  function getValidFolderType(type) {
+    return type === "image" || type === "file" ? type : undefined;
+  }
+
   function createFolder(foldid, foldname, isCurrent, type, owner = undefined) {
+    type = getValidFolderType(type);
     let construct = "";
     construct +=
       '<a href="#" class="folder ' +
@@ -880,7 +898,7 @@ if (typeof loaded == "undefined") {
       '" data-id="' +
       foldid +
       '" data-target="';
-    let isType = type != "None" && type != undefined;
+    let isType = type != undefined;
     construct +=
       "/podfile/get_folder_files/" +
       foldid +
@@ -937,7 +955,9 @@ if (typeof loaded == "undefined") {
    */
   function getFolders(search = "") {
     document.getElementById("list_folders_sub").textContent = "";
-    let type = document.getElementById("list_folders_sub").dataset.type;
+    let type = getValidFolderType(
+      document.getElementById("list_folders_sub").dataset.type
+    );
     let currentFolder = getCurrentSessionFolder();
     let url = "/podfile/ajax_calls/user_folders";
     if(search !== ""){
@@ -1057,7 +1077,9 @@ if (typeof loaded == "undefined") {
     let next = moreLink.dataset.next;
     let search = moreLink.dataset.search || null;
     let currentFolder = getCurrentSessionFolder();
-    let type = document.getElementById("list_folders_sub").dataset.type;
+    let type = getValidFolderType(
+      document.getElementById("list_folders_sub").dataset.type
+    );
     let url = next;
     let token = document.querySelector(
       'input[name="csrfmiddlewaretoken"]'
@@ -1107,10 +1129,9 @@ if (typeof loaded == "undefined") {
   }
 
   function showfiles(e) {
-    let cible = e.target;
-    if (e.target.nodeName.toLowerCase() !== "a" ) {
-      cible = e.target.parentNode;
-    }
+    // The click target can be an icon or nested span, so resolve the folder link.
+    let cible = e.target.closest ? e.target.closest("a.folder") : null;
+    if (!cible || !cible.dataset.target) return;
     document
       .querySelectorAll("#podfile #list_folders_sub a.folder-opened")
       .forEach((el) => {

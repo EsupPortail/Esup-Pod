@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block page_content %}
-  {% if ENABLE_PAGE_OBSO_MAIL  == True and display_or_not == True %}
+  {% if ENABLE_PAGE_OBSO_MAIL == True and display_or_not == True %}
     <h1 class="h2">{% trans "Your video will soon be deleted, what do you want do?" %}</h1>
     <ul>
       <li>
@@ -38,7 +38,7 @@
       {% trans "This link allows you to export your video, along with its metadata and attached files, as a ZIP file so you can save them to your storage space. We strongly recommend using this option before permanently deleting your video from the server." %}
     </p>
   {% else %}
-    {% if ENABLE_PAGE_OBSO_MAIL  == False %}
+    {% if ENABLE_PAGE_OBSO_MAIL == False %}
       <h1>{% trans "This service is not available." %}</h1>
     {% endif %}
     {% if display_or_not == False %}

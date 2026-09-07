@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-07 12:13+0200\n"
+"POT-Creation-Date: 2026-07-10 15:39+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -95,8 +95,9 @@ msgstr "La discipline proposée par l’IA Aristote."
 #: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
 #: pod/main/models.py pod/main/views.py pod/playlist/forms.py
 #: pod/playlist/models.py pod/quiz/forms.py pod/quiz/models.py
-#: pod/speaker/models.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
+#: pod/speaker/models.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Title"
 msgstr "Titre"
@@ -656,8 +657,9 @@ msgid "Receive push notifications on your devices."
 msgstr "Recevez des notifications push sur vos appareils."
 
 #: pod/authentication/models.py pod/live/models.py pod/meeting/models.py
-#: pod/podfile/models.py pod/video/admin.py pod/video/models.py
-#: pod/video/templates/videos/dashboard.html
+#: pod/podfile/models.py pod/video/admin.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/videos/dashboard.html
 #: pod/video_search/templates/search/search.html
 msgid "Owner"
 msgstr "Propriétaire"
@@ -2591,7 +2593,7 @@ msgstr "Liste des hyperliens"
 
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
 #: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
-#: pod/live/models.py
+#: pod/live/models.py pod/video/management/commands/check_video_owner_exists.py
 msgid "URL"
 msgstr "URL"
 
@@ -9424,14 +9426,17 @@ msgid "In %(deadline)s days:"
 msgstr "Dans %(deadline)s jours :"
 
 #: pod/video/management/commands/check_video_owner_exists.py
-#, python-format
-msgid "%(old)s replaced by %(new)s"
-msgstr "%(old)s remplacé par %(new)s"
-
-#: pod/video/management/commands/check_video_owner_exists.py
 msgid "For information, you will find below the list of reaffected videos."
 msgstr ""
 "Pour information, vous trouverez ci-dessous la liste des vidéos réaffectées."
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "id"
+msgstr "Id"
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "Replaced by"
+msgstr "Remplacé par"
 
 #: pod/video/management/commands/check_video_owner_exists.py
 msgid "The reaffected videos on Pod"
