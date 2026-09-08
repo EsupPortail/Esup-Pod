@@ -30,36 +30,25 @@ class Command(BaseCommand):
         """Compare recorded migrations with migrations discovered on disk."""
         database = options["database"]
         db_connection = connections[database]
-        loader = MigrationLoader(
-            db_connection, load=False, ignore_no_migrations=True
-        )
+        loader = MigrationLoader(db_connection, load=False, ignore_no_migrations=True)
         loader.load_disk()
         applied_migrations = set(
-            MigrationRecorder(db_connection)
-            .migration_qs.values_list("app", "name")
+            MigrationRecorder(db_connection).migration_qs.values_list("app", "name")
         )
-        missing_migrations = sorted(
-            applied_migrations.difference(loader.disk_migrations)
-        )
+        missing_migrations = sorted(applied_migrations.difference(loader.disk_migrations))
 
         if missing_migrations:
             self.stdout.write(self.style.ERROR("# Missing migration files:"))
             self.stdout.write("app_label,migration_name,expected_path")
             for app_label, migration_name in missing_migrations:
-                expected_path = self.get_expected_path(
-                    loader, app_label, migration_name
-                )
-                self.stdout.write(
-                    f"{app_label},{migration_name},{expected_path}"
-                )
+                expected_path = self.get_expected_path(loader, app_label, migration_name)
+                self.stdout.write(f"{app_label},{migration_name},{expected_path}")
             if options["fail_on_missing"]:
                 raise CommandError(
                     f"{len(missing_migrations)} migration file(s) missing."
                 )
         else:
-            self.stdout.write(
-                self.style.SUCCESS("No missing migration files found.")
-            )
+            self.stdout.write(self.style.SUCCESS("No missing migration files found."))
 
     def get_expected_path(
         self, loader: MigrationLoader, app_label: str, migration_name: str
