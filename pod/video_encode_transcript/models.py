@@ -488,9 +488,7 @@ class RunnerManager(models.Model):
         max_length=250,
         blank=True,
         verbose_name=_("URL of the runner administration"),
-        help_text=_(
-            "Leave blank to use the runner manager URL followed by /admin."
-        ),
+        help_text=_("Leave blank to use the runner manager URL followed by /admin."),
     )
 
     # Bearer token for the runner manager server (e.g. `6YqG_73xt-9s8v5aBz`)

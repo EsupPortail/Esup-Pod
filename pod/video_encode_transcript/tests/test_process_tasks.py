@@ -27,9 +27,7 @@ class ProcessTasksCommandOutputTests(SimpleTestCase):
         """Run the command against an empty task queue."""
         empty_queryset = MagicMock()
         empty_queryset.__bool__.return_value = False
-        empty_queryset.select_related.return_value.order_by.return_value = (
-            empty_queryset
-        )
+        empty_queryset.select_related.return_value.order_by.return_value = empty_queryset
 
         with (
             patch.object(self.command, "_get_site", return_value=self.site),

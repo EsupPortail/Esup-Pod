@@ -650,9 +650,7 @@ class Command(BaseCommand):
             return
 
         self.print_log(f"Found {all_pending_tasks.count()} pending encoding task(s)")
-        self.print_log(
-            f"Found {all_pending_studio_tasks.count()} pending studio task(s)"
-        )
+        self.print_log(f"Found {all_pending_studio_tasks.count()} pending studio task(s)")
         self.print_log(
             f"Found {all_pending_transcription_tasks.count()} pending transcription task(s)"
         )
@@ -664,9 +662,7 @@ class Command(BaseCommand):
             all_pending_transcription_tasks, max_tasks
         )
 
-        self.print_log(
-            f"Processing {len(pending_tasks)} task(s) after priority sorting"
-        )
+        self.print_log(f"Processing {len(pending_tasks)} task(s) after priority sorting")
 
         # Get available active runner managers for this site
         runner_managers = self._get_available_runner_managers(site)
@@ -687,9 +683,7 @@ class Command(BaseCommand):
             return
 
         # Process each pending task
-        success_count_encoding = self._process_tasks(
-            pending_tasks, site, runner_managers
-        )
+        success_count_encoding = self._process_tasks(pending_tasks, site, runner_managers)
         success_count_studio = self._process_studio_tasks(
             pending_studio_tasks, site, runner_managers
         )

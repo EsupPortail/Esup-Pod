@@ -367,8 +367,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
         """Build health URLs for current and pre-1.8.0 manager versions."""
         base_url = runner_manager.url.rstrip("/")
         return tuple(
-            f"{base_url}/{endpoint}"
-            for endpoint in RUNNER_MANAGER_HEALTH_ENDPOINTS
+            f"{base_url}/{endpoint}" for endpoint in RUNNER_MANAGER_HEALTH_ENDPOINTS
         )
 
     def _auth_headers(self, runner_manager: RunnerManager) -> dict[str, str]:
