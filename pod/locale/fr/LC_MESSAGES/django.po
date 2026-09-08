@@ -11704,6 +11704,14 @@ msgid "URL of the runner manager"
 msgstr "URL du runner manager"
 
 #: pod/video_encode_transcript/models.py
+msgid "URL of the runner administration"
+msgstr "URL de l’administration du runner"
+
+#: pod/video_encode_transcript/models.py
+msgid "Leave blank to use the runner manager URL followed by /admin."
+msgstr "Laisser vide pour utiliser l’URL du runner manager suivie de /admin."
+
+#: pod/video_encode_transcript/models.py
 msgid "Bearer token for the runner manager."
 msgstr "Jeton porteur pour le runner manager."
 
