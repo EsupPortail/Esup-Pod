@@ -677,7 +677,8 @@ class StudioPodTestView(TestCase):
 
         print(" -->  test_studio_ingest_addCatalog of StudioPodTestView: OK!")
 
-    def test_studio_ingest_ingest(self):
+    @patch("pod.recorder.plugins.type_studio.process")
+    def test_studio_ingest_ingest(self, mock_process):
         """Test view ingest_ingest."""
 
         self.client = Client()
@@ -709,6 +710,7 @@ class StudioPodTestView(TestCase):
             },
         )
         self.assertRaises(PermissionDenied)
+        mock_process.assert_not_called()
 
         videotype = Type.objects.create(title="others")
         recorder = Recorder.objects.create(
@@ -752,6 +754,8 @@ class StudioPodTestView(TestCase):
         )
         # check if recording object exist
         self.assertTrue(recording.first())
+        # Check dispatch without starting a worker on the test transaction.
+        mock_process.assert_called_once_with(recording.get())
 
         print(" -->  test_studio_ingest_ingest of StudioPodTestView: OK!")
 

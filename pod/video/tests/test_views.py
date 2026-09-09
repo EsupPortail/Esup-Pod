@@ -2,7 +2,6 @@
 *  run with 'python manage.py test pod.video.tests.test_views'
 """
 
-from django.conf import settings
 from django.http import JsonResponse
 from django.test import Client, TestCase, override_settings, TransactionTestCase
 from django.urls import reverse
@@ -11,7 +10,6 @@ from django.contrib.auth.models import User
 from pod.authentication.models import AccessGroup
 from django.contrib.sites.models import Site
 from django.contrib.messages import get_messages
-from django.core.files.temp import NamedTemporaryFile
 from django.utils.translation import gettext_lazy as _
 
 from pod.main.models import AdditionalChannelTab
@@ -23,21 +21,18 @@ from ..models import Channel
 from ..models import Discipline
 from ..models import AdvancedNotes
 from ..models import VideoAccessToken
-from pod.video_encode_transcript import encode
+from pod.video_encode_transcript.models import EncodingAudio
 from pod.video_encode_transcript.models import VideoRendition
 from pod.video_encode_transcript.models import EncodingVideo
+from .. import forms as video_forms
 from .. import views
 
 import re
 import json
 from http import HTTPStatus
 from importlib import reload
-import shutil
-import os
 import uuid
 from unittest.mock import patch
-
-AUDIO_TEST = getattr(settings, "AUDIO_TEST", "pod/main/static/video_test/pod.mp3")
 
 
 class ChannelTestView(TestCase):
@@ -884,7 +879,8 @@ class VideoEditTestView(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_video_edit_get_request of VideoEditTestView: OK!")
 
-    def test_video_edit_post_request(self) -> None:
+    @patch.object(video_forms.encode, video_forms.ENCODE_VIDEO)
+    def test_video_edit_post_request(self, mock_start_encode) -> None:
 
         # Force user `pod` login
         self.client = Client()
@@ -913,6 +909,7 @@ class VideoEditTestView(TestCase):
         # Check that the newly modified video has proper attrs
         v = Video.objects.get(title="VideoTest1")
         self.assertEqual(v.description, "<p>bl</p>")
+        mock_start_encode.assert_not_called()
 
         # Replace video source file
         video_file = SimpleUploadedFile(
@@ -931,6 +928,7 @@ class VideoEditTestView(TestCase):
         v = Video.objects.get(title="VideoTest1")
         p = re.compile(r"^videos/([\d\w]+)/file([_\d\w]*).mp4$")
         self.assertRegex(v.video.name, p)
+        mock_start_encode.assert_called_once_with(v.id)
 
         # Force user `pod2` login
         self.client = Client()
@@ -1714,6 +1712,7 @@ class VideoTranscriptTestView(TestCase):
 
     @override_settings(
         USE_TRANSCRIPTION=True,
+        TRANSCRIPT_VIDEO="start_transcript",
         TRANSCRIPTION_TYPE="VOSK",
         TRANSCRIPTION_MODEL_PARAM={
             # les modèles Vosk
@@ -1727,8 +1726,13 @@ class VideoTranscriptTestView(TestCase):
             }
         },
     )
-    def test_video_transcript_get_request_transcription(self) -> None:
+    @patch("pod.video_encode_transcript.transcript.start_transcript")
+    def test_video_transcript_get_request_transcription(
+        self, mock_start_transcript
+    ) -> None:
         """Check response for get request with use transcription."""
+        # Test dispatch without a worker accessing SQLite's uncommitted test data.
+        self.addCleanup(reload, views)
         reload(views)
 
         def inner_get_transcription_choices() -> list:
@@ -1766,14 +1770,16 @@ class VideoTranscriptTestView(TestCase):
             owner=self.user,
             video="test.mp3",
             type=Type.objects.get(id=1),
+            encoding_in_progress=False,
         )
-        tempfile = NamedTemporaryFile(delete=True)
-        audio.video.save("test.mp3", tempfile)
-        dest = os.path.join(settings.MEDIA_ROOT, audio.video.name)
-        shutil.copyfile(AUDIO_TEST, dest)
-        print("\n ---> Start Encoding audio")
-        encode.encode_video(audio.id)
-        print("\n ---> End Encoding audio")
+        # The view needs encoded audio records, not an actual FFmpeg run.
+        for extension, encoding_format in (("m4a", "video/mp4"), ("mp3", "audio/mp3")):
+            EncodingAudio.objects.create(
+                video=audio,
+                name="audio",
+                encoding_format=encoding_format,
+                source_file="audio.%s" % extension,
+            )
         url = reverse("video:video_transcript", kwargs={"slug": audio.slug})
         response = self.client.get(url)
         messages = list(get_messages(response.wsgi_request))
@@ -1782,6 +1788,7 @@ class VideoTranscriptTestView(TestCase):
             str_messages.append(str(message))
         check_message = "An available transcription language must be specified."
         self.assertTrue(check_message in str_messages)
+        mock_start_transcript.assert_not_called()
         url = reverse("video:video_transcript", kwargs={"slug": audio.slug})
         url += "?lang=fr"
         response = self.client.get(url)
@@ -1800,6 +1807,7 @@ class VideoTranscriptTestView(TestCase):
         )
         audio.refresh_from_db()
         self.assertEqual(audio.transcript, "fr")
+        mock_start_transcript.assert_called_once_with(audio.id)
         print(" ---> test_video_transcript_get_request_transcription: OK!")
 
 
