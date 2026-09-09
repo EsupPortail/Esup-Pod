@@ -196,6 +196,59 @@ class ChannelTestView(TestCase):
             in response.content
         )
 
+    @patch.object(views, "ORGANIZE_BY_THEME", True)
+    def test_regroup_shared_video_by_current_channel(self) -> None:
+        """A theme in one channel must not hide a video in another channel."""
+        self.v.channel.add(self.c2)
+        self.v.theme.add(self.theme)
+
+        for url, expected_videos in (
+            (self.c2.get_absolute_url(), [self.v]),
+            (self.c.get_absolute_url(), []),
+            (self.theme.get_absolute_url(), [self.v]),
+        ):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, HTTPStatus.OK)
+                self.assertEqual(response.context["videos"], expected_videos)
+                self.assertEqual(response.context["count_videos"], len(expected_videos))
+
+    @patch.object(views, "ORGANIZE_BY_THEME", True)
+    def test_regroup_shared_video_ajax(self) -> None:
+        """Both AJAX video responses keep videos themed in another channel."""
+        self.v.channel.add(self.c2)
+        self.v.theme.add(self.theme)
+
+        for params in ({}, {"target": "videos"}):
+            with self.subTest(params=params):
+                response = self.client.get(
+                    self.c2.get_absolute_url(),
+                    params,
+                    headers={"x-requested-with": "XMLHttpRequest"},
+                )
+                self.assertEqual(response.status_code, HTTPStatus.OK)
+                self.assertEqual(list(response.context["videos"]), [self.v])
+                self.assertEqual(response.context["videos"].paginator.count, 1)
+
+    @patch.object(views, "ORGANIZE_BY_THEME", True)
+    def test_regroup_shared_video_with_theme_in_both_channels(self) -> None:
+        """A local subtheme still excludes a shared video from the channel root."""
+        theme = Theme.objects.create(title="Theme2", channel=self.c2)
+        child = Theme.objects.create(title="ChildTheme2", channel=self.c2, parentId=theme)
+        self.v.channel.add(self.c2)
+        self.v.theme.add(self.theme, child)
+
+        for url, expected_videos in (
+            (self.c2.get_absolute_url(), []),
+            (theme.get_absolute_url(), []),
+            (child.get_absolute_url(), [self.v]),
+        ):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, HTTPStatus.OK)
+                self.assertEqual(response.context["videos"], expected_videos)
+                self.assertEqual(response.context["count_videos"], len(expected_videos))
+
 
 class MyChannelsTestView(TestCase):
     fixtures = [

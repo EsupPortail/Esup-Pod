@@ -286,7 +286,6 @@ def _regroup_videos_by_theme(  # noqa: C901
 
     if target in ("", "themes"):
         theme_children = Theme.objects.filter(parentId=theme, channel=channel)
-        videos = videos.filter(theme=theme, channel=channel).distinct()
 
         if theme is not None and theme.parentId is not None:
             parent_title = theme.parentId.title
@@ -294,7 +293,13 @@ def _regroup_videos_by_theme(  # noqa: C901
             parent_title = channel.title
 
     if target in ("", "videos"):
-        videos = videos.filter(theme=theme, channel=channel).distinct()
+        videos = videos.filter(channel=channel)
+        if theme is None:
+            # Themes in other channels do not affect this channel's root videos.
+            videos = videos.exclude(theme__channel=channel)
+        else:
+            videos = videos.filter(theme=theme)
+        videos = videos.distinct()
         response["next_videos"], *_ = pagination_data(
             request.path, offset, limit, videos.count()
         )
