@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_protect
 from pod.main.views import in_maintenance
@@ -393,7 +394,11 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         raise Http404()
 
     if quiz.connected_user_only and not request.user.is_authenticated:
-        return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
+        return redirect_to_login(
+            request.get_full_path(),
+            login_url=settings.LOGIN_URL,
+            redirect_field_name="referrer",
+        )
 
     if request.method == "POST":
         percentage_score, questions_stats, questions_answers, questions_form_errors = (

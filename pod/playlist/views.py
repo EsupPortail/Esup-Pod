@@ -1,5 +1,7 @@
 """Esup-Pod playlist views."""
 
+from urllib.parse import urlsplit
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -7,7 +9,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.urls import reverse
+from django.urls import Resolver404, resolve, reverse
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
@@ -447,15 +449,31 @@ def handle_post_request_for_add_or_edit_function(
         if request.POST.get("additional_owners"):
             new_playlist.additional_owners.set(request.POST.getlist("additional_owners"))
             new_playlist.save()
-        if request.GET.get("next"):
-            video_slug = request.GET.get("next").split("/")[2]
+        next_url = request.GET.get("next")
+        is_safe_next_url = (
+            next_url
+            and next_url.startswith("/")
+            and not next_url.startswith("//")
+            and url_has_allowed_host_and_scheme(
+                next_url,
+                allowed_hosts={request.get_host()},
+                require_https=request.is_secure(),
+            )
+        )
+        try:
+            next_match = resolve(urlsplit(next_url).path) if is_safe_next_url else None
+        except Resolver404:
+            next_match = None
+        is_safe_video_url = next_match and next_match.view_name == "video:video"
+        if is_safe_video_url:
+            video_slug = next_match.kwargs["slug"]
             user_add_video_in_playlist(new_playlist, Video.objects.get(slug=video_slug))
             messages.add_message(
                 request,
                 messages.INFO,
                 _("The playlist has been created and the video has been added in it."),
             )
-            return redirect(request.GET.get("next"))
+            return redirect(next_url)
         return HttpResponseRedirect(
             reverse("playlist:content", kwargs={"slug": new_playlist.slug})
         )

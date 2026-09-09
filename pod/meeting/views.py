@@ -17,6 +17,7 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import SuspiciousOperation
@@ -508,7 +509,11 @@ def check_user(request: WSGIRequest) -> HttpResponse:
         )
         raise PermissionDenied
     else:
-        return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
+        return redirect_to_login(
+            request.get_full_path(),
+            login_url=settings.LOGIN_URL,
+            redirect_field_name="referrer",
+        )
 
 
 def check_form(

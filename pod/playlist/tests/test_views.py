@@ -501,6 +501,51 @@ class TestAddOrRemoveFormTestCase(TestCase):
         print(" --->  test_edit_form_page ok")
 
     @override_settings(USE_PLAYLIST=True)
+    def test_add_form_rejects_external_next_url(self) -> None:
+        """A submitted next parameter cannot redirect to another host."""
+        self.client.force_login(self.user)
+        response = self.client.post(
+            f"{self.addUrl}?next=//evil.example/video/example/",
+            {
+                "name": "Playlist with safe redirect",
+                "description": "",
+                "visibility": "public",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith("/playlist/"))
+        self.assertNotIn("evil.example", response.url)
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_add_form_accepts_video_next_url(self) -> None:
+        """The existing return-to-video workflow remains available."""
+        video = Video.objects.create(
+            title="Video to add",
+            owner=self.user,
+            video="video-to-add.mp4",
+            type=Type.objects.get(id=1),
+        )
+        next_url = (
+            reverse("video:video", kwargs={"slug": video.slug}) + "?is_iframe=true"
+        )
+        self.client.force_login(self.user)
+        response = self.client.post(
+            f"{self.addUrl}?next={next_url}",
+            {
+                "name": "Playlist with video",
+                "description": "",
+                "visibility": "public",
+            },
+        )
+
+        self.assertRedirects(response, next_url)
+        playlist = Playlist.objects.get(name="Playlist with video")
+        self.assertTrue(
+            PlaylistContent.objects.filter(playlist=playlist, video=video).exists()
+        )
+
+    @override_settings(USE_PLAYLIST=True)
     def test_maintenance(self) -> None:
         """Test Pod maintenance mode in TestAddOrRemoveFormTestCase."""
         self.client.force_login(self.user)

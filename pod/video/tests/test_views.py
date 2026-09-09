@@ -35,6 +35,7 @@ from importlib import reload
 import shutil
 import os
 import uuid
+from unittest.mock import patch
 
 AUDIO_TEST = getattr(settings, "AUDIO_TEST", "pod/main/static/video_test/pod.mp3")
 
@@ -1415,6 +1416,20 @@ class VideoTestFiltersViews(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
+    def test_filter_owners_does_not_expose_exception_details(self) -> None:
+        """Internal exception messages must not be sent to API clients."""
+        self.client.force_login(self.admin)
+        url = reverse("video:filter_owners")
+
+        with patch(
+            "pod.video.views.auth_get_owners",
+            side_effect=RuntimeError("private database details"),
+        ):
+            response = self.client.get(url)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertNotIn("private database details", response.json()["detail"])
+
     def test_filter_videos(self) -> None:
         url = reverse("video:filter_videos", kwargs={"user_id": self.admin.id})
 
@@ -1460,6 +1475,20 @@ class VideoTestFiltersViews(TestCase):
         }
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+    def test_filter_videos_does_not_expose_exception_details(self) -> None:
+        """Internal exception messages must not be sent to API clients."""
+        self.client.force_login(self.admin)
+        url = reverse("video:filter_videos", kwargs={"user_id": self.admin.id})
+
+        with patch(
+            "pod.video.views.video_get_videos",
+            side_effect=RuntimeError("private storage details"),
+        ):
+            response = self.client.get(url)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertNotIn("private storage details", response.json()["detail"])
 
     def test_available_filters_endpoint(self):
         """API available_filters should return the expected structure."""
