@@ -177,7 +177,7 @@ def manage_personal_meeting_room(request: WSGIRequest):
             site=site,
             attendee_password=get_random_string(8),
             moderator_password=get_random_string(8),
-            start_at=datetime.now().replace(minute=0, second=0, microsecond=0),
+            start_at=timezone.now().replace(minute=0, second=0, microsecond=0),
             recurrence=None,
             is_personal=True,
         )

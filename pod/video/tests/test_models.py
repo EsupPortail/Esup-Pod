@@ -10,6 +10,7 @@ from django.db.models.fields.files import ImageFieldFile
 from django.db.utils import IntegrityError
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.conf import settings
@@ -306,7 +307,7 @@ class VideoTestCase(TestCase):
             type=type,
             title="Video2",
             password=None,
-            date_added=datetime.today(),
+            date_added=timezone.now(),
             encoding_in_progress=False,
             owner=user,
             date_evt=datetime.today(),
@@ -343,7 +344,7 @@ class VideoTestCase(TestCase):
         self.assertFalse(video.allow_downloading)
         self.assertEqual(video.description, "")
         self.assertEqual(video.slug, "%04d-%s" % (video.id, slugify(video.title)))
-        date = datetime.today()
+        date = timezone.now()
         self.assertEqual(video.owner, User.objects.get(username="pod"))
         self.assertEqual(video.date_added.year, date.year)
         self.assertEqual(video.date_added.month, date.month)
