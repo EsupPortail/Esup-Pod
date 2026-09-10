@@ -3,7 +3,7 @@
 import os
 import time
 from unittest.mock import patch
-from xml.dom import minidom  # nosec
+from xml.dom import minidom
 
 from django.conf import settings
 from django.contrib.auth.models import User
