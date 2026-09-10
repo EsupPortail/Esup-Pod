@@ -2725,18 +2725,16 @@ def get_videos(p_slug, target, p_slug_t=None, request=None):
         .prefetch_related("additional_owners", "restrict_access_to_groups")
     )
     if target.lower() == "video":
-        video_founded = (
+        video_found = (
             Video.objects.filter(slug=p_slug, sites=get_current_site(request))
             .select_related("owner")
             .prefetch_related("additional_owners", "restrict_access_to_groups")
             .first()
         )
         # In case that the slug is a bad one
-        if video_founded:
-            videos.append(video_founded)
-            title = (
-                _("Video viewing statistics for %s") % video_founded.title.capitalize()
-            )
+        if video_found:
+            videos.append(video_found)
+            title = _("Video viewing statistics for %s") % video_found.title.capitalize()
 
     elif target.lower() == "channel":
         title = _("Video viewing statistics for the channel %s") % p_slug
