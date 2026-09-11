@@ -219,9 +219,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         username = request.GET.get("username")
         user_videos = (
             self.filter_queryset(self.get_queryset())
-            .filter(
-                Q(owner__username=username) | Q(additional_owners__username=username)
-            )
+            .filter(Q(owner__username=username) | Q(additional_owners__username=username))
             .distinct()
         )
         if request.GET.get("encoded") and request.GET.get("encoded") == "true":

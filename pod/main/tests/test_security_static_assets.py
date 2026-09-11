@@ -77,7 +77,5 @@ class FrontendSecurityAssetsTests(unittest.TestCase):
             workflow = self._read_asset(workflow_path)
             self.assertIn("\npermissions:\n  contents: read\n", workflow)
 
-        formatting_workflow = self._read_asset(
-            ".github/workflows/code_formatting.yml"
-        )
+        formatting_workflow = self._read_asset(".github/workflows/code_formatting.yml")
         self.assertIn("\npermissions:\n  contents: write\n", formatting_workflow)

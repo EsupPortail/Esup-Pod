@@ -526,9 +526,7 @@ class TestAddOrRemoveFormTestCase(TestCase):
             video="video-to-add.mp4",
             type=Type.objects.get(id=1),
         )
-        next_url = (
-            reverse("video:video", kwargs={"slug": video.slug}) + "?is_iframe=true"
-        )
+        next_url = reverse("video:video", kwargs={"slug": video.slug}) + "?is_iframe=true"
         self.client.force_login(self.user)
         response = self.client.post(
             f"{self.addUrl}?next={next_url}",

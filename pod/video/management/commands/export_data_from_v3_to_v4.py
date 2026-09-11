@@ -339,10 +339,7 @@ class Command(BaseCommand):
             canonical_ids[deletion_date] = min(
                 row_id, canonical_ids.get(deletion_date, row_id)
             )
-        return {
-            row["id"]: canonical_ids[row["date_deletion"]]
-            for row in rows
-        }
+        return {row["id"]: canonical_ids[row["date_deletion"]] for row in rows}
 
     @staticmethod
     def merge_video_to_delete_rows(

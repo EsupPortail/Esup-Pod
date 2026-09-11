@@ -75,9 +75,7 @@ class ImportVideoUtilsSecurityTest(SimpleTestCase):
 
     def test_define_destination_rejects_owner_path_traversal(self):
         """Even a compromised owner path cannot control the created directory."""
-        user = SimpleNamespace(
-            owner=SimpleNamespace(hashkey="../../outside-media-root")
-        )
+        user = SimpleNamespace(owner=SimpleNamespace(hashkey="../../outside-media-root"))
 
         with TemporaryDirectory() as media_root, override_settings(
             MEDIA_ROOT=media_root

@@ -100,10 +100,7 @@ class ExportDataFromV3ToV4Tests(SimpleTestCase):
                 {"id": 101, "videotodelete_id": 11, "video_id": 2},
             ],
         }
-        expected = {
-            table: [row.copy() for row in rows]
-            for table, rows in data.items()
-        }
+        expected = {table: [row.copy() for row in rows] for table, rows in data.items()}
 
         self.command.normalize_video_to_delete_data(data)
 
@@ -144,9 +141,7 @@ class ExportDataFromV3ToV4Tests(SimpleTestCase):
             with (
                 patch.object(export_data_from_v3_to_v4, "BASE_DIR", temporary_directory),
                 patch.object(export_data_from_v3_to_v4, "connection"),
-                patch.object(
-                    self.command, "check_table_existence", return_value=tables
-                ),
+                patch.object(self.command, "check_table_existence", return_value=tables),
                 patch.object(
                     self.command,
                     "fetch_table_data",
