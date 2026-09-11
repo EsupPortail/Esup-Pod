@@ -74,7 +74,7 @@ jobs:
                 yarn
 
             - name: Run JavaScript tests
-              run: node --test pod/video/static/js/*.test.cjs
+              run: node --test pod/*/static/**/js/*.test.cjs
 
             - name: Run Tests without coverage
               env:

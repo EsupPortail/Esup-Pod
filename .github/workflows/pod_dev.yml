@@ -97,7 +97,7 @@ jobs:
         run: flake8
 
       - name: Run JavaScript tests
-        run: node --test pod/video/static/js/*.test.cjs
+        run: node --test pod/*/static/**/js/*.test.cjs
 
       - name: Check French translations
         run: |

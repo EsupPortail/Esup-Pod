@@ -421,7 +421,7 @@ def remove_playlist_view(request: WSGIRequest, slug: str):
 @login_required(redirect_field_name="referrer")
 def handle_post_request_for_add_or_edit_function(
     request: WSGIRequest, playlist: Playlist
-) -> None:
+):
     """Handle post request for add_or_edit function."""
     page_title = ""
     form = (

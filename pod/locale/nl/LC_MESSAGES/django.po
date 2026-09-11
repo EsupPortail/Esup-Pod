@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-09 09:42+0200\n"
+"POT-Creation-Date: 2026-09-11 15:12+0200\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -6833,7 +6833,7 @@ msgid "Remove video from this playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-list-modal.html
-msgid "Add video in this playlist"
+msgid "Add the video in this playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-list-modal.html
@@ -7029,6 +7029,10 @@ msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
+msgstr ""
+
+#: pod/playlist/views.py
+msgid "Delete the playlist"
 msgstr ""
 
 #: pod/playlist/views.py
@@ -7419,7 +7423,7 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr ""
 
@@ -8767,7 +8771,7 @@ msgid "Manager of “%(et)s” notified for %(nb)s deleted video(s)."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "For information, you will find below the list of archived video."
+msgid "For information, you will find below the list of archived videos."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py

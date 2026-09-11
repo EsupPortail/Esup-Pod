@@ -219,8 +219,12 @@ class Comment extends HTMLElement {
           : String(content ?? "");
     }
     let svg_icon = [
-      `<span class="unvoted"><i class="bi bi-star"></i></span>`,
-      `<span class="voted"><i class="bi bi-star-fill"></i></span>`,
+      `<span class="unvoted"><i class="bi bi-star" title="${gettext(
+        "Not voted",
+      )}"></i></span>`,
+      `<span class="voted"><i class="bi bi-star-fill" title="${gettext(
+        "Voted",
+      )}"></i></span>`,
     ];
 
     let vote_text = interpolate(
