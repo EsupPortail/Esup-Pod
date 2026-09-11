@@ -44,7 +44,19 @@ test("preventRefreshButton toggles the playlist button after JSON responses", as
     requestedUrls.push(url);
     return { ok: true, json: async () => ({ state: states.shift() }) };
   });
-  const button = new FakeButton();
+  const button = new FakeButton({
+    classes: [
+      "action-btn",
+      "btn-success",
+      "add-video-from-playlist",
+    ],
+    attributes: {
+      href: "/playlist/add/video/",
+      title: "Add the video in this playlist",
+      "aria-label": "Add the video in this playlist",
+    },
+    iconClasses: ["bi", "bi-plus"],
+  });
 
   preventRefreshButton(button, true);
   await clickButton(button);
@@ -74,4 +86,5 @@ test("preventRefreshButton toggles the playlist button after JSON responses", as
   assert.equal(button.classList.contains("btn-success"), true);
   assert.equal(button.getAttribute("title"), "Add the video in this playlist");
   assert.equal(button.getAttribute("aria-label"), "Add the video in this playlist");
+  assert.equal(button.replacedWith, null);
 });
