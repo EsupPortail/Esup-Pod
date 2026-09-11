@@ -97,7 +97,7 @@ jobs:
         run: flake8
 
       - name: Run JavaScript tests
-        run: node --test pod/*/static/**/js/*.test.cjs
+        run: find pod -type f -name '*.test.cjs' -print0 | xargs -0 node --test
 
       - name: Check French translations
         run: |
