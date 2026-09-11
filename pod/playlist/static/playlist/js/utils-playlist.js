@@ -21,13 +21,12 @@ function preventRefreshButton(button, jsonFormat) {
       let url = this.getAttribute("href");
       if (button.classList.contains("action-btn")) {
         button.classList.add("disabled");
-        button.style.backgroundColor = "gray";
         this.removeAttribute("href");
       } else if (button.classList.contains("favorite-btn-link")) {
         button.classList.add("disabled");
       }
-      if (jsonFormat) {
-        url += "?json=true";
+      if (jsonFormat && !url.includes("json=true")) {
+        url += `${url.includes("?") ? "&" : "?"}json=true`;
       }
       fetch(url, {
         method: "GET",
@@ -44,19 +43,41 @@ function preventRefreshButton(button, jsonFormat) {
         })
         .then((data) => {
           if (jsonFormat) {
-            const starIconElement = button.querySelector(".bi");
-            if (data.state === "in-playlist") {
-              const newUrl = url.replace("/add/", "/remove/");
-              starIconElement.classList.remove("bi-star");
-              starIconElement.classList.add("bi-star-fill");
+            window.setTimeout(() => {
+              const iconElement = button.querySelector(".bi");
+              const isInPlaylist = data.state === "in-playlist";
+              const newUrl = isInPlaylist
+                ? url.replace("/add/", "/remove/")
+                : url.replace("/remove/", "/add/");
+              const oldIcon = isInPlaylist ? "bi-plus" : "bi-dash";
+              const newIcon = isInPlaylist ? "bi-dash" : "bi-plus";
+              const oldButtonClass = isInPlaylist
+                ? "btn-success"
+                : "btn-danger";
+              const newButtonClass = isInPlaylist
+                ? "btn-danger"
+                : "btn-success";
+              const oldActionClass = isInPlaylist
+                ? "add-video-from-playlist"
+                : "remove-video-from-playlist";
+              const newActionClass = isInPlaylist
+                ? "remove-video-from-playlist"
+                : "add-video-from-playlist";
+              const actionLabel = isInPlaylist
+                ? gettext("Remove the video from this playlist")
+                : gettext("Add the video in this playlist");
+
+              if (data.state !== "in-playlist" && data.state !== "out-playlist") {
+                return;
+              }
+              iconElement.classList.remove(oldIcon);
+              iconElement.classList.add(newIcon);
+              button.classList.remove(oldButtonClass, oldActionClass, "disabled");
+              button.classList.add(newButtonClass, newActionClass);
               button.setAttribute("href", newUrl);
-            } else if (data.state === "out-playlist") {
-              const newUrl = url.replace("/remove/", "/add/");
-              starIconElement.classList.remove("bi-star-fill");
-              starIconElement.classList.add("bi-star");
-              button.setAttribute("href", newUrl);
-            }
-            preventRefreshButton(button, jsonFormat);
+              button.setAttribute("title", actionLabel);
+              button.setAttribute("aria-label", actionLabel);
+            }, 300);
           } else {
             const parser = new DOMParser();
             const html = parser.parseFromString(data, "text/html");
@@ -77,7 +98,7 @@ function preventRefreshButton(button, jsonFormat) {
             }
           }
           // Hide empty menu and change style for favorite button
-          hideEmptyDropdowns();
+          // hideEmptyDropdowns();
         })
         .catch((error) => {
           console.error("Error: ", error);

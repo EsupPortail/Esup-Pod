@@ -73,6 +73,9 @@ jobs:
                 cd pod
                 yarn
 
+            - name: Run JavaScript tests
+              run: find pod -type f -name '*.test.cjs' -print0 | xargs -0 node --test
+
             - name: Run Tests without coverage
               env:
                 PYTHONUNBUFFERED: 1

@@ -421,7 +421,7 @@ def remove_playlist_view(request: WSGIRequest, slug: str):
 @login_required(redirect_field_name="referrer")
 def handle_post_request_for_add_or_edit_function(
     request: WSGIRequest, playlist: Playlist
-) -> None:
+):
     """Handle post request for add_or_edit function."""
     page_title = ""
     form = (
@@ -450,10 +450,8 @@ def handle_post_request_for_add_or_edit_function(
             new_playlist.additional_owners.set(request.POST.getlist("additional_owners"))
             new_playlist.save()
         next_url = request.GET.get("next")
-        is_safe_next_url = (
+        is_safe_next_url = bool(
             next_url
-            and next_url.startswith("/")
-            and not next_url.startswith("//")
             and url_has_allowed_host_and_scheme(
                 next_url,
                 allowed_hosts={request.get_host()},

@@ -445,8 +445,7 @@ class Command(BaseCommand):
                 msg_html += (
                     "<br>\n<p>"
                     + _(
-                        "For information, "
-                        + "you will find below the list of archived video."
+                        "For information, you will find below the list of archived videos."
                     )
                     + "</p>"
                 )
