@@ -1,0 +1,24 @@
+Podfile file-type icons
+=======================
+
+Files covered by this notice:
+
+- odp.webp
+- ods.webp
+- odt.webp
+- vtt.webp
+
+Source
+------
+
+These icons were generated specifically for the Esup-Pod project using
+OpenAI's image generation tool on 2026-08-26. They were not downloaded from
+an external icon library and are not official product or file-format logos.
+
+License
+-------
+
+To the extent that copyright or related rights apply, these icons are made
+available under the Creative Commons CC0 1.0 Universal dedication:
+
+https://creativecommons.org/publicdomain/zero/1.0/

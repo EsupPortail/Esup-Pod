@@ -1,13 +1,16 @@
-"""Esup-Pod tests for SSRF protections in import_video utils.
+"""Esup-Pod tests for SSRF and filesystem protections in import_video utils.
 
 test with `python manage.py test pod.import_video.tests.test_utils`
 """
 
+from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, override_settings
 
 from pod.import_video.utils import (
+    define_dest_file_and_path,
     download_video_file,
     safe_request,
     validate_remote_import_url,
@@ -53,6 +56,36 @@ class ImportVideoUtilsSecurityTest(SimpleTestCase):
             download_video_file(session, "http://127.0.0.1/video.mp4", "/tmp/test.mp4")
 
         session.request.assert_not_called()
+
+    def test_download_video_file_rejects_destination_outside_media_root(self):
+        """A destination path cannot escape MEDIA_ROOT."""
+        session = Mock()
+
+        with TemporaryDirectory() as media_root, patch(
+            "pod.import_video.utils.MEDIA_ROOT", media_root
+        ):
+            with self.assertRaises(ValueError):
+                download_video_file(
+                    session,
+                    "https://example.org/video.mp4",
+                    "/tmp/outside-media-root.mp4",
+                )
+
+        session.request.assert_not_called()
+
+    def test_define_destination_rejects_owner_path_traversal(self):
+        """Even a compromised owner path cannot control the created directory."""
+        user = SimpleNamespace(owner=SimpleNamespace(hashkey="../../outside-media-root"))
+
+        with TemporaryDirectory() as media_root, override_settings(
+            MEDIA_ROOT=media_root
+        ), patch("pod.import_video.utils.MEDIA_ROOT", media_root), patch(
+            "pod.import_video.utils.os.makedirs"
+        ) as mock_makedirs:
+            with self.assertRaises(ValueError):
+                define_dest_file_and_path(user, "recording", "mp4")
+
+        mock_makedirs.assert_not_called()
 
     @patch("pod.import_video.utils.socket.getaddrinfo")
     def test_validate_remote_import_url_accepts_public_host(self, mock_getaddrinfo):

@@ -17,6 +17,7 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import SuspiciousOperation
@@ -176,7 +177,7 @@ def manage_personal_meeting_room(request: WSGIRequest):
             site=site,
             attendee_password=get_random_string(8),
             moderator_password=get_random_string(8),
-            start_at=datetime.now().replace(minute=0, second=0, microsecond=0),
+            start_at=timezone.now().replace(minute=0, second=0, microsecond=0),
             recurrence=None,
             is_personal=True,
         )
@@ -508,7 +509,11 @@ def check_user(request: WSGIRequest) -> HttpResponse:
         )
         raise PermissionDenied
     else:
-        return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
+        return redirect_to_login(
+            request.get_full_path(),
+            login_url=settings.LOGIN_URL,
+            redirect_field_name="referrer",
+        )
 
 
 def check_form(

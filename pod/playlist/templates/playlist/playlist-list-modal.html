@@ -24,7 +24,7 @@
             {% video_in_playlist playlist video as video_in_playlist %}
             {% if video_in_playlist %}
               <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}"
-                 class="action-btn remove-video-from-playlist" id="{{ playlist.slug }}-btn"
+                 class="btn btn-danger btn-lg rounded-circle action-btn remove-video-from-playlist" id="{{ playlist.slug }}-btn"
                  title="{% trans 'Remove video from this playlist' %}"
                  aria-label="{% trans 'Remove video from this playlist' %}"
               >
@@ -32,9 +32,9 @@
               </a>
             {% else %}
               <a href="{% url 'playlist:add-video' playlist.slug video.slug %}"
-                 class="action-btn add-video-from-playlist" id="{{ playlist.slug }}-btn"
-                 title="{% trans 'Add video in this playlist' %}"
-                 aria-label="{% trans 'Add video in this playlist' %}"
+                 class="btn btn-success btn-lg rounded-circle action-btn add-video-from-playlist" id="{{ playlist.slug }}-btn"
+                 title="{% trans 'Add the video in this playlist' %}"
+                 aria-label="{% trans 'Add the video in this playlist' %}"
               >
                 <i class="bi bi-plus" aria-hidden="true"></i>
               </a>

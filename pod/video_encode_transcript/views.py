@@ -14,12 +14,15 @@ import secrets
 import shutil
 import tempfile
 import time
+from collections.abc import Iterator
+from contextlib import contextmanager
 from hashlib import sha256
 from typing import TypeAlias, TypedDict, cast
 
 import requests
 import webvtt
 from django.conf import settings
+from django.core.files import locks
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -254,8 +257,24 @@ def _authorize_notify_task(task: Task, bearer_token: str) -> JsonResponse | None
 
 
 def _apply_notify_payload_to_task(task: Task, data: NotifyTaskPayload) -> None:
-    """Persist task status and append optional script output details."""
-    task.status = str(data["status"])
+    """Persist task progress and append optional script output details.
+
+    A Runner ``completed`` status only means that the remote processing has
+    finished.  Pod still has to download and import the result before the
+    local task can be considered completed.  Keep it running during that
+    phase so failed encoding and transcription imports remain eligible for
+    the periodic retry.
+    """
+    notified_status = str(data["status"])
+    update_fields = ["script_output"]
+    if notified_status == "completed":
+        # A callback may hold a stale instance while another process finishes importing.
+        Task.objects.filter(pk=task.pk).exclude(status="completed").update(
+            status="running"
+        )
+    else:
+        task.status = notified_status
+        update_fields.append("status")
 
     script_output = task.script_output or ""
     error_message = data.get("error_message")
@@ -266,7 +285,8 @@ def _apply_notify_payload_to_task(task: Task, data: NotifyTaskPayload) -> None:
         script_output += str(script_output_payload)
 
     task.script_output = script_output
-    task.save()
+    task.save(update_fields=update_fields)
+    task.refresh_from_db(fields=["status"])
 
     if task.video_id and task.status in {"failed", "timeout"}:
         detail = (
@@ -308,12 +328,13 @@ def notify_task_end(request: WSGIRequest) -> JsonResponse:
             status=500,
         )
 
+    notified_status = str(data["status"])
     _apply_notify_payload_to_task(task, data)
 
-    if task.status == "failed":
+    if notified_status == "failed":
         send_email_item(f"Task {task.id} failed", "Task", task.task_id)
 
-    if task.status == "completed":
+    if notified_status == "completed":
         download_and_import_task_result(task)
 
     return JsonResponse({"status": "OK"}, status=200)
@@ -362,31 +383,65 @@ def _get_task_result_manifest(
     return manifest
 
 
+@contextmanager
+def _task_import_lock(task: Task) -> Iterator[bool]:
+    """Yield whether this process acquired the task's exclusive import lock.
+
+    Callback and periodic workers must share MEDIA_ROOT on a filesystem that
+    supports file locks. Closing the file, including on process exit, releases
+    the lock so an interrupted import can be retried without an expiry delay.
+    Keep the lock file in place: unlinking it could let workers lock different
+    files for the same task. Store it outside directories moved by Studio imports.
+    """
+    lock_dir = os.path.join(_get_media_root(), ".runner_task_locks")
+    os.makedirs(lock_dir, exist_ok=True)
+    lock_path = os.path.join(lock_dir, f"{task.pk}.lock")
+    with open(lock_path, "a") as lock_file:
+        acquired = locks.lock(lock_file, locks.LOCK_EX | locks.LOCK_NB)
+        try:
+            yield acquired
+        finally:
+            if acquired:
+                locks.unlock(lock_file)
+
+
 def download_and_import_task_result(task: Task) -> None:
-    """Download the result of a completed task from the runner manager, extract it,
-    and import the encoded video back into Pod.
+    """Download and import a Runner result while holding the task's file lock.
+
+    Skip imports already running in another worker or completed in the database.
+    Failed attempts release the lock and remain eligible for a later retry.
 
     Args:
-        task (Task): Task object
+        task: Task whose remote result is ready to import.
     """
-    runner_manager = _get_runner_manager_for_task(task)
-    if not runner_manager:
-        return
+    with _task_import_lock(task) as acquired:
+        if not acquired:
+            log.info("Result import already in progress for task %s", task.pk)
+            return
 
-    manifest = _get_task_result_manifest(task, runner_manager)
-    if manifest is None:
-        return
+        task.refresh_from_db()
+        if task.status == "completed":
+            log.info("Result already imported for task %s", task.pk)
+            return
 
-    extracted_dir, extracted_vtt_path = _save_manifest_files(
-        manifest, task, runner_manager.url, runner_manager.token
-    )
+        runner_manager = _get_runner_manager_for_task(task)
+        if not runner_manager:
+            return
 
-    if not extracted_dir:
-        log.error(f"Failed to import result for task {task.id}")
-        return
+        manifest = _get_task_result_manifest(task, runner_manager)
+        if manifest is None:
+            return
 
-    log.info(f"Successfully downloaded and extracted result for task {task.id}")
-    _finalize_task_import(task, extracted_dir, extracted_vtt_path)
+        extracted_dir, extracted_vtt_path = _save_manifest_files(
+            manifest, task, runner_manager.url, runner_manager.token
+        )
+
+        if not extracted_dir:
+            log.error(f"Failed to import result for task {task.id}")
+            return
+
+        log.info(f"Successfully downloaded and extracted result for task {task.id}")
+        _finalize_task_import(task, extracted_dir, extracted_vtt_path)
 
 
 def _import_transcription_result(task: Task, extracted_vtt_path: str) -> None:

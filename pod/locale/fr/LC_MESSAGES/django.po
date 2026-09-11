@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-07 12:13+0200\n"
+"POT-Creation-Date: 2026-09-11 15:12+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -95,8 +95,9 @@ msgstr "La discipline proposée par l’IA Aristote."
 #: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
 #: pod/main/models.py pod/main/views.py pod/playlist/forms.py
 #: pod/playlist/models.py pod/quiz/forms.py pod/quiz/models.py
-#: pod/speaker/models.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
+#: pod/speaker/models.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Title"
 msgstr "Titre"
@@ -656,8 +657,9 @@ msgid "Receive push notifications on your devices."
 msgstr "Recevez des notifications push sur vos appareils."
 
 #: pod/authentication/models.py pod/live/models.py pod/meeting/models.py
-#: pod/podfile/models.py pod/video/admin.py pod/video/models.py
-#: pod/video/templates/videos/dashboard.html
+#: pod/podfile/models.py pod/video/admin.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/videos/dashboard.html
 #: pod/video_search/templates/search/search.html
 msgid "Owner"
 msgstr "Propriétaire"
@@ -2591,7 +2593,7 @@ msgstr "Liste des hyperliens"
 
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
 #: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
-#: pod/live/models.py
+#: pod/live/models.py pod/video/management/commands/check_video_owner_exists.py
 msgid "URL"
 msgstr "URL"
 
@@ -3008,7 +3010,7 @@ msgid "Delete the external recording"
 msgstr "Supprimer l’enregistrement externe"
 
 #: pod/import_video/tests/test_views.py pod/import_video/utils.py
-#: pod/import_video/views.py pod/meeting/views.py
+#: pod/import_video/views.py pod/live/views.py pod/meeting/views.py
 msgid "Unable to upload the video to Pod"
 msgstr "Impossible de téléverser la vidéo sur Pod"
 
@@ -7298,12 +7300,12 @@ msgid "Remove video from this playlist"
 msgstr "Retirer la vidéo de cette liste de lecture"
 
 #: pod/playlist/templates/playlist/playlist-list-modal.html
-msgid "Add video in this playlist"
+msgid "Add the video in this playlist"
 msgstr "Ajouter la vidéo à cette liste de lecture"
 
 #: pod/playlist/templates/playlist/playlist-list-modal.html
 msgid "Add the video in a new playlist"
-msgstr "Ajouter une vidéo à une nouvelle liste de lecture"
+msgstr "Ajouter la vidéo à une nouvelle liste de lecture"
 
 #: pod/playlist/templates/playlist/playlist-management-card.html
 msgid "Manage playlist"
@@ -9403,7 +9405,7 @@ msgstr ""
 "supprimée(s)."
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "For information, you will find below the list of archived video."
+msgid "For information, you will find below the list of archived videos."
 msgstr ""
 "Pour information, vous trouverez ci-dessous la liste des vidéos archivées."
 
@@ -9424,14 +9426,17 @@ msgid "In %(deadline)s days:"
 msgstr "Dans %(deadline)s jours :"
 
 #: pod/video/management/commands/check_video_owner_exists.py
-#, python-format
-msgid "%(old)s replaced by %(new)s"
-msgstr "%(old)s remplacé par %(new)s"
-
-#: pod/video/management/commands/check_video_owner_exists.py
 msgid "For information, you will find below the list of reaffected videos."
 msgstr ""
 "Pour information, vous trouverez ci-dessous la liste des vidéos réaffectées."
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "id"
+msgstr "Id"
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "Replaced by"
+msgstr "Remplacé par"
 
 #: pod/video/management/commands/check_video_owner_exists.py
 msgid "The reaffected videos on Pod"
@@ -11430,12 +11435,12 @@ msgid "You do not have rights to delete this category"
 msgstr "Vous n’avez pas les droits pour supprimer cette catégorie"
 
 #: pod/video/views.py
-msgid "Server error while fetching user videos."
-msgstr "Erreur serveur lors de la récupération des vidéos de l’utilisateur."
-
-#: pod/video/views.py
 msgid "Server error while processing filter."
 msgstr "Erreur serveur lors du traitement du filtre."
+
+#: pod/video/views.py
+msgid "Server error while fetching user videos."
+msgstr "Erreur serveur lors de la récupération des vidéos de l’utilisateur."
 
 #: pod/video/views.py
 #, python-format
@@ -11697,6 +11702,14 @@ msgstr ""
 #: pod/video_encode_transcript/models.py
 msgid "URL of the runner manager"
 msgstr "URL du runner manager"
+
+#: pod/video_encode_transcript/models.py
+msgid "URL of the runner administration"
+msgstr "URL de l’administration du runner"
+
+#: pod/video_encode_transcript/models.py
+msgid "Leave blank to use the runner manager URL followed by /admin."
+msgstr "Laisser vide pour utiliser l’URL du runner manager suivie de /admin."
 
 #: pod/video_encode_transcript/models.py
 msgid "Bearer token for the runner manager."

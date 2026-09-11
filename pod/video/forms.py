@@ -65,6 +65,8 @@ ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 
 USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
 
+ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
+
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 
 VIDEO_REQUIRED_FIELDS = getattr(settings, "VIDEO_REQUIRED_FIELDS", [])
@@ -1009,6 +1011,15 @@ class VideoForm(forms.ModelForm):
                 self.remove_field("video")  # .widget = forms.HiddenInput()
                 self.remove_field("thumbnail")
 
+        if (
+            self.is_bound
+            and self.instance.pk
+            and self.add_prefix("thumbnail") not in self.data
+        ):
+            # A form opened during encoding has no thumbnail field. If encoding
+            # finishes before POST, preserve its thumbnail instead of clearing it.
+            self.remove_field("thumbnail")
+
         # remove required=True for videofield if instance
         if self.fields.get("video") and self.instance and self.instance.video:
             # remove del self.fields["video"].widget.attrs["required"]
@@ -1057,7 +1068,11 @@ class VideoForm(forms.ModelForm):
             for key, _value in settings.LANGUAGES:
                 self.fields["description_%s" % key.replace("-", "_")].widget = TinyMCE()
         if self.fields.get("date_delete"):
-            if self.is_staff is False or USE_OBSOLESCENCE is False:
+            if (
+                self.is_staff is False
+                or USE_OBSOLESCENCE is False
+                or ENABLE_PAGE_OBSO_MAIL is True
+            ):
                 del self.fields["date_delete"]
             else:
                 self.fields["date_delete"].widget = forms.DateInput(

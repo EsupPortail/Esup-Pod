@@ -51,6 +51,8 @@ if USE_TRANSCRIPTION:
 
 USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
 
+ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
+
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
@@ -211,7 +213,12 @@ class VideoAdmin(admin.ModelAdmin):
             exclude += ("video", "owner", "thumbnail")
         if not USE_TRANSCRIPTION:
             exclude += ("transcript",)
-        if request.user.is_staff is False or obj is None or USE_OBSOLESCENCE is False:
+        if (
+            request.user.is_staff is False
+            or obj is None
+            or USE_OBSOLESCENCE is False
+            or ENABLE_PAGE_OBSO_MAIL is True
+        ):
             exclude += ("date_delete",)
         if not request.user.is_superuser:
             exclude += ("sites",)

@@ -10,6 +10,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sites.models import Site
 from django.test import RequestFactory, Client, TransactionTestCase
+from django.utils import timezone
 
 from pod.authentication.backends import User
 from pod.video.models import Video, Type
@@ -48,7 +49,7 @@ class BulkUpdateTestCase(TransactionTestCase):
             type=type1,
             title="Video1",
             password=None,
-            date_added=datetime.today(),
+            date_added=timezone.now(),
             encoding_in_progress=False,
             owner=user1,
             date_evt=datetime.today(),
@@ -63,7 +64,7 @@ class BulkUpdateTestCase(TransactionTestCase):
             type=type1,
             title="Video2",
             password=None,
-            date_added=datetime.today(),
+            date_added=timezone.now(),
             encoding_in_progress=False,
             owner=user2,
             date_evt=datetime.today(),
@@ -78,7 +79,7 @@ class BulkUpdateTestCase(TransactionTestCase):
             type=type2,
             title="Video3",
             password=None,
-            date_added=datetime.today(),
+            date_added=timezone.now(),
             encoding_in_progress=False,
             owner=user2,
             date_evt=datetime.today(),
@@ -93,7 +94,7 @@ class BulkUpdateTestCase(TransactionTestCase):
             type=type2,
             title="Video4",
             password=None,
-            date_added=datetime.today(),
+            date_added=timezone.now(),
             encoding_in_progress=False,
             owner=user3,
             date_evt=datetime.today(),
@@ -108,7 +109,7 @@ class BulkUpdateTestCase(TransactionTestCase):
             type=type2,
             title="Video5",
             password=None,
-            date_added=datetime.today(),
+            date_added=timezone.now(),
             encoding_in_progress=False,
             owner=user3,
             date_evt=datetime.today(),

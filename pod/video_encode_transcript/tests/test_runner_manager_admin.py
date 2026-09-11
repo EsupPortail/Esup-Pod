@@ -74,6 +74,24 @@ class RunnerManagerAdminTests(TestCase):
         self.assertContains(response, "runner-admin-link")
         self.assertContains(response, "https://runner-no-slash.example.com/admin")
 
+    def test_runner_admin_links_use_configured_admin_url(self):
+        """Use the optional administration URL in list and change page links."""
+        configured_url = "https://runner-admin.example.com/control-panel"
+        default_url = "https://runner.example.com/admin"
+        self.runner_manager.admin_url = configured_url
+        self.runner_manager.save(update_fields=["admin_url"])
+
+        urls = [
+            self.change_url,
+            reverse("admin:video_encode_transcript_runnermanager_changelist"),
+        ]
+        for url in urls:
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200)
+                self.assertContains(response, configured_url)
+                self.assertNotContains(response, default_url)
+
     def test_changelist_displays_activation_badge(self):
         """Display activation badge in runner manager changelist."""
         changelist_url = reverse("admin:video_encode_transcript_runnermanager_changelist")
@@ -211,7 +229,7 @@ class RunnerManagerAdminTests(TestCase):
             )
         )
         mocked_get.assert_called_once_with(
-            "https://runner.example.com/manager/health",
+            "https://runner.example.com/api/health",
             headers={
                 "Accept": "application/json",
                 "Authorization": "Bearer runner-token",
@@ -234,10 +252,40 @@ class RunnerManagerAdminTests(TestCase):
             )
         )
         mocked_get.assert_called_once_with(
-            "https://runner.example.com/manager/health",
+            "https://runner.example.com/api/health",
             headers={
                 "Accept": "application/json",
                 "Authorization": "Bearer runner-token",
             },
+            timeout=15,
+        )
+
+    @patch("pod.video_encode_transcript.admin.requests.get")
+    def test_test_connection_supports_managers_older_than_1_8_0(self, mocked_get):
+        """Fall back to the legacy health endpoint when the new one is absent."""
+        mocked_get.side_effect = [Mock(status_code=404), Mock(status_code=200)]
+
+        response = self.client.get(self.test_connection_url, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            any(
+                "Connection to runner manager" in message
+                for message in self._messages(response)
+            )
+        )
+        expected_headers = {
+            "Accept": "application/json",
+            "Authorization": "Bearer runner-token",
+        }
+        self.assertEqual(mocked_get.call_count, 2)
+        mocked_get.assert_any_call(
+            "https://runner.example.com/api/health",
+            headers=expected_headers,
+            timeout=15,
+        )
+        mocked_get.assert_any_call(
+            "https://runner.example.com/manager/health",
+            headers=expected_headers,
             timeout=15,
         )

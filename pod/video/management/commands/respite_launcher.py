@@ -99,7 +99,7 @@ class Command(BaseCommand):
                     % (
                         vid.id,
                         str(daysmore),
-                        str(vid.date_delete + timedelta(daysmore)),
+                        vid.date_delete,
                     )
                 )
             )

@@ -1,7 +1,6 @@
 """Esup-pod URL configuration."""
 
-import importlib.util
-
+from django.apps import apps as django_apps
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -223,7 +222,7 @@ if USE_RUNNER_MANAGER:
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    if importlib.util.find_spec("debug_toolbar") is not None:
+    if django_apps.is_installed("debug_toolbar"):
         urlpatterns += [
             path("__debug__/", include("debug_toolbar.urls")),
         ]

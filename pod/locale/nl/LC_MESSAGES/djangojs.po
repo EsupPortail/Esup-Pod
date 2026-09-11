@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-07 11:07+0200\n"
+"POT-Creation-Date: 2026-09-11 15:12+0200\n"
 "PO-Revision-Date: 2025-04-25 10:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -562,6 +562,14 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: pod/playlist/static/playlist/js/utils-playlist.js
+msgid "Remove the video from this playlist"
+msgstr ""
+
+#: pod/playlist/static/playlist/js/utils-playlist.js
+msgid "Add the video in this playlist"
+msgstr ""
+
 #: pod/playlist/static/playlist/js/video-favorites-remove-card.js
 msgid "Network response was not ok."
 msgstr ""
@@ -813,6 +821,14 @@ msgstr ""
 
 #: pod/video/static/js/comment-script.js
 msgid "Cancel"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js
+msgid "Not voted"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js
+msgid "Voted"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js

@@ -1408,7 +1408,8 @@ function processProxyVttResponse(obj) {
  * @returns stripped line
  */
 function stripHtmlTags(line) {
-  return String(line).replace(/[<>]/g, "").trim();
+  const cue = new VTTCue(0, 1, String(line));
+  return (cue.getCueAsHTML().textContent || "").trim();
 }
 
 /**

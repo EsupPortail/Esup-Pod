@@ -181,59 +181,71 @@
         </nav>
         {% endif %}
       </div>
+      {% with icon=file.file.name|icon_exists extension=file.file.name|file_extension %}
       {% if file.class_name.lower == "customimagemodel" and file.file_exist %}
         {% if type.lower == "image" and file.class_name.lower == "customimagemodel" %}
           <a
             href="{{file.file.url}}"
             class="card-image {% if request %} file-image {% endif %}"
-            title="{{file.name}}"
+            title="{{file.file.name|file_basename}}"
             target="_blank"
             data-fileid="{{file.id}}"
             data-filetype="{{file.class_name}}"
           >
             <img class="card-img-top p-1" src="{{file.file.url}}" alt="" loading="lazy">
+            {% if icon == "default" and extension %}
+              <span class="badge text-bg-secondary podfile-extension-badge">{{ extension|upper }}</span>
+            {% endif %}
           </a>
         {% else %}
           {# Same code - to avoid a bug when folder is renamed #}
           <a
             href="{{file.file.url}}"
             class="card-image {% if request %} file-image {% endif %}"
-            title="{{file.name}}"
+            title="{{file.file.name|file_basename}}"
             target="_blank"
             data-fileid="{{file.id}}"
             data-filetype="{{file.class_name}}"
           >
             <img class="card-img-top p-1" src="{{file.file.url}}" alt="" loading="lazy">
+            {% if icon == "default" and extension %}
+              <span class="badge text-bg-secondary podfile-extension-badge">{{ extension|upper }}</span>
+            {% endif %}
           </a>
         {% endif %}
       {% else %}
-        {% with file.file.name|icon_exists as icon %}
           {% if type.lower == "file" and file.class_name.lower == "customfilemodel" or type.lower == "image" and file.class_name.lower == "customimagemodel" %}
             <a
               href="{{file.file.url}}"
               class="card-image {% if request %} file-image {% endif %}"
-              title="{{file.name}}"
+              title="{{file.file.name|file_basename}}"
               target="_blank"
               data-fileid="{{file.id}}"
               data-filetype="{{file.class_name}}"
             >
-              <img class="card-img-top p-1" src="{% static 'podfile/images/icons/'|add:icon|add:'.png' %}" alt="" loading="lazy">
+              <img class="card-img-top p-1" src="{% static 'podfile/images/icons/'|add:icon|add:'.webp' %}" alt="" loading="lazy">
+              {% if icon == "default" and extension %}
+                <span class="badge text-bg-secondary podfile-extension-badge">{{ extension|upper }}</span>
+              {% endif %}
             </a>
           {% else %}
             {# Same code - to avoid a bug when folder is renamed #}
             <a
               href="{{file.file.url}}"
               class="card-image {% if request %} file-image {% endif %}"
-              title="{{file.name}}"
+              title="{{file.file.name|file_basename}}"
               target="_blank"
               data-fileid="{{file.id}}"
               data-filetype="{{file.class_name}}"
             >
-              <img class="card-img-top p-1" src="{% static 'podfile/images/icons/'|add:icon|add:'.png' %}" alt="" loading="lazy">
+              <img class="card-img-top p-1" src="{% static 'podfile/images/icons/'|add:icon|add:'.webp' %}" alt="" loading="lazy">
+              {% if icon == "default" and extension %}
+                <span class="badge text-bg-secondary podfile-extension-badge">{{ extension|upper }}</span>
+              {% endif %}
             </a>
           {% endif %}
-        {%endwith%}
       {% endif %}
+      {% endwith %}
       <div class="card-body">
         <p class="card-text p-0 m-0">
           {% if type %}
@@ -241,7 +253,7 @@
               <a
                 href="{{file.file.url}}"
                 class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif %}"
-                title="{% blocktrans with title=file.name %}See the picture “{{ title }}”.{% endblocktrans %}"
+                title="{% blocktrans with title=file.file.name|file_basename %}See the picture “{{ title }}”.{% endblocktrans %}"
                 target="_blank"
                 data-fileid="{{file.id}}"
                 data-filetype="{{file.class_name}}"
@@ -252,7 +264,7 @@
               <a
                 href="{{file.file.url}}"
                 class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif %}"
-                title="{% blocktrans with title=file.name %}Download the file “{{ title }}”.{% endblocktrans %}"
+                title="{% blocktrans with title=file.file.name|file_basename %}Download the file “{{ title }}”.{% endblocktrans %}"
                 target="_blank"
                 data-fileid="{{file.id}}"
                 data-filetype="{{file.class_name}}"
@@ -266,7 +278,7 @@
             <a
               href="{{file.file.url}}"
               class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif %}"
-              title="{% blocktrans with title=file.name %}Get the file “{{ title }}”.{% endblocktrans %}"
+              title="{% blocktrans with title=file.file.name|file_basename %}Get the file “{{ title }}”.{% endblocktrans %}"
               target="_blank"
               data-fileid="{{file.id}}"
               data-filetype="{{file.class_name}}"

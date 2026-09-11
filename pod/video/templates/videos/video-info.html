@@ -216,6 +216,7 @@
               <li>
                 <a href="{% url 'channel-video:channel' slug_c=channel.slug%}"
                   {% if request.GET.is_iframe %}target="_blank" {% endif %}
+                >
                   {{ channel.title }}
                 </a>
               </li>

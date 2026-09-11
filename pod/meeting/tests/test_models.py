@@ -47,7 +47,7 @@ class MeetingTestCase(TestCase):
         """
         user = User.objects.get(username="pod")
         meeting = Meeting.objects.create(
-            start_at=datetime(2022, 6, 27, 14, 0, 0),
+            start_at=timezone.make_aware(datetime(2022, 6, 27, 14, 0, 0)),
             recurring_until=date(2022, 6, 26),
             recurrence="daily",
             owner=user,
@@ -481,7 +481,7 @@ class OccurencesMeetingTestCase(TestCase):
         occurences. The monthly reccurence is on the precise date each month.
         """
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 10, 7, 14, 0, 0))
         meeting.recurrence = "monthly"
         meeting.frequency = 1
         meeting.recurring_until = date(2023, 4, 2)
@@ -516,7 +516,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Monthly occurences with number of occurrences filled in but not date of end \
         of reccurrence. The monthly reccurence is on the nth weekday of the month."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 10, 7, 14, 0, 0))
         meeting.recurrence = "monthly"
         meeting.frequency = 1
         meeting.recurring_until = None
@@ -562,7 +562,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Monthly occurences with date of end of recurrence filled in but not number \
         of occurences. The monthly reccurence is on the nth weekday of the month."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 10, 21, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 10, 21, 14, 0, 0))
         meeting.recurrence = "monthly"
         meeting.frequency = 1
         meeting.recurring_until = date(2023, 4, 2)
@@ -604,7 +604,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Monthly occurences with date of end of recurrence filled in but not number \
         of occurrences. The monthly reccurence is on the nth weekday of the month."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 10, 21, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 10, 21, 14, 0, 0))
         meeting.recurrence = "monthly"
         meeting.frequency = 1
         meeting.recurring_until = None
@@ -660,7 +660,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Yearly occurences with date of end of recurrence filled in but not \
         number of occurrences."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 10, 7, 14, 0, 0))
         meeting.recurrence = "yearly"
         meeting.frequency = 1
         meeting.recurring_until = date(2028, 4, 2)
@@ -700,7 +700,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Yearly occurences with number of occurrences filled in but not date of \
         end of reccurrence."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 10, 7, 14, 0, 0))
         meeting.recurrence = "yearly"
         meeting.frequency = 1
         meeting.recurring_until = None
@@ -780,7 +780,7 @@ class InternalRecordingTestCase(TestCase):
             owner=user,
             recording_id="d058c39d3dc59d9e9516d95f76eb",
             meeting=meeting2,
-            start_at=datetime(2022, 4, 24, 14, 0, 0),
+            start_at=timezone.make_aware(datetime(2022, 4, 24, 14, 0, 0)),
             uploaded_to_pod_by=user2,
             site=Site.objects.get(id=1),
         )

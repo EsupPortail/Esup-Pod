@@ -3,6 +3,7 @@
 from django.test import TestCase, override_settings
 from django.contrib.auth.models import User
 from pod.cut.models import CutVideo
+from pod.video import forms as video_forms
 from pod.video.models import Video, Type
 from django.urls import reverse
 from pod.main.models import Configuration
@@ -11,6 +12,7 @@ from django.contrib.messages import get_messages
 from django.utils.translation import gettext_lazy as _
 from .. import views
 from importlib import reload
+from unittest.mock import patch
 
 # ggignore-start
 # gitguardian:ignore
@@ -95,10 +97,12 @@ class CutVideoViewsTestCase(TestCase):
             "duration": 10,
         }
 
-        response = self.client.post(
-            reverse("cut:video_cut", kwargs={"slug": self.video.slug}), data=post_data
-        )
+        with patch.object(video_forms.encode, video_forms.ENCODE_VIDEO) as start_encode:
+            response = self.client.post(
+                reverse("cut:video_cut", kwargs={"slug": self.video.slug}), data=post_data
+            )
 
+        start_encode.assert_called_once_with(self.video.id)
         self.assertTrue(CutVideo.objects.filter(video=self.video).exists())
         self.assertRedirects(response, reverse("video:dashboard"))
         messages = [m.message for m in get_messages(response.wsgi_request)]

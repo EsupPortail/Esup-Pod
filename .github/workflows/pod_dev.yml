@@ -13,6 +13,9 @@ on:
     - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   PYTHON_VERSION: '3.10'
   DJANGO_SUPERUSER_USERNAME: "admin"
@@ -92,6 +95,9 @@ jobs:
       # FLAKE 8 (see setup.cfg for configurations)
       - name: Flake8 compliance
         run: flake8
+
+      - name: Run JavaScript tests
+        run: find pod -type f -name '*.test.cjs' -print0 | xargs -0 node --test
 
       - name: Check French translations
         run: |
