@@ -1,16 +1,22 @@
 """Regression tests for Runner Manager artifact persistence."""
 
+import json
+import shutil
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 
 from pod.video.models import Type, Video
+from pod.video_encode_transcript.models import EncodingLog, Task
 from pod.video_encode_transcript.runner_manager_utils import (
     FILEPICKER,
     CustomImageModel,
     remote_video_part,
 )
+from pod.video_encode_transcript.views import _finalize_task_import
 
 
 class RunnerManagerArtifactPersistenceTests(TestCase):
@@ -80,3 +86,65 @@ class RunnerManagerArtifactPersistenceTests(TestCase):
             self.video.id,
             "attach existing overview: /tmp/media/videos/0001/overview.vtt",
         )
+
+    @patch("pod.video_encode_transcript.runner_manager_utils.USE_NOTIFICATIONS", False)
+    @patch("pod.video_encode_transcript.runner_manager_utils.USE_TRANSCRIPTION", False)
+    @patch(
+        "pod.video_encode_transcript.runner_manager_utils.EMAIL_ON_ENCODING_COMPLETION",
+        False,
+    )
+    def test_completed_import_preserves_thumbnail_after_audio_and_finalization(self):
+        """A complete Runner import must retain the selected image in the database."""
+        task = Task.objects.create(video=self.video, type="encoding", status="running")
+        info_video = {
+            "duration": 47,
+            "has_stream_video": True,
+            "has_stream_audio": True,
+            "has_stream_thumbnail": True,
+            "encode_video": [
+                {
+                    "encoding_format": "video/mp4",
+                    "filename": "720p_runner.mp4",
+                    "rendition": "1280x720",
+                }
+            ],
+            "encode_audio": {
+                "encoding_format": "audio/mp3",
+                "filename": "audio_runner.mp3",
+            },
+            "encode_thumbnail": [
+                {"filename": f"thumbnail_{index}.jpg"} for index in (2, 0, 1)
+            ],
+        }
+        with TemporaryDirectory() as media_root, self.settings(MEDIA_ROOT=media_root):
+            output_dir = Path(media_root) / f"{self.video.id:04d}"
+            output_dir.mkdir()
+            (output_dir / "info_video.json").write_text(
+                json.dumps(info_video), encoding="utf-8"
+            )
+            (output_dir / "720p_runner.mp4").write_bytes(b"encoded video")
+            (output_dir / "audio_runner.mp3").write_bytes(b"encoded audio")
+            (output_dir / "overview.vtt").write_text("WEBVTT\n", encoding="utf-8")
+            image_fixture = Path(__file__).with_name("testimage.jpg")
+            for entry in info_video["encode_thumbnail"]:
+                shutil.copyfile(image_fixture, output_dir / entry["filename"])
+
+            _finalize_task_import(task, str(output_dir), "")
+
+            self.video.refresh_from_db()
+            task.refresh_from_db()
+            self.assertEqual(task.status, "completed")
+            self.assertFalse(self.video.encoding_in_progress)
+            self.assertEqual(self.video.duration, 47)
+            self.assertEqual(
+                self.video.overview.name, f"{self.video.id:04d}/overview.vtt"
+            )
+            self.assertIsNotNone(self.video.thumbnail_id)
+            thumbnail = CustomImageModel.objects.get(id=self.video.thumbnail_id)
+            self.assertEqual(Path(thumbnail.file.name).name, "thumbnail_1.jpg")
+            self.assertTrue(thumbnail.file_exist())
+            self.assertEqual(self.video.encodingvideo_set.count(), 1)
+            self.assertEqual(self.video.encodingaudio_set.count(), 1)
+            encoding_log = EncodingLog.objects.get(video=self.video).log
+            self.assertIn("- persisted_thumbnail_id:\n%s" % thumbnail.id, encoding_log)
+            self.assertIn("End:", encoding_log)

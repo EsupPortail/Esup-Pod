@@ -9,6 +9,8 @@ Key Features:
 - Handles both MariaDB/MySQL and PostgreSQL databases.
 - Creates a directory to store the exported data if it does not already exist.
 - Converts datetime, time, and date objects to JSON-serializable formats.
+- Corrects invalid meeting recurrence end dates before export.
+- Merges duplicate video deletion dates while preserving their video relations.
 - Provides detailed success and error messages using Django's management command framework.
 
 Important notes:
@@ -287,9 +289,12 @@ class Command(BaseCommand):
         return rows, columns
 
     def convert_to_json(
-        self, rows: List[Tuple[Any, ...]], columns: List[str]
+        self,
+        rows: List[Tuple[Any, ...]],
+        columns: List[str],
+        table: str = None,
     ) -> List[Dict[str, Any]]:
-        """Convert rows to JSON format."""
+        """Convert rows to JSON format and normalize table-specific data."""
         data = []
         for row in rows:
             row_dict = {}
@@ -304,8 +309,87 @@ class Command(BaseCommand):
                     row_dict[column] = value.strftime("%Y-%m-%d")
                 else:
                     row_dict[column] = value
+
+            # A timezone offset between the application and database servers can
+            # make the exported start date one day later than recurring_until.
+            # Keep both recurrence fields non-null and move the end date to the
+            # meeting start date so all Pod v4 meeting constraints remain valid.
+            if table == "meeting":
+                start_at = row_dict.get("start_at")
+                recurring_until = row_dict.get("recurring_until")
+                if (
+                    isinstance(start_at, str)
+                    and isinstance(recurring_until, str)
+                    and recurring_until[:10] < start_at[:10]
+                ):
+                    row_dict["recurring_until"] = start_at[:10]
+
             data.append(row_dict)
         return data
+
+    @staticmethod
+    def get_canonical_video_to_delete_ids(
+        rows: List[Dict[str, Any]],
+    ) -> Dict[Any, Any]:
+        """Map every VideoToDelete ID to the lowest ID for its deletion date."""
+        canonical_ids = {}
+        for row in rows:
+            deletion_date = row["date_deletion"]
+            row_id = row["id"]
+            canonical_ids[deletion_date] = min(
+                row_id, canonical_ids.get(deletion_date, row_id)
+            )
+        return {
+            row["id"]: canonical_ids[row["date_deletion"]]
+            for row in rows
+        }
+
+    @staticmethod
+    def merge_video_to_delete_rows(
+        rows: List[Dict[str, Any]], id_map: Dict[Any, Any]
+    ) -> List[Dict[str, Any]]:
+        """Keep only the canonical VideoToDelete row for each deletion date."""
+        return [row for row in rows if row["id"] == id_map[row["id"]]]
+
+    @staticmethod
+    def remap_video_to_delete_relations(
+        rows: List[Dict[str, Any]], id_map: Dict[Any, Any]
+    ) -> List[Dict[str, Any]]:
+        """Point video relations to canonical IDs and remove duplicate links."""
+        normalized_rows = []
+        seen_relations = set()
+        for row in rows:
+            normalized_row = row.copy()
+            previous_id = normalized_row["videotodelete_id"]
+            normalized_row["videotodelete_id"] = id_map.get(previous_id, previous_id)
+            relation = (
+                normalized_row["videotodelete_id"],
+                normalized_row["video_id"],
+            )
+            if relation in seen_relations:
+                continue
+            seen_relations.add(relation)
+            normalized_rows.append(normalized_row)
+        return normalized_rows
+
+    def normalize_video_to_delete_data(
+        self, data: Dict[str, List[Dict[str, Any]]]
+    ) -> None:
+        """Merge duplicate deletion dates and preserve all related videos."""
+        video_to_delete_table = "video_videotodelete"
+        relation_table = "video_videotodelete_video"
+        video_to_delete_rows = data.get(video_to_delete_table)
+        if not video_to_delete_rows:
+            return
+
+        id_map = self.get_canonical_video_to_delete_ids(video_to_delete_rows)
+        data[video_to_delete_table] = self.merge_video_to_delete_rows(
+            video_to_delete_rows, id_map
+        )
+        if relation_table in data:
+            data[relation_table] = self.remap_video_to_delete_relations(
+                data[relation_table], id_map
+            )
 
     def export_tables_to_json(
         self, table_names: List[str], output_directory: str, output_file: str
@@ -326,7 +410,7 @@ class Command(BaseCommand):
                     else:
                         # Management for others data
                         rows, columns = self.fetch_table_data(cursor, table)
-                    data[table] = self.convert_to_json(rows, columns)
+                    data[table] = self.convert_to_json(rows, columns, table=table)
                     self.stdout.write(
                         self.style.SUCCESS(f" - Table {table} has been processed.")
                     )
@@ -336,6 +420,8 @@ class Command(BaseCommand):
                             f" - Table {table} could not be processed. Error: {e}"
                         )
                     )
+
+        self.normalize_video_to_delete_data(data)
 
         # Write the JSON file
         json_file = os.path.join(BASE_DIR, f"{output_directory}{output_file}")

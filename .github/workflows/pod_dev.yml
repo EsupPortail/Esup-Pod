@@ -13,6 +13,9 @@ on:
     - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   PYTHON_VERSION: '3.10'
   DJANGO_SUPERUSER_USERNAME: "admin"

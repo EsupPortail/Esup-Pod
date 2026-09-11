@@ -12,6 +12,9 @@ on:
       - master
     workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
     Pod-Main:
         runs-on: ubuntu-latest

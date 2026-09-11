@@ -1011,6 +1011,15 @@ class VideoForm(forms.ModelForm):
                 self.remove_field("video")  # .widget = forms.HiddenInput()
                 self.remove_field("thumbnail")
 
+        if (
+            self.is_bound
+            and self.instance.pk
+            and self.add_prefix("thumbnail") not in self.data
+        ):
+            # A form opened during encoding has no thumbnail field. If encoding
+            # finishes before POST, preserve its thumbnail instead of clearing it.
+            self.remove_field("thumbnail")
+
         # remove required=True for videofield if instance
         if self.fields.get("video") and self.instance and self.instance.video:
             # remove del self.fields["video"].widget.attrs["required"]

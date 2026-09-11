@@ -253,6 +253,7 @@
 {% block more_script %}
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
   {{form.media.js}}
+  {{ listTheme|json_script:"list-theme-data" }}
 
   <script>
     const urlVideos = "{% url 'video:dashboard' %}";
@@ -268,7 +269,7 @@
     let nextPage = false;
     const ownerFilter = {{ owner_filter|yesno:'true,false'}};
     const formFieldsets = {{ fieldsets_dashboard|safe }};
-    const listTheme = {{listTheme | safe}};
+    const listTheme = JSON.parse(document.getElementById("list-theme-data").textContent);
 
     {% if videos.has_next %}
       page = parseInt("{{videos.next_page_number}}", 10);

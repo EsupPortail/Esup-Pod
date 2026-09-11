@@ -8,6 +8,7 @@ from rest_framework import renderers, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from tagulous.contrib.drf import TagRelatedManagerField
 
 from pod.main.utils import remove_trailing_spaces
 
@@ -67,6 +68,8 @@ class DisciplineSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class VideoSerializer(serializers.HyperlinkedModelSerializer):
+    tags = TagRelatedManagerField(required=False)
+
     class Meta:
         model = Video
         fields = (
@@ -216,7 +219,9 @@ class VideoViewSet(viewsets.ModelViewSet):
         username = request.GET.get("username")
         user_videos = (
             self.filter_queryset(self.get_queryset())
-            .filter(Q(owner__username=username) | Q(additional_owners__username=username))
+            .filter(
+                Q(owner__username=username) | Q(additional_owners__username=username)
+            )
             .distinct()
         )
         if request.GET.get("encoded") and request.GET.get("encoded") == "true":

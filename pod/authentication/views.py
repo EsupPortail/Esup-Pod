@@ -5,6 +5,8 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
+from django.http import QueryDict
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext_lazy as _
 from django.contrib import auth
 
@@ -29,14 +31,12 @@ def authentication_login(request):
     elif referrer.startswith("http:/") and not referrer.startswith("http://"):
         referrer = "http://" + referrer[len("http:/") :]
 
-    host = (
-        "https://%s" % request.get_host()
-        if (request.is_secure())
-        else "http://%s" % request.get_host()
-    )
-    if not referrer.startswith(("/", host)):
+    if not url_has_allowed_host_and_scheme(
+        referrer,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
         raise SuspiciousOperation("referrer is not internal")
-    iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
     if request.user.is_authenticated:
         return redirect(referrer)
     if USE_CAS or USE_SHIB or USE_OIDC:
@@ -55,7 +55,11 @@ def authentication_login(request):
         )
     else:
         url = reverse("local-login")
-        url += "?%snext=%s" % (iframe_param, referrer.replace("&", "%26"))
+        query = QueryDict(mutable=True)
+        if request.GET.get("is_iframe"):
+            query["is_iframe"] = "true"
+        query["next"] = referrer
+        url += "?" + query.urlencode(safe="/")
         return redirect(url)
 
 

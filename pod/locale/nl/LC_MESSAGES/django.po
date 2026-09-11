@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 15:39+0200\n"
+"POT-Creation-Date: 2026-09-09 09:42+0200\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2846,7 +2846,7 @@ msgid "Delete the external recording"
 msgstr ""
 
 #: pod/import_video/tests/test_views.py pod/import_video/utils.py
-#: pod/import_video/views.py pod/meeting/views.py
+#: pod/import_video/views.py pod/live/views.py pod/meeting/views.py
 msgid "Unable to upload the video to Pod"
 msgstr ""
 
@@ -7032,10 +7032,6 @@ msgid "The playlist has been deleted."
 msgstr ""
 
 #: pod/playlist/views.py
-msgid "Delete the playlist"
-msgstr ""
-
-#: pod/playlist/views.py
 #, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr ""
@@ -7423,7 +7419,7 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: pod/quiz/models.py pod/quiz/tests/test_models.py
+#: pod/quiz/models.py
 msgid "Quiz of video"
 msgstr ""
 
@@ -9458,10 +9454,8 @@ msgstr ""
 #: pod/video/templates/videos/archive_or_not.html
 #: pod/video/templates/videos/prolong_or_not.html
 #: pod/video/templates/videos/video_respite_choice.html
-#, fuzzy
-#| msgid "Date email sent"
 msgid "Date to delete:"
-msgstr "Datum verzonden e-mail"
+msgstr ""
 
 #: pod/video/templates/videos/archive_download.html
 msgid "Download video archive"
@@ -10683,11 +10677,11 @@ msgid "You do not have rights to delete this category"
 msgstr ""
 
 #: pod/video/views.py
-msgid "Server error while fetching user videos."
+msgid "Server error while processing filter."
 msgstr ""
 
 #: pod/video/views.py
-msgid "Server error while processing filter."
+msgid "Server error while fetching user videos."
 msgstr ""
 
 #: pod/video/views.py
@@ -11155,8 +11149,6 @@ msgstr ""
 msgid "Esup-Pod xAPI"
 msgstr ""
 
-#, fuzzy
-#~| msgid "Please enter a title."
 #~ msgid "Please Wait."
 #~ msgstr "Voer een titel in."
 

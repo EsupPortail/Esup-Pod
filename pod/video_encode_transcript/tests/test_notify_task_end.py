@@ -89,6 +89,55 @@ class NotifyTaskEndAuthTests(TestCase):
         self.task.refresh_from_db()
         self.assertEqual(self.task.status, "running")
 
+    @patch("pod.video_encode_transcript.views.download_and_import_task_result")
+    def test_completed_runner_task_stays_running_during_local_import(
+        self, mock_download_and_import
+    ):
+        """Do not report completion before Pod has imported the Runner result."""
+        status_during_import = []
+
+        def complete_local_import(task):
+            task.refresh_from_db()
+            status_during_import.append(task.status)
+            task.status = "completed"
+            task.save(update_fields=["status"])
+
+        mock_download_and_import.side_effect = complete_local_import
+
+        response = self._post_notify("Bearer runner-token", status="completed")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(status_during_import, ["running"])
+        self.task.refresh_from_db()
+        self.assertEqual(self.task.status, "completed")
+
+    @patch("pod.video_encode_transcript.views.download_and_import_task_result")
+    def test_failed_local_import_does_not_report_task_as_completed(
+        self, mock_download_and_import
+    ):
+        """Keep a task retryable when result retrieval or import does not finish."""
+        response = self._post_notify("Bearer runner-token", status="completed")
+
+        self.assertEqual(response.status_code, 200)
+        mock_download_and_import.assert_called_once()
+        self.task.refresh_from_db()
+        self.assertEqual(self.task.status, "running")
+
+    @patch("pod.video_encode_transcript.views.download_and_import_task_result")
+    def test_repeated_completed_notification_preserves_completed_status(
+        self, mock_download_and_import
+    ):
+        """Do not reopen a task when the Runner repeats a completion callback."""
+        self.task.status = "completed"
+        self.task.save(update_fields=["status"])
+
+        response = self._post_notify("Bearer runner-token", status="completed")
+
+        self.assertEqual(response.status_code, 200)
+        mock_download_and_import.assert_called_once()
+        self.task.refresh_from_db()
+        self.assertEqual(self.task.status, "completed")
+
     @patch("pod.video_encode_transcript.views.send_email_item")
     def test_notify_task_end_sends_alert_on_failed_status(self, mock_send_email_item):
         """Send an alert email when runner notifies a failed task."""
