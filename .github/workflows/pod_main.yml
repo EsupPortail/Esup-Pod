@@ -73,6 +73,9 @@ jobs:
                 cd pod
                 yarn
 
+            - name: Run JavaScript tests
+              run: node --test pod/video/static/js/*.test.cjs
+
             - name: Run Tests without coverage
               env:
                 PYTHONUNBUFFERED: 1
