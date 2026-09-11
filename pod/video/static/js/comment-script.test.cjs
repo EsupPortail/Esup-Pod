@@ -7,6 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const test = require("node:test");
 const vm = require("node:vm");
+const { FakeElement } = require("../../../test-utils.cjs");
 
 const source = fs.readFileSync(
   new URL("./comment-script.js", `file://${__dirname}/`),
@@ -17,29 +18,6 @@ const classSource = source.match(
 )?.[0];
 
 if (!classSource) throw new Error("CommentSince class not found");
-
-class FakeElement {
-  // Create a minimal DOM element substitute for the test.
-  constructor() {
-    this.attributes = new Map();
-    this.children = [];
-  }
-
-  // Return an element attribute.
-  getAttribute(name) {
-    return this.attributes.get(name) ?? null;
-  }
-
-  // Set an element attribute.
-  setAttribute(name, value) {
-    this.attributes.set(name, value);
-  }
-
-  // Add a child to the element.
-  appendChild(child) {
-    this.children.push(child);
-  }
-}
 
 // Create a CommentSince instance in a minimal browser context.
 function createCommentSince() {
