@@ -4,9 +4,9 @@
 
 {% spaceless %}
 {% if playlist %}
-  {% user_can_edit_or_remove playlist as can_edit_or_remove %}
-  {% if not in_favorites_playlist and can_edit_or_remove%}
-    <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" data-csrf-token="{{ csrf_token }}" title="{% trans 'Remove from playlist' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1 remove-from-playlist-btn-link" id="remove-from-playlist-btn-{{ video.id }}" data-bs-toggle="tooltip" data-bs-placement="top">
+  {% user_can_modify_playlist_content request.user playlist as can_modify_content %}
+  {% if not in_favorites_playlist and can_modify_content %}
+    <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" data-csrf-token="{{ csrf_token }}" title="{% trans 'Remove from playlist' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1 remove-from-playlist-btn-link" id="remove-from-playlist-btn-{{ video.id }}" data-remove-playlist-card="true" data-bs-toggle="tooltip" data-bs-placement="top">
       <i class="bi bi-folder-minus card-footer-link-i" aria-hidden="true"></i>
     </a>
   {% endif %}
@@ -16,7 +16,7 @@
 {% get_favorite_playlist user as fav_playlist %}
 {% if USE_PLAYLIST and USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
   {% if is_favorite %}
-    <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" data-csrf-token="{{ csrf_token }}" title="{% trans 'Remove from favorite' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1 remove-from-playlist-btn-link favorite-btn-link" id="favorite-btn-{{ video.id }}" aria-pressed="true" data-bs-toggle="tooltip" data-bs-placement="top" role="button">
+    <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" data-csrf-token="{{ csrf_token }}" title="{% trans 'Remove from favorite' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1 remove-from-playlist-btn-link favorite-btn-link" id="favorite-btn-{{ video.id }}"{% if in_favorites_playlist %} data-remove-playlist-card="true"{% endif %} aria-pressed="true" data-bs-toggle="tooltip" data-bs-placement="top" role="button">
       <i class="bi bi-star-fill card-footer-link-i" aria-hidden="true"></i>
     </a>
   {% else %}

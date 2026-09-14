@@ -49,6 +49,7 @@ from .utils import (
     require_playlist_access,
     reorganize_playlist,
     user_can_manage_playlist,
+    user_can_modify_playlist_content,
     user_can_delete_playlist,
     user_can_see_playlist_video,
 )
@@ -239,7 +240,7 @@ def render_playlist(
 def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
     """Remove a video in playlist."""
     playlist = get_object_or_404(Playlist, slug=slug)
-    if not user_can_manage_playlist(request.user, playlist):
+    if not user_can_modify_playlist_content(request.user, playlist):
         raise PermissionDenied
     video = get_object_or_404(Video, slug=video_slug)
     user_remove_video_from_playlist(playlist, video)
@@ -262,7 +263,7 @@ def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
 def add_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
     """Add a video in playlist."""
     playlist = get_object_or_404(Playlist, slug=slug)
-    if not user_can_manage_playlist(request.user, playlist):
+    if not user_can_modify_playlist_content(request.user, playlist):
         raise PermissionDenied
     video = get_object_or_404(Video, slug=video_slug)
     user_add_video_in_playlist(playlist, video)
@@ -430,7 +431,7 @@ def add_or_edit(request: WSGIRequest, slug: str = None):
 def favorites_save_reorganisation(request: WSGIRequest, slug: str):
     """Save reorganization when the user click on save button."""
     playlist = get_object_or_404(Playlist, slug=slug)
-    if not user_can_manage_playlist(request.user, playlist):
+    if not user_can_modify_playlist_content(request.user, playlist):
         raise PermissionDenied
     if request.method == "POST":
         try:

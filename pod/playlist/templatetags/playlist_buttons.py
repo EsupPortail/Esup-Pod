@@ -8,11 +8,13 @@ from ..utils import (
     get_link_to_start_playlist as get_link_to_start_playlist_util,
     user_can_see_playlist_video,
     user_can_manage_playlist,
+    user_can_modify_playlist_content,
     user_can_delete_playlist,
 )
 
 register = Library()
 register.simple_tag(user_can_delete_playlist)
+register.simple_tag(user_can_modify_playlist_content)
 
 
 @register.simple_tag(takes_context=True, name="user_can_edit_or_remove")

@@ -38,8 +38,8 @@
         {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
       </h2>
         <div class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons">
-          {% user_can_edit_or_remove playlist as can_edit_or_remove %}
-          {% if can_edit_or_remove or in_favorites_playlist %}
+          {% user_can_modify_playlist_content request.user playlist as can_modify_content %}
+          {% if can_modify_content %}
             <form action="{% url 'playlist:save-reorganisation' slug=playlist.slug %}" method="post" class="{% if count_videos < 2 %}d-none{% endif %}">
               {% csrf_token %}
               <input id="json-data" type="hidden" name="json-data">

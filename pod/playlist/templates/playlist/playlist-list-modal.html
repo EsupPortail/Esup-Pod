@@ -2,6 +2,7 @@
 {% load static %}
 {% load playlist_list_modal %}
 {% load favorites_playlist %}
+{% load playlist_buttons %}
 
 {% block page_extra_head %}
   <link rel="stylesheet" href="{% static 'playlist/css/playlist.css' %}?ver={{ VERSION }}">
@@ -22,22 +23,25 @@
         {% for playlist in playlists %}
           <div class="d-flex flex-row justify-content-start align-items-center mb-3 gap-4">
             {% video_in_playlist playlist video as video_in_playlist %}
-            {% if video_in_playlist %}
-              <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" data-csrf-token="{{ csrf_token }}"
-                 class="btn btn-danger btn-lg rounded-circle action-btn remove-video-from-playlist" id="{{ playlist.slug }}-btn"
-                 title="{% trans 'Remove video from this playlist' %}"
-                 aria-label="{% trans 'Remove video from this playlist' %}"
-              >
-                <i class="bi bi-dash" aria-hidden="true"></i>
-              </a>
-            {% else %}
-              <a href="{% url 'playlist:add-video' playlist.slug video.slug %}" data-csrf-token="{{ csrf_token }}"
-                 class="btn btn-success btn-lg rounded-circle action-btn add-video-from-playlist" id="{{ playlist.slug }}-btn"
-                 title="{% trans 'Add the video in this playlist' %}"
-                 aria-label="{% trans 'Add the video in this playlist' %}"
-              >
-                <i class="bi bi-plus" aria-hidden="true"></i>
-              </a>
+            {% user_can_modify_playlist_content request.user playlist as can_modify_content %}
+            {% if can_modify_content %}
+              {% if video_in_playlist %}
+                <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" data-csrf-token="{{ csrf_token }}"
+                   class="btn btn-danger btn-lg rounded-circle action-btn remove-video-from-playlist" id="{{ playlist.slug }}-btn"
+                   title="{% trans 'Remove video from this playlist' %}"
+                   aria-label="{% trans 'Remove video from this playlist' %}"
+                >
+                  <i class="bi bi-dash" aria-hidden="true"></i>
+                </a>
+              {% else %}
+                <a href="{% url 'playlist:add-video' playlist.slug video.slug %}" data-csrf-token="{{ csrf_token }}"
+                   class="btn btn-success btn-lg rounded-circle action-btn add-video-from-playlist" id="{{ playlist.slug }}-btn"
+                   title="{% trans 'Add the video in this playlist' %}"
+                   aria-label="{% trans 'Add the video in this playlist' %}"
+                >
+                  <i class="bi bi-plus" aria-hidden="true"></i>
+                </a>
+              {% endif %}
             {% endif %}
             {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
             {% get_playlist_name playlist as playlist_name %}

@@ -30,7 +30,8 @@ function postPlaylistAction(button, url = button.getAttribute("href")) {
 function preventRefreshButton(button, jsonFormat) {
   const FAVORITE_BUTTON_ID = "favorite-button";
   const PLAYLIST_MODAL_ID = "playlist-list";
-  if (button) {
+  // Cards removed from the current playlist use the delegated removal handler.
+  if (button && button.getAttribute("data-remove-playlist-card") === null) {
     button.addEventListener("click", function (e) {
       e.preventDefault();
       const originalUrl = this.getAttribute("href");

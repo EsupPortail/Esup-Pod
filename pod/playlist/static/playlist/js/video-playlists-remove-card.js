@@ -1,34 +1,30 @@
 /**
- * @file Esup-Pod playlist card removal.
+ * @file Esup-Pod delegated playlist and favorite card removal.
  */
 
 /* global postPlaylistAction */
 
-document.addEventListener("DOMContentLoaded", function () {
-  const cards = document.getElementsByClassName("draggable-container");
-  for (let card of cards) {
-    const btn = card.querySelector(".remove-from-playlist-btn-link");
-    if (!btn) continue;
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
-      return postPlaylistAction(btn)
-        .then((response) => {
-          if (response.ok) {
-            return response.text();
-          } else {
-            throw new Error("Network response was not ok.");
-          }
-        })
-        .then((data) => {
-          card.remove();
-          const parser = new DOMParser();
-          const html = parser.parseFromString(data, "text/html");
-          const title = document.getElementById("video_count");
-          title.replaceWith(html.getElementById("video_count"));
-        })
-        .catch((error) => {
-          console.error("Error: ", error);
-        });
+// Delegate clicks so pagination and filtering can replace cards without rebinding.
+document.addEventListener("click", function (event) {
+  const button = event.target.closest("#videos_list [data-remove-playlist-card]");
+  if (!button) return;
+  event.preventDefault();
+  if (button.classList.contains("disabled")) return;
+  button.classList.add("disabled");
+  return postPlaylistAction(button)
+    .then((response) => {
+      if (!response.ok) throw new Error(gettext("Network response was not ok."));
+      return response.text();
+    })
+    .then((data) => {
+      const html = new DOMParser().parseFromString(data, "text/html");
+      button.closest(".draggable-container").remove();
+      document.getElementById("video_count").replaceWith(html.getElementById("video_count"));
+    })
+    .catch((error) => {
+      console.error("Error: ", error);
+    })
+    .finally(() => {
+      button.classList.remove("disabled");
     });
-  }
 });

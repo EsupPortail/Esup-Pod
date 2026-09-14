@@ -248,12 +248,19 @@ def remove_playlist(user: User, playlist: Playlist) -> None:
 
 
 def user_can_manage_playlist(user: User, playlist: Playlist) -> bool:
-    """Allow owners, co-owners and administrators to manage playlist contents."""
+    """Identify authenticated playlist owners, co-owners and administrators."""
     return user.is_authenticated and (
         playlist.owner_id == user.pk
         or user.is_superuser
         or playlist.additional_owners.filter(pk=user.pk).exists()
     )
+
+
+def user_can_modify_playlist_content(user: User, playlist: Playlist) -> bool:
+    """Allow content changes on editable playlists and system favorites."""
+    return (
+        playlist.editable or playlist.name == FAVORITE_PLAYLIST_NAME
+    ) and user_can_manage_playlist(user, playlist)
 
 
 def user_can_delete_playlist(user: User, playlist: Playlist) -> bool:

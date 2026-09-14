@@ -30,11 +30,9 @@
 
 {% block more_script %}
   <script src="{% static 'playlist/js/utils-playlist.js' %}?ver={{VERSION}}"></script>
-  {% if in_favorites_playlist %}
-    <script src="{% static 'playlist/js/video-favorites-remove-card.js' %}?ver={{VERSION}}"></script>
-  {% else %}
+  {% if not in_favorites_playlist %}
     <script src="{% static 'playlist/js/video-list-favorites-card.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'playlist/js/video-playlists-remove-card.js' %}?ver={{VERSION}}"></script>
   {% endif %}
+  <script src="{% static 'playlist/js/video-playlists-remove-card.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/link_video_dropdown_menu.js' %}"></script>
 {% endblock %}
