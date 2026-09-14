@@ -14,8 +14,8 @@ const source = fs.readFileSync(
   "utf8",
 );
 
-// Load preventRefreshButton in an isolated context.
-function loadPreventRefreshButton(fetchMock, logger = console) {
+// Load playlist utilities in an isolated context with optional DOM replacements.
+function loadPlaylistContext(fetchMock, logger = console, overrides = {}) {
   const context = {
     fetch: fetchMock,
     console: logger,
@@ -23,12 +23,23 @@ function loadPreventRefreshButton(fetchMock, logger = console) {
     DOMParser: class {},
     window: { setTimeout },
     gettext: (text) => text,
+    ...overrides,
   };
-  vm.runInNewContext(
-    `${source}; this.preventRefreshButton = preventRefreshButton;`,
-    context,
-  );
-  return context.preventRefreshButton;
+  vm.createContext(context);
+  vm.runInContext(source, context);
+  return context;
+}
+
+// Return the button listener installer for focused utility tests.
+function loadPreventRefreshButton(fetchMock, logger = console) {
+  return loadPlaylistContext(fetchMock, logger).preventRefreshButton;
+}
+
+// Verify that a mutation sends its rendered token only to the current origin.
+function assertPostOptions(options, token) {
+  assert.equal(options.method, "POST");
+  assert.equal(options.mode, "same-origin");
+  assert.equal(options.headers["X-CSRFToken"], token);
 }
 
 // Trigger a click listener and wait for the asynchronous response handling.
@@ -39,7 +50,8 @@ async function clickButton(button) {
 test("preventRefreshButton toggles the playlist button after JSON responses", async () => {
   const requestedUrls = [];
   const states = ["in-playlist", "out-playlist"];
-  const preventRefreshButton = loadPreventRefreshButton(async (url) => {
+  const preventRefreshButton = loadPreventRefreshButton(async (url, options) => {
+    assertPostOptions(options, "modal-token");
     requestedUrls.push(url);
     return { ok: true, json: async () => ({ state: states.shift() }) };
   });
@@ -51,6 +63,7 @@ test("preventRefreshButton toggles the playlist button after JSON responses", as
     ],
     attributes: {
       href: "/playlist/add/video/",
+      "data-csrf-token": "modal-token",
       title: "Add the video in this playlist",
       "aria-label": "Add the video in this playlist",
     },
@@ -135,3 +148,91 @@ test("failed requests restore the modal button and allow retrying", async () => 
   assert.equal(attempts, 2);
   assert.equal(button.icon.contains("bi-dash"), true);
 });
+
+test("favorite HTML responses preserve POST behavior after replacing the button", async () => {
+  const buttons = ["add", "remove", "add"].map((action, index) => {
+    const button = new FakeButton({
+      classes: ["favorite-btn-link"],
+      attributes: {
+        href: `/playlist/${action}/favorites/video/`,
+        "data-csrf-token": `token-${index}`,
+      },
+    });
+    button.id = "favorite-button";
+    return button;
+  });
+  const requests = [];
+  let responseIndex = 0;
+  const context = loadPlaylistContext(async (url, options) => {
+    assertPostOptions(options, `token-${responseIndex}`);
+    requests.push(url);
+    return { ok: true, text: async () => "<html></html>" };
+  }, console, {
+    document: {
+      getElementById: (id) => id === "favorite-button" ? buttons[0] : null,
+    },
+    DOMParser: class {
+      parseFromString() {
+        return { getElementById: () => buttons[++responseIndex] };
+      }
+    },
+  });
+  context.preventRefreshButton(buttons[0], false);
+  await clickButton(buttons[0]);
+  assert.equal(buttons[0].replacedWith, buttons[1]);
+  await clickButton(buttons[1]);
+  assert.equal(buttons[1].replacedWith, buttons[2]);
+  assert.deepEqual(requests, [
+    "/playlist/add/favorites/video/",
+    "/playlist/remove/favorites/video/",
+  ]);
+});
+
+for (const [filename, selector] of [
+  ["video-playlists-remove-card.js", ".remove-from-playlist-btn-link"],
+  ["video-favorites-remove-card.js", ".favorite-btn-link"],
+]) {
+  for (const ok of [true, false]) {
+    test(`${filename} ${ok ? "removes the card after POST" : "keeps the card after a refused POST"}`, async () => {
+      const button = new FakeButton({ attributes: {
+        href: "/playlist/remove/playlist/video/",
+        "data-csrf-token": "card-token",
+      } });
+      let removed = false;
+      const requests = [];
+      const errors = [];
+      const title = new FakeButton();
+      const updatedTitle = {};
+      const card = {
+        querySelector: (query) => query === selector ? button : null,
+        remove: () => { removed = true; },
+      };
+      const context = loadPlaylistContext(async (url, options) => {
+        requests.push({ url, options });
+        return { ok, text: async () => "<html></html>" };
+      }, { error: (...args) => errors.push(args) }, {
+        document: {
+          addEventListener: (event, listener) => {
+            assert.equal(event, "DOMContentLoaded");
+            listener();
+          },
+          getElementsByClassName: () => [card, { querySelector: () => null }],
+          getElementById: () => title,
+        },
+        DOMParser: class {
+          parseFromString() {
+            return { getElementById: () => updatedTitle };
+          }
+        },
+      });
+      vm.runInContext(fs.readFileSync(`${__dirname}/${filename}`, "utf8"), context);
+      await clickButton(button);
+      assert.equal(requests.length, 1);
+      assert.equal(requests[0].url, button.getAttribute("href"));
+      assertPostOptions(requests[0].options, "card-token");
+      assert.equal(removed, ok);
+      assert.equal(title.replacedWith, ok ? updatedTitle : null);
+      assert.equal(errors.length, ok ? 0 : 1);
+    });
+  }
+}

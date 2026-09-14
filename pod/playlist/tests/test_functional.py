@@ -551,24 +551,143 @@ class PlaylistFunctionalTests(TestCase):
         """Redirect anonymous additions to login without changing playlist contents."""
         self.client.logout()
         before = self.contents(self.public)
-        response = self.client.get(
+        response = self.client.post(
             self.url("add-video", self.public, video_slug=self.videos[3].slug)
         )
         self.assertEqual(response.status_code, 302)
         self.assertIn("referrer=", response.url)
         self.assertEqual(self.contents(self.public), before)
 
+    def test_video_mutations_reject_get_and_head(self):
+        """Reject safe HTTP methods without changing playlist membership or ranks."""
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.owner)
+        before = self.contents(self.public)
+        for action, video in (
+            ("add-video", self.videos[3]),
+            ("remove-video", self.videos[0]),
+        ):
+            for method in ("get", "head"):
+                with self.subTest(action=action, method=method):
+                    response = getattr(client, method)(
+                        self.url(action, self.public, video_slug=video.slug)
+                    )
+                    self.assertEqual(response.status_code, 405)
+                    self.assertEqual(response.headers["Allow"], "POST")
+                    self.assertEqual(self.contents(self.public), before)
+
+    def test_video_mutations_require_csrf(self):
+        """Reject missing tokens, invalid tokens and requests from foreign origins."""
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.owner)
+        client.get(self.url("content", self.public))
+        token = client.cookies["csrftoken"].value
+        before = self.contents(self.public)
+        for action, video in (
+            ("add-video", self.videos[3]),
+            ("remove-video", self.videos[0]),
+        ):
+            for headers in (
+                {},
+                {"HTTP_X_CSRFTOKEN": "invalid"},
+                {"HTTP_X_CSRFTOKEN": token, "HTTP_ORIGIN": "https://other.example"},
+            ):
+                with self.subTest(action=action, headers=headers):
+                    response = client.post(
+                        self.url(action, self.public, video_slug=video.slug), **headers
+                    )
+                    self.assertEqual(response.status_code, 403)
+                    self.assertEqual(self.contents(self.public), before)
+
+    def test_playlist_controls_provide_valid_csrf_tokens(self):
+        """Allow owners and co-owners to add from the modal and remove from cards."""
+        video = self.videos[3]
+        for user in (self.owner, self.coowner):
+            with self.subTest(user=user.username):
+                client = Client(enforce_csrf_checks=True)
+                client.force_login(user)
+                response = client.get(reverse("video:video", kwargs={"slug": video.slug}))
+                button = BeautifulSoup(response.content, "html.parser").find(
+                    id=f"{self.private.slug}-btn"
+                )
+                response = client.post(
+                    button["href"] + "?json=true",
+                    HTTP_X_CSRFTOKEN=button["data-csrf-token"],
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json(), {"state": "in-playlist"})
+                self.assertTrue(
+                    PlaylistContent.objects.filter(
+                        playlist=self.private, video=video
+                    ).exists()
+                )
+                url = self.url("content", self.private)
+                response = client.get(url)
+                button = BeautifulSoup(response.content, "html.parser").find(
+                    id=f"remove-from-playlist-btn-{video.pk}"
+                )
+                response = client.post(
+                    button["href"],
+                    HTTP_X_CSRFTOKEN=button["data-csrf-token"],
+                    HTTP_REFERER=url,
+                    follow=True,
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.redirect_chain, [(url, 302)])
+                self.assertFalse(
+                    PlaylistContent.objects.filter(
+                        playlist=self.private, video=video
+                    ).exists()
+                )
+
+    def test_favorite_controls_support_csrf_cookie_and_session_settings(self):
+        """Use rendered tokens for favorite additions and removals on every control."""
+        video = self.videos[0]
+        favorites = get_favorite_playlist_for_user(self.owner)
+        player_url = reverse("video:video", kwargs={"slug": video.slug})
+        content_url = self.url("content", self.public)
+        for settings in ({}, {"CSRF_COOKIE_HTTPONLY": True}, {"CSRF_USE_SESSIONS": True}):
+            with self.subTest(settings=settings), self.settings(**settings):
+                client = Client(enforce_csrf_checks=True)
+                client.force_login(self.owner)
+                for url, selector, expected in (
+                    (player_url, "#favorite-button", "in-playlist"),
+                    (player_url, "#favorite-button", "out-playlist"),
+                    (content_url, f"#favorite-btn-{video.pk}", "in-playlist"),
+                    (
+                        self.url("content", favorites),
+                        f"#favorite-btn-{video.pk}",
+                        "out-playlist",
+                    ),
+                ):
+                    response = client.get(url)
+                    button = BeautifulSoup(response.content, "html.parser").select_one(
+                        selector
+                    )
+                    response = client.post(
+                        button["href"] + "?json=true",
+                        HTTP_X_CSRFTOKEN=button["data-csrf-token"],
+                    )
+                    self.assertEqual(response.status_code, 200)
+                    self.assertEqual(response.json(), {"state": expected})
+                    self.assertEqual(
+                        PlaylistContent.objects.filter(
+                            playlist=favorites, video=video
+                        ).exists(),
+                        expected == "in-playlist",
+                    )
+
     def test_add_duplicate_remove_journey(self):
         """Verify JSON responses, duplicate prevention and video removal."""
         video = self.videos[3]
         add_url = self.url("add-video", self.public, video_slug=video.slug) + "?json=1"
         for _ in range(2):
-            response = self.client.get(add_url)
+            response = self.client.post(add_url)
             self.assertEqual(response.json(), {"state": "in-playlist"})
         self.assertEqual(
             PlaylistContent.objects.filter(playlist=self.public, video=video).count(), 1
         )
-        response = self.client.get(
+        response = self.client.post(
             self.url("remove-video", self.public, video_slug=video.slug) + "?json=1"
         )
         self.assertEqual(response.json(), {"state": "out-playlist"})
@@ -670,6 +789,73 @@ class PlaylistFunctionalTests(TestCase):
         )
         self.assertContains(response, self.videos[0].title)
 
+    def test_legacy_password_spaces_are_preserved_on_edit_and_unlock(self):
+        """Keep raw legacy password hashes usable after an unrelated metadata edit."""
+        for password in (" legacy secret ", "\tlegacy secret\u00a0", "   "):
+            with self.subTest(password=repr(password)):
+                digest = hashlib.sha256(password.encode()).hexdigest()
+                self.protected.password = digest
+                self.protected.save()
+                response = self.client.post(
+                    self.url("edit", self.protected), self.payload(self.protected)
+                )
+                self.assertEqual(response.status_code, 302)
+                self.protected.refresh_from_db()
+                self.assertEqual(self.protected.password, digest)
+                visitor = Client()
+                response = visitor.post(
+                    self.url("content", self.protected), {"password": password}
+                )
+                self.assertContains(response, self.videos[0].title)
+                self.assertEqual(
+                    visitor.session[f"playlist_access_{self.protected.pk}"],
+                    self.protected.get_session_auth_hash(),
+                )
+                self.protected.refresh_from_db()
+                self.assertEqual(self.protected.password, digest)
+
+    def test_legacy_password_fallback_does_not_accept_inexact_passwords(self):
+        """Require the original spaces for legacy hashes and reject incorrect input."""
+        self.protected.password = hashlib.sha256(b" legacy secret ").hexdigest()
+        self.protected.save()
+        for password in (
+            "legacy secret",
+            " legacy secret",
+            "legacy secret ",
+            "wrong",
+            " ",
+            "",
+        ):
+            with self.subTest(password=repr(password)):
+                visitor = Client()
+                response = visitor.post(
+                    self.url("content", self.protected), {"password": password}
+                )
+                self.assertContains(response, 'id="playlist_password_form"')
+                self.assertNotContains(response, self.videos[0].title)
+                self.assertNotIn(f"playlist_access_{self.protected.pk}", visitor.session)
+
+    def test_legacy_password_unlocks_playlist_start_and_player_variants(self):
+        """Accept legacy passwords through each route using the shared password gate."""
+        password = " legacy secret "
+        self.protected.password = hashlib.sha256(password.encode()).hexdigest()
+        self.protected.save()
+        urls = [self.url("start-playlist", self.protected)]
+        for view_name in ("video:video", "enrichment:video_enrichment"):
+            for embedded in ("", "true"):
+                url = reverse(view_name, kwargs={"slug": self.videos[0].slug})
+                urls.append(f"{url}?playlist={self.protected.slug}&is_iframe={embedded}")
+        for url in urls:
+            with self.subTest(url=url):
+                visitor = Client()
+                response = visitor.post(url, {"password": password}, follow=True)
+                self.assertEqual(response.status_code, 200)
+                self.assertNotContains(response, 'id="playlist_password_form"')
+                self.assertEqual(
+                    visitor.session[f"playlist_access_{self.protected.pk}"],
+                    self.protected.get_session_auth_hash(),
+                )
+
     def test_direct_player_requires_protected_playlist_password(self):
         """Prevent direct player URLs from bypassing playlist password protection."""
         self.client.logout()
@@ -717,18 +903,20 @@ class PlaylistFunctionalTests(TestCase):
         """Preserve playlist contents after an unauthorized video addition."""
         self.client.force_login(self.stranger)
         before = self.contents(self.private)
-        self.client.get(
+        response = self.client.post(
             self.url("add-video", self.private, video_slug=self.videos[3].slug)
         )
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(self.contents(self.private), before)
 
     def test_stranger_cannot_remove_video(self):
         """Preserve playlist contents after an unauthorized video removal."""
         self.client.force_login(self.stranger)
         before = self.contents(self.private)
-        self.client.get(
+        response = self.client.post(
             self.url("remove-video", self.private, video_slug=self.videos[0].slug)
         )
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(self.contents(self.private), before)
 
     def test_stranger_cannot_reorganize(self):
