@@ -9,13 +9,21 @@ import json
 from unittest.mock import patch
 
 from bs4 import BeautifulSoup
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AnonymousUser, Permission, User
 from django.contrib.messages import get_messages
-from django.test import Client, TestCase
+from django.db import connection
+from django.test import Client, RequestFactory, TestCase
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 
+from pod.authentication.models import AccessGroup
+from pod.playlist.forms import PlaylistForm
 from pod.playlist.models import Playlist, PlaylistContent
-from pod.playlist.utils import get_favorite_playlist_for_user
+from pod.playlist.utils import (
+    get_favorite_playlist_for_user,
+    get_video_list_for_playlist,
+    user_can_see_playlist_video,
+)
 from pod.video.models import Type, Video
 
 
@@ -157,6 +165,238 @@ class PlaylistFunctionalTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'id="card-playlistplayer"')
+
+    def test_whitespace_password_cannot_create_a_protected_playlist(self):
+        """Reject whitespace-only passwords without creating a protected playlist."""
+        before = Playlist.objects.count()
+        for password in ("   ", "\t\n", "\u00a0\u2003"):
+            with self.subTest(password=repr(password)):
+                response = self.client.post(
+                    self.url("add"),
+                    self.payload(visibility="protected", password=password),
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertTrue(response.context["form"].errors)
+                self.assertEqual(Playlist.objects.count(), before)
+
+    def test_form_save_hashes_normalized_password(self):
+        """Persist a digest from validated form data without relying on the view."""
+        form = PlaylistForm(
+            data=self.payload(visibility="protected", password="  audit-password\t"),
+            user=self.owner,
+        )
+        self.assertTrue(form.is_valid(), form.errors)
+        self.assertEqual(
+            form.save(commit=False).password,
+            hashlib.sha256(b"audit-password").hexdigest(),
+        )
+
+    def test_group_permission_does_not_grant_private_playlist_access(self):
+        """Keep playlist privacy separate from the video's group permissions."""
+        group = AccessGroup.objects.create(code_name="audit-private")
+        self.stranger.owner.accessgroup_set.add(group)
+        self.videos[0].restrict_access_to_groups.add(group)
+        request = RequestFactory().get("/")
+        request.user = self.stranger
+        self.assertFalse(
+            user_can_see_playlist_video(request, self.videos[0], self.private)
+        )
+        self.client.force_login(self.stranger)
+        response = self.client.get(
+            reverse("video:video", kwargs={"slug": self.videos[0].slug}),
+            {"playlist": self.private.slug},
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_whitespace_password_preserves_protected_playlist_access(self):
+        """Keep the existing password when an edit submits only whitespace."""
+        response = self.client.post(
+            self.url("edit", self.protected),
+            self.payload(self.protected, password=" \t\u00a0 "),
+        )
+        self.assertEqual(response.status_code, 302)
+        self.protected.refresh_from_db()
+        self.assertEqual(
+            self.protected.password, hashlib.sha256(b"audit-password").hexdigest()
+        )
+        self.client.logout()
+        response = self.client.post(
+            self.url("content", self.protected), {"password": "audit-password"}
+        )
+        self.assertContains(response, self.videos[0].title)
+
+    def test_password_normalization_matches_creation_editing_and_unlocking(self):
+        """Hash normalized input once and apply the same normalization on access."""
+        for playlist in (None, self.protected):
+            with self.subTest(editing=playlist is not None):
+                self.client.force_login(self.owner)
+                response = self.client.post(
+                    self.url("edit", playlist) if playlist else self.url("add"),
+                    self.payload(
+                        playlist, visibility="protected", password="  spaced secret\t "
+                    ),
+                )
+                self.assertEqual(response.status_code, 302)
+                saved = (
+                    Playlist.objects.get(pk=playlist.pk)
+                    if playlist
+                    else Playlist.objects.get(name="Created through HTTP")
+                )
+                self.assertEqual(
+                    saved.password, hashlib.sha256(b"spaced secret").hexdigest()
+                )
+                self.client.logout()
+                response = self.client.post(
+                    self.url("content", saved), {"password": "\tspaced secret  "}
+                )
+                self.assertTemplateUsed(response, "playlist/playlist.html")
+
+    def test_whitespace_cannot_protect_a_playlist_without_an_existing_password(self):
+        """Reject a switch to protected visibility without a usable password."""
+        response = self.client.post(
+            self.url("edit", self.private),
+            self.payload(self.private, visibility="protected", password="   "),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["form"].errors)
+        self.private.refresh_from_db()
+        self.assertEqual(self.private.visibility, "private")
+
+    def assert_video_access_through_playlist(self, allowed):
+        """Check start, player variants and AJAX access for the current visitor."""
+        video = self.videos[0]
+        response = self.client.get(self.url("start-playlist", self.public), follow=True)
+        if allowed:
+            self.assertContains(response, 'id="card-playlistplayer"')
+        else:
+            self.assertNotContains(response, 'id="card-playlistplayer"')
+        for view in ("video:video", "enrichment:video_enrichment"):
+            for embedded in ("", "true"):
+                with self.subTest(view=view, embedded=embedded):
+                    response = self.client.get(
+                        reverse(view, kwargs={"slug": video.slug}),
+                        {"playlist": self.public.slug, "is_iframe": embedded},
+                    )
+                    self.assertEqual(response.status_code, 200 if allowed else 403)
+        response = self.client.get(
+            reverse(
+                "playlist:get-video",
+                kwargs={"video_slug": video.slug, "playlist_slug": self.public.slug},
+            )
+        )
+        self.assertEqual(response.status_code, 200 if allowed else 403)
+
+    def test_allowed_group_member_can_play_restricted_playlist_videos(self):
+        """Honor video group membership across all playlist playback routes."""
+        group = AccessGroup.objects.create(code_name="audit-allowed")
+        self.stranger.owner.accessgroup_set.add(group)
+        for video in self.videos[:3]:
+            video.restrict_access_to_groups.add(group)
+        self.client.force_login(self.stranger)
+        for restricted in (False, True):
+            with self.subTest(restricted=restricted):
+                Video.objects.filter(pk__in=[v.pk for v in self.videos[:3]]).update(
+                    is_restricted=restricted
+                )
+                self.assert_video_access_through_playlist(True)
+
+    def test_recorder_permission_allows_group_restricted_playlist_videos(self):
+        """Honor the recorder grant already supported by the standalone player."""
+        group = AccessGroup.objects.create(code_name="audit-recorder")
+        self.videos[0].restrict_access_to_groups.add(group)
+        self.stranger.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="recorder", codename="add_recording"
+            )
+        )
+        self.client.force_login(self.stranger)
+        self.assert_video_access_through_playlist(True)
+
+    def test_group_restrictions_still_reject_unauthorized_visitors(self):
+        """Reject outsiders and anonymous visitors across every playlist player."""
+        group = AccessGroup.objects.create(code_name="audit-excluded")
+        for video in self.videos[:3]:
+            video.restrict_access_to_groups.add(group)
+        self.client.force_login(self.stranger)
+        self.assert_video_access_through_playlist(False)
+        self.client.logout()
+        self.assert_video_access_through_playlist(False)
+
+    def test_authenticated_viewer_can_play_login_restricted_playlist_videos(self):
+        """Honor a video's login-only restriction without requiring ownership."""
+        Video.objects.filter(pk=self.videos[0].pk).update(is_restricted=True)
+        self.client.force_login(self.stranger)
+        self.assert_video_access_through_playlist(True)
+
+    def test_video_editor_can_play_draft_playlist_videos(self):
+        """Honor the video editing permission when a playlist contains a draft."""
+        Video.objects.filter(pk=self.videos[0].pk).update(is_draft=True)
+        self.stranger.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="video", codename="change_video"
+            )
+        )
+        self.client.force_login(self.stranger)
+        self.assert_video_access_through_playlist(True)
+
+    def test_group_membership_does_not_bypass_video_passwords(self):
+        """Keep video passwords protected even for an allowed group member."""
+        group = AccessGroup.objects.create(code_name="audit-password")
+        self.stranger.owner.accessgroup_set.add(group)
+        for video in self.videos[:3]:
+            video.restrict_access_to_groups.add(group)
+        Video.objects.filter(pk__in=[v.pk for v in self.videos[:3]]).update(
+            password="video-secret"
+        )
+        self.client.force_login(self.stranger)
+        self.assert_video_access_through_playlist(False)
+
+    def assert_playlist_access_query_count_is_constant(self, user):
+        """Verify that loading and checking more playlist videos adds no queries."""
+        for video in self.videos[3:]:
+            PlaylistContent.objects.create(playlist=self.public, video=video)
+        counts = []
+        for size in (1, len(self.videos)):
+            request = RequestFactory().get("/")
+            request.user = User.objects.get(pk=user.pk) if user else AnonymousUser()
+            with CaptureQueriesContext(connection) as queries:
+                videos = get_video_list_for_playlist(self.public).order_by("rank")[:size]
+                allowed = [
+                    user_can_see_playlist_video(request, video, self.public)
+                    for video in videos
+                ]
+            self.assertEqual(allowed, [True] * size)
+            counts.append(len(queries))
+        self.assertEqual(counts[0], counts[1], counts)
+
+    def test_public_playlist_access_queries_do_not_grow_per_video(self):
+        """Avoid a query per card when checking unrestricted public videos."""
+        self.assert_playlist_access_query_count_is_constant(None)
+
+    def test_group_playlist_access_queries_do_not_grow_per_video(self):
+        """Load video restrictions and viewer groups once per playlist traversal."""
+        group = AccessGroup.objects.create(code_name="audit-query-count")
+        self.stranger.owner.accessgroup_set.add(group)
+        for video in self.videos:
+            video.restrict_access_to_groups.add(group)
+        self.assert_playlist_access_query_count_is_constant(self.stranger)
+
+    def test_removed_group_membership_revokes_access_on_the_next_request(self):
+        """Keep prefetched access groups local to the current request's user."""
+        group = AccessGroup.objects.create(code_name="audit-revocation")
+        self.videos[0].restrict_access_to_groups.add(group)
+        self.stranger.owner.accessgroup_set.add(group)
+        self.client.force_login(self.stranger)
+        url = reverse(
+            "playlist:get-video",
+            kwargs={
+                "video_slug": self.videos[0].slug,
+                "playlist_slug": self.public.slug,
+            },
+        )
+        self.assertEqual(self.client.get(url).status_code, 200)
+        self.stranger.owner.accessgroup_set.remove(group)
+        self.assertEqual(self.client.get(url).status_code, 403)
 
     def test_anonymous_mutation_redirects_to_login(self):
         """Redirect anonymous additions to login without changing playlist contents."""

@@ -120,6 +120,7 @@ from .utils import (
     get_filtered_types_for_videos,
     get_headband,
     get_id_from_request,
+    get_video_access,
     is_archiving_authorized,
     pagination_data,
     sort_videos_list,
@@ -1144,71 +1145,6 @@ def videos(request):
             "owner_filter": owner_filter,
         },
     )
-
-
-def is_in_video_groups(user, video):
-    """Return whether the user belongs to one of the video's access groups."""
-    return user.owner.accessgroup_set.filter(
-        code_name__in=[
-            name[0] for name in video.restrict_access_to_groups.values_list("code_name")
-        ]
-    ).exists()
-
-
-def get_video_access(request, video, slug_private):
-    """Return True if access is granted to current user."""
-    is_draft = video.is_draft
-    is_restricted = video.is_restricted
-    is_restricted_to_group = video.restrict_access_to_groups.all().exists()
-    """
-    is_password_protected = (video.password is not None
-                             and video.password != '')
-    """
-    is_access_protected = (
-        is_draft
-        or is_restricted
-        or is_restricted_to_group
-        # or is_password_protected
-    )
-    if is_access_protected:
-        access_granted_for_private = slug_private and slug_private == video.get_hashkey()
-        access_granted_for_draft = request.user.is_authenticated and (
-            request.user == video.owner
-            or request.user.is_superuser
-            or request.user.has_perm("video.change_video")
-            or (request.user in video.additional_owners.all())
-        )
-        access_granted_for_restricted = (
-            request.user.is_authenticated and not is_restricted_to_group
-        )
-        access_granted_for_group = (
-            (request.user.is_authenticated and is_in_video_groups(request.user, video))
-            or request.user == video.owner
-            or request.user.is_superuser
-            or request.user.has_perm("recorder.add_recording")
-            or (request.user in video.additional_owners.all())
-        )
-
-        return (
-            access_granted_for_private
-            or (is_draft and access_granted_for_draft)
-            or (is_restricted and access_granted_for_restricted)
-            # and is_password_protected is False)
-            or (is_restricted_to_group and access_granted_for_group)
-            # and is_password_protected is False)
-            # or (
-            #     is_password_protected
-            #     and access_granted_for_draft
-            # )
-            # or (
-            #     is_password_protected
-            #     and request.POST.get('password')
-            #     and request.POST.get('password') == video.password
-            # )
-        )
-
-    else:
-        return True
 
 
 @csrf_protect

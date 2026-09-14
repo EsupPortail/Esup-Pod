@@ -1,5 +1,7 @@
 """Esup-Pod playlist application forms."""
 
+import hashlib
+
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -153,9 +155,11 @@ class PlaylistForm(forms.ModelForm):
             self.fields.pop("promoted", None)
 
     def clean_password(self) -> str:
-        """Keep an existing protected playlist's password when it is left blank."""
+        """Hash normalized input or keep the existing password on a protected edit."""
         password = self.cleaned_data["password"]
-        if not password and self.cleaned_data.get("visibility") == "protected":
+        if password:
+            return hashlib.sha256(password.encode("utf-8")).hexdigest()
+        if self.cleaned_data.get("visibility") == "protected":
             return self.instance.password
         return password
 

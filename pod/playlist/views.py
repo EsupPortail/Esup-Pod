@@ -53,7 +53,6 @@ from .utils import (
 )
 
 import json
-import hashlib
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
@@ -331,11 +330,6 @@ def handle_post_request_for_add_or_edit_function(
         if playlist is None:
             new_playlist.site = get_current_site(request)
             new_playlist.owner = request.user
-        password = request.POST.get("password", "").strip()
-        if password:
-            hashed_password = hashlib.sha256(password.encode("utf-8")).hexdigest()
-            new_playlist.password = hashed_password
-
         new_playlist.save()
         form.save_m2m()
         next_url = request.GET.get("next")

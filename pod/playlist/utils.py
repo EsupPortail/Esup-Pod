@@ -14,6 +14,7 @@ from django.http import Http404
 from django.utils.translation import gettext as _
 
 from pod.video.models import Video
+from pod.video.utils import get_video_access
 from django.conf import settings
 
 from .apps import FAVORITE_PLAYLIST_NAME
@@ -195,7 +196,7 @@ def get_video_list_for_playlist(playlist: Playlist) -> list:
         ],
         params=[playlist.id],
     )
-    return video_list
+    return video_list.prefetch_related("restrict_access_to_groups", "additional_owners")
 
 
 def get_playlist(slug: str) -> Playlist:
@@ -362,7 +363,7 @@ def user_can_see_playlist_video(
     request: WSGIRequest, video: Video, playlist: Playlist
 ) -> bool:
     """
-    Check if the authenticated user can see the playlist video.
+    Check video permissions within a playlist, independently of its password gate.
 
     Args:
         request (WSGIRequest): The WSGIRequest
@@ -372,22 +373,19 @@ def user_can_see_playlist_video(
     Returns:
         bool: True if the user can see the playlist video. False otherwise
     """
-    if (
-        video.password
-        or video.is_restricted
-        or video.is_draft
-        or video.restrict_access_to_groups.exists()
-    ):
-        if not request.user.is_authenticated:
-            return False
-        return (
-            video.owner == request.user
-            or request.user in video.additional_owners.all()
+    if playlist.visibility not in {
+        "public",
+        "protected",
+    } and not user_can_manage_playlist(request.user, playlist):
+        return False
+    if video.password:
+        return request.user.is_authenticated and (
+            video.owner_id == request.user.pk
             or request.user.is_superuser
+            or request.user.has_perm("video.change_video")
+            or request.user in video.additional_owners.all()
         )
-    return playlist.visibility in {"public", "protected"} or user_can_manage_playlist(
-        request.user, playlist
-    )
+    return get_video_access(request, video, None)
 
 
 def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") -> list:
