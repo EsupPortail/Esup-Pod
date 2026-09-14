@@ -951,12 +951,145 @@ class PlaylistFunctionalTests(TestCase):
         self.assertContains(response, 'id="reorganize-button"')
 
     def test_favorites_load_their_removal_script(self):
-        """Load the shared playlist utilities and favorites removal script."""
+        """Load the shared utilities and delegated card removal script for favorites."""
         response = self.client.get(
             self.url("content", get_favorite_playlist_for_user(self.owner))
         )
-        self.assertContains(response, "playlist/js/video-favorites-remove-card.js")
+        self.assertContains(response, "playlist/js/video-playlists-remove-card.js")
         self.assertContains(response, "playlist/js/utils-playlist.js")
+
+    def assert_content_mutations_denied(self, playlist, actions):
+        """Reject membership and rank changes while preserving every persisted entry."""
+        before = self.contents(playlist)
+        for action, video in actions:
+            with self.subTest(action=action):
+                response = (
+                    self.client.post(self.url(action, playlist, video_slug=video.slug))
+                    if video
+                    else self.swap(playlist)
+                )
+                self.assertEqual(response.status_code, 403)
+                self.assertEqual(self.contents(playlist), before)
+
+    def test_noneditable_playlist_rejects_membership_changes(self):
+        """Deny additions and removals even for a locked playlist's managers."""
+        self.private.editable = False
+        self.private.save()
+        for user in (self.owner, self.coowner, self.admin):
+            with self.subTest(user=user.username):
+                self.client.force_login(user)
+                self.assert_content_mutations_denied(
+                    self.private,
+                    (
+                        ("add-video", self.videos[3]),
+                        ("remove-video", self.videos[0]),
+                    ),
+                )
+
+    def test_noneditable_playlist_rejects_reorganization(self):
+        """Keep locked playlist ranks unchanged for owners, co-owners and admins."""
+        self.private.editable = False
+        self.private.save()
+        for user in (self.owner, self.coowner, self.admin):
+            with self.subTest(user=user.username):
+                self.client.force_login(user)
+                self.assert_content_mutations_denied(
+                    self.private, (("save-reorganisation", None),)
+                )
+
+    def test_noneditable_playlist_keeps_read_access_without_mutation_controls(self):
+        """Keep locked playlists playable while hiding card, modal and reorder actions."""
+        self.private.editable = False
+        self.private.save()
+        for user in (self.owner, self.coowner, self.admin):
+            with self.subTest(user=user.username):
+                self.client.force_login(user)
+                response = self.client.get(self.url("content", self.private))
+                self.assertContains(response, self.videos[0].title)
+                self.assertNotContains(response, 'id="reorganize-button"')
+                self.assertNotContains(response, 'id="remove-from-playlist-btn-')
+                response = self.client.get(
+                    self.url("start-playlist", self.private), follow=True
+                )
+                self.assertContains(response, 'id="card-playlistplayer"')
+                self.assertNotContains(response, f'id="{self.private.slug}-btn"')
+
+    def test_favorites_content_remains_mutable_when_not_editable(self):
+        """Allow favorite additions, reordering and removal without unlocking metadata."""
+        favorites = get_favorite_playlist_for_user(self.owner)
+        self.assertFalse(favorites.editable)
+        for video in self.videos[:2]:
+            response = self.client.post(
+                self.url("add-video", favorites, video_slug=video.slug) + "?json=true"
+            )
+            self.assertEqual(response.json(), {"state": "in-playlist"})
+        self.assertEqual(self.swap(favorites).status_code, 302)
+        self.assertEqual(
+            self.contents(favorites), [(self.videos[1].pk, 1), (self.videos[0].pk, 2)]
+        )
+        response = self.client.post(
+            self.url("remove-video", favorites, video_slug=self.videos[1].slug)
+            + "?json=true"
+        )
+        self.assertEqual(response.json(), {"state": "out-playlist"})
+        self.assertEqual(self.contents(favorites), [(self.videos[0].pk, 2)])
+        favorites.refresh_from_db()
+        self.assertFalse(favorites.editable)
+
+    def test_favorites_exception_does_not_grant_access_to_other_users(self):
+        """Do not let the favorites exception bypass ownership checks."""
+        favorites = get_favorite_playlist_for_user(self.owner)
+        for video in self.videos[:2]:
+            PlaylistContent.objects.create(playlist=favorites, video=video)
+        self.client.force_login(self.stranger)
+        self.assert_content_mutations_denied(
+            favorites,
+            (
+                ("add-video", self.videos[3]),
+                ("remove-video", self.videos[0]),
+                ("save-reorganisation", None),
+            ),
+        )
+
+    def test_paginated_removal_controls_preserve_csrf_and_playlist_membership(self):
+        """Remove page-two playlist and favorite entries using their rendered tokens."""
+        favorites = get_favorite_playlist_for_user(self.owner)
+        for playlist in (self.public, favorites):
+            with self.subTest(playlist=playlist.name):
+                for video in self.videos:
+                    PlaylistContent.objects.get_or_create(playlist=playlist, video=video)
+                client = Client(enforce_csrf_checks=True)
+                client.force_login(self.owner)
+                url = self.url("content", playlist)
+                response = client.get(
+                    url, {"page": 2}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+                )
+                html = BeautifulSoup(response.content, "html.parser")
+                buttons = html.select("#videos_list [data-remove-playlist-card]")
+                self.assertEqual(len(buttons), 1)
+                response = client.post(
+                    buttons[0]["href"],
+                    HTTP_X_CSRFTOKEN=buttons[0]["data-csrf-token"],
+                    HTTP_REFERER=url,
+                    follow=True,
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.context["count_videos"], 12)
+                self.assertFalse(
+                    PlaylistContent.objects.filter(
+                        playlist=playlist, video=self.videos[-1]
+                    ).exists()
+                )
+
+    def test_favorite_toggle_in_another_playlist_does_not_mark_its_card_for_removal(self):
+        """Reserve card removal for membership of the playlist currently displayed."""
+        favorites = get_favorite_playlist_for_user(self.owner)
+        PlaylistContent.objects.create(playlist=favorites, video=self.videos[0])
+        response = self.client.get(self.url("content", self.public))
+        html = BeautifulSoup(response.content, "html.parser")
+        self.assertTrue(html.select(".favorite-btn-link"))
+        self.assertFalse(html.select(".favorite-btn-link[data-remove-playlist-card]"))
+        self.assertEqual(len(html.select("[data-remove-playlist-card]")), 3)
 
     def test_favorites_cannot_be_renamed(self):
         """Preserve the system favorites name after an attempted edit."""

@@ -188,51 +188,179 @@ test("favorite HTML responses preserve POST behavior after replacing the button"
   ]);
 });
 
-for (const [filename, selector] of [
-  ["video-playlists-remove-card.js", ".remove-from-playlist-btn-link"],
-  ["video-favorites-remove-card.js", ".favorite-btn-link"],
-]) {
-  for (const ok of [true, false]) {
-    test(`${filename} ${ok ? "removes the card after POST" : "keeps the card after a refused POST"}`, async () => {
-      const button = new FakeButton({ attributes: {
-        href: "/playlist/remove/playlist/video/",
-        "data-csrf-token": "card-token",
-      } });
-      let removed = false;
-      const requests = [];
-      const errors = [];
-      const title = new FakeButton();
-      const updatedTitle = {};
-      const card = {
-        querySelector: (query) => query === selector ? button : null,
-        remove: () => { removed = true; },
-      };
-      const context = loadPlaylistContext(async (url, options) => {
-        requests.push({ url, options });
-        return { ok, text: async () => "<html></html>" };
-      }, { error: (...args) => errors.push(args) }, {
-        document: {
-          addEventListener: (event, listener) => {
-            assert.equal(event, "DOMContentLoaded");
-            listener();
-          },
-          getElementsByClassName: () => [card, { querySelector: () => null }],
-          getElementById: () => title,
+// Simulate cards, bubbling clicks and the DOM replacement performed by InfiniteLoader.
+function createCardScenario(favorites, responses = [true]) {
+  const requests = [];
+  const errors = [];
+  const listeners = new Map();
+  const title = new FakeButton();
+  const updatedTitle = { textContent: "Updated video count" };
+  const list = {
+    cards: [],
+    get innerHTML() {
+      return this.cards.map((card) => `${card.id},`).join("");
+    },
+    set innerHTML(value) {
+      this.cards = value.split(",").filter(Boolean).map(createCard);
+    },
+  };
+
+  // Supply the card selectors and ancestor lookup used by the real click handlers.
+  function createCard(id) {
+    const card = {
+      id,
+      removed: false,
+      buttons: [],
+      querySelector: (selector) => card.buttons.find((button) =>
+        button.classList.contains(selector.slice(1))) || null,
+      remove: () => { card.removed = true; },
+    };
+    for (const isFavorite of favorites ? [true] : [false, true]) {
+      const button = new FakeButton({
+        classes: ["remove-from-playlist-btn-link", ...(isFavorite ? ["favorite-btn-link"] : [])],
+        attributes: {
+          href: `/playlist/remove/${isFavorite ? "favorites" : "custom"}/video-${id}/`,
+          "data-csrf-token": "card-token",
+          ...(!isFavorite || favorites ? { "data-remove-playlist-card": "true" } : {}),
         },
-        DOMParser: class {
-          parseFromString() {
-            return { getElementById: () => updatedTitle };
-          }
-        },
+        iconClasses: ["bi", isFavorite ? "bi-star-fill" : "bi-folder-minus"],
       });
-      vm.runInContext(fs.readFileSync(`${__dirname}/${filename}`, "utf8"), context);
-      await clickButton(button);
-      assert.equal(requests.length, 1);
-      assert.equal(requests[0].url, button.getAttribute("href"));
-      assertPostOptions(requests[0].options, "card-token");
-      assert.equal(removed, ok);
-      assert.equal(title.replacedWith, ok ? updatedTitle : null);
-      assert.equal(errors.length, ok ? 0 : 1);
-    });
+      button.closest = (selector) => {
+        if (selector === ".draggable-container") return card;
+        if (selector === "#videos_list [data-remove-playlist-card]") {
+          return list.cards.includes(card) && button.getAttribute("data-remove-playlist-card") ? button : null;
+        }
+        throw new Error(`Unexpected ancestor selector: ${selector}`);
+      };
+      card.buttons.push(button);
+    }
+    return card;
   }
+
+  list.cards.push(createCard("1"));
+  const context = loadPlaylistContext(async (url, options) => {
+    requests.push({ url, options });
+    if (options.method === "GET") return { text: async () => "page-two" };
+    const ok = responses.length > 1 ? responses.shift() : responses[0];
+    return { ok, text: async () => "updated", json: async () => ({ state: "out-playlist" }) };
+  }, { error: (...args) => errors.push(args) }, {
+    document: {
+      addEventListener: (event, listener) => {
+        if (!listeners.has(event)) listeners.set(event, []);
+        listeners.get(event).push(listener);
+      },
+      getElementsByClassName: (name) => name === "draggable-container" ? list.cards
+        : list.cards.flatMap((card) => card.buttons.filter((button) => button.classList.contains(name))),
+      getElementById: (id) => ({ videos_list: list, video_count: title })[id] || null,
+      querySelector: () => ({ style: {} }),
+      querySelectorAll: () => [],
+    },
+    DOMParser: class {
+      parseFromString(data) {
+        return {
+          getElementById: (id) => id === "videos_list"
+            ? { innerHTML: data === "page-two" ? "2," : "", dataset: { nextpage: "false" } }
+            : updatedTitle,
+        };
+      }
+    },
+    window: { addEventListener() {}, removeEventListener() {} },
+    hideEmptyDropdowns() {},
+  });
+  vm.runInContext(fs.readFileSync(`${__dirname}/video-playlists-remove-card.js`, "utf8"), context);
+  if (!favorites) {
+    vm.runInContext(fs.readFileSync(`${__dirname}/video-list-favorites-card.js`, "utf8"), context);
+  }
+  for (const listener of listeners.get("DOMContentLoaded") || []) listener();
+
+  return {
+    list, requests, errors, title, updatedTitle,
+    // Execute the real pagination loader, including its favorite-button initialization.
+    async loadNextPage() {
+      const infiniteSource = fs.readFileSync(`${__dirname}/../../../../main/static/js/infinite.js`, "utf8");
+      vm.runInContext(`${infiniteSource}; this.InfiniteLoader = InfiniteLoader;`, context);
+      let loader;
+      const loaded = new Promise((resolve) => {
+        loader = new context.InfiniteLoader("/playlist/custom/?page=", () => {}, resolve);
+      });
+      await loader.initMore();
+      await loaded;
+    },
+    // Bubble an icon click through the button and document before awaiting the handlers.
+    async click(button) {
+      const event = {
+        defaultPrevented: false,
+        target: { closest: (selector) => button.closest(selector) },
+        preventDefault() { this.defaultPrevented = true; },
+      };
+      const pending = [];
+      const handler = button.listeners.get("click");
+      if (handler) pending.push(handler.call(button, event));
+      for (const listener of listeners.get("click") || []) pending.push(listener(event));
+      await Promise.all(pending);
+      return event;
+    },
+  };
 }
+
+for (const favorites of [false, true]) {
+  const label = favorites ? "Favorites" : "Playlist";
+  test(`${label} removes both earlier and new cards after infinite pagination`, async () => {
+    const scenario = createCardScenario(favorites);
+    await scenario.loadNextPage();
+    assert.equal(scenario.list.cards.length, 2);
+    for (const card of scenario.list.cards) {
+      const event = await scenario.click(card.buttons[0]);
+      assert.equal(event.defaultPrevented, true);
+      assert.equal(card.removed, true);
+      assert.equal(scenario.title.replacedWith, scenario.updatedTitle);
+    }
+    const mutations = scenario.requests.filter(({ options }) => options.method === "POST");
+    assert.equal(mutations.length, 2);
+    for (const { url, options } of mutations) {
+      assertPostOptions(options, "card-token");
+      assert.equal(url.includes("?json"), false);
+    }
+    assert.deepEqual(scenario.errors, []);
+  });
+
+  test(`${label} keeps a card after a refused POST and allows retrying`, async () => {
+    const scenario = createCardScenario(favorites, [false, true]);
+    const card = scenario.list.cards[0];
+    const button = card.buttons[0];
+    await scenario.click(button);
+    assert.equal(card.removed, false);
+    assert.equal(scenario.title.replacedWith, null);
+    assert.equal(button.classList.contains("disabled"), false);
+    assert.equal(scenario.errors.length, 1);
+    await scenario.click(button);
+    assert.equal(card.removed, true);
+    assert.equal(scenario.requests.length, 2);
+    scenario.requests.forEach(({ options }) => assertPostOptions(options, "card-token"));
+  });
+
+  test(`${label} sends only one request for repeated clicks during removal`, async () => {
+    const scenario = createCardScenario(favorites);
+    const card = scenario.list.cards[0];
+    await Promise.all([scenario.click(card.buttons[0]), scenario.click(card.buttons[0])]);
+    assert.equal(scenario.requests.length, 1);
+    assertPostOptions(scenario.requests[0].options, "card-token");
+    assert.equal(card.removed, true);
+    assert.deepEqual(scenario.errors, []);
+  });
+}
+
+test("a paginated favorite toggle in a custom playlist leaves the card visible", async () => {
+  const scenario = createCardScenario(false);
+  await scenario.loadNextPage();
+  const card = scenario.list.cards[1];
+  const button = card.buttons[1];
+  await scenario.click(button);
+  const mutations = scenario.requests.filter(({ options }) => options.method === "POST");
+  assert.equal(mutations.length, 1);
+  assertPostOptions(mutations[0].options, "card-token");
+  assert.equal(card.removed, false);
+  assert.equal(scenario.title.replacedWith, null);
+  assert.equal(button.icon.contains("bi-star"), true);
+  assert.deepEqual(scenario.errors, []);
+});
