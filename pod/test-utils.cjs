@@ -12,8 +12,8 @@ class FakeClassList {
     return this.classes.has(className);
   }
 
-  add(className) {
-    this.classes.add(className);
+  add(...classNames) {
+    classNames.forEach((className) => this.classes.add(className));
   }
 
   remove(...classNames) {

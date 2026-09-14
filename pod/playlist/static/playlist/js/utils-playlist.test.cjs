@@ -15,10 +15,10 @@ const source = fs.readFileSync(
 );
 
 // Load preventRefreshButton in an isolated context.
-function loadPreventRefreshButton(fetchMock) {
+function loadPreventRefreshButton(fetchMock, logger = console) {
   const context = {
     fetch: fetchMock,
-    console,
+    console: logger,
     document: {},
     DOMParser: class {},
     window: { setTimeout },
@@ -34,7 +34,6 @@ function loadPreventRefreshButton(fetchMock) {
 // Trigger a click listener and wait for the asynchronous response handling.
 async function clickButton(button) {
   await button.listeners.get("click").call(button, { preventDefault() {} });
-  await new Promise((resolve) => setTimeout(resolve, 350));
 }
 
 test("preventRefreshButton toggles the playlist button after JSON responses", async () => {
@@ -87,4 +86,52 @@ test("preventRefreshButton toggles the playlist button after JSON responses", as
   assert.equal(button.getAttribute("title"), "Add the video in this playlist");
   assert.equal(button.getAttribute("aria-label"), "Add the video in this playlist");
   assert.equal(button.replacedWith, null);
+});
+
+test("favorite JSON responses update stars and accessible labels", async () => {
+  const states = ["in-playlist", "out-playlist"];
+  const preventRefreshButton = loadPreventRefreshButton(async () => ({
+    ok: true, json: async () => ({ state: states.shift() }),
+  }));
+  const button = new FakeButton({
+    classes: ["favorite-btn-link"],
+    attributes: { href: "/playlist/add/favorites/video/", "aria-pressed": "false" },
+    iconClasses: ["bi", "bi-star"],
+  });
+  preventRefreshButton(button, true);
+  await clickButton(button);
+  assert.equal(button.icon.contains("bi-star-fill"), true);
+  assert.equal(button.icon.contains("bi-star"), false);
+  assert.equal(button.icon.contains("bi-dash"), false);
+  assert.equal(button.getAttribute("aria-pressed"), "true");
+  assert.equal(button.getAttribute("title"), "Remove from favorite");
+  await clickButton(button);
+  assert.equal(button.icon.contains("bi-star"), true);
+  assert.equal(button.icon.contains("bi-star-fill"), false);
+  assert.equal(button.icon.contains("bi-plus"), false);
+  assert.equal(button.getAttribute("aria-pressed"), "false");
+  assert.equal(button.getAttribute("aria-label"), "Add in favorite");
+});
+
+test("failed requests restore the modal button and allow retrying", async () => {
+  let attempts = 0;
+  const errors = [];
+  const preventRefreshButton = loadPreventRefreshButton(async () => ({
+    ok: ++attempts > 1,
+    json: async () => ({ state: "in-playlist" }),
+  }), { error: (...args) => errors.push(args) });
+  const url = "/playlist/add/playlist/video/";
+  const button = new FakeButton({
+    classes: ["action-btn", "btn-success"],
+    attributes: { href: url },
+    iconClasses: ["bi", "bi-plus"],
+  });
+  preventRefreshButton(button, true);
+  await clickButton(button);
+  assert.equal(errors.length, 1);
+  assert.equal(button.classList.contains("disabled"), false);
+  assert.equal(button.getAttribute("href"), url);
+  await clickButton(button);
+  assert.equal(attempts, 2);
+  assert.equal(button.icon.contains("bi-dash"), true);
 });
