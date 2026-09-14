@@ -593,6 +593,14 @@ msgid "Save"
 msgstr "Sauvegarder"
 
 #: pod/playlist/static/playlist/js/utils-playlist.js
+msgid "Remove from favorite"
+msgstr "Retirer des favoris"
+
+#: pod/playlist/static/playlist/js/utils-playlist.js
+msgid "Add in favorite"
+msgstr "Ajouter aux favoris"
+
+#: pod/playlist/static/playlist/js/utils-playlist.js
 msgid "Remove the video from this playlist"
 msgstr "Supprimer la vidéo de cette liste de lecture"
 
