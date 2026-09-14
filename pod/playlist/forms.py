@@ -25,6 +25,17 @@ general_informations = _("General informations")
 security_informations = _("Security informations")
 
 
+class PlaylistOwnerWidget(AddOwnerWidget):
+    """Render the co-owner selection safely when submitted identifiers are invalid."""
+
+    def optgroups(self, name, value, attrs=None):
+        """Display validation errors without querying malformed user identifiers."""
+        try:
+            return super().optgroups(name, value, attrs)
+        except (ValueError, TypeError):
+            return super().optgroups(name, [], attrs)
+
+
 class PlaylistForm(forms.ModelForm):
     """Form to add or edit a playlist."""
 
@@ -43,7 +54,7 @@ class PlaylistForm(forms.ModelForm):
         if not USE_PROMOTED_PLAYLIST:
             exclude.append("promoted")
         widgets = {
-            "additional_owners": AddOwnerWidget,
+            "additional_owners": PlaylistOwnerWidget,
         }
 
     field_order = [
@@ -148,6 +159,15 @@ class PlaylistForm(forms.ModelForm):
         self.user = kwargs.pop("user", None)
         super(PlaylistForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
+        owners_field = self.add_prefix("additional_owners")
+        if (
+            self.is_bound
+            and self.instance.pk
+            and owners_field not in self.data
+            and f"{owners_field}_present" not in self.data
+        ):
+            # Omitted fields must not be written by ModelForm.save_m2m().
+            self.fields.pop("additional_owners")
         if not self.user or (
             RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY
             and not (self.user.is_staff or self.user.is_superuser)

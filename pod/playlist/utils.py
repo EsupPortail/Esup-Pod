@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.db.models.functions import Lower
-from django.db.models import Max
+from django.db.models import Max, QuerySet
 from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.exceptions import PermissionDenied
@@ -175,15 +175,18 @@ def get_playlist_list_for_user(user: User) -> list:
         ).exclude(name="Favorites")
 
 
-def get_video_list_for_playlist(playlist: Playlist) -> list:
+def get_video_list_for_playlist(
+    playlist: Playlist, *, prefetch_access: bool = False
+) -> QuerySet[Video]:
     """
-    Get all videos for a playlist.
+    Get a playlist's videos, optionally loading relations used for access checks.
 
     Args:
         playlist (:class:`pod.playlist.models.Playlist`): The playlist object
+        prefetch_access (bool): Preload group restrictions and additional owners.
 
     Returns:
-        list(:class:`pod.video.models.Video`): The video list for a playlist
+        QuerySet[Video]: The playlist videos with their ranks.
     """
     playlist_content = PlaylistContent.objects.filter(playlist=playlist)
     videos_id = playlist_content.values_list("video_id", flat=True)
@@ -196,7 +199,11 @@ def get_video_list_for_playlist(playlist: Playlist) -> list:
         ],
         params=[playlist.id],
     )
-    return video_list.prefetch_related("restrict_access_to_groups", "additional_owners")
+    if prefetch_access:
+        video_list = video_list.prefetch_related(
+            "restrict_access_to_groups", "additional_owners"
+        )
+    return video_list
 
 
 def get_playlist(slug: str) -> Playlist:

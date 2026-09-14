@@ -196,7 +196,9 @@ def render_playlist(
 ):
     """Render playlist contents as a page or an AJAX fragment, including favorites."""
     videos_list = sort_videos_list(
-        get_video_list_for_playlist(playlist), sort_field, sort_direction
+        get_video_list_for_playlist(playlist, prefetch_access=True),
+        sort_field,
+        sort_direction,
     )
     paginator = Paginator(videos_list, 12)
     videos = paginator.get_page(request.GET.get("page", 1))
@@ -482,7 +484,7 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
         request, playlist
     ) or not user_can_see_playlist_video(request, video, playlist):
         raise PermissionDenied
-    videos = get_video_list_for_playlist(playlist).order_by("rank")
+    videos = get_video_list_for_playlist(playlist, prefetch_access=True).order_by("rank")
     if video in videos:
         context = {
             "video": video,

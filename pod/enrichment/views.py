@@ -285,7 +285,9 @@ def video_enrichment(
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
         params = {
             "playlist_in_get": playlist,
-            "videos": get_video_list_for_playlist(playlist).order_by("rank"),
+            "videos": get_video_list_for_playlist(
+                playlist, prefetch_access=True
+            ).order_by("rank"),
         }
     template_video = (
         "enrichment/video_enrichment-iframe.html"

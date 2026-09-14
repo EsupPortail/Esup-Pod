@@ -129,6 +129,153 @@ class PlaylistFunctionalTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertFalse(Playlist.objects.filter(pk=playlist.pk).exists())
 
+    def test_partial_metadata_edit_preserves_coowners(self):
+        """Keep co-owners when an authorized editor omits the selection field."""
+        data = self.payload(self.private, description="Partial metadata edit")
+        data.pop("additional_owners")
+        for editor in (self.owner, self.coowner, self.admin):
+            with self.subTest(editor=editor.username):
+                self.private.additional_owners.set([self.coowner])
+                self.client.force_login(editor)
+                response = self.client.post(self.url("edit", self.private), data)
+                self.assertEqual(response.status_code, 302)
+                self.private.refresh_from_db()
+                self.assertEqual(self.private.description, "Partial metadata edit")
+                self.assertEqual(
+                    list(self.private.additional_owners.all()), [self.coowner]
+                )
+                self.assertEqual(self.private.owner_id, self.owner.pk)
+
+    def test_browser_form_can_explicitly_clear_all_coowners(self):
+        """Submit the rendered presence marker when the multiple select is empty."""
+        response = self.client.get(self.url("edit", self.private))
+        form = BeautifulSoup(response.content, "html.parser")
+        marker = form.select_one('input[type="hidden"][name="additional_owners_present"]')
+        self.assertIsNotNone(marker)
+        data = self.payload(self.private)
+        data.pop("additional_owners")
+        data[marker["name"]] = marker["value"]
+        response = self.client.post(self.url("edit", self.private), data)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(self.private.additional_owners.exists())
+
+    def test_explicit_coowner_selection_replaces_previous_selection(self):
+        """Apply a supplied selection even when no presence marker is included."""
+        response = self.client.post(
+            self.url("edit", self.private),
+            self.payload(self.private, additional_owners=[self.stranger.pk]),
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(list(self.private.additional_owners.all()), [self.stranger])
+
+    def test_invalid_coowner_selection_preserves_existing_relations(self):
+        """Keep current co-owners when submitted identifiers fail validation."""
+        response = self.client.post(
+            self.url("edit", self.private),
+            self.payload(
+                self.private,
+                additional_owners=["invalid-user"],
+                additional_owners_present="1",
+            ),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("additional_owners", response.context["form"].errors)
+        self.assertEqual(list(self.private.additional_owners.all()), [self.coowner])
+
+    def test_omitted_coowners_are_not_rewritten_when_saving_a_form(self):
+        """Preserve co-owner changes made after validation of a partial form."""
+        data = self.payload(self.private)
+        data.pop("additional_owners")
+        form = PlaylistForm(data=data, instance=self.private, user=self.owner)
+        self.assertTrue(form.is_valid(), form.errors)
+        self.private.additional_owners.add(self.stranger)
+        form.save()
+        self.assertCountEqual(
+            self.private.additional_owners.all(), [self.coowner, self.stranger]
+        )
+
+    def test_prefixed_form_distinguishes_omitted_and_cleared_coowners(self):
+        """Recognize the optional selection marker when the form has a prefix."""
+        data = self.payload(self.private)
+        data.pop("additional_owners")
+        data = {f"playlist-{name}": value for name, value in data.items()}
+        for clear in (False, True):
+            with self.subTest(clear=clear):
+                self.private.additional_owners.set([self.coowner])
+                submitted = data.copy()
+                if clear:
+                    submitted["playlist-additional_owners_present"] = "1"
+                form = PlaylistForm(
+                    data=submitted,
+                    instance=self.private,
+                    user=self.owner,
+                    prefix="playlist",
+                )
+                self.assertTrue(form.is_valid(), form.errors)
+                form.save()
+                self.assertEqual(
+                    list(self.private.additional_owners.all()),
+                    [] if clear else [self.coowner],
+                )
+
+    def test_creation_without_coowners_succeeds(self):
+        """Create a playlist when a client omits the optional co-owner selection."""
+        data = self.payload()
+        data.pop("additional_owners")
+        response = self.client.post(self.url("add"), data)
+        self.assertEqual(response.status_code, 302)
+        playlist = Playlist.objects.get(name="Created through HTTP")
+        self.assertFalse(playlist.additional_owners.exists())
+
+    def test_base_video_queryset_keeps_first_video_lookup_lightweight(self):
+        """Fetch a thumbnail candidate without loading authorization relations."""
+        with self.assertNumQueries(1):
+            video = get_video_list_for_playlist(self.public).order_by("rank").first()
+        self.assertEqual(video.pk, self.videos[0].pk)
+
+    def test_playlist_thumbnail_fetches_only_its_first_video(self):
+        """Keep the playlist card's first-video lookup to a single query."""
+        with self.assertNumQueries(1):
+            video = self.public.get_first_video()
+        self.assertEqual(video.pk, self.videos[0].pk)
+
+    def test_playlist_rendering_prefetches_video_access_relations(self):
+        """Reuse loaded video rights on content pages, player sidebars and AJAX."""
+        self.client.logout()
+        video = self.videos[0]
+        requests = [
+            (self.url("content", self.public), {}),
+            (
+                reverse("video:video", kwargs={"slug": video.slug}),
+                {"playlist": self.public.slug},
+            ),
+            (
+                reverse("enrichment:video_enrichment", kwargs={"slug": video.slug}),
+                {"playlist": self.public.slug},
+            ),
+            (
+                reverse(
+                    "playlist:get-video",
+                    kwargs={"video_slug": video.slug, "playlist_slug": self.public.slug},
+                ),
+                {},
+            ),
+        ]
+        for url, params in requests:
+            with self.subTest(url=url):
+                response = self.client.get(url, params)
+                self.assertEqual(response.status_code, 200)
+                videos = list(response.context["videos"])
+                with self.assertNumQueries(0):
+                    self.assertTrue(
+                        all(
+                            user_can_see_playlist_video(
+                                response.wsgi_request, item, self.public
+                            )
+                            for item in videos
+                        )
+                    )
+
     def test_creation_rejects_empty_name(self):
         """Reject an empty title without creating a playlist."""
         before = Playlist.objects.count()
@@ -360,7 +507,9 @@ class PlaylistFunctionalTests(TestCase):
             request = RequestFactory().get("/")
             request.user = User.objects.get(pk=user.pk) if user else AnonymousUser()
             with CaptureQueriesContext(connection) as queries:
-                videos = get_video_list_for_playlist(self.public).order_by("rank")[:size]
+                videos = get_video_list_for_playlist(
+                    self.public, prefetch_access=True
+                ).order_by("rank")[:size]
                 allowed = [
                     user_can_see_playlist_video(request, video, self.public)
                     for video in videos

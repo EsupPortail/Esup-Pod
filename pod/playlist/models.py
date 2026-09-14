@@ -162,7 +162,9 @@ class Playlist(models.Model):
         """Get the first video."""
         from .utils import get_video_list_for_playlist, user_can_see_playlist_video
 
-        videos = get_video_list_for_playlist(self).order_by("rank")
+        videos = get_video_list_for_playlist(
+            self, prefetch_access=request is not None
+        ).order_by("rank")
         if request is None:
             return videos.first()
         return next(
