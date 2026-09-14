@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load playlist_buttons %}
 {% spaceless %}
   <a href="{% url 'playlist:edit' playlist.slug %}"
      title="{% blocktrans with name=playlist.name %}Edit the playlist “{{ name }}”{% endblocktrans %}"
@@ -7,6 +8,8 @@
      data-bs-toggle="tooltip" data-bs-placement="top">
     <i class="bi bi-pencil-square" aria-hidden="true"></i>
   </a>
+  {% user_can_delete_playlist request.user playlist as can_delete %}
+  {% if can_delete %}
   <a href="{% url 'playlist:remove' playlist.slug %}"
      title="{% blocktrans with name=playlist.name %}Remove the playlist “{{ name }}”{% endblocktrans %}"
      aria-label="{% trans 'Remove the playlist'%}"
@@ -14,4 +17,5 @@
      data-bs-toggle="tooltip" data-bs-placement="top">
     <i class="bi bi-trash" aria-hidden="true"></i>
   </a>
+  {% endif %}
 {% endspaceless %}

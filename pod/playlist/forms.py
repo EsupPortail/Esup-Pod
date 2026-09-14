@@ -146,14 +146,18 @@ class PlaylistForm(forms.ModelForm):
         self.user = kwargs.pop("user", None)
         super(PlaylistForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
-        if self.user:
-            if (
-                RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY or self.user.is_superuser
-            ) and "promoted" in self.fields:
-                del self.fields["promoted"]
-        else:
-            if "promoted" in self.fields:
-                del self.fields["promoted"]
+        if not self.user or (
+            RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY
+            and not (self.user.is_staff or self.user.is_superuser)
+        ):
+            self.fields.pop("promoted", None)
+
+    def clean_password(self) -> str:
+        """Keep an existing protected playlist's password when it is left blank."""
+        password = self.cleaned_data["password"]
+        if not password and self.cleaned_data.get("visibility") == "protected":
+            return self.instance.password
+        return password
 
     def clean_name(self) -> str:
         """Check if the playlist name asked is correct."""

@@ -1,7 +1,12 @@
+/**
+ * @file Esup-Pod playlist card removal.
+ */
+
 document.addEventListener("DOMContentLoaded", function () {
   const cards = document.getElementsByClassName("draggable-container");
   for (let card of cards) {
     const btn = card.querySelector(".remove-from-playlist-btn-link");
+    if (!btn) continue;
     btn.addEventListener("click", function (e) {
       e.preventDefault();
       const url = btn.getAttribute("href");

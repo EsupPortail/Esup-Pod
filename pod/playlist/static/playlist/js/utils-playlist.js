@@ -18,7 +18,9 @@ function preventRefreshButton(button, jsonFormat) {
   if (button) {
     button.addEventListener("click", function (e) {
       e.preventDefault();
-      let url = this.getAttribute("href");
+      const originalUrl = this.getAttribute("href");
+      if (!originalUrl || button.classList.contains("disabled")) return;
+      let url = originalUrl;
       if (button.classList.contains("action-btn")) {
         button.classList.add("disabled");
         this.removeAttribute("href");
@@ -28,7 +30,7 @@ function preventRefreshButton(button, jsonFormat) {
       if (jsonFormat && !url.includes("json=true")) {
         url += `${url.includes("?") ? "&" : "?"}json=true`;
       }
-      fetch(url, {
+      return fetch(url, {
         method: "GET",
       })
         .then((response) => {
@@ -43,41 +45,7 @@ function preventRefreshButton(button, jsonFormat) {
         })
         .then((data) => {
           if (jsonFormat) {
-            window.setTimeout(() => {
-              const iconElement = button.querySelector(".bi");
-              const isInPlaylist = data.state === "in-playlist";
-              const newUrl = isInPlaylist
-                ? url.replace("/add/", "/remove/")
-                : url.replace("/remove/", "/add/");
-              const oldIcon = isInPlaylist ? "bi-plus" : "bi-dash";
-              const newIcon = isInPlaylist ? "bi-dash" : "bi-plus";
-              const oldButtonClass = isInPlaylist
-                ? "btn-success"
-                : "btn-danger";
-              const newButtonClass = isInPlaylist
-                ? "btn-danger"
-                : "btn-success";
-              const oldActionClass = isInPlaylist
-                ? "add-video-from-playlist"
-                : "remove-video-from-playlist";
-              const newActionClass = isInPlaylist
-                ? "remove-video-from-playlist"
-                : "add-video-from-playlist";
-              const actionLabel = isInPlaylist
-                ? gettext("Remove the video from this playlist")
-                : gettext("Add the video in this playlist");
-
-              if (data.state !== "in-playlist" && data.state !== "out-playlist") {
-                return;
-              }
-              iconElement.classList.remove(oldIcon);
-              iconElement.classList.add(newIcon);
-              button.classList.remove(oldButtonClass, oldActionClass, "disabled");
-              button.classList.add(newButtonClass, newActionClass);
-              button.setAttribute("href", newUrl);
-              button.setAttribute("title", actionLabel);
-              button.setAttribute("aria-label", actionLabel);
-            }, 300);
+            updatePlaylistButton(button, data.state, url);
           } else {
             const parser = new DOMParser();
             const html = parser.parseFromString(data, "text/html");
@@ -97,12 +65,54 @@ function preventRefreshButton(button, jsonFormat) {
               favoriteButton.replaceWith(updatedFavoriteButton);
             }
           }
-          // Hide empty menu and change style for favorite button
-          // hideEmptyDropdowns();
         })
         .catch((error) => {
           console.error("Error: ", error);
+        })
+        .finally(() => {
+          button.classList.remove("disabled");
+          if (!button.getAttribute("href")) button.setAttribute("href", originalUrl);
         });
     });
   }
+}
+
+/**
+ * Update a modal button or a favorite star after a successful JSON response.
+ * @param {HTMLElement} button - The action button.
+ * @param {string} state - The new playlist membership state.
+ * @param {string} url - The URL used for the action.
+ */
+function updatePlaylistButton(button, state, url) {
+  if (state !== "in-playlist" && state !== "out-playlist") {
+    throw new Error("Unexpected playlist state");
+  }
+  const isInPlaylist = state === "in-playlist";
+  const isFavorite = button.classList.contains("favorite-btn-link");
+  const icons = isFavorite ? ["bi-star", "bi-star-fill"] : ["bi-plus", "bi-dash"];
+  const icon = button.querySelector(".bi");
+  icon?.classList.remove(...icons);
+  icon?.classList.add(icons[Number(isInPlaylist)]);
+
+  let label;
+  if (isFavorite) {
+    label = isInPlaylist ? gettext("Remove from favorite") : gettext("Add in favorite");
+    button.setAttribute("aria-pressed", String(isInPlaylist));
+  } else {
+    label = isInPlaylist
+      ? gettext("Remove the video from this playlist")
+      : gettext("Add the video in this playlist");
+    button.classList.remove(
+      "btn-success", "btn-danger", "add-video-from-playlist", "remove-video-from-playlist",
+    );
+    button.classList.add(
+      isInPlaylist ? "btn-danger" : "btn-success",
+      isInPlaylist ? "remove-video-from-playlist" : "add-video-from-playlist",
+    );
+  }
+  button.setAttribute("href", isInPlaylist
+    ? url.replace("/add/", "/remove/")
+    : url.replace("/remove/", "/add/"));
+  button.setAttribute("title", label);
+  button.setAttribute("aria-label", label);
 }
