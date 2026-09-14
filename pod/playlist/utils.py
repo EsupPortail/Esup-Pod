@@ -477,7 +477,11 @@ def require_playlist_access(request: WSGIRequest, playlist: Playlist):
         raise PermissionDenied(_("You cannot access this playlist."))
     form = PlaylistPasswordForm(request.POST if request.method == "POST" else None)
     if request.method == "POST" and form.is_valid():
-        if check_password(form.cleaned_data["password"], playlist):
+        password = form.cleaned_data["password"]
+        # New passwords are normalized; legacy hashes may include surrounding spaces.
+        if check_password(password.strip(), playlist) or check_password(
+            password, playlist
+        ):
             request.session[f"playlist_access_{playlist.pk}"] = (
                 playlist.get_session_auth_hash()
             )

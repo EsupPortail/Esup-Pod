@@ -2,6 +2,8 @@
  * @file Esup-Pod playlist card removal.
  */
 
+/* global postPlaylistAction */
+
 document.addEventListener("DOMContentLoaded", function () {
   const cards = document.getElementsByClassName("draggable-container");
   for (let card of cards) {
@@ -9,10 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!btn) continue;
     btn.addEventListener("click", function (e) {
       e.preventDefault();
-      const url = btn.getAttribute("href");
-      fetch(url, {
-        method: "GET"
-      })
+      return postPlaylistAction(btn)
         .then((response) => {
           if (response.ok) {
             return response.text();
@@ -27,9 +26,9 @@ document.addEventListener("DOMContentLoaded", function () {
           const title = document.getElementById("video_count");
           title.replaceWith(html.getElementById("video_count"));
         })
-        .catch(error => {
-          console.error("Error: ", error)
+        .catch((error) => {
+          console.error("Error: ", error);
         });
-    })
+    });
   }
 });

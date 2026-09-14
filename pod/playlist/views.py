@@ -14,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django.views.decorators.http import require_POST
 from django.http import (
     Http404,
     HttpResponseBadRequest,
@@ -233,6 +234,8 @@ def render_playlist(
 
 
 @login_required(redirect_field_name="referrer")
+@require_POST
+@csrf_protect
 def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
     """Remove a video in playlist."""
     playlist = get_object_or_404(Playlist, slug=slug)
@@ -254,6 +257,8 @@ def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
 
 
 @login_required(redirect_field_name="referrer")
+@require_POST
+@csrf_protect
 def add_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
     """Add a video in playlist."""
     playlist = get_object_or_404(Playlist, slug=slug)

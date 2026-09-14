@@ -240,6 +240,7 @@ class PlaylistPasswordForm(forms.Form):
 
     password = forms.CharField(
         label=_("Password"),
+        strip=False,  # Preserve whitespace for passwords created before normalization.
         widget=forms.PasswordInput(
             attrs={
                 "aria-describedby": "id_passwordHelp",

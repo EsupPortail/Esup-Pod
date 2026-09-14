@@ -9,8 +9,23 @@ global addEventListenerForModal
 */
 
 /**
- * Disables the default refresh behavior of a button and performs an asynchronous GET request using the Fetch API.
+ * Submit a playlist mutation with the token rendered on its button.
+ * @param {HTMLElement} button - The action button carrying the CSRF token.
+ * @param {string} url - The action URL, optionally including a response format.
+ * @returns {Promise<Response>} The server response.
+ */
+function postPlaylistAction(button, url = button.getAttribute("href")) {
+  return fetch(url, {
+    method: "POST",
+    mode: "same-origin",
+    headers: { "X-CSRFToken": button.getAttribute("data-csrf-token") },
+  });
+}
+
+/**
+ * Submit a playlist action without refreshing the page.
  * @param {HTMLElement} button - The HTML button element.
+ * @param {boolean} jsonFormat - Whether to request a JSON response.
  */
 function preventRefreshButton(button, jsonFormat) {
   const FAVORITE_BUTTON_ID = "favorite-button";
@@ -30,9 +45,7 @@ function preventRefreshButton(button, jsonFormat) {
       if (jsonFormat && !url.includes("json=true")) {
         url += `${url.includes("?") ? "&" : "?"}json=true`;
       }
-      return fetch(url, {
-        method: "GET",
-      })
+      return postPlaylistAction(button, url)
         .then((response) => {
           if (response.ok) {
             if (jsonFormat) {
