@@ -364,3 +364,155 @@ test("a paginated favorite toggle in a custom playlist leaves the card visible",
   assert.equal(button.icon.contains("bi-star"), true);
   assert.deepEqual(scenario.errors, []);
 });
+
+// Run player transitions with fresh controls each time the video fragment is replaced.
+function createPlayerScenario(enriched, controls = true) {
+  const requests = [];
+  const errors = [];
+  const readyListeners = [];
+  const elements = new Map();
+  let favoriteButton;
+  let modalButton;
+  let videoNumber = 1;
+
+  // Recreate controls as innerHTML does, without retaining the old event listeners.
+  function replaceControls(number, favorite = false) {
+    videoNumber = Number(number);
+    favoriteButton = new FakeButton({
+      classes: [favorite ? "remove-from-playlist-btn-link" : "favorite-btn-link"],
+      attributes: {
+        href: `/playlist/${favorite ? "remove" : "add"}/favorites/video-${number}/`,
+        "data-csrf-token": `token-${number}`,
+      },
+    });
+    favoriteButton.id = "favorite-button";
+    favoriteButton.replaceWith = (replacement) => { favoriteButton = replacement; };
+    modalButton = new FakeButton({
+      classes: ["action-btn", "btn-success", "add-video-from-playlist"],
+      attributes: { href: `/playlist/add/custom/video-${number}/`, "data-csrf-token": `token-${number}` },
+      iconClasses: ["bi", "bi-plus"],
+    });
+    const modal = {
+      children: [{ querySelector: () => modalButton }],
+      replaceWith(replacement) { elements.set("playlist-list", replacement); },
+    };
+    elements.set("playlist-list", controls ? modal : null);
+  }
+
+  const playerElement = {
+    set innerHTML(content) {
+      if (content.startsWith("video-")) replaceControls(content.slice(6));
+      else favoriteButton = modalButton = null;
+    },
+  };
+  elements.set("video-player", playerElement);
+  elements.set("card-enrichment-informations", { style: {} });
+  elements.set("enrichment_style_id", { remove() {} });
+  for (const id of ["mainbreadcrumb", "more-script", "title"]) elements.set(id, {});
+  const videos = [1, 2, 3].map((number) => {
+    const button = new FakeButton({
+      classes: ["player-element", ...(number === 1 ? ["selected"] : [])],
+      attributes: {
+        href: `/video/video-${number}/?playlist=custom`,
+        "data-url-for-video": `/playlist/get-video/video-${number}/custom/`,
+      },
+    });
+    button.id = String(number);
+    button.querySelector = () => ({ innerHTML: "" });
+    return button;
+  });
+  replaceControls(1);
+  const context = loadPlaylistContext(async (url, options) => {
+    requests.push({ url, options });
+    return {
+      ok: true,
+      json: async () => ({ state: "in-playlist" }),
+      text: async () => `favorite-${videoNumber}`,
+    };
+  }, { error: (...args) => errors.push(args) }, {
+    document: {
+      addEventListener: (event, listener) => {
+        if (event === "DOMContentLoaded") readyListeners.push(listener);
+      },
+      getElementById: (id) => id === "favorite-button" ? (controls ? favoriteButton : null) : elements.get(id),
+      querySelector: (selector) => selector === ".selected"
+        ? videos.find((video) => video.classList.contains("selected"))
+        : elements.get(selector.replace(/^#/, "")),
+      querySelectorAll: (selector) => selector === ".player-element" ? videos
+        : selector === "#playlist-list .action-btn" && controls ? [modalButton] : [],
+      createDocumentFragment: () => ({
+        appendChild(element) { this.element = element; },
+        querySelector() { return this.element; },
+      }),
+    },
+    DOMParser: class {
+      parseFromString(content) {
+        if (content.startsWith("favorite-")) {
+          replaceControls(content.slice(9), true);
+          return { getElementById: (id) => id === "favorite-button" ? favoriteButton : elements.get(id) };
+        }
+        return {
+          querySelectorAll: () => [],
+          querySelector: () => ({ cloneNode: () => ({ innerHTML: content }) }),
+        };
+      }
+    },
+    XMLHttpRequest: class {
+      open(method, url) { this.url = url; }
+      send() {
+        const number = this.url.match(/video-(\d+)/)[1];
+        this.readyState = 4;
+        this.status = 200;
+        this.responseText = JSON.stringify({
+          opengraph: "", breadcrumbs: "", page_aside: "", more_script: "", page_title: "",
+          page_content: `video-${number}`, enrichment_is_on: enriched,
+        });
+        this.onreadystatechange();
+      }
+    },
+    MutationObserver: class { observe() {} },
+    history: { pushState() {} },
+    setTimeout: (callback) => callback(),
+  });
+  if (controls) {
+    for (const name of ["video-header-favorites.js", "playlist-modal.js"]) {
+      vm.runInContext(fs.readFileSync(`${__dirname}/${name}`, "utf8"), context);
+    }
+  }
+  vm.runInContext(fs.readFileSync(`${__dirname}/playlist-player.js`, "utf8"), context);
+  readyListeners.forEach((listener) => listener());
+  return {
+    context, requests, errors,
+    get favoriteButton() { return favoriteButton; },
+    get modalButton() { return modalButton; },
+  };
+}
+
+for (const enriched of [false, true]) {
+  test(`${enriched ? "Enriched" : "Standard"} player rebinds favorites and playlists after each video transition`, async () => {
+    const scenario = createPlayerScenario(enriched);
+    for (const number of [2, 3]) {
+      const previousFavorite = scenario.favoriteButton;
+      const previousModal = scenario.modalButton;
+      scenario.context.switchToNextVideo();
+      assert.notEqual(scenario.favoriteButton, previousFavorite);
+      assert.notEqual(scenario.modalButton, previousModal);
+      await clickButton(scenario.modalButton);
+      await clickButton(scenario.favoriteButton);
+      const requests = scenario.requests.slice(-2);
+      assert.equal(requests[0].url, `/playlist/add/custom/video-${number}/?json=true`);
+      assert.equal(requests[1].url, `/playlist/add/favorites/video-${number}/`);
+      requests.forEach(({ options }) => assertPostOptions(options, `token-${number}`));
+      assert.equal(typeof scenario.favoriteButton.listeners.get("click"), "function");
+      assert.equal(typeof scenario.modalButton.listeners.get("click"), "function");
+    }
+    assert.equal(scenario.requests.length, 4);
+    assert.deepEqual(scenario.errors, []);
+  });
+}
+
+test("playlist video transitions also work without favorite or modal controls", () => {
+  const scenario = createPlayerScenario(false, false);
+  assert.doesNotThrow(() => scenario.context.switchToNextVideo());
+  assert.equal(scenario.requests.length, 0);
+});

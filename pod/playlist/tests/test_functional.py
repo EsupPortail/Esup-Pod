@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 from django.contrib.auth.models import AnonymousUser, Permission, User
 from django.contrib.messages import get_messages
 from django.db import connection
+from django.db.models.signals import post_init
 from django.test import Client, RequestFactory, TestCase
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
@@ -1204,6 +1205,198 @@ class PlaylistFunctionalTests(TestCase):
         before = self.contents(self.public)
         self.assertEqual(self.swap(self.public, client).status_code, 403)
         self.assertEqual(self.contents(self.public), before)
+
+    def reorganize_and_capture_rows(self, swaps):
+        """Measure loaded entries and affected database rows during a real reorder."""
+        loaded = []
+        updated = []
+
+        def track_entry(sender, instance, **kwargs):
+            """Record each playlist entry materialized by the reorder request."""
+            loaded.append(instance.pk)
+
+        def track_update(execute, sql, params, many, context):
+            """Count affected rows after database updates have actually executed."""
+            result = execute(sql, params, many, context)
+            if sql.startswith("UPDATE") and PlaylistContent._meta.db_table in sql:
+                updated.append(context["cursor"].rowcount)
+            return result
+
+        post_init.connect(track_entry, sender=PlaylistContent)
+        try:
+            with connection.execute_wrapper(track_update):
+                response = self.client.post(
+                    self.url("save-reorganisation", self.public),
+                    {"json-data": json.dumps(swaps)},
+                )
+        finally:
+            post_init.disconnect(track_entry, sender=PlaylistContent)
+        self.assertEqual(response.status_code, 302)
+        return loaded, sum(updated)
+
+    def test_reorganization_only_loads_and_updates_the_requested_entries(self):
+        """Keep a two-video swap independent of the total playlist size."""
+        for video in self.videos[3:]:
+            PlaylistContent.objects.create(playlist=self.public, video=video)
+        expected = set(
+            PlaylistContent.objects.filter(
+                playlist=self.public, video__in=self.videos[:2]
+            ).values_list("pk", flat=True)
+        )
+        before = self.contents(self.public)
+        loaded, updated = self.reorganize_and_capture_rows(
+            {"0": [video.slug for video in self.videos[:2]]}
+        )
+        self.assertEqual(set(loaded), expected)
+        self.assertEqual(updated, 2)
+        self.assertEqual(self.contents(self.public)[2:], before[2:])
+
+    def test_empty_reorganization_does_not_load_or_update_playlist_entries(self):
+        """Avoid touching playlist contents when no swaps are supplied."""
+        self.assertEqual(self.reorganize_and_capture_rows({}), ([], 0))
+
+    def test_reorganization_does_not_write_unchanged_ranks(self):
+        """Skip writes for self-swaps and swaps that cancel each other out."""
+        first, second = (video.slug for video in self.videos[:2])
+        before = self.contents(self.public)
+        for swaps in (
+            {"0": [first, first]},
+            {"0": [first, second], "1": [first, second]},
+        ):
+            with self.subTest(swaps=swaps):
+                _, updated = self.reorganize_and_capture_rows(swaps)
+                self.assertEqual(updated, 0)
+                self.assertEqual(self.contents(self.public), before)
+
+    def test_reorganization_applies_overlapping_swaps_in_order(self):
+        """Compose swaps that share a video and persist each final rank once."""
+        first, second, third = (video.slug for video in self.videos[:3])
+        _, updated = self.reorganize_and_capture_rows(
+            {"0": [first, second], "1": [second, third]}
+        )
+        self.assertEqual(updated, 3)
+        self.assertEqual(
+            self.contents(self.public),
+            [
+                (self.videos[2].pk, 1),
+                (self.videos[0].pk, 2),
+                (self.videos[1].pk, 3),
+            ],
+        )
+
+    def test_nonmember_player_urls_are_rejected_before_playlist_access(self):
+        """Reject unrelated videos before displaying a gate or granting a session."""
+        video = self.videos[3]
+        for playlist in (self.private, self.protected):
+            for view in ("video:video", "enrichment:video_enrichment"):
+                for embedded in ("", "true"):
+                    for password in (None, "wrong", "audit-password"):
+                        with self.subTest(
+                            playlist=playlist.name,
+                            view=view,
+                            embedded=embedded,
+                            password=password,
+                        ):
+                            visitor = Client()
+                            url = reverse(view, kwargs={"slug": video.slug})
+                            url += f"?playlist={playlist.slug}&is_iframe={embedded}"
+                            response = (
+                                visitor.get(url)
+                                if password is None
+                                else visitor.post(url, {"password": password})
+                            )
+                            self.assertEqual(response.status_code, 404)
+                            self.assertNotIn(
+                                f"playlist_access_{playlist.pk}", visitor.session
+                            )
+
+    def test_explicit_start_rejects_nonmembers_before_playlist_access(self):
+        """Apply the membership-first rule when a starting video is supplied."""
+        for playlist in (self.private, self.protected):
+            with self.subTest(playlist=playlist.name):
+                visitor = Client()
+                response = visitor.post(
+                    self.url("start-playlist", playlist, video=self.videos[3].slug),
+                    {"password": "audit-password"},
+                )
+                self.assertEqual(response.status_code, 404)
+                self.assertNotIn(f"playlist_access_{playlist.pk}", visitor.session)
+
+    def test_nonmember_fragments_have_the_same_error_regardless_of_access(self):
+        """Preserve the JSON membership error without exposing video permissions."""
+        expected = {
+            "error_type": 404,
+            "error_text": "This video isn’t present in this playlist.",
+        }
+        video = self.videos[3]
+        for draft in (False, True):
+            Video.objects.filter(pk=video.pk).update(is_draft=draft)
+            for playlist in (self.public, self.private, self.protected):
+                for user in (None, self.stranger, self.owner):
+                    with self.subTest(draft=draft, playlist=playlist.name, user=user):
+                        visitor = Client()
+                        if user:
+                            visitor.force_login(user)
+                        response = visitor.get(
+                            reverse(
+                                "playlist:get-video",
+                                kwargs={
+                                    "video_slug": video.slug,
+                                    "playlist_slug": playlist.slug,
+                                },
+                            )
+                        )
+                        self.assertEqual(response.status_code, 200)
+                        self.assertEqual(response.json(), expected)
+
+    def test_player_fragment_controls_target_the_current_video_with_valid_csrf(self):
+        """Use real fragment buttons to toggle favorites and playlists on later videos."""
+        favorites = get_favorite_playlist_for_user(self.owner)
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.owner)
+        for video in self.videos[1:3]:
+            url = reverse(
+                "playlist:get-video",
+                kwargs={
+                    "video_slug": video.slug,
+                    "playlist_slug": self.public.slug,
+                },
+            )
+            for playlist, button_id, actions in (
+                (favorites, "favorite-button", ("add-video", "remove-video")),
+                (self.private, f"{self.private.slug}-btn", ("remove-video", "add-video")),
+            ):
+                for action in actions:
+                    with self.subTest(
+                        video=video.slug, playlist=playlist.name, action=action
+                    ):
+                        fragment = client.get(url).json()["page_content"]
+                        button = BeautifulSoup(fragment, "html.parser").find(id=button_id)
+                        self.assertEqual(
+                            button["href"],
+                            self.url(action, playlist, video_slug=video.slug),
+                        )
+                        response = client.post(
+                            button["href"] + "?json=true",
+                            HTTP_X_CSRFTOKEN=button["data-csrf-token"],
+                        )
+                        self.assertEqual(response.status_code, 200)
+                        self.assertEqual(
+                            response.json(),
+                            {
+                                "state": (
+                                    "in-playlist"
+                                    if action == "add-video"
+                                    else "out-playlist"
+                                ),
+                            },
+                        )
+                        self.assertEqual(
+                            PlaylistContent.objects.filter(
+                                playlist=playlist, video=video
+                            ).exists(),
+                            action == "add-video",
+                        )
 
     def test_private_player_fragment_requires_permission(self):
         """Deny anonymous access to private playlist player fragments."""
