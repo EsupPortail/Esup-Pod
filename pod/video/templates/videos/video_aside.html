@@ -11,7 +11,7 @@
       <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video"%}
     </h2>
     <div class="card-body card-text text-center">
-      {% include "videos/link_video.html" with hide_favorite_link=True %}
+      {% include "videos/link_video.html" with hide_favorite_link=True playlist=playlist_in_get playlist_player=True %}
     </div>
   </div>
 {% endif %}

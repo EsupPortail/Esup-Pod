@@ -6,9 +6,19 @@
 {% if playlist %}
   {% user_can_modify_playlist_content request.user playlist as can_modify_content %}
   {% if not in_favorites_playlist and can_modify_content %}
-    <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" data-csrf-token="{{ csrf_token }}" title="{% trans 'Remove from playlist' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1 remove-from-playlist-btn-link" id="remove-from-playlist-btn-{{ video.id }}" data-remove-playlist-card="true" data-bs-toggle="tooltip" data-bs-placement="top">
-      <i class="bi bi-folder-minus card-footer-link-i" aria-hidden="true"></i>
-    </a>
+    {% if playlist_player %}
+      <form action="{% url 'playlist:remove-video' playlist.slug video.slug %}" method="post" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="return_to_playlist" value="1">
+        <button type="submit" title="{% trans 'Remove from playlist' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1 remove-from-playlist-btn-link" id="remove-from-playlist-btn-{{ video.id }}" data-bs-toggle="tooltip" data-bs-placement="top">
+          <i class="bi bi-folder-minus card-footer-link-i" aria-hidden="true"></i>
+        </button>
+      </form>
+    {% else %}
+      <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" data-csrf-token="{{ csrf_token }}" title="{% trans 'Remove from playlist' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1 remove-from-playlist-btn-link" id="remove-from-playlist-btn-{{ video.id }}" data-remove-playlist-card="true" data-bs-toggle="tooltip" data-bs-placement="top">
+        <i class="bi bi-folder-minus card-footer-link-i" aria-hidden="true"></i>
+      </a>
+    {% endif %}
   {% endif %}
 {% endif %}
 

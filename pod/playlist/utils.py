@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.db.models.functions import Lower
-from django.db.models import Max, QuerySet
+from django.db.models import Max, QuerySet, prefetch_related_objects
 from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.exceptions import PermissionDenied
@@ -248,12 +248,13 @@ def remove_playlist(user: User, playlist: Playlist) -> None:
 
 
 def user_can_manage_playlist(user: User, playlist: Playlist) -> bool:
-    """Identify authenticated playlist owners, co-owners and administrators."""
-    return user.is_authenticated and (
-        playlist.owner_id == user.pk
-        or user.is_superuser
-        or playlist.additional_owners.filter(pk=user.pk).exists()
-    )
+    """Check managers, loading co-owners once per playlist instance when needed."""
+    if not user.is_authenticated:
+        return False
+    if playlist.owner_id == user.pk or user.is_superuser:
+        return True
+    prefetch_related_objects([playlist], "additional_owners")
+    return user in playlist.additional_owners.all()
 
 
 def user_can_modify_playlist_content(user: User, playlist: Playlist) -> bool:

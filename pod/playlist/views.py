@@ -250,6 +250,8 @@ def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
                 "state": "out-playlist",
             }
         )
+    if request.POST.get("return_to_playlist"):
+        return redirect("playlist:content", slug=playlist.slug)
     referer = request.headers.get("referer", "/")
     if url_has_allowed_host_and_scheme(referer, allowed_hosts=ALLOWED_HOSTS):
         return redirect(referer)
