@@ -23,6 +23,7 @@ from pod.playlist.models import Playlist, PlaylistContent
 from pod.playlist.utils import (
     get_favorite_playlist_for_user,
     get_video_list_for_playlist,
+    user_can_manage_playlist,
     user_can_see_playlist_video,
 )
 from pod.video.models import Type, Video
@@ -531,6 +532,75 @@ class PlaylistFunctionalTests(TestCase):
             video.restrict_access_to_groups.add(group)
         self.assert_playlist_access_query_count_is_constant(self.stranger)
 
+    def test_private_playlist_coowner_queries_do_not_grow_with_video_count(self):
+        """Keep playlist co-owner queries constant across list and player rendering."""
+        self.client.force_login(self.coowner)
+        urls = [
+            self.url("content", self.private),
+            reverse("video:video", kwargs={"slug": self.videos[0].slug})
+            + f"?playlist={self.private.slug}",
+            reverse("enrichment:video_enrichment", kwargs={"slug": self.videos[0].slug})
+            + f"?playlist={self.private.slug}",
+            reverse(
+                "playlist:get-video",
+                kwargs={
+                    "video_slug": self.videos[0].slug,
+                    "playlist_slug": self.private.slug,
+                },
+            ),
+        ]
+        counts = []
+        for size in (3, len(self.videos)):
+            for video in self.videos[:size]:
+                PlaylistContent.objects.get_or_create(playlist=self.private, video=video)
+            per_url = []
+            for url in urls:
+                with CaptureQueriesContext(connection) as queries:
+                    response = self.client.get(url)
+                self.assertEqual(response.status_code, 200)
+                per_url.append(
+                    sum(
+                        "playlist_playlist_additional_owners" in query["sql"]
+                        for query in queries
+                    )
+                )
+            counts.append(per_url)
+        self.assertEqual(counts[0], counts[1], dict(zip(urls, zip(*counts))))
+
+    def test_coowner_lookup_is_shared_without_granting_access_to_another_user(self):
+        """Load the relation once and still check each caller's identity."""
+        playlist = Playlist.objects.get(pk=self.private.pk)
+        with self.assertNumQueries(1):
+            for _ in range(3):
+                self.assertTrue(user_can_manage_playlist(self.coowner, playlist))
+                self.assertFalse(user_can_manage_playlist(self.stranger, playlist))
+        with self.assertNumQueries(0):
+            self.assertTrue(user_can_manage_playlist(self.owner, self.private))
+            self.assertTrue(user_can_manage_playlist(self.admin, self.private))
+            self.assertFalse(user_can_manage_playlist(AnonymousUser(), self.private))
+
+    def test_coowner_cache_is_invalidated_by_relation_changes(self):
+        """Honor removal, addition and clearing on a previously checked playlist."""
+        playlist = Playlist.objects.get(pk=self.private.pk)
+        self.assertTrue(user_can_manage_playlist(self.coowner, playlist))
+        playlist.additional_owners.remove(self.coowner)
+        self.assertFalse(user_can_manage_playlist(self.coowner, playlist))
+        playlist.additional_owners.add(self.stranger)
+        self.assertTrue(user_can_manage_playlist(self.stranger, playlist))
+        playlist.additional_owners.set([self.coowner])
+        self.assertFalse(user_can_manage_playlist(self.stranger, playlist))
+        self.assertTrue(user_can_manage_playlist(self.coowner, playlist))
+        playlist.additional_owners.clear()
+        self.assertFalse(user_can_manage_playlist(self.coowner, playlist))
+
+    def test_removed_coowner_loses_access_on_the_next_request(self):
+        """Keep co-owner caching local to the playlist instance loaded for a request."""
+        self.client.force_login(self.coowner)
+        url = self.url("content", self.private)
+        self.assertEqual(self.client.get(url).status_code, 200)
+        self.private.additional_owners.remove(self.coowner)
+        self.assertEqual(self.client.get(url).status_code, 403)
+
     def test_removed_group_membership_revokes_access_on_the_next_request(self):
         """Keep prefetched access groups local to the current request's user."""
         group = AccessGroup.objects.create(code_name="audit-revocation")
@@ -1013,6 +1083,7 @@ class PlaylistFunctionalTests(TestCase):
                     self.url("start-playlist", self.private), follow=True
                 )
                 self.assertContains(response, 'id="card-playlistplayer"')
+                self.assertNotContains(response, 'id="remove-from-playlist-btn-')
                 self.assertNotContains(response, f'id="{self.private.slug}-btn"')
 
     def test_favorites_content_remains_mutable_when_not_editable(self):
@@ -1397,6 +1468,86 @@ class PlaylistFunctionalTests(TestCase):
                             ).exists(),
                             action == "add-video",
                         )
+
+    def submit_player_removal_form(self, client, html, playlist, video, referer):
+        """Submit a native sidebar form and verify CSRF, membership and navigation."""
+        button = BeautifulSoup(html, "html.parser").find(
+            id=f"remove-from-playlist-btn-{video.pk}"
+        )
+        self.assertIsNotNone(button)
+        self.assertEqual(button.name, "button")
+        self.assertEqual(button.get("type"), "submit")
+        self.assertNotIn("data-remove-playlist-card", button.attrs)
+        form = button.find_parent("form")
+        self.assertEqual(form["method"].lower(), "post")
+        self.assertEqual(
+            form["action"], self.url("remove-video", playlist, video_slug=video.slug)
+        )
+        data = {
+            field["name"]: field.get("value", "") for field in form.select("input[name]")
+        }
+        self.assertTrue(data.get("csrfmiddlewaretoken"))
+        response = client.post(form["action"], data, HTTP_REFERER=referer, follow=True)
+        self.assertRedirects(response, self.url("content", playlist))
+        self.assertFalse(
+            PlaylistContent.objects.filter(playlist=playlist, video=video).exists()
+        )
+
+    def test_player_sidebar_removal_uses_a_native_post_form(self):
+        """Remove the playing video without returning to its invalid playlist URL."""
+        video = self.videos[0]
+        for view in ("video:video", "enrichment:video_enrichment"):
+            with self.subTest(view=view):
+                PlaylistContent.objects.get_or_create(playlist=self.private, video=video)
+                client = Client(enforce_csrf_checks=True)
+                client.force_login(self.owner)
+                url = (
+                    reverse(view, kwargs={"slug": video.slug})
+                    + f"?playlist={self.private.slug}"
+                )
+                response = client.get(url)
+                self.assertEqual(response.status_code, 200)
+                self.submit_player_removal_form(
+                    client, response.content, self.private, video, url
+                )
+
+    def test_replaced_player_sidebar_keeps_a_native_removal_form(self):
+        """Include usable POST controls in sidebars returned for later playlist videos."""
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.owner)
+        for video in self.videos[1:3]:
+            with self.subTest(video=video.slug):
+                response = client.get(
+                    reverse(
+                        "playlist:get-video",
+                        kwargs={
+                            "video_slug": video.slug,
+                            "playlist_slug": self.private.slug,
+                        },
+                    )
+                )
+                self.assertEqual(response.status_code, 200)
+                referer = (
+                    reverse("video:video", kwargs={"slug": video.slug})
+                    + f"?playlist={self.private.slug}"
+                )
+                self.submit_player_removal_form(
+                    client, response.json()["page_aside"], self.private, video, referer
+                )
+
+    def test_player_sidebar_removal_preserves_the_favorites_exception(self):
+        """Allow the favorites owner to remove the playing video through the sidebar."""
+        favorites = get_favorite_playlist_for_user(self.owner)
+        video = self.videos[0]
+        PlaylistContent.objects.create(playlist=favorites, video=video)
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.owner)
+        url = (
+            reverse("video:video", kwargs={"slug": video.slug})
+            + f"?playlist={favorites.slug}"
+        )
+        response = client.get(url)
+        self.submit_player_removal_form(client, response.content, favorites, video, url)
 
     def test_private_player_fragment_requires_permission(self):
         """Deny anonymous access to private playlist player fragments."""
