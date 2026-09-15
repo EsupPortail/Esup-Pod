@@ -29,7 +29,7 @@ from pod.video.views import CURSUS_CODES, get_owners_has_instances
 from pod.video.models import Video
 from pod.video.utils import sort_videos_list
 
-from .models import Playlist
+from .models import Playlist, PlaylistContent
 from .forms import PlaylistForm, PlaylistRemoveForm
 from pod.playlist.templatetags.favorites_playlist import get_playlist_name
 from .utils import (
@@ -454,6 +454,11 @@ def favorites_save_reorganisation(request: WSGIRequest, slug: str):
 def start_playlist(request: WSGIRequest, slug: str, video: str | None = None):
     """Start an accessible playlist, requesting its password when needed."""
     playlist = get_object_or_404(Playlist, slug=slug)
+    selected_video = (
+        get_object_or_404(Video, slug=video, playlistcontent__playlist=playlist)
+        if video
+        else None
+    )
     if playlist.visibility == "private" and not user_can_manage_playlist(
         request.user, playlist
     ):
@@ -461,12 +466,10 @@ def start_playlist(request: WSGIRequest, slug: str, video: str | None = None):
     password_response = require_playlist_access(request, playlist)
     if password_response is not None:
         return password_response
-    if video:
-        selected_video = get_object_or_404(
-            Video, slug=video, playlistcontent__playlist=playlist
-        )
-        if not user_can_see_playlist_video(request, selected_video, playlist):
-            raise PermissionDenied
+    if selected_video and not user_can_see_playlist_video(
+        request, selected_video, playlist
+    ):
+        raise PermissionDenied
     url = get_link_to_start_playlist(request, playlist, video)
     return redirect(url or reverse("playlist:content", kwargs={"slug": playlist.slug}))
 
@@ -483,64 +486,64 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
     Returns:
         ::class::`django.http.JsonResponse`: The JSON response.
     """
-    response_data = {}
     video = get_object_or_404(Video, slug=video_slug)
     playlist = get_object_or_404(Playlist, slug=playlist_slug)
+    if not PlaylistContent.objects.filter(playlist=playlist, video=video).exists():
+        return JsonResponse(
+            {
+                "error_type": 404,
+                "error_text": _("This video isn’t present in this playlist."),
+            }
+        )
     if not playlist_can_be_displayed(
         request, playlist
     ) or not user_can_see_playlist_video(request, video, playlist):
         raise PermissionDenied
     videos = get_video_list_for_playlist(playlist, prefetch_access=True).order_by("rank")
-    if video in videos:
-        context = {
-            "video": video,
-            "playlist_in_get": playlist,
-            "videos": videos,
-        }
-        video_is_enrichment = True if video.get_default_version_link() else False
-        templates = {
-            "breadcrumbs": "playlist/playlist_breadcrumbs.html",
-            "opengraph": "videos/video_opengraph.html",
-            "more_script": "enrichment/video_enrichment_more_script.html",
-            "page_aside": (
-                "enrichment/video_enrichment_page_aside.html"
-                if video_is_enrichment
-                else "videos/video_page_aside.html"
-            ),
-            "page_content": (
-                "enrichment/video_enrichment_page_content.html"
-                if video_is_enrichment
-                else "videos/video_page_content.html"
-            ),
-            "page_title": (
-                "enrichment/video_enrichment_page_title.html"
-                if video_is_enrichment
-                else "videos/video_page_title.html"
-            ),
-        }
-        breadcrumbs = render_to_string(templates["breadcrumbs"], context, request)
-        opengraph = render_to_string(templates["opengraph"], context, request)
-        more_script = '<div id="more-script">%s</div>' % render_to_string(
-            templates["more_script"], context, request
-        )
-        page_aside = render_to_string(templates["page_aside"], context, request)
-        page_content = render_to_string(templates["page_content"], context, request)
-        page_title = "<title>%s - %s</title>" % (
-            __TITLE_SITE__,
-            render_to_string(templates["page_title"], context, request),
-        )
-        response_data = {
-            "breadcrumbs": breadcrumbs,
-            "opengraph": opengraph,
-            "more_script": more_script,
-            "page_aside": page_aside,
-            "page_content": page_content,
-            "page_title": page_title,
-            "enrichment_is_on": video_is_enrichment,
-        }
-    else:
-        response_data = {
-            "error_type": 404,
-            "error_text": _("This video isn’t present in this playlist."),
-        }
+    context = {
+        "video": video,
+        "playlist_in_get": playlist,
+        "videos": videos,
+    }
+    video_is_enrichment = True if video.get_default_version_link() else False
+    templates = {
+        "breadcrumbs": "playlist/playlist_breadcrumbs.html",
+        "opengraph": "videos/video_opengraph.html",
+        "more_script": "enrichment/video_enrichment_more_script.html",
+        "page_aside": (
+            "enrichment/video_enrichment_page_aside.html"
+            if video_is_enrichment
+            else "videos/video_page_aside.html"
+        ),
+        "page_content": (
+            "enrichment/video_enrichment_page_content.html"
+            if video_is_enrichment
+            else "videos/video_page_content.html"
+        ),
+        "page_title": (
+            "enrichment/video_enrichment_page_title.html"
+            if video_is_enrichment
+            else "videos/video_page_title.html"
+        ),
+    }
+    breadcrumbs = render_to_string(templates["breadcrumbs"], context, request)
+    opengraph = render_to_string(templates["opengraph"], context, request)
+    more_script = '<div id="more-script">%s</div>' % render_to_string(
+        templates["more_script"], context, request
+    )
+    page_aside = render_to_string(templates["page_aside"], context, request)
+    page_content = render_to_string(templates["page_content"], context, request)
+    page_title = "<title>%s - %s</title>" % (
+        __TITLE_SITE__,
+        render_to_string(templates["page_title"], context, request),
+    )
+    response_data = {
+        "breadcrumbs": breadcrumbs,
+        "opengraph": opengraph,
+        "more_script": more_script,
+        "page_aside": page_aside,
+        "page_content": page_content,
+        "page_title": page_title,
+        "enrichment_is_on": video_is_enrichment,
+    }
     return JsonResponse(response_data)

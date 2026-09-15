@@ -5,9 +5,9 @@
 
 /* exported asyncStartCountDown */
 
-// Global vars defined in playlist_player.html
+// Globals defined in playlist_player.html and utils-playlist.js
 /*
-  global playlistCount
+  global playlistCount, preventRefreshButton
 */
 
 
@@ -92,6 +92,12 @@ function switchToNextVideo() {
             }
             document.getElementById('card-enrichment-informations').style.display = enrichmentIsOn ? 'flex' : 'none';
             refreshElementWithDocumentFragment('#video-player', pageContent);
+            if (typeof preventRefreshButton === 'function') {
+              preventRefreshButton(document.getElementById('favorite-button'));
+              document.querySelectorAll('#playlist-list .action-btn').forEach((button) => {
+                preventRefreshButton(button, true);
+              });
+            }
             refreshElementWithDocumentFragment('#more-script', moreScript);
             refreshElementWithDocumentFragment('title', pageTitle);
             document.querySelectorAll('script').forEach((item) => {

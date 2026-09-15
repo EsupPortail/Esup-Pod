@@ -274,19 +274,36 @@ def user_can_delete_playlist(user: User, playlist: Playlist) -> bool:
 
 @transaction.atomic
 def reorganize_playlist(playlist: Playlist, swaps: dict) -> None:
-    """Apply validated swaps atomically without invoking automatic rank assignment."""
+    """Lock referenced entries and atomically persist only their changed ranks."""
+    slugs = set()
+    for pair in swaps.values():
+        if (
+            not isinstance(pair, list)
+            or len(pair) != 2
+            or not all(isinstance(slug, str) for slug in pair)
+        ):
+            raise ValueError("A swap must contain two video slugs")
+        slugs.update(pair)
+    if not slugs:
+        return
     contents = {
         content.video.slug: content
         for content in PlaylistContent.objects.select_for_update()
-        .filter(playlist=playlist)
+        .filter(playlist=playlist, video__slug__in=slugs)
         .select_related("video")
+        .order_by("pk")
     }
+    original_ranks = {content.pk: content.rank for content in contents.values()}
     for pair in swaps.values():
-        if not isinstance(pair, list) or len(pair) != 2:
-            raise ValueError("A swap must contain two video slugs")
         first, second = (contents[slug] for slug in pair)
         first.rank, second.rank = second.rank, first.rank
-    PlaylistContent.objects.bulk_update(contents.values(), ["rank"])
+    changed = [
+        content
+        for content in contents.values()
+        if content.rank != original_ranks[content.pk]
+    ]
+    if changed:
+        PlaylistContent.objects.bulk_update(changed, ["rank"])
 
 
 def get_playlists_for_additional_owner(user: User) -> list:
@@ -503,11 +520,11 @@ def require_playlist_access(request: WSGIRequest, playlist: Playlist):
 
 def require_playlist_video_access(request: WSGIRequest, video: Video, playlist: Playlist):
     """Check playlist membership and video permissions for every player variant."""
+    if not PlaylistContent.objects.filter(playlist=playlist, video=video).exists():
+        raise Http404
     response = require_playlist_access(request, playlist)
     if response is not None:
         return response
-    if not PlaylistContent.objects.filter(playlist=playlist, video=video).exists():
-        raise Http404
     if not user_can_see_playlist_video(request, video, playlist):
         raise PermissionDenied
     return None
