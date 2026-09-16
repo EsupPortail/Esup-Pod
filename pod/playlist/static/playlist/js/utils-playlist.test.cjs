@@ -21,6 +21,7 @@ function loadPlaylistContext(fetchMock, logger = console, overrides = {}) {
     console: logger,
     document: { addEventListener() {} },
     DOMParser: class {},
+    URL,
     gettext: (text) => text,
     ...overrides,
     window: { setTimeout: (callback) => callback(), ...overrides.window },
@@ -600,17 +601,74 @@ test("redirected removal responses keep the card and pagination unchanged", asyn
   assert.equal(scenario.errors.length, 1);
 });
 
-test("removing the current player video navigates to the playlist contents", async () => {
+for (const origin of ["https://pod.example", "http://pod.example:8080"]) {
+  for (const target of ["/playlist/custom/", "playlist/custom/", `${origin}/playlist/custom/`]) {
+    test(`removing the current video accepts a same-origin URL: ${origin}, ${target}`, async () => {
+      const context = loadPlaylistContext(async () => ({
+        ok: true, json: async () => ({ state: "out-playlist" }),
+      }), console, { window: { location: { origin, href: "" } } });
+      const button = new FakeButton({
+        classes: ["action-btn"],
+        attributes: { href: "/playlist/remove/custom/video/", "data-removed-url": target },
+      });
+      context.preventRefreshButton(button);
+      await clickButton(button);
+      assert.equal(context.window.location.href, `${origin}/playlist/custom/`);
+      assert.equal(button.classList.contains("disabled"), false);
+    });
+  }
+}
+
+for (const target of [
+  "javascript:alert(document.domain)",
+  " \tJaVaScRiPt:alert(1)",
+  "java\nscript:alert(1)",
+  "data:text/html,<script>alert(1)</script>",
+  "blob:https://pod.example/id",
+  "https://other.example/playlist/",
+  "//other.example/playlist/",
+  "\\\\other.example/playlist/",
+  "https://pod.example.other.example/",
+  "https://pod.example@other.example/",
+  "https://pod.example:8443/",
+  "http://pod.example/",
+  "https://[invalid/",
+]) {
+  test(`removing the current video rejects an unsafe URL and permits retry: ${JSON.stringify(target)}`, async () => {
+    const errors = [];
+    const context = loadPlaylistContext(async () => ({
+      ok: true, json: async () => ({ state: "out-playlist" }),
+    }), { error: (...args) => errors.push(args) }, {
+      window: { location: { origin: "https://pod.example", href: "/current-video/" } },
+    });
+    const button = new FakeButton({
+      attributes: { href: "/playlist/remove/custom/video/", "data-removed-url": target },
+    });
+    context.preventRefreshButton(button);
+    await clickButton(button);
+    assert.equal(context.window.location.href, "/current-video/");
+    assert.equal(errors.length, 1);
+    assert.equal(button.classList.contains("disabled"), false);
+    assert.equal(context.playlistPendingActions.size, 0);
+
+    button.setAttribute("href", "/playlist/remove/custom/video/");
+    button.setAttribute("data-removed-url", "/playlist/custom/");
+    await clickButton(button);
+    assert.equal(context.window.location.href, "https://pod.example/playlist/custom/");
+    assert.equal(errors.length, 1);
+  });
+}
+
+test("adding the current video does not navigate to its removal URL", async () => {
   const context = loadPlaylistContext(async () => ({
-    ok: true, json: async () => ({ state: "out-playlist" }),
-  }), console, { window: { location: { href: "" } } });
+    ok: true, json: async () => ({ state: "in-playlist" }),
+  }), console, { window: { location: { origin: "https://pod.example", href: "/current-video/" } } });
   const button = new FakeButton({
-    classes: ["action-btn"],
-    attributes: { href: "/playlist/remove/custom/video/", "data-removed-url": "/playlist/custom/" },
+    attributes: { href: "/playlist/add/custom/video/", "data-removed-url": "/playlist/custom/" },
   });
   context.preventRefreshButton(button);
   await clickButton(button);
-  assert.equal(context.window.location.href, "/playlist/custom/");
+  assert.equal(context.window.location.href, "/current-video/");
 });
 
 test("the Favorites modal and header stay synchronized after either control is used", async () => {

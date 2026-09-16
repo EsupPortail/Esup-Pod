@@ -9,12 +9,13 @@ import json
 from unittest.mock import patch
 
 from bs4 import BeautifulSoup
+from django.contrib.auth.hashers import check_password, identify_hasher, make_password
 from django.contrib.auth.models import AnonymousUser, Permission, User
 from django.contrib.messages import get_messages
 from django.contrib.sites.models import Site
 from django.db import connection
 from django.db.models.signals import post_init
-from django.test import Client, RequestFactory, TestCase
+from django.test import Client, RequestFactory, TestCase, override_settings
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 
@@ -308,7 +309,8 @@ class PlaylistFunctionalTests(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         playlist = Playlist.objects.get(name="Created through HTTP")
-        self.assertEqual(playlist.password, self.protected.password)
+        self.assertTrue(check_password("audit-password", playlist.password))
+        self.assertNotEqual(playlist.password, self.protected.password)
         PlaylistContent.objects.create(playlist=playlist, video=self.videos[0])
         self.client.logout()
         response = self.client.get(self.url("start-playlist", playlist))
@@ -334,17 +336,24 @@ class PlaylistFunctionalTests(TestCase):
                 self.assertTrue(response.context["form"].errors)
                 self.assertEqual(Playlist.objects.count(), before)
 
+    @override_settings(
+        PASSWORD_HASHERS=["django.contrib.auth.hashers.PBKDF2PasswordHasher"]
+    )
     def test_form_save_hashes_normalized_password(self):
-        """Persist a digest from validated form data without relying on the view."""
-        form = PlaylistForm(
-            data=self.payload(visibility="protected", password="  audit-password\t"),
-            user=self.owner,
-        )
-        self.assertTrue(form.is_valid(), form.errors)
-        self.assertEqual(
-            form.save(commit=False).password,
-            hashlib.sha256(b"audit-password").hexdigest(),
-        )
+        """Use the configured password hasher and a fresh salt for each form save."""
+        passwords = []
+        for _ in range(2):
+            form = PlaylistForm(
+                data=self.payload(visibility="protected", password="  audit-password\t"),
+                user=self.owner,
+            )
+            self.assertTrue(form.is_valid(), form.errors)
+            encoded = form.save(commit=False).password
+            self.assertEqual(identify_hasher(encoded).algorithm, "pbkdf2_sha256")
+            self.assertTrue(check_password("audit-password", encoded))
+            self.assertFalse(check_password("  audit-password\t", encoded))
+            passwords.append(encoded)
+        self.assertNotEqual(*passwords)
 
     def test_group_permission_does_not_grant_private_playlist_access(self):
         """Keep playlist privacy separate from the video's group permissions."""
@@ -380,6 +389,26 @@ class PlaylistFunctionalTests(TestCase):
         )
         self.assertContains(response, self.videos[0].title)
 
+    def test_metadata_edit_preserves_a_django_password_and_visitor_access(self):
+        """Keep the salted hash and existing sessions when no new password is given."""
+        encoded = make_password("current password")
+        self.protected.password = encoded
+        self.protected.save()
+        visitor = Client()
+        response = visitor.post(
+            self.url("content", self.protected), {"password": "current password"}
+        )
+        self.assertContains(response, self.videos[0].title)
+        response = self.client.post(
+            self.url("edit", self.protected),
+            self.payload(self.protected, description="Updated description"),
+        )
+        self.assertEqual(response.status_code, 302)
+        self.protected.refresh_from_db()
+        self.assertEqual(self.protected.password, encoded)
+        response = visitor.get(self.url("content", self.protected))
+        self.assertContains(response, self.videos[0].title)
+
     def test_password_normalization_matches_creation_editing_and_unlocking(self):
         """Hash normalized input once and apply the same normalization on access."""
         for playlist in (None, self.protected):
@@ -397,9 +426,7 @@ class PlaylistFunctionalTests(TestCase):
                     if playlist
                     else Playlist.objects.get(name="Created through HTTP")
                 )
-                self.assertEqual(
-                    saved.password, hashlib.sha256(b"spaced secret").hexdigest()
-                )
+                self.assertTrue(check_password("spaced secret", saved.password))
                 self.client.logout()
                 response = self.client.post(
                     self.url("content", saved), {"password": "\tspaced secret  "}
@@ -883,33 +910,66 @@ class PlaylistFunctionalTests(TestCase):
                     self.url("content", self.protected), {"password": password}
                 )
                 self.assertContains(response, self.videos[0].title)
+                self.protected.refresh_from_db()
                 self.assertEqual(
                     visitor.session[f"playlist_access_{self.protected.pk}"],
                     self.protected.get_session_auth_hash(),
                 )
-                self.protected.refresh_from_db()
-                self.assertEqual(self.protected.password, digest)
+                self.assertNotEqual(self.protected.password, digest)
+                self.assertTrue(check_password(password, self.protected.password))
+                response = visitor.get(self.url("content", self.protected))
+                self.assertContains(response, self.videos[0].title)
+                response = Client().post(
+                    self.url("content", self.protected), {"password": password}
+                )
+                self.assertContains(response, self.videos[0].title)
 
     def test_legacy_password_fallback_does_not_accept_inexact_passwords(self):
         """Require the original spaces for legacy hashes and reject incorrect input."""
-        self.protected.password = hashlib.sha256(b" legacy secret ").hexdigest()
-        self.protected.save()
-        for password in (
-            "legacy secret",
-            " legacy secret",
-            "legacy secret ",
-            "wrong",
-            " ",
-            "",
+        for encoded in (
+            hashlib.sha256(b" legacy secret ").hexdigest(),
+            make_password(" legacy secret "),
         ):
-            with self.subTest(password=repr(password)):
-                visitor = Client()
-                response = visitor.post(
-                    self.url("content", self.protected), {"password": password}
-                )
-                self.assertContains(response, 'id="playlist_password_form"')
-                self.assertNotContains(response, self.videos[0].title)
-                self.assertNotIn(f"playlist_access_{self.protected.pk}", visitor.session)
+            self.protected.password = encoded
+            self.protected.save()
+            for password in (
+                "legacy secret",
+                " legacy secret",
+                "legacy secret ",
+                "wrong",
+                " ",
+                "",
+            ):
+                with self.subTest(encoded=encoded, password=repr(password)):
+                    visitor = Client()
+                    response = visitor.post(
+                        self.url("content", self.protected), {"password": password}
+                    )
+                    self.assertContains(response, 'id="playlist_password_form"')
+                    self.assertNotContains(response, self.videos[0].title)
+                    self.assertNotIn(
+                        f"playlist_access_{self.protected.pk}", visitor.session
+                    )
+
+    def test_legacy_upgrade_requires_other_visitors_to_unlock_again(self):
+        """Expire legacy session grants once and accept the same password again."""
+        visitor = Client()
+        session = visitor.session
+        session[f"playlist_access_{self.protected.pk}"] = (
+            self.protected.get_session_auth_hash()
+        )
+        session.save()
+        url = self.url("content", self.protected)
+        self.assertContains(visitor.get(url), self.videos[0].title)
+
+        response = Client().post(url, {"password": "audit-password"})
+        self.assertContains(response, self.videos[0].title)
+        response = visitor.get(url)
+        self.assertContains(response, 'id="playlist_password_form"')
+        self.assertNotContains(response, self.videos[0].title)
+        response = visitor.post(url, {"password": "audit-password"})
+        self.assertContains(response, self.videos[0].title)
+        self.assertContains(visitor.get(url), self.videos[0].title)
 
     def test_legacy_password_unlocks_playlist_start_and_player_variants(self):
         """Accept legacy passwords through each route using the shared password gate."""
@@ -927,6 +987,7 @@ class PlaylistFunctionalTests(TestCase):
                 response = visitor.post(url, {"password": password}, follow=True)
                 self.assertEqual(response.status_code, 200)
                 self.assertNotContains(response, 'id="playlist_password_form"')
+                self.protected.refresh_from_db()
                 self.assertEqual(
                     visitor.session[f"playlist_access_{self.protected.pk}"],
                     self.protected.get_session_auth_hash(),
