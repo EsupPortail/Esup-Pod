@@ -48,11 +48,11 @@
       {% if USE_PLAYLIST and USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
         {% if is_favorite %}
           <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" data-csrf-token="{{ csrf_token }}" data-playlist-id="{{ fav_playlist.pk }}" data-video-id="{{ video.pk }}" {% if fav_playlist == playlist_in_get %}data-removed-url="{% url 'playlist:content' fav_playlist.slug %}"{% endif %}title="{% trans 'Remove from favorite' %}" class="btn btn-link btn-lg pod-btn-share remove-from-playlist-btn-link" id="favorite-button" aria-pressed="true" role="button">
-            <i class="bi-star-fill" aria-hidden="true"></i>
+            <i class="bi bi-star-fill" aria-hidden="true"></i>
           </a>
         {% else %}
           <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}" data-csrf-token="{{ csrf_token }}" data-playlist-id="{{ fav_playlist.pk }}" data-video-id="{{ video.pk }}" title="{% trans 'Add in favorite' %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="false" role="button">
-            <i class="bi-star" aria-hidden="true"></i>
+            <i class="bi bi-star" aria-hidden="true"></i>
           </a>
         {% endif %}
 
