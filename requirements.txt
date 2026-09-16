@@ -28,7 +28,7 @@ qrcode
 ralph-malph==5.0.1
 pydantic==2.13.4
 bleach==6.4.0
-pytubefix==10.7.3
+pytubefix==11.1.0
 django-redis-sessions
 paramiko==5.0.0
 djangorestframework-simplejwt==5.5.1
