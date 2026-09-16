@@ -11,6 +11,7 @@ from unittest.mock import patch
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import AnonymousUser, Permission, User
 from django.contrib.messages import get_messages
+from django.contrib.sites.models import Site
 from django.db import connection
 from django.db.models.signals import post_init
 from django.test import Client, RequestFactory, TestCase
@@ -20,13 +21,18 @@ from django.urls import reverse
 from pod.authentication.models import AccessGroup
 from pod.playlist.forms import PlaylistForm
 from pod.playlist.models import Playlist, PlaylistContent
+from pod.playlist.templatetags.playlist_list_modal import get_user_playlists
 from pod.playlist.utils import (
     get_favorite_playlist_for_user,
+    get_link_to_start_playlist,
     get_video_list_for_playlist,
     user_can_manage_playlist,
     user_can_see_playlist_video,
 )
-from pod.video.models import Type, Video
+from pod.video.models import AdvancedNotes, Type, Video, VideoVersion
+from pod.enrichment.models import Enrichment
+from pod.video.utils import get_video_access, is_in_video_groups
+from pod.test_utils import response_error
 
 
 class PlaylistFunctionalTests(TestCase):
@@ -799,14 +805,7 @@ class PlaylistFunctionalTests(TestCase):
         """Handle an empty playlist without returning a server error."""
         empty = Playlist.objects.create(name="Audit empty", owner=self.owner)
         response = self.client.get(self.url("start-playlist", empty))
-        self.assertLess(response.status_code, 500, self.response_error(response))
-
-    @staticmethod
-    def response_error(response):
-        """Include the cause of an HTTP 500 without dumping the entire HTML page."""
-        if response.exc_info:
-            return f"{response.exc_info[0].__name__}: {response.exc_info[1]}"
-        return f"HTTP {response.status_code}"
+        self.assertLess(response.status_code, 500, response_error(response))
 
     def test_private_content_denied_to_anonymous(self):
         """Deny anonymous access to private playlist contents."""
@@ -1241,7 +1240,7 @@ class PlaylistFunctionalTests(TestCase):
         before = self.contents(self.public)
         response = self.client.post(self.url("save-reorganisation", self.public), {})
         self.assertEqual(self.contents(self.public), before)
-        self.assertEqual(response.status_code, 400, self.response_error(response))
+        self.assertEqual(response.status_code, 400, response_error(response))
 
     def test_reorganization_rejects_invalid_json(self):
         """Reject malformed JSON with HTTP 400 and preserve video ranks."""
@@ -1267,7 +1266,7 @@ class PlaylistFunctionalTests(TestCase):
             },
         )
         self.assertEqual(self.contents(self.public), before)
-        self.assertIn(response.status_code, (400, 404), self.response_error(response))
+        self.assertIn(response.status_code, (400, 404), response_error(response))
 
     def test_reorganization_requires_csrf(self):
         """Reject a reorganization request without a valid CSRF token."""
@@ -1561,9 +1560,7 @@ class PlaylistFunctionalTests(TestCase):
                 },
             )
         )
-        self.assertIn(
-            response.status_code, (302, 403, 404), self.response_error(response)
-        )
+        self.assertIn(response.status_code, (302, 403, 404), response_error(response))
 
     def test_private_player_fragment_requires_permission_for_stranger(self):
         """Deny private player fragments to an unrelated authenticated user."""
@@ -1577,9 +1574,7 @@ class PlaylistFunctionalTests(TestCase):
                 },
             )
         )
-        self.assertIn(
-            response.status_code, (302, 403, 404), self.response_error(response)
-        )
+        self.assertIn(response.status_code, (302, 403, 404), response_error(response))
 
     def test_protected_player_fragment_requires_password(self):
         """Deny protected player fragments before the playlist password is supplied."""
@@ -1613,19 +1608,11 @@ class PlaylistFunctionalTests(TestCase):
     def test_public_player_fragment_can_load_next_video(self):
         """Load the next public video and keep the player sidebar in rank order."""
         self.client.logout()
-        response = self.client.get(
-            reverse(
-                "playlist:get-video",
-                kwargs={
-                    "video_slug": self.videos[1].slug,
-                    "playlist_slug": self.public.slug,
-                },
-            )
+        initial = self.client.get(
+            self.videos[0].get_absolute_url(), {"playlist": self.public.slug}
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(self.videos[1].title.lower(), response.json()["page_title"].lower())
-        self.assertIn("page_content", response.json())
-        aside = BeautifulSoup(response.json()["page_aside"], "html.parser")
+        self.assertEqual(initial.status_code, 200)
+        aside = BeautifulSoup(initial.content, "html.parser")
         self.assertEqual(
             [item["data-url-for-video"] for item in aside.select(".player-element")],
             [
@@ -1639,6 +1626,19 @@ class PlaylistFunctionalTests(TestCase):
                 for video in self.videos[:3]
             ],
         )
+
+        response = self.client.get(
+            reverse(
+                "playlist:get-video",
+                kwargs={
+                    "video_slug": self.videos[1].slug,
+                    "playlist_slug": self.public.slug,
+                },
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(self.videos[1].title.lower(), response.json()["page_title"].lower())
+        self.assertIn("page_content", response.json())
 
     def test_superuser_creation_form_exposes_promoted_control(self):
         """Show the promotion control when an administrator creates a playlist."""
@@ -1777,3 +1777,447 @@ class PlaylistFunctionalTests(TestCase):
                     self.assertEqual(
                         "promoted" in response.context["form"].fields, allowed
                     )
+
+    def test_login_and_group_grants_cannot_publish_a_draft(self):
+        """Keep drafts private even when other restrictions would allow playback."""
+        group = AccessGroup.objects.create(code_name="audit-draft-group")
+        self.stranger.owner.accessgroup_set.add(group)
+        self.client.force_login(self.stranger)
+        for restricted, grouped in ((True, False), (False, True), (True, True)):
+            with self.subTest(restricted=restricted, grouped=grouped):
+                for video in self.videos[:3]:
+                    video.is_draft = True
+                    video.is_restricted = restricted
+                    video.save()
+                    video.restrict_access_to_groups.set([group] if grouped else [])
+                self.assert_video_access_through_playlist(False)
+                request = RequestFactory().get("/")
+                request.user = self.stranger
+                self.assertFalse(get_video_access(request, self.videos[0], None))
+                self.assertTrue(
+                    get_video_access(
+                        request, self.videos[0], self.videos[0].get_hashkey()
+                    )
+                )
+
+    def test_group_cache_honors_changes_on_the_same_user_instance(self):
+        """Recheck access after the relation manager invalidates its prefetch cache."""
+        group = AccessGroup.objects.create(code_name="audit-live-groups")
+        video = self.videos[0]
+        video.restrict_access_to_groups.add(group)
+        groups = self.stranger.owner.accessgroup_set
+        groups.add(group)
+        self.assertTrue(is_in_video_groups(self.stranger, video))
+        groups.remove(group)
+        self.assertFalse(is_in_video_groups(self.stranger, video))
+        groups.add(group)
+        self.assertTrue(is_in_video_groups(self.stranger, video))
+        groups.clear()
+        self.assertFalse(is_in_video_groups(self.stranger, video))
+
+    def test_start_link_accepts_a_video_object_and_a_slug(self):
+        """Support the utility's documented object argument and the URL caller."""
+        request = RequestFactory().get("/")
+        request.user = self.owner
+        video = self.videos[0]
+        expected = video.get_absolute_url() + f"?playlist={self.public.slug}"
+        for value in (video, video.slug):
+            with self.subTest(value=value):
+                self.assertEqual(
+                    get_link_to_start_playlist(request, self.public, value), expected
+                )
+
+    def test_missing_next_video_does_not_break_playlist_creation(self):
+        """Ignore a stale next link instead of failing after saving the playlist."""
+        next_url = reverse("video:video", kwargs={"slug": "999999-deleted-video"})
+        response = self.client.post(self.url("add") + f"?next={next_url}", self.payload())
+        playlist = Playlist.objects.get(name="Created through HTTP")
+        self.assertRedirects(response, self.url("content", playlist))
+        self.assertEqual(self.contents(playlist), [])
+
+    def test_unsupported_mutation_methods_return_405(self):
+        """Reject unsupported verbs consistently without changing any data."""
+        before = self.contents(self.private)
+        for action in ("edit", "remove", "save-reorganisation"):
+            for method in ("put", "patch", "delete", "options"):
+                with self.subTest(action=action, method=method):
+                    response = getattr(self.client, method)(
+                        self.url(action, self.private)
+                    )
+                    self.assertEqual(response.status_code, 405)
+        self.assertEqual(self.contents(self.private), before)
+
+    def test_foreign_site_playlists_are_unavailable_through_direct_routes(self):
+        """Apply site isolation to readers, fragments and all mutation endpoints."""
+        other_site = Site.objects.create(domain="other.example", name="Other site")
+        self.public.site = other_site
+        self.public.save()
+        video = self.videos[0]
+        urls = [
+            self.url(action, self.public)
+            for action in ("content", "edit", "remove", "start-playlist")
+        ]
+        urls += [
+            reverse(view, kwargs={"slug": video.slug}) + f"?playlist={self.public.slug}"
+            for view in ("video:video", "enrichment:video_enrichment")
+        ]
+        urls.append(
+            reverse(
+                "playlist:get-video",
+                kwargs={"video_slug": video.slug, "playlist_slug": self.public.slug},
+            )
+        )
+        for url in urls:
+            with self.subTest(url=url):
+                self.assertEqual(self.client.get(url).status_code, 404)
+        before = self.contents(self.public)
+        for action in ("add-video", "remove-video"):
+            response = self.client.post(
+                self.url(action, self.public, video_slug=video.slug)
+            )
+            self.assertEqual(response.status_code, 404)
+        self.assertEqual(self.swap(self.public).status_code, 404)
+        self.assertEqual(self.contents(self.public), before)
+
+    def test_foreign_site_videos_cannot_be_played_or_added(self):
+        """Keep AJAX and playlist starts within the standalone player's site scope."""
+        site = Site.objects.create(domain="other.example", name="Other site")
+        video = self.videos[0]
+        video.sites.set([site])
+        urls = [
+            self.url("start-playlist", self.public, video=video.slug),
+            reverse(
+                "playlist:get-video",
+                kwargs={"video_slug": video.slug, "playlist_slug": self.public.slug},
+            ),
+        ]
+        for url in urls:
+            with self.subTest(url=url):
+                self.assertEqual(self.client.get(url).status_code, 404)
+        response = self.client.post(
+            self.url("add-video", self.public, video_slug=video.slug)
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertNotIn(video, get_video_list_for_playlist(self.public))
+
+    def test_private_playlist_coowner_has_sidebar_controls_for_other_owners_videos(self):
+        """Playlist management must not require ownership of the playing video."""
+        self.client.force_login(self.coowner)
+        video = self.videos[0]
+        response = self.client.get(
+            video.get_absolute_url(), {"playlist": self.private.slug}
+        )
+        self.assertContains(response, f'id="remove-from-playlist-btn-{video.pk}"')
+
+    def test_modal_queries_do_not_grow_with_shared_playlists(self):
+        """Load co-owners and video membership in a fixed number of modal queries."""
+        counts = []
+        for size in (1, 10):
+            for number in range(size):
+                playlist, _ = Playlist.objects.get_or_create(
+                    name=f"Shared {number}", owner=self.owner
+                )
+                playlist.additional_owners.add(self.coowner)
+                PlaylistContent.objects.get_or_create(
+                    playlist=playlist, video=self.videos[0]
+                )
+            with CaptureQueriesContext(connection) as queries:
+                playlists = list(get_user_playlists(self.coowner, self.videos[0]))
+                for playlist in playlists:
+                    self.assertTrue(user_can_manage_playlist(self.coowner, playlist))
+            for playlist in playlists:
+                self.assertEqual(
+                    playlist.contains_video,
+                    PlaylistContent.objects.filter(
+                        playlist=playlist, video=self.videos[0]
+                    ).exists(),
+                )
+            counts.append(len(queries))
+        self.assertEqual(counts[0], counts[1], counts)
+
+    def test_first_playable_video_does_not_materialize_the_entire_playlist(self):
+        """Bound prefetch memory when the first item of a large playlist is playable."""
+        videos = Video.objects.bulk_create(
+            [
+                Video(
+                    slug=f"large-{number}",
+                    title=f"Large {number}",
+                    owner=self.owner,
+                    video="audit.mp4",
+                    is_draft=False,
+                    type_id=1,
+                )
+                for number in range(120)
+            ]
+        )
+        Video.sites.through.objects.bulk_create(
+            [
+                Video.sites.through(video_id=video.pk, site_id=self.public.site_id)
+                for video in videos
+            ]
+        )
+        PlaylistContent.objects.bulk_create(
+            [
+                PlaylistContent(playlist=self.public, video=video, rank=number + 4)
+                for number, video in enumerate(videos)
+            ]
+        )
+        loaded = []
+
+        def record_video(sender, instance, **kwargs):
+            """Count actual video instances loaded by the helper."""
+            loaded.append(instance.pk)
+
+        request = RequestFactory().get("/")
+        request.user = self.owner
+        post_init.connect(record_video, sender=Video)
+        try:
+            self.assertEqual(self.public.get_first_video(request), self.videos[0])
+        finally:
+            post_init.disconnect(record_video, sender=Video)
+        self.assertLessEqual(len(loaded), 100)
+
+    def test_tied_sort_values_have_stable_pagination(self):
+        """Disambiguate duplicate titles and legacy ranks with the video identifier."""
+        for video in self.videos[3:]:
+            PlaylistContent.objects.create(playlist=self.public, video=video)
+        Video.objects.filter(pk__in=[video.pk for video in self.videos]).update(
+            title="Same title"
+        )
+        PlaylistContent.objects.filter(playlist=self.public).update(rank=1)
+        for sort in ("rank", "title"):
+            ids = []
+            for page in (1, 2):
+                response = self.client.get(
+                    self.url("content", self.public),
+                    {"sort": sort, "sort_direction": "on", "page": page},
+                )
+                ids.extend(video.pk for video in response.context["videos"])
+            self.assertEqual(ids, [video.pk for video in self.videos])
+
+    def test_current_playlist_modal_and_favorite_removal_offer_a_valid_return_url(self):
+        """Avoid returning to a player URL after removing its current membership."""
+        favorites = get_favorite_playlist_for_user(self.owner)
+        video = self.videos[0]
+        PlaylistContent.objects.create(playlist=favorites, video=video)
+        for playlist, selector in (
+            (self.public, f'[id="{self.public.slug}-btn"]'),
+            (favorites, "#favorite-button"),
+        ):
+            response = self.client.get(
+                video.get_absolute_url(), {"playlist": playlist.slug}
+            )
+            button = BeautifulSoup(response.content, "html.parser").select_one(selector)
+            self.assertEqual(button["data-removed-url"], self.url("content", playlist))
+
+    def test_password_gates_and_metadata_mutations_require_csrf(self):
+        """Enforce CSRF on password sessions, creation, editing and deletion."""
+        visitor = Client(enforce_csrf_checks=True)
+        for action in ("content", "start-playlist"):
+            response = visitor.post(
+                self.url(action, self.protected), {"password": "audit-password"}
+            )
+            self.assertEqual(response.status_code, 403)
+            self.assertNotIn(f"playlist_access_{self.protected.pk}", visitor.session)
+        visitor.force_login(self.owner)
+        before = Playlist.objects.count()
+        for action, playlist, payload in (
+            ("add", None, self.payload()),
+            ("edit", self.private, self.payload(self.private)),
+            ("remove", self.private, {"agree": "on"}),
+        ):
+            self.assertEqual(
+                visitor.post(self.url(action, playlist), payload).status_code, 403
+            )
+        self.assertEqual(Playlist.objects.count(), before)
+
+    def test_legacy_promoted_private_playlists_are_not_listed_publicly(self):
+        """Apply visibility filtering even when old data bypassed model validation."""
+        Playlist.objects.filter(pk__in=[self.private.pk, self.protected.pk]).update(
+            promoted=True
+        )
+        self.client.logout()
+        response = self.client.get(self.url("list"))
+        self.assertEqual(list(response.context["playlists"]), [self.public])
+
+    def test_video_editors_can_play_group_restricted_videos_consistently(self):
+        """Match the standalone player's editor grant without requiring group membership."""
+        group = AccessGroup.objects.create(code_name="audit-editor-group")
+        self.videos[0].restrict_access_to_groups.add(group)
+        self.stranger.user_permissions.add(
+            Permission.objects.get(
+                content_type__app_label="video", codename="change_video"
+            )
+        )
+        self.client.force_login(self.stranger)
+        self.assert_video_access_through_playlist(True)
+
+    def test_enriched_redirect_checks_membership_and_password_before_redirecting(self):
+        """Keep alternate-version redirects behind the shared playlist gate."""
+        video = self.videos[0]
+        Enrichment.objects.create(video=video, title="Audit enrichment", start=0, end=1)
+        VideoVersion.objects.create(video=video, version="E")
+        self.client.logout()
+        url = video.get_absolute_url() + f"?playlist={self.protected.slug}"
+        response = self.client.get(url)
+        self.assertContains(response, 'id="playlist_password_form"')
+        PlaylistContent.objects.filter(playlist=self.protected, video=video).delete()
+        self.assertEqual(self.client.get(url).status_code, 404)
+
+    def test_invalid_creation_keeps_the_video_on_form_retry(self):
+        """Keep the original next URL when a user corrects an invalid creation form."""
+        video = self.videos[0]
+        next_url = video.get_absolute_url() + "?redirect=false&autoplay=true"
+        response = self.client.get(self.url("add"), {"next": next_url})
+        form = BeautifulSoup(response.content, "html.parser").select_one(
+            "form.needs-validation"
+        )
+        response = self.client.post(form["action"], self.payload(name=""))
+        self.assertEqual(response.status_code, 200)
+        form = BeautifulSoup(response.content, "html.parser").select_one(
+            "form.needs-validation"
+        )
+        response = self.client.post(form["action"], self.payload())
+        self.assertRedirects(response, next_url, fetch_redirect_response=False)
+        playlist = Playlist.objects.get(name="Created through HTTP")
+        self.assertTrue(
+            PlaylistContent.objects.filter(playlist=playlist, video=video).exists()
+        )
+
+    def test_player_fragment_preserves_note_visibility(self):
+        """Render the new video's visible notes without leaking private or stale notes."""
+        video = self.videos[1]
+        for user, status, text, target in (
+            (self.owner, "2", "Visible current note", video),
+            (self.stranger, "0", "My private current note", video),
+            (self.owner, "0", "Hidden private note", video),
+            (self.owner, "1", "Hidden owner note", video),
+            (self.owner, "2", "Stale previous note", self.videos[0]),
+        ):
+            AdvancedNotes.objects.create(
+                user=user, status=status, note=text, video=target
+            )
+        url = reverse(
+            "playlist:get-video",
+            kwargs={"video_slug": video.slug, "playlist_slug": self.public.slug},
+        )
+        for authenticated in (False, True):
+            with self.subTest(authenticated=authenticated):
+                self.client.logout()
+                if authenticated:
+                    self.client.force_login(self.stranger)
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200)
+                aside = response.json()["page_aside"]
+                self.assertIn("Visible current note", aside)
+                self.assertEqual("My private current note" in aside, authenticated)
+                for hidden in (
+                    "Hidden private note",
+                    "Hidden owner note",
+                    "Stale previous note",
+                ):
+                    self.assertNotIn(hidden, aside)
+
+    def test_player_fragment_omits_the_unchanged_playlist_sidebar(self):
+        """Do not regenerate every playlist entry for a single video transition."""
+        response = self.client.get(
+            reverse(
+                "playlist:get-video",
+                kwargs={
+                    "video_slug": self.videos[0].slug,
+                    "playlist_slug": self.public.slug,
+                },
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('id="card-playlistplayer"', response.json()["page_aside"])
+
+    def test_xapi_playlist_transitions_reload_the_document(self):
+        """Keep per-player xAPI registration when its scripts require a fresh document."""
+        for enabled, video_enabled in ((True, True), (False, True), (True, False)):
+            with self.subTest(enabled=enabled, video_enabled=video_enabled):
+                with self.settings(USE_XAPI=enabled, USE_XAPI_VIDEO=video_enabled):
+                    response = self.client.get(
+                        self.videos[0].get_absolute_url(), {"playlist": self.public.slug}
+                    )
+                self.assertEqual(response.status_code, 200)
+                entries = BeautifulSoup(response.content, "html.parser").select(
+                    ".player-element"
+                )
+                self.assertEqual(len(entries), 3)
+                self.assertTrue(
+                    all(
+                        entry.has_attr("data-full-page") == (enabled and video_enabled)
+                        for entry in entries
+                    )
+                )
+
+    def test_default_version_queries_do_not_grow_per_playlist_entry(self):
+        """Keep original and enriched playlist rendering independent of entry count."""
+        for version in ("O", "E"):
+            if version == "E":
+                for video in self.videos:
+                    Enrichment.objects.create(
+                        video=video, title="Version", start=0, end=1
+                    )
+                    VideoVersion.objects.create(video=video, version=version)
+            self.public.playlistcontent_set.filter(video__in=self.videos[3:]).delete()
+            counts = {}
+            for size in (3, len(self.videos)):
+                for video in self.videos[:size]:
+                    PlaylistContent.objects.get_or_create(
+                        playlist=self.public, video=video
+                    )
+                for route in (
+                    "video:video",
+                    "enrichment:video_enrichment",
+                    "playlist:get-video",
+                ):
+                    kwargs = (
+                        {
+                            "video_slug": self.videos[0].slug,
+                            "playlist_slug": self.public.slug,
+                        }
+                        if route == "playlist:get-video"
+                        else {"slug": self.videos[0].slug}
+                    )
+                    with CaptureQueriesContext(connection) as queries:
+                        response = self.client.get(
+                            reverse(route, kwargs=kwargs),
+                            {"playlist": self.public.slug, "redirect": "false"},
+                        )
+                    self.assertEqual(response.status_code, 200)
+                    count = sum(
+                        'FROM "enrichment_enrichment"' in query["sql"]
+                        for query in queries
+                    )
+                    if size == 3:
+                        counts[route] = count
+                    else:
+                        with self.subTest(version=version, route=route):
+                            self.assertEqual(count, counts[route])
+
+    def test_playlist_version_checks_do_not_load_enrichment_payloads(self):
+        """Resolve version links without materializing each video's enrichment data."""
+        video = self.videos[0]
+        Enrichment.objects.create(video=video, title="Enriched version", start=0, end=1)
+        VideoVersion.objects.create(video=video, version="E")
+        loaded = []
+
+        def record_enrichment(sender, instance, **kwargs):
+            """Record instantiated enrichments while playlist links are resolved."""
+            loaded.append(instance.pk)
+
+        post_init.connect(record_enrichment, sender=Enrichment)
+        try:
+            videos = list(get_video_list_for_playlist(self.public, prefetch_access=True))
+            with self.assertNumQueries(0):
+                links = {item.pk: item.get_default_version_link() for item in videos}
+        finally:
+            post_init.disconnect(record_enrichment, sender=Enrichment)
+        self.assertEqual(
+            links[video.pk],
+            reverse("enrichment:video_enrichment", kwargs={"slug": video.slug}),
+        )
+        self.assertIsNone(links[self.videos[1].pk])
+        self.assertEqual(loaded, [])
