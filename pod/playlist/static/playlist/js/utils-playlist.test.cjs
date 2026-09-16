@@ -151,7 +151,7 @@ test("failed requests restore the modal button and allow retrying", async () => 
 });
 
 for (const initiallyFavorite of [false, true]) {
-  test(`header stars without the bi class toggle in both directions (initial favorite: ${initiallyFavorite})`, async () => {
+  test(`header stars toggle in both directions while preserving the bi class (initial favorite: ${initiallyFavorite})`, async () => {
     const states = initiallyFavorite ? ["out-playlist", "in-playlist"] : ["in-playlist", "out-playlist"];
     const preventRefreshButton = loadPreventRefreshButton(async () => ({
       ok: true, json: async () => ({ state: states.shift() }),
@@ -162,13 +162,13 @@ for (const initiallyFavorite of [false, true]) {
         href: `/playlist/${initiallyFavorite ? "remove" : "add"}/favorites/video/`,
         "aria-pressed": String(initiallyFavorite),
       },
-      iconClasses: [initiallyFavorite ? "bi-star-fill" : "bi-star"],
+      iconClasses: ["bi", initiallyFavorite ? "bi-star-fill" : "bi-star"],
     });
     button.id = "favorite-button";
-    assert.equal(button.querySelector(".bi"), null);
     preventRefreshButton(button);
     for (const favorite of [!initiallyFavorite, initiallyFavorite]) {
       await clickButton(button);
+      assert.equal(button.icon.contains("bi"), true);
       assert.equal(button.icon.contains("bi-star"), !favorite);
       assert.equal(button.icon.contains("bi-star-fill"), favorite);
       assert.equal(button.icon.contains("bi-plus"), false);
@@ -407,7 +407,7 @@ function createPlayerScenario(enriched, controls = true, config = {}) {
         href: `/playlist/${favorite ? "remove" : "add"}/favorites/video-${number}/`,
         "data-csrf-token": `token-${number}`,
       },
-      iconClasses: [favorite ? "bi-star-fill" : "bi-star"],
+      iconClasses: ["bi", favorite ? "bi-star-fill" : "bi-star"],
     });
     favoriteButton.id = "favorite-button";
     favoriteButton.replaceWith = (replacement) => { favoriteButton = replacement; };
@@ -616,7 +616,7 @@ test("removing the current player video navigates to the playlist contents", asy
 test("the Favorites modal and header stay synchronized after either control is used", async () => {
   const attributes = { href: "/playlist/add/favorites/video/", "data-playlist-id": "1", "data-video-id": "2" };
   const modal = new FakeButton({ classes: ["action-btn"], attributes, iconClasses: ["bi", "bi-plus"] });
-  const header = new FakeButton({ classes: ["favorite-btn-link"], attributes, iconClasses: ["bi-star"] });
+  const header = new FakeButton({ classes: ["favorite-btn-link"], attributes, iconClasses: ["bi", "bi-star"] });
   header.id = "favorite-button";
   const states = ["in-playlist", "out-playlist"];
   const context = loadPlaylistContext(async () => ({ ok: true, json: async () => ({ state: states.shift() }) }), console, {

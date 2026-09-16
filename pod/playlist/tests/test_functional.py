@@ -741,6 +741,12 @@ class PlaylistFunctionalTests(TestCase):
                     button = BeautifulSoup(response.content, "html.parser").select_one(
                         selector
                     )
+                    icon = button.select_one(".bi")
+                    self.assertIsNotNone(icon)
+                    self.assertIn(
+                        "bi-star" if expected == "in-playlist" else "bi-star-fill",
+                        icon["class"],
+                    )
                     response = client.post(
                         button["href"] + "?json=true",
                         HTTP_X_CSRFTOKEN=button["data-csrf-token"],

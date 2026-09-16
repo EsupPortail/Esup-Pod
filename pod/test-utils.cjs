@@ -69,7 +69,7 @@ class FakeButton {
   }
 
   querySelector(selector) {
-    return selector === "i" || (selector === ".bi" && this.icon.contains("bi"))
+    return selector === ".bi" && this.icon.contains("bi")
       ? { classList: this.icon }
       : null;
   }

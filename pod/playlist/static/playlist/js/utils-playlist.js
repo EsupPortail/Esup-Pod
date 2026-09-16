@@ -105,7 +105,7 @@ function updatePlaylistButton(button, state, url) {
   const isInPlaylist = state === "in-playlist";
   const isFavorite = button.id === "favorite-button" || button.classList.contains("favorite-btn-link");
   const icons = isFavorite ? ["bi-star", "bi-star-fill"] : ["bi-plus", "bi-dash"];
-  const icon = button.querySelector("i");
+  const icon = button.querySelector(".bi");
   icon?.classList.remove(...icons);
   icon?.classList.add(icons[Number(isInPlaylist)]);
 
