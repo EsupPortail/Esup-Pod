@@ -391,7 +391,7 @@ class ExternalRecordingUploadTestView(TestCase):
 
         def youtube_side_effect(source_url, client):
             """Raise on primary client, return stream on fallback client."""
-            if client == "ANDROID_VR":
+            if client in ("ANDROID", "ANDROID_VR"):
                 raise HTTPError(
                     url="https://youtube.url",
                     code=403,
@@ -422,9 +422,10 @@ class ExternalRecordingUploadTestView(TestCase):
         )
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(mock_youtube.call_count, 2)
-        self.assertEqual(mock_youtube.call_args_list[0].args[1], "ANDROID_VR")
-        self.assertEqual(mock_youtube.call_args_list[1].args[1], "WEB")
+        self.assertEqual(mock_youtube.call_count, 3)
+        self.assertEqual(mock_youtube.call_args_list[0].args[1], "ANDROID")
+        self.assertEqual(mock_youtube.call_args_list[1].args[1], "ANDROID_VR")
+        self.assertEqual(mock_youtube.call_args_list[2].args[1], "WEB")
         mock_check_video_size.assert_called_once_with(10)
         mock_save_external_recording.assert_called_once()
         mock_save_video.assert_called_once()
