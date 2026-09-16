@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-11 15:12+0200\n"
+"POT-Creation-Date: 2026-09-16 12:34+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -444,8 +444,9 @@ msgstr "Pas de diffuseur pour ce bâtiment"
 msgid "An error occurred during broadcasters loading…"
 msgstr "Une erreur s’est produite lors du chargement des diffuseurs…"
 
-#: pod/live/static/js/filter_aside_event_list.js
+#: pod/live/static/js/filter_aside_event_list.js pod/main/static/js/infinite.js
 #: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
+#: pod/playlist/static/playlist/js/utils-playlist.js
 #: pod/video/static/js/filter_aside_video_list_refresh.js
 #: pod/video/static/js/video_category.js
 msgid "An Error occurred while processing."
@@ -607,10 +608,6 @@ msgstr "Supprimer la vidéo de cette liste de lecture"
 #: pod/playlist/static/playlist/js/utils-playlist.js
 msgid "Add the video in this playlist"
 msgstr "Ajouter la vidéo à cette liste de lecture"
-
-#: pod/playlist/static/playlist/js/video-favorites-remove-card.js
-msgid "Network response was not ok."
-msgstr "La réponse du réseau n’était pas correcte."
 
 #: pod/podfile/static/podfile/js/filewidget.js
 #: pod/video/static/js/change_video_owner.js
@@ -1107,6 +1104,9 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Network response was not ok."
+#~ msgstr "La réponse du réseau n’était pas correcte."
 
 #~ msgid "Please enter a correct image."
 #~ msgstr "Veuillez joindre une image."
