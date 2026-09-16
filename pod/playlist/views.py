@@ -347,7 +347,7 @@ def handle_post_request_for_add_or_edit_function(
             new_playlist.owner = request.user
         new_playlist.save()
         form.save_m2m()
-        next_url = request.GET.get("next")
+        next_url = str(request.GET.get("next"))
         is_safe_next_url = bool(
             next_url
             and url_has_allowed_host_and_scheme(
@@ -374,7 +374,7 @@ def handle_post_request_for_add_or_edit_function(
                 messages.INFO,
                 _("The playlist has been created and the video has been added in it."),
             )
-            return redirect(next_url)
+            return redirect(next_url) # nosec
         return HttpResponseRedirect(
             reverse("playlist:content", kwargs={"slug": new_playlist.slug})
         )

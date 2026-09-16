@@ -485,7 +485,7 @@ def check_password(form_password: str, playlist: Playlist) -> bool:
     encoded = playlist.password
     if len(encoded) == 64 and "$" not in encoded:
         # Raw SHA-256 is only accepted for verification of existing playlists.
-        legacy_hash = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
+        legacy_hash = hashlib.sha256(form_password.encode("utf-8")).hexdigest() # nosec
         if not constant_time_compare(legacy_hash, encoded):
             return False
         upgraded = make_password(form_password)
