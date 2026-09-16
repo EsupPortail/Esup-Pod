@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 12:34+0200\n"
+"POT-Creation-Date: 2026-09-16 14:47+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -777,7 +777,7 @@ msgstr "Le fichier doit être au format VTT."
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/admin.py
-#: pod/video/models.py pod/video_encode_transcript/utils.py
+#: pod/video/models.py
 msgid "video"
 msgstr "vidéo"
 
@@ -11864,40 +11864,29 @@ msgstr "La transcription du contenu"
 #: pod/video_encode_transcript/utils.py
 #, python-format
 msgid "Encoding #%(content_id)s completed"
-msgstr "Encodage du #%(content_id)s est terminé"
-
-#: pod/video_encode_transcript/utils.py
-#, python-format
-msgid ""
-"%(content_type)s “%(content_title)s” has been %(action)s, and is now "
-"available on %(site_title)s."
-msgstr ""
-"%(content_type)s « %(content_title)s » a été %(action)s, et est maintenant "
-"disponible sur %(site_title)s."
-
-#: pod/video_encode_transcript/utils.py
-msgid "The content"
-msgstr "Le contenu"
-
-#: pod/video_encode_transcript/utils.py
-msgid "The video"
-msgstr "La vidéo"
-
-#: pod/video_encode_transcript/utils.py
-msgid "automatically transcripted"
-msgstr "automatiquement transcrit"
-
-#: pod/video_encode_transcript/utils.py
-msgid "encoded to Web formats"
-msgstr "encodée aux formats Web"
-
-#: pod/video_encode_transcript/utils.py
-msgid "content"
-msgstr "contenu"
+msgstr "Encodage de #%(content_id)s terminé"
 
 #: pod/video_encode_transcript/utils.py
 msgid "Transcripting"
 msgstr "Transcrire"
+
+#: pod/video_encode_transcript/utils.py
+#, python-format
+msgid ""
+"The content “%(content_title)s” has been automatically transcribed, and is "
+"now available on %(site_title)s."
+msgstr ""
+"Le contenu « %(content_title)s » a été automatiquement transcrit, et est "
+"maintenant disponible sur %(site_title)s."
+
+#: pod/video_encode_transcript/utils.py
+#, python-format
+msgid ""
+"The video “%(content_title)s” has been encoded to Web formats, and is now "
+"available on %(site_title)s."
+msgstr ""
+"La vidéo « %(content_title)s » a été encodée aux formats Web, et est "
+"maintenant disponible sur %(site_title)s."
 
 #: pod/video_search/apps.py
 msgid "Video search"
@@ -11926,6 +11915,29 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#, python-format
+#~ msgid ""
+#~ "%(content_type)s “%(content_title)s” has been %(action)s, and is now "
+#~ "available on %(site_title)s."
+#~ msgstr ""
+#~ "%(content_type)s « %(content_title)s » a été %(action)s, et est "
+#~ "maintenant disponible sur %(site_title)s."
+
+#~ msgid "The content"
+#~ msgstr "Le contenu"
+
+#~ msgid "The video"
+#~ msgstr "La vidéo"
+
+#~ msgid "automatically transcripted"
+#~ msgstr "automatiquement transcrit"
+
+#~ msgid "encoded to Web formats"
+#~ msgstr "encodée aux formats Web"
+
+#~ msgid "content"
+#~ msgstr "contenu"
 
 #~ msgid "You cannot access this playlist because it is private."
 #~ msgstr ""

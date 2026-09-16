@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 12:34+0200\n"
+"POT-Creation-Date: 2026-09-16 14:47+0200\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -749,7 +749,7 @@ msgstr ""
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/admin.py
-#: pod/video/models.py pod/video_encode_transcript/utils.py
+#: pod/video/models.py
 msgid "video"
 msgstr ""
 
@@ -11092,34 +11092,21 @@ msgid "Encoding #%(content_id)s completed"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py
+msgid "Transcripting"
+msgstr ""
+
+#: pod/video_encode_transcript/utils.py
 #, python-format
 msgid ""
-"%(content_type)s “%(content_title)s” has been %(action)s, and is now "
+"The content “%(content_title)s” has been automatically transcribed, and is "
+"now available on %(site_title)s."
+msgstr ""
+
+#: pod/video_encode_transcript/utils.py
+#, python-format
+msgid ""
+"The video “%(content_title)s” has been encoded to Web formats, and is now "
 "available on %(site_title)s."
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "The content"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "The video"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "automatically transcripted"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "encoded to Web formats"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "content"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "Transcripting"
 msgstr ""
 
 #: pod/video_search/apps.py

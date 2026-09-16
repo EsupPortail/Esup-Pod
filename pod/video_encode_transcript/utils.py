@@ -220,6 +220,24 @@ def _completion_subject(content_id, subject_prefix) -> str:
     }
 
 
+def _completion_message(content_title, subject_prefix) -> str:
+    """Translate a complete sentence so each language can use the correct agreement."""
+    if subject_prefix in (_("The transcripting of content"), _("Transcripting")):
+        message = _(
+            "The content “%(content_title)s” has been automatically transcribed, "
+            "and is now available on %(site_title)s."
+        )
+    else:
+        message = _(
+            "The video “%(content_title)s” has been encoded to Web formats, "
+            "and is now available on %(site_title)s."
+        )
+    return message % {
+        "content_title": content_title,
+        "site_title": __TITLE_SITE__,
+    }
+
+
 def send_notification_email(video_to_encode, subject_prefix) -> None:
     """Send email notification on video encoding or transcripting completion."""
     logger.debug("SEND EMAIL ON %s COMPLETION" % subject_prefix.upper())
@@ -237,24 +255,7 @@ def send_notification_email(video_to_encode, subject_prefix) -> None:
                 </p><p>%s</p>'
         % (
             _("Hello,"),
-            _(
-                "%(content_type)s “%(content_title)s” has been %(action)s"
-                + ", and is now available on %(site_title)s."
-            )
-            % {
-                "content_type": (
-                    _("The content")
-                    if subject_prefix == _("The transcripting of content")
-                    else _("The video")
-                ),
-                "content_title": "<b>%s</b>" % video_to_encode.title,
-                "action": (
-                    _("automatically transcripted")
-                    if (subject_prefix == _("The transcripting of content"))
-                    else _("encoded to Web formats")
-                ),
-                "site_title": __TITLE_SITE__,
-            },
+            _completion_message("<b>%s</b>" % video_to_encode.title, subject_prefix),
             _("You will find it here:"),
             content_url,
             content_url,
@@ -317,21 +318,7 @@ def send_notification(video_to_encode, subject_prefix) -> None:
         __TITLE_SITE__,
         _completion_subject(video_to_encode.id, subject_prefix),
     )
-    message = _(
-        "%(content_type)s “%(content_title)s” has been %(action)s"
-        + ", and is now available on %(site_title)s."
-    ) % {
-        "content_type": (
-            _("content") if subject_prefix == _("Transcripting") else _("video")
-        ),
-        "content_title": video_to_encode.title,
-        "action": (
-            _("automatically transcripted")
-            if (subject_prefix == _("Transcripting"))
-            else _("encoded to Web formats")
-        ),
-        "site_title": __TITLE_SITE__,
-    }
+    message = _completion_message(video_to_encode.title, subject_prefix)
 
     notify_user(
         video_to_encode.owner,

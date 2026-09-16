@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 
 from django.core import mail
 from django.test import SimpleTestCase, override_settings
-from django.utils.translation import override
+from django.utils.translation import gettext, override
 
 from .. import utils
 from ..encoding_utils import get_dressing_position_value, sec_to_timestamp
@@ -88,7 +88,7 @@ class SendEmailItemTests(SimpleTestCase):
 
 @override_settings(
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
-    EMAIL_SUBJECT_PREFIX="[UniCApod] ",
+    EMAIL_SUBJECT_PREFIX="[TESTpod] ",
     MANAGERS=(("Manager", "manager@example.org"),),
     LANGUAGE_CODE="en",
 )
@@ -106,7 +106,7 @@ class CompletionEmailTests(SimpleTestCase):
         patcher = patch.multiple(
             utils,
             DEBUG=False,
-            __TITLE_SITE__="UniCApod",
+            __TITLE_SITE__="TESTpod",
             USE_ESTABLISHMENT_FIELD=False,
             MANAGERS=(),
         )
@@ -115,7 +115,7 @@ class CompletionEmailTests(SimpleTestCase):
 
     def test_subject_prefix_for_owner_and_managers(self) -> None:
         """Use the configured prefix once, with the site name as an empty fallback."""
-        for prefix in ("[UniCApod] ", "[Custom] ", ""):
+        for prefix in ("[TESTpod] ", "[Custom] ", ""):
             with self.subTest(prefix=prefix), override_settings(
                 EMAIL_SUBJECT_PREFIX=prefix
             ):
@@ -128,7 +128,7 @@ class CompletionEmailTests(SimpleTestCase):
                 for message in mail.outbox:
                     self.assertEqual(
                         message.subject,
-                        (prefix or "[UniCApod] ") + "Encoding #42 completed",
+                        (prefix or "[TESTpod] ") + "Encoding #42 completed",
                     )
 
     def test_subject_prefix_for_establishment_managers(self) -> None:
@@ -138,7 +138,7 @@ class CompletionEmailTests(SimpleTestCase):
             USE_ESTABLISHMENT_FIELD=True,
             MANAGERS=(("university", "establishment@example.org"),),
         ):
-            for prefix in ("[UniCApod] ", "[Custom] ", ""):
+            for prefix in ("[TESTpod] ", "[Custom] ", ""):
                 with self.subTest(prefix=prefix), override_settings(
                     EMAIL_SUBJECT_PREFIX=prefix
                 ):
@@ -150,7 +150,7 @@ class CompletionEmailTests(SimpleTestCase):
                     self.assertEqual(mail.outbox[0].bcc, ["establishment@example.org"])
                     self.assertEqual(
                         mail.outbox[0].subject,
-                        (prefix or "[UniCApod] ") + "Encoding #42 completed",
+                        (prefix or "[TESTpod] ") + "Encoding #42 completed",
                     )
 
     def test_french_encoding_email(self) -> None:
@@ -159,10 +159,17 @@ class CompletionEmailTests(SimpleTestCase):
             utils.send_email_encoding(self.video)
 
         self.assertEqual(len(mail.outbox), 2)
+        expected_message = (
+            "La vidéo « example.mp4 » a été encodée aux formats Web, "
+            "et est maintenant disponible sur TESTpod."
+        )
         for message in mail.outbox:
-            self.assertEqual(message.subject, "[UniCApod] Encodage du #42 est terminé")
-            for body in (message.body, message.alternatives[0][0]):
-                self.assertIn("a été encodée aux formats Web", body)
+            self.assertEqual(message.subject, "[TESTpod] Encodage de #42 terminé")
+            self.assertIn(expected_message, message.body)
+            self.assertIn(
+                expected_message.replace("example.mp4", "<b>example.mp4</b>"),
+                message.alternatives[0][0],
+            )
         for body in (mail.outbox[0].body, mail.outbox[0].alternatives[0][0]):
             self.assertIn("Posté par\u00a0: Alice", body)
             self.assertIn("le\u00a0: 2026-09-16", body)
@@ -173,12 +180,47 @@ class CompletionEmailTests(SimpleTestCase):
             utils.send_email_transcript(self.video)
 
         self.assertEqual(len(mail.outbox), 2)
+        expected_message = (
+            "Le contenu « example.mp4 » a été automatiquement transcrit, "
+            "et est maintenant disponible sur TESTpod."
+        )
         for message in mail.outbox:
             self.assertEqual(
                 message.subject,
-                "[UniCApod] La transcription du contenu du #42 est terminée",
+                "[TESTpod] La transcription du contenu du #42 est terminée",
             )
-            self.assertIn("a été automatiquement transcrit", message.body)
+            self.assertIn(expected_message, message.body)
+            self.assertIn(
+                expected_message.replace("example.mp4", "<b>example.mp4</b>"),
+                message.alternatives[0][0],
+            )
+
+    def test_english_completion_email_messages(self) -> None:
+        """Render complete English encoding and transcription sentences."""
+        cases = (
+            (
+                utils.send_email_encoding,
+                "The video “example.mp4” has been encoded to Web formats, "
+                "and is now available on TESTpod.",
+            ),
+            (
+                utils.send_email_transcript,
+                "The content “example.mp4” has been automatically transcribed, "
+                "and is now available on TESTpod.",
+            ),
+        )
+        for send_email, expected_message in cases:
+            with self.subTest(notification=send_email.__name__), override("en"):
+                mail.outbox.clear()
+                send_email(self.video)
+
+                self.assertEqual(len(mail.outbox), 2)
+                for message in mail.outbox:
+                    self.assertIn(expected_message, message.body)
+                    self.assertIn(
+                        expected_message.replace("example.mp4", "<b>example.mp4</b>"),
+                        message.alternatives[0][0],
+                    )
 
     @patch("pod.video_encode_transcript.utils.notify_user")
     def test_french_encoding_push_notification(self, mock_notify_user) -> None:
@@ -189,5 +231,25 @@ class CompletionEmailTests(SimpleTestCase):
         mock_notify_user.assert_called_once()
         self.assertEqual(
             mock_notify_user.call_args.args[1],
-            "[UniCApod] Encodage du #42 est terminé",
+            "[TESTpod] Encodage de #42 terminé",
         )
+        self.assertEqual(
+            mock_notify_user.call_args.args[2],
+            "La vidéo « example.mp4 » a été encodée aux formats Web, "
+            "et est maintenant disponible sur TESTpod.",
+        )
+
+    @patch("pod.video_encode_transcript.utils.notify_user")
+    def test_french_transcription_push_notification(self, mock_notify_user) -> None:
+        """Use the complete transcription sentence for both existing subject labels."""
+        for subject in ("The transcripting of content", "Transcripting"):
+            with self.subTest(subject=subject), override("fr"):
+                mock_notify_user.reset_mock()
+                utils.send_notification(self.video, gettext(subject))
+
+                mock_notify_user.assert_called_once()
+                self.assertEqual(
+                    mock_notify_user.call_args.args[2],
+                    "Le contenu « example.mp4 » a été automatiquement transcrit, "
+                    "et est maintenant disponible sur TESTpod.",
+                )
