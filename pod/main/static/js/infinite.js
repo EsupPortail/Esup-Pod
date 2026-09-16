@@ -137,43 +137,50 @@ class InfiniteLoader {
     this.loading = true;
     this.callBackBeforeLoad();
     let url = this.url;
-    return this.getData(url, this.next_page_number, this.nextPage).then((data) => {
-      if (this.stopped) return;
-      if (data !== null && data !== undefined) {
-        const html = new DOMParser().parseFromString(data, "text/html");
-        const newList = html.getElementById("videos_list");
-        if (!newList) throw new Error("Missing video list");
-        this.nextPage = newList.dataset.nextpage === "true";
-        let element = this.videos_list;
+    return this.getData(url, this.next_page_number, this.nextPage)
+      .then((data) => {
+        if (this.stopped) return;
+        if (data !== null && data !== undefined) {
+          const html = new DOMParser().parseFromString(data, "text/html");
+          const newList = html.getElementById("videos_list");
+          if (!newList) throw new Error("Missing video list");
+          this.nextPage = newList.dataset.nextpage === "true";
+          let element = this.videos_list;
 
-        element.innerHTML += newList.innerHTML;
-        this.next_page_number += 1;
-        const favoritesButtons =
-          document.getElementsByClassName("favorite-btn-link");
-        for (let btn of favoritesButtons) {
-          if (typeof preventRefreshButton === "function") preventRefreshButton(btn, true);
+          element.innerHTML += newList.innerHTML;
+          this.next_page_number += 1;
+          const favoritesButtons =
+            document.getElementsByClassName("favorite-btn-link");
+          for (let btn of favoritesButtons) {
+            if (typeof preventRefreshButton === "function")
+              preventRefreshButton(btn, true);
+          }
         }
-      }
-      /* Refresh Bootstrap tooltips after load */
-      const tooltipTriggerList = document.querySelectorAll(
-        '[data-bs-toggle="tooltip"], [data-pod-tooltip="true"]',
-      );
-      [...tooltipTriggerList].map(
-        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
-      );
-      // Hide empty menu
-      hideEmptyDropdowns();
-    }).catch((error) => {
-      if (this.stopped) return;
-      this.current_page_number = this.next_page_number - 1;
-      console.error("Video pagination failed:", error);
-      if (typeof showalert === "function") {
-        showalert(gettext("An Error occurred while processing."), "alert-danger");
-      }
-    }).finally(() => {
-      this.loading = false;
-      if (!this.stopped) this.callBackAfterLoad();
-    });
+        /* Refresh Bootstrap tooltips after load */
+        const tooltipTriggerList = document.querySelectorAll(
+          '[data-bs-toggle="tooltip"], [data-pod-tooltip="true"]',
+        );
+        [...tooltipTriggerList].map(
+          (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
+        );
+        // Hide empty menu
+        hideEmptyDropdowns();
+      })
+      .catch((error) => {
+        if (this.stopped) return;
+        this.current_page_number = this.next_page_number - 1;
+        console.error("Video pagination failed:", error);
+        if (typeof showalert === "function") {
+          showalert(
+            gettext("An Error occurred while processing."),
+            "alert-danger",
+          );
+        }
+      })
+      .finally(() => {
+        this.loading = false;
+        if (!this.stopped) this.callBackAfterLoad();
+      });
   }
 
   /**

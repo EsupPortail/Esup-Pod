@@ -188,7 +188,10 @@ function refreshVideosSearch() {
       nextPage =
         document.getElementById("videos_list").dataset.nextpage === "true";
       window.history.pushState({}, "", url);
-      const pageNext = Number(document.querySelector("a.infinite-more-link")?.dataset.nextpagenumber || 2);
+      const pageNext = Number(
+        document.querySelector("a.infinite-more-link")?.dataset
+          .nextpagenumber || 2,
+      );
       refreshInfiniteLoader(url, nextPage, pageNext);
       if (
         typeof urlVideos !== "undefined" &&
@@ -309,7 +312,10 @@ if (typeof InfiniteLoader === "function") {
     onBeforePageLoad,
     onAfterPageLoad,
     typeof nextPage !== "undefined" ? nextPage : true,
-    Number(document.querySelector("a.infinite-more-link")?.dataset.nextpagenumber || 2),
+    Number(
+      document.querySelector("a.infinite-more-link")?.dataset.nextpagenumber ||
+        2,
+    ),
   );
 }
 
