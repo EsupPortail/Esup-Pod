@@ -210,16 +210,27 @@ def send_email_transcript(video_to_encode) -> None:
     send_notification_email(video_to_encode, subject_prefix)
 
 
+def _completion_subject(content_id, subject_prefix) -> str:
+    """Translate the completion subject with the appropriate grammatical agreement."""
+    if subject_prefix == _("Encoding"):
+        return _("Encoding #%(content_id)s completed") % {"content_id": content_id}
+    return _("%(subject)s #%(content_id)s completed") % {
+        "subject": subject_prefix,
+        "content_id": content_id,
+    }
+
+
 def send_notification_email(video_to_encode, subject_prefix) -> None:
     """Send email notification on video encoding or transcripting completion."""
     logger.debug("SEND EMAIL ON %s COMPLETION" % subject_prefix.upper())
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
     content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
-    subject = "[%s] %s" % (
-        __TITLE_SITE__,
-        _("%(subject)s #%(content_id)s completed")
-        % {"subject": subject_prefix, "content_id": video_to_encode.id},
-    )
+    subject = _completion_subject(video_to_encode.id, subject_prefix)
+    email_subject_prefix = settings.EMAIL_SUBJECT_PREFIX
+    if not email_subject_prefix:
+        subject = "[%s] %s" % (__TITLE_SITE__, subject)
+    # mail_managers adds EMAIL_SUBJECT_PREFIX itself; direct sends do not.
+    direct_subject = "%s%s" % (email_subject_prefix, subject)
 
     html_message = (
         '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
@@ -251,7 +262,7 @@ def send_notification_email(video_to_encode, subject_prefix) -> None:
         )
     )
 
-    full_html_message = html_message + "<br>%s%s<br>%s%s" % (
+    full_html_message = html_message + "<br>%s %s<br>%s %s" % (
         _("Post by:"),
         video_to_encode.owner,
         _("the:"),
@@ -278,7 +289,7 @@ def send_notification_email(video_to_encode, subject_prefix) -> None:
         elif isinstance(manager, str):
             bcc_email.append(manager)
         msg = EmailMultiAlternatives(
-            subject, message, from_email, to_email, bcc=bcc_email
+            direct_subject, message, from_email, to_email, bcc=bcc_email
         )
         msg.attach_alternative(html_message, "text/html")
         msg.send()
@@ -291,7 +302,7 @@ def send_notification_email(video_to_encode, subject_prefix) -> None:
         )
         if not DEBUG:
             send_mail(
-                subject,
+                direct_subject,
                 message,
                 from_email,
                 to_email,
@@ -304,8 +315,7 @@ def send_notification(video_to_encode, subject_prefix) -> None:
     """Send push notification on video encoding or transcripting completion."""
     subject = "[%s] %s" % (
         __TITLE_SITE__,
-        _("%(subject)s #%(content_id)s completed")
-        % {"subject": subject_prefix, "content_id": video_to_encode.id},
+        _completion_subject(video_to_encode.id, subject_prefix),
     )
     message = _(
         "%(content_type)s “%(content_title)s” has been %(action)s"
