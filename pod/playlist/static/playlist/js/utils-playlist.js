@@ -59,7 +59,12 @@ async function handlePlaylistAction(event) {
     // Keep successful feedback visible and ignore rapid clicks on matching controls.
     await new Promise((resolve) => window.setTimeout(resolve, 300));
     if (data.state === "out-playlist" && this.getAttribute("data-removed-url")) {
-      window.location.href = this.getAttribute("data-removed-url");
+      const removedUrl = new URL(this.getAttribute("data-removed-url"), window.location.origin);
+      if (removedUrl.origin !== window.location.origin ||
+          (removedUrl.protocol !== "http:" && removedUrl.protocol !== "https:")) {
+        throw new Error("Unsafe playlist redirect URL");
+      }
+      window.location.href = removedUrl.href;
     }
   } catch (error) {
     reportPlaylistError(error);
