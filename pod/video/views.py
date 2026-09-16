@@ -1162,6 +1162,13 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         and request.GET.get("redirect") != "false"
         and video.get_default_version_link(slug_private)
     ):
+        if request.GET.get("playlist"):
+            playlist = get_object_or_404(
+                Playlist, slug=request.GET["playlist"], site=get_current_site(request)
+            )
+            password_response = require_playlist_video_access(request, video, playlist)
+            if password_response is not None:
+                return password_response
         query_string = (
             "?%s" % request.META["QUERY_STRING"]
             if (request.META.get("QUERY_STRING"))
@@ -1177,12 +1184,14 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         params = {"page_title": video.title}
         template_video = "videos/video-iframe.html"
     elif request.GET.get("playlist"):
-        playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+        playlist = get_object_or_404(
+            Playlist, slug=request.GET.get("playlist"), site=get_current_site(request)
+        )
         params = {
             "playlist_in_get": playlist,
             "videos": get_video_list_for_playlist(
                 playlist, prefetch_access=True
-            ).order_by("rank"),
+            ).order_by("rank", "pk"),
         }
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
@@ -1251,7 +1260,9 @@ def render_video(
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
     playlist = None
     if request.GET.get("playlist"):
-        playlist = get_object_or_404(Playlist, slug=request.GET["playlist"])
+        playlist = get_object_or_404(
+            Playlist, slug=request.GET["playlist"], site=get_current_site(request)
+        )
         password_response = require_playlist_video_access(request, video, playlist)
         if password_response is not None:
             return password_response

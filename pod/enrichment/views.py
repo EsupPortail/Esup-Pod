@@ -282,12 +282,14 @@ def video_enrichment(
     """
     params = {}
     if request.GET.get("playlist"):
-        playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+        playlist = get_object_or_404(
+            Playlist, slug=request.GET.get("playlist"), site=get_current_site(request)
+        )
         params = {
             "playlist_in_get": playlist,
             "videos": get_video_list_for_playlist(
                 playlist, prefetch_access=True
-            ).order_by("rank"),
+            ).order_by("rank", "pk"),
         }
     template_video = (
         "enrichment/video_enrichment-iframe.html"
@@ -300,6 +302,7 @@ def video_enrichment(
     except ValueError:
         raise SuspiciousOperation("Invalid video id")
 
+    # The shared renderer checks playlist membership, passwords and video access.
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 

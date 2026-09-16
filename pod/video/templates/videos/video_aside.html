@@ -1,11 +1,15 @@
 {% load i18n %}
 {% load video_quiz %}
+{% load playlist_buttons %}
 
 {% if playlist_in_get %}
-  {% include 'playlist/playlist_player.html' %}
+  {% user_can_modify_playlist_content request.user playlist_in_get as can_modify_playlist_content %}
+  {% if not playlist_fragment %}
+    {% include 'playlist/playlist_player.html' %}
+  {% endif %}
 {% endif %}
 
-{% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video or perms.enrichment.edit_enrichment or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay or perms.chapter.change_chapter or perms.video.delete_video %}
+{% if can_modify_playlist_content or video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video or perms.enrichment.edit_enrichment or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay or perms.chapter.change_chapter or perms.video.delete_video %}
   <div class="card" id="card-manage-video">
     <h2 class="card-header card-title pod-card__title h4">
       <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video"%}

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.db.models.functions import Lower
-from django.db.models import Max, QuerySet, prefetch_related_objects
+from django.db.models import Exists, Max, OuterRef, QuerySet, prefetch_related_objects
 from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.exceptions import PermissionDenied
@@ -13,7 +13,7 @@ from django.shortcuts import render
 from django.http import Http404
 from django.utils.translation import gettext as _
 
-from pod.video.models import Video
+from pod.video.models import THIRD_PARTY_APPS, Video
 from pod.video.utils import get_video_access
 from django.conf import settings
 
@@ -37,7 +37,8 @@ def check_video_in_playlist(playlist: Playlist, video: Video) -> bool:
     return PlaylistContent.objects.filter(playlist=playlist, video=video).exists()
 
 
-def user_add_video_in_playlist(playlist: Playlist, video: Video) -> str:
+@transaction.atomic
+def user_add_video_in_playlist(playlist: Playlist, video: Video) -> None:
     """
     Add a video in playlist.
 
@@ -46,12 +47,11 @@ def user_add_video_in_playlist(playlist: Playlist, video: Video) -> str:
         video (:class:`pod.video.models.Video`): The video object.
 
     Returns:
-        str: The status message.
+        None: The membership is created if it does not already exist.
     """
-    if not check_video_in_playlist(playlist, video):
-        PlaylistContent.objects.create(
-            playlist=playlist, video=video, rank=get_next_rank(playlist)
-        )
+    # Serialize rank allocation and duplicate additions by different managers.
+    Playlist.objects.select_for_update().get(pk=playlist.pk)
+    PlaylistContent.objects.get_or_create(playlist=playlist, video=video)
 
 
 def user_remove_video_from_playlist(playlist: Playlist, video: Video) -> str:
@@ -154,7 +154,9 @@ def get_promoted_playlist() -> list:
     Returns:
         list(:class:`pod.playlist.models.Playlist`): The public playlist list
     """
-    return Playlist.objects.filter(promoted=True, site=Site.objects.get_current())
+    return Playlist.objects.filter(
+        promoted=True, visibility="public", site=Site.objects.get_current()
+    )
 
 
 def get_playlist_list_for_user(user: User) -> list:
@@ -190,7 +192,7 @@ def get_video_list_for_playlist(
     """
     playlist_content = PlaylistContent.objects.filter(playlist=playlist)
     videos_id = playlist_content.values_list("video_id", flat=True)
-    video_list = Video.objects.filter(id__in=videos_id).extra(
+    video_list = Video.objects.filter(id__in=videos_id, sites=playlist.site_id).extra(
         select={"rank": "playlist_playlistcontent.rank"},
         tables=["playlist_playlistcontent"],
         where=[
@@ -200,8 +202,24 @@ def get_video_list_for_playlist(
         params=[playlist.id],
     )
     if prefetch_access:
-        video_list = video_list.prefetch_related(
-            "restrict_access_to_groups", "additional_owners"
+        versions = {
+            f"_has_{relation.related_model._meta.app_label}_version": Exists(
+                relation.related_model.objects.filter(video__pk=OuterRef("pk"))
+            )
+            for relation in Video._meta.related_objects
+            if relation.related_model._meta.app_label in THIRD_PARTY_APPS
+            and relation.related_model._meta.app_label != "interactive"
+            and relation.related_model.__name__.lower()
+            == relation.related_model._meta.app_label.lower()
+        }
+        video_list = (
+            video_list.annotate(**versions)
+            .select_related("owner", "thumbnail", "videoversion")
+            .prefetch_related(
+                "restrict_access_to_groups",
+                "additional_owners",
+                "chapter_set",
+            )
         )
     return video_list
 
@@ -287,11 +305,11 @@ def reorganize_playlist(playlist: Playlist, swaps: dict) -> None:
         slugs.update(pair)
     if not slugs:
         return
+    video_slugs = dict(Video.objects.filter(slug__in=slugs).values_list("pk", "slug"))
     contents = {
-        content.video.slug: content
+        video_slugs[content.video_id]: content
         for content in PlaylistContent.objects.select_for_update()
-        .filter(playlist=playlist, video__slug__in=slugs)
-        .select_related("video")
+        .filter(playlist=playlist, video_id__in=video_slugs)
         .order_by("pk")
     }
     original_ranks = {content.pk: content.rank for content in contents.values()}
@@ -336,7 +354,7 @@ def get_additional_owners(playlist: Playlist) -> list:
 
 
 def get_link_to_start_playlist(
-    request: WSGIRequest, playlist: Playlist, video=None
+    request: WSGIRequest, playlist: Playlist, video: Video | str | None = None
 ) -> str:
     """
     Get the link to start a specific playlist.
@@ -344,20 +362,16 @@ def get_link_to_start_playlist(
     Args:
         request (WSGIRequest): The WSGIRequest
         playlist (:class:`pod.playlist.models.Playlist`): The specific playlist
-        video (:class:`pod.video.models.Video`): The video object, optionnal. Default to None
+        video (Video | str | None): An optional video object or slug.
 
     Returns:
         str: Link to start the playlist.
     """
-    if video:
-        return (
-            f"{reverse('video:video', kwargs={'slug': video})}?playlist={playlist.slug}"
-        )
-    first_video = playlist.get_first_video(request)
-    if first_video:
-        return f"{reverse('video:video', kwargs={'slug': first_video.slug})}?playlist={playlist.slug}"
-    else:
+    video = video or playlist.get_first_video(request)
+    if not video:
         return ""
+    slug = video.slug if isinstance(video, Video) else video
+    return f"{reverse('video:video', kwargs={'slug': slug})}?playlist={playlist.slug}"
 
 
 def get_total_favorites_video(video: Video) -> int:

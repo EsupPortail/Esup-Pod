@@ -164,13 +164,13 @@ class Playlist(models.Model):
 
         videos = get_video_list_for_playlist(
             self, prefetch_access=request is not None
-        ).order_by("rank")
+        ).order_by("rank", "pk")
         if request is None:
             return videos.first()
         return next(
             (
                 video
-                for video in videos
+                for video in videos.iterator(chunk_size=100)
                 if user_can_see_playlist_video(request, video, self)
             ),
             None,

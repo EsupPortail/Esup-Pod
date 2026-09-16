@@ -15,7 +15,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import SuspiciousOperation
 from django.core.serializers import serialize
-from django.db.models import Count, Prefetch, Q, prefetch_related_objects
+from django.db.models import Count, Q, prefetch_related_objects
 from django.db.models.functions import Lower
 from django.http import JsonResponse
 from django.template.loader import render_to_string
@@ -83,10 +83,10 @@ def is_in_video_groups(user, video) -> bool:
     if not group_ids:
         return False
     owner = user.owner
-    prefetch_related_objects(
-        [owner], Prefetch("accessgroup_set", to_attr="video_access_groups")
-    )
-    return any(group.pk in group_ids for group in owner.video_access_groups)
+    groups = owner.accessgroup_set
+    if groups.prefetch_cache_name not in getattr(owner, "_prefetched_objects_cache", {}):
+        prefetch_related_objects([owner], "accessgroup_set")
+    return any(group.pk in group_ids for group in groups.all())
 
 
 def get_video_access(request, video, slug_private):
@@ -103,6 +103,10 @@ def get_video_access(request, video, slug_private):
         or user.has_perm("video.change_video")
         or user in video.additional_owners.all()
     )
+    if video.is_draft:
+        return bool(access_granted_for_private or access_granted_for_draft)
+    if access_granted_for_draft:
+        return True
     access_granted_for_restricted = user.is_authenticated and not is_restricted_to_group
     access_granted_for_group = (
         (user.is_authenticated and is_in_video_groups(user, video))
@@ -113,7 +117,6 @@ def get_video_access(request, video, slug_private):
     )
     return (
         access_granted_for_private
-        or (video.is_draft and access_granted_for_draft)
         or (video.is_restricted and access_granted_for_restricted)
         or (is_restricted_to_group and access_granted_for_group)
     )

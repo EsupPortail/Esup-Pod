@@ -16,6 +16,7 @@
 /* global setSelectedVideos */
 
 var infinite;
+var videoListRequestId = 0;
 
 let infiniteLoading = document.querySelector(".infinite-loading");
 
@@ -68,7 +69,7 @@ function onAfterPageLoad() {
  * @param url
  * @param nextPage
  */
-function refreshInfiniteLoader(url, nextPage) {
+function refreshInfiniteLoader(url, nextPage, nextPageNumber = 2) {
   if (typeof InfiniteLoader !== "function") return;
   if (infinite !== undefined) {
     infinite.removeLoader();
@@ -78,7 +79,8 @@ function refreshInfiniteLoader(url, nextPage) {
     url,
     onBeforePageLoad,
     onAfterPageLoad,
-    (page = nextPage),
+    nextPage,
+    nextPageNumber,
   );
 }
 
@@ -149,12 +151,14 @@ function getSearchValue() {
  * Async request to refresh view with filtered and sorted video list
  */
 function refreshVideosSearch() {
+  const requestId = ++videoListRequestId;
+  if (infinite) infinite.removeLoader();
   // Erase videos list and show loader
   document.getElementById("videos_list").textContent = "";
   showLoader(videosListLoader, true);
   let url = getUrlForRefresh();
   // Async GET request wth parameters by fetch method
-  fetch(url, {
+  return fetch(url, {
     method: "GET",
     headers: {
       "X-CSRFToken": "{{ csrf_token }}",
@@ -163,23 +167,29 @@ function refreshVideosSearch() {
     dataType: "html",
     cache: "no-store",
   })
-    .then((response) => response.text())
+    .then((response) => {
+      if (!response.ok) throw new Error("Video list request failed");
+      return response.text();
+    })
     .then((data) => {
+      if (requestId !== videoListRequestId) return;
       // parse data into html and replace videos list
       let parser = new DOMParser();
       let html = parser.parseFromString(data, "text/html").body;
-      document.getElementById("videos_list").outerHTML = html.innerHTML;
+      const newList = html.querySelector("#videos_list");
+      if (!newList) throw new Error("Missing video list");
+      document.getElementById("videos_list").replaceWith(newList);
+      const nextLink = html.querySelector("a.infinite-more-link");
+      document.querySelector("a.infinite-more-link")?.remove();
+      if (nextLink) newList.after(nextLink);
       replaceCountVideos(
         document.getElementById("videos_list").dataset.countvideos,
       );
       nextPage =
         document.getElementById("videos_list").dataset.nextpage === "true";
       window.history.pushState({}, "", url);
-      if (nextPage) {
-        pageNext = document.querySelector("a.infinite-more-link").dataset
-          .nextpagenumber;
-        refreshInfiniteLoader(url, pageNext);
-      }
+      const pageNext = Number(document.querySelector("a.infinite-more-link")?.dataset.nextpagenumber || 2);
+      refreshInfiniteLoader(url, nextPage, pageNext);
       if (
         typeof urlVideos !== "undefined" &&
         urlVideos === "/video/dashboard/" &&
@@ -193,11 +203,13 @@ function refreshVideosSearch() {
       }
     })
     .catch(() => {
+      if (requestId !== videoListRequestId) return;
       document.getElementById("videos_list").textContent = gettext(
         "An Error occurred while processing.",
       );
     })
     .finally(() => {
+      if (requestId !== videoListRequestId) return;
       // Finally re-enable inputs and dismiss loader
       disabledInputs(false);
       showLoader(videosListLoader, false);
@@ -263,12 +275,8 @@ function getUrlForRefresh() {
 
   urlParams.delete("page");
 
-  let fullUrl = `${baseUrl}?${urlParams.toString()}`;
-  if (urlParams.toString()) {
-    fullUrl += "&page=";
-  } else {
-    fullUrl += "?page=";
-  }
+  const query = urlParams.toString();
+  const fullUrl = `${baseUrl}?${query ? query + "&" : ""}page=`;
 
   if (fullUrl.includes("undefined")) {
     const debugParams = [];
@@ -301,7 +309,7 @@ if (typeof InfiniteLoader === "function") {
     onBeforePageLoad,
     onAfterPageLoad,
     typeof nextPage !== "undefined" ? nextPage : true,
-    2,
+    Number(document.querySelector("a.infinite-more-link")?.dataset.nextpagenumber || 2),
   );
 }
 

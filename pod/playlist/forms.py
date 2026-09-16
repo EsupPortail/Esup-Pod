@@ -8,8 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
 from django.utils.translation import gettext_lazy as _
 
-from pod.main.forms_utils import add_placeholder_and_asterisk
-from pod.meeting.forms import AddOwnerWidget
+from pod.main.forms_utils import AddOwnerWidget, add_placeholder_and_asterisk
 
 from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist
@@ -23,17 +22,6 @@ RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY = getattr(
 
 general_informations = _("General informations")
 security_informations = _("Security informations")
-
-
-class PlaylistOwnerWidget(AddOwnerWidget):
-    """Render the co-owner selection safely when submitted identifiers are invalid."""
-
-    def optgroups(self, name, value, attrs=None):
-        """Display validation errors without querying malformed user identifiers."""
-        try:
-            return super().optgroups(name, value, attrs)
-        except (ValueError, TypeError):
-            return super().optgroups(name, [], attrs)
 
 
 class PlaylistForm(forms.ModelForm):
@@ -54,7 +42,7 @@ class PlaylistForm(forms.ModelForm):
         if not USE_PROMOTED_PLAYLIST:
             exclude.append("promoted")
         widgets = {
-            "additional_owners": PlaylistOwnerWidget,
+            "additional_owners": AddOwnerWidget,
         }
 
     field_order = [

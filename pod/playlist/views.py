@@ -14,9 +14,8 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 from django.http import (
-    Http404,
     HttpResponseBadRequest,
     JsonResponse,
     HttpResponseRedirect,
@@ -25,7 +24,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 
 from pod.main.utils import is_ajax
 from pod.main.views import in_maintenance
-from pod.video.views import CURSUS_CODES, get_owners_has_instances
+from pod.video.views import CURSUS_CODES, get_adv_note_list, get_owners_has_instances
 from pod.video.models import Video
 from pod.video.utils import sort_videos_list
 
@@ -130,9 +129,10 @@ def playlist_list(request: WSGIRequest):
     )
 
 
+@csrf_protect
 def playlist_content(request: WSGIRequest, slug: str):
     """Render playlist contents after checking access and any required password."""
-    playlist = get_object_or_404(Playlist, slug=slug)
+    playlist = get_object_or_404(Playlist, slug=slug, site=get_current_site(request))
     password_response = require_playlist_access(request, playlist)
     if password_response is not None:
         return password_response
@@ -202,6 +202,9 @@ def render_playlist(
         sort_field,
         sort_direction,
     )
+    videos_list = videos_list.order_by(
+        *(videos_list.query.order_by or Video._meta.ordering), "pk"
+    )
     paginator = Paginator(videos_list, 12)
     videos = paginator.get_page(request.GET.get("page", 1))
     in_favorites_playlist = (
@@ -239,10 +242,10 @@ def render_playlist(
 @csrf_protect
 def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
     """Remove a video in playlist."""
-    playlist = get_object_or_404(Playlist, slug=slug)
+    playlist = get_object_or_404(Playlist, slug=slug, site=get_current_site(request))
     if not user_can_modify_playlist_content(request.user, playlist):
         raise PermissionDenied
-    video = get_object_or_404(Video, slug=video_slug)
+    video = get_object_or_404(Video, slug=video_slug, sites=get_current_site(request))
     user_remove_video_from_playlist(playlist, video)
     if request.GET.get("json"):
         return JsonResponse(
@@ -264,10 +267,10 @@ def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
 @csrf_protect
 def add_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
     """Add a video in playlist."""
-    playlist = get_object_or_404(Playlist, slug=slug)
+    playlist = get_object_or_404(Playlist, slug=slug, site=get_current_site(request))
     if not user_can_modify_playlist_content(request.user, playlist):
         raise PermissionDenied
-    video = get_object_or_404(Video, slug=video_slug)
+    video = get_object_or_404(Video, slug=video_slug, sites=get_current_site(request))
     user_add_video_in_playlist(playlist, video)
     if request.GET.get("json"):
         return JsonResponse(
@@ -283,9 +286,11 @@ def add_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
 
 
 @login_required(redirect_field_name="referrer")
+@require_http_methods(["GET", "POST"])
+@csrf_protect
 def remove_playlist_view(request: WSGIRequest, slug: str):
     """Remove playlist with form."""
-    playlist = get_object_or_404(Playlist, slug=slug)
+    playlist = get_object_or_404(Playlist, slug=slug, site=get_current_site(request))
     if in_maintenance():
         return redirect(reverse("maintenance"))
     if not user_can_delete_playlist(request.user, playlist):
@@ -355,10 +360,15 @@ def handle_post_request_for_add_or_edit_function(
             next_match = resolve(urlsplit(next_url).path) if is_safe_next_url else None
         except Resolver404:
             next_match = None
-        is_safe_video_url = next_match and next_match.view_name == "video:video"
-        if is_safe_video_url:
-            video_slug = next_match.kwargs["slug"]
-            user_add_video_in_playlist(new_playlist, Video.objects.get(slug=video_slug))
+        next_video = (
+            Video.objects.filter(
+                slug=next_match.kwargs["slug"], sites=get_current_site(request)
+            ).first()
+            if next_match and next_match.view_name == "video:video"
+            else None
+        )
+        if next_video:
+            user_add_video_in_playlist(new_playlist, next_video)
             messages.add_message(
                 request,
                 messages.INFO,
@@ -380,7 +390,6 @@ def handle_post_request_for_add_or_edit_function(
         {
             "form": form,
             "page_title": page_title,
-            "options": "",
         },
     )
 
@@ -388,11 +397,11 @@ def handle_post_request_for_add_or_edit_function(
 @login_required(redirect_field_name="referrer")
 def handle_get_request_for_add_or_edit_function(request: WSGIRequest, slug: str) -> None:
     """Handle get request for add_or_edit function."""
-    if request.GET.get("next"):
-        options = f"?next={request.GET.get('next')}"
-    else:
-        options = ""
-    playlist = get_object_or_404(Playlist, slug=slug) if slug else None
+    playlist = (
+        get_object_or_404(Playlist, slug=slug, site=get_current_site(request))
+        if slug
+        else None
+    )
     if playlist:
         form = PlaylistForm(instance=playlist, user=request.user)
         page_title = _("Edit playlist “%(name)s”") % {"name": playlist.name}
@@ -405,7 +414,6 @@ def handle_get_request_for_add_or_edit_function(request: WSGIRequest, slug: str)
         {
             "form": form,
             "page_title": page_title,
-            "options": options,
         },
     )
 
@@ -413,9 +421,14 @@ def handle_get_request_for_add_or_edit_function(request: WSGIRequest, slug: str)
 @csrf_protect
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
+@require_http_methods(["GET", "POST"])
 def add_or_edit(request: WSGIRequest, slug: str = None):
     """Add or edit view with form."""
-    playlist = get_object_or_404(Playlist, slug=slug) if slug else None
+    playlist = (
+        get_object_or_404(Playlist, slug=slug, site=get_current_site(request))
+        if slug
+        else None
+    )
     if in_maintenance():
         return redirect(reverse("maintenance"))
     if playlist and (
@@ -430,34 +443,38 @@ def add_or_edit(request: WSGIRequest, slug: str = None):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
+@require_POST
 def favorites_save_reorganisation(request: WSGIRequest, slug: str):
     """Save reorganization when the user click on save button."""
-    playlist = get_object_or_404(Playlist, slug=slug)
+    playlist = get_object_or_404(Playlist, slug=slug, site=get_current_site(request))
     if not user_can_modify_playlist_content(request.user, playlist):
         raise PermissionDenied
-    if request.method == "POST":
-        try:
-            swaps = json.loads(request.POST.get("json-data", ""))
-            if not isinstance(swaps, dict):
-                raise ValueError("Reorganization data must be an object")
-            reorganize_playlist(playlist, swaps)
-        except (ValueError, TypeError, KeyError):
-            return HttpResponseBadRequest(_("JSON in wrong format"))
+    try:
+        swaps = json.loads(request.POST.get("json-data", ""))
+        if not isinstance(swaps, dict):
+            raise ValueError("Reorganization data must be an object")
+        reorganize_playlist(playlist, swaps)
+    except (ValueError, TypeError, KeyError):
+        return HttpResponseBadRequest(_("JSON in wrong format"))
 
-        referer = request.headers.get("referer", "/")
-        if url_has_allowed_host_and_scheme(referer, allowed_hosts=ALLOWED_HOSTS):
-            return redirect(referer)
-        else:
-            return redirect("/")
+    referer = request.headers.get("referer", "/")
+    if url_has_allowed_host_and_scheme(referer, allowed_hosts=ALLOWED_HOSTS):
+        return redirect(referer)
     else:
-        raise Http404()
+        return redirect("/")
 
 
+@csrf_protect
 def start_playlist(request: WSGIRequest, slug: str, video: str | None = None):
     """Start an accessible playlist, requesting its password when needed."""
-    playlist = get_object_or_404(Playlist, slug=slug)
+    playlist = get_object_or_404(Playlist, slug=slug, site=get_current_site(request))
     selected_video = (
-        get_object_or_404(Video, slug=video, playlistcontent__playlist=playlist)
+        get_object_or_404(
+            Video,
+            slug=video,
+            sites=get_current_site(request),
+            playlistcontent__playlist=playlist,
+        )
         if video
         else None
     )
@@ -488,8 +505,10 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
     Returns:
         ::class::`django.http.JsonResponse`: The JSON response.
     """
-    video = get_object_or_404(Video, slug=video_slug)
-    playlist = get_object_or_404(Playlist, slug=playlist_slug)
+    video = get_object_or_404(Video, slug=video_slug, sites=get_current_site(request))
+    playlist = get_object_or_404(
+        Playlist, slug=playlist_slug, site=get_current_site(request)
+    )
     if not PlaylistContent.objects.filter(playlist=playlist, video=video).exists():
         return JsonResponse(
             {
@@ -501,11 +520,15 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
         request, playlist
     ) or not user_can_see_playlist_video(request, video, playlist):
         raise PermissionDenied
-    videos = get_video_list_for_playlist(playlist, prefetch_access=True).order_by("rank")
+    videos = get_video_list_for_playlist(playlist, prefetch_access=True).order_by(
+        "rank", "pk"
+    )
     context = {
         "video": video,
         "playlist_in_get": playlist,
         "videos": videos,
+        "playlist_fragment": True,
+        "listNotes": get_adv_note_list(request, video),
     }
     video_is_enrichment = True if video.get_default_version_link() else False
     templates = {
