@@ -374,7 +374,7 @@ def handle_post_request_for_add_or_edit_function(
                 messages.INFO,
                 _("The playlist has been created and the video has been added in it."),
             )
-            return redirect(next_url) # nosec
+            return redirect(next_url)  # nosec
         return HttpResponseRedirect(
             reverse("playlist:content", kwargs={"slug": new_playlist.slug})
         )
