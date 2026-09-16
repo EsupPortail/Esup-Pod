@@ -1,6 +1,8 @@
 """Esup-Pod playlist utilities."""
 
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password as django_check_password
+from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.db.models.functions import Lower
@@ -12,6 +14,7 @@ from django.db import transaction
 from django.shortcuts import render
 from django.http import Http404
 from django.utils.translation import gettext as _
+from django.utils.crypto import constant_time_compare
 
 from pod.video.models import THIRD_PARTY_APPS, Video
 from pod.video.utils import get_video_access
@@ -469,7 +472,7 @@ def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") 
 
 def check_password(form_password: str, playlist: Playlist) -> bool:
     """
-    Check if the form password is correct for the playlist.
+    Verify a playlist password and upgrade legacy SHA-256 hashes on success.
 
     Args:
         form_password (str): Password provided by user
@@ -479,8 +482,32 @@ def check_password(form_password: str, playlist: Playlist) -> bool:
     Returns:
         bool: `True` if the password provided matches the playlist password, `False` otherwise.
     """
-    hashed_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
-    return hashed_password == playlist.password
+    encoded = playlist.password
+    if len(encoded) == 64 and "$" not in encoded:
+        # Raw SHA-256 is only accepted for verification of existing playlists.
+        legacy_hash = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
+        if not constant_time_compare(legacy_hash, encoded):
+            return False
+        upgraded = make_password(form_password)
+        # Do not overwrite a password changed or upgraded by a concurrent request.
+        if Playlist.objects.filter(pk=playlist.pk, password=encoded).update(
+            password=upgraded
+        ):
+            playlist.password = upgraded
+            return True
+        encoded = (
+            Playlist.objects.filter(pk=playlist.pk)
+            .values_list("password", flat=True)
+            .first()
+        )
+        if not encoded:
+            return False
+        playlist.password = encoded
+    try:
+        return django_check_password(form_password, encoded)
+    except ValueError:
+        # Malformed stored hashes must deny access rather than fail the request.
+        return False
 
 
 def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
@@ -518,8 +545,9 @@ def require_playlist_access(request: WSGIRequest, playlist: Playlist):
     if request.method == "POST" and form.is_valid():
         password = form.cleaned_data["password"]
         # New passwords are normalized; legacy hashes may include surrounding spaces.
-        if check_password(password.strip(), playlist) or check_password(
-            password, playlist
+        normalized = password.strip()
+        if check_password(normalized, playlist) or (
+            normalized != password and check_password(password, playlist)
         ):
             request.session[f"playlist_access_{playlist.pk}"] = (
                 playlist.get_session_auth_hash()

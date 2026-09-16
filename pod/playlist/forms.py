@@ -1,9 +1,8 @@
 """Esup-Pod playlist application forms."""
 
-import hashlib
-
 from django import forms
 from django.conf import settings
+from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
 from django.utils.translation import gettext_lazy as _
@@ -166,7 +165,7 @@ class PlaylistForm(forms.ModelForm):
         """Hash normalized input or keep the existing password on a protected edit."""
         password = self.cleaned_data["password"]
         if password:
-            return hashlib.sha256(password.encode("utf-8")).hexdigest()
+            return make_password(password)
         if self.cleaned_data.get("visibility") == "protected":
             return self.instance.password
         return password
