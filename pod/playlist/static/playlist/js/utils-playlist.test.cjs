@@ -207,6 +207,7 @@ for (const response of [
 function createCardScenario(favorites, responses = [true]) {
   const requests = [];
   const errors = [];
+  const disposedTooltips = [];
   const listeners = new Map();
   const title = new FakeButton();
   let refreshCount = 0;
@@ -241,6 +242,7 @@ function createCardScenario(favorites, responses = [true]) {
         },
         iconClasses: ["bi", isFavorite ? "bi-star-fill" : "bi-folder-minus"],
       });
+      button.tooltip = { dispose: () => disposedTooltips.push(button) };
       button.closest = (selector) => {
         if (selector === ".draggable-container") return card;
         if (selector === ".favorite-btn-link, #favorite-button, #playlist-list .action-btn") {
@@ -285,6 +287,7 @@ function createCardScenario(favorites, responses = [true]) {
     },
     window: { addEventListener() {}, removeEventListener() {} },
     hideEmptyDropdowns() {},
+    bootstrap: { Tooltip: { getInstance: (button) => button.tooltip } },
     refreshVideosSearch() { refreshCount++; },
   });
   vm.runInContext(fs.readFileSync(`${__dirname}/video-playlists-remove-card.js`, "utf8"), context);
@@ -294,7 +297,7 @@ function createCardScenario(favorites, responses = [true]) {
   for (const listener of listeners.get("DOMContentLoaded") || []) listener();
 
   return {
-    list, requests, errors, title, updatedTitle,
+    list, requests, errors, title, updatedTitle, disposedTooltips,
     get refreshCount() { return refreshCount; },
     // Execute the real pagination loader, including its favorite-button initialization.
     async loadNextPage() {
@@ -335,6 +338,7 @@ for (const favorites of [false, true]) {
       const event = await scenario.click(card.buttons[0]);
       assert.equal(event.defaultPrevented, true);
       assert.equal(card.removed, true);
+      assert.equal(scenario.disposedTooltips.at(-1), card.buttons[0]);
       assert.ok(scenario.refreshCount > 0);
     }
     const mutations = scenario.requests.filter(({ options }) => options.method === "POST");
@@ -934,6 +938,14 @@ for (const nextPage of [false, true]) {
     assert.deepEqual(scenario.errors, []);
   });
 }
+
+test("list refresh works when the page has no videos list loader", async () => {
+  const scenario = createListRefreshScenario(false);
+  delete scenario.context.videosListLoader;
+  await scenario.context.refreshVideosSearch();
+  assert.equal(scenario.list.dataset.countvideos, "12");
+  assert.deepEqual(scenario.errors, []);
+});
 
 for (const failure of [false, true]) {
   test(`an obsolete list refresh cannot overwrite the latest result (failure: ${failure})`, async () => {
