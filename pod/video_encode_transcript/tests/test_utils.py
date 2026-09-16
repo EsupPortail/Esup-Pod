@@ -9,7 +9,6 @@ from unittest.mock import MagicMock, patch
 
 from django.core import mail
 from django.test import SimpleTestCase, override_settings
-from django.utils.translation import gettext, override
 
 from .. import utils
 from ..encoding_utils import get_dressing_position_value, sec_to_timestamp
@@ -153,50 +152,8 @@ class CompletionEmailTests(SimpleTestCase):
                         (prefix or "[TESTpod] ") + "Encoding #42 completed",
                     )
 
-    def test_french_encoding_email(self) -> None:
-        """Render correct French agreements and spaces in both email formats."""
-        with override("fr"):
-            utils.send_email_encoding(self.video)
-
-        self.assertEqual(len(mail.outbox), 2)
-        expected_message = (
-            "La vidéo « example.mp4 » a été encodée aux formats Web, "
-            "et est maintenant disponible sur TESTpod."
-        )
-        for message in mail.outbox:
-            self.assertEqual(message.subject, "[TESTpod] Encodage de #42 terminé")
-            self.assertIn(expected_message, message.body)
-            self.assertIn(
-                expected_message.replace("example.mp4", "<b>example.mp4</b>"),
-                message.alternatives[0][0],
-            )
-        for body in (mail.outbox[0].body, mail.outbox[0].alternatives[0][0]):
-            self.assertIn("Posté par\u00a0: Alice", body)
-            self.assertIn("le\u00a0: 2026-09-16", body)
-
-    def test_french_transcription_email(self) -> None:
-        """Preserve feminine agreement for transcription and masculine for content."""
-        with override("fr"):
-            utils.send_email_transcript(self.video)
-
-        self.assertEqual(len(mail.outbox), 2)
-        expected_message = (
-            "Le contenu « example.mp4 » a été automatiquement transcrit, "
-            "et est maintenant disponible sur TESTpod."
-        )
-        for message in mail.outbox:
-            self.assertEqual(
-                message.subject,
-                "[TESTpod] La transcription du contenu du #42 est terminée",
-            )
-            self.assertIn(expected_message, message.body)
-            self.assertIn(
-                expected_message.replace("example.mp4", "<b>example.mp4</b>"),
-                message.alternatives[0][0],
-            )
-
-    def test_english_completion_email_messages(self) -> None:
-        """Render complete English encoding and transcription sentences."""
+    def test_completion_email_messages(self) -> None:
+        """Render encoding and transcription messages with their content and metadata."""
         cases = (
             (
                 utils.send_email_encoding,
@@ -210,7 +167,7 @@ class CompletionEmailTests(SimpleTestCase):
             ),
         )
         for send_email, expected_message in cases:
-            with self.subTest(notification=send_email.__name__), override("en"):
+            with self.subTest(notification=send_email.__name__):
                 mail.outbox.clear()
                 send_email(self.video)
 
@@ -221,35 +178,38 @@ class CompletionEmailTests(SimpleTestCase):
                         expected_message.replace("example.mp4", "<b>example.mp4</b>"),
                         message.alternatives[0][0],
                     )
+                manager_message = mail.outbox[0]
+                for body in (manager_message.body, manager_message.alternatives[0][0]):
+                    self.assertIn("Post by: Alice", body)
+                    self.assertIn("the: 2026-09-16", body)
 
     @patch("pod.video_encode_transcript.utils.notify_user")
-    def test_french_encoding_push_notification(self, mock_notify_user) -> None:
-        """Keep the site name and encoding agreement in push notifications."""
-        with override("fr"):
-            utils.send_notification_encoding(self.video)
+    def test_encoding_push_notification(self, mock_notify_user) -> None:
+        """Include the site name and encoded video details in push notifications."""
+        utils.send_notification_encoding(self.video)
 
         mock_notify_user.assert_called_once()
         self.assertEqual(
             mock_notify_user.call_args.args[1],
-            "[TESTpod] Encodage de #42 terminé",
+            "[TESTpod] Encoding #42 completed",
         )
         self.assertEqual(
             mock_notify_user.call_args.args[2],
-            "La vidéo « example.mp4 » a été encodée aux formats Web, "
-            "et est maintenant disponible sur TESTpod.",
+            "The video “example.mp4” has been encoded to Web formats, "
+            "and is now available on TESTpod.",
         )
 
     @patch("pod.video_encode_transcript.utils.notify_user")
-    def test_french_transcription_push_notification(self, mock_notify_user) -> None:
+    def test_transcription_push_notification(self, mock_notify_user) -> None:
         """Use the complete transcription sentence for both existing subject labels."""
         for subject in ("The transcripting of content", "Transcripting"):
-            with self.subTest(subject=subject), override("fr"):
+            with self.subTest(subject=subject):
                 mock_notify_user.reset_mock()
-                utils.send_notification(self.video, gettext(subject))
+                utils.send_notification(self.video, subject)
 
                 mock_notify_user.assert_called_once()
                 self.assertEqual(
                     mock_notify_user.call_args.args[2],
-                    "Le contenu « example.mp4 » a été automatiquement transcrit, "
-                    "et est maintenant disponible sur TESTpod.",
+                    "The content “example.mp4” has been automatically transcribed, "
+                    "and is now available on TESTpod.",
                 )
