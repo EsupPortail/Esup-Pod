@@ -3,6 +3,8 @@
 from django_select2 import forms as s2forms
 from django import forms
 from django.contrib.admin import widgets
+from django.core.exceptions import ValidationError
+from django.forms.models import ModelChoiceIterator
 from django.forms.utils import to_current_timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -101,9 +103,26 @@ class OwnerWidget(s2forms.ModelSelect2Widget):
 
 
 class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
-    """Class AddOwnerWidget."""
+    """Select co-owners and render validation errors for malformed identifiers."""
 
     search_fields = [
         "username__icontains",
         "email__icontains",
     ]
+
+    def optgroups(self, name, value, attrs=None):
+        """Keep valid selections visible while the form rejects malformed input."""
+        if isinstance(self.choices, ModelChoiceIterator):
+            meta = self.choices.queryset.model._meta
+            field_name = self.choices.field.to_field_name
+            field = meta.pk if field_name in (None, "pk") else meta.get_field(field_name)
+            valid_values = []
+            for raw_value in value:
+                try:
+                    parsed = field.to_python(raw_value)
+                except ValidationError:
+                    continue
+                if parsed is not None:
+                    valid_values.append(str(parsed))
+            value = valid_values
+        return super().optgroups(name, value, attrs)

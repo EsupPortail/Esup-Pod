@@ -12,8 +12,8 @@ class FakeClassList {
     return this.classes.has(className);
   }
 
-  add(className) {
-    this.classes.add(className);
+  add(...classNames) {
+    classNames.forEach((className) => this.classes.add(className));
   }
 
   remove(...classNames) {
@@ -69,7 +69,9 @@ class FakeButton {
   }
 
   querySelector(selector) {
-    return selector === ".bi" ? { classList: this.icon } : null;
+    return selector === ".bi" && this.icon.contains("bi")
+      ? { classList: this.icon }
+      : null;
   }
 
   replaceWith(element) {

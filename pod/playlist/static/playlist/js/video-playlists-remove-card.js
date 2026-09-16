@@ -1,30 +1,25 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const cards = document.getElementsByClassName("draggable-container");
-  for (let card of cards) {
-    const btn = card.querySelector(".remove-from-playlist-btn-link");
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
-      const url = btn.getAttribute("href");
-      fetch(url, {
-        method: "GET"
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.text();
-          } else {
-            throw new Error("Network response was not ok.");
-          }
-        })
-        .then((data) => {
-          card.remove();
-          const parser = new DOMParser();
-          const html = parser.parseFromString(data, "text/html");
-          const title = document.getElementById("video_count");
-          title.replaceWith(html.getElementById("video_count"));
-        })
-        .catch(error => {
-          console.error("Error: ", error)
-        });
-    })
+/**
+ * @file Esup-Pod delegated playlist and favorite card removal.
+ */
+
+/* global postPlaylistAction, reportPlaylistError, refreshVideosSearch */
+
+// Delegate clicks so pagination and filtering can replace cards without rebinding.
+document.addEventListener("click", async function (event) {
+  const button = event.target.closest("#videos_list [data-remove-playlist-card]");
+  if (!button) return;
+  event.preventDefault();
+  if (button.classList.contains("disabled")) return;
+  button.classList.add("disabled");
+  try {
+    const data = await postPlaylistAction(button);
+    if (data.state !== "out-playlist") throw new Error("Unexpected removal state");
+    button.closest(".draggable-container").remove();
+    // Deletion shifts page boundaries; reload the filtered list and its pagination.
+    refreshVideosSearch();
+  } catch (error) {
+    reportPlaylistError(error);
+  } finally {
+    button.classList.remove("disabled");
   }
 });

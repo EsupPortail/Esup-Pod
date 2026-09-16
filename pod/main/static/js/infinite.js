@@ -107,6 +107,8 @@ class InfiniteLoader {
     this.next_page_number = page;
     this.current_page_number = page - 1;
     this.nextPage = nextPage;
+    this.stopped = false;
+    this.loading = false;
     this.callBackBeforeLoad = callBackBeforeLoad;
     this.callBackAfterLoad = callBackAfterLoad;
     this.url = url;
@@ -131,26 +133,27 @@ class InfiniteLoader {
    * Loads the next page of content and updates the DOM.
    */
   async initMore() {
+    if (this.stopped || this.loading) return;
+    this.loading = true;
     this.callBackBeforeLoad();
     let url = this.url;
-    this.getData(url, this.next_page_number, this.nextPage).then((data) => {
+    return this.getData(url, this.next_page_number, this.nextPage).then((data) => {
+      if (this.stopped) return;
       if (data !== null && data !== undefined) {
         const html = new DOMParser().parseFromString(data, "text/html");
-        if (html.getElementById("videos_list").dataset.nextpage !== "True") {
-          this.nextPage = false;
-        }
-        this.nextPage = html.getElementById("videos_list").dataset.nextpage;
+        const newList = html.getElementById("videos_list");
+        if (!newList) throw new Error("Missing video list");
+        this.nextPage = newList.dataset.nextpage === "true";
         let element = this.videos_list;
 
-        element.innerHTML += html.getElementById("videos_list").innerHTML;
+        element.innerHTML += newList.innerHTML;
         this.next_page_number += 1;
         const favoritesButtons =
           document.getElementsByClassName("favorite-btn-link");
         for (let btn of favoritesButtons) {
-          preventRefreshButton(btn, true);
+          if (typeof preventRefreshButton === "function") preventRefreshButton(btn, true);
         }
       }
-      this.callBackAfterLoad();
       /* Refresh Bootstrap tooltips after load */
       const tooltipTriggerList = document.querySelectorAll(
         '[data-bs-toggle="tooltip"], [data-pod-tooltip="true"]',
@@ -160,6 +163,16 @@ class InfiniteLoader {
       );
       // Hide empty menu
       hideEmptyDropdowns();
+    }).catch((error) => {
+      if (this.stopped) return;
+      this.current_page_number = this.next_page_number - 1;
+      console.error("Video pagination failed:", error);
+      if (typeof showalert === "function") {
+        showalert(gettext("An Error occurred while processing."), "alert-danger");
+      }
+    }).finally(() => {
+      this.loading = false;
+      if (!this.stopped) this.callBackAfterLoad();
     });
   }
 
@@ -167,7 +180,13 @@ class InfiniteLoader {
    * Removes the scroll event listener to stop infinite loading.
    */
   removeLoader() {
+    if (this.stopped) return;
+    this.stopped = true;
     window.removeEventListener("scroll", this.scroller_init);
+    if (this.loading) {
+      this.loading = false;
+      this.callBackAfterLoad();
+    }
   }
 
   /**
@@ -180,7 +199,7 @@ class InfiniteLoader {
    */
   async getData(url, page, nextPage) {
     if (!url) return;
-    if (nextPage == "false") return;
+    if (nextPage === false || nextPage === "false") return;
     url = url + page;
     const response = await fetch(url, {
       method: "GET",
@@ -190,6 +209,7 @@ class InfiniteLoader {
       },
       credentials: "same-origin",
     });
+    if (!response.ok) throw new Error("Video pagination request failed");
     const data = await response.text();
     return data;
   }

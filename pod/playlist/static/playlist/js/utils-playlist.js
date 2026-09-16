@@ -3,106 +3,131 @@
  * @since 3.4.0
  */
 
-/* Read-only Globals defined in playlist-modal.js */
-/*
-global addEventListenerForModal
-*/
+/**
+ * Submit a playlist mutation without following redirects to login or error pages.
+ * @param {HTMLElement} button - The control carrying the rendered CSRF token.
+ * @returns {Promise<Object>} The validated membership response.
+ */
+async function postPlaylistAction(button) {
+  const url = button.getAttribute("href");
+  const response = await fetch(`${url}${url.includes("?") ? "&" : "?"}json=true`, {
+    method: "POST",
+    mode: "same-origin",
+    redirect: "error",
+    headers: { "X-CSRFToken": button.getAttribute("data-csrf-token") },
+  });
+  if (!response.ok || response.redirected) throw new Error("Playlist request failed");
+  const data = await response.json();
+  if (!["in-playlist", "out-playlist"].includes(data.state)) {
+    throw new Error("Unexpected playlist state");
+  }
+  return data;
+}
 
 /**
- * Disables the default refresh behavior of a button and performs an asynchronous GET request using the Fetch API.
- * @param {HTMLElement} button - The HTML button element.
+ * Report a failed action without changing the displayed membership state.
+ * @param {Error} error - The request or response error.
  */
-function preventRefreshButton(button, jsonFormat) {
-  const FAVORITE_BUTTON_ID = "favorite-button";
-  const PLAYLIST_MODAL_ID = "playlist-list";
-  if (button) {
-    button.addEventListener("click", function (e) {
-      e.preventDefault();
-      let url = this.getAttribute("href");
-      if (button.classList.contains("action-btn")) {
-        button.classList.add("disabled");
-        this.removeAttribute("href");
-      } else if (button.classList.contains("favorite-btn-link")) {
-        button.classList.add("disabled");
-      }
-      if (jsonFormat && !url.includes("json=true")) {
-        url += `${url.includes("?") ? "&" : "?"}json=true`;
-      }
-      fetch(url, {
-        method: "GET",
-      })
-        .then((response) => {
-          if (response.ok) {
-            if (jsonFormat) {
-              return response.json();
-            }
-            return response.text();
-          } else {
-            throw new Error("Network response was not ok.");
-          }
-        })
-        .then((data) => {
-          if (jsonFormat) {
-            window.setTimeout(() => {
-              const iconElement = button.querySelector(".bi");
-              const isInPlaylist = data.state === "in-playlist";
-              const newUrl = isInPlaylist
-                ? url.replace("/add/", "/remove/")
-                : url.replace("/remove/", "/add/");
-              const oldIcon = isInPlaylist ? "bi-plus" : "bi-dash";
-              const newIcon = isInPlaylist ? "bi-dash" : "bi-plus";
-              const oldButtonClass = isInPlaylist
-                ? "btn-success"
-                : "btn-danger";
-              const newButtonClass = isInPlaylist
-                ? "btn-danger"
-                : "btn-success";
-              const oldActionClass = isInPlaylist
-                ? "add-video-from-playlist"
-                : "remove-video-from-playlist";
-              const newActionClass = isInPlaylist
-                ? "remove-video-from-playlist"
-                : "add-video-from-playlist";
-              const actionLabel = isInPlaylist
-                ? gettext("Remove the video from this playlist")
-                : gettext("Add the video in this playlist");
-
-              if (data.state !== "in-playlist" && data.state !== "out-playlist") {
-                return;
-              }
-              iconElement.classList.remove(oldIcon);
-              iconElement.classList.add(newIcon);
-              button.classList.remove(oldButtonClass, oldActionClass, "disabled");
-              button.classList.add(newButtonClass, newActionClass);
-              button.setAttribute("href", newUrl);
-              button.setAttribute("title", actionLabel);
-              button.setAttribute("aria-label", actionLabel);
-            }, 300);
-          } else {
-            const parser = new DOMParser();
-            const html = parser.parseFromString(data, "text/html");
-            const updatedButton = html.getElementById(button.id);
-            const favoriteButton = document.getElementById(FAVORITE_BUTTON_ID);
-            const playlistModal = document.getElementById(PLAYLIST_MODAL_ID);
-            preventRefreshButton(updatedButton);
-            button.replaceWith(updatedButton);
-            if (playlistModal && button.id === FAVORITE_BUTTON_ID) {
-              playlistModal.replaceWith(html.getElementById(PLAYLIST_MODAL_ID));
-              addEventListenerForModal();
-            }
-            if (favoriteButton && button.id !== FAVORITE_BUTTON_ID) {
-              const updatedFavoriteButton =
-                html.getElementById(FAVORITE_BUTTON_ID);
-              preventRefreshButton(updatedFavoriteButton, false);
-              favoriteButton.replaceWith(updatedFavoriteButton);
-            }
-          }
-          // Hide empty menu and change style for favorite button
-          // hideEmptyDropdowns();
-        })
-        .catch((error) => {
-          console.error("Error: ", error);
-        });
-    });
+function reportPlaylistError(error) {
+  console.error("Playlist action failed:", error);
+  if (typeof showalert === "function") {
+    showalert(gettext("An Error occurred while processing."), "alert-danger");
   }
+}
+
+/**
+ * Apply a successful mutation and restore the control after failures.
+ * @param {Event} event - The click on a favorite or modal control.
+ */
+async function handlePlaylistAction(event) {
+  event.preventDefault();
+  const url = this.getAttribute("href");
+  const action = url?.replace("/remove/", "/add/");
+  if (!url || this.classList.contains("disabled") || playlistPendingActions.has(action)) return;
+  playlistPendingActions.add(action);
+  this.classList.add("disabled");
+  try {
+    const data = await postPlaylistAction(this);
+    updatePlaylistButton(this, data.state, url);
+    const playlistId = this.getAttribute("data-playlist-id");
+    const videoId = this.getAttribute("data-video-id");
+    if (playlistId && videoId) {
+      document.querySelectorAll(`[data-playlist-id="${playlistId}"][data-video-id="${videoId}"]`).forEach((button) => {
+        if (button !== this) updatePlaylistButton(button, data.state, button.getAttribute("href"));
+      });
+    }
+    // Keep successful feedback visible and ignore rapid clicks on matching controls.
+    await new Promise((resolve) => window.setTimeout(resolve, 300));
+    if (data.state === "out-playlist" && this.getAttribute("data-removed-url")) {
+      window.location.href = this.getAttribute("data-removed-url");
+    }
+  } catch (error) {
+    reportPlaylistError(error);
+  } finally {
+    this.classList.remove("disabled");
+    playlistPendingActions.delete(action);
+  }
+}
+
+var playlistBoundButtons = playlistBoundButtons || new WeakSet();
+var playlistPendingActions = playlistPendingActions || new Set();
+
+/**
+ * Keep existing callers compatible while making repeated binding harmless.
+ * @param {HTMLElement} button - A control from the initial or a replaced fragment.
+ */
+function preventRefreshButton(button) {
+  if (button && button.getAttribute("data-remove-playlist-card") === null && !playlistBoundButtons.has(button)) {
+    playlistBoundButtons.add(button);
+    button.addEventListener("click", handlePlaylistAction);
+  }
+}
+
+// Filtering and modal replacement can create controls without running their scripts.
+document.addEventListener("click", function (event) {
+  if (event.defaultPrevented) return;
+  const button = event.target.closest(".favorite-btn-link, #favorite-button, #playlist-list .action-btn");
+  if (button && button.getAttribute("data-remove-playlist-card") === null) {
+    return handlePlaylistAction.call(button, event);
+  }
+});
+
+/**
+ * Update a modal button or a favorite star after a successful JSON response.
+ * @param {HTMLElement} button - The action button.
+ * @param {string} state - The new playlist membership state.
+ * @param {string} url - The URL used for the action.
+ */
+function updatePlaylistButton(button, state, url) {
+  if (state !== "in-playlist" && state !== "out-playlist") {
+    throw new Error("Unexpected playlist state");
+  }
+  const isInPlaylist = state === "in-playlist";
+  const isFavorite = button.id === "favorite-button" || button.classList.contains("favorite-btn-link");
+  const icons = isFavorite ? ["bi-star", "bi-star-fill"] : ["bi-plus", "bi-dash"];
+  const icon = button.querySelector(".bi");
+  icon?.classList.remove(...icons);
+  icon?.classList.add(icons[Number(isInPlaylist)]);
+
+  let label;
+  if (isFavorite) {
+    label = isInPlaylist ? gettext("Remove from favorite") : gettext("Add in favorite");
+    button.setAttribute("aria-pressed", String(isInPlaylist));
+  } else {
+    label = isInPlaylist
+      ? gettext("Remove the video from this playlist")
+      : gettext("Add the video in this playlist");
+    button.classList.remove(
+      "btn-success", "btn-danger", "add-video-from-playlist", "remove-video-from-playlist",
+    );
+    button.classList.add(
+      isInPlaylist ? "btn-danger" : "btn-success",
+      isInPlaylist ? "remove-video-from-playlist" : "add-video-from-playlist",
+    );
+  }
+  button.setAttribute("href", isInPlaylist
+    ? url.replace("/add/", "/remove/")
+    : url.replace("/remove/", "/add/"));
+  button.setAttribute("title", label);
+  button.setAttribute("aria-label", label);
 }

@@ -64,9 +64,11 @@
 <link href="{% static 'css/video_notes.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/video_notes.js' %}?ver={{VERSION}}"></script>
 <!-- Playlist / favorites -->
-{% if USE_PLAYLIST and USE_FAVORITES %}
+{% if USE_PLAYLIST %}
   <script src="{% static 'playlist/js/utils-playlist.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'playlist/js/video-header-favorites.js' %}?ver={{VERSION}}"></script>
+  {% if USE_FAVORITES %}
+    <script src="{% static 'playlist/js/video-header-favorites.js' %}?ver={{VERSION}}"></script>
+  {% endif %}
 {% endif %}
 <!-- logo -->
 <link href="{% static 'css/videojs-controlbar.css' %}?ver={{VERSION}}" rel="stylesheet">

@@ -1,13 +1,14 @@
 """Esup-Pod playlist application forms."""
 
+import hashlib
+
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
 from django.utils.translation import gettext_lazy as _
 
-from pod.main.forms_utils import add_placeholder_and_asterisk
-from pod.meeting.forms import AddOwnerWidget
+from pod.main.forms_utils import AddOwnerWidget, add_placeholder_and_asterisk
 
 from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist
@@ -146,14 +147,29 @@ class PlaylistForm(forms.ModelForm):
         self.user = kwargs.pop("user", None)
         super(PlaylistForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
-        if self.user:
-            if (
-                RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY or self.user.is_superuser
-            ) and "promoted" in self.fields:
-                del self.fields["promoted"]
-        else:
-            if "promoted" in self.fields:
-                del self.fields["promoted"]
+        owners_field = self.add_prefix("additional_owners")
+        if (
+            self.is_bound
+            and self.instance.pk
+            and owners_field not in self.data
+            and f"{owners_field}_present" not in self.data
+        ):
+            # Omitted fields must not be written by ModelForm.save_m2m().
+            self.fields.pop("additional_owners")
+        if not self.user or (
+            RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY
+            and not (self.user.is_staff or self.user.is_superuser)
+        ):
+            self.fields.pop("promoted", None)
+
+    def clean_password(self) -> str:
+        """Hash normalized input or keep the existing password on a protected edit."""
+        password = self.cleaned_data["password"]
+        if password:
+            return hashlib.sha256(password.encode("utf-8")).hexdigest()
+        if self.cleaned_data.get("visibility") == "protected":
+            return self.instance.password
+        return password
 
     def clean_name(self) -> str:
         """Check if the playlist name asked is correct."""
@@ -212,6 +228,7 @@ class PlaylistPasswordForm(forms.Form):
 
     password = forms.CharField(
         label=_("Password"),
+        strip=False,  # Preserve whitespace for passwords created before normalization.
         widget=forms.PasswordInput(
             attrs={
                 "aria-describedby": "id_passwordHelp",
