@@ -150,22 +150,35 @@ test("failed requests restore the modal button and allow retrying", async () => 
   assert.equal(button.icon.contains("bi-dash"), true);
 });
 
-test("favorite headers keep their star when toggling an existing favorite", async () => {
-  const preventRefreshButton = loadPreventRefreshButton(async () => ({
-    ok: true, json: async () => ({ state: "out-playlist" }),
-  }));
-  const button = new FakeButton({
-    classes: ["remove-from-playlist-btn-link"],
-    attributes: { href: "/playlist/remove/favorites/video/", "aria-pressed": "true" },
-    iconClasses: ["bi", "bi-star-fill"],
+for (const initiallyFavorite of [false, true]) {
+  test(`header stars without the bi class toggle in both directions (initial favorite: ${initiallyFavorite})`, async () => {
+    const states = initiallyFavorite ? ["out-playlist", "in-playlist"] : ["in-playlist", "out-playlist"];
+    const preventRefreshButton = loadPreventRefreshButton(async () => ({
+      ok: true, json: async () => ({ state: states.shift() }),
+    }));
+    const button = new FakeButton({
+      classes: [initiallyFavorite ? "remove-from-playlist-btn-link" : "favorite-btn-link"],
+      attributes: {
+        href: `/playlist/${initiallyFavorite ? "remove" : "add"}/favorites/video/`,
+        "aria-pressed": String(initiallyFavorite),
+      },
+      iconClasses: [initiallyFavorite ? "bi-star-fill" : "bi-star"],
+    });
+    button.id = "favorite-button";
+    assert.equal(button.querySelector(".bi"), null);
+    preventRefreshButton(button);
+    for (const favorite of [!initiallyFavorite, initiallyFavorite]) {
+      await clickButton(button);
+      assert.equal(button.icon.contains("bi-star"), !favorite);
+      assert.equal(button.icon.contains("bi-star-fill"), favorite);
+      assert.equal(button.icon.contains("bi-plus"), false);
+      assert.equal(button.icon.contains("bi-dash"), false);
+      assert.equal(button.getAttribute("aria-pressed"), String(favorite));
+      assert.equal(button.getAttribute("href"), `/playlist/${favorite ? "remove" : "add"}/favorites/video/`);
+      assert.equal(button.getAttribute("aria-label"), favorite ? "Remove from favorite" : "Add in favorite");
+    }
   });
-  button.id = "favorite-button";
-  preventRefreshButton(button);
-  await clickButton(button);
-  assert.equal(button.icon.contains("bi-star"), true);
-  assert.equal(button.icon.contains("bi-plus"), false);
-  assert.equal(button.getAttribute("aria-pressed"), "false");
-});
+}
 
 for (const response of [
   { ok: true, redirected: true, json: async () => ({ state: "in-playlist" }) },
@@ -394,6 +407,7 @@ function createPlayerScenario(enriched, controls = true, config = {}) {
         href: `/playlist/${favorite ? "remove" : "add"}/favorites/video-${number}/`,
         "data-csrf-token": `token-${number}`,
       },
+      iconClasses: [favorite ? "bi-star-fill" : "bi-star"],
     });
     favoriteButton.id = "favorite-button";
     favoriteButton.replaceWith = (replacement) => { favoriteButton = replacement; };
@@ -521,6 +535,8 @@ for (const enriched of [false, true]) {
       assert.notEqual(scenario.modalButton, previousModal);
       await clickButton(scenario.modalButton);
       await clickButton(scenario.favoriteButton);
+      assert.equal(scenario.favoriteButton.icon.contains("bi-star-fill"), true);
+      assert.equal(scenario.favoriteButton.icon.contains("bi-star"), false);
       const requests = scenario.requests.slice(-2);
       assert.equal(requests[0].url, `/playlist/add/custom/video-${number}/?json=true`);
       assert.equal(requests[1].url, `/playlist/add/favorites/video-${number}/?json=true`);
@@ -600,7 +616,7 @@ test("removing the current player video navigates to the playlist contents", asy
 test("the Favorites modal and header stay synchronized after either control is used", async () => {
   const attributes = { href: "/playlist/add/favorites/video/", "data-playlist-id": "1", "data-video-id": "2" };
   const modal = new FakeButton({ classes: ["action-btn"], attributes, iconClasses: ["bi", "bi-plus"] });
-  const header = new FakeButton({ classes: ["favorite-btn-link"], attributes, iconClasses: ["bi", "bi-star"] });
+  const header = new FakeButton({ classes: ["favorite-btn-link"], attributes, iconClasses: ["bi-star"] });
   header.id = "favorite-button";
   const states = ["in-playlist", "out-playlist"];
   const context = loadPlaylistContext(async () => ({ ok: true, json: async () => ({ state: states.shift() }) }), console, {
@@ -612,6 +628,8 @@ test("the Favorites modal and header stay synchronized after either control is u
   assert.equal(header.icon.contains("bi-star-fill"), true);
   assert.equal(header.getAttribute("href"), "/playlist/remove/favorites/video/");
   await clickButton(header);
+  assert.equal(header.icon.contains("bi-star"), true);
+  assert.equal(header.icon.contains("bi-star-fill"), false);
   assert.equal(modal.icon.contains("bi-plus"), true);
   assert.equal(modal.getAttribute("href"), "/playlist/add/favorites/video/");
 });
