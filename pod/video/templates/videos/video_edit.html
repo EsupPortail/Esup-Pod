@@ -277,8 +277,9 @@
 
 {% block more_script %}
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+  {{ listTheme|json_script:"list-theme-data" }}
   <script>
-    const listTheme = {{listTheme | safe}};
+    const listTheme = JSON.parse(document.getElementById("list-theme-data").textContent);
   </script>
   {{ form.media.js }}
   <script defer src="{% static 'js/video_edit.js' %}?ver={{VERSION}}"></script>

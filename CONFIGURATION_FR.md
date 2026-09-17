@@ -509,9 +509,12 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
 * `ARCHIVE_OWNER_USERNAME`
   > valeur par défaut : `"archive"`
   >> Nom de l’utilisateur pour l’archivage des vidéos.<br>
+* `ARCHIVE_ROOT`
+  > valeur par défaut : `'/video_archiving'`
+  >> Dossier dans lequel sont déplacées les vidéos après ARCHIVE_HOW_MANY_DAYS jours.<br>
 * `ARCHIVE_HOW_MANY_DAYS`
   > valeur par défaut : `365`
-  >> Délai avant qu'une vidéo archivée ne soit déplacée vers archive_ROOT.<br>
+  >> Délai avant qu'une vidéo archivée ne soit déplacée vers ARCHIVE_ROOT.<br>
 * `POD_ARCHIVE_AFFILIATION`
   > valeur par défaut : `[]`
   >> Affiliations pour lesquelles on souhaite archiver la vidéo plutôt que de la supprimer.<br>
@@ -560,7 +563,13 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >>    'respite_criteria_parameter': [...],
   >>    'archiving_criteria_parameter': {
   >>        'minimum_expected_score': value,
-  >>        'attribute_scores': [...],
+  >>        'attribute_scores': [
+  >>            'title': 2,
+  >>            'description',: 3,
+  >>            'discipline',: 2,
+  >>            'tags',: 2,
+  >>            'date_evt',: 1,
+  >>        ],
   >>        'excluded_title_terms': [...],
   >>        'excluded_discipline_terms': [...],
   >>    }

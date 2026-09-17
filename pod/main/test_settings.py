@@ -38,12 +38,14 @@ USE_DOCKER = True
 ES_URL = ["http://elasticsearch.localhost:9200/"]
 ES_VERSION = 8
 ES_INDEX = "pod"
+ES_OPTIONS = {}
 path = "pod/custom/settings_local.py"
 if os.path.exists(path):
     _temp = __import__("pod.custom", globals(), locals(), ["settings_local"])
     USE_DOCKER = getattr(_temp.settings_local, "USE_DOCKER", USE_DOCKER)
     ES_URL = getattr(_temp.settings_local, "ES_URL", ES_URL)
     ES_VERSION = getattr(_temp.settings_local, "ES_VERSION", ES_VERSION)
+    ES_OPTIONS = getattr(_temp.settings_local, "ES_OPTIONS", ES_OPTIONS)
 
 for application in INSTALLED_APPS:
     if application.startswith("pod"):

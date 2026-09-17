@@ -12,6 +12,9 @@ on:
       - master
     workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
     Pod-Main:
         runs-on: ubuntu-latest
@@ -69,6 +72,9 @@ jobs:
                 python manage.py migrate --settings=pod.main.test_settings
                 cd pod
                 yarn
+
+            - name: Run JavaScript tests
+              run: find pod -type f -name '*.test.cjs' -print0 | xargs -0 node --test
 
             - name: Run Tests without coverage
               env:

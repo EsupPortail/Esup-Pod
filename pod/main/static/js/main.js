@@ -1280,30 +1280,50 @@ var showalert = function (message, alertType, idAlertType = "formalertdiv") {
     "alert-info": "info-fill",
     "alert-warning": "exclamation-triangle-fill",
     "alert-danger": "exclamation-triangle-fill",
+    "alert-error": "exclamation-triangle-fill",
   };
+  const safeAlertType = Object.prototype.hasOwnProperty.call(
+    icon_types,
+    alertType,
+  )
+    ? alertType
+    : "alert-info";
+  const alertElement = document.createElement("div");
+  alertElement.id = idAlertType;
+  alertElement.classList.add(
+    "alert",
+    safeAlertType,
+    "alert-dismissible",
+    "fade",
+    "show",
+  );
+  alertElement.setAttribute("role", "alert");
 
-  let textHtml =
-    "<div id=" +
-    idAlertType +
-    ' class="alert ' +
-    alertType +
-    ' alert-dismissible fade show" role="alert">' +
-    '<i aria-hidden="true" class="bi bi-' +
-    icon_types[alertType] +
-    ' me-2"></i>' +
-    '<span class="alert-message">' +
-    message +
-    "</span>" +
-    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="' +
-    gettext("Close") +
-    '"></button></div>';
+  const icon = document.createElement("i");
+  icon.setAttribute("aria-hidden", "true");
+  icon.classList.add("bi", `bi-${icon_types[safeAlertType]}`, "me-2");
+  alertElement.appendChild(icon);
 
-  let parsedHTML = new DOMParser().parseFromString(textHtml, "text/html").body
-    .firstChild;
+  const messageElement = document.createElement("span");
+  messageElement.classList.add("alert-message");
+  String(message)
+    .split(/<br\s*\/?>/i)
+    .forEach((line, index) => {
+      if (index > 0) messageElement.appendChild(document.createElement("br"));
+      messageElement.appendChild(document.createTextNode(line));
+    });
+  alertElement.appendChild(messageElement);
 
-  document.body.appendChild(parsedHTML);
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.classList.add("btn-close");
+  closeButton.dataset.bsDismiss = "alert";
+  closeButton.setAttribute("aria-label", gettext("Close"));
+  alertElement.appendChild(closeButton);
+
+  document.body.appendChild(alertElement);
   // Auto dismiss success and info types
-  if (["alert-success", "alert-info"].includes(alertType)) {
+  if (["alert-success", "alert-info"].includes(safeAlertType)) {
     setTimeout(function () {
       let formalertdiv = document.getElementById(idAlertType);
       window.setTimeout(function () {
@@ -1485,11 +1505,48 @@ function update_theme(id_theme) {
       }
     }
     // Remove all id_theme options
-    for (option in id_theme.options) {
-      id_theme.options.remove(0);
-    }
+    while (id_theme.options.length > 0) id_theme.options.remove(0);
   }
   return tab_initial;
+}
+
+/**
+ * Append theme options using DOM text nodes so labels are never parsed as HTML.
+ * @param {HTMLSelectElement} id_theme Theme selector
+ * @param {Array} themes Themes to append
+ * @param {Array} selectedThemes Initially selected theme identifiers
+ * @param {string} channelLabel Channel label prefix
+ * @param {number} level Theme nesting level
+ */
+function appendThemeOptions(
+  id_theme,
+  themes,
+  selectedThemes,
+  channelLabel,
+  level = 0,
+) {
+  let prefix = "";
+  for (let i = 0; i < level; i++) prefix += "\u00a0\u00a0";
+  if (level !== 0) prefix += "|-";
+
+  themes.forEach((theme) => {
+    const option = document.createElement("option");
+    option.value = String(theme.id);
+    option.id = `theme_${theme.id}`;
+    option.selected = selectedThemes.includes(String(theme.id));
+    option.textContent = `${prefix} ${channelLabel}${theme.title}`;
+    id_theme.appendChild(option);
+
+    if (theme.child && Object.keys(theme.child).length > 0) {
+      appendThemeOptions(
+        id_theme,
+        theme.child,
+        selectedThemes,
+        channelLabel,
+        level + 1,
+      );
+    }
+  });
 }
 
 /**
@@ -1503,29 +1560,20 @@ function channel_callback(id_channel, id_theme, listTheme) {
   const channels = id_channel.parentElement.querySelectorAll(
     ".select2-selection__choice",
   );
-  let new_themes = [];
   for (let i = 0; i < channels.length; i++) {
     for (let j = 0; j < id_channel.options.length; j++) {
       if (channels[i].title === id_channel.options[j].text) {
         if (listTheme["channel_" + id_channel.options[j].value]) {
-          new_themes.push(
-            get_list(
-              listTheme["channel_" + id_channel.options[j].value],
-              0,
-              tab_initial,
-              (tag_type = "option"),
-              (li_class = ""),
-              (attrs = ""),
-              (add_link = false),
-              (current = ""),
-              (channel = id_channel.options[j].text + ": "),
-            ),
+          appendThemeOptions(
+            id_theme,
+            listTheme["channel_" + id_channel.options[j].value],
+            tab_initial,
+            id_channel.options[j].text + ": ",
           );
         }
       }
     }
   }
-  id_theme.innerHTML = new_themes.join("\n");
   flashing(id_theme, 1000);
 }
 
@@ -1537,23 +1585,14 @@ function channel_callback(id_channel, id_theme, listTheme) {
  */
 function init_theme_selector(id_channel, id_theme, listTheme) {
   const tab_initial = update_theme(id_theme);
-  var initial_themes = [];
   for (let i = 0; i < id_channel.options.length; i++) {
     if (listTheme["channel_" + id_channel.options[i].value]) {
-      initial_themes.push(
-        get_list(
-          listTheme["channel_" + id_channel.options[i].value],
-          0,
-          tab_initial,
-          (tag_type = "option"),
-          (li_class = ""),
-          (attrs = ""),
-          (add_link = false),
-          (current = ""),
-          (channel = id_channel.options[i].text + ": "),
-        ),
+      appendThemeOptions(
+        id_theme,
+        listTheme["channel_" + id_channel.options[i].value],
+        tab_initial,
+        id_channel.options[i].text + ": ",
       );
     }
   }
-  id_theme.innerHTML = initial_themes.join("\n");
 }

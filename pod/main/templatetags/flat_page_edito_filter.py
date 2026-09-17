@@ -4,7 +4,7 @@ import hashlib
 import html
 import random
 import string
-from datetime import date, datetime
+from datetime import date
 from html.parser import HTMLParser
 
 from django import template
@@ -285,7 +285,7 @@ def render_next_events(uniq_id, params, current_site, debug_elts):
 
     query = (
         Event.objects.filter(is_draft=False)
-        .exclude(end_date__lt=datetime.now())
+        .exclude(end_date__lt=timezone.now())
         .filter(broadcaster__building__sites__exact=current_site)
     )
 

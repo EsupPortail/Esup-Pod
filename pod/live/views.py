@@ -11,6 +11,7 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import SuspiciousOperation
@@ -124,10 +125,13 @@ def direct(request, slug):
     site = get_current_site(request)
     broadcaster = get_broadcaster_by_slug(slug, site)
     if broadcaster.is_restricted and not request.user.is_authenticated:
-        iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-        return redirect(
-            "%s?%sreferrer=%s"
-            % (settings.LOGIN_URL, iframe_param, request.get_full_path())
+        login_url = settings.LOGIN_URL
+        if request.GET.get("is_iframe"):
+            login_url += "?is_iframe=true"
+        return redirect_to_login(
+            request.get_full_path(),
+            login_url=login_url,
+            redirect_field_name="referrer",
         )
 
     return render(
@@ -297,10 +301,13 @@ def event(request, slug, slug_private=None):
     if (
         evemnt.is_restricted or evemnt.restrict_access_to_groups.all().exists()
     ) and not request.user.is_authenticated:
-        iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-        return redirect(
-            "%s?%sreferrer=%s"
-            % (settings.LOGIN_URL, iframe_param, request.get_full_path())
+        login_url = settings.LOGIN_URL
+        if request.GET.get("is_iframe"):
+            login_url += "?is_iframe=true"
+        return redirect_to_login(
+            request.get_full_path(),
+            login_url=login_url,
+            redirect_field_name="referrer",
         )
 
     user_owns_event = request.user.is_authenticated and (
@@ -1029,10 +1036,11 @@ def create_video(event_id, current_file, segment_number):
 
         os.remove(full_file_name)
 
-    except Exception as exc:
+    except Exception:
+        logger.exception("Unable to create a video for live event %s", event_id)
         return JsonResponse(
             status=500,
-            data={"success": False, "error": str(exc)},
+            data={"success": False, "error": _("Unable to upload the video to Pod")},
         )
 
     segment = "(" + segment_number + ")" if segment_number else ""

@@ -5,6 +5,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.test import TestCase
+from django.utils import timezone
 
 
 class ExternalRecordingTestCase(TestCase):
@@ -21,7 +22,7 @@ class ExternalRecordingTestCase(TestCase):
             id=1,
             name="test recording1",
             owner=user,
-            start_at=datetime(2022, 4, 24, 14, 0, 0),
+            start_at=timezone.make_aware(datetime(2022, 4, 24, 14, 0, 0)),
             site=Site.objects.get(id=1),
             type="bigbluebutton",
             source_url="https://bbb.url",
@@ -30,7 +31,7 @@ class ExternalRecordingTestCase(TestCase):
             id=2,
             name="test recording2",
             owner=user,
-            start_at=datetime(2022, 4, 24, 14, 0, 0),
+            start_at=timezone.make_aware(datetime(2022, 4, 24, 14, 0, 0)),
             site=Site.objects.get(id=1),
             type="bigbluebutton",
             source_url="https://bbb.url",

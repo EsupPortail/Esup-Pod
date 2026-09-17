@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-07 11:07+0200\n"
+"POT-Creation-Date: 2026-09-16 12:34+0200\n"
 "PO-Revision-Date: 2025-04-25 10:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -420,8 +420,9 @@ msgstr ""
 msgid "An error occurred during broadcasters loading…"
 msgstr ""
 
-#: pod/live/static/js/filter_aside_event_list.js
+#: pod/live/static/js/filter_aside_event_list.js pod/main/static/js/infinite.js
 #: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
+#: pod/playlist/static/playlist/js/utils-playlist.js
 #: pod/video/static/js/filter_aside_video_list_refresh.js
 #: pod/video/static/js/video_category.js
 msgid "An Error occurred while processing."
@@ -562,8 +563,20 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: pod/playlist/static/playlist/js/video-favorites-remove-card.js
-msgid "Network response was not ok."
+#: pod/playlist/static/playlist/js/utils-playlist.js
+msgid "Remove from favorite"
+msgstr ""
+
+#: pod/playlist/static/playlist/js/utils-playlist.js
+msgid "Add in favorite"
+msgstr ""
+
+#: pod/playlist/static/playlist/js/utils-playlist.js
+msgid "Remove the video from this playlist"
+msgstr ""
+
+#: pod/playlist/static/playlist/js/utils-playlist.js
+msgid "Add the video in this playlist"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
@@ -813,6 +826,14 @@ msgstr ""
 
 #: pod/video/static/js/comment-script.js
 msgid "Cancel"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js
+msgid "Not voted"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js
+msgid "Voted"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js

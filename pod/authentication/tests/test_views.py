@@ -7,6 +7,7 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+from urllib.parse import parse_qs, urlsplit
 
 # ggignore-start
 # gitguardian:ignore
@@ -42,6 +43,29 @@ class authenticationViewsTestCase(TestCase):
         self.assertRedirects(response, "/accounts/login/?next=/")
 
         print("   --->  test_authentication_login of authenticationViewsTestCase: OK!")
+
+    def test_authentication_login_rejects_external_referrers(self) -> None:
+        """Authentication redirects must remain on the current host."""
+        login_url = settings.LOGIN_URL
+
+        for referrer in ("//evil.example", "https://testserver.evil.example/path"):
+            with self.subTest(referrer=referrer):
+                response = self.client.get(login_url, {"referrer": referrer})
+                self.assertEqual(response.status_code, 400)
+
+    def test_authentication_login_encodes_local_referrer(self) -> None:
+        """Keep a local return URL as one encoded query-string value."""
+        referrer = "/video/example/?first=1&second=2"
+        response = self.client.get(
+            settings.LOGIN_URL,
+            {"referrer": referrer, "is_iframe": "true"},
+        )
+
+        location = urlsplit(response.url)
+        query = parse_qs(location.query)
+        self.assertEqual(location.path, "/accounts/login/")
+        self.assertEqual(query["next"], [referrer])
+        self.assertEqual(query["is_iframe"], ["true"])
 
     def test_authentication_logout(self) -> None:
         self.client = Client()

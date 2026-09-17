@@ -137,10 +137,11 @@ class ConfirmModal extends HTMLElement {
 customElements.define("confirm-modal", ConfirmModal);
 
 class CommentSince extends HTMLElement {
-  constructor(since) {
-    super();
-    since = this.getAttribute("since") ? this.getAttribute("since") : since;
+  connectedCallback() {
+    let since = this.getAttribute("since");
+    if (!since) return;
     since = typeof since === "string" ? new Date(since) : since;
+    if (Number.isNaN(since.getTime())) return;
     this.setAttribute("title", since.toLocaleString());
     let date_since = dayjs(since).fromNow();
     let div = document.createElement("DIV");
@@ -218,8 +219,12 @@ class Comment extends HTMLElement {
           : String(content ?? "");
     }
     let svg_icon = [
-      `<span class="unvoted"><i class="bi bi-star"></i></span>`,
-      `<span class="voted"><i class="bi bi-star-fill"></i></span>`,
+      `<span class="unvoted"><i class="bi bi-star" title="${gettext(
+        "Not voted",
+      )}"></i></span>`,
+      `<span class="voted"><i class="bi bi-star-fill" title="${gettext(
+        "Voted",
+      )}"></i></span>`,
     ];
 
     let vote_text = interpolate(

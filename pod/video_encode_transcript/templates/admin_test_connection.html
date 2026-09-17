@@ -61,7 +61,7 @@
   {% if change and original %}
     <li>
       <a class="runner-admin-link"
-         href="{% if original.url|slice:'-1:' == '/' %}{{ original.url }}admin{% else %}{{ original.url }}/admin{% endif %}"
+         href="{{ original.runner_admin_url }}"
          target="_blank"
          rel="noopener noreferrer">
         <i class="bi bi-box-arrow-up-right runner-admin-icon" aria-hidden="true"></i>

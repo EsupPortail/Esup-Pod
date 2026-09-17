@@ -131,13 +131,15 @@ class RestViewsApiTests(TestCase):
             recording_type="studio",
             type=recorder_type,
         )
-        recording = Recording.objects.create(
-            recorder=recorder,
-            user=self.user,
-            title="studio recording",
-            type="studio",
-            source_file="/tmp/recording.mp4",
-        )
+        # Creating this fixture must not process a file left by another test.
+        with patch("pod.recorder.plugins.type_studio.process"):
+            recording = Recording.objects.create(
+                recorder=recorder,
+                user=self.user,
+                title="studio recording",
+                type="studio",
+                source_file="/tmp/recording.mp4",
+            )
         payload = {
             "video_output": "records/output.mp4",
             "msg": "encoded",

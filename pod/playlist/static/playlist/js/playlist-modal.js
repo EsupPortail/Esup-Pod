@@ -19,7 +19,7 @@ function addEventListenerForModal() {
   }
 
   for (let button of buttons) {
-    preventRefreshButton(button, false);
+    preventRefreshButton(button, true);
   }
 }
 

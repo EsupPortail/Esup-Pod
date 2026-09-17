@@ -6,6 +6,7 @@
 import os
 import shutil
 import importlib
+from unittest.mock import patch
 from defusedxml import minidom
 
 from django.conf import settings
@@ -31,6 +32,11 @@ class PluginVideoTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
+        # Existing source files must not start workers during fixture creation.
+        for plugin in ("video", "audiovideocast"):
+            process = patch("pod.recorder.plugins.type_%s.process" % plugin)
+            process.start()
+            self.addCleanup(process.stop)
         mediatype = Type.objects.create(title="others")
         Type.objects.create(title="second")
         user = User.objects.create(username="pod", is_staff=True)
@@ -82,10 +88,12 @@ class PluginVideoTestCase(TestCase):
         mod = importlib.import_module("pod.recorder.plugins.type_%s" % ("video"))
         nbnow = Video.objects.all().count()
         nbtest = nbnow + 1
-        mod.encode_recording(recording)
+        with patch.object(mod.encode, mod.ENCODE_VIDEO) as start_encode:
+            mod.encode_recording(recording)
         # print("Number of video after encode: ", Video.objects.all().count())
         self.assertEqual(Video.objects.all().count(), nbtest)
         video = Video.objects.last()
+        start_encode.assert_called_once_with(video.id)
         self.assertEqual(video.is_draft, recorder.is_draft)
         self.assertEqual(video.channel.all().count(), recorder.channel.all().count())
         self.assertEqual(video.theme.all().count(), recorder.theme.all().count())
@@ -105,10 +113,12 @@ class PluginVideoTestCase(TestCase):
         mod = importlib.import_module("pod.recorder.plugins.type_%s" % "audiovideocast")
         nbnow = Video.objects.all().count()
         nbtest = nbnow + 1
-        mod.encode_recording(recording)
+        with patch.object(mod.encode, mod.ENCODE_VIDEO) as start_encode:
+            mod.encode_recording(recording)
         # print("Number of video after encode: ", Video.objects.all().count())
         self.assertEqual(Video.objects.all().count(), nbtest)
         video = Video.objects.last()
+        start_encode.assert_called_once_with(video.id)
         # print("Number of slide after encode: ",
         #       video.enrichment_set.all().count())
         self.assertEqual((video.enrichment_set.all().count() > 0), True)

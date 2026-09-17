@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from django.contrib.flatpages.models import FlatPage
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from pod.live.models import Broadcaster, Building, Event
@@ -606,7 +607,7 @@ class TestBlock(TestCase):
             is_draft=False,
             slug="video-on-hold",
             duration=20,
-            date_added=datetime.today(),
+            date_added=timezone.now(),
             encoding_in_progress=False,
             date_evt=datetime.today(),
         )
@@ -633,7 +634,7 @@ class TestBlock(TestCase):
             is_draft=False,
             slug="video-on-hold",
             duration=20,
-            date_added=datetime.today(),
+            date_added=timezone.now(),
             encoding_in_progress=False,
             date_evt=datetime.today(),
         )
@@ -702,8 +703,8 @@ class TestBlock(TestCase):
             type=h_type,
             is_draft=False,
         )
-        event.start_date = datetime.today() + timedelta(days=+1)
-        event.end_date = datetime.today() + timedelta(days=+2)
+        event.start_date = timezone.now() + timedelta(days=+1)
+        event.end_date = timezone.now() + timedelta(days=+2)
         event.save()
 
         Block.objects.create(
