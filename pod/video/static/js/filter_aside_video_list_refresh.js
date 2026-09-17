@@ -147,6 +147,17 @@ function getSearchValue() {
   const value = input.value.trim();
   return value;
 }
+
+/**
+ * Show or hide the video list loader when the page provides one.
+ * @param {boolean} show - Whether to display the loader.
+ */
+function toggleVideosListLoader(show) {
+  if (typeof videosListLoader !== "undefined" && videosListLoader) {
+    showLoader(videosListLoader, show);
+  }
+}
+
 /*
  * Async request to refresh view with filtered and sorted video list
  */
@@ -155,7 +166,7 @@ function refreshVideosSearch() {
   if (infinite) infinite.removeLoader();
   // Erase videos list and show loader
   document.getElementById("videos_list").textContent = "";
-  showLoader(videosListLoader, true);
+  toggleVideosListLoader(true);
   let url = getUrlForRefresh();
   // Async GET request wth parameters by fetch method
   return fetch(url, {
@@ -215,7 +226,7 @@ function refreshVideosSearch() {
       if (requestId !== videoListRequestId) return;
       // Finally re-enable inputs and dismiss loader
       disabledInputs(false);
-      showLoader(videosListLoader, false);
+      toggleVideosListLoader(false);
     });
 }
 

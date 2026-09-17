@@ -2,7 +2,7 @@
  * @file Esup-Pod delegated playlist and favorite card removal.
  */
 
-/* global postPlaylistAction, reportPlaylistError, refreshVideosSearch */
+/* global bootstrap, postPlaylistAction, reportPlaylistError, refreshVideosSearch */
 
 // Delegate clicks so pagination and filtering can replace cards without rebinding.
 document.addEventListener("click", async function (event) {
@@ -14,6 +14,8 @@ document.addEventListener("click", async function (event) {
   try {
     const data = await postPlaylistAction(button);
     if (data.state !== "out-playlist") throw new Error("Unexpected removal state");
+    const tooltip = bootstrap.Tooltip.getInstance(button);
+    if (tooltip) tooltip.dispose();
     button.closest(".draggable-container").remove();
     // Deletion shifts page boundaries; reload the filtered list and its pagination.
     refreshVideosSearch();
