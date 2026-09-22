@@ -1,0 +1,20 @@
+name: Plumber
+
+on:
+  push:
+    branches: [main, dev_v4]
+  pull_request:
+
+permissions:
+  contents: read
+  security-events: write
+  # id-token: write          # uncomment to publish a live Plumber Score badge (see below)
+
+jobs:
+  plumber:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: getplumber/plumber@d6a09a888677f2fc9580144635bc5dab62c58173 # pinned plumber version: v0.5.3
+        with:
+          score-push: false # set to "true" to publish a public Plumber Score badge
