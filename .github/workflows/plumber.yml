@@ -8,13 +8,15 @@ on:
 permissions:
   contents: read
   security-events: write
-  # id-token: write          # uncomment to publish a live Plumber Score badge (see below)
+  id-token: write          # uncomment to publish a live Plumber Score badge (see below)
 
 jobs:
   plumber:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - uses: getplumber/plumber@d6a09a888677f2fc9580144635bc5dab62c58173 # pinned plumber version: v0.5.3
         with:
-          score-push: false # set to "true" to publish a public Plumber Score badge
+          score-push: true # set to "true" to publish a public Plumber Score badge
