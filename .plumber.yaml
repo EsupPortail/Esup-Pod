@@ -11,5 +11,4 @@ github:
       includePlumberDefaults: true
       trustedGithubActions:
         - jlumbroso/*
-        - jakejarvis/*
         - elastic/*
