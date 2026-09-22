@@ -10,5 +10,5 @@ github:
     githubActionMustComeFromAuthorizedSources:
       includePlumberDefaults: true
       trustedGithubActions:
-        - jlumbroso/*
-        - elastic/*
+        - jlumbroso/free-disk-space
+        - elastic/elastic-github-actions
