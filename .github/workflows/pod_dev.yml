@@ -50,11 +50,11 @@ jobs:
           docker-images: false
           swap-storage: true
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{env.NODE_VERSION}}
 
@@ -66,7 +66,7 @@ jobs:
           sudo sysctl -w vm.max_map_count=262144
 
       - name: Set up Python ${{env.PYTHON_VERSION}}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{env.PYTHON_VERSION}}
 
