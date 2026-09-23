@@ -35,11 +35,11 @@ jobs:
     steps:
 
       - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
+        uses: jlumbroso/free-disk-space@ceedf095f4ec1a097402bc6bd80831f2e1a6fde6 # v2.0.0
         with:
           # this might remove tools that are actually needed,
           # if set to "true" but frees about 6 GB
-          tool-cache: false
+          preinstalled-runtimes: false
 
           # all of these default to true, but feel free to set to
           # "false" if necessary for your workflow
@@ -50,9 +50,11 @@ jobs:
           docker-images: false
           swap-storage: true
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{env.NODE_VERSION}}
 
@@ -64,7 +66,7 @@ jobs:
           sudo sysctl -w vm.max_map_count=262144
 
       - name: Set up Python ${{env.PYTHON_VERSION}}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{env.PYTHON_VERSION}}
 
@@ -135,9 +137,8 @@ jobs:
           docker compose -f ./docker-compose-full-dev-with-volumes-test.yml up --detach --force-recreate --always-recreate-deps
 
       - name: Sleep for 60 seconds to wait run server on pod back
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '60s'
+        run: 'sleep 60s'
+        shell: bash
 
       - name: Show running containers
         run: |
@@ -173,7 +174,7 @@ jobs:
 
       ## Start unit test test ##
       - name: Run Elasticsearch
-        uses: elastic/elastic-github-actions/elasticsearch@master
+        uses: elastic/elastic-github-actions/elasticsearch@98431b45a60cbb6ace481778827bc8e11f12fd65 # master at 2026-09-22
         with:
           stack-version: 8.17.3
           plugins: analysis-icu
