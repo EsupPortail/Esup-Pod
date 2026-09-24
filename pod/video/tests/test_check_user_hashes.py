@@ -159,10 +159,18 @@ class UserHashRepairTests(TestCase):
         self.assertEqual((self.media / document.file.name).read_bytes(), b"other profile")
         self.assertFalse((self.media / "documents" / other_hash).exists())
 
-    def assert_original_database(self) -> None:
+    def snapshot_references(self) -> tuple:
+        """Capture paths after fixture setup, including encodings already relocated."""
+        references = []
+        for obj, field, _ in self.references:
+            obj.refresh_from_db()
+            references.append((obj, field, str(getattr(obj, field))))
+        return tuple(references)
+
+    def assert_original_database(self, references: tuple | None = None) -> None:
         """Check that neither the hash nor any file reference was changed."""
         self.assertEqual(Owner.objects.get(user=self.user).hashkey, self.previous)
-        for obj, field, name in self.references:
+        for obj, field, name in self.references if references is None else references:
             obj.refresh_from_db()
             self.assertEqual(str(getattr(obj, field)), name)
 
@@ -298,6 +306,50 @@ class UserHashRepairTests(TestCase):
         repair.plan_profile(plan)
         self.assertFalse(plan.errors)
         self.assertEqual(len(plan.metadata_archives), 1)
+        return repair, plan
+
+    def create_log_conflict(self) -> SimpleNamespace:
+        """Create two logs whose exact bytes must survive archival."""
+        source = self.media / self.file_name("0001/encoding.log")
+        destination = self.media / self.file_name("0001/encoding.log").replace(
+            self.previous, self.expected
+        )
+        source_bytes = b"Original encoding log\n"
+        destination_bytes = b"Later encoding log with non-UTF-8 bytes: \xff\n"
+        self.write_file(str(source), source_bytes)
+        self.write_file(str(destination), destination_bytes)
+        return SimpleNamespace(
+            source=source,
+            destination=destination,
+            source_bytes=source_bytes,
+            destination_bytes=destination_bytes,
+            archive=destination.with_name(
+                f"encoding.{hashlib.sha256(destination_bytes).hexdigest()}.log"
+            ),
+        )
+
+    def set_log_reference(
+        self, path: Path, expected_contents: bytes, absolute: bool = False
+    ) -> EncodingLog:
+        """Remember a changed log reference and the bytes it should expose after repair."""
+        log = EncodingLog.objects.get(video=self.video)
+        name = str(path) if absolute else path.relative_to(self.media).as_posix()
+        EncodingLog.objects.filter(pk=log.pk).update(logfile=name)
+        for index, (obj, field, previous) in enumerate(self.references):
+            if isinstance(obj, EncodingLog) and obj.pk == log.pk:
+                self.references[index] = (obj, field, name)
+        self.reference_contents[name] = expected_contents
+        return log
+
+    def planned_log_repair(self) -> tuple:
+        """Prepare a log archival plan for mutation before application."""
+        repair = UserHashRepair(StringIO())
+        repair.select_profiles([self.user.username])
+        repair.configure_paths()
+        plan = repair.plans[0]
+        repair.plan_profile(plan)
+        self.assertFalse(plan.errors)
+        self.assertEqual(len(plan.log_archives), 1)
         return repair, plan
 
     def assert_report_conflict_repaired(self, fixture: SimpleNamespace) -> str:
@@ -515,6 +567,221 @@ class UserHashRepairTests(TestCase):
         """Both transcription JSON files are archived beside the retained encoding."""
         self.assert_joint_json_archives(encoding_at_destination=True)
 
+    def test_encoding_log_archive_preserves_both_logs(self) -> None:
+        """Keep the encoding side's log by default and preserve arbitrary log bytes."""
+        fixture = self.create_log_conflict()
+        output = self.run_repair()
+        self.assert_repaired()
+        self.assertEqual(fixture.destination.read_bytes(), fixture.source_bytes)
+        self.assertEqual(fixture.archive.read_bytes(), fixture.destination_bytes)
+        self.assertIn("Archive encoding log (planned)", output)
+        self.assertIn("Log archives         : 1", output)
+        self.assertIn("JSON archives        : 0", output)
+        after = self.snapshot()
+        self.run_repair()
+        self.assertEqual(self.snapshot(), after)
+
+    def test_encoding_log_archive_preserves_referenced_destination(self) -> None:
+        """Prefer a referenced log over the default encoding directory's log."""
+        fixture = self.create_log_conflict()
+        self.set_log_reference(fixture.destination, fixture.destination_bytes)
+        self.run_repair()
+        self.assert_repaired()
+        archive = fixture.destination.with_name(
+            f"encoding.{hashlib.sha256(fixture.source_bytes).hexdigest()}.log"
+        )
+        self.assertEqual(fixture.destination.read_bytes(), fixture.destination_bytes)
+        self.assertEqual(archive.read_bytes(), fixture.source_bytes)
+
+    def test_encoding_log_archive_refuses_two_referenced_logs(self) -> None:
+        """Two distinct consumers cannot be merged onto one log's bytes."""
+        fixture = self.create_log_conflict()
+        self.set_log_reference(fixture.destination, fixture.destination_bytes)
+        RecordingFileTreatment.objects.create(file=str(fixture.source))
+        before = self.snapshot()
+        with self.assertRaisesMessage(CommandError, "conflict(s)"):
+            self.run_repair()
+        self.assert_original_database()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_encoding_log_archive_does_not_resolve_media_conflicts(self) -> None:
+        """Log archival must not allow a different MP4 to be overwritten."""
+        self.create_log_conflict()
+        self.write_file(
+            self.file_name("0001/video.mp4").replace(self.previous, self.expected),
+            b"another encoding",
+        )
+        before = self.snapshot()
+        with self.assertRaisesMessage(CommandError, "conflict(s)"):
+            self.run_repair()
+        self.assert_original_database()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_encoding_log_archive_refuses_existing_archives(self) -> None:
+        """A preexisting log archive on either side is never overwritten."""
+        fixture = self.create_log_conflict()
+        for path in (fixture.archive, fixture.source.with_name(fixture.archive.name)):
+            with self.subTest(path=path):
+                path.write_bytes(b"existing log archive")
+                before = self.snapshot()
+                with self.assertRaisesMessage(CommandError, "conflict(s)"):
+                    self.run_repair()
+                self.assert_original_database()
+                self.assertEqual(self.snapshot(), before)
+                path.unlink()
+
+    def test_encoding_log_archive_rechecks_bytes_and_destination(self) -> None:
+        """Changed logs or a newly created archive invalidate a prepared plan."""
+        fixture = self.create_log_conflict()
+        repair, plan = self.planned_log_repair()
+        for path in (fixture.source, fixture.destination):
+            with self.subTest(path=path):
+                contents = path.read_bytes()
+                path.write_bytes(contents + b"new event\n")
+                before = self.snapshot()
+                with self.assertRaisesMessage(CommandError, "evidence changed"):
+                    repair.apply(plan)
+                self.assert_original_database()
+                self.assertEqual(self.snapshot(), before)
+                path.write_bytes(contents)
+        fixture.archive.write_bytes(b"appeared after planning")
+        before = self.snapshot()
+        with self.assertRaisesMessage(CommandError, "Archive already exists"):
+            repair.apply(plan)
+        self.assert_original_database()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_encoding_log_archive_rechecks_new_references(self) -> None:
+        """A new reference changes which log can be archived and blocks a stale plan."""
+        fixture = self.create_log_conflict()
+        repair, plan = self.planned_log_repair()
+        RecordingFileTreatment.objects.create(file=str(fixture.destination))
+        before = self.snapshot()
+        with self.assertRaisesMessage(CommandError, "evidence changed"):
+            repair.apply(plan)
+        self.assert_original_database()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_encoding_report_reconciles_log_already_at_destination(self) -> None:
+        """A canonical path can stay unchanged while the true encoding report moves in."""
+        fixture = self.create_report_conflict()
+        logs = self.create_log_conflict()
+        log = self.set_log_reference(fixture.transcription, fixture.encoding_bytes)
+        output = self.assert_report_conflict_repaired(fixture)
+        self.assertIn(f"Reconcile EncodingLog #{log.pk}.logfile", output)
+        self.assertEqual(logs.destination.read_bytes(), logs.source_bytes)
+        self.assertEqual(logs.archive.read_bytes(), logs.destination_bytes)
+
+    def test_encoding_report_reconciles_absolute_log_at_source(self) -> None:
+        """Move an absolute stale log reference to the encoding's retained report."""
+        fixture = self.create_report_conflict(encoding_at_destination=True)
+        logs = self.create_log_conflict()
+        self.set_log_reference(
+            fixture.transcription, fixture.encoding_bytes, absolute=True
+        )
+        self.assert_report_conflict_repaired(fixture)
+        archive = logs.destination.with_name(
+            f"encoding.{hashlib.sha256(logs.source_bytes).hexdigest()}.log"
+        )
+        self.assertEqual(logs.destination.read_bytes(), logs.destination_bytes)
+        self.assertEqual(archive.read_bytes(), logs.source_bytes)
+
+    def test_encoding_report_rolls_back_corrected_log_path(self) -> None:
+        """A failure after SQL updates restores the old absolute EncodingLog path."""
+        fixture = self.create_report_conflict(encoding_at_destination=True)
+        self.create_log_conflict()
+        self.set_log_reference(
+            fixture.transcription, fixture.encoding_bytes, absolute=True
+        )
+        before = self.snapshot()
+        before_references = self.snapshot_references()
+        update_database = UserHashRepair.update_database
+
+        def fail_after_updates(repair, plan) -> None:
+            update_database(repair, plan)
+            log = EncodingLog.objects.get(video=self.video)
+            self.assertEqual(log.logfile.name, str(fixture.destination))
+            raise DatabaseError("failure after correcting EncodingLog")
+
+        with patch.object(UserHashRepair, "update_database", fail_after_updates):
+            with self.assertRaisesMessage(CommandError, "failure after correcting"):
+                self.run_repair()
+        self.assert_original_database(before_references)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_encoding_report_and_log_archive_dry_run_is_read_only(self) -> None:
+        """Both new resolutions work together, including when the Task was purged."""
+        fixture = self.create_report_conflict(encoding_at_destination=True)
+        self.successful_transcription_metadata(fixture)
+        fixture.task.delete()
+        self.create_log_conflict()
+        self.set_log_reference(fixture.transcription, fixture.encoding_bytes)
+        before = self.snapshot()
+        before_references = self.snapshot_references()
+        with CaptureQueriesContext(connection) as queries:
+            output = self.run_repair(dry=True)
+        self.assertTrue(all(q["sql"].lstrip().startswith("SELECT") for q in queries))
+        self.assertIn("Archive encoding log (planned)", output)
+        self.assertIn("Reconcile EncodingLog", output)
+        self.assertIn("Task absent from database", output)
+        self.assert_original_database(before_references)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_encoding_report_refuses_log_paths_other_than_hash_counterpart(self) -> None:
+        """Another video's report or another filename cannot authorize reconciliation."""
+        fixture = self.create_report_conflict()
+        for filename in ("0002/info_video.json", "0001/another-report.json"):
+            with self.subTest(filename=filename):
+                path = self.write_file(self.file_name(filename), fixture.encoding_bytes)
+                self.set_log_reference(path, fixture.encoding_bytes)
+                before = self.snapshot()
+                output = StringIO()
+                with self.assertRaisesMessage(CommandError, "conflict(s)"):
+                    self.run_repair(stdout=output)
+                self.assertIn(
+                    "Encoding log references a different report", output.getvalue()
+                )
+                self.assert_original_database()
+                self.assertEqual(self.snapshot(), before)
+
+    def test_encoding_report_protects_other_videos_log_references(self) -> None:
+        """Only this video's exact EncodingLog row may change the report it refers to."""
+        fixture = self.create_report_conflict()
+        self.set_log_reference(fixture.transcription, fixture.encoding_bytes)
+        other_video = Video.objects.create(
+            owner=self.user,
+            title="Other report consumer",
+            type=self.video.type,
+            video=self.video.video.name,
+        )
+        other_log = EncodingLog.objects.create(
+            video=other_video,
+            logfile=fixture.transcription.relative_to(self.media).as_posix(),
+        )
+        before = self.snapshot()
+        output = StringIO()
+        with self.assertRaisesMessage(CommandError, "conflict(s)"):
+            self.run_repair(stdout=output)
+        self.assertIn(
+            "referenced by video_encode_transcript.EncodingLog.logfile", output.getvalue()
+        )
+        self.assert_original_database()
+        self.assertEqual(self.snapshot(), before)
+        other_log.refresh_from_db()
+        self.assertEqual(self.media / other_log.logfile.name, fixture.transcription)
+
+    def test_encoding_report_rechecks_log_reference_before_reconciliation(self) -> None:
+        """A changed log reference invalidates the report resolution before any moves."""
+        fixture = self.create_report_conflict()
+        self.set_log_reference(fixture.transcription, fixture.encoding_bytes)
+        repair, plan = self.planned_report_repair()
+        self.set_log_reference(fixture.retained, fixture.encoding_bytes)
+        before = self.snapshot()
+        with self.assertRaisesMessage(CommandError, "evidence changed"):
+            repair.apply(plan)
+        self.assert_original_database()
+        self.assertEqual(self.snapshot(), before)
+
     def test_missing_task_uses_metadata_to_archive_report_at_destination(self) -> None:
         """A purged Task does not prevent preserving the encoding and transcription."""
         fixture = self.create_report_conflict()
@@ -647,6 +914,7 @@ class UserHashRepairTests(TestCase):
     def test_invalid_or_ambiguous_report_evidence_remains_a_conflict(self) -> None:
         """Malformed JSON, another video report and unproven task metadata never resolve."""
         fixture = self.create_report_conflict()
+        self.set_log_reference(fixture.transcription, fixture.encoding_bytes)
         cases = [
             (fixture.transcription, b"not JSON"),
             (fixture.transcription, b"[]"),
@@ -682,6 +950,7 @@ class UserHashRepairTests(TestCase):
     def test_report_archive_requires_completed_task_for_same_video(self) -> None:
         """Successful metadata cannot override an inconsistent existing Task."""
         fixture = self.create_report_conflict()
+        self.set_log_reference(fixture.transcription, fixture.encoding_bytes)
         self.successful_transcription_metadata(fixture)
         for values in (
             {"status": "pending"},
@@ -752,6 +1021,7 @@ class UserHashRepairTests(TestCase):
     def test_report_archive_never_breaks_a_reference_to_transcription_json(self) -> None:
         """Even an unrelated absolute FilePathField reference prevents archiving."""
         fixture = self.create_report_conflict()
+        self.set_log_reference(fixture.transcription, fixture.encoding_bytes)
         record = RecordingFileTreatment.objects.create(file=str(fixture.transcription))
         before = self.snapshot()
         with self.assertRaisesMessage(CommandError, "conflict(s)"):
@@ -777,6 +1047,8 @@ class UserHashRepairTests(TestCase):
     def test_report_archive_is_rolled_back_with_database_changes(self) -> None:
         """A late SQL failure restores both original JSONs and every moved file."""
         fixture = self.create_report_conflict()
+        self.set_log_reference(fixture.transcription, fixture.encoding_bytes)
+        self.create_log_conflict()
         fixture.retained.with_name("task_metadata.json").write_bytes(
             b'{"task_id": "encoding-task", "task_type": "encoding"}'
         )

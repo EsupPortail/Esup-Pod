@@ -21,18 +21,24 @@ Checks performed:
 6. Preserve differing task_metadata.json files by archiving the unreferenced one
    as task_metadata.<SHA256>.json. Keep the encoding directory's metadata when
    identifiable, otherwise the destination's. Validate both JSON objects first.
+7. Preserve differing encoding.log files as encoding.<SHA256>.log. Keep a
+   referenced log under its canonical name; block if both logs are referenced.
+8. Reconcile EncodingLog.logfile with a validated encoding report when it points
+   to the same video's info_video.json under the other hash. Keep all other
+   references to the transcription report blocking; never select new media.
 
 Key Features:
 - With --dry, report the complete plan without database or filesystem changes.
 - With --with-videos, avoid expensive path scans for profiles without videos.
   Still check all media and file references belonging to the selected hash paths.
-- Automatically archive an unreferenced transcription report as
+- Automatically archive a transcription report as
   info_video.transcription-<SHA256>.json beside the retained encoding report.
   Require task_metadata.json (task_type/task_id), valid reports and consistent
   media references. A matching Task must be completed and belong to this video.
   If the Task is absent (for example after retention cleanup), require explicit
   transcription success in results and script_output, an integer returncode of
-  zero and UTF-8 VTT files with WEBVTT headers. Report this fallback explicitly.
+  zero and UTF-8 VTT files with WEBVTT headers. An encoding.log beside JSON/VTT
+  artifacts is permitted. Report this fallback explicitly.
   The video association then relies on the local output directory and encoding
   references; historical runner paths are not accessed. Ambiguity or a conflicting
   existing Task remains a conflict. Do not recreate missing Task rows.
@@ -55,7 +61,7 @@ Main Components:
 - UserHashRepair: Planning, validation, application, rollback and cleanup.
 - ProfileChange / FileChange / ProfilePlan: Changes and isolated per-profile plans.
 - ReportArchive: Evidence and archive destination for a resolved JSON collision.
-- MetadataArchive: Preserve task metadata without selecting different media files.
+- AuxiliaryArchive: Preserve task metadata and logs without selecting media files.
 
 Important notes:
 - Restore the intended SECRET_KEY first. Back up the database and media, and
@@ -204,13 +210,14 @@ class ReportArchive:
     archive: Path
     task_id: str
     task_pk: int | None
+    corrected_log_pk: int | None
     fingerprints: dict[Path, str]
     references: tuple
 
 
 @dataclass
-class MetadataArchive:
-    """Record both metadata files and the evidence for retaining one canonical name."""
+class AuxiliaryArchive:
+    """Record both metadata/log files and the evidence for their canonical name."""
 
     source: Path
     destination: Path
@@ -232,7 +239,8 @@ class ProfilePlan:
     source_directories: list[Path] = dataclass_field(default_factory=list)
     errors: list[str] = dataclass_field(default_factory=list)
     report_archives: list[ReportArchive] = dataclass_field(default_factory=list)
-    metadata_archives: list[MetadataArchive] = dataclass_field(default_factory=list)
+    metadata_archives: list[AuxiliaryArchive] = dataclass_field(default_factory=list)
+    log_archives: list[AuxiliaryArchive] = dataclass_field(default_factory=list)
     outcome: str = "ready"
 
 
@@ -425,6 +433,7 @@ class UserHashRepair:
                     for plan in self.plans
                 ),
             ),
+            ("Log archives", sum(len(plan.log_archives) for plan in self.plans)),
             ("Database paths", sum(len(plan.files) for plan in self.plans)),
         ]:
             self.stdout.write(f"  {label:<20} : {count}")
@@ -544,7 +553,8 @@ class UserHashRepair:
         moves = plan.moves[move_start:]
         duplicates = plan.duplicates[duplicate_start:]
         archive_paths = {
-            item.archive for item in plan.report_archives + plan.metadata_archives
+            item.archive
+            for item in plan.report_archives + plan.metadata_archives + plan.log_archives
         }
         for old, new in moves:
             if new in archive_paths:
@@ -554,7 +564,7 @@ class UserHashRepair:
             self.status(f"{description} (planned)")
             self.report_full_paths(str(old), str(new), indent=4)
         self.report_json_archives(plan, source)
-        self.report_metadata_archives(plan, source)
+        self.report_auxiliary_archives(plan, source)
         for old, new in duplicates:
             self.status(
                 f"Identical duplicate: {old.relative_to(source)} (cleanup planned)"
@@ -588,18 +598,26 @@ class UserHashRepair:
                 f"{item.source.parent.relative_to(source) / item.archive.name}"
             )
             self.report_full_paths(str(item.transcription), str(item.archive), indent=4)
+            if item.corrected_log_pk is not None:
+                self.status(
+                    f"Reconcile EncodingLog #{item.corrected_log_pk}.logfile with "
+                    "the retained encoding report (planned)."
+                )
 
-    def report_metadata_archives(self, plan: ProfilePlan, source: Path) -> None:
-        """Show the canonical metadata choice and the preserved alternative."""
-        for item in plan.metadata_archives:
+    def report_auxiliary_archives(self, plan: ProfilePlan, source: Path) -> None:
+        """Show canonical metadata/log choices and their preserved alternatives."""
+        for item in plan.metadata_archives + plan.log_archives:
             if not item.source.is_relative_to(source):
                 continue
             origin = "Stored" if item.retained == item.source else "Expected"
-            self.status(
-                f"Keep task metadata: {item.source.relative_to(source)} (from {origin})"
+            label = (
+                "encoding log" if item.source.name == "encoding.log" else "task metadata"
             )
             self.status(
-                "Archive task metadata (planned): "
+                f"Keep {label}: {item.source.relative_to(source)} (from {origin})"
+            )
+            self.status(
+                f"Archive {label} (planned): "
                 f"{item.source.parent.relative_to(source) / item.archive.name}"
             )
             self.report_full_paths(str(item.archived), str(item.archive), indent=4)
@@ -669,8 +687,11 @@ class UserHashRepair:
             plan.duplicates.append((source, destination))
         elif source.name == "info_video.json" and destination.is_file():
             self.plan_report_archive(plan, source, destination)
-        elif source.name == "task_metadata.json" and destination.is_file():
-            self.plan_metadata_archive(plan, source, destination)
+        elif (
+            source.name in ("task_metadata.json", "encoding.log")
+            and destination.is_file()
+        ):
+            self.plan_auxiliary_archive(plan, source, destination)
         else:
             plan.errors.append(
                 f"Different files or entry types: {source} / {destination}"
@@ -690,28 +711,31 @@ class UserHashRepair:
         if archive.retained == source:
             plan.moves.append((source, destination))
 
-    def plan_metadata_archive(
+    def plan_auxiliary_archive(
         self, plan: ProfilePlan, source: Path, destination: Path
     ) -> None:
-        """Archive a metadata collision without replacing different media files."""
+        """Archive a metadata/log collision without replacing different media files."""
         try:
-            archive = self.inspect_metadata_conflict(plan.profile, source, destination)
+            archive = self.inspect_auxiliary_conflict(plan.profile, source, destination)
         except CommandError as exc:
             plan.errors.append(f"Cannot resolve {source} / {destination}: {exc}")
             return
-        plan.metadata_archives.append(archive)
+        archives = (
+            plan.log_archives if source.name == "encoding.log" else plan.metadata_archives
+        )
+        archives.append(archive)
         plan.moves.append((archive.archived, archive.archive))
         if archive.retained == source:
             plan.moves.append((source, destination))
 
-    def inspect_metadata_conflict(
+    def inspect_auxiliary_conflict(
         self, profile: ProfileChange, source: Path, destination: Path
-    ) -> MetadataArchive:
-        """Preserve both JSONs, using encoding references only to choose their names."""
+    ) -> AuxiliaryArchive:
+        """Preserve both artifacts, using references only to choose their names."""
         video = self.report_video(profile, source, destination)
         fingerprints = {}
-        self.read_report(source, fingerprints)
-        self.read_report(destination, fingerprints)
+        self.read_auxiliary_file(source, fingerprints)
+        self.read_auxiliary_file(destination, fingerprints)
         references = self.encoding_references(video)
         try:
             retained = self.retained_report(references, source, destination)
@@ -721,17 +745,31 @@ class UserHashRepair:
             # Media/report collisions are still checked independently.
             retained = destination
         archived = destination if retained == source else source
+        if source.name == "encoding.log" and self.file_reference(archived):
+            retained, archived = archived, retained
         self.require_unreferenced_report(archived)
         archive = self.safe_path(
-            destination.with_name(f"task_metadata.{fingerprints[archived]}.json")
+            destination.with_name(
+                f"{source.stem}.{fingerprints[archived]}{source.suffix}"
+            )
         )
         if archive.exists() or self.safe_path(source.with_name(archive.name)).exists():
             raise CommandError(
                 f"Archive already exists; manual review required: {archive}"
             )
-        return MetadataArchive(
+        return AuxiliaryArchive(
             source, destination, retained, archived, archive, fingerprints, references
         )
+
+    def read_auxiliary_file(self, path: Path, fingerprints: dict) -> None:
+        """Validate metadata JSON; preserve logs byte-for-byte without parsing them."""
+        if path.name == "task_metadata.json":
+            self.read_report(path, fingerprints)
+            return
+        self.safe_path(path)
+        if not path.is_file():
+            raise CommandError(f"Missing encoding log: {path}")
+        fingerprints[path] = hashlib.sha256(path.read_bytes()).hexdigest()
 
     def read_report(self, path: Path, fingerprints: dict) -> dict:
         """Read a regular JSON object and remember its exact bytes for revalidation."""
@@ -813,8 +851,10 @@ class UserHashRepair:
             )
         return candidates[0]
 
-    def validate_report_references(self, references: tuple, retained: Path) -> None:
-        """Reject inconsistent source video and encoding log locations."""
+    def validate_report_references(
+        self, references: tuple, retained: Path, alternative: Path
+    ) -> None:
+        """Allow the video's log to reference either exact hash counterpart report."""
         for kind, _, name in references:
             if kind == "video":
                 path = self.media_path(name)
@@ -822,8 +862,13 @@ class UserHashRepair:
                     raise CommandError(
                         "Video source does not match the encoding directory"
                     )
-            if kind == "encodinglog" and name and self.media_path(name) != retained:
-                raise CommandError("Encoding log references a different report")
+            if kind == "encodinglog" and name:
+                path = self.media_path(name)
+                if path not in (retained, alternative):
+                    raise CommandError(
+                        f"Encoding log references a different report: {path}; "
+                        f"expected {retained} or {alternative}"
+                    )
 
     @staticmethod
     def report_has_video(data: dict) -> bool:
@@ -889,13 +934,17 @@ class UserHashRepair:
     def validate_transcription_directory(
         self, directory: Path, fingerprints: dict, check_subtitles: bool
     ) -> None:
-        """Require JSON/VTT-only output and inspect VTT contents for missing Tasks."""
+        """Allow JSON/VTT artifacts and encoding.log; inspect VTTs for missing Tasks."""
         has_subtitles = False
         for path in directory.iterdir():
             self.safe_path(path)
-            if not path.is_file() or path.suffix.lower() not in (".json", ".vtt"):
+            allowed = (
+                path.suffix.lower() in (".json", ".vtt") or path.name == "encoding.log"
+            )
+            if not path.is_file() or not allowed:
                 raise CommandError(
-                    "Transcription directory contains files other than JSON/VTT artifacts"
+                    "Transcription directory contains files other than JSON/VTT artifacts "
+                    "and encoding.log"
                 )
             if path.suffix.lower() == ".vtt":
                 has_subtitles = True
@@ -938,8 +987,8 @@ class UserHashRepair:
             raise CommandError(f"Transcription VTT has no WEBVTT header: {path}")
         fingerprints[path] = hashlib.sha256(contents).hexdigest()
 
-    def require_unreferenced_report(self, path: Path) -> None:
-        """Never archive a JSON still referenced by any managed Django file field."""
+    def file_reference_queries(self, path: Path):
+        """Find exact paths in all managed Django file fields, including absolute paths."""
         relative = path.relative_to(self.media)
         names = [relative.as_posix(), str(path), str(self.configured_media / relative)]
         for model in apps.get_models():
@@ -947,14 +996,42 @@ class UserHashRepair:
                 continue
             for model_field in model._meta.local_fields:
                 if isinstance(model_field, (models.FileField, models.FilePathField)):
-                    if (
-                        model._base_manager.using("default")
-                        .filter(**{f"{model_field.name}__in": names})
-                        .exists()
-                    ):
-                        raise CommandError(
-                            f"Report to archive is referenced by {model._meta.label}.{model_field.name}"
-                        )
+                    rows = model._base_manager.using("default").filter(
+                        **{f"{model_field.name}__in": names}
+                    )
+                    yield model, model_field, rows
+
+    def file_reference(
+        self, path: Path, *, corrected_log_pk: int | None = None
+    ) -> str | None:
+        """Return a blocking field, except the exact EncodingLog being reconciled."""
+        for model, model_field, rows in self.file_reference_queries(path):
+            if (
+                model is EncodingLog
+                and model_field.name == "logfile"
+                and corrected_log_pk is not None
+            ):
+                rows = rows.exclude(pk=corrected_log_pk)
+            if rows.exists():
+                return f"{model._meta.label}.{model_field.name}"
+        return None
+
+    def require_unreferenced_report(
+        self, path: Path, *, corrected_log_pk: int | None = None
+    ) -> None:
+        """Protect every reference except a separately validated log reconciliation."""
+        reference = self.file_reference(path, corrected_log_pk=corrected_log_pk)
+        if reference:
+            raise CommandError(f"Report to archive is referenced by {reference}")
+
+    def encoding_log_to_reconcile(
+        self, references: tuple, transcription: Path
+    ) -> int | None:
+        """Find only this video's log that points at the report being archived."""
+        for kind, pk, name in references:
+            if kind == "encodinglog" and name and self.media_path(name) == transcription:
+                return pk
+        return None
 
     def inspect_report_conflict(
         self, profile: ProfileChange, source: Path, destination: Path
@@ -963,8 +1040,8 @@ class UserHashRepair:
         video = self.report_video(profile, source, destination)
         references = self.encoding_references(video)
         retained = self.retained_report(references, source, destination)
-        self.validate_report_references(references, retained)
         transcription = destination if retained == source else source
+        self.validate_report_references(references, retained, transcription)
         fingerprints = {}
         encoding_info = self.read_report(retained, fingerprints)
         transcript_info = self.read_report(transcription, fingerprints)
@@ -981,7 +1058,8 @@ class UserHashRepair:
         task_id, task_pk = self.transcription_task(
             video, transcription.parent, fingerprints
         )
-        self.require_unreferenced_report(transcription)
+        corrected_log_pk = self.encoding_log_to_reconcile(references, transcription)
+        self.require_unreferenced_report(transcription, corrected_log_pk=corrected_log_pk)
         archive = self.safe_path(
             destination.with_name(
                 f"info_video.transcription-{fingerprints[transcription]}.json"
@@ -999,6 +1077,7 @@ class UserHashRepair:
             archive,
             task_id,
             task_pk,
+            corrected_log_pk,
             fingerprints,
             references,
         )
@@ -1132,13 +1211,13 @@ class UserHashRepair:
                 raise CommandError(
                     f"Report conflict evidence changed during repair: {item.source}"
                 )
-        for item in plan.metadata_archives:
-            current = self.inspect_metadata_conflict(
+        for item in plan.metadata_archives + plan.log_archives:
+            current = self.inspect_auxiliary_conflict(
                 plan.profile, item.source, item.destination
             )
             if current != item:
                 raise CommandError(
-                    f"Metadata conflict evidence changed during repair: {item.source}"
+                    f"Metadata/log conflict evidence changed during repair: {item.source}"
                 )
 
     def lock_profile(self, profile: ProfileChange) -> None:
