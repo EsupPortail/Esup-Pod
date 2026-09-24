@@ -269,6 +269,37 @@ class UserHashRepairTests(TestCase):
         fixture.metadata.write_text(json.dumps(metadata), encoding="utf-8")
         return metadata
 
+    def create_metadata_conflict(self) -> SimpleNamespace:
+        """Create two historical metadata files without any media/report conflict."""
+        source = self.media / self.file_name("0001/task_metadata.json")
+        destination = self.media / str(source.relative_to(self.media)).replace(
+            self.previous, self.expected
+        )
+        source_bytes = b'{"task_id": "encoding-task", "task_type": "encoding"}'
+        destination_bytes = b'{"task_id": "later-task", "task_type": "transcription"}'
+        self.write_file(str(source), source_bytes)
+        self.write_file(str(destination), destination_bytes)
+        return SimpleNamespace(
+            source=source,
+            destination=destination,
+            source_bytes=source_bytes,
+            destination_bytes=destination_bytes,
+            archive=destination.with_name(
+                f"task_metadata.{hashlib.sha256(destination_bytes).hexdigest()}.json"
+            ),
+        )
+
+    def planned_metadata_repair(self) -> tuple:
+        """Build a metadata-only plan to exercise revalidation before applying."""
+        repair = UserHashRepair(StringIO())
+        repair.select_profiles([self.user.username])
+        repair.configure_paths()
+        plan = repair.plans[0]
+        repair.plan_profile(plan)
+        self.assertFalse(plan.errors)
+        self.assertEqual(len(plan.metadata_archives), 1)
+        return repair, plan
+
     def assert_report_conflict_repaired(self, fixture: SimpleNamespace) -> str:
         """Both JSONs and transcription artifacts survive, with only the encoding active."""
         metadata_bytes = fixture.metadata.read_bytes()
@@ -330,6 +361,159 @@ class UserHashRepairTests(TestCase):
         self.assert_report_conflict_repaired(
             self.create_report_conflict(encoding_at_destination=True)
         )
+
+    def test_metadata_archive_keeps_encoding_metadata_and_preserves_both_files(self):
+        """Keep the registered encoding's metadata even if the Task has been purged."""
+        fixture = self.create_metadata_conflict()
+        output = self.run_repair()
+        self.assert_repaired()
+        self.assertEqual(fixture.destination.read_bytes(), fixture.source_bytes)
+        self.assertEqual(fixture.archive.read_bytes(), fixture.destination_bytes)
+        self.assertIn("Keep task metadata: 0001/task_metadata.json (from Stored)", output)
+        self.assertIn("JSON archives        : 1", output)
+        self.assertFalse(fixture.source.exists())
+        after = self.snapshot()
+        self.run_repair()
+        self.assertEqual(self.snapshot(), after)
+
+    def test_metadata_archive_keeps_destination_when_encoding_references_are_split(self):
+        """Ambiguous encoding locations only affect the metadata's canonical name."""
+        fixture = self.create_metadata_conflict()
+        audio = EncodingAudio.objects.get(video=self.video)
+        old_name = audio.source_file.name
+        new_name = old_name.replace(self.previous, self.expected)
+        (self.media / old_name).rename(self.media / new_name)
+        EncodingAudio.objects.filter(pk=audio.pk).update(source_file=new_name)
+        output = self.run_repair()
+        self.assert_repaired()
+        archived = fixture.destination.with_name(
+            f"task_metadata.{hashlib.sha256(fixture.source_bytes).hexdigest()}.json"
+        )
+        self.assertEqual(fixture.destination.read_bytes(), fixture.destination_bytes)
+        self.assertEqual(archived.read_bytes(), fixture.source_bytes)
+        self.assertIn(
+            "Keep task metadata: 0001/task_metadata.json (from Expected)", output
+        )
+
+    def test_metadata_archive_dry_run_only_reads(self):
+        """The simulation lists archival moves without changing files or references."""
+        fixture = self.create_metadata_conflict()
+        before = self.snapshot()
+        with CaptureQueriesContext(connection) as queries:
+            output = self.run_repair(dry=True)
+        self.assertTrue(all(q["sql"].lstrip().startswith("SELECT") for q in queries))
+        self.assertIn("Archive task metadata (planned)", output)
+        self.assertIn(fixture.archive.name, output)
+        self.assert_original_database()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_metadata_archive_does_not_resolve_media_conflicts(self):
+        """Different MP4s still block the whole profile, including metadata moves."""
+        self.create_metadata_conflict()
+        self.write_file(
+            self.file_name("0001/video.mp4").replace(self.previous, self.expected),
+            b"a different encoding",
+        )
+        before = self.snapshot()
+        output = StringIO()
+        with self.assertRaisesMessage(CommandError, "conflict(s)"):
+            self.run_repair(stdout=output)
+        self.assertIn("Different files or entry types", output.getvalue())
+        self.assertIn("Archive task metadata (planned)", output.getvalue())
+        self.assert_original_database()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_metadata_archive_refuses_invalid_json(self):
+        """Neither metadata file may be renamed on the strength of malformed JSON."""
+        fixture = self.create_metadata_conflict()
+        for path in (fixture.source, fixture.destination):
+            original = path.read_bytes()
+            for contents in (b"not JSON", b"[]", b"{}"):
+                with self.subTest(path=path, contents=contents):
+                    path.write_bytes(contents)
+                    before = self.snapshot()
+                    with self.assertRaisesMessage(CommandError, "conflict(s)"):
+                        self.run_repair()
+                    self.assert_original_database()
+                    self.assertEqual(self.snapshot(), before)
+            path.write_bytes(original)
+
+    def test_metadata_archive_never_overwrites_existing_archives(self):
+        """An archive on either side remains intact and prevents ambiguous moves."""
+        fixture = self.create_metadata_conflict()
+        for path in (fixture.archive, fixture.source.with_name(fixture.archive.name)):
+            with self.subTest(path=path):
+                path.write_bytes(b"existing archive")
+                before = self.snapshot()
+                with self.assertRaisesMessage(CommandError, "conflict(s)"):
+                    self.run_repair()
+                self.assert_original_database()
+                self.assertEqual(self.snapshot(), before)
+                path.unlink()
+
+    def test_metadata_archive_never_renames_a_referenced_file(self):
+        """A file-field reference must not silently start pointing at another JSON."""
+        fixture = self.create_metadata_conflict()
+        RecordingFileTreatment.objects.create(file=str(fixture.destination))
+        before = self.snapshot()
+        with self.assertRaisesMessage(CommandError, "conflict(s)"):
+            self.run_repair()
+        self.assert_original_database()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_metadata_archive_rechecks_both_json_files_before_moving(self):
+        """Even valid JSON changes invalidate an already prepared archival plan."""
+        fixture = self.create_metadata_conflict()
+        repair, plan = self.planned_metadata_repair()
+        for path in (fixture.source, fixture.destination):
+            with self.subTest(path=path):
+                original = path.read_bytes()
+                path.write_bytes(original + b"\n")
+                before = self.snapshot()
+                with self.assertRaisesMessage(CommandError, "evidence changed"):
+                    repair.apply(plan)
+                self.assert_original_database()
+                self.assertEqual(self.snapshot(), before)
+                path.write_bytes(original)
+
+    def test_metadata_archive_rechecks_references_before_moving(self):
+        """A new consumer of the metadata to archive must block the prepared plan."""
+        fixture = self.create_metadata_conflict()
+        repair, plan = self.planned_metadata_repair()
+        RecordingFileTreatment.objects.create(file=str(fixture.destination))
+        before = self.snapshot()
+        with self.assertRaisesMessage(CommandError, "Report to archive is referenced"):
+            repair.apply(plan)
+        self.assert_original_database()
+        self.assertEqual(self.snapshot(), before)
+
+    def assert_joint_json_archives(self, encoding_at_destination: bool) -> None:
+        """Resolve both JSON collisions, retaining the encoding's report and metadata."""
+        fixture = self.create_report_conflict(encoding_at_destination)
+        encoding_metadata = b'{"task_id": "encoding-task", "task_type": "encoding"}'
+        fixture.retained.with_name("task_metadata.json").write_bytes(encoding_metadata)
+        transcription_metadata = fixture.metadata.read_bytes()
+        metadata_archive = fixture.destination.with_name(
+            f"task_metadata.{hashlib.sha256(transcription_metadata).hexdigest()}.json"
+        )
+        output = self.run_repair()
+        self.assert_repaired()
+        self.assertEqual(fixture.destination.read_bytes(), fixture.encoding_bytes)
+        self.assertEqual(fixture.archive.read_bytes(), fixture.transcript_bytes)
+        self.assertEqual(
+            fixture.destination.with_name("task_metadata.json").read_bytes(),
+            encoding_metadata,
+        )
+        self.assertEqual(metadata_archive.read_bytes(), transcription_metadata)
+        self.assertIn("JSON archives        : 2", output)
+
+    def test_metadata_archive_with_encoding_report_at_source(self):
+        """A metadata collision does not interfere with proof of the transcription."""
+        self.assert_joint_json_archives(encoding_at_destination=False)
+
+    def test_metadata_archive_with_encoding_report_at_destination(self):
+        """Both transcription JSON files are archived beside the retained encoding."""
+        self.assert_joint_json_archives(encoding_at_destination=True)
 
     def test_missing_task_uses_metadata_to_archive_report_at_destination(self) -> None:
         """A purged Task does not prevent preserving the encoding and transcription."""
@@ -593,6 +777,9 @@ class UserHashRepairTests(TestCase):
     def test_report_archive_is_rolled_back_with_database_changes(self) -> None:
         """A late SQL failure restores both original JSONs and every moved file."""
         fixture = self.create_report_conflict()
+        fixture.retained.with_name("task_metadata.json").write_bytes(
+            b'{"task_id": "encoding-task", "task_type": "encoding"}'
+        )
         update_database = UserHashRepair.update_database
 
         def fail_after_updates(repair, plan) -> None:

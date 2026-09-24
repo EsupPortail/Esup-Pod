@@ -18,6 +18,9 @@ Checks performed:
 5. Resolve an info_video.json collision only when the database identifies the
    encoding directory and the other directory contains a completed transcription
    task's JSON/VTT artifacts. Keep the encoding report and archive the other JSON.
+6. Preserve differing task_metadata.json files by archiving the unreferenced one
+   as task_metadata.<SHA256>.json. Keep the encoding directory's metadata when
+   identifiable, otherwise the destination's. Validate both JSON objects first.
 
 Key Features:
 - With --dry, report the complete plan without database or filesystem changes.
@@ -52,6 +55,7 @@ Main Components:
 - UserHashRepair: Planning, validation, application, rollback and cleanup.
 - ProfileChange / FileChange / ProfilePlan: Changes and isolated per-profile plans.
 - ReportArchive: Evidence and archive destination for a resolved JSON collision.
+- MetadataArchive: Preserve task metadata without selecting different media files.
 
 Important notes:
 - Restore the intended SECRET_KEY first. Back up the database and media, and
@@ -205,6 +209,19 @@ class ReportArchive:
 
 
 @dataclass
+class MetadataArchive:
+    """Record both metadata files and the evidence for retaining one canonical name."""
+
+    source: Path
+    destination: Path
+    retained: Path
+    archived: Path
+    archive: Path
+    fingerprints: dict[Path, str]
+    references: tuple
+
+
+@dataclass
 class ProfilePlan:
     """Keep each profile's operations, conflicts and outcome independent."""
 
@@ -215,6 +232,7 @@ class ProfilePlan:
     source_directories: list[Path] = dataclass_field(default_factory=list)
     errors: list[str] = dataclass_field(default_factory=list)
     report_archives: list[ReportArchive] = dataclass_field(default_factory=list)
+    metadata_archives: list[MetadataArchive] = dataclass_field(default_factory=list)
     outcome: str = "ready"
 
 
@@ -400,7 +418,13 @@ class UserHashRepair:
         for label, count in [
             ("Moves planned", sum(len(plan.moves) for plan in self.plans)),
             ("Identical duplicates", sum(len(plan.duplicates) for plan in self.plans)),
-            ("JSON archives", sum(len(plan.report_archives) for plan in self.plans)),
+            (
+                "JSON archives",
+                sum(
+                    len(plan.report_archives) + len(plan.metadata_archives)
+                    for plan in self.plans
+                ),
+            ),
             ("Database paths", sum(len(plan.files) for plan in self.plans)),
         ]:
             self.stdout.write(f"  {label:<20} : {count}")
@@ -519,7 +543,9 @@ class UserHashRepair:
         """Use relative paths for planned moves instead of repeating the hashes."""
         moves = plan.moves[move_start:]
         duplicates = plan.duplicates[duplicate_start:]
-        archive_paths = {item.archive for item in plan.report_archives}
+        archive_paths = {
+            item.archive for item in plan.report_archives + plan.metadata_archives
+        }
         for old, new in moves:
             if new in archive_paths:
                 continue
@@ -528,6 +554,7 @@ class UserHashRepair:
             self.status(f"{description} (planned)")
             self.report_full_paths(str(old), str(new), indent=4)
         self.report_json_archives(plan, source)
+        self.report_metadata_archives(plan, source)
         for old, new in duplicates:
             self.status(
                 f"Identical duplicate: {old.relative_to(source)} (cleanup planned)"
@@ -561,6 +588,21 @@ class UserHashRepair:
                 f"{item.source.parent.relative_to(source) / item.archive.name}"
             )
             self.report_full_paths(str(item.transcription), str(item.archive), indent=4)
+
+    def report_metadata_archives(self, plan: ProfilePlan, source: Path) -> None:
+        """Show the canonical metadata choice and the preserved alternative."""
+        for item in plan.metadata_archives:
+            if not item.source.is_relative_to(source):
+                continue
+            origin = "Stored" if item.retained == item.source else "Expected"
+            self.status(
+                f"Keep task metadata: {item.source.relative_to(source)} (from {origin})"
+            )
+            self.status(
+                "Archive task metadata (planned): "
+                f"{item.source.parent.relative_to(source) / item.archive.name}"
+            )
+            self.report_full_paths(str(item.archived), str(item.archive), indent=4)
 
     def report_database(self, destination: Path, changes: list[FileChange]) -> None:
         """List each validated file once, grouped by its model and field."""
@@ -627,6 +669,8 @@ class UserHashRepair:
             plan.duplicates.append((source, destination))
         elif source.name == "info_video.json" and destination.is_file():
             self.plan_report_archive(plan, source, destination)
+        elif source.name == "task_metadata.json" and destination.is_file():
+            self.plan_metadata_archive(plan, source, destination)
         else:
             plan.errors.append(
                 f"Different files or entry types: {source} / {destination}"
@@ -645,6 +689,49 @@ class UserHashRepair:
         plan.moves.append((archive.transcription, archive.archive))
         if archive.retained == source:
             plan.moves.append((source, destination))
+
+    def plan_metadata_archive(
+        self, plan: ProfilePlan, source: Path, destination: Path
+    ) -> None:
+        """Archive a metadata collision without replacing different media files."""
+        try:
+            archive = self.inspect_metadata_conflict(plan.profile, source, destination)
+        except CommandError as exc:
+            plan.errors.append(f"Cannot resolve {source} / {destination}: {exc}")
+            return
+        plan.metadata_archives.append(archive)
+        plan.moves.append((archive.archived, archive.archive))
+        if archive.retained == source:
+            plan.moves.append((source, destination))
+
+    def inspect_metadata_conflict(
+        self, profile: ProfileChange, source: Path, destination: Path
+    ) -> MetadataArchive:
+        """Preserve both JSONs, using encoding references only to choose their names."""
+        video = self.report_video(profile, source, destination)
+        fingerprints = {}
+        self.read_report(source, fingerprints)
+        self.read_report(destination, fingerprints)
+        references = self.encoding_references(video)
+        try:
+            retained = self.retained_report(references, source, destination)
+        except CommandError:
+            # Metadata is historical: preserve the destination's canonical name
+            # when encoding references do not identify a single directory.
+            # Media/report collisions are still checked independently.
+            retained = destination
+        archived = destination if retained == source else source
+        self.require_unreferenced_report(archived)
+        archive = self.safe_path(
+            destination.with_name(f"task_metadata.{fingerprints[archived]}.json")
+        )
+        if archive.exists() or self.safe_path(source.with_name(archive.name)).exists():
+            raise CommandError(
+                f"Archive already exists; manual review required: {archive}"
+            )
+        return MetadataArchive(
+            source, destination, retained, archived, archive, fingerprints, references
+        )
 
     def read_report(self, path: Path, fingerprints: dict) -> dict:
         """Read a regular JSON object and remember its exact bytes for revalidation."""
@@ -1044,6 +1131,14 @@ class UserHashRepair:
             if current != item:
                 raise CommandError(
                     f"Report conflict evidence changed during repair: {item.source}"
+                )
+        for item in plan.metadata_archives:
+            current = self.inspect_metadata_conflict(
+                plan.profile, item.source, item.destination
+            )
+            if current != item:
+                raise CommandError(
+                    f"Metadata conflict evidence changed during repair: {item.source}"
                 )
 
     def lock_profile(self, profile: ProfileChange) -> None:
