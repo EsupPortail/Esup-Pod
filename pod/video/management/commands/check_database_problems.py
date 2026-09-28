@@ -9,11 +9,7 @@ Key Features:
 - Identifies encoding files with incorrect owner hashkey references
 - Provides a dry-run mode to simulate changes without modifying the database
 - Automatically fixes detected ownership path inconsistencies
-
-Main Components:
-- Command class: Entry point for Django management command
-- Process methods: Handle the main checking and fixing logic
-- Owner change detection: Specialized functions to handle ownership-related issues
+- Move video folder when needed
 
 Important notes:
  - Do not forget to save database (at least video_encode_transcript_* tables) before use.
@@ -25,14 +21,6 @@ Arguments:
  --dry: Simulates what will be achieved (default=False).
 
 Example: python manage.py check_database_problems --dry
-
-Functions:
-- add_arguments: Adds command-line arguments for the script.
-- handle: Main entry point for the command, handling the overall process.
-- process: Core method that orchestrates the database verification for all videos.
-- check_change_owner_problems: Detects if a video's encoding paths do not match the current owner's hashkey.
-- solve_change_owner_problems: Moves/deduplicates encoding files on the filesystem and corrects file paths in
-  EncodingVideo, EncodingAudio, and PlaylistVideo models to match the new owner.
 """
 
 import os
@@ -54,6 +42,7 @@ def get_video_dir(hashkey: str, video_id: int) -> str:
     """Get the absolute directory holding a video's encoding files for a given owner hashkey."""
     return os.path.join(settings.MEDIA_ROOT, VIDEOS_DIR, hashkey, str(video_id))
 
+
 def find_hashkey(video: Video, models_to_update: list):
     """Find the owner hashkey currently set for a video."""
     for model in models_to_update:
@@ -63,6 +52,7 @@ def find_hashkey(video: Video, models_to_update: list):
             if match:
                 return match.group(0)
     return None
+
 
 class Command(BaseCommand):
     """Main command class to check whether the data in the database is inconsistent."""
@@ -161,7 +151,6 @@ class Command(BaseCommand):
                         % encoding_video.source_file.name
                     )
                 )
-
 
     def move_video_dir_if_needed(
         self, old_hashkey: str, new_hashkey: str, video: Video
