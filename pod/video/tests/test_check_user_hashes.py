@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 from io import StringIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -276,6 +277,342 @@ class UserHashRepairTests(TestCase):
         }
         fixture.metadata.write_text(json.dumps(metadata), encoding="utf-8")
         return metadata
+
+    def create_reencoding_conflict(
+        self,
+        active_format: str = "runner",
+        encoding_at_destination: bool = False,
+        alternative_format: str | None = None,
+    ) -> SimpleNamespace:
+        """Model the supplied legacy/Runner reports with different output filenames."""
+        fixture = self.create_report_conflict(encoding_at_destination)
+        fixture.task.delete()
+        fixture.metadata.unlink()
+        fixture.subtitle.unlink()
+        archived = fixture.transcription
+
+        def report_data(report_format, directory, active):
+            video_name = "video.mp4" if active else "360p-old.mp4"
+            audio_name = "audio.mp3" if active else "audio_192k-old.mp3"
+            hls_name = "playlist.m3u8" if active else "360p-old.m3u8"
+            if report_format == "legacy":
+                return {
+                    "id": self.video.pk,
+                    "video_file": str(directory.parent / "source.mp4"),
+                    "list_video_track": {"0": {"width": 1080, "height": 1920}},
+                    "list_mp4_files": {"360": str(directory / video_name)},
+                    "list_hls_files": {"360": str(directory / hls_name)},
+                    "list_mp3_files": {"192k": str(directory / audio_name)},
+                    "list_m4a_files": {},
+                    "error_encoding": False,
+                }
+            return {
+                "video_id": str(self.video.pk),
+                "has_stream_video": True,
+                "has_stream_audio": True,
+                "encode_video": [
+                    {
+                        "encoding_format": "video/mp4",
+                        "rendition": "640x360",
+                        "filename": video_name,
+                    },
+                    {
+                        "encoding_format": "video/mp2t",
+                        "rendition": "640x360",
+                        "filename": "360p.m3u8" if active else hls_name,
+                    },
+                ],
+                "encode_audio": [
+                    {"encoding_format": "audio/mp3", "filename": audio_name}
+                ],
+                "encode_result": True,
+            }
+
+        alternative_format = alternative_format or (
+            "legacy" if active_format == "runner" else "runner"
+        )
+        retained_bytes = json.dumps(
+            report_data(active_format, fixture.retained.parent, True)
+        ).encode()
+        archived_bytes = json.dumps(
+            report_data(alternative_format, archived.parent, False)
+        ).encode()
+        fixture.retained.write_bytes(retained_bytes)
+        archived.write_bytes(archived_bytes)
+        for filename in ("360p-old.mp4", "audio_192k-old.mp3", "360p-old.m3u8"):
+            self.write_file(str(archived.parent / filename), b"old unregistered media")
+        self.reference_contents[self.file_name("0001/info_video.json")] = retained_bytes
+        return SimpleNamespace(
+            source=fixture.source,
+            destination=fixture.destination,
+            retained=fixture.retained,
+            archived=archived,
+            retained_bytes=retained_bytes,
+            archived_bytes=archived_bytes,
+            archive=fixture.destination.with_name(
+                f"info_video.encoding-{hashlib.sha256(archived_bytes).hexdigest()}.json"
+            ),
+        )
+
+    def assert_reencoding_repaired(self, fixture: SimpleNamespace) -> str:
+        """Keep current media references, both reports and unused historical media."""
+        self.assertFalse(Task.objects.filter(video=self.video).exists())
+        output = self.run_repair()
+        self.assert_repaired()
+        self.assertEqual(fixture.destination.read_bytes(), fixture.retained_bytes)
+        self.assertEqual(fixture.archive.read_bytes(), fixture.archived_bytes)
+        self.assertEqual(
+            (fixture.destination.parent / "360p-old.mp4").read_bytes(),
+            b"old unregistered media",
+        )
+        self.assertIn("Archive alternative encoding report (planned", output)
+        self.assertNotIn("Task absent from database", output)
+        self.assertIn("JSON archives        : 1", output)
+        after = self.snapshot()
+        self.run_repair()
+        self.assertEqual(self.snapshot(), after)
+        return output
+
+    def test_reencoding_keeps_runner_at_source(self) -> None:
+        """An active Runner report survives the merge even under the stored hash."""
+        self.assert_reencoding_repaired(self.create_reencoding_conflict())
+
+    def test_reencoding_keeps_runner_at_destination_and_reconciles_log(self) -> None:
+        """Archive the legacy report and repair a stale log reference to it."""
+        fixture = self.create_reencoding_conflict(encoding_at_destination=True)
+        self.set_log_reference(fixture.archived, fixture.retained_bytes, absolute=True)
+        output = self.assert_reencoding_repaired(fixture)
+        self.assertIn("Reconcile EncodingLog", output)
+
+    def test_reencoding_keeps_legacy_when_database_uses_it_despite_timestamps(
+        self,
+    ) -> None:
+        """A newer Runner report cannot supersede a registered legacy encoding."""
+        fixture = self.create_reencoding_conflict(active_format="legacy")
+        os.utime(fixture.retained, (1, 1))
+        os.utime(fixture.archived, (2, 2))
+        self.assert_reencoding_repaired(fixture)
+
+    def test_reencoding_accepts_two_runner_reports(self) -> None:
+        """Report format alone does not select between two Runner encodings."""
+        self.assert_reencoding_repaired(
+            self.create_reencoding_conflict(alternative_format="runner")
+        )
+
+    def test_reencoding_accepts_two_legacy_reports(self) -> None:
+        """The same evidence also disambiguates two historical encodings."""
+        self.assert_reencoding_repaired(
+            self.create_reencoding_conflict(
+                active_format="legacy",
+                alternative_format="legacy",
+                encoding_at_destination=True,
+            )
+        )
+
+    def test_reencoding_dry_run_is_read_only(self) -> None:
+        """Expose the active report and archive before any filesystem or SQL writes."""
+        fixture = self.create_reencoding_conflict()
+        before = self.snapshot()
+        with CaptureQueriesContext(connection) as queries:
+            output = self.run_repair(dry=True)
+        self.assertTrue(all(q["sql"].lstrip().startswith("SELECT") for q in queries))
+        self.assertIn("registered media match retained report", output)
+        self.assertIn(fixture.archive.name, output)
+        self.assertFalse(fixture.archive.exists())
+        self.assert_original_database()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_reencoding_accepts_hls_transport_stream_and_audio_object(self) -> None:
+        """The importer derives TS filenames from HLS and accepts one audio object."""
+        fixture = self.create_reencoding_conflict()
+        info = json.loads(fixture.retained_bytes)
+        info["encode_video"] = [info["encode_video"][1]]
+        info["encode_audio"] = info["encode_audio"][0]
+        fixture.retained_bytes = json.dumps(info).encode()
+        fixture.retained.write_bytes(fixture.retained_bytes)
+        self.reference_contents[self.file_name("0001/info_video.json")] = (
+            fixture.retained_bytes
+        )
+        for index, (obj, field, name) in enumerate(self.references):
+            if isinstance(obj, EncodingVideo):
+                contents = (self.media / name).read_bytes()
+                new_name = self.file_name("0001/360p.ts")
+                (self.media / name).rename(self.media / new_name)
+                EncodingVideo.objects.filter(pk=obj.pk).update(source_file=new_name)
+                self.references[index] = (obj, field, new_name)
+                self.reference_contents[new_name] = contents
+        self.assert_reencoding_repaired(fixture)
+
+    def test_reencoding_refuses_master_playlist_as_only_video_evidence(self) -> None:
+        """The shared master playlist name cannot distinguish different encodings."""
+        self.create_reencoding_conflict()
+        EncodingVideo.objects.filter(video=self.video).delete()
+        self.references = [
+            row for row in self.references if not isinstance(row[0], EncodingVideo)
+        ]
+        before = self.snapshot()
+        output = StringIO()
+        with self.assertRaisesMessage(CommandError, "conflict(s)"):
+            self.run_repair(stdout=output)
+        self.assertIn("master playlist alone", output.getvalue())
+        self.assert_original_database()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_reencoding_requires_valid_identity_success_and_matching_outputs(
+        self,
+    ) -> None:
+        """A directory match cannot validate incomplete, failed or unrelated reports."""
+        fixture = self.create_reencoding_conflict()
+        cases = [
+            (fixture.retained, {"video_id": "99999"}),
+            (fixture.retained, {"id": "99999"}),
+            (fixture.retained, {"video_id": None}),
+            (fixture.archived, {"id": "99999"}),
+            (fixture.retained, {"encode_result": False}),
+            (fixture.archived, {"error_encoding": True}),
+            (fixture.archived, {"list_mp4_files": []}),
+            (fixture.retained, {"encode_video": ["video.mp4"]}),
+            (fixture.retained, {"encode_video": []}),
+            (fixture.retained, {"encode_video": [{"encoding_format": []}]}),
+            (fixture.retained, {"encode_audio": []}),
+            (
+                fixture.retained,
+                {
+                    "encode_audio": [
+                        {"encoding_format": "audio/mp3", "filename": "wrong.mp3"}
+                    ]
+                },
+            ),
+            (
+                fixture.retained,
+                {
+                    "encode_video": [
+                        {"encoding_format": "video/mp4", "filename": "other.mp4"}
+                    ]
+                },
+            ),
+            (
+                fixture.retained,
+                {
+                    "encode_video": [
+                        {"encoding_format": "video/mp4", "filename": "../video.mp4"}
+                    ]
+                },
+            ),
+            (
+                fixture.retained,
+                {
+                    "encode_video": [
+                        {
+                            "encoding_format": "video/mp4",
+                            "filename": str(fixture.retained),
+                        }
+                    ]
+                },
+            ),
+            (
+                fixture.retained,
+                {"video_file": str(fixture.archived.parent / "source.mp4")},
+            ),
+            (fixture.archived, {"list_mp4_files": {"360": str(fixture.retained)}}),
+        ]
+        for path, changes in cases:
+            with self.subTest(path=path, changes=changes):
+                original = path.read_bytes()
+                data = json.loads(original)
+                data.update(changes)
+                try:
+                    path.write_text(json.dumps(data))
+                    before = self.snapshot()
+                    with self.assertRaisesMessage(CommandError, "conflict(s)"):
+                        self.run_repair()
+                    self.assert_original_database()
+                    self.assertEqual(self.snapshot(), before)
+                finally:
+                    path.write_bytes(original)
+
+    def test_reencoding_preserves_conflicting_media(self) -> None:
+        """Resolving JSONs never authorizes choosing between MP4, image or VTT bytes."""
+        fixture = self.create_reencoding_conflict()
+        for filename in ("video.mp4", "overview.png", "subtitles.vtt"):
+            with self.subTest(filename=filename):
+                source = self.media / self.file_name(f"0001/{filename}")
+                original = source.read_bytes() if source.exists() else None
+                destination = fixture.destination.parent / filename
+                try:
+                    source.write_bytes(b"first media")
+                    destination.write_bytes(b"different media")
+                    before = self.snapshot()
+                    with self.assertRaisesMessage(CommandError, "conflict(s)"):
+                        self.run_repair()
+                    self.assert_original_database()
+                    self.assertEqual(self.snapshot(), before)
+                    self.assertFalse(fixture.archive.exists())
+                finally:
+                    destination.unlink()
+                    if original is None:
+                        source.unlink()
+                    else:
+                        source.write_bytes(original)
+
+    def test_reencoding_protects_other_references_and_existing_archive(self) -> None:
+        """A second consumer or a preexisting archive still blocks the whole profile."""
+        fixture = self.create_reencoding_conflict()
+        record = RecordingFileTreatment.objects.create(file=str(fixture.archived))
+        for referenced in (True, False):
+            with self.subTest(referenced=referenced):
+                if not referenced:
+                    record.delete()
+                    fixture.archive.write_bytes(b"existing archive")
+                before = self.snapshot()
+                with self.assertRaisesMessage(CommandError, "conflict(s)"):
+                    self.run_repair()
+                self.assert_original_database()
+                self.assertEqual(self.snapshot(), before)
+
+    def test_reencoding_rechecks_reports_and_references(self) -> None:
+        """Revalidate both manifests and database selection before moving anything."""
+        fixture = self.create_reencoding_conflict()
+        repair, plan = self.planned_report_repair()
+        for path in (fixture.retained, fixture.archived):
+            original = path.read_bytes()
+            path.write_bytes(original + b"\n")
+            before = self.snapshot()
+            with self.assertRaisesMessage(CommandError, "evidence changed"):
+                repair.apply(plan)
+            self.assert_original_database()
+            self.assertEqual(self.snapshot(), before)
+            path.write_bytes(original)
+        audio = EncodingAudio.objects.get(video=self.video)
+        audio.source_file = (
+            (fixture.archived.parent / "audio_192k-old.mp3")
+            .relative_to(self.media)
+            .as_posix()
+        )
+        audio.save(update_fields=["source_file"])
+        before = self.snapshot()
+        with self.assertRaisesMessage(CommandError, "split between directories"):
+            repair.apply(plan)
+        self.assertEqual(self.snapshot(), before)
+
+    def test_reencoding_rolls_back_archives_and_database_changes(self) -> None:
+        """Restore both JSONs and the stale log path after a failed database update."""
+        fixture = self.create_reencoding_conflict(encoding_at_destination=True)
+        self.set_log_reference(fixture.archived, fixture.retained_bytes, absolute=True)
+        before = self.snapshot()
+        before_references = self.snapshot_references()
+        update_database = UserHashRepair.update_database
+
+        def fail_after_updates(repair, plan):
+            update_database(repair, plan)
+            self.assertEqual(fixture.archive.read_bytes(), fixture.archived_bytes)
+            raise DatabaseError("failure after archiving alternative encoding")
+
+        with patch.object(UserHashRepair, "update_database", fail_after_updates):
+            with self.assertRaisesMessage(CommandError, "failure after archiving"):
+                self.run_repair()
+        self.assert_original_database(before_references)
+        self.assertEqual(self.snapshot(), before)
 
     def create_metadata_conflict(self) -> SimpleNamespace:
         """Create two historical metadata files without any media/report conflict."""

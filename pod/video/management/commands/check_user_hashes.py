@@ -15,9 +15,11 @@ Checks performed:
    symlinks inside media paths and special files.
 4. Find matching directory prefixes in FileField, ImageField and FilePathField
    values and require each referenced file at its source or destination.
-5. Resolve an info_video.json collision only when the database identifies the
-   encoding directory and the other directory contains a completed transcription
-   task's JSON/VTT artifacts. Keep the encoding report and archive the other JSON.
+5. Resolve an info_video.json collision when the database identifies the encoding
+   directory and the other report describes a completed transcription or another
+   encoding of the same video. For two encodings, require successful reports and
+   match the retained report's output files against all registered media paths.
+   Keep the active encoding report and archive the other JSON.
 6. Preserve differing task_metadata.json files by archiving the unreferenced one
    as task_metadata.<SHA256>.json. Keep the encoding directory's metadata when
    identifiable, otherwise the destination's. Validate both JSON objects first.
@@ -25,7 +27,7 @@ Checks performed:
    referenced log under its canonical name; block if both logs are referenced.
 8. Reconcile EncodingLog.logfile with a validated encoding report when it points
    to the same video's info_video.json under the other hash. Keep all other
-   references to the transcription report blocking; never select new media.
+   references to the archived report blocking; never select new media.
 
 Key Features:
 - With --dry, report the complete plan without database or filesystem changes.
@@ -43,6 +45,12 @@ Key Features:
   references; historical runner paths are not accessed. Ambiguity or a conflicting
   existing Task remains a conflict. Do not recreate missing Task rows.
   Recheck the evidence before applying; archive moves participate in rollback.
+- Archive an alternative encoding report as info_video.encoding-<SHA256>.json.
+  Recognize both legacy and Runner output manifests, including generated HLS
+  transport streams and master playlists. Require both reports to identify this
+  video and the database to identify actual rendition files in the retained one.
+  Do not choose by timestamps, report format or hash age. No Task row is required
+  for this case; differing media files remain conflicts.
 - Group output by user, directory and database field. Green [OK] entries mean
   validation succeeded; dry-run entries are planned changes, not applied changes.
   Use --verbosity 2 to include full source and destination paths.
@@ -94,7 +102,7 @@ Functions:
 - UserHashRepair.run / apply_profiles: Plan all profiles, then repair each valid one.
 - select_profiles / plan_profile: Identify mismatches and plan media changes.
 - plan_references: Validate matching database file paths and local storage.
-- plan_report_archive / recheck_report_archives: Resolve proven transcription
+- plan_report_archive / recheck_report_archives: Resolve proven encoding/transcription
   report collisions and revalidate the evidence immediately before application.
 - apply / update_database: Move files and commit corrected paths and hashes.
 - rollback_moves / cleanup: Recover failed moves and remove obsolete duplicates.
@@ -206,9 +214,10 @@ class ReportArchive:
     source: Path
     destination: Path
     retained: Path
-    transcription: Path
+    archived: Path
     archive: Path
-    task_id: str
+    report_type: str
+    task_id: str | None
     task_pk: int | None
     corrected_log_pk: int | None
     fingerprints: dict[Path, str]
@@ -586,18 +595,22 @@ class UserHashRepair:
             self.status(
                 f"Keep encoding report: {item.source.relative_to(source)} (from {origin})"
             )
+            report_type = "transcription"
             evidence = f"task #{item.task_pk}"
-            if item.task_pk is None:
+            if item.report_type == "encoding":
+                report_type = "alternative encoding"
+                evidence = "registered media match retained report"
+            elif item.task_pk is None:
                 self.status(
                     "Task absent from database; validated successful transcription "
                     "metadata and VTT files."
                 )
                 evidence = f"metadata task_id={item.task_id!r}"
             self.status(
-                f"Archive transcription report (planned, {evidence}): "
+                f"Archive {report_type} report (planned, {evidence}): "
                 f"{item.source.parent.relative_to(source) / item.archive.name}"
             )
-            self.report_full_paths(str(item.transcription), str(item.archive), indent=4)
+            self.report_full_paths(str(item.archived), str(item.archive), indent=4)
             if item.corrected_log_pk is not None:
                 self.status(
                     f"Reconcile EncodingLog #{item.corrected_log_pk}.logfile with "
@@ -700,14 +713,14 @@ class UserHashRepair:
     def plan_report_archive(
         self, plan: ProfilePlan, source: Path, destination: Path
     ) -> None:
-        """Resolve only a verified encoding/transcription collision without overwriting."""
+        """Resolve a verified report collision without overwriting either JSON."""
         try:
             archive = self.inspect_report_conflict(plan.profile, source, destination)
         except CommandError as exc:
             plan.errors.append(f"Cannot resolve {source} / {destination}: {exc}")
             return
         plan.report_archives.append(archive)
-        plan.moves.append((archive.transcription, archive.archive))
+        plan.moves.append((archive.archived, archive.archive))
         if archive.retained == source:
             plan.moves.append((source, destination))
 
@@ -883,6 +896,144 @@ class UserHashRepair:
             )
         )
 
+    @staticmethod
+    def legacy_encoding_entries(data: dict) -> list[tuple[str, str, str]]:
+        """Read output maps written by the historical encoder, without reading logs."""
+        entries = []
+        for key, kind, suffix in (
+            ("list_mp4_files", "encodingvideo", ".mp4"),
+            ("list_hls_files", "playlistvideo", ".m3u8"),
+            ("list_mp3_files", "encodingaudio", ".mp3"),
+            ("list_m4a_files", "encodingaudio", ".m4a"),
+        ):
+            files = data.get(key, {})
+            if not isinstance(files, dict):
+                raise CommandError(f"Invalid legacy encoding output map: {key}")
+            entries.extend((kind, name, suffix) for name in files.values())
+        return entries
+
+    @staticmethod
+    def runner_encoding_entries(data: dict) -> list[tuple[str, str, str]]:
+        """Read Runner filenames using the formats handled by the media importer."""
+        entries = []
+        for key, formats in (
+            (
+                "encode_video",
+                {
+                    "video/mp4": ("encodingvideo", ".mp4"),
+                    "video/mp2t": ("playlistvideo", ".m3u8"),
+                },
+            ),
+            (
+                "encode_audio",
+                {
+                    "audio/mp3": ("encodingaudio", ".mp3"),
+                    "video/mp4": ("encodingaudio", ".m4a"),
+                },
+            ),
+        ):
+            files = data.get(key, [])
+            if key == "encode_audio" and isinstance(files, dict):
+                files = [files]
+            if not isinstance(files, list):
+                raise CommandError(f"Invalid Runner encoding output list: {key}")
+            for item in files:
+                if not isinstance(item, dict) or not isinstance(
+                    item.get("encoding_format"), str
+                ):
+                    raise CommandError(f"Invalid Runner encoding output: {key}")
+                output_format = formats.get(item["encoding_format"])
+                if output_format is None:
+                    raise CommandError(f"Unsupported Runner encoding output: {key}")
+                kind, suffix = output_format
+                entries.append((kind, item.get("filename"), suffix))
+        return entries
+
+    def encoding_output_path(
+        self, report: Path, name: object, suffix: str, legacy: bool
+    ) -> Path:
+        """Resolve only outputs in this report's own directory, in their stated format."""
+        if not isinstance(name, str) or not name or "\0" in name:
+            raise CommandError(f"Invalid encoding output filename in {report}")
+        if legacy:
+            path = self.media_path(name)
+        else:
+            if Path(name).name != name:
+                raise CommandError(f"Runner output is not a local filename: {name}")
+            path = self.safe_path(report.parent / name)
+        if path.parent != report.parent or path.suffix != suffix:
+            raise CommandError(
+                f"Encoding output has an unexpected path or format: {name}"
+            )
+        return path
+
+    def encoding_report_outputs(
+        self, video: Video, data: dict, report: Path
+    ) -> tuple[dict[str, set[Path]], set[Path]]:
+        """Require a successful encoding of this video and valid local output paths."""
+        legacy = "list_video_track" in data
+        identity = "id" if legacy else "video_id"
+        for key in {identity} | ({"id", "video_id"} & data.keys()):
+            if str(data.get(key)) != str(video.pk):
+                raise CommandError(
+                    f"Encoding report does not identify this video: {report}"
+                )
+        success = (
+            data.get("error_encoding") is False
+            if legacy
+            else data.get("encode_result") is True
+            and data.get("has_stream_video") is True
+        )
+        if not success:
+            raise CommandError(f"Encoding report does not confirm success: {report}")
+        entries = (
+            self.legacy_encoding_entries(data)
+            if legacy
+            else self.runner_encoding_entries(data)
+        )
+        outputs = {
+            kind: set() for kind in ("encodingvideo", "playlistvideo", "encodingaudio")
+        }
+        for kind, name, suffix in entries:
+            path = self.encoding_output_path(report, name, suffix, legacy)
+            outputs[kind].add(path)
+            if kind == "playlistvideo":
+                outputs["encodingvideo"].add(path.with_suffix(".ts"))
+        direct_video_outputs = outputs["encodingvideo"] | outputs["playlistvideo"]
+        if not direct_video_outputs:
+            raise CommandError(f"Encoding report has no video output files: {report}")
+        if outputs["playlistvideo"]:
+            # Both importers build a master playlist that is absent from the JSON.
+            master = "livestream.m3u8" if legacy else "playlist.m3u8"
+            outputs["playlistvideo"].add(report.parent / master)
+        return outputs, direct_video_outputs
+
+    def validate_active_encoding_report(
+        self, video: Video, data: dict, report: Path, references: tuple
+    ) -> None:
+        """Match every registered output and at least one actual video rendition."""
+        outputs, direct_video_outputs = self.encoding_report_outputs(video, data, report)
+        if "video_file" in data and (
+            not isinstance(data["video_file"], str)
+            or self.media_path(data["video_file"]) != self.media_path(video.video.name)
+        ):
+            raise CommandError("Encoding report source differs from the registered video")
+        matched_video = False
+        for kind, _, name in references:
+            if kind not in outputs:
+                continue
+            path = self.media_path(name)
+            if path not in outputs[kind]:
+                raise CommandError(
+                    f"Encoding report does not list registered media: {path}"
+                )
+            if kind != "encodingaudio" and path in direct_video_outputs:
+                matched_video = True
+        if not matched_video:
+            raise CommandError(
+                "A master playlist alone cannot identify the encoding report"
+            )
+
     def transcription_task(
         self, video: Video, directory: Path, fingerprints: dict
     ) -> tuple[str, int | None]:
@@ -1024,12 +1175,10 @@ class UserHashRepair:
         if reference:
             raise CommandError(f"Report to archive is referenced by {reference}")
 
-    def encoding_log_to_reconcile(
-        self, references: tuple, transcription: Path
-    ) -> int | None:
+    def encoding_log_to_reconcile(self, references: tuple, archived: Path) -> int | None:
         """Find only this video's log that points at the report being archived."""
         for kind, pk, name in references:
-            if kind == "encodinglog" and name and self.media_path(name) == transcription:
+            if kind == "encodinglog" and name and self.media_path(name) == archived:
                 return pk
         return None
 
@@ -1040,14 +1189,12 @@ class UserHashRepair:
         video = self.report_video(profile, source, destination)
         references = self.encoding_references(video)
         retained = self.retained_report(references, source, destination)
-        transcription = destination if retained == source else source
-        self.validate_report_references(references, retained, transcription)
+        archived = destination if retained == source else source
+        self.validate_report_references(references, retained, archived)
         fingerprints = {}
         encoding_info = self.read_report(retained, fingerprints)
-        transcript_info = self.read_report(transcription, fingerprints)
-        if not self.report_has_video(encoding_info) or self.report_has_video(
-            transcript_info
-        ):
+        other_info = self.read_report(archived, fingerprints)
+        if not self.report_has_video(encoding_info):
             raise CommandError(
                 "JSON contents do not distinguish video encoding from transcription"
             )
@@ -1055,14 +1202,23 @@ class UserHashRepair:
             video.pk
         ):
             raise CommandError("Legacy encoding report does not identify this video")
-        task_id, task_pk = self.transcription_task(
-            video, transcription.parent, fingerprints
-        )
-        corrected_log_pk = self.encoding_log_to_reconcile(references, transcription)
-        self.require_unreferenced_report(transcription, corrected_log_pk=corrected_log_pk)
+        task_id = task_pk = None
+        report_type = "transcription"
+        if self.report_has_video(other_info):
+            self.validate_active_encoding_report(
+                video, encoding_info, retained, references
+            )
+            self.encoding_report_outputs(video, other_info, archived)
+            report_type = "encoding"
+        else:
+            task_id, task_pk = self.transcription_task(
+                video, archived.parent, fingerprints
+            )
+        corrected_log_pk = self.encoding_log_to_reconcile(references, archived)
+        self.require_unreferenced_report(archived, corrected_log_pk=corrected_log_pk)
         archive = self.safe_path(
             destination.with_name(
-                f"info_video.transcription-{fingerprints[transcription]}.json"
+                f"info_video.{report_type}-{fingerprints[archived]}.json"
             )
         )
         if archive.exists() or self.safe_path(source.with_name(archive.name)).exists():
@@ -1073,8 +1229,9 @@ class UserHashRepair:
             source,
             destination,
             retained,
-            transcription,
+            archived,
             archive,
+            report_type,
             task_id,
             task_pk,
             corrected_log_pk,
