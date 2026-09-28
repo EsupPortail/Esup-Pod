@@ -280,7 +280,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         return video.video_file
 
     @extend_schema(
-        summary="Créer un jeton de stream éphémère (Create an ephemeral stream token)",
+        summary="Create an ephemeral stream token",
         description=(
             "Generates a short-lived stream token (valid for 5 minutes) to access the video. "
             "The frontend calls this endpoint immediately before loading the video player. "
