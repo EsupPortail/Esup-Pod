@@ -126,8 +126,9 @@ class UserHashRepairTests(TestCase):
         }
 
     def run_repair(self, **options) -> str:
-        """Run the public management command and capture its report."""
+        """Capture the detailed audit unless a test explicitly selects another level."""
         stdout = options.pop("stdout", StringIO())
+        options.setdefault("verbosity", 2)
         call_command(
             "check_user_hashes",
             stdout=stdout,
@@ -135,6 +136,151 @@ class UserHashRepairTests(TestCase):
             **options,
         )
         return stdout.getvalue()
+
+    def test_default_output_skips_detailed_reports_without_changing_validation(self):
+        """Normal verbosity avoids per-file formatting while still validating archives."""
+        self.create_reencoding_conflict()
+        before = self.snapshot()
+        output = StringIO()
+        with patch.object(
+            UserHashRepair,
+            "report_filesystem",
+            side_effect=AssertionError("Detailed files"),
+        ), patch.object(
+            UserHashRepair,
+            "report_database",
+            side_effect=AssertionError("Detailed paths"),
+        ), patch(
+            "pod.video.management.commands.check_user_hashes.monotonic", return_value=0
+        ):
+            # Omit verbosity to exercise Django's actual default, not the test helper's.
+            call_command("check_user_hashes", dry=True, stdout=output)
+        text = output.getvalue()
+        self.assertIn("[PROGRESS] Selection: 0 profiles processed", text)
+        self.assertIn("[PROGRESS] Validation: 0/1 profiles processed", text)
+        self.assertIn("Ready profiles       : 1", text)
+        self.assertIn("JSON archives        : 1", text)
+        self.assertNotIn("Archive alternative encoding", text)
+        self.assertNotIn("Stored hash", text)
+        self.assertNotIn(self.previous, text)
+        self.assertEqual(self.snapshot(), before)
+        self.assert_original_database()
+
+    def test_quiet_output_keeps_summary_and_verbose_output_keeps_full_plan(self):
+        """Quiet and detailed simulations plan the same changes without writing files."""
+        fixture = self.create_reencoding_conflict()
+        before = self.snapshot()
+        quiet = self.run_repair(dry=True, verbosity=0)
+        detailed = self.run_repair(dry=True, verbosity=2)
+        self.assertNotIn("User hash consistency check", quiet)
+        self.assertNotIn("[PROGRESS]", quiet)
+        self.assertNotIn("Stored hash", quiet)
+        self.assertNotIn("Archive alternative encoding", quiet)
+        self.assertIn("Summary - simulation", quiet)
+        self.assertIn("Simulation complete", quiet)
+        self.assertEqual(
+            quiet[quiet.index("Summary - simulation") :],
+            detailed[detailed.index("Summary - simulation") :],
+        )
+        self.assertIn("Archive alternative encoding", detailed)
+        self.assertIn(f"From: {fixture.archived}", detailed)
+        self.assertIn(f"To  : {fixture.archive}", detailed)
+        self.assertNotIn("[PROGRESS]", detailed)
+        self.assertEqual(self.snapshot(), before)
+        self.assert_original_database()
+
+    def test_compact_conflicts_identify_user_and_preserve_exit_status(self):
+        """Removing profile headers never hides a conflict or its affected user."""
+        self.write_file(
+            self.file_name("source.mp4").replace(self.previous, self.expected),
+            b"conflicting video",
+        )
+        before = self.snapshot()
+        for verbosity in (0, 1):
+            with self.subTest(verbosity=verbosity):
+                output = StringIO()
+                with self.assertRaisesMessage(CommandError, "conflict(s)"):
+                    self.run_repair(dry=True, verbosity=verbosity, stdout=output)
+                self.assertIn(
+                    f"[CONFLICT] {self.user.username}: Different files", output.getvalue()
+                )
+                self.assertIn("Blocked profiles     : 1", output.getvalue())
+                self.assertNotIn("Stored hash", output.getvalue())
+                self.assertEqual(self.snapshot(), before)
+                self.assert_original_database()
+
+    def test_quiet_repair_preserves_cleanup_warnings(self):
+        """Successful repairs still expose cleanup problems at verbosity zero."""
+        source_name = self.file_name("source.mp4")
+        self.write_file(
+            source_name.replace(self.previous, self.expected), source_name.encode()
+        )
+        with patch.object(
+            Path, "rmdir", side_effect=OSError("simulated cleanup failure")
+        ):
+            output = self.run_repair(verbosity=0)
+        self.assertIn("[WARNING] Source directory retained", output)
+        self.assertIn("simulated cleanup failure", output)
+        self.assertIn("Repaired profiles    : 1", output)
+        self.assertNotIn("[PROGRESS]", output)
+        self.assertNotIn("Applying repair for", output)
+        self.assert_repaired()
+
+    def test_quiet_repair_preserves_failure_summary_and_rollback(self):
+        """Fatal errors remain explicit and repair rollback is independent of output."""
+        before = self.snapshot()
+        output = StringIO()
+        with patch.object(
+            UserHashRepair, "update_database", side_effect=DatabaseError("failed update")
+        ):
+            with self.assertRaisesMessage(CommandError, "failed update"):
+                self.run_repair(verbosity=0, stdout=output)
+        self.assertIn(
+            f"[CONFLICT] Repair stopped for {self.user.username}", output.getvalue()
+        )
+        self.assertIn("Failed profiles      : 1", output.getvalue())
+        self.assertEqual(self.snapshot(), before)
+        self.assert_original_database()
+
+    def test_progress_is_throttled_and_flushed_with_profile_counters(self):
+        """Show progress every five seconds without sleeping or querying the database."""
+        output = StringIO()
+        repair = UserHashRepair(output, verbosity=1)
+        with patch(
+            "pod.video.management.commands.check_user_hashes.monotonic", return_value=100
+        ) as clock, patch.object(output, "flush") as flush:
+            repair.begin_progress("Validation", 10)
+            repair.progress_completed = 2
+            repair.progress_username = self.user.username
+            clock.return_value = 104.9
+            repair.report_progress()
+            self.assertEqual(output.getvalue().count("[PROGRESS]"), 1)
+            clock.return_value = 105
+            repair.report_progress()
+            self.assertIn("Validation: 2/10 profiles processed", output.getvalue())
+            self.assertIn(f"current: {self.user.username}", output.getvalue())
+            repair.report_progress()
+            self.assertEqual(output.getvalue().count("[PROGRESS]"), 2)
+            self.assertEqual(flush.call_count, 2)
+
+    def test_progress_continues_inside_one_profiles_database_scan(self):
+        """Large profiles get updates between queries, not just between users."""
+        original_plan_field = UserHashRepair.plan_field
+        with patch(
+            "pod.video.management.commands.check_user_hashes.monotonic", return_value=0
+        ) as clock:
+
+            def slow_scan(repair, *args):
+                clock.return_value = 5
+                return original_plan_field(repair, *args)
+
+            with patch.object(UserHashRepair, "plan_field", slow_scan):
+                output = self.run_repair(dry=True, verbosity=1)
+        self.assertIn(
+            f"Validation: 0/1 profiles processed | current: {self.user.username}", output
+        )
+        self.assertIn("Ready profiles       : 1", output)
+        self.assert_original_database()
 
     def create_other_profile(self, username: str = "second-hash-profile") -> tuple:
         """Create another independent profile with a document that must also move."""

@@ -30,7 +30,8 @@ Checks performed:
    references to the archived report blocking; never select new media.
 
 Key Features:
-- With --dry, report the complete plan without database or filesystem changes.
+- With --dry, validate the complete plan without database or filesystem changes.
+  Use --verbosity 2 to review every planned operation.
 - With --with-videos, avoid expensive path scans for profiles without videos.
   Still check all media and file references belonging to the selected hash paths.
 - Automatically archive a transcription report as
@@ -51,9 +52,13 @@ Key Features:
   video and the database to identify actual rendition files in the retained one.
   Do not choose by timestamps, report format or hash age. No Task row is required
   for this case; differing media files remain conflicts.
-- Group output by user, directory and database field. Green [OK] entries mean
-  validation succeeded; dry-run entries are planned changes, not applied changes.
-  Use --verbosity 2 to include full source and destination paths.
+- With --verbosity 0, show conflicts, warnings and the final summary only.
+  The default verbosity (1) adds progress counters approximately every five
+  seconds, between operations. A single slow database/file operation can delay
+  the next update. With --verbosity 2, show the detailed plan grouped by user,
+  directory and database field, including full source and destination paths.
+  Green [OK] entries mean validation succeeded; dry-run entries are planned
+  changes, not applied changes.
 - Without --dry, rename or merge directories without overwriting different files,
   update database paths and the hash in a separate transaction per profile, then remove
   identical old copies and empty source directories.
@@ -72,8 +77,9 @@ Main Components:
 - AuxiliaryArchive: Preserve task metadata and logs without selecting media files.
 
 Important notes:
-- Restore the intended SECRET_KEY first. Back up the database and media, and
-  pause uploads, profile changes and encoding/import workers during repair.
+- Restore the intended SECRET_KEY first and back up the database and media.
+  Avoid concurrent uploads, profile changes and encoding/import operations for
+  the profiles being repaired.
 - Database and filesystem changes do not share a single transaction. Review
   recovery/cleanup warnings and verify playback and downloads after repair.
 - Local storage under MEDIA_ROOT and the default database are used. Previously
@@ -83,19 +89,33 @@ Important notes:
   additional video owners, and former owners whose videos were deleted or
   transferred. Omit it for a complete check. It combines with --username (intersection).
 
-Usage:
-    python manage.py check_user_hashes --dry
+Recommended sequence:
+1. Simulate first with --dry; add --verbosity 2 to review the detailed plan.
     python manage.py check_user_hashes --with-videos --dry
+2. Repair the primary owners of videos first, preferably during maintenance.
+    python manage.py check_user_hashes --with-videos
+3. Run without --with-videos to process all remaining profiles.
+    python manage.py check_user_hashes
+   This final pass can take hours in a large institution. Already corrected
+   profiles are skipped; after video owners have been repaired, the remaining
+   work usually has little user impact and can run outside a full maintenance
+   window. Resolve any remaining video-owner conflicts first and avoid concurrent
+   changes to the profiles/media still being repaired. The unfiltered pass also
+   includes accounts with documents or images; it is not a read-only operation.
+
+Other usage:
+    python manage.py check_user_hashes --dry
     python manage.py check_user_hashes --username alice --username bob --dry
     python manage.py check_user_hashes --username alice
-    python manage.py check_user_hashes
 Arguments:
     --dry: Report planned changes only (default=False); omit it to apply changes.
     --username USERNAME: Select a profile; repeat for several users.
         All profiles are checked when neither selection option is supplied.
     --with-videos: Only check primary owners of at least one existing video.
         Excluded profiles and their stored hashes are left untouched.
-    --verbosity 2: Include full before/after paths in the report.
+    --verbosity 0: Conflicts, warnings and final summary only.
+    --verbosity 1: Periodic progress and final summary (default).
+    --verbosity 2: Detailed plan with full before/after paths.
 
 Functions:
 - add_arguments / handle: Configure and execute the management command.
@@ -116,6 +136,7 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass, field as dataclass_field
 from pathlib import Path
+from time import monotonic
 
 from django.apps import apps
 from django.conf import settings
@@ -170,16 +191,19 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options) -> None:
         """Run the hash repair with a fresh plan for this invocation."""
-        self.stdout.write("\n" + "=" * 72)
-        self.stdout.write("User hash consistency check")
-        self.stdout.write("=" * 72)
-        mode = "DRY RUN - no changes will be applied" if options["dry"] else "REPAIR"
-        self.stdout.write(f"Mode: {mode}")
-        if options["with_videos"]:
-            self.stdout.write("Selection: primary owners of at least one existing video")
-        self.stdout.write(
-            "[OK] validated | [WARNING] attention needed | [CONFLICT] blocked"
-        )
+        if options["verbosity"] >= 1:
+            self.stdout.write("\n" + "=" * 72)
+            self.stdout.write("User hash consistency check")
+            self.stdout.write("=" * 72)
+            mode = "DRY RUN - no changes will be applied" if options["dry"] else "REPAIR"
+            self.stdout.write(f"Mode: {mode}")
+            if options["with_videos"]:
+                self.stdout.write(
+                    "Selection: primary owners of at least one existing video"
+                )
+            self.stdout.write(
+                "[OK] validated | [WARNING] attention needed | [CONFLICT] blocked"
+            )
         UserHashRepair(self.stdout, self.style, options["verbosity"]).run(
             options["username"], options["dry"], with_videos=options["with_videos"]
         )
@@ -270,6 +294,38 @@ class UserHashRepair:
         self.checked = 0
         self.with_videos = False
         self.excluded_without_videos = 0
+        self.progress_phase = ""
+        self.progress_completed = 0
+        self.progress_total = None
+        self.progress_username = ""
+        self.last_progress = None
+
+    def begin_progress(self, phase: str, total: int | None = None) -> None:
+        """Start a phase with constant-size counters, without extra database queries."""
+        self.progress_phase = phase
+        self.progress_completed = 0
+        self.progress_total = total
+        self.progress_username = ""
+        self.last_progress = None
+        self.report_progress()
+
+    def report_progress(self) -> None:
+        """Emit a compact update at most every five seconds within each phase."""
+        if self.verbosity != 1 or not self.progress_phase:
+            return
+        now = monotonic()
+        if self.last_progress is not None and now - self.last_progress < 5:
+            return
+        total = "" if self.progress_total is None else f"/{self.progress_total}"
+        current = (
+            f" | current: {self.progress_username}" if self.progress_username else ""
+        )
+        self.stdout.write(
+            f"[PROGRESS] {self.progress_phase}: "
+            f"{self.progress_completed}{total} profiles processed{current}"
+        )
+        self.stdout.flush()
+        self.last_progress = now
 
     def run(
         self, usernames: list[str] | None, dry: bool, with_videos: bool = False
@@ -279,7 +335,8 @@ class UserHashRepair:
             self.select_profiles(usernames, with_videos=with_videos)
             if self.plans:
                 self.configure_paths()
-                self.stdout.write(f"Media root: {self.media}")
+                if self.verbosity >= 2:
+                    self.stdout.write(f"Media root: {self.media}")
                 self.plan_profiles()
         except (OSError, DatabaseError) as exc:
             raise CommandError(
@@ -292,25 +349,37 @@ class UserHashRepair:
 
     def plan_profiles(self) -> None:
         """Finish reporting local conflicts before allowing any profile to change."""
+        self.begin_progress("Validation", len(self.plans))
         for index, plan in enumerate(self.plans, start=1):
+            self.progress_username = plan.profile.username
+            self.report_progress()
             self.report_profile(plan, index)
             self.plan_profile(plan)
             if plan.errors:
                 plan.outcome = "blocked"
                 self.status(
-                    "Profile blocked. No changes will be applied to this profile.",
+                    f"Profile blocked: {plan.profile.username}. No changes will be applied to this profile.",
                     "CONFLICT",
                     indent=1,
                 )
             else:
                 self.status("Profile validated. Ready for repair.", indent=1)
+            self.progress_completed = index
+            self.progress_username = ""
+            self.report_progress()
 
     def apply_profiles(self) -> None:
         """Skip blocked profiles and stop on infrastructure or rollback failures."""
-        for plan in self.plans:
+        self.begin_progress("Repair", len(self.plans))
+        for index, plan in enumerate(self.plans, start=1):
             if plan.errors:
+                self.progress_completed = index
+                self.report_progress()
                 continue
-            self.stdout.write(f"\nApplying repair for {plan.profile.username}...")
+            self.progress_username = plan.profile.username
+            self.report_progress()
+            if self.verbosity >= 2:
+                self.stdout.write(f"\nApplying repair for {plan.profile.username}...")
             try:
                 self.apply(plan)
             except FilesystemRecoveryError as exc:
@@ -321,13 +390,18 @@ class UserHashRepair:
                 plan.outcome = "blocked"
                 self.report_conflicts(plan.errors, plan.profile)
                 self.status(
-                    "Profile blocked; its changes were rolled back.", "CONFLICT", 1
+                    f"Profile blocked: {plan.profile.username}; its changes were rolled back.",
+                    "CONFLICT",
+                    1,
                 )
             except (OSError, DatabaseError) as exc:
                 self.stop_after_failure(plan, exc)
             else:
                 plan.outcome = "repaired"
                 self.status(f"Profile repaired: {plan.profile.username}", indent=1)
+            self.progress_completed = index
+            self.progress_username = ""
+            self.report_progress()
 
     def stop_after_failure(
         self, plan: ProfilePlan, error: Exception, recovery_required: bool = False
@@ -370,6 +444,8 @@ class UserHashRepair:
 
     def status(self, message: str, status: str = "OK", indent: int = 3) -> None:
         """Use consistent semantic colors and labels that also work without color."""
+        if status == "OK" and indent > 0 and self.verbosity < 2:
+            return
         styles = {
             "OK": self.style.SUCCESS,
             "WARNING": self.style.WARNING,
@@ -380,11 +456,12 @@ class UserHashRepair:
     def report_profile(self, plan: ProfilePlan, index: int) -> None:
         """Display full hashes once before the user's directory reports."""
         profile = plan.profile
-        self.stdout.write("\n" + "-" * 72)
-        self.stdout.write(f"User {index}/{len(self.plans)}: {profile.username}")
-        self.stdout.write(f"  Stored hash   : {profile.previous or '(empty)'}")
-        self.stdout.write(f"  Expected hash : {profile.expected}")
-        self.stdout.write("  <hash> below changes from Stored to Expected.")
+        if self.verbosity >= 2:
+            self.stdout.write("\n" + "-" * 72)
+            self.stdout.write(f"User {index}/{len(self.plans)}: {profile.username}")
+            self.stdout.write(f"  Stored hash   : {profile.previous or '(empty)'}")
+            self.stdout.write(f"  Expected hash : {profile.expected}")
+            self.stdout.write("  <hash> below changes from Stored to Expected.")
         self.report_conflicts(plan.errors, profile)
 
     def report_conflicts(self, errors: list[str], profile: ProfileChange) -> None:
@@ -395,6 +472,7 @@ class UserHashRepair:
                 if profile.previous:
                     error = error.replace(profile.previous, "<stored hash>")
                 error = error.replace(profile.expected, "<expected hash>")
+                error = f"{profile.username}: {error}"
             self.status(error, "CONFLICT")
 
     def report_summary(self, dry: bool) -> None:
@@ -451,6 +529,7 @@ class UserHashRepair:
         self, usernames: list[str] | None, with_videos: bool = False
     ) -> None:
         """Filter profiles in SQL before checking hashes or scanning their file paths."""
+        self.begin_progress("Selection")
         self.with_videos = with_videos
         owners = Owner.objects.order_by("pk")
         if usernames:
@@ -468,6 +547,8 @@ class UserHashRepair:
         rows = owners.values_list("pk", "user__username", "hashkey")
         for pk, username, previous in rows.iterator():
             self.checked += 1
+            self.progress_completed = self.checked
+            self.report_progress()
             expected = hashlib.sha256(
                 (settings.SECRET_KEY + username).encode("utf-8")
             ).hexdigest()
@@ -525,8 +606,9 @@ class UserHashRepair:
             source = self.media / root / profile.previous
             destination = self.media / root / profile.expected
             plan.source_directories.append(source)
-            self.stdout.write(f"\n  Directory: {root}/<hash>/")
-            self.stdout.write("    File names below are relative to this directory.")
+            if self.verbosity >= 2:
+                self.stdout.write(f"\n  Directory: {root}/<hash>/")
+                self.stdout.write("    File names below are relative to this directory.")
             before = (
                 len(plan.moves),
                 len(plan.duplicates),
@@ -545,9 +627,10 @@ class UserHashRepair:
     ) -> None:
         """Group validated operations and references below their directory."""
         moves, duplicates, files, errors = before
-        self.stdout.write("\n    Filesystem")
-        self.report_filesystem(plan, source, destination, moves, duplicates)
-        self.report_database(destination, plan.files[files:])
+        if self.verbosity >= 2:
+            self.stdout.write("\n    Filesystem")
+            self.report_filesystem(plan, source, destination, moves, duplicates)
+            self.report_database(destination, plan.files[files:])
         self.report_conflicts(plan.errors[errors:], plan.profile)
 
     def report_filesystem(
@@ -656,6 +739,7 @@ class UserHashRepair:
 
     def plan_directory(self, plan: ProfilePlan, source: Path, destination: Path) -> None:
         """Rename missing destinations; recursively merge existing directories."""
+        self.report_progress()
         self.safe_path(source)
         self.safe_path(destination)
         if destination.exists() and not destination.is_dir():
@@ -669,6 +753,7 @@ class UserHashRepair:
             plan.moves.append((source, destination))
             return
         for child in sorted(source.iterdir()):
+            self.report_progress()
             target = destination / child.name
             self.safe_path(child)
             self.safe_path(target)
@@ -683,6 +768,7 @@ class UserHashRepair:
         """Reject symlinks and special files before renaming an entire directory."""
         for directory, dirs, files in os.walk(source, onerror=self.walk_error):
             for name in dirs + files:
+                self.report_progress()
                 path = self.safe_path(Path(directory) / name)
                 if not path.is_dir() and not path.is_file():
                     raise CommandError(f"Unsupported filesystem entry: {path}")
@@ -1147,6 +1233,7 @@ class UserHashRepair:
                 continue
             for model_field in model._meta.local_fields:
                 if isinstance(model_field, (models.FileField, models.FilePathField)):
+                    self.report_progress()
                     rows = model._base_manager.using("default").filter(
                         **{f"{model_field.name}__in": names}
                     )
@@ -1278,12 +1365,14 @@ class UserHashRepair:
     ) -> None:
         """Collect database replacements without invoking model save hooks."""
         for old_prefix, new_prefix in prefixes:
+            self.report_progress()
             rows = (
                 model._base_manager.using("default")
                 .filter(**{f"{field.name}__startswith": old_prefix})
                 .values_list("pk", field.name)
             )
             for pk, previous in rows.iterator():
+                self.report_progress()
                 if not previous.startswith(old_prefix):
                     continue
                 expected = new_prefix + previous[len(old_prefix) :]
@@ -1339,11 +1428,13 @@ class UserHashRepair:
                 self.lock_profile(plan.profile)
                 self.recheck_report_archives(plan)
                 for source, destination in plan.duplicates:
+                    self.report_progress()
                     self.safe_path(source)
                     self.safe_path(destination)
                     if not self.same_file(source, destination):
                         raise CommandError(f"Duplicate changed during repair: {source}")
                 for source, destination in plan.moves:
+                    self.report_progress()
                     self.safe_path(source)
                     self.safe_path(destination)
                     if destination.exists():
@@ -1395,6 +1486,7 @@ class UserHashRepair:
     def update_database(self, plan: ProfilePlan) -> None:
         """Use conditional updates; leave owner hashes until every path is updated."""
         for change in plan.files:
+            self.report_progress()
             self.safe_path(change.destination)
             if not change.destination.is_file():
                 raise CommandError(
@@ -1434,6 +1526,7 @@ class UserHashRepair:
     def cleanup(self, plan: ProfilePlan) -> None:
         """Remove identical old copies and empty source directories after commit."""
         for source, destination in plan.duplicates:
+            self.report_progress()
             try:
                 if self.same_file(source, destination):
                     source.unlink()
@@ -1443,6 +1536,7 @@ class UserHashRepair:
                 self.status(f"Duplicate retained at {source}: {exc}", "WARNING", indent=1)
         for source in plan.source_directories:
             for directory, _, _ in os.walk(source, topdown=False):
+                self.report_progress()
                 try:
                     Path(directory).rmdir()
                 except OSError as exc:
