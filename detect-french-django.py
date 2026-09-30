@@ -49,6 +49,9 @@ IGNORED_DIRS = {
     "dist", "build", ".mypy_cache", ".pytest_cache",
 }
 
+# Fichiers à ne jamais analyser (ex : dictionnaires de traduction déjà en place)
+IGNORED_FILES = {"detect-french-django.py", "constants.py"}
+
 # ---------- Détection du français ----------
 ACCENTS = re.compile(r"[àâäçéèêëîïôöûùüÿœæ]", re.I)
 FR_WORDS = set("""
@@ -103,6 +106,8 @@ def walk(root):
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = [d for d in dirnames if d not in IGNORED_DIRS and not d.startswith(".")]
         for fn in filenames:
+            if fn in IGNORED_FILES:
+                continue
             ext = os.path.splitext(fn)[1]
             if ext == ".py" and not html_only:
                 yield os.path.join(dirpath, fn), "py"

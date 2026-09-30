@@ -40,7 +40,7 @@ def _resolve_parents(self, old_comment_id, old_parent_id, comment_mapping):
         self.stdout.write(
             self.style.WARNING(
                 f"Commentaire {old_comment_id}: parent {old_parent_id} "
-                f"introuvable, créé sans parent"
+                f"Could not be found, created without parent"
             )
         )
         return None, None
@@ -65,7 +65,7 @@ def _migrate_comment_row(self, data, user_mapping, video_mapping, comment_mappin
     if not new_user_id:
         self.stdout.write(
             self.style.WARNING(
-                f"Skip commentaire {old_comment_id}: user {data['userid']} introuvable"
+                f"Skip comment {old_comment_id}: user {data['userid']} not found"
             )
         )
         return "skipped"
@@ -74,7 +74,7 @@ def _migrate_comment_row(self, data, user_mapping, video_mapping, comment_mappin
     if not new_video_id:
         self.stdout.write(
             self.style.WARNING(
-                f"Skip commentaire {old_comment_id}: vidéo {data['type_id']} introuvable"
+                f"Skip comment {old_comment_id}: video {data['type_id']} not found"
             )
         )
         return "skipped"
@@ -108,7 +108,7 @@ def commentMigrate(self, *args, **kwargs):
     user_mapping = {m.old_id: m.new_id for m in UserMapping.objects.all()}
     video_mapping = {m.old_id: m.new_id for m in VideoMapping.objects.all()}
     self.stdout.write(
-        f"Users mappés: {len(user_mapping)}, Vidéos mappées: {len(video_mapping)}"
+        f"Users mapped: {len(user_mapping)}, Videos mapped: {len(video_mapping)}"
     )
 
     with connections["webtv"].cursor() as cursor:
@@ -125,7 +125,7 @@ def commentMigrate(self, *args, **kwargs):
         columns = [col[0] for col in cursor.description]
         rows = cursor.fetchall()
 
-    self.stdout.write(f"{len(rows)} commentaires à migrer")
+    self.stdout.write(f"{len(rows)} comments found for migration")
 
     created_count = skipped_count = error_count = 0
     comment_mapping = {}
@@ -147,13 +147,13 @@ def commentMigrate(self, *args, **kwargs):
         except Exception as e:
             error_count += 1
             self.stdout.write(
-                self.style.ERROR(f"Erreur commentaire {old_comment_id}: {e}")
+                self.style.ERROR(f"Error migrating comment {old_comment_id}: {e}")
             )
 
     self.stdout.write(
         self.style.SUCCESS(
-            f"Terminé — {created_count} créés, "
-            f"{skipped_count} skippés, "
-            f"{error_count} erreurs"
+            f"Finished — {created_count} created, "
+            f"{skipped_count} skipped, "
+            f"{error_count} errors"
         )
     )

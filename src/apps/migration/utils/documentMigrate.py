@@ -44,8 +44,8 @@ def _migrate_documents(self, video_documents, documents_by_id, video_mapping):
         if not new_video_id or not doc_data:
             self.stdout.write(
                 self.style.WARNING(
-                    f"Skip video_document {old_id}: video {old_video_id} ou "
-                    f"document {old_document_id} introuvable"
+                    f"Skip video_document {old_id}: video {old_video_id} or "
+                    f"document {old_document_id} not found"
                 )
             )
             skipped += 1
@@ -55,17 +55,17 @@ def _migrate_documents(self, video_documents, documents_by_id, video_mapping):
             with transaction.atomic():
                 document = Document.objects.create(
                     video_id=new_video_id,
-                    title=unescape(doc_data["title"] or "Sans titre").strip()[:250],
+                    title=unescape(doc_data["title"] or "Untitled").strip()[:250],
                     file=(doc_data["storedfilename"] or "")[:100],
                     is_private=False,
                 )
                 DocumentMapping.objects.create(old_id=old_id, new_id=document.id)
                 created += 1
-                self.stdout.write(f"Document créé: [{old_id}] {document.title[:50]}")
+                self.stdout.write(f"Document created: [{old_id}] {document.title[:50]}")
 
         except Exception as e:
             errors += 1
-            self.stdout.write(self.style.ERROR(f"Erreur Document {old_id}: {e}"))
+            self.stdout.write(self.style.ERROR(f"Error creating document {old_id}: {e}"))
 
     return created, skipped, errors
 
@@ -73,14 +73,14 @@ def _migrate_documents(self, video_documents, documents_by_id, video_mapping):
 def documentMigrate(self, *args, **kwargs):
     """Migration helper."""
     video_mapping = {m.old_id: m.new_id for m in VideoMapping.objects.all()}
-    self.stdout.write(f"Videos mappées: {len(video_mapping)}")
+    self.stdout.write(f"Videos mapped: {len(video_mapping)}")
 
     with connections["webtv"].cursor() as cursor:
         documents_by_id = _fetch_documents(cursor)
         video_documents = _fetch_video_documents(cursor)
 
     self.stdout.write(
-        f"{len(documents_by_id)} documents, {len(video_documents)} liaisons vidéo trouvées"
+        f"{len(documents_by_id)} documents, {len(video_documents)} video links found"
     )
 
     created, skipped, errors = _migrate_documents(
@@ -89,6 +89,6 @@ def documentMigrate(self, *args, **kwargs):
 
     self.stdout.write(
         self.style.SUCCESS(
-            f"Terminé — {created} documents créés, {skipped} ignorés, {errors} erreurs"
+            f"Finished — {created} documents created, {skipped} ignored, {errors} errors"
         )
     )

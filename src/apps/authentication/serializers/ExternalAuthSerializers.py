@@ -13,7 +13,7 @@ class OIDCTokenObtainSerializer(serializers.Serializer):
     code = serializers.CharField(required=True)
     redirect_uri = serializers.CharField(
         required=True,
-        help_text="L'URI de redirection utilisée lors de la demande initiale.",
+        help_text="The redirect URI used in the OIDC flow. It must match the one registered with the OIDC provider.",
     )
 
 

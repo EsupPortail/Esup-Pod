@@ -33,7 +33,7 @@ def _migrate_channels(self, collections, contributors_by_collection, user_mappin
         old_id = data["collection_id"]
 
         if ChannelMapping.objects.filter(old_id=old_id).exists():
-            self.stdout.write(f"Skip Channel {old_id}: déjà migré")
+            self.stdout.write(f"Skip Channel {old_id}: already migrated")
             skipped += 1
             continue
 
@@ -41,7 +41,7 @@ def _migrate_channels(self, collections, contributors_by_collection, user_mappin
         if not new_user_id:
             self.stdout.write(
                 self.style.WARNING(
-                    f"Skip Channel {old_id}: user {data['userid']} introuvable"
+                    f"Skip Channel {old_id}: user {data['userid']} not found"
                 )
             )
             skipped += 1
@@ -49,7 +49,7 @@ def _migrate_channels(self, collections, contributors_by_collection, user_mappin
 
         try:
             with transaction.atomic():
-                title = (data["collection_name"] or "Sans titre").strip()[:250]
+                title = (data["collection_name"] or "Untitled").strip()[:250]
                 description = unescape(data["collection_description"] or "")
                 is_public = (data["broadcast"] or "").strip().lower() == "public"
 
@@ -68,17 +68,17 @@ def _migrate_channels(self, collections, contributors_by_collection, user_mappin
 
                 ChannelMapping.objects.create(old_id=old_id, new_id=channel.id)
                 created += 1
-                self.stdout.write(f"Channel créé: [{old_id}] {title[:50]}")
+                self.stdout.write(f"Channel created: [{old_id}] {title[:50]}")
 
         except Exception as e:
             errors += 1
-            self.stdout.write(self.style.ERROR(f"Erreur Channel {old_id}: {e}"))
+            self.stdout.write(self.style.ERROR(f"Error creating Channel {old_id}: {e}"))
 
     return created, skipped, errors
 
 
 def _resolve_or_recreate_theme_mapping(self, old_cat_id):
-    """Retourne le Theme existant pour old_cat_id, ou None s'il faut le (re)créer."""
+    """Resolve a ThemeMapping to a Theme, or recreate the Theme if the mapping points to a deleted Theme."""
     mapping = ThemeMapping.objects.filter(old_id=old_cat_id).first()
     if not mapping:
         return None
@@ -90,7 +90,7 @@ def _resolve_or_recreate_theme_mapping(self, old_cat_id):
     self.stdout.write(
         self.style.WARNING(
             f"Mapping Theme {old_cat_id} orphelin (Theme {mapping.new_id} "
-            f"introuvable) — re-création."
+            f"not found) — re-creation."
         )
     )
     mapping.delete()
@@ -109,13 +109,13 @@ def _migrate_themes(self, categories):
         existing_theme = _resolve_or_recreate_theme_mapping(self, old_cat_id)
         if existing_theme:
             theme_map[old_cat_id] = existing_theme
-            self.stdout.write(f"Skip Theme {old_cat_id}: déjà migré")
+            self.stdout.write(f"Skip Theme {old_cat_id}: already migrated")
             skipped += 1
             continue
 
         try:
             with transaction.atomic():
-                title = (cat["category_name"] or "Sans nom").strip()[:250]
+                title = (cat["category_name"] or "Untitled").strip()[:250]
                 description = unescape(cat["category_desc"] or "")
 
                 theme = Theme.objects.create(
@@ -126,11 +126,11 @@ def _migrate_themes(self, categories):
                 theme_map[old_cat_id] = theme
                 ThemeMapping.objects.create(old_id=old_cat_id, new_id=theme.id)
                 created += 1
-                self.stdout.write(f"Theme créé: [{old_cat_id}] {title[:50]}")
+                self.stdout.write(f"Theme created: [{old_cat_id}] {title[:50]}")
 
         except Exception as e:
             errors += 1
-            self.stdout.write(self.style.ERROR(f"Erreur Theme {old_cat_id}: {e}"))
+            self.stdout.write(self.style.ERROR(f"Error creating Theme {old_cat_id}: {e}"))
 
     # Passe 2 : liaison des parents
     for cat in categories:
@@ -146,7 +146,7 @@ def _migrate_themes(self, categories):
             except Exception as e:
                 self.stdout.write(
                     self.style.WARNING(
-                        f"Impossible de lier parent du Theme {old_cat_id}: {e}"
+                        f"Error linking parent of Theme {old_cat_id}: {e}"
                     )
                 )
 
@@ -165,7 +165,7 @@ def _migrate_favorites(self, favorites, user_mapping, video_mapping):
         if not new_user_id:
             self.stdout.write(
                 self.style.WARNING(
-                    f"Skip Favori video {old_video_id}: user {data['userid']} introuvable"
+                    f"Skip Favori video {old_video_id}: user {data['userid']} not found"
                 )
             )
             skipped += 1
@@ -173,7 +173,7 @@ def _migrate_favorites(self, favorites, user_mapping, video_mapping):
 
         if not new_video_id:
             self.stdout.write(
-                self.style.WARNING(f"Skip Favori video {old_video_id}: video introuvable")
+                self.style.WARNING(f"Skip Favori video {old_video_id}: video not found")
             )
             skipped += 1
             continue
@@ -190,7 +190,7 @@ def _migrate_favorites(self, favorites, user_mapping, video_mapping):
         except Exception as e:
             errors += 1
             self.stdout.write(
-                self.style.ERROR(f"Erreur Favori video {old_video_id}: {e}")
+                self.style.ERROR(f"Error creating Favorite for video {old_video_id}: {e}")
             )
 
     return created, skipped, errors
@@ -206,7 +206,7 @@ def _migrate_playlists(
         old_playlist_id = data["playlist_id"]
 
         if PlaylistMapping.objects.filter(old_id=old_playlist_id).exists():
-            self.stdout.write(f"Skip Playlist {old_playlist_id}: déjà migrée")
+            self.stdout.write(f"Skip Playlist {old_playlist_id}: already migrated")
             skipped += 1
             continue
 
@@ -214,7 +214,7 @@ def _migrate_playlists(
         if not new_user_id:
             self.stdout.write(
                 self.style.WARNING(
-                    f"Skip Playlist {old_playlist_id}: user {data['userid']} introuvable"
+                    f"Skip Playlist {old_playlist_id}: user {data['userid']} not found"
                 )
             )
             skipped += 1
@@ -222,7 +222,7 @@ def _migrate_playlists(
 
         try:
             with transaction.atomic():
-                title = (data["playlist_name"] or "Sans titre").strip()[:250]
+                title = (data["playlist_name"] or "Untitled").strip()[:250]
                 description = unescape(data["description"] or "")
                 is_public = (data["privacy"] or "private").strip().lower() == "public"
 
@@ -244,8 +244,8 @@ def _migrate_playlists(
                     else:
                         self.stdout.write(
                             self.style.WARNING(
-                                f"  Video {item['object_id']} introuvable "
-                                f"pour playlist {old_playlist_id}"
+                                f"  Video {item['object_id']} not found "
+                                f"for playlist {old_playlist_id}"
                             )
                         )
 
@@ -254,11 +254,11 @@ def _migrate_playlists(
                     new_id=playlist.id,
                 )
                 created += 1
-                self.stdout.write(f"Playlist créée: [{old_playlist_id}] {title[:50]}")
+                self.stdout.write(f"Playlist created: [{old_playlist_id}] {title[:50]}")
 
         except Exception as e:
             errors += 1
-            self.stdout.write(self.style.ERROR(f"Erreur Playlist {old_playlist_id}: {e}"))
+            self.stdout.write(self.style.ERROR(f"Error creating Playlist {old_playlist_id}: {e}"))
 
     return created, skipped, errors
 
@@ -345,23 +345,23 @@ def collectionMigrate(self, *args, **kwargs):
     user_mapping = {m.old_id: m.new_id for m in UserMapping.objects.all()}
     video_mapping = {m.old_id: m.new_id for m in VideoMapping.objects.all()}
     self.stdout.write(
-        f"Mapping chargé: {len(user_mapping)} users, {len(video_mapping)} videos"
+        f"Mapping loaded: {len(user_mapping)} users, {len(video_mapping)} videos"
     )
 
     with connections["webtv"].cursor() as cursor:
         collections = _fetch_collections(cursor, limit)
-        self.stdout.write(f"{len(collections)} collections trouvées")
+        self.stdout.write(f"{len(collections)} collections found")
 
         contributors_by_collection = _fetch_contributors_by_collection(cursor)
 
         categories = _fetch_categories(cursor)
-        self.stdout.write(f"{len(categories)} catégories trouvées")
+        self.stdout.write(f"{len(categories)} categories found")
 
         favorites = _fetch_favorites(cursor)
-        self.stdout.write(f"{len(favorites)} favoris trouvés")
+        self.stdout.write(f"{len(favorites)} favorites found")
 
         playlists = _fetch_playlists(cursor)
-        self.stdout.write(f"{len(playlists)} playlists trouvées")
+        self.stdout.write(f"{len(playlists)} playlists found")
 
         playlist_items_by_playlist = _fetch_playlist_items_by_playlist(cursor)
 
@@ -389,8 +389,8 @@ def collectionMigrate(self, *args, **kwargs):
 
     self.stdout.write(
         self.style.SUCCESS(
-            f"Terminé — {created_count} créés, "
-            f"{skipped_count} skippés, "
-            f"{error_count} erreurs"
+            f"Finished — {created_count} created, "
+            f"{skipped_count} skipped, "
+            f"{error_count} errors"
         )
     )

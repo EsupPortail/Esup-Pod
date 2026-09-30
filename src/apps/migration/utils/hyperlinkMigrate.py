@@ -17,14 +17,14 @@ def hyperlinkMigrate(self, *args, **kwargs):
 
     video_mapping = {m.old_id: m.new_id for m in VideoMapping.objects.all()}
 
-    self.stdout.write(f"Vidéos mappées: {len(video_mapping)}")
+    self.stdout.write(f"Mapped video: {len(video_mapping)}")
 
     with connections["webtv"].cursor() as cursor:
         cursor.execute("SELECT video_id, link_id FROM Ze4fg_video_links")
         video_links = cursor.fetchall()
 
     if not video_links:
-        self.stdout.write("Aucun lien à migrer")
+        self.stdout.write("No link to migrate")
         return
 
     link_ids = {link_id for _, link_id in video_links}
@@ -73,12 +73,12 @@ def hyperlinkMigrate(self, *args, **kwargs):
 
         except Exception as e:
             errors += 1
-            self.stdout.write(self.style.ERROR(f"Erreur lien video {old_video_id}: {e}"))
+            self.stdout.write(self.style.ERROR(f"Video link error {old_video_id}: {e}"))
 
     self.stdout.write(
         self.style.SUCCESS(
-            f"Terminé — {created} liens créés, "
-            f"{skipped} ignorés, "
-            f"{errors} erreurs"
+            f"Finished — {created} links created, "
+            f"{skipped} ignored, "
+            f"{errors} errors"
         )
     )

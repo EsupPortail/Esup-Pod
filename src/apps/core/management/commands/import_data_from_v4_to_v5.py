@@ -1120,8 +1120,8 @@ class Command(BaseCommand):
         self.stdout.write("Tagging videos with missing files...")
         tag_model = Video.tags.tag_model
         missing_tag, _ = tag_model.objects.get_or_create(
-            name="Fichier égaré",
-            defaults={"slug": "fichier-egare"},
+            name="Lost file",
+            defaults={"slug": "lost-file"},
         )
         through_model = Video.tags.through
 
