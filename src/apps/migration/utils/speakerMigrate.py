@@ -110,7 +110,6 @@ def speakerMigrate(self, *args, **kwargs):
     video_mapping = {m.old_id: m.new_id for m in VideoMapping.objects.all()}
     contributor_mapping = {m.old_id: m.new_id for m in CompletionMapping.objects.all()}
 
-
     self.stdout.write(f"Videos mapped: {len(video_mapping)}")
     self.stdout.write(f"Contributors already mapped: {len(contributor_mapping)}")
 

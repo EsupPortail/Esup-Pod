@@ -110,9 +110,7 @@ def _migrate_channels(self, groupings, grouping_videos, video_mapping, fallback_
 
         except Exception as e:
             errors += 1
-            self.stdout.write(
-                self.style.ERROR(f"Channel error (grouping {old_id}): {e}")
-            )
+            self.stdout.write(self.style.ERROR(f"Channel error (grouping {old_id}): {e}"))
 
     return created, skipped, errors, grouping_map
 

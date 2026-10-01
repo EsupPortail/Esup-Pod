@@ -22,6 +22,7 @@ Ce qui est ignoré automatiquement :
   - dossiers : venv, env, .venv, __pycache__, node_modules, .git, migrations,
     locale, static, staticfiles, media, dist, build
 """
+
 import ast
 import bisect
 import json
@@ -44,9 +45,21 @@ positional = [a for a in args if not a.startswith("--") and a not in skip_next]
 root = positional[0] if positional else "."
 
 IGNORED_DIRS = {
-    "venv", "env", ".venv", "__pycache__", "node_modules", ".git",
-    "migrations", "locale", "static", "staticfiles", "media",
-    "dist", "build", ".mypy_cache", ".pytest_cache",
+    "venv",
+    "env",
+    ".venv",
+    "__pycache__",
+    "node_modules",
+    ".git",
+    "migrations",
+    "locale",
+    "static",
+    "staticfiles",
+    "media",
+    "dist",
+    "build",
+    ".mypy_cache",
+    ".pytest_cache",
 }
 
 # Fichiers à ne jamais analyser (ex : dictionnaires de traduction déjà en place)
@@ -104,7 +117,9 @@ def record(file, line, text):
 # ---------- Parcours des fichiers ----------
 def walk(root):
     for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if d not in IGNORED_DIRS and not d.startswith(".")]
+        dirnames[:] = [
+            d for d in dirnames if d not in IGNORED_DIRS and not d.startswith(".")
+        ]
         for fn in filenames:
             if fn in IGNORED_FILES:
                 continue
@@ -117,9 +132,17 @@ def walk(root):
 
 # ---------- Analyse des fichiers Python ----------
 TRANSLATION_FUNCS = {
-    "_", "gettext", "gettext_lazy", "ugettext", "ugettext_lazy",
-    "pgettext", "pgettext_lazy", "npgettext", "npgettext_lazy",
-    "ngettext", "ngettext_lazy",
+    "_",
+    "gettext",
+    "gettext_lazy",
+    "ugettext",
+    "ugettext_lazy",
+    "pgettext",
+    "pgettext_lazy",
+    "npgettext",
+    "npgettext_lazy",
+    "ngettext",
+    "ngettext_lazy",
 }
 
 
@@ -137,15 +160,19 @@ def analyze_py(path):
     for node in ast.walk(tree):
         if isinstance(node, ast.Call):
             func = node.func
-            name = func.id if isinstance(func, ast.Name) else (
-                func.attr if isinstance(func, ast.Attribute) else None
+            name = (
+                func.id
+                if isinstance(func, ast.Name)
+                else (func.attr if isinstance(func, ast.Attribute) else None)
             )
             if name in TRANSLATION_FUNCS:
                 for arg in node.args:
                     if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
                         excluded_positions.add((arg.lineno, arg.col_offset))
 
-        if isinstance(node, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        if isinstance(
+            node, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+        ):
             body = node.body
             if (
                 body
@@ -183,6 +210,7 @@ ATTR_RE = re.compile(
 def mask(text, pattern, flags=0):
     def repl(m):
         return "".join(c if c == "\n" else " " for c in m.group(0))
+
     return re.sub(pattern, repl, text, flags=flags)
 
 
@@ -201,8 +229,8 @@ def analyze_html(path):
     with open(path, encoding="utf-8", errors="replace") as f:
         text = f.read()
 
-    text = mask(text, r"<!--.*?-->", re.S)                                    # commentaires HTML
-    text = mask(text, r"{#.*?#}", re.S)                                       # commentaires Django
+    text = mask(text, r"<!--.*?-->", re.S)  # commentaires HTML
+    text = mask(text, r"{#.*?#}", re.S)  # commentaires Django
     text = mask(text, r"{%\s*comment\s*%}.*?{%\s*endcomment\s*%}", re.S | re.I)
     text = mask(text, r"<script\b[^>]*>.*?</script>", re.S | re.I)
     text = mask(text, r"<style\b[^>]*>.*?</style>", re.S | re.I)
@@ -224,7 +252,7 @@ def analyze_html(path):
 
     pos = 0
     for m in TAG_RE.finditer(text):
-        chunk = text[pos:m.start()]
+        chunk = text[pos : m.start()]
         if chunk.strip():
             first_char = pos + (len(chunk) - len(chunk.lstrip()))
             record(path, line_of(first_char, line_starts), chunk)

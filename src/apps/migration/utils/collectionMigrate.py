@@ -145,9 +145,7 @@ def _migrate_themes(self, categories):
                 theme.save()
             except Exception as e:
                 self.stdout.write(
-                    self.style.WARNING(
-                        f"Error linking parent of Theme {old_cat_id}: {e}"
-                    )
+                    self.style.WARNING(f"Error linking parent of Theme {old_cat_id}: {e}")
                 )
 
     return created, skipped, errors
@@ -258,7 +256,9 @@ def _migrate_playlists(
 
         except Exception as e:
             errors += 1
-            self.stdout.write(self.style.ERROR(f"Error creating Playlist {old_playlist_id}: {e}"))
+            self.stdout.write(
+                self.style.ERROR(f"Error creating Playlist {old_playlist_id}: {e}")
+            )
 
     return created, skipped, errors
 
