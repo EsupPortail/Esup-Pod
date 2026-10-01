@@ -1,15 +1,15 @@
 """Esup-Pod -
-Migration des groupings webtv -> Pod (Channels et Themes).
+Migration of webtv groupings -> Pod (Channels and Themes).
 
-Ze4fg_vdogrouping est le vrai système de classification de webtv (bien plus
-utilisé que Ze4fg_collections/Ze4fg_collection_categories, quasi vides sur
-ce dump) : les groupings de type "Collection" deviennent des Channel, ceux
-de type "Thematique" deviennent des Theme.
+Ze4fg_vdogrouping is the actual webtv classification system (used much more
+than Ze4fg_collections/Ze4fg_collection_categories, which are nearly empty in
+this dump): groupings of type "Collection" become Channels, while those of
+type "Thematic" become Themes.
 
-- Channel : Video.channel est une ForeignKey simple (une seule par vidéo).
-  Une vidéo dans plusieurs Collections webtv ne garde que la première
-  (plus petit id) ; les autres sont juste loguées, pas perdues silencieusement.
-- Theme : relation many-to-many via ThemeItem, donc aucune perte possible.
+- Channel: Video.channel is a simple ForeignKey (one per video).
+  A video in several webtv Collections keeps only the first one
+  (smallest id); the others are logged rather than silently discarded.
+- Theme: many-to-many relationship through ThemeItem, so no data can be lost.
 """
 
 from html import unescape
@@ -26,7 +26,7 @@ COLLECTION_TYPE_NAME = "collection"
 
 
 def _fetch_grouping_type_ids(cursor):
-    """Retourne l'id Ze4fg_vdogrouping_type dont le nom vaut "Collection"."""
+    """Return the Ze4fg_vdogrouping_type id whose name is "Collection"."""
     cursor.execute("SELECT id, name FROM Ze4fg_vdogrouping_type")
     collection_type_id = None
     for type_id, name in cursor.fetchall():
@@ -62,7 +62,7 @@ def _group_videos_by_grouping(video_groupings):
 
 
 def _resolve_channel_owner(old_video_ids, video_mapping, fallback_owner_id):
-    """Le propriétaire d'un Channel migré = celui de sa plus ancienne vidéo source."""
+    """The owner of a migrated Channel is the owner of its oldest source video."""
     for old_video_id in old_video_ids:
         new_video_id = video_mapping.get(old_video_id)
         if not new_video_id:
@@ -93,7 +93,7 @@ def _migrate_channels(self, groupings, grouping_videos, video_mapping, fallback_
                     grouping_videos.get(old_id, []), video_mapping, fallback_owner_id
                 )
                 channel = Channel.objects.create(
-                    title=(g["name"] or "Sans titre").strip()[:250],
+                    title=(g["name"] or "Untitled").strip()[:250],
                     description=unescape(g["description"] or ""),
                     owner_id=owner_id,
                     is_public=not bool(g["private"]),
@@ -106,13 +106,11 @@ def _migrate_channels(self, groupings, grouping_videos, video_mapping, fallback_
                 )
                 grouping_map[old_id] = channel.id
                 created += 1
-                self.stdout.write(f"Channel créé: [{old_id}] {channel.title[:50]}")
+                self.stdout.write(f"Channel created: [{old_id}] {channel.title[:50]}")
 
         except Exception as e:
             errors += 1
-            self.stdout.write(
-                self.style.ERROR(f"Erreur Channel (grouping {old_id}): {e}")
-            )
+            self.stdout.write(self.style.ERROR(f"Channel error (grouping {old_id}): {e}"))
 
     return created, skipped, errors, grouping_map
 
@@ -134,7 +132,7 @@ def _migrate_themes(self, groupings):
         try:
             with transaction.atomic():
                 theme = Theme.objects.create(
-                    title=(g["name"] or "Sans nom").strip()[:250],
+                    title=(g["name"] or "Unnamed").strip()[:250],
                     description=unescape(g["description"] or ""),
                     old_v4_id=old_id,
                 )
@@ -145,11 +143,11 @@ def _migrate_themes(self, groupings):
                 )
                 grouping_map[old_id] = theme.id
                 created += 1
-                self.stdout.write(f"Theme créé: [{old_id}] {theme.title[:50]}")
+                self.stdout.write(f"Theme created: [{old_id}] {theme.title[:50]}")
 
         except Exception as e:
             errors += 1
-            self.stdout.write(self.style.ERROR(f"Erreur Theme (grouping {old_id}): {e}"))
+            self.stdout.write(self.style.ERROR(f"Theme error (grouping {old_id}): {e}"))
 
     return created, skipped, errors, grouping_map
 
@@ -157,7 +155,7 @@ def _migrate_themes(self, groupings):
 def _assign_video_channels(
     self, video_groupings, channel_type_id, groupings_by_id, channel_map, video_mapping
 ):
-    """Chaque vidéo ne garde que sa Collection de plus petit id comme Video.channel."""
+    """Each video keeps only its smallest-id Collection as Video.channel."""
     video_channel_groupings = {}
     for video_id, grouping_id in video_groupings:
         if (
@@ -184,8 +182,8 @@ def _assign_video_channels(
             self.stdout.write(
                 self.style.WARNING(
                     f"Video {old_video_id}: {len(old_grouping_ids)} Collections "
-                    f"({old_grouping_ids}) — seule la première (grouping "
-                    f"{old_grouping_ids[0]}) est conservée comme Channel."
+                    f"({old_grouping_ids}) — only the first (grouping "
+                    f"{old_grouping_ids[0]}) is kept as the Channel."
                 )
             )
 
@@ -218,7 +216,7 @@ def _assign_video_themes(self, video_groupings, theme_map, video_mapping):
         except Exception as e:
             self.stdout.write(
                 self.style.ERROR(
-                    f"Erreur ThemeItem video={old_video_id} theme={old_grouping_id}: {e}"
+                    f"ThemeItem error video={old_video_id} theme={old_grouping_id}: {e}"
                 )
             )
 
@@ -228,7 +226,7 @@ def _assign_video_themes(self, video_groupings, theme_map, video_mapping):
 def groupingMigrate(self, *args, **kwargs):
     """Migration helper."""
     video_mapping = {m.old_id: m.new_id for m in VideoMapping.objects.all()}
-    self.stdout.write(f"Videos mappées: {len(video_mapping)}")
+    self.stdout.write(f"Mapped videos: {len(video_mapping)}")
 
     fallback_owner = (
         get_user_model().objects.filter(is_superuser=True).order_by("id").first()
@@ -249,21 +247,21 @@ def groupingMigrate(self, *args, **kwargs):
     ]
 
     self.stdout.write(
-        f"{len(groupings)} groupings trouvés "
-        f"({len(channel_groupings)} Collections, {len(theme_groupings)} Thématiques)"
+        f"{len(groupings)} groupings found "
+        f"({len(channel_groupings)} Collections, {len(theme_groupings)} Thematic)"
     )
 
     grouping_videos = _group_videos_by_grouping(video_groupings)
 
-    self.stdout.write("--- Migration Channels (Collections) ---")
+    self.stdout.write("--- Channel migration (Collections) ---")
     c_created, c_skipped, c_errors, channel_map = _migrate_channels(
         self, channel_groupings, grouping_videos, video_mapping, fallback_owner_id
     )
 
-    self.stdout.write("--- Migration Themes (Thématiques) ---")
+    self.stdout.write("--- Theme migration (Thematic) ---")
     t_created, t_skipped, t_errors, theme_map = _migrate_themes(self, theme_groupings)
 
-    self.stdout.write("--- Association vidéos -> Channel ---")
+    self.stdout.write("--- Assigning videos -> Channel ---")
     video_updated, conflicts = _assign_video_channels(
         self,
         video_groupings,
@@ -273,18 +271,18 @@ def groupingMigrate(self, *args, **kwargs):
         video_mapping,
     )
 
-    self.stdout.write("--- Association vidéos -> Themes ---")
+    self.stdout.write("--- Assigning videos -> Themes ---")
     theme_items_created = _assign_video_themes(
         self, video_groupings, theme_map, video_mapping
     )
 
     self.stdout.write(
         self.style.SUCCESS(
-            f"Terminé — {c_created} Channels, {t_created} Themes, "
-            f"{video_updated} vidéos affectées à un Channel "
-            f"({conflicts} avec plusieurs Collections, une seule conservée), "
-            f"{theme_items_created} liaisons Theme créées, "
-            f"{c_skipped + t_skipped} groupings déjà migrés, "
-            f"{c_errors + t_errors} erreurs"
+            f"Completed — {c_created} Channels, {t_created} Themes, "
+            f"{video_updated} videos assigned to a Channel "
+            f"({conflicts} with multiple Collections, only one kept), "
+            f"{theme_items_created} Theme links created, "
+            f"{c_skipped + t_skipped} groupings already migrated, "
+            f"{c_errors + t_errors} errors"
         )
     )

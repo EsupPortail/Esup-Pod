@@ -139,7 +139,7 @@ def _parse_video_fields(data):
     )
 
     return {
-        "title": (data.get("title") or "Sans titre").strip()[:250],
+        "title": (data.get("title") or "Untitled").strip()[:250],
         "description": strip_html(data.get("description") or ""),
         "video_file": legacy_path,
         "duration": duration,
@@ -165,8 +165,8 @@ def videoMigrate(self, *args, **kwargs):
 
     migrated_ids = set(VideoMapping.objects.values_list("old_id", flat=True))
 
-    self.stdout.write(f"Users mappés: {len(user_mapping)}")
-    self.stdout.write(f"Videos déjà migrées: {len(migrated_ids)}")
+    self.stdout.write(f"Users mapped: {len(user_mapping)}")
+    self.stdout.write(f"Videos already migrated: {len(migrated_ids)}")
 
     with connections["webtv"].cursor() as cursor:
         query = """
@@ -183,7 +183,7 @@ def videoMigrate(self, *args, **kwargs):
         columns = [c[0] for c in cursor.description]
         rows = cursor.fetchall()
 
-    self.stdout.write(f"{len(rows)} vidéos trouvées")
+    self.stdout.write(f"{len(rows)} videos found")
 
     created_count = 0
     skipped_count = 0
@@ -236,9 +236,9 @@ def videoMigrate(self, *args, **kwargs):
 
     self.stdout.write(
         self.style.SUCCESS(
-            f"Terminé — {created_count} créées, "
-            f"{already_migrated} déjà migrées, "
-            f"{skipped_count} skippées, "
-            f"{error_count} erreurs"
+            f"Finished — {created_count} created, "
+            f"{already_migrated} already migrated, "
+            f"{skipped_count} skipped, "
+            f"{error_count} errors"
         )
     )

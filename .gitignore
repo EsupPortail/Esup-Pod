@@ -57,3 +57,7 @@ src/config/settings/*
 .pytest_cache/
 htmlcov/
 .coverage
+
+
+# --- Ignore files ---
+rapport.json
