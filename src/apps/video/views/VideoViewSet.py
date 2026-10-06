@@ -281,11 +281,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Create an ephemeral stream token",
-        description=(
-            "Generates a short-lived stream token (valid for 5 minutes) to access the video. "
-            "The frontend calls this endpoint immediately before loading the video player. "
-            "This token must be appended as a query parameter `?token=<token>` to the `/stream/` endpoint."
-        ),
         responses={
             200: OpenApiResponse(
                 description="Token generated successfully.",

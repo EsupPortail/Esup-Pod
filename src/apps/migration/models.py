@@ -6,8 +6,8 @@ from django.db import models
 class UserMapping(models.Model):
     """Map legacy WebTV user IDs to new Django User IDs."""
 
-    old_id = models.IntegerField(unique=True, help_text="Old ID")
-    new_id = models.IntegerField(unique=True, help_text="New ID")
+    old_id = models.IntegerField(unique=True, help_text="ID in the old WebTV database")
+    new_id = models.IntegerField(unique=True, help_text="ID in the new WebTV database")
     username = models.CharField(max_length=150)
 
     class Meta:
@@ -22,8 +22,8 @@ class UserMapping(models.Model):
 class VideoMapping(models.Model):
     """Map legacy WebTV video IDs to new Video IDs."""
 
-    old_id = models.IntegerField(unique=True, help_text="Old ID")
-    new_id = models.IntegerField(unique=True, help_text="New ID")
+    old_id = models.IntegerField(unique=True, help_text="ID in the old WebTV database")
+    new_id = models.IntegerField(unique=True, help_text="ID in the new WebTV database")
 
     class Meta:
         """Meta options for VideoMapping."""
@@ -37,8 +37,8 @@ class VideoMapping(models.Model):
 class CommentMapping(models.Model):
     """Map legacy WebTV comment IDs to new Comment IDs."""
 
-    old_id = models.IntegerField(unique=True, help_text="Old ID")
-    new_id = models.IntegerField(unique=True, help_text="New ID")
+    old_id = models.IntegerField(unique=True, help_text="ID in the old WebTV database")
+    new_id = models.IntegerField(unique=True, help_text="ID in the new WebTV database")
 
     class Meta:
         """Meta options for CommentMapping."""
@@ -52,8 +52,8 @@ class CommentMapping(models.Model):
 class CompletionMapping(models.Model):
     """Speaker mapping webtv."""
 
-    old_id = models.IntegerField(unique=True, help_text="Old ID")
-    new_id = models.IntegerField(unique=True, help_text="New ID")
+    old_id = models.IntegerField(unique=True, help_text="ID in the old WebTV database")
+    new_id = models.IntegerField(unique=True, help_text="ID in the new WebTV database")
 
     class Meta:
         """Meta options for CompletionMapping."""

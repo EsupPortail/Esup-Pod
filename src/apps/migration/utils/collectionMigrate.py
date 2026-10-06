@@ -163,7 +163,7 @@ def _migrate_favorites(self, favorites, user_mapping, video_mapping):
         if not new_user_id:
             self.stdout.write(
                 self.style.WARNING(
-                    f"Skip Favori video {old_video_id}: user {data['userid']} not found"
+                    f"Skip Favorite video {old_video_id}: user {data['userid']} not found"
                 )
             )
             skipped += 1
