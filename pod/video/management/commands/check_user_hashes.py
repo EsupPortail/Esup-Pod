@@ -524,6 +524,14 @@ class UserHashRepair:
             ("Database paths", sum(len(plan.files) for plan in self.plans)),
         ]:
             self.stdout.write(f"  {label:<20} : {count}")
+        if "blocked" in outcomes:
+            self.status(
+                "Blocked profiles may have changed during processing (e.g. SSO login). "
+                "Check conflicts and rerun later; already matching hashes are skipped "
+                "without rechecking files.",
+                "WARNING",
+                indent=0,
+            )
 
     def select_profiles(
         self, usernames: list[str] | None, with_videos: bool = False
