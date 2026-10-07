@@ -1,4 +1,4 @@
-"""Test-only fixtures for remote import validation."""
+"""Esup-Pod test-only fixtures for remote import validation."""
 
 import ipaddress
 

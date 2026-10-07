@@ -1,4 +1,4 @@
-"""Exercise remote imports against a local TLS server using a test-only key."""
+"""Esup-Pod HTTPS import tests using a local TLS server and a test-only key."""
 
 import ipaddress
 import ssl

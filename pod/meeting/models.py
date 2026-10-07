@@ -1,4 +1,4 @@
-"""Models for the Meeting module."""
+"""Esup-Pod models for the Meeting module."""
 
 import hashlib
 import random
