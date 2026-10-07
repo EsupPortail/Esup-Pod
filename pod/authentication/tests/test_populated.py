@@ -6,7 +6,8 @@
 import random
 
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
+from django.contrib.sites.models import Site
 from django.test import TestCase, override_settings, RequestFactory
 from unittest import mock
 from importlib import reload
@@ -447,6 +448,83 @@ class PopulatedShibTestCase(TestCase):
         self.assertTrue(user.is_authenticated)
 
         return (user, shib_meta)
+
+    @mock.patch.object(backends, "CREATE_GROUP_FROM_AFFILIATION", True)
+    def test_create_accessgroup_from_affiliation(self) -> None:
+        """Create and reuse an access group when authenticating through Shibboleth."""
+        attributes = {
+            "username": "jdo@univ.fr",
+            "first_name": "John",
+            "last_name": "Do",
+            "email": "john.do@univ.fr",
+            "affiliations": "staff;member",
+        }
+        user, _ = self._authenticate_shib_user(attributes)
+        user, _ = self._authenticate_shib_user(attributes)
+
+        accessgroup = AccessGroup.objects.get(code_name="staff")
+        self.assertEqual(accessgroup.display_name, "staff")
+        self.assertTrue(accessgroup.auto_sync)
+        self.assertQuerySetEqual(accessgroup.sites.all(), [Site.objects.get_current()])
+        self.assertQuerySetEqual(user.owner.accessgroup_set.all(), [accessgroup])
+        self.assertEqual(AccessGroup.objects.count(), 1)
+        self.assertFalse(Group.objects.exists())
+        user.refresh_from_db()
+        self.assertTrue(user.is_staff)
+        self.assertEqual(user.owner.auth_type, "Shibboleth")
+        self.assertEqual(user.owner.affiliation, "staff")
+
+    @mock.patch.object(backends, "CREATE_GROUP_FROM_AFFILIATION", True)
+    def test_reuse_existing_affiliation_accessgroup(self) -> None:
+        """Preserve existing access group settings and Django group membership."""
+        other_site = Site.objects.create(domain="other.univ.fr", name="Other site")
+        accessgroup = AccessGroup.objects.create(
+            code_name="staff", display_name="University staff", auto_sync=False
+        )
+        accessgroup.sites.add(other_site)
+        group = Group.objects.create(name="staff")
+        user = User.objects.create(username="jdo@univ.fr")
+        user.groups.add(group)
+
+        user, _ = self._authenticate_shib_user(
+            {
+                "username": "jdo@univ.fr",
+                "first_name": "John",
+                "last_name": "Do",
+                "email": "john.do@univ.fr",
+                "affiliations": "staff;member",
+            }
+        )
+
+        accessgroup.refresh_from_db()
+        self.assertEqual(accessgroup.display_name, "University staff")
+        self.assertFalse(accessgroup.auto_sync)
+        self.assertQuerySetEqual(
+            accessgroup.sites.order_by("id"),
+            [Site.objects.get_current(), other_site],
+        )
+        self.assertQuerySetEqual(user.owner.accessgroup_set.all(), [accessgroup])
+        self.assertEqual(AccessGroup.objects.count(), 1)
+        self.assertQuerySetEqual(user.groups.all(), [group])
+        self.assertEqual(Group.objects.count(), 1)
+
+    @mock.patch.object(backends, "CREATE_GROUP_FROM_AFFILIATION", False)
+    def test_affiliation_group_creation_disabled(self) -> None:
+        """Skip group creation and assignment when the affiliation option is disabled."""
+        AccessGroup.objects.create(code_name="staff", display_name="University staff")
+        user, _ = self._authenticate_shib_user(
+            {
+                "username": "jdo@univ.fr",
+                "first_name": "John",
+                "last_name": "Do",
+                "email": "john.do@univ.fr",
+                "affiliations": "staff;member",
+            }
+        )
+
+        self.assertEqual(AccessGroup.objects.count(), 1)
+        self.assertFalse(user.owner.accessgroup_set.exists())
+        self.assertFalse(Group.objects.exists())
 
     @override_settings(DEBUG=False)
     def test_make_profile(self) -> None:
