@@ -48,12 +48,13 @@ services:
       ENCODING_MANAGER_TOKEN: ${ENCODING_MANAGER_TOKEN}
       SITE_URL: ${SITE_URL:-http://api:8000}
       ENCODING_WEBHOOK_SECRET: ${ENCODING_WEBHOOK_SECRET}
+      SEARCH_REDIS_URL: redis://redis:6379/0
     command: ["run-server"]
     networks:
       - pod-network
 
   redis:
-    image: redis:7
+    image: redis/redis-stack-server:latest
     container_name: pod-redis
     ports:
       - "${REDIS_PORT:-6380}:6379"
@@ -90,6 +91,7 @@ services:
       ENCODING_MANAGER_TOKEN: ${ENCODING_MANAGER_TOKEN}
       SITE_URL: ${SITE_URL:-http://api:8000}
       ENCODING_WEBHOOK_SECRET: ${ENCODING_WEBHOOK_SECRET}
+      SEARCH_REDIS_URL: redis://redis:6379/0
     command: ["celery", "-A", "config", "worker", "-l", "info"]
     networks:
       - pod-network

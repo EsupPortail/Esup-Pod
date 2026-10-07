@@ -1,0 +1,72 @@
+"""
+Esup-Pod - Search app settings — local overrides example.
+
+Copy this file to src/config/settings/search.py and adapt it to your environment.
+All settings listed here override the defaults defined in src/config/defaults/search.py.
+
+V4 Elasticsearch flag equivalents:
+  ES_URL          → SEARCH_REDIS_URL
+  ES_INDEX        → SEARCH_INDEX_NAME
+  ES_TIMEOUT      → SEARCH_TIMEOUT
+  ES_MAX_RETRIES  → SEARCH_MAX_RETRIES
+  ES_OPTIONS      → SEARCH_REDIS_OPTIONS
+"""
+
+# =============================================================================
+# Engine selection
+# =============================================================================
+# SEARCH_ENGINE = "redis"      # Redis Search (Redis 8) — recommended
+# SEARCH_ENGINE = "database"   # Basic Django ORM fallback (no Redis needed)
+# SEARCH_ENGINE = "disabled"   # Disable search entirely
+
+# =============================================================================
+# Redis Search connection
+# =============================================================================
+# SEARCH_REDIS_URL = "redis://redis-search:6379/0"        # Production: Docker
+# SEARCH_REDIS_URL = "redis://127.0.0.1:6381/0"           # Production: local
+# SEARCH_REDIS_URL = "redis://localhost:6379/3"            # Dev: share same Redis, DB 3
+
+# Optional: SSL + authentication (equiv. ES_OPTIONS in V4)
+# SEARCH_REDIS_OPTIONS = {
+#     "ssl": True,
+#     "ssl_cert_reqs": "none",
+#     "username": "default",
+#     "password": "your-redis-password",
+# }
+
+# SEARCH_MAX_RETRIES = 3          # V4 default was 10
+# SEARCH_TIMEOUT = 5              # V4 default was 30
+
+# =============================================================================
+# Index
+# =============================================================================
+# SEARCH_INDEX_NAME = "pod_videos"    # equiv. ES_INDEX in V4 (was "pod")
+# SEARCH_KEY_PREFIX = "pod:video:"
+
+# =============================================================================
+# Feature flags
+# =============================================================================
+# SEARCH_ENABLE_FACETS = True         # Expose facet aggregations in results
+# SEARCH_ENABLE_AUTO_INDEX = True     # Auto-reindex on Video post_save signal
+# SEARCH_ENABLE_SUGGESTIONS = False   # Auto-complete (future)
+
+# =============================================================================
+# Pagination
+# =============================================================================
+# SEARCH_RESULTS_PER_PAGE = 12
+# SEARCH_MIN_QUERY_LENGTH = 2
+# SEARCH_MAX_PAGE = 500
+
+# =============================================================================
+# Field weights (adjust to tune ranking)
+# =============================================================================
+# SEARCH_WEIGHT_TITLE = 2.0
+# SEARCH_WEIGHT_DESCRIPTION = 0.8
+# SEARCH_WEIGHT_TAGS = 1.5
+# SEARCH_WEIGHT_OWNER = 1.0
+# SEARCH_WEIGHT_CHANNELS = 0.8
+# SEARCH_WEIGHT_DISCIPLINES = 1.0
+# SEARCH_WEIGHT_THEMES = 0.5
+# SEARCH_WEIGHT_CONTRIBUTORS = 0.6
+# SEARCH_WEIGHT_OVERLAYS = 0.4
+# SEARCH_WEIGHT_CHAPTERS = 0.4

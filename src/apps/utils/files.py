@@ -2,11 +2,9 @@
 Esup-Pod - File utility functions.
 """
 
-import logging
 import os
-from time import sleep
 
-logger = logging.getLogger(__name__)
+SUPPORTED_IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp"]
 
 
 def safe_remove_file(field) -> None:
@@ -22,68 +20,28 @@ def safe_remove_file(field) -> None:
             pass
 
 
-def check_size_not_changing(resource_path: str, max_attempt: int = 10) -> None:
+def resolve_file_field_image_url(file_field) -> str | None:
     """
-    Check if the size of a resource remains unchanged over a number of attempts.
+    Returns the image URL for a given file field.
 
-    Raises:
-        Exception: if the file size keeps changing after max_attempt retries.
-        OSError: if the resource does not exist or is inaccessible.
+    If the field points to a .vtt storyboard file, it attempts to locate an existing image
+    with a supported extension (.png, .jpg, .jpeg, .webp) alongside the .vtt file.
     """
-    file_size = os.path.getsize(resource_path)
-    size_match = False
-    attempt_number = 0
+    if not file_field or not hasattr(file_field, "url"):
+        return None
 
-    while not size_match and attempt_number <= max_attempt:
-        sleep(1)
-        new_size = os.path.getsize(resource_path)
-        if file_size != new_size:
-            logger.warning(
-                "File size of %s changing from %s to %s, attempt number %s",
-                resource_path,
-                file_size,
-                new_size,
-                attempt_number,
-            )
-            file_size = new_size
-            attempt_number += 1
-            if attempt_number == max_attempt:
-                logger.error("File: %s is still changing", resource_path)
-                raise Exception("checkFileSize aborted")
-        else:
-            logger.info("Size checked for %s: %s", resource_path, new_size)
-            size_match = True
+    url = file_field.url
+    if url and url.endswith(".vtt"):
+        from pathlib import Path
 
+        base_url = Path(url)
+        base_name = Path(file_field.name)
+        storage = file_field.storage
 
-def check_exists(resource_path: str, is_dir: bool, max_attempt: int = 10) -> None:
-    """
-    Check whether a file or directory exists, retrying up to max_attempt times.
+        for ext in SUPPORTED_IMAGE_EXTENSIONS:
+            if storage.exists(str(base_name.with_suffix(ext))):
+                return str(base_url.with_suffix(ext))
 
-    Args:
-        resource_path: resource path and name.
-        is_dir: True for a dir, False for a file.
-        max_attempt: number of attempts before raising.
-    Raises:
-        Exception: if the resource doesn't exist after max_attempt retries.
-    """
-    fct = os.path.isdir if is_dir else os.path.exists
-    r_type = "Dir" if is_dir else "File"
-    attempt_number = 1
+        return str(base_url.with_suffix(".png"))
 
-    while not fct(resource_path) and attempt_number <= max_attempt:
-        logger.warning("%s does not exist, attempt number %s", r_type, attempt_number)
-        if attempt_number == max_attempt:
-            logger.error("Impossible to get %s: %s", r_type, resource_path)
-            raise Exception(f"{r_type}: {resource_path} does not exist")
-        attempt_number += 1
-        sleep(1)
-
-
-def check_dir_exists(dest_dir_name: str, max_attempt: int = 10) -> None:
-    """Check a directory exists, retrying if needed."""
-    return check_exists(dest_dir_name, True, max_attempt)
-
-
-def check_file_exists(full_file_name: str, max_attempt: int = 10) -> None:
-    """Check a file exists, retrying if needed."""
-    return check_exists(full_file_name, False, max_attempt)
+    return url

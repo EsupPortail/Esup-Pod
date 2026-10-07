@@ -11,7 +11,7 @@ class QueryParameterJWTAuthentication(JWTAuthentication):
     """
 
     def authenticate(self, request):
-        """Authenticate request using JWT token from header or query parameters."""
+        """Authenticate the request using JWT header or query parameter."""
         # First try to authenticate using the standard header
         header_auth = super().authenticate(request)
         if header_auth is not None:
