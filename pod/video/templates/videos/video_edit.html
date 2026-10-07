@@ -88,6 +88,9 @@
           {% elif 'input video duration is 0 seconds' in form.instance.get_encoding_step|lower %}
             <i class="bi bi-clock-history" aria-hidden="true"></i>
             <strong>{% trans "The input video duration is 0 seconds. Please re-upload a valid video file." %}</strong>
+          {% elif 'encoding incomplete:' in form.instance.get_encoding_step|lower %}
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            <strong>{% trans "Part of the video is missing: the resulting video is shorter than expected. Please check the source file and re-upload a valid, complete video file." %}</strong>
           {% else %}
             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
             <strong>{% trans "An error occurred while processing this video. Our administrators have already been notified." %}</strong>

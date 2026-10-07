@@ -188,8 +188,8 @@ def add_recording(request):
             rec = RecordingFileTreatment.objects.get(file=file)
             rec.delete()
             message = _(
-                "Your publication is saved."
-                " Adding it to your videos will be in a few minutes."
+                "Your video has been received and is being processed. "
+                "It will appear in the dashboard once processing is complete."
             )
 
             messages.add_message(request, messages.INFO, message)
@@ -663,6 +663,14 @@ def open_ingest_ingest(request):
                 recorder=recorder,
             )
             recording.save()
+            messages.add_message(
+                request,
+                messages.INFO,
+                _(
+                    "Your video has been received and is being processed. "
+                    "It will appear in the dashboard once processing is complete."
+                ),
+            )
         else:
             messages.add_message(
                 request, messages.ERROR, _("Recorder for Studio not found.")
