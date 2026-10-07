@@ -289,7 +289,7 @@ class Meeting(models.Model):
 
     # #################### Configs
     max_participants = models.IntegerField(
-        default=150, verbose_name=_("Max Participants")
+        default=250, verbose_name=_("Max Participants")
     )
     welcome_text = models.TextField(
         default=_("Welcome!"), verbose_name=_("Meeting Text in Bigbluebutton")
