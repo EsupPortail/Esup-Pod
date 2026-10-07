@@ -115,18 +115,18 @@ class RemoteImportHTTPSTest(SimpleTestCase):
         self.session = requests.Session()
         self.session.trust_env = False
         self.addCleanup(self.session.close)
-        self.resolver = self.enterContext(
-            patch(
-                "pod.import_video.utils._resolve_remote_addresses",
-                return_value={self.address},
-            )
+        resolver_patcher = patch(
+            "pod.import_video.utils._resolve_remote_addresses",
+            return_value={self.address},
         )
-        self.enterContext(
-            patch(
-                "urllib3.util.connection.create_connection",
-                side_effect=self.connect_locally,
-            )
+        self.resolver = resolver_patcher.start()
+        self.addCleanup(resolver_patcher.stop)
+        connection_patcher = patch(
+            "urllib3.util.connection.create_connection",
+            side_effect=self.connect_locally,
         )
+        connection_patcher.start()
+        self.addCleanup(connection_patcher.stop)
 
     def connect_locally(self, address, *args, **kwargs):
         """Record the requested destination and route the socket to the test server."""
