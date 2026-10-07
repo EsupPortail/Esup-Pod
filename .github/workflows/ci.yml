@@ -2,62 +2,65 @@ name: Pod V5 CI/CD
 
 on:
   push:
-    branches:
-      - "**"
-  pull_request:
-    branches:
-      - dev_v5
-      - main
+    branches: ["**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  # 1. Code Quality
   quality-check:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v6
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
-          ref: ${{ github.head_ref || github.ref }}
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: "pip"
 
-      - name: Install dependencies
-        run: |
+      - run: |
           pip install -r requirements.txt
           pip install flake8 black
 
       - name: Format code with Black
-        run: |
-          black . -l 90
+        if: >-
+          github.ref_name != 'main' && github.ref_name != 'dev_v5' &&
+          github.actor != 'dependabot[bot]'
+        run: black . -l 90
 
       - name: Commit formatted code
+        if: >-
+          github.ref_name != 'main' && github.ref_name != 'dev_v5' &&
+          github.actor != 'dependabot[bot]'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "style: Auto-format code with Black"
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
 
-      - name: Lint with flake8
-        run: flake8 src --count --show-source --statistics
+      - name: Check formatting
+        run: black . -l 90 --check --diff
 
-      - name: Run PyDoc Audit
-        run: python scripts/check_pydocs.py
+      - run: flake8 src --count --show-source --statistics
+      - run: python scripts/check_pydocs.py
 
-      - name: Create .env file
-        run: cp .env.example .env
-
-  # 2. Docker Integration, E2E & Security (The Authoritative Test)
   test-docker-full:
     needs: [quality-check]
+    if: github.repository == 'EsupPortail/Esup-Pod'
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ github.sha }}
+      DJANGO_SETTINGS_MODULE: config.django.dev.docker
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
@@ -69,23 +72,19 @@ jobs:
 
       - name: Pre-pull Docker images with retries
         run: |
+          ok=0
           for i in {1..5}; do
             echo "Attempt $i to pull images..."
             timeout 60s docker pull ghcr.io/esupportail/esup-runner-manager:latest && \
-            timeout 60s docker pull ghcr.io/esupportail/esup-runner-runner:latest && \
-            break || sleep 10
+            timeout 60s docker pull ghcr.io/esupportail/esup-runner-runner:latest && { ok=1; break; }
+            sleep 10
           done
+          [ "$ok" -eq 1 ] || { echo "Image pull failed"; exit 1; }
 
       - name: Build Stack
-        env:
-          VERSION: ${VERSION}
-          DJANGO_SETTINGS_MODULE: config.django.dev.docker
         run: make build
 
       - name: Start Stack
-        env:
-          VERSION: ${VERSION}
-          DJANGO_SETTINGS_MODULE: config.django.dev.docker
         run: make start
 
       - name: Wait for Services
@@ -119,16 +118,7 @@ jobs:
         run: python src/config/django/test/e2e_scenario.py
 
       - name: Basic Load Test
-        run: |
-          fail=0
-          for i in {1..50}; do
-            curl -sf http://127.0.0.1:8000/api/docs/ > /dev/null || fail=1 &
-          done
-          wait
-          if [ "$fail" -ne 0 ]; then
-            echo "Load test failed"
-            exit 1
-          fi
+        run: seq 50 | xargs -P 50 -I{} curl -sf http://127.0.0.1:8000/api/docs/ -o /dev/null
 
       - name: Teardown
         if: always()
