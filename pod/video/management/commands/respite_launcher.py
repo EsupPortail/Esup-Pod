@@ -108,7 +108,6 @@ class Command(BaseCommand):
     def _process_video(self, vid, higher_warn, respite_module):
         """Evaluate a video for respite extension and apply model results if eligible."""
         if (vid.date_delete - timedelta(days=higher_warn + 1)) <= (date.today()):
-            #video_data = self._get_video_data(vid)
             vdata = Vdata()
             video_data = vdata.get_video_data(vid)
 
@@ -188,8 +187,9 @@ class Command(BaseCommand):
                     )
                 )
 
+
 class Vdata:
-    def get_video_data(self,vid):
+    def get_video_data(self, vid):
         """Collect the video features required by the respite calculation model."""
         video_data = {}
 
