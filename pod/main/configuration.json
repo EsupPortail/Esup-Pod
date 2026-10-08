@@ -5360,7 +5360,51 @@
                           },
                           "pod_version_end": "",
                           "pod_version_init": "4.3.0"
+                        },
+                        "STFP_HOST_ARCHIVE": {
+                          "default_value": "",
+                          "description": {
+                            "en": [
+                              "This is the FTP host where are sent the archive files. "
+                            ],
+                            "fr": [
+                              "Il s'agit du serveur FTP vers lequel est envoyé les fichiers d'archive."
+                            ]
+                          },
+                          "STFP_USER_ARCHIVE": {
+                            "default_value": "",
+                            "description": {
+                              "en": [
+                                "This is the user login of the FTP host where are sent the archive files."
+                              ],
+                              "fr": [
+                                "C'est l'identifiant user de l'hote FTP où sont envoyés les fichiers archives"
+                              ]
+                            },
+                            "STFP_PASSWORD": {
+                              "default_value": "",
+                              "description": {
+                                "en": [
+                                  "This is the password of the user for the FTP host where are sent the archive files."
+                                ],
+                                "fr": [
+                                  "C'est le mot de passe de l'utilisateur de l'hote FTP où sont envoyés les fichiers archives"
+                                ]
+                              },
+                              "STFP_REMOTE_DIR": {
+                                "default_value": "",
+                                "description": {
+                                  "en": [
+                                    "This is the FTP server absolute path where are sent the archive files."
+                                  ],
+                                  "fr": [
+                                    "C'est le chemin absolu du serveur FTP où sont envoyés les fichiers archives"
+                                  ]
+                                },
+                          "pod_version_end": "",
+                          "pod_version_init": "4.3.0"
                         }
+
                     },
                     "title": {
                         "en": "Obsolescence",

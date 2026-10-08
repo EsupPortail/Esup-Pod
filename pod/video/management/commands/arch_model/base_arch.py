@@ -5,10 +5,6 @@ This is just a proof of concept, not intented to be used in production.
 We invite you to use this as a starting point to establish your own model.
 """
 
-import json
-
-from pod.video.models import Video
-
 
 def calcul(parameters, dry_mode: bool = True):
     """Calculate the number of days to add to date_delete"""
