@@ -5939,7 +5939,7 @@ msgstr ""
 
 #: pod/meeting/models.py
 msgid "Max Participants"
-msgstr "Nombre maximum de participant"
+msgstr "Nombre maximum de participants"
 
 #: pod/meeting/models.py
 msgid "Welcome!"
@@ -8681,10 +8681,11 @@ msgstr "La source du fichier doit être indiquée."
 
 #: pod/recorder/views.py
 msgid ""
-"Your publication is saved. Adding it to your videos will be in a few minutes."
+"Your video has been received and is being processed. "
+"It will appear in the dashboard once processing is complete."
 msgstr ""
-"Votre publication est sauvegardée, elle sera ajoutée à vos vidéos dans "
-"quelques minutes."
+"Votre vidéo a bien été reçue et est en cours de traitement. "
+"Elle apparaîtra dans le tableau de bord une fois le traitement terminé."
 
 #: pod/recorder/views.py
 #, python-format
@@ -10857,6 +10858,16 @@ msgid ""
 msgstr ""
 "La durée de la vidéo source est de 0 seconde. Veuillez mettre en ligne à "
 "nouveau un fichier vidéo valide."
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"Part of the video is missing: the resulting video is shorter than expected. "
+"Please check the source file and re-upload a valid, complete video file."
+msgstr ""
+"Une partie de la vidéo est manquante : la vidéo obtenue est plus courte que "
+"prévu. Veuillez vérifier le fichier source et mettre en ligne à nouveau un "
+"fichier vidéo valide et complet."
 
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html

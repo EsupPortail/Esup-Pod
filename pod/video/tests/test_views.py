@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from pod.authentication.models import AccessGroup
 from django.contrib.sites.models import Site
 from django.contrib.messages import get_messages
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from pod.main.models import AdditionalChannelTab
@@ -32,6 +33,7 @@ import json
 from http import HTTPStatus
 from importlib import reload
 import uuid
+from datetime import timedelta
 from unittest.mock import patch
 
 
@@ -92,6 +94,62 @@ class ChannelTestView(TestCase):
         response = self.client.get("/%s/%s/" % (self.c.slug, self.theme.slug))
         self.assertEqual(response.status_code, HTTPStatus.OK)
         print("   --->  test_channel_with_theme_in_argument of ChannelTestView: OK!")
+
+    def test_channel_and_theme_video_order(self) -> None:
+        """Order channel and theme videos by position, then newest first."""
+        now = timezone.now()
+        self.v.order = 2
+        self.v.date_added = now
+        self.v.save()
+        earlier = Video.objects.create(
+            title="Earlier video",
+            owner=self.v.owner,
+            video="test.mp4",
+            is_draft=False,
+            type=self.v.type,
+            order=1,
+            date_added=now - timedelta(days=2),
+        )
+        later = Video.objects.create(
+            title="Later video",
+            owner=self.v.owner,
+            video="test.mp4",
+            is_draft=False,
+            type=self.v.type,
+            order=1,
+            date_added=now - timedelta(days=1),
+        )
+        rendition = VideoRendition.objects.get(resolution__contains="x360")
+        for video in (earlier, later):
+            video.channel.add(self.c)
+            EncodingVideo.objects.create(
+                name="360p",
+                video=video,
+                rendition=rendition,
+                encoding_format="video/mp4",
+                source_file="360p.mp4",
+            )
+
+        for target in (self.c, self.theme):
+            if target == self.theme:
+                child = Theme.objects.create(
+                    title="Child theme", channel=self.c, parentId=self.theme
+                )
+                for video in (self.v, earlier, later):
+                    video.theme.add(self.theme, child)
+            for organize_by_theme in (False, True):
+                for ajax in (False, True):
+                    with self.subTest(
+                        target=target, organize_by_theme=organize_by_theme, ajax=ajax
+                    ), patch.object(views, "ORGANIZE_BY_THEME", organize_by_theme):
+                        headers = {"x-requested-with": "XMLHttpRequest"} if ajax else {}
+                        response = self.client.get(
+                            target.get_absolute_url(), headers=headers
+                        )
+                        self.assertEqual(response.status_code, HTTPStatus.OK)
+                        self.assertEqual(
+                            list(response.context["videos"]), [later, earlier, self.v]
+                        )
 
     @override_settings(ORGANIZE_BY_THEME=True)
     def test_regroup_videos_by_theme(self) -> None:
