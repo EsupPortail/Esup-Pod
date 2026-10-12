@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from requests import Session
+from requests.adapters import HTTPAdapter
 
 from pod.meeting.utils import slash_join
 from pod.video.models import Type, Video
@@ -167,34 +168,70 @@ def validate_remote_import_url(source_url: str):
     return url, addresses
 
 
-def get_secure_response(
-    parsed_url, requester, selected_ip, method, user_headers, **kwargs
-):
-    """Makes a secure HTTP request to the selected IP address while preserving the Host header."""
-    host_header = parsed_url.hostname
-    if parsed_url.port:
-        host_header = f"{host_header}:{parsed_url.port}"
+def _get_pinned_url(parsed_url, selected_ip):
+    """Replace an URL's host with the validated IP, preserving its port."""
     if selected_ip.version == 6:
         netloc_ip = f"[{selected_ip.compressed}]"
     else:
         netloc_ip = selected_ip.compressed
     if parsed_url.port:
         netloc_ip = f"{netloc_ip}:{parsed_url.port}"
-    request_url = parsed_url._replace(netloc=netloc_ip).geturl()
+    return parsed_url._replace(netloc=netloc_ip).geturl()
+
+
+class PinnedIPAdapter(HTTPAdapter):
+    """Connect to a validated IP while retaining the original TLS hostname."""
+
+    def __init__(self, selected_ip):
+        self.selected_ip = selected_ip
+        super().__init__()
+
+    def build_connection_pool_key_attributes(self, request, verify, cert=None):
+        """Pin the connection without changing certificate verification settings."""
+        host_params, pool_kwargs = super().build_connection_pool_key_attributes(
+            request, verify, cert
+        )
+        if host_params["scheme"] == "https":
+            pool_kwargs["server_hostname"] = host_params["host"]
+            pool_kwargs["assert_hostname"] = host_params["host"]
+        host_params["host"] = self.selected_ip.compressed
+        return host_params, pool_kwargs
+
+    def request_url(self, request, proxies):
+        """Also pin absolute HTTP URLs forwarded through a proxy."""
+        request_url = super().request_url(request, proxies)
+        if request_url.startswith("http://"):
+            return _get_pinned_url(urlparse(request_url), self.selected_ip)
+        return request_url
+
+
+def get_secure_response(parsed_url, session, selected_ip, method, user_headers, **kwargs):
+    """Preserve the URL and cookies while connecting only to the validated IP."""
+    request_url = requests.Request(method, parsed_url.geturl()).prepare().url
     request_headers = dict(user_headers)
-    request_headers["Host"] = host_header
-    return requester(
-        method,
-        request_url,
-        allow_redirects=False,
-        headers=request_headers,
-        **kwargs,
-    )
+    request_headers["Host"] = urlparse(request_url).netloc
+    adapter = PinnedIPAdapter(selected_ip)
+    previous_adapters = session.adapters
+    session.adapters = {f"{parsed_url.scheme}://": adapter}
+    try:
+        return session.request(
+            method,
+            request_url,
+            allow_redirects=False,
+            headers=request_headers,
+            **kwargs,
+        )
+    finally:
+        session.adapters = previous_adapters
+        adapter.close()
 
 
 def safe_request(method: str, source_url: str, session: Session = None, **kwargs):
     """Perform an HTTP request after validating the target and redirects."""
-    requester = session.request if session else requests.request
+    if session is None:
+        with Session() as owned_session:
+            return safe_request(method, source_url, session=owned_session, **kwargs)
+
     parsed_url, addresses = validate_remote_import_url(source_url)
     current_url = parsed_url.geturl()
     remaining_redirects = 5
@@ -203,7 +240,7 @@ def safe_request(method: str, source_url: str, session: Session = None, **kwargs
     while True:
         selected_ip = next(iter(addresses))
         response = get_secure_response(
-            parsed_url, requester, selected_ip, method, user_headers, **kwargs
+            parsed_url, session, selected_ip, method, user_headers, **kwargs
         )
         redirect_url = response.headers.get("Location")
         if response.is_redirect and redirect_url:
