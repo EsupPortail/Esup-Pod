@@ -30,4 +30,4 @@ def calcul(parameters, dry_mode: bool = True):
     # additional_owners: Additional owner of the video (list)
     # categories: categories of the video (list)
 
-    return True
+    return False
