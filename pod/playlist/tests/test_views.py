@@ -802,7 +802,7 @@ class TestPlaylistPage(TestCase):
                 "video_slug": self.video.slug,
             },
         )
-        response = self.client.get(url, headers={"referer": url_content})
+        response = self.client.post(url, headers={"referer": url_content})
         self.assertEqual(response.status_code, 302)
 
         redirected_url = response.url
@@ -838,7 +838,7 @@ class TestPlaylistPage(TestCase):
             + "?json=1"
         )
 
-        response = self.client.get(url)
+        response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
         data = JsonResponse({"state": "out-playlist"}).content.decode("utf-8")
         self.assertEqual(response.content.decode("utf-8"), data)

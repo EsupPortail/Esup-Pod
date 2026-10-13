@@ -798,7 +798,7 @@ def _select_best_youtube_progressive_stream(yt_video):
 def _get_youtube_video_and_stream(source_url: str):
     """Return the first working YouTube object and best progressive stream."""
     last_youtube_error = None
-    for yt_client in ("ANDROID_VR", "WEB"):
+    for yt_client in ("ANDROID", "ANDROID_VR", "WEB"):
         try:
             yt_video = YouTube(source_url, yt_client)
             selected_stream = _select_best_youtube_progressive_stream(yt_video)
@@ -875,7 +875,7 @@ def upload_youtube_recording_to_pod(request, record_id: int):
 
         # Use pytubefix to download Youtube file.
         # On some public videos, WEB client may return HTTP 403.
-        # Prefer ANDROID_VR and keep WEB as fallback.
+        # Prefer ANDROID for progressive streams, keeping ANDROID_VR and WEB as fallbacks.
         yt_video, yt_stream = _get_youtube_video_and_stream(source_url)
 
         # Publish date (format: 2023-05-13 00:00:00)

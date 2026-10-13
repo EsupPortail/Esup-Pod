@@ -31,6 +31,8 @@
   <h2 class="card-header card-title pod-card__title h4">
     <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Playlist:" %} <a class="btn-link" href="{% url 'playlist:content' playlist_in_get.slug %}" title="{% trans 'View the playlist' %}">{{ playlist_name|capfirst|truncatechars:20 }}</a>
   </h2>
+  {% get_setting "USE_XAPI" False as use_xapi %}
+  {% get_setting "USE_XAPI_VIDEO" False as use_xapi_video %}
   <div {% if videos|length > 5 %}class="scroll-container"{% endif %}>
     {% for video_in_playlist in videos %}
       {% can_see_playlist_video video_in_playlist playlist_in_get as can_see_video %}
@@ -40,6 +42,7 @@
             title="{% trans 'Watch the video' %}"
             aria-label="{{ video_in_playlist.title }}"
           {% endif %}
+          {% if video_in_playlist.get_version != "O" or video_in_playlist.chapter_set.all or use_xapi and use_xapi_video %}data-full-page="true"{% endif %}
           id="{{ forloop.counter }}"
           class="player-element card-body card-text border mb-1 mt-2 d-flex flex-row
           {% if video_in_playlist == video %}selected{% else %}bg-light{% endif %}

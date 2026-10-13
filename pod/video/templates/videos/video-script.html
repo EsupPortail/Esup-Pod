@@ -297,21 +297,7 @@
 
   /* --- PLAYLIST --- */
   {% if playlist_in_get.autoplay %}
-    player.on('ended', function (e) {
-      {% if COUNTDOWN_PLAYLIST_PLAYER >= 3 %}
-        const playButtonElement = document.querySelector('.vjs-big-play-button');
-        if (playButtonElement) {
-            playButtonElement.remove();
-        }
-        asyncStartCountDown().then(function () {
-          player.dispose();
-          switchToNextVideo();
-        });
-      {% else %}
-        player.dispose();
-        switchToNextVideo();
-      {% endif %}
-    });
+    player.on('ended', handlePlaylistVideoEnded);
   {% endif %}
 
   {% if not video.is_video and event is None %}

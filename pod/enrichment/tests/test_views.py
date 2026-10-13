@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.urls import reverse
-from pod.playlist.models import Playlist
+from pod.playlist.models import Playlist, PlaylistContent
 from pod.video.models import Video, Type
 from ..models import Enrichment
 from django.contrib.sites.models import Site
@@ -203,8 +203,9 @@ class VideoEnrichmentViewTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_private_playlist_access(self):
-        """Test if a random user can't access to a private playlist."""
+        """Distinguish missing membership from denied access to a private playlist."""
         self.client.force_login(self.student)
+        Video.objects.filter(pk=self.video.pk).update(is_draft=False)
         playlist = Playlist.objects.create(
             name="Private playlist",
             visibility="private",
@@ -214,5 +215,8 @@ class VideoEnrichmentViewTestCase(TestCase):
             reverse("enrichment:video_enrichment", kwargs={"slug": self.video.slug})
             + f"?playlist={playlist.slug}"
         )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+        PlaylistContent.objects.create(playlist=playlist, video=self.video)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)

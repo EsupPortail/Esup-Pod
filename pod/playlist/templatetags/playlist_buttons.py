@@ -5,12 +5,16 @@ from django.template import Library
 from pod.video.models import Video
 from ..models import Playlist
 from ..utils import (
-    get_additional_owners,
     get_link_to_start_playlist as get_link_to_start_playlist_util,
     user_can_see_playlist_video,
+    user_can_manage_playlist,
+    user_can_modify_playlist_content,
+    user_can_delete_playlist,
 )
 
 register = Library()
+register.simple_tag(user_can_delete_playlist)
+register.simple_tag(user_can_modify_playlist_content)
 
 
 @register.simple_tag(takes_context=True, name="user_can_edit_or_remove")
@@ -25,13 +29,8 @@ def user_can_edit_or_remove(context: dict, playlist: Playlist) -> bool:
     Returns:
         bool: `True` if the user can do it. `False` otherwise.
     """
-    request = context["request"]
-    if not request.user.is_authenticated:
-        return False
-    return playlist.editable and (
-        request.user == playlist.owner
-        or request.user.is_superuser
-        or request.user in get_additional_owners(playlist)
+    return playlist.editable and user_can_manage_playlist(
+        context["request"].user, playlist
     )
 
 

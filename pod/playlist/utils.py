@@ -1,13 +1,23 @@
 """Esup-Pod playlist utilities."""
 
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password as django_check_password
+from django.contrib.auth.hashers import make_password
+from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.db.models.functions import Lower
-from django.db.models import Max
+from django.db.models import Exists, Max, OuterRef, QuerySet, prefetch_related_objects
 from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
+from django.core.exceptions import PermissionDenied
+from django.db import transaction
+from django.shortcuts import render
+from django.http import Http404
+from django.utils.translation import gettext as _
+from django.utils.crypto import constant_time_compare
 
-from pod.video.models import Video
+from pod.video.models import THIRD_PARTY_APPS, Video
+from pod.video.utils import get_video_access
 from django.conf import settings
 
 from .apps import FAVORITE_PLAYLIST_NAME
@@ -30,7 +40,8 @@ def check_video_in_playlist(playlist: Playlist, video: Video) -> bool:
     return PlaylistContent.objects.filter(playlist=playlist, video=video).exists()
 
 
-def user_add_video_in_playlist(playlist: Playlist, video: Video) -> str:
+@transaction.atomic
+def user_add_video_in_playlist(playlist: Playlist, video: Video) -> None:
     """
     Add a video in playlist.
 
@@ -39,12 +50,11 @@ def user_add_video_in_playlist(playlist: Playlist, video: Video) -> str:
         video (:class:`pod.video.models.Video`): The video object.
 
     Returns:
-        str: The status message.
+        None: The membership is created if it does not already exist.
     """
-    if not check_video_in_playlist(playlist, video):
-        PlaylistContent.objects.create(
-            playlist=playlist, video=video, rank=get_next_rank(playlist)
-        )
+    # Serialize rank allocation and duplicate additions by different managers.
+    Playlist.objects.select_for_update().get(pk=playlist.pk)
+    PlaylistContent.objects.get_or_create(playlist=playlist, video=video)
 
 
 def user_remove_video_from_playlist(playlist: Playlist, video: Video) -> str:
@@ -147,7 +157,9 @@ def get_promoted_playlist() -> list:
     Returns:
         list(:class:`pod.playlist.models.Playlist`): The public playlist list
     """
-    return Playlist.objects.filter(promoted=True, site=Site.objects.get_current())
+    return Playlist.objects.filter(
+        promoted=True, visibility="public", site=Site.objects.get_current()
+    )
 
 
 def get_playlist_list_for_user(user: User) -> list:
@@ -168,19 +180,22 @@ def get_playlist_list_for_user(user: User) -> list:
         ).exclude(name="Favorites")
 
 
-def get_video_list_for_playlist(playlist: Playlist) -> list:
+def get_video_list_for_playlist(
+    playlist: Playlist, *, prefetch_access: bool = False
+) -> QuerySet[Video]:
     """
-    Get all videos for a playlist.
+    Get a playlist's videos, optionally loading relations used for access checks.
 
     Args:
         playlist (:class:`pod.playlist.models.Playlist`): The playlist object
+        prefetch_access (bool): Preload group restrictions and additional owners.
 
     Returns:
-        list(:class:`pod.video.models.Video`): The video list for a playlist
+        QuerySet[Video]: The playlist videos with their ranks.
     """
     playlist_content = PlaylistContent.objects.filter(playlist=playlist)
     videos_id = playlist_content.values_list("video_id", flat=True)
-    video_list = Video.objects.filter(id__in=videos_id).extra(
+    video_list = Video.objects.filter(id__in=videos_id, sites=playlist.site_id).extra(
         select={"rank": "playlist_playlistcontent.rank"},
         tables=["playlist_playlistcontent"],
         where=[
@@ -189,6 +204,26 @@ def get_video_list_for_playlist(playlist: Playlist) -> list:
         ],
         params=[playlist.id],
     )
+    if prefetch_access:
+        versions = {
+            f"_has_{relation.related_model._meta.app_label}_version": Exists(
+                relation.related_model.objects.filter(video__pk=OuterRef("pk"))
+            )
+            for relation in Video._meta.related_objects
+            if relation.related_model._meta.app_label in THIRD_PARTY_APPS
+            and relation.related_model._meta.app_label != "interactive"
+            and relation.related_model.__name__.lower()
+            == relation.related_model._meta.app_label.lower()
+        }
+        video_list = (
+            video_list.annotate(**versions)
+            .select_related("owner", "thumbnail", "videoversion")
+            .prefetch_related(
+                "restrict_access_to_groups",
+                "additional_owners",
+                "chapter_set",
+            )
+        )
     return video_list
 
 
@@ -228,8 +263,69 @@ def remove_playlist(user: User, playlist: Playlist) -> None:
         user (:class:`django.contrib.auth.models.User`): The user object
         playlist (:class:`pod.playlist.models.Playlist`): The playlist objet
     """
-    if playlist.owner == user or user.is_superuser:
-        playlist.delete()
+    if not user_can_delete_playlist(user, playlist):
+        raise PermissionDenied
+    playlist.delete()
+
+
+def user_can_manage_playlist(user: User, playlist: Playlist) -> bool:
+    """Check managers, loading co-owners once per playlist instance when needed."""
+    if not user.is_authenticated:
+        return False
+    if playlist.owner_id == user.pk or user.is_superuser:
+        return True
+    prefetch_related_objects([playlist], "additional_owners")
+    return user in playlist.additional_owners.all()
+
+
+def user_can_modify_playlist_content(user: User, playlist: Playlist) -> bool:
+    """Allow content changes on editable playlists and system favorites."""
+    return (
+        playlist.editable or playlist.name == FAVORITE_PLAYLIST_NAME
+    ) and user_can_manage_playlist(user, playlist)
+
+
+def user_can_delete_playlist(user: User, playlist: Playlist) -> bool:
+    """Reserve deletion to the owner and administrators, excluding system playlists."""
+    return (
+        playlist.editable
+        and user.is_authenticated
+        and (playlist.owner_id == user.pk or user.is_superuser)
+    )
+
+
+@transaction.atomic
+def reorganize_playlist(playlist: Playlist, swaps: dict) -> None:
+    """Lock referenced entries and atomically persist only their changed ranks."""
+    slugs = set()
+    for pair in swaps.values():
+        if (
+            not isinstance(pair, list)
+            or len(pair) != 2
+            or not all(isinstance(slug, str) for slug in pair)
+        ):
+            raise ValueError("A swap must contain two video slugs")
+        slugs.update(pair)
+    if not slugs:
+        return
+    video_slugs = dict(Video.objects.filter(slug__in=slugs).values_list("pk", "slug"))
+    contents = {
+        video_slugs[content.video_id]: content
+        for content in PlaylistContent.objects.select_for_update()
+        .filter(playlist=playlist, video_id__in=video_slugs)
+        .order_by("pk")
+    }
+    original_ranks = {content.pk: content.rank for content in contents.values()}
+    for pair in swaps.values():
+        first, second = (contents[slug] for slug in pair)
+        first.rank, second.rank = second.rank, first.rank
+    changed = [
+        content
+        for content in contents.values()
+        if content.rank != original_ranks[content.pk]
+    ]
+    if changed:
+        PlaylistContent.objects.bulk_update(changed, ["rank"])
 
 
 def get_playlists_for_additional_owner(user: User) -> list:
@@ -261,7 +357,7 @@ def get_additional_owners(playlist: Playlist) -> list:
 
 
 def get_link_to_start_playlist(
-    request: WSGIRequest, playlist: Playlist, video=None
+    request: WSGIRequest, playlist: Playlist, video: Video | str | None = None
 ) -> str:
     """
     Get the link to start a specific playlist.
@@ -269,20 +365,16 @@ def get_link_to_start_playlist(
     Args:
         request (WSGIRequest): The WSGIRequest
         playlist (:class:`pod.playlist.models.Playlist`): The specific playlist
-        video (:class:`pod.video.models.Video`): The video object, optionnal. Default to None
+        video (Video | str | None): An optional video object or slug.
 
     Returns:
         str: Link to start the playlist.
     """
-    first_video = playlist.get_first_video(request)
-    if video:
-        return (
-            f"{reverse('video:video', kwargs={'slug': video})}?playlist={playlist.slug}"
-        )
-    elif first_video:
-        return f"{reverse('video:video', kwargs={'slug': first_video.slug})}?playlist={playlist.slug}"
-    else:
+    video = video or playlist.get_first_video(request)
+    if not video:
         return ""
+    slug = video.slug if isinstance(video, Video) else video
+    return f"{reverse('video:video', kwargs={'slug': slug})}?playlist={playlist.slug}"
 
 
 def get_total_favorites_video(video: Video) -> int:
@@ -320,7 +412,7 @@ def user_can_see_playlist_video(
     request: WSGIRequest, video: Video, playlist: Playlist
 ) -> bool:
     """
-    Check if the authenticated user can see the playlist video.
+    Check video permissions within a playlist, independently of its password gate.
 
     Args:
         request (WSGIRequest): The WSGIRequest
@@ -330,25 +422,19 @@ def user_can_see_playlist_video(
     Returns:
         bool: True if the user can see the playlist video. False otherwise
     """
-    is_password_protected = video.password is not None and video.password != ""
-    if is_password_protected or video.is_restricted or video.is_draft:
-        if not request.user.is_authenticated:
-            return False
-        return (
-            video.owner == request.user
-            or request.user in video.additional_owners.all()
+    if playlist.visibility not in {
+        "public",
+        "protected",
+    } and not user_can_manage_playlist(request.user, playlist):
+        return False
+    if video.password:
+        return request.user.is_authenticated and (
+            video.owner_id == request.user.pk
             or request.user.is_superuser
+            or request.user.has_perm("video.change_video")
+            or request.user in video.additional_owners.all()
         )
-    else:
-        return (
-            playlist.visibility == "private"
-            and (
-                playlist.owner == request.user
-                or playlist in get_playlists_for_additional_owner(request.user)
-                or request.user.is_superuser
-            )
-            or playlist.visibility in {"public", "protected"}
-        )
+    return get_video_access(request, video, None)
 
 
 def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") -> list:
@@ -386,7 +472,7 @@ def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") 
 
 def check_password(form_password: str, playlist: Playlist) -> bool:
     """
-    Check if the form password is correct for the playlist.
+    Verify a playlist password and upgrade legacy SHA-256 hashes on success.
 
     Args:
         form_password (str): Password provided by user
@@ -396,8 +482,32 @@ def check_password(form_password: str, playlist: Playlist) -> bool:
     Returns:
         bool: `True` if the password provided matches the playlist password, `False` otherwise.
     """
-    hashed_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
-    return hashed_password == playlist.password
+    encoded = playlist.password
+    if len(encoded) == 64 and "$" not in encoded:
+        # Raw SHA-256 is only accepted for verification of existing playlists.
+        legacy_hash = hashlib.sha256(form_password.encode("utf-8")).hexdigest()  # nosec
+        if not constant_time_compare(legacy_hash, encoded):
+            return False
+        upgraded = make_password(form_password)
+        # Do not overwrite a password changed or upgraded by a concurrent request.
+        if Playlist.objects.filter(pk=playlist.pk, password=encoded).update(
+            password=upgraded
+        ):
+            playlist.password = upgraded
+            return True
+        encoded = (
+            Playlist.objects.filter(pk=playlist.pk)
+            .values_list("password", flat=True)
+            .first()
+        )
+        if not encoded:
+            return False
+        playlist.password = encoded
+    try:
+        return django_check_password(form_password, encoded)
+    except ValueError:
+        # Malformed stored hashes must deny access rather than fail the request.
+        return False
 
 
 def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
@@ -411,11 +521,53 @@ def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
     Returns:
         bool: `True` if the current user can be see the playlist, `False` otherwise.
     """
-    return playlist.visibility in {"public", "protected"} or (
-        request.user.is_authenticated
-        and (
-            playlist.owner == request.user
-            or request.user.is_superuser
-            or playlist in get_playlists_for_additional_owner(request.user)
+    return (
+        playlist.visibility == "public"
+        or user_can_manage_playlist(request.user, playlist)
+        or (
+            playlist.visibility == "protected"
+            and request.session.get(f"playlist_access_{playlist.pk}")
+            == playlist.get_session_auth_hash()
         )
     )
+
+
+def require_playlist_access(request: WSGIRequest, playlist: Playlist):
+    """Return a password form when access is missing, or reject a private playlist."""
+    from .forms import PlaylistPasswordForm
+
+    if playlist_can_be_displayed(request, playlist):
+        return None
+    if playlist.visibility != "protected":
+        messages.error(request, _("You cannot access this playlist."))
+        raise PermissionDenied(_("You cannot access this playlist."))
+    form = PlaylistPasswordForm(request.POST if request.method == "POST" else None)
+    if request.method == "POST" and form.is_valid():
+        password = form.cleaned_data["password"]
+        # New passwords are normalized; legacy hashes may include surrounding spaces.
+        normalized = password.strip()
+        if check_password(normalized, playlist) or (
+            normalized != password and check_password(password, playlist)
+        ):
+            request.session[f"playlist_access_{playlist.pk}"] = (
+                playlist.get_session_auth_hash()
+            )
+            return None
+        form.add_error("password", _("The password is incorrect."))
+    return render(
+        request,
+        "playlist/protected-playlist-form.html",
+        {"form": form, "playlist": playlist},
+    )
+
+
+def require_playlist_video_access(request: WSGIRequest, video: Video, playlist: Playlist):
+    """Check playlist membership and video permissions for every player variant."""
+    if not PlaylistContent.objects.filter(playlist=playlist, video=video).exists():
+        raise Http404
+    response = require_playlist_access(request, playlist)
+    if response is not None:
+        return response
+    if not user_can_see_playlist_video(request, video, playlist):
+        raise PermissionDenied
+    return None

@@ -1118,9 +1118,11 @@ class Video(models.Model):
         for app in THIRD_PARTY_APPS:
             mod = importlib.import_module("pod.%s.models" % app)
             if hasattr(mod, capfirst(app)):
-                video_app = eval(
-                    "mod.%s.objects.filter(video__id=%s).all()" % (capfirst(app), self.id)
-                )
+                model = getattr(mod, capfirst(app))
+                # Playlist queries preload existence without loading enrichment payloads.
+                video_app = getattr(self, f"_has_{app}_version", None)
+                if video_app is None:
+                    video_app = model.objects.filter(video__id=self.pk)
                 if (
                     app == "interactive"
                     and video_app.first() is not None
