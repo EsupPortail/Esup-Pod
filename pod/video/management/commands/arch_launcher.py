@@ -35,6 +35,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        """Run ARCH processing for all applicable videos"""
         if options["dry"]:
             self.dry_mode = True
 
@@ -50,7 +51,7 @@ class Command(BaseCommand):
                 _, link = archive_and_get_link(safe_slug, "video_archived_storage")
 
                 try:
-                    self.envoyer_zip(
+                    self.send_zip(
                         file_path=os.path.join(BASE_DIR, "") + link,
                         sftp_host=STFP_HOST_ARCHIVE,
                         sftp_user=STFP_USER_ARCHIVE,
@@ -93,7 +94,8 @@ class Command(BaseCommand):
                 _("Arch model import error: %(error)s") % {"error": e}
             ) from e
 
-    def envoyer_zip(self, file_path, sftp_host, sftp_user, sftp_password, remote_dir="/"):
+    def send_zip(self, file_path, sftp_host, sftp_user, sftp_password, remote_dir="/"):
+        """Send the zip file to the specified FTP server using SFTP."""
         transport = paramiko.Transport((sftp_host, 22))
         transport.connect(
             username=sftp_user,
