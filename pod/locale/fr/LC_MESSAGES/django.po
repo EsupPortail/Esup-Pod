@@ -9523,10 +9523,20 @@ msgstr "Déplacement de %s vidéos archivées sur Pod"
 msgid "Respite model not found: %(error)s"
 msgstr "Modèle de répit introuvable : %(error)s"
 
+#: pod/video/management/commands/arch_launcher.py
+#, python-format
+msgid "Arch model not found: %(error)s"
+msgstr "Modèle d'archivage introuvable : %(error)s"
+
 #: pod/video/management/commands/respite_launcher.py
 #, python-format
 msgid "Respite model import error: %(error)s"
 msgstr "Erreur d’importation du modèle de répit : %(error)s"
+
+#: pod/video/management/commands/arch_launcher.py
+#, python-format
+msgid "Arch model import error: %(error)s"
+msgstr "Erreur d’importation du modèle de archivage : %(error)s"
 
 #: pod/video/management/commands/respite_launcher.py
 msgid "DRY MODE. This is only a simulation of what would be done."
