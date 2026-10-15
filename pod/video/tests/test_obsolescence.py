@@ -6,7 +6,6 @@ Test with `python manage.py test pod.video.tests.test_obsolescence  --settings=p
 import os
 import tempfile
 from datetime import date, timedelta
-from unittest.mock import patch
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -18,6 +17,13 @@ from pod.authentication.models import Owner
 
 from ..models import Type, Video, VideoToDelete
 from ..utils import archive_pack, check_csv_header, read_archived_csv
+
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from unittest.mock import MagicMock, patch
+
+from pod.video.management.commands.arch_launcher import Command
+from pod.video.utils import upload_zip_to_ftp
 
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
@@ -557,15 +563,7 @@ class ValidFormRespitTestCase(TestCase):
             pass
 
 
-from pathlib import Path
-from tempfile import TemporaryDirectory
-from unittest.mock import MagicMock, patch
-
-from pod.video.management.commands.arch_launcher import Command
-from pod.video.utils import upload_zip_to_ftp
-
-
-class TestSendZip(SimpleTestCase):
+class TestSendZip (SimpleTestCase):
     """Send and upload zip test class"""
 
     def setUp(self):
