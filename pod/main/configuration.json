@@ -5361,14 +5361,14 @@
                           "pod_version_end": "",
                           "pod_version_init": "4.3.0"
                         },
-                        "STFP_HOST_ARCHIVE": {
+                        "SFTP_HOST_ARCHIVE": {
                           "default_value": "",
                           "description": {
                             "en": [
-                              "This is the FTP host where are sent the archive files. "
+                              "This is the FTP host where are sent the archive files."
                             ],
                             "fr": [
-                              "Il s'agit du serveur FTP vers lequel est envoyé les fichiers d'archive."
+                              "Il s'agit du serveur FTP vers lequel sont envoyés les fichiers d'archive."
                             ]
                           },
                           "STFP_USER_ARCHIVE": {
@@ -5402,7 +5402,7 @@
                                   ]
                                 },
                           "pod_version_end": "",
-                          "pod_version_init": "4.3.0"
+                          "pod_version_init": "4.4.1"
                         }
 
                     },

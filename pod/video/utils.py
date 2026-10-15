@@ -916,22 +916,22 @@ def archive_and_get_link(slug, sub_fold="tmp"):
 def upload_zip_to_ftp(file_path: str, ftp_host: str, ftp_user: str,
                       ftp_password: str, remote_dir: str = "/") -> None:
     """
-    Envoie un fichier ZIP vers un serveur FTP.
+    Send a file to a FTP server.
 
-    :param file_path: chemin local du fichier ZIP
-    :param ftp_host: adresse du serveur FTP
-    :param ftp_user: utilisateur FTP
-    :param ftp_password: mot de passe FTP
-    :param remote_dir: répertoire distant
+    :param file_path: Zip File local Path
+    :param ftp_host: FTP Host address
+    :param ftp_user: FTP user
+    :param ftp_password: FTP password
+    :param remote_dir: Remote directory
     """
 
     file_path = Path(file_path)
 
     if not file_path.exists():
-        raise FileNotFoundError(f"Fichier introuvable : {file_path}")
+        raise FileNotFoundError(f"Can't find the file : {file_path}")
 
     if file_path.suffix.lower() != ".zip":
-        raise ValueError("Le fichier doit être au format ZIP")
+        raise ValueError("The file must be a ZIP file")
 
     with FTP(ftp_host) as ftp:
         ftp.login(ftp_user, ftp_password)
@@ -939,6 +939,6 @@ def upload_zip_to_ftp(file_path: str, ftp_host: str, ftp_user: str,
 
         with file_path.open("rb") as file:
             ftp.storbinary(
-                f"STOR {file_path.name}",
+                f"STORE {file_path.name}",
                 file
             )

@@ -1,3 +1,8 @@
+"""Esup-Pod - Launch custom calculation model for each video of the platform
+
+*  run with `python manage.py arch_launcher [--dry]`
+"""
+
 import importlib
 import os
 import sys

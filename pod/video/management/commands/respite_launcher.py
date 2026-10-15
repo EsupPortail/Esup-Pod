@@ -189,6 +189,7 @@ class Command(BaseCommand):
 
 
 class Vdata:
+    """Collect data for a specific video"""
     def get_video_data(self, vid):
         """Collect the video features required by the respite calculation model."""
         video_data = {}
