@@ -108,7 +108,8 @@ class Command(BaseCommand):
     def _process_video(self, vid, higher_warn, respite_module):
         """Evaluate a video for respite extension and apply model results if eligible."""
         if (vid.date_delete - timedelta(days=higher_warn + 1)) <= (date.today()):
-            video_data = self._get_video_data(vid)
+            vdata = Vdata()
+            video_data = vdata.get_video_data(vid)
 
             # Ask selected model for the numbers of days to be added to given video_data.
             daysmore = respite_module.calcul(video_data, self.dry_mode)
@@ -118,73 +119,6 @@ class Command(BaseCommand):
                 "[Video %s] “%s” has a date delete the %s. It’s in more than %s days. Nothing to do."
                 % (vid.id, vid.title, str(vid.date_delete), str(int(higher_warn + 1)))
             )
-
-    def _get_video_data(self, vid):
-        """Collect the video features required by the respite calculation model."""
-        video_data = {}
-
-        video_data["id"] = vid.id
-        video_data["title"] = vid.title
-        video_data["view_count"] = vid.get_viewcount()
-        video_data["view_count_year"] = vid.get_viewcount(365)
-        video_data["is_draft"] = vid.is_draft
-        video_data["is_restricted"] = vid.is_restricted
-
-        today = datetime.now()
-        diff = today - datetime(
-            vid.date_added.year,
-            vid.date_added.month,
-            vid.date_added.day,
-            vid.date_added.hour,
-            vid.date_added.minute,
-            vid.date_added.second,
-        )
-        video_data["date_added"] = datetime(
-            vid.date_added.year,
-            vid.date_added.month,
-            vid.date_added.day,
-            vid.date_added.hour,
-            vid.date_added.minute,
-            vid.date_added.second,
-        )
-        video_data["days_on_platform"] = diff.days
-        video_data["date_delete"] = vid.date_delete
-        video_data["description"] = vid.description
-
-        # Channels containing vid
-        video_data["channels"] = list(Channel.objects.filter(video=vid))
-
-        # Number of favorites containing vid
-        favorites = Playlist.objects.filter(name__exact="Favorites")
-        favorites_with_vid = favorites.filter(playlistcontent__video=vid).distinct()
-        video_data["nb_fav"] = len(favorites_with_vid)
-
-        # Number of comments on vid
-        vid_comments = Comment.objects.filter(video=vid)
-        video_data["nb_comment"] = len(vid_comments)
-
-        # Video duration
-        video_data["duration"] = vid.duration
-
-        # Video Disciplines
-        video_data["disciplines"] = list(Discipline.objects.filter(video=vid))
-
-        # Video type
-        video_data["type"] = vid.type
-
-        # Video Theme
-        video_data["themes"] = list(Theme.objects.filter(video=vid))
-
-        # Video Owner
-        video_data["owner"] = vid.owner.username
-
-        # Video Owner Additionnal
-        video_data["additional_owners"] = list(vid.additional_owners.all())
-
-        # Categories
-        video_data["categories"] = list(Category.objects.filter(video=vid))
-
-        return video_data
 
     def _notify_results(self):
         """Notify managers with results of respite calculations and send emails if needed."""
@@ -252,3 +186,73 @@ class Command(BaseCommand):
                         "NO mail sent. Set MANAGER in your settings first."
                     )
                 )
+
+
+class Vdata:
+    """Collect data for a specific video"""
+    def get_video_data(self, vid):
+        """Collect the video features required by the respite calculation model."""
+        video_data = {}
+
+        video_data["id"] = vid.id
+        video_data["title"] = vid.title
+        video_data["view_count"] = vid.get_viewcount()
+        video_data["view_count_year"] = vid.get_viewcount(365)
+        video_data["is_draft"] = vid.is_draft
+        video_data["is_restricted"] = vid.is_restricted
+
+        today = datetime.now()
+        diff = today - datetime(
+            vid.date_added.year,
+            vid.date_added.month,
+            vid.date_added.day,
+            vid.date_added.hour,
+            vid.date_added.minute,
+            vid.date_added.second,
+        )
+        video_data["date_added"] = datetime(
+            vid.date_added.year,
+            vid.date_added.month,
+            vid.date_added.day,
+            vid.date_added.hour,
+            vid.date_added.minute,
+            vid.date_added.second,
+        )
+        video_data["days_on_platform"] = diff.days
+        video_data["date_delete"] = vid.date_delete
+        video_data["description"] = vid.description
+
+        # Channels containing vid
+        video_data["channels"] = list(Channel.objects.filter(video=vid))
+
+        # Number of favorites containing vid
+        favorites = Playlist.objects.filter(name__exact="Favorites")
+        favorites_with_vid = favorites.filter(playlistcontent__video=vid).distinct()
+        video_data["nb_fav"] = len(favorites_with_vid)
+
+        # Number of comments on vid
+        vid_comments = Comment.objects.filter(video=vid)
+        video_data["nb_comment"] = len(vid_comments)
+
+        # Video duration
+        video_data["duration"] = vid.duration
+
+        # Video Disciplines
+        video_data["disciplines"] = list(Discipline.objects.filter(video=vid))
+
+        # Video type
+        video_data["type"] = vid.type
+
+        # Video Theme
+        video_data["themes"] = list(Theme.objects.filter(video=vid))
+
+        # Video Owner
+        video_data["owner"] = vid.owner.username
+
+        # Video Owner Additionnal
+        video_data["additional_owners"] = list(vid.additional_owners.all())
+
+        # Categories
+        video_data["categories"] = list(Category.objects.filter(video=vid))
+
+        return video_data

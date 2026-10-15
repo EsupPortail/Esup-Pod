@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 14:47+0200\n"
+"POT-Creation-Date: 2026-10-15 14:17+0000\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -8140,8 +8140,8 @@ msgstr ""
 
 #: pod/recorder/views.py
 msgid ""
-"Your video has been received and is being processed. "
-"It will appear in the dashboard once processing is complete."
+"Your video has been received and is being processed. It will appear in the "
+"dashboard once processing is complete."
 msgstr ""
 
 #: pod/recorder/views.py
@@ -8621,9 +8621,20 @@ msgstr ""
 msgid "Your preference regarding the future of your video on this platform."
 msgstr ""
 
+#: pod/video/management/commands/arch_launcher.py
 #: pod/video/management/commands/check_obsolete_videos.py
 #: pod/video/management/commands/respite_launcher.py
 msgid "An Error occurred while processing."
+msgstr ""
+
+#: pod/video/management/commands/arch_launcher.py
+#, python-format
+msgid "Archiving model not found: %(error)s"
+msgstr ""
+
+#: pod/video/management/commands/arch_launcher.py
+#, python-format
+msgid "Archiving model import error: %(error)s"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
