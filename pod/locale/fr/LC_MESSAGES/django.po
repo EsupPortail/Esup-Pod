@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 14:47+0200\n"
+"POT-Creation-Date: 2026-10-15 14:17+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1763,8 +1763,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format "
-"« .vtt »."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format « ."
+"vtt »."
 
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
@@ -8681,11 +8681,11 @@ msgstr "La source du fichier doit être indiquée."
 
 #: pod/recorder/views.py
 msgid ""
-"Your video has been received and is being processed. "
-"It will appear in the dashboard once processing is complete."
+"Your video has been received and is being processed. It will appear in the "
+"dashboard once processing is complete."
 msgstr ""
-"Votre vidéo a bien été reçue et est en cours de traitement. "
-"Elle apparaîtra dans le tableau de bord une fois le traitement terminé."
+"Votre vidéo a bien été reçue et est en cours de traitement. Elle apparaîtra "
+"dans le tableau de bord une fois le traitement terminé."
 
 #: pod/recorder/views.py
 #, python-format
@@ -9237,10 +9237,21 @@ msgstr "Choix en matière d’obsolescence"
 msgid "Your preference regarding the future of your video on this platform."
 msgstr "Vos préférences quant au futur de votre vidéo sur cette plateforme."
 
+#: pod/video/management/commands/arch_launcher.py
 #: pod/video/management/commands/check_obsolete_videos.py
 #: pod/video/management/commands/respite_launcher.py
 msgid "An Error occurred while processing."
 msgstr "Une erreur est survenue durant l’exécution du processus."
+
+#: pod/video/management/commands/arch_launcher.py
+#, python-format
+msgid "Archiving model not found: %(error)s"
+msgstr "Modèle d’archivage introuvable : %(error)s"
+
+#: pod/video/management/commands/arch_launcher.py
+#, python-format
+msgid "Archiving model import error: %(error)s"
+msgstr "Erreur d’importation du modèle d'archivage : %(error)s"
 
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid "USE_OBSOLESCENCE is FALSE"
@@ -9523,20 +9534,10 @@ msgstr "Déplacement de %s vidéos archivées sur Pod"
 msgid "Respite model not found: %(error)s"
 msgstr "Modèle de répit introuvable : %(error)s"
 
-#: pod/video/management/commands/arch_launcher.py
-#, python-format
-msgid "Archiving model not found: %(error)s"
-msgstr "Modèle d’archivage introuvable : %(error)s"
-
 #: pod/video/management/commands/respite_launcher.py
 #, python-format
 msgid "Respite model import error: %(error)s"
 msgstr "Erreur d’importation du modèle de répit : %(error)s"
-
-#: pod/video/management/commands/arch_launcher.py
-#, python-format
-msgid "Archiving model import error: %(error)s"
-msgstr "Erreur d’importation du modèle d'archivage : %(error)s"
 
 #: pod/video/management/commands/respite_launcher.py
 msgid "DRY MODE. This is only a simulation of what would be done."
