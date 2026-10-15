@@ -91,12 +91,12 @@ class Command(BaseCommand):
         except ModuleNotFoundError as e:
             self.stderr.write(self.style.ERROR(_("An Error occurred while processing.")))
             raise CommandError(
-                _("Arch model not found: %(error)s") % {"error": e}
+                _("Archiving model not found: %(error)s") % {"error": e}
             ) from e
         except ImportError as e:
             self.stderr.write(self.style.ERROR(_("An Error occurred while processing.")))
             raise CommandError(
-                _("Arch model import error: %(error)s") % {"error": e}
+                _("Archiving model import error: %(error)s") % {"error": e}
             ) from e
 
     def send_zip(self, file_path, sftp_host, sftp_user, sftp_password, remote_dir="/"):
