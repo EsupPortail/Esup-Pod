@@ -9525,8 +9525,8 @@ msgstr "Modèle de répit introuvable : %(error)s"
 
 #: pod/video/management/commands/arch_launcher.py
 #, python-format
-msgid "Arch model not found: %(error)s"
-msgstr "Modèle d'archivage introuvable : %(error)s"
+msgid "Archiving model not found: %(error)s"
+msgstr "Modèle d’archivage introuvable : %(error)s"
 
 #: pod/video/management/commands/respite_launcher.py
 #, python-format
