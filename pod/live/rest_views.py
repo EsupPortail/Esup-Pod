@@ -1,5 +1,10 @@
+"""Esup-Pod Live API serializers and views."""
+
 from .models import Building, Broadcaster, Event
 from rest_framework import serializers, viewsets
+from rest_framework.validators import UniqueValidator
+from django.core.exceptions import ValidationError
+from pod.video_encode_transcript.models import RunnerManager
 
 # Serializers define the API representation.
 from django.conf import settings
@@ -19,7 +24,42 @@ class BroadcasterSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name="broadcaster-detail", lookup_field="slug"
     )
-    broadcaster_url = serializers.URLField(source="url")
+    broadcaster_url = serializers.URLField(
+        source="url",
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        validators=[UniqueValidator(queryset=Broadcaster.objects.all())],
+    )
+    runner_manager = serializers.PrimaryKeyRelatedField(
+        queryset=RunnerManager.objects.filter(supports_live=True),
+        required=False,
+        allow_null=True,
+    )
+
+    def validate(self, attrs):
+        """Validate the effective stream configuration, including partial updates."""
+        fields = ("stream_mode", "url", "runner_manager", "source_id", "building")
+        values = {
+            field: attrs.get(field, getattr(self.instance, field, None))
+            for field in fields
+            if field in attrs or self.instance is not None
+        }
+        candidate = Broadcaster(**values)
+        try:
+            candidate.clean()
+        except ValidationError as exc:
+            errors = exc.message_dict
+            if "url" in errors:
+                errors["broadcaster_url"] = errors.pop("url")
+            raise serializers.ValidationError(errors)
+        return attrs
+
+    def to_representation(self, instance):
+        """Expose the resolved playback URL without serializing manager credentials."""
+        data = super().to_representation(instance)
+        data["broadcaster_url"] = instance.get_stream_url() or None
+        return data
 
     class Meta:
         model = Broadcaster
@@ -32,6 +72,9 @@ class BroadcasterSerializer(serializers.HyperlinkedModelSerializer):
             "description",
             "poster",
             "broadcaster_url",
+            "stream_mode",
+            "runner_manager",
+            "source_id",
             "status",
             "is_restricted",
             "manage_groups",
@@ -85,9 +128,12 @@ class BuildingViewSet(viewsets.ModelViewSet):
 
 
 class BroadcasterViewSet(viewsets.ModelViewSet):
-    queryset = Broadcaster.objects.all().order_by("building", "name")
+    queryset = Broadcaster.objects.select_related("runner_manager").order_by(
+        "building", "name"
+    )
     serializer_class = BroadcasterSerializer
     lookup_field = "slug"
+    filterset_fields = ["source_id"]
 
     def partial_update(self, request, *args, **kwargs):
         data_updated = super().partial_update(request, *args, **kwargs)

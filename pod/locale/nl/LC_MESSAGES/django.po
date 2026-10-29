@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 14:47+0200\n"
+"POT-Creation-Date: 2026-10-29 10:14+0100\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -3211,6 +3211,14 @@ msgstr ""
 msgid "Buildings"
 msgstr ""
 
+#: pod/live/models.py
+msgid "Fixed URL"
+msgstr ""
+
+#: pod/live/models.py
+msgid "Esup-Runner Live"
+msgstr ""
+
 #: pod/live/models.py pod/recorder/models.py
 msgid "description"
 msgstr ""
@@ -3220,7 +3228,27 @@ msgid "Poster"
 msgstr ""
 
 #: pod/live/models.py
-msgid "Url of the stream"
+msgid "Stream mode"
+msgstr ""
+
+#: pod/live/models.py
+msgid "Fixed stream URL. Required only in fixed URL mode."
+msgstr ""
+
+#: pod/live/models.py pod/video_encode_transcript/models.py
+msgid "Runner manager"
+msgstr ""
+
+#: pod/live/models.py
+msgid "Select the manager receiving this broadcaster's RTMP stream."
+msgstr ""
+
+#: pod/live/models.py
+msgid "Live source ID"
+msgstr ""
+
+#: pod/live/models.py
+msgid "Source identifier on the manager, may match this broadcaster's slug."
 msgstr ""
 
 #: pod/live/models.py
@@ -3280,6 +3308,26 @@ msgstr ""
 
 #: pod/live/models.py pod/video/forms.py
 msgid "Select the main language used in the content."
+msgstr ""
+
+#: pod/live/models.py
+msgid "Select a runner manager for Live mode."
+msgstr ""
+
+#: pod/live/models.py
+msgid "Select a manager that supports Live mode."
+msgstr ""
+
+#: pod/live/models.py
+msgid "Enter the source ID for Live mode."
+msgstr ""
+
+#: pod/live/models.py
+msgid "The manager must belong to a building site."
+msgstr ""
+
+#: pod/live/models.py
+msgid "Enter a stream URL for fixed URL mode."
 msgstr ""
 
 #: pod/live/models.py
@@ -3927,6 +3975,50 @@ msgstr ""
 
 #: pod/live/templates/live/my_events.html
 msgid "Past events"
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "Waiting for the live stream. Playback will start when it is ready."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "The live stream is starting. Playback will start when it is ready."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "The live stream is running, but its media is not ready yet."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "The live stream has ended. Waiting for a new session."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "The live stream failed. Waiting for a new session."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "The live stream is temporarily unavailable. Retrying automatically."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid ""
+"This live stream uses HTTP and cannot be played on this HTTPS page. Contact "
+"the live administrator."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid ""
+"Unable to play the live stream. Check your connection or contact the live "
+"administrator."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "Unable to check live stream availability. Retrying automatically."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "The live stream is ready. Press Play to start playback."
 msgstr ""
 
 #: pod/live/templates/meeting/meeting_live_form.html
@@ -5931,6 +6023,24 @@ msgstr ""
 msgid "Livestreams"
 msgstr ""
 
+#: pod/meeting/templates/meeting/access_denied.html
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Access denied"
+msgstr ""
+
+#: pod/meeting/templates/meeting/access_denied.html
+msgid "The security key in this link is invalid."
+msgstr ""
+
+#: pod/meeting/templates/meeting/access_denied.html
+msgid "Please ask the meeting owner for a new link."
+msgstr ""
+
+#: pod/meeting/templates/meeting/access_denied.html
+#: pod/meeting/templates/meeting/join.html
+msgid "Back to home"
+msgstr ""
+
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/meeting/templates/meeting/link_meeting.html pod/meeting/views.py
 msgid "Edit the meeting"
@@ -6140,10 +6250,6 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/join.html
 msgid "Unable to access to this meeting"
-msgstr ""
-
-#: pod/meeting/templates/meeting/join.html
-msgid "Back to home"
 msgstr ""
 
 #: pod/meeting/templates/meeting/join.html
@@ -8140,8 +8246,8 @@ msgstr ""
 
 #: pod/recorder/views.py
 msgid ""
-"Your video has been received and is being processed. "
-"It will appear in the dashboard once processing is complete."
+"Your video has been received and is being processed. It will appear in the "
+"dashboard once processing is complete."
 msgstr ""
 
 #: pod/recorder/views.py
@@ -10322,10 +10428,6 @@ msgid "This service is not available."
 msgstr ""
 
 #: pod/video/templates/videos/video_respite_choice.html
-msgid "Access denied"
-msgstr ""
-
-#: pod/video/templates/videos/video_respite_choice.html
 msgid "The video does not belong to you or has already been processed."
 msgstr ""
 
@@ -10928,6 +11030,14 @@ msgid "If checked, this runner manager can be used to process tasks."
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
+msgid "Live support"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Allow this manager to be selected for Esup-Runner Live broadcasters."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
 msgid "URL of the runner manager"
 msgstr ""
 
@@ -10945,10 +11055,6 @@ msgstr ""
 
 #: pod/video_encode_transcript/models.py
 msgid "Example format: 6YqG_73xt-9s8v5aBz"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "Runner manager"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py

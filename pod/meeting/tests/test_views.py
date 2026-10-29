@@ -15,6 +15,7 @@ from django.urls import reverse
 from django.utils import timezone
 from http import HTTPStatus
 from importlib import reload
+from unittest.mock import patch
 from pod.authentication.models import AccessGroup
 from pod.live.models import Building, Broadcaster
 from pod.meeting.models import LiveGateway
@@ -533,6 +534,84 @@ class MeetingJoinTestView(TestCase):
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
         print(" --->  SetUp of MeetingJoinTestView: OK!")
+
+    @override_settings(DEBUG=False, LANGUAGE_CODE="en")
+    def test_meeting_join_invalid_direct_access(self):
+        """Reject invalid links without logging a security error or contacting BBB."""
+        meeting = Meeting.objects.get(name="test")
+        participant = User.objects.get(username="pod2")
+        with patch.object(Meeting, "get_is_meeting_running") as is_running:
+            for user in (None, participant):
+                if user:
+                    self.client.force_login(user)
+                else:
+                    self.client.logout()
+                for key in (meeting.get_hashkey()[:53], "0" * 64):
+                    url = reverse(
+                        "meeting:join",
+                        kwargs={"meeting_id": meeting.meeting_id, "direct_access": key},
+                    )
+                    for method in ("get", "post"):
+                        with self.subTest(user=user, key=key, method=method):
+                            with self.assertNoLogs("django.security", level="ERROR"):
+                                response = getattr(self.client, method)(url)
+                            self.assertTemplateUsed(
+                                response, "meeting/access_denied.html"
+                            )
+                            self.assertContains(
+                                response,
+                                "The security key in this link is invalid.",
+                                status_code=HTTPStatus.FORBIDDEN,
+                            )
+                            self.assertContains(
+                                response,
+                                "Please ask the meeting owner for a new link.",
+                                status_code=HTTPStatus.FORBIDDEN,
+                            )
+                            self.assertNotContains(
+                                response,
+                                "meeting_password_form",
+                                status_code=HTTPStatus.FORBIDDEN,
+                            )
+            is_running.assert_not_called()
+
+    @override_settings(LANGUAGE_CODE="en")
+    def test_meeting_join_invalid_direct_access_in_english(self):
+        """Display the explanation to English-speaking visitors."""
+        meeting = Meeting.objects.get(name="test")
+        url = reverse(
+            "meeting:join",
+            kwargs={"meeting_id": meeting.meeting_id, "direct_access": "invalid-key"},
+        )
+        response = self.client.get(url, HTTP_ACCEPT_LANGUAGE="en")
+        self.assertContains(response, "Access denied", status_code=HTTPStatus.FORBIDDEN)
+        self.assertContains(
+            response,
+            "The security key in this link is invalid.",
+            status_code=HTTPStatus.FORBIDDEN,
+        )
+        self.assertContains(
+            response,
+            "Please ask the meeting owner for a new link.",
+            status_code=HTTPStatus.FORBIDDEN,
+        )
+
+    def test_meeting_join_valid_direct_access(self):
+        """Keep valid direct links usable without asking for the meeting password."""
+        meeting = Meeting.objects.get(name="test")
+        url = reverse(
+            "meeting:join",
+            kwargs={
+                "meeting_id": meeting.meeting_id,
+                "direct_access": meeting.get_hashkey(),
+            },
+        )
+        with patch.object(Meeting, "get_is_meeting_running", return_value=True):
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, "meeting/join.html")
+        self.assertIn("name", response.context["form"].fields)
+        self.assertNotIn("password", response.context["form"].fields)
 
     def test_meeting_join_get_request(self):
         self.client = Client()

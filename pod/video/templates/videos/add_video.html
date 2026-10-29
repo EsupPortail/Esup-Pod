@@ -55,7 +55,7 @@
   </p>
 {% else %}
 
-  <form id="uploadForm">
+  <form id="uploadForm" data-complete-url="{% url 'video:api_chunked_upload_complete' %}">
     {% csrf_token %}
     <div class="mb-5">
       <h2><i class="bi bi-pin-angle" aria-hidden="true"></i>&nbsp;{% trans "Legal notice" %}</h2>
@@ -97,6 +97,8 @@
     {% endif %}
 
     <p class="pod-callout pod-callout-warning">{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
+
+    <p id="upload-status" role="status" aria-live="polite" aria-atomic="true"></p>
 
     <div class="d-grid">
       <input id="submitVideo" class="btn btn-primary btn-block" type="submit" value="{% trans 'Upload' %}" disabled>
@@ -163,38 +165,42 @@
 <script src="{% static 'blueimp-file-upload/js/jquery.fileupload-ui.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'spark-md5/spark-md5.min.js' %}?ver={{VERSION}}"></script>
 
-<script>
+<script id="video-upload-core">
   /** formulaire **/
   var max_chunk_size = {{ CHUNK_SIZE }};
-  var slug = "{{ slug }}";
+  var slug = "{{ slug|escapejs }}";
   var max_size = {{ max_size }};
   var global_data;
-  var md5 = "",
-    csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value,
+  var checksums = new WeakMap();
+  var csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value,
     form_data = [{ "name": "csrfmiddlewaretoken", "value": csrf }];
   /* Calculate an md5 checksum of uploaded file. */
   function calculate_md5(file, chunk_size) {
-    var slice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
-      chunks = chunks = Math.ceil(file.size / chunk_size),
-      current_chunk = 0,
-      spark = new SparkMD5.ArrayBuffer();
-    function onload(e) {
-      spark.append(e.target.result);  // append chunk
-      current_chunk++;
-      if (current_chunk < chunks) {
-        read_next_chunk();
-      } else {
-        md5 = spark.end();
+    return new Promise(function(resolve, reject) {
+      var slice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+        chunks = Math.ceil(file.size / chunk_size),
+        current_chunk = 0,
+        spark = new SparkMD5.ArrayBuffer();
+      function onload(e) {
+        try {
+          spark.append(e.target.result);
+          current_chunk++;
+          if (current_chunk < chunks) read_next_chunk();
+          else resolve(spark.end());
+        } catch (error) {
+          reject(error);
+        }
       }
-    }
-    function read_next_chunk() {
-      var reader = new FileReader();
-      reader.onload = onload;
-      var start = current_chunk * chunk_size,
-        end = Math.min(start + chunk_size, file.size);
-      reader.readAsArrayBuffer(slice.call(file, start, end));
-    }
-    read_next_chunk();
+      function read_next_chunk() {
+        var reader = new FileReader();
+        reader.onload = onload;
+        reader.onerror = reader.onabort = reject;
+        var start = current_chunk * chunk_size,
+          end = Math.min(start + chunk_size, file.size);
+        reader.readAsArrayBuffer(slice.call(file, start, end));
+      }
+      read_next_chunk();
+    });
   }
 
   /* Upload file to Pod on form submit */
@@ -243,10 +249,13 @@
       }
       else {
         form_data.splice(1);
-        calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
-        $(this).value=data.files[0];
+        // Keep the checksum outside the AJAX settings, which jQuery deep-copies.
+        // Upload starts as before; only final validation waits for the checksum.
+        var checksum = calculate_md5(data.files[0], max_chunk_size);
+        checksums.set(data.files[0], checksum);
+        checksum.catch(function() {});
         document.getElementById("file_field").classList.add("d-none");
-        document.getElementById("file_name").innerHTML = data.originalFiles[0].name;
+        document.getElementById("file_name").textContent = data.originalFiles[0].name;
         document.getElementById("file_selected").classList.remove("d-none");
 
         global_data = data;
@@ -264,22 +273,27 @@
       document.getElementById("progBar").value = progress;
     },
     done: function (e, data) { // Called when the file has completely uploaded
-      $.ajax({
-        type: "POST",
-        url: "{% url 'video:api_chunked_upload_complete' %}",
-        data: {
-          csrfmiddlewaretoken: csrf,
-          upload_id: data.result.upload_id,
-          md5: md5,
-          slug: slug,
-          {% if TRANSCRIPT|length > 0 %}
-            transcript: document.getElementById("select-transcript-lang").value
-          {% endif %}
-        },
-        dataType: "json",
-        success: function (data) {
-          location.href = data.redirlink;
-        }
+      checksums.get(data.files[0]).then(function(md5) {
+        $.ajax({
+          type: "POST",
+          url: "{% url 'video:api_chunked_upload_complete' %}",
+          data: {
+            csrfmiddlewaretoken: csrf,
+            upload_id: data.result.upload_id,
+            md5: md5,
+            slug: slug,
+            {% if TRANSCRIPT|length > 0 %}
+              transcript: document.getElementById("select-transcript-lang").value
+            {% endif %}
+          },
+          dataType: "json",
+          success: function (data) {
+            location.href = data.redirlink;
+          }
+        });
+      }, function() {
+        // This is an existing integrity requirement, independent of diagnostics.
+        showalert(gettext("Unable to read the file. Please select it again."), "alert-danger");
       });
     },
   }).on('fileuploaddragover', function (e) {
@@ -304,6 +318,9 @@
   });
 
 </script>
+
+<!-- Optional diagnostics: the upload above works even if this script cannot load. -->
+<script async src="{% static 'js/video_upload.js' %}?ver={{VERSION}}"></script>
 
 {{form.media}}
 

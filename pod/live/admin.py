@@ -1,3 +1,5 @@
+"""Esup-Pod Live administration."""
+
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.sites.models import Site
@@ -79,6 +81,9 @@ class BroadcasterAdmin(admin.ModelAdmin):
         "name",
         "slug",
         "building",
+        "stream_mode",
+        "runner_manager",
+        "source_id",
         "url",
         "status",
         "is_recording_admin",
@@ -86,7 +91,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
         "piloting_conf",
         "main_lang",
     )
-    list_filter = ["building"]
+    list_filter = ["building", "stream_mode", "runner_manager"]
 
     def get_fields(self, request, obj=None):
         fields = (
@@ -94,6 +99,9 @@ class BroadcasterAdmin(admin.ModelAdmin):
             "building",
             "description",
             "poster",
+            "stream_mode",
+            "runner_manager",
+            "source_id",
             "url",
             "status",
             "enable_add_event",
@@ -118,10 +126,11 @@ class BroadcasterAdmin(admin.ModelAdmin):
         return ["slug", "qrcode", "transcription_file"]
 
     def get_autocomplete_fields(self, request):
-        return ["building"]
+        return ["building", "runner_manager"]
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(BroadcasterAdmin, self).get_form(request, obj, **kwargs)
+        form.base_fields["runner_manager"].widget.can_delete_related = False
         form.base_fields["piloting_conf"].widget.attrs.update(
             {"data-url": reverse("live:ajax_get_mandatory_parameters") + "?impl_name="}
         )
@@ -137,6 +146,12 @@ class BroadcasterAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "building":
             kwargs["queryset"] = Building.objects.filter(sites=Site.objects.get_current())
+        if db_field.name == "runner_manager" and not request.user.is_superuser:
+            from pod.video_encode_transcript.models import RunnerManager
+
+            kwargs["queryset"] = RunnerManager.objects.filter(
+                site=get_current_site(request)
+            )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     @admin.display(description=_("QR code"))

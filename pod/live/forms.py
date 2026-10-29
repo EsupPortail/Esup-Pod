@@ -1,3 +1,5 @@
+"""Esup-Pod Live forms."""
+
 from django import forms
 from django.conf import settings
 from django.db.models import Q
@@ -73,6 +75,14 @@ class BroadcasterAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs) -> None:
         super(BroadcasterAdminForm, self).__init__(*args, **kwargs)
+        mode = (
+            self.data.get(self.add_prefix("stream_mode"), Broadcaster.StreamMode.STATIC)
+            if self.is_bound
+            else self.initial.get("stream_mode", self.instance.stream_mode)
+        )
+        self.fields["url"].required = mode == Broadcaster.StreamMode.STATIC
+        for field in ("runner_manager", "source_id"):
+            self.fields[field].required = mode == Broadcaster.StreamMode.ESUP_RUNNER
         if __FILEPICKER__:
             self.fields["poster"].widget = CustomFileWidget(type="image")
 

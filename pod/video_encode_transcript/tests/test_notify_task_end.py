@@ -12,7 +12,7 @@ from django.contrib.sites.models import Site
 from django.test import RequestFactory, TestCase
 
 from pod.video.models import Type, Video
-from pod.video_encode_transcript.models import RunnerManager, Task
+from pod.video_encode_transcript.models import EncodingStep, RunnerManager, Task
 from pod.video_encode_transcript.views import notify_task_end
 
 
@@ -51,7 +51,9 @@ class NotifyTaskEndAuthTests(TestCase):
             video=self.video,
         )
 
-    def _post_notify(self, authorization: str | None = None, status: str = "running"):
+    def _post_notify(
+        self, authorization: str | None = None, status: str = "running", **payload
+    ):
         """Send a JSON notify_task_end request with an optional bearer token."""
         headers = {}
         if authorization is not None:
@@ -59,7 +61,9 @@ class NotifyTaskEndAuthTests(TestCase):
         return notify_task_end(
             self.factory.post(
                 "/runner/notify_task_end/",
-                data=json.dumps({"task_id": self.task.task_id, "status": status}),
+                data=json.dumps(
+                    {"task_id": self.task.task_id, "status": status, **payload}
+                ),
                 content_type="application/json",
                 **headers,
             )
@@ -169,6 +173,74 @@ class NotifyTaskEndAuthTests(TestCase):
         self.assertEqual(called_video_id, self.video.id)
         self.assertEqual(called_step, -1)
         self.assertEqual(called_desc, "Runner manager task failed")
+
+    @patch("pod.video_encode_transcript.views.send_email_item")
+    def test_invalid_source_error_reuses_existing_video_message(
+        self, mock_send_email_item
+    ):
+        """Recognize full ffprobe errors in either payload field and preserve logs."""
+        error = (
+            "Encoding aborted: ffprobe failed to analyze the source media (exit code 1): "
+            "[mov,mp4,m4a,3gp,3g2,mj2 @ 0x5555811fd180] moov atom not found "
+            "/tmp/esup-runner/4b515910-068a-4d22-98a7-bf9f6260c2a8/faussevideopdf.mp4: "
+            "Invalid data found when processing input."
+        )
+        long_error = error.replace("faussevideopdf.mp4", "long-filename-" * 20 + ".mp4")
+        self.assertNotIn("Invalid data found when processing input", long_error[:255])
+        for payload in (
+            {"error_message": error},
+            {"script_output": error},
+            {"error_message": "Encoding aborted", "script_output": error},
+            {"error_message": error.upper()},
+            {"error_message": long_error},
+        ):
+            with self.subTest(payload=payload):
+                Task.objects.filter(pk=self.task.pk).update(
+                    status="running", script_output="Existing runner output\n"
+                )
+                Video.objects.filter(pk=self.video.pk).update(encoding_in_progress=True)
+
+                response = self._post_notify(
+                    "Bearer runner-token", status="failed", **payload
+                )
+
+                self.assertEqual(response.status_code, 200)
+                self.task.refresh_from_db()
+                self.video.refresh_from_db()
+                self.assertEqual(self.task.status, "failed")
+                self.assertFalse(self.video.encoding_in_progress)
+                encoding_step = EncodingStep.objects.get(video=self.video)
+                self.assertEqual(encoding_step.num_step, -1)
+                self.assertEqual(
+                    encoding_step.desc_step,
+                    "The source file does not appear to be a valid video file. "
+                    "Please re-upload a valid video file.",
+                )
+                expected_output = "Existing runner output\n"
+                if "error_message" in payload:
+                    expected_output += f"{payload['error_message']}\n---\n"
+                expected_output += payload.get("script_output", "")
+                self.assertEqual(self.task.script_output, expected_output)
+
+        self.assertEqual(mock_send_email_item.call_count, 5)
+
+    @patch("pod.video_encode_transcript.views.send_email_item")
+    def test_other_ffprobe_errors_keep_original_details(self, mock_send_email_item):
+        """Leave unrelated ffprobe failures available for the generic error alert."""
+        error = (
+            "Encoding aborted: ffprobe failed to analyze the source media "
+            "(exit code 1): Permission denied"
+        )
+
+        response = self._post_notify(
+            "Bearer runner-token", status="failed", error_message=error
+        )
+
+        self.assertEqual(response.status_code, 200)
+        encoding_step = EncodingStep.objects.get(video=self.video)
+        self.assertEqual(encoding_step.num_step, -1)
+        self.assertEqual(encoding_step.desc_step, error)
+        mock_send_email_item.assert_called_once()
 
     @patch("pod.video_encode_transcript.views.change_encoding_step")
     def test_notify_task_end_updates_video_encoding_step_on_timeout_status(

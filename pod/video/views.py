@@ -3515,6 +3515,17 @@ class PodChunkedUploadView(ChunkedUploadView):
     model = ChunkedUpload
     field_name = "the_file"
 
+    def get_response_data(self, chunked_upload, request):
+        """Refresh active upload sessions only after a chunk has been accepted."""
+        response_data = super().get_response_data(chunked_upload, request)
+        if (
+            request.user.is_authenticated
+            and self.check_permissions(request) is not False
+        ):
+            # SessionMiddleware saves the session and resets its configured lifetime.
+            request.session.modified = True
+        return response_data
+
     def check_permissions(self, request):
         """Return False for anonymous users or users excluded by the staff restriction."""
         if not request.user.is_authenticated:
