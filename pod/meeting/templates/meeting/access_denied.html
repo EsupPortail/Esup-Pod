@@ -1,0 +1,10 @@
+{# Esup-Pod: meeting access denied page. #}
+{% extends "403.html" %}
+{% load i18n %}
+
+{% block page_content %}
+  <h1 class="page_title">{% trans "Access denied" %}</h1>
+  <p>{% trans "The security key in this link is invalid." %}</p>
+  <p>{% trans "Please ask the meeting owner for a new link." %}</p>
+  <p><a href="/" class="btn btn-primary">{% trans "Back to home" %}</a></p>
+{% endblock %}
