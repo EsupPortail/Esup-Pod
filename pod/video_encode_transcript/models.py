@@ -474,6 +474,13 @@ class RunnerManager(models.Model):
         verbose_name=_("Active"),
         help_text=_("If checked, this runner manager can be used to process tasks."),
     )
+    supports_live = models.BooleanField(
+        default=False,
+        verbose_name=_("Live support"),
+        help_text=_(
+            "Allow this manager to be selected for Esup-Runner Live broadcasters."
+        ),
+    )
 
     # Runner manager URL
     # Format: https://manager.univ.fr:port/
