@@ -1,6 +1,11 @@
+{# Esup-Pod: live event playback and interaction scripts. #}
 {% load custom_tags %}
 {% load i18n %}
 {% load static %}
+{% if not form %}
+{% if event.is_current and not form and event.broadcaster.is_runner_live %}
+  <script src="{% static 'js/runner_live.js' %}?ver={{ VERSION }}"></script>
+{% endif %}
 <script>
     // Debug if necessary, depends on the settings_local
     const debug = "{% get_setting "DEBUG" False %}" === "True";
@@ -56,6 +61,7 @@
     }
 
     // Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
+    {% if not event.broadcaster.is_runner_live %}
     videojs.Hls.xhr.beforeRequest = function (options) {
 
         if ('{{event.is_past }}' === 'False') {
@@ -66,7 +72,7 @@
             }
             if (started && player.readyState() <= 2) {
                 // Check if .m3u8 exists, to be sure that live is stopped
-                fetch("{{event.broadcaster.url}}", {
+                fetch("{{event.broadcaster.get_stream_url|escapejs}}", {
                     method: 'GET',
                     {#crossDomain: true,#}
                     headers: {
@@ -96,8 +102,9 @@
         }
         return options;
     }
+    {% endif %}
 
-    {% if event.is_current %}
+    {% if event.is_current and not form %}
 
       // Management of the streaming live
       let player = videojs("podvideoplayer", options, function() {
@@ -109,6 +116,22 @@
         link: '{{ LINK_PLAYER }}'
       });
 
+      {% if event.broadcaster.is_runner_live %}
+      window.PodRunnerLive.start(player, {
+        onUnavailable: () => {
+          {% if event.video_on_hold.is_video %}
+            showWaitingVideo(false);
+          {% endif %}
+        },
+        onAvailable: () => {
+          const waitingPlayer = videojs.getPlayer('podvideoonholdplayer');
+          if (waitingPlayer) waitingPlayer.pause();
+          document.getElementById("divvideoonhold").style.display = "none";
+          document.getElementById("divvideoplayer").style.display = "block";
+          video_on_hold_is_displayed = false;
+        }
+      });
+      {% else %}
       player.on("error", function() {
         // Handle successives errors to avoid multiple reload
         if (typeof (errored) == "undefined" || !errored) {
@@ -132,7 +155,9 @@
           {% endif %}
         }
       });
+      {% endif %}
 
+      let liveUiInitialized = false;
       // Fire this event when live started
       player.on("loadedmetadata", function() {
         if (debug) {
@@ -141,11 +166,20 @@
 
         // dispose onHold resources
         video_on_hold_is_displayed = false;
-        videojs(document.getElementById("divvideoonhold")).dispose();
+        {% if event.broadcaster.is_runner_live %}
+          const waitingPlayer = videojs.getPlayer('podvideoonholdplayer');
+          if (waitingPlayer) waitingPlayer.pause();
+          document.getElementById("divvideoonhold").style.display = "none";
+        {% else %}
+          videojs(document.getElementById("divvideoonhold")).dispose();
+        {% endif %}
 
         // Affichage du flux direct
         started = true;
         document.getElementById("divvideoplayer").style.display = "block";
+
+        if (liveUiInitialized) return;
+        liveUiInitialized = true;
 
         // Affichage du nombre de spectateurs
         {% if event.broadcaster.enable_viewer_count %}
@@ -666,8 +700,8 @@
      * Reloads the page if the event has started or ended while viewing.
      */
     function reloadIfNeeded() {
-        const start = new Date("{{ event.start_date }}")
-        const end = new Date("{{ event.end_date }}")
+        const start = new Date("{{ event.start_date|date:'c' }}")
+        const end = new Date("{{ event.end_date|date:'c' }}")
         {% if event.is_coming %}
             setInterval(() => {
                 if (new Date() >= start) {
@@ -765,7 +799,7 @@
             {% endif %}
         {% endif %}
 
-        {% if event.is_current %}
+        {% if event.is_current and not form and not event.broadcaster.is_runner_live %}
             showWaitingVideo(true);
         {% endif %}
 
@@ -840,3 +874,4 @@
     }
 
 </script>
+{% endif %}
