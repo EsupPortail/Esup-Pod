@@ -864,6 +864,9 @@ class RunnerLivePlaybackTests(RunnerLiveDatabaseTestCase):
 class RunnerLiveMigrationTests(TransactionTestCase):
     """Check that incremental Live migrations preserve existing broadcasters."""
 
+    # Preserve seeded primary keys for fixture-based transaction tests that follow.
+    serialized_rollback = True
+
     def test_existing_broadcaster_keeps_its_url_and_defaults_to_static(self):
         """Preserve legacy broadcaster URLs and select static mode during migration."""
         old_target = [
@@ -871,13 +874,13 @@ class RunnerLiveMigrationTests(TransactionTestCase):
             ("video_encode_transcript", "0014_runnermanager_admin_url"),
         ]
         executor = MigrationExecutor(connection)
-        if old_target[0] not in executor.loader.graph.nodes:
+        if any(target not in executor.loader.graph.nodes for target in old_target):
             self.skipTest(
                 "Upgrade regression requires the existing deployment migration history."
             )
         new_target = executor.loader.graph.leaf_nodes()
-        executor.migrate(old_target)
         try:
+            executor.migrate(old_target)
             old_apps = executor.loader.project_state(old_target).apps
             site = old_apps.get_model("sites", "Site").objects.create(
                 domain="legacy.example.com", name="Legacy site"

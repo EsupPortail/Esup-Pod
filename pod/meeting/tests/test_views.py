@@ -575,24 +575,24 @@ class MeetingJoinTestView(TestCase):
                             )
             is_running.assert_not_called()
 
-    @override_settings(LANGUAGE_CODE="fr")
-    def test_meeting_join_invalid_direct_access_in_french(self):
-        """Display the translated explanation to French-speaking visitors."""
+    @override_settings(LANGUAGE_CODE="en")
+    def test_meeting_join_invalid_direct_access_in_english(self):
+        """Display the explanation to English-speaking visitors."""
         meeting = Meeting.objects.get(name="test")
         url = reverse(
             "meeting:join",
             kwargs={"meeting_id": meeting.meeting_id, "direct_access": "invalid-key"},
         )
-        response = self.client.get(url, HTTP_ACCEPT_LANGUAGE="fr")
-        self.assertContains(response, "Accès refusé", status_code=HTTPStatus.FORBIDDEN)
+        response = self.client.get(url, HTTP_ACCEPT_LANGUAGE="en")
+        self.assertContains(response, "Access denied", status_code=HTTPStatus.FORBIDDEN)
         self.assertContains(
             response,
-            "La clé de sécurité de ce lien est invalide.",
+            "The security key in this link is invalid.",
             status_code=HTTPStatus.FORBIDDEN,
         )
         self.assertContains(
             response,
-            "Veuillez demander un nouveau lien à l’organisateur de la réunion.",
+            "Please ask the meeting owner for a new link.",
             status_code=HTTPStatus.FORBIDDEN,
         )
 
