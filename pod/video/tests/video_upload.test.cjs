@@ -4,7 +4,17 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const SparkMD5 = require("../../static/spark-md5/spark-md5.js");
+const { createHash } = require("node:crypto");
+
+/** Match the SparkMD5 API used by uploads without requiring browser dependencies. */
+const SparkMD5 = {
+  ArrayBuffer: class {
+    constructor() { this.checksum = createHash("md5"); }
+    append(buffer) { this.checksum.update(Buffer.from(buffer)); return this; }
+    end() { return this.checksum.digest("hex"); }
+  },
+  hash(contents) { return createHash("md5").update(contents).digest("hex"); },
+};
 
 const template = fs.readFileSync(path.join(__dirname, "../templates/videos/add_video.html"), "utf8");
 const core = template.match(/<script id="video-upload-core">([\s\S]*?)<\/script>/)[1]
