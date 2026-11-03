@@ -1,4 +1,7 @@
-/** Run with: node --test pod/video/tests/video_upload.test.cjs */
+/**
+ * Esup-Pod upload and optional diagnostics tests.
+ * Run with: node --test pod/video/tests/video_upload.test.cjs
+ */
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
@@ -17,19 +20,28 @@ const SparkMD5 = {
 };
 
 const template = fs.readFileSync(path.join(__dirname, "../templates/videos/add_video.html"), "utf8");
-const core = template.match(/<script id="video-upload-core">([\s\S]*?)<\/script>/)[1]
+const core = (transcript) => template.match(/<script id="video-upload-core">([\s\S]*?)<\/script>/)[1]
   .replaceAll("{{ CHUNK_SIZE }}", "4")
   .replaceAll("{{ max_size }}", "1")
   .replaceAll("{{ slug|escapejs }}", "existing-video")
   .replace(/\{% trans (["'])(.*?)\1 %\}/g, (match, quote, text) => text)
   .replace(/\{% url 'video:api_chunked_upload_complete' %\}/g, "/complete/")
   .replace(/\{% url 'video:api_chunked_upload' %\}/g, "/upload/")
+  .replace(/\{% if TRANSCRIPT\|length > 0 %\}([\s\S]*?)\{% endif %\}/g, transcript ? "$1" : "")
   .replace(/\{%[^%]*%\}/g, "");
 const diagnostics = fs.readFileSync(path.join(__dirname, "../static/js/video_upload.js"), "utf8");
 const flush = () => new Promise((resolve) => setImmediate(resolve));
 
+/** Provide the browser CustomEvent API on Node versions without it. */
+class CustomEvent extends Event {
+  constructor(type, options) {
+    super(type, options);
+    this.detail = options.detail;
+  }
+}
+
 /** Exercise the inline upload independently of optional diagnostic listeners. */
-function setup({ missing = false, initError = false, renderError = false, translationError = false, noStatus = false } = {}) {
+function setup({ missing = false, initError = false, renderError = false, translationError = false, noStatus = false, eventError = false, transcript = true } = {}) {
   const elements = new Map();
   const listeners = [];
   const reads = [];
@@ -41,8 +53,8 @@ function setup({ missing = false, initError = false, renderError = false, transl
   function element(id) {
     if (!elements.has(id)) {
       const classes = new Set();
-      elements.set(id, {
-        value: "", checked: true, disabled: false, textContent: "", style: {}, handlers: {},
+      elements.set(id, Object.assign(new EventTarget(), {
+        value: "", checked: true, disabled: false, textContent: "", style: {},
         accept: ".mp4, .mov", dataset: { completeUrl: "/complete/" },
         classList: {
           add(name) { classes.add(name); },
@@ -53,8 +65,15 @@ function setup({ missing = false, initError = false, renderError = false, transl
             if (enabled) classes.add(name); else classes.delete(name);
           },
         },
-        addEventListener(name, callback) { this.handlers[name] = callback; },
-      });
+        addEventListener(name, callback) {
+          if (initError && name === "pod-upload-status") throw new Error("Broken diagnostics initialization");
+          EventTarget.prototype.addEventListener.call(this, name, callback);
+        },
+        dispatchEvent(event) {
+          if (eventError && event.type === "pod-upload-status") throw new Error("Broken optional event");
+          return EventTarget.prototype.dispatchEvent.call(this, event);
+        },
+      }));
     }
     return elements.get(id);
   }
@@ -63,27 +82,27 @@ function setup({ missing = false, initError = false, renderError = false, transl
   element("csrf").value = "csrf-token";
 
   const document = {
-    getElementById: (id) => id === "upload-status" && noStatus ? null : element(id),
+    getElementById: (id) => (id === "upload-status" && noStatus) || (id === "select-transcript-lang" && !transcript) ? null : element(id),
     getElementsByName: () => [element("csrf")],
     getElementsByClassName: () => [],
     body: element("body"),
     addEventListener() {},
   };
-  const $ = (target) => {
+  const $ = () => {
     const wrapper = {
       fileupload(value) { options = value; return wrapper; },
-      on(name, selector, callback) {
-        if (target === document && initError) throw new Error("Broken diagnostics initialization");
-        listeners.push({ name: name.split(".")[0], callback: callback || selector });
+      on(names, callback) {
+        for (const name of names.split(/\s+/)) listeners.push({ name, callback });
         return wrapper;
       },
     };
     return wrapper;
   };
-  $.ajax = (request) => completions.push(request);
+  $.ajax = () => { throw new Error("Upload confirmation must use fetch"); };
 
   function emit(name, data) {
     const event = {
+      type: name,
       preventDefault() { throw new Error("Diagnostics must not cancel upload events"); },
       stopPropagation() { throw new Error("Diagnostics must not stop upload events"); },
     };
@@ -96,7 +115,7 @@ function setup({ missing = false, initError = false, renderError = false, transl
     readAsArrayBuffer(blob) { reads.push({ reader: this, blob }); }
   }
   const window = {
-    jQuery: $, location: { href: "http://localhost/video/add/" },
+    location: { href: "http://localhost/video/add/" },
     gettext(message) {
       if (translationError) throw new Error("Broken optional translation");
       return message;
@@ -104,18 +123,23 @@ function setup({ missing = false, initError = false, renderError = false, transl
   };
   const context = vm.createContext({
     window, document, $, jQuery: $, location: window.location,
-    File: Blob, FileReader: Reader, SparkMD5, URL,
+    File: Blob, FileReader: Reader, SparkMD5, URLSearchParams, CustomEvent,
+    fetch(url, options) {
+      return new Promise((resolve, reject) => {
+        completions.push({ url, options, data: Object.fromEntries(options.body), resolve, reject });
+      });
+    },
     gettext: (message) => message,
     showalert(message) { alerts.push(message); },
   });
-  vm.runInContext(core, context);
-  if (!missing) vm.runInContext(diagnostics, context);
+  vm.runInContext(core(transcript), context);
+  if (!missing) vm.runInNewContext(diagnostics, { window, document });
 
   return {
     element, context, requests, completions, alerts, reads, window,
     get options() { return options; },
     emit,
-    loadDiagnostics() { vm.runInContext(diagnostics, context); },
+    loadDiagnostics() { vm.runInNewContext(diagnostics, { window, document }); },
     select(contents = "testtest", name = "video.mp4") {
       const file = new Blob([contents]);
       file.name = name;
@@ -130,8 +154,8 @@ function setup({ missing = false, initError = false, renderError = false, transl
       options.add.call(element("chunked_upload"), {}, data);
       return data;
     },
-    submit() { element("uploadForm").handlers.submit({ preventDefault() {} }); },
-    reset() { element("resetButton").handlers.click(); },
+    submit() { element("uploadForm").dispatchEvent(new Event("submit", { cancelable: true })); },
+    reset() { element("resetButton").dispatchEvent(new Event("click")); },
     async read() {
       const { reader, blob } = reads.shift();
       reader.onload({ target: { result: await blob.arrayBuffer() } });
@@ -157,10 +181,13 @@ function setup({ missing = false, initError = false, renderError = false, transl
     fail(code) {
       emit("fileuploadfail", { ...requests.at(-1), jqXHR: { status: code } });
     },
-    finalError(code = 500, url = "/complete/") {
-      for (const listener of listeners) {
-        if (listener.name === "ajaxError") listener.callback({}, { status: code }, { url });
-      }
+    async complete() {
+      completions.at(-1).resolve({ ok: true, json: async () => ({ redirlink: "/video/edit/" }) });
+      await flush();
+    },
+    async finalError(code = 500) {
+      completions.at(-1).resolve({ ok: false, status: code });
+      await flush();
     },
   };
 }
@@ -172,6 +199,7 @@ for (const [name, fault] of [
   ["unable to render messages", { renderError: true }],
   ["unable to translate messages", { translationError: true }],
   ["without a status element", { noStatus: true }],
+  ["unable to dispatch notifications", { eventError: true }],
 ]) {
   test(`the original upload completes when diagnostics are ${name}`, async () => {
     const upload = setup(fault);
@@ -186,7 +214,12 @@ for (const [name, fault] of [
     assert.equal(upload.completions[0].data.csrfmiddlewaretoken, "csrf-token");
     assert.equal(upload.completions[0].data.slug, "existing-video");
     assert.equal(upload.completions[0].data.transcript, "fr");
-    upload.completions[0].success({ redirlink: "/video/edit/" });
+    assert.equal(upload.completions[0].url, "/complete/");
+    assert.equal(upload.completions[0].options.method, "POST");
+    assert.equal(upload.completions[0].options.credentials, "same-origin");
+    assert.equal(upload.completions[0].options.headers["X-Requested-With"], "XMLHttpRequest");
+    assert.ok(upload.completions[0].options.body instanceof URLSearchParams);
+    await upload.complete();
     assert.equal(upload.window.location.href, "/video/edit/");
   });
 }
@@ -259,7 +292,7 @@ test("the same chunk settings, upload ID and progress are preserved without diag
   assert.doesNotThrow(() => JSON.stringify(upload.requests.at(-1)));
   await upload.prepare();
   await upload.done();
-  assert.equal(upload.completions[0].timeout, undefined);
+  assert.equal(upload.completions[0].options.timeout, undefined);
 });
 
 test("network errors are observed without retries, timeouts or changes to controls", async () => {
@@ -292,11 +325,84 @@ test("completion errors are displayed without sending another request", async ()
   upload.submit();
   await upload.prepare();
   await upload.done();
-  upload.finalError();
+  await upload.finalError();
   assert.match(upload.element("upload-status").textContent, /Check your dashboard/);
   assert.equal(upload.completions.length, 1);
-  upload.finalError(500, "/another-endpoint/");
-  assert.equal(upload.completions.length, 1);
+});
+
+for (const failure of ["network", "invalid JSON", "authentication"]) {
+  test(`a completion ${failure} error is displayed without redirecting or retrying`, async () => {
+    const upload = setup();
+    upload.select("test");
+    upload.submit();
+    await upload.prepare();
+    await upload.done();
+    if (failure === "network") {
+      upload.completions[0].reject(new Error("Offline"));
+    } else if (failure === "invalid JSON") {
+      upload.completions[0].resolve({ ok: true, json: async () => { throw new SyntaxError("Invalid JSON"); } });
+    } else {
+      upload.completions[0].resolve({ ok: false, status: 403 });
+    }
+    await flush();
+    assert.match(upload.element("upload-status").textContent, /Check your dashboard/);
+    assert.equal(upload.element("upload-status").classList.contains("text-danger"), true);
+    assert.equal(upload.window.location.href, "http://localhost/video/add/");
+    assert.equal(upload.completions.length, 1);
+    assert.equal(upload.requests.length, 1);
+  });
+}
+
+test("native diagnostics show upload phases without access to jQuery", async () => {
+  const upload = setup();
+  upload.select("test");
+  assert.equal(upload.element("upload-status").textContent, "");
+  upload.submit();
+  assert.equal(upload.element("upload-status").textContent, "Uploading…");
+  await upload.prepare();
+  await upload.done();
+  assert.equal(upload.element("upload-status").textContent, "Checking your upload…");
+});
+
+for (const code of [401, 403]) {
+  test(`an upload HTTP ${code} error is reported and reset clears the diagnostic`, () => {
+    const upload = setup();
+    upload.select();
+    upload.submit();
+    upload.fail(code);
+    assert.match(upload.element("upload-status").textContent, /no longer authenticated/);
+    assert.equal(upload.element("upload-status").classList.contains("text-danger"), true);
+    upload.reset();
+    assert.equal(upload.element("upload-status").textContent, "");
+    assert.equal(upload.element("upload-status").classList.contains("text-danger"), false);
+  });
+}
+
+test("completion encodes form values and works without the optional transcript selector", async () => {
+  const upload = setup({ transcript: false });
+  upload.context.slug = "video with spaces & plus+";
+  upload.context.csrf = "token+&=";
+  upload.select("test");
+  upload.submit();
+  await upload.prepare();
+  await upload.done();
+  assert.equal(upload.completions[0].data.slug, "video with spaces & plus+");
+  assert.equal(upload.completions[0].data.csrfmiddlewaretoken, "token+&=");
+  assert.equal(Object.hasOwn(upload.completions[0].data, "transcript"), false);
+  await upload.complete();
+  assert.equal(upload.window.location.href, "/video/edit/");
+});
+
+test("diagnostics loaded after upload starts still observe completion", async () => {
+  const upload = setup({ missing: true });
+  upload.select("test");
+  upload.submit();
+  upload.loadDiagnostics();
+  await upload.prepare();
+  await upload.done();
+  assert.equal(upload.element("upload-status").textContent, "Checking your upload…");
+  await upload.complete();
+  assert.equal(upload.window.location.href, "/video/edit/");
 });
 
 test("loading diagnostics twice cannot submit or complete twice", async () => {

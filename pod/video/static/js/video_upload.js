@@ -1,14 +1,11 @@
-/** Optional upload diagnostics. This file never starts or controls a request. */
+/** Esup-Pod optional upload diagnostics. This file never starts or controls a request. */
 (function () {
   "use strict";
 
   try {
     const form = document.getElementById("uploadForm");
     const status = document.getElementById("upload-status");
-    if (!form || !status || typeof window.jQuery !== "function") return;
-
-    const $ = window.jQuery;
-    const completePath = new URL(form.dataset.completeUrl, window.location.href).pathname;
+    if (!form || !status) return;
 
     function gettext(message) {
       return typeof window.gettext === "function" ? window.gettext(message) : message;
@@ -19,7 +16,7 @@
       status.classList.toggle("text-danger", error);
     }
 
-    // Event listeners must never throw into jQuery or change an event's outcome.
+    // Event listeners must never interrupt the upload or change an event's outcome.
     function observe(callback) {
       return function () {
         try {
@@ -30,26 +27,28 @@
       };
     }
 
-    $(document).on("fileuploadadd.podUploadDiagnostics", "#chunked_upload", observe(function () {
-      show("");
-    }));
-    $(document).on("fileuploadsend.podUploadDiagnostics", "#chunked_upload", observe(function () {
-      show(gettext("Uploading…"));
-    }));
-    $(document).on("fileuploaddone.podUploadDiagnostics", "#chunked_upload", observe(function () {
-      show(gettext("Checking your upload…"));
-    }));
-    $(document).on("fileuploadfail.podUploadDiagnostics", "#chunked_upload", observe(function (event, data) {
-      const code = data.jqXHR && data.jqXHR.status;
-      if (code === 401 || code === 403) {
-        show(gettext("You are no longer authenticated. Please log in again."), true);
-      } else {
-        show(gettext("An error has occurred. Please try later."), true);
-      }
-    }));
-    $(document).on("ajaxError.podUploadDiagnostics", observe(function (event, xhr, settings) {
-      if (new URL(settings.url, window.location.href).pathname === completePath) {
-        show(gettext("Unable to confirm the upload. Check your dashboard before uploading the file again."), true);
+    form.addEventListener("pod-upload-status", observe(function (event) {
+      const { phase, status: code } = event.detail;
+      switch (phase) {
+        case "fileuploadadd":
+          show("");
+          break;
+        case "fileuploadsend":
+          show(gettext("Uploading…"));
+          break;
+        case "fileuploaddone":
+          show(gettext("Checking your upload…"));
+          break;
+        case "fileuploadfail":
+          if (code === 401 || code === 403) {
+            show(gettext("You are no longer authenticated. Please log in again."), true);
+          } else {
+            show(gettext("An error has occurred. Please try later."), true);
+          }
+          break;
+        case "complete-error":
+          show(gettext("Unable to confirm the upload. Check your dashboard before uploading the file again."), true);
+          break;
       }
     }));
     const reset = document.getElementById("resetButton");

@@ -174,6 +174,18 @@
   var checksums = new WeakMap();
   var csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value,
     form_data = [{ "name": "csrfmiddlewaretoken", "value": csrf }];
+
+  // Bridge upload notifications to native events for optional diagnostics.
+  function notifyUploadStatus(phase, status) {
+    try {
+      document.getElementById("uploadForm").dispatchEvent(new CustomEvent("pod-upload-status", {
+        detail: { phase: phase, status: status }
+      }));
+    } catch (_) {
+      // Diagnostics are optional; leave the existing upload running.
+    }
+  }
+
   /* Calculate an md5 checksum of uploaded file. */
   function calculate_md5(file, chunk_size) {
     return new Promise(function(resolve, reject) {
@@ -274,10 +286,14 @@
     },
     done: function (e, data) { // Called when the file has completely uploaded
       checksums.get(data.files[0]).then(function(md5) {
-        $.ajax({
-          type: "POST",
-          url: "{% url 'video:api_chunked_upload_complete' %}",
-          data: {
+        fetch(document.getElementById("uploadForm").dataset.completeUrl, {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            "Accept": "application/json",
+            "X-Requested-With": "XMLHttpRequest"
+          },
+          body: new URLSearchParams({
             csrfmiddlewaretoken: csrf,
             upload_id: data.result.upload_id,
             md5: md5,
@@ -285,11 +301,14 @@
             {% if TRANSCRIPT|length > 0 %}
               transcript: document.getElementById("select-transcript-lang").value
             {% endif %}
-          },
-          dataType: "json",
-          success: function (data) {
-            location.href = data.redirlink;
-          }
+          })
+        }).then(function(response) {
+          if (!response.ok) throw new Error("Upload confirmation failed");
+          return response.json();
+        }).then(function(data) {
+          location.href = data.redirlink;
+        }).catch(function() {
+          notifyUploadStatus("complete-error");
         });
       }, function() {
         // This is an existing integrity requirement, independent of diagnostics.
@@ -300,6 +319,8 @@
     if (!document.body.classList.contains("dragover")) {
       document.body.classList.add("dragover");
     }
+  }).on("fileuploadadd fileuploadsend fileuploaddone fileuploadfail", function (e, data) {
+    notifyUploadStatus(e.type, data.jqXHR && data.jqXHR.status);
   });
 
   document.addEventListener("dragleave", (event) => {
