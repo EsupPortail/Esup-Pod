@@ -156,10 +156,12 @@ class VideoAdmin(admin.ModelAdmin):
     )
 
     def file_size_mb(self, obj):
-        """Calculates and returns the file size of the video in Megabytes."""
-        if obj.video_file and hasattr(obj.video_file, "size"):
-            return f"{obj.video_file.size / (1024 * 1024):.2f} MB"
-        return "N/A"
+        if not obj.video_file:
+            return "-"
+        try:
+            return f"{obj.video_file.size / (1024 * 1024):.1f} Mo"
+        except (FileNotFoundError, OSError, ValueError):
+            return "Fichier manquant"
 
     file_size_mb.short_description = "Size (MB)"
 
