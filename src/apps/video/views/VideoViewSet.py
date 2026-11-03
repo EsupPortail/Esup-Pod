@@ -164,7 +164,9 @@ class VideoViewSet(viewsets.ModelViewSet):
         """Creates a new video, checking user quota and triggering encoding."""
 
         user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file="")
-        total_bytes = sum(self.safe_file_size(v.video_file) for v in user_videos if v.video_file)
+        total_bytes = sum(
+            self.safe_file_size(v.video_file) for v in user_videos if v.video_file
+        )
 
         incoming_file = self.request.FILES.get("video_file")
         incoming_size = self.safe_file_size(incoming_file)
