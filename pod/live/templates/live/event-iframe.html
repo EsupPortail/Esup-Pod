@@ -90,11 +90,11 @@
                 {% endif %}
               </video>
             </div>
-            {# ajouter ici l'event.aside_iframe_url au besoin #}
-            {# ajouter ici le chatBBB au besoin #}
+            {# Add event.aside_iframe_url here if needed #}
+            {# Add the BBB chat here if needed #}
           </div>
         </div>
-        {# ajouter ici l'event.iframe_url au besoin #}
+        {# Add event.iframe_url here if needed #}
 
         {% if event.broadcaster.is_runner_live %}
           {% include 'live/runner-live-status.html' %}
@@ -150,38 +150,38 @@
   {% block more_script %}
     {% include 'live/event-script.html' %}
 
-    {# affichage du bouton d'info sur le player #}
+    {# Display the information button on the player #}
     {% if not form %}
-    {% if event.is_coming and event.video_on_hold.is_video or event.is_current  %}
+      {% if event.is_coming and event.video_on_hold.is_video or event.is_current  %}
 
-      <script>
-        {% if event.is_coming and event.video_on_hold.is_video %}
-          iframeplayer = videojs("podvideoonholdplayer");
-        {% else %}
-          iframeplayer = videojs("podvideoplayer");
-        {% endif %}
+        <script>
+          {% if event.is_coming and event.video_on_hold.is_video %}
+            iframeplayer = videojs("podvideoonholdplayer");
+          {% else %}
+            iframeplayer = videojs("podvideoplayer");
+          {% endif %}
 
-        iframeplayer.videoJsInfo();
+          iframeplayer.videoJsInfo();
 
-        let overlay = document.createElement("div");
-        overlay.id="overlay-footer";
-        document.getElementById("div-video-wrapper").appendChild(overlay);
-        iframeplayer.ready(function () {
-          const btinfo = document.querySelector(".vjs-info-button");
-          const clonedInfo = btinfo.cloneNode(true);
-          overlay.appendChild(clonedInfo);
-          clonedInfo.addEventListener("click", showInfoVideo);
-        });
-        document.querySelector("#info-video-wrapper .close").addEventListener("click", showInfoVideo);
+          let overlay = document.createElement("div");
+          overlay.id="overlay-footer";
+          document.getElementById("div-video-wrapper").appendChild(overlay);
+          iframeplayer.ready(function () {
+            const btinfo = document.querySelector(".vjs-info-button");
+            const clonedInfo = btinfo.cloneNode(true);
+            overlay.appendChild(clonedInfo);
+            clonedInfo.addEventListener("click", showInfoVideo);
+          });
+          document.querySelector("#info-video-wrapper .close").addEventListener("click", showInfoVideo);
 
-        iframeplayer.on('play',function() {
-          isPlaying = true;
-          document.getElementById("div-video-wrapper").className = '';
-        });
-        iframeplayer.on('pause',function() { isPlaying = false; });
+          iframeplayer.on('play',function() {
+            isPlaying = true;
+            document.getElementById("div-video-wrapper").className = '';
+          });
+          iframeplayer.on('pause',function() { isPlaying = false; });
 
-      </script>
-    {% endif %}
+        </script>
+      {% endif %}
     {% endif %}
 
   {% endblock more_script %}

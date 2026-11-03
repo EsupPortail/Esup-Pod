@@ -1,4 +1,4 @@
-"""Keep long video uploads authenticated without extending inactive sessions."""
+"""Esup-Pod: keep long video uploads authenticated without extending inactive sessions."""
 
 import json
 import tempfile

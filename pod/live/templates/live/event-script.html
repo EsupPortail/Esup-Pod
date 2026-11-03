@@ -3,10 +3,10 @@
 {% load i18n %}
 {% load static %}
 {% if not form %}
-{% if event.is_current and not form and event.broadcaster.is_runner_live %}
-  <script src="{% static 'js/runner_live.js' %}?ver={{ VERSION }}"></script>
-{% endif %}
-<script>
+  {% if event.is_current and not form and event.broadcaster.is_runner_live %}
+    <script src="{% static 'js/runner_live.js' %}?ver={{ VERSION }}"></script>
+  {% endif %}
+  <script>
     // Debug if necessary, depends on the settings_local
     const debug = "{% get_setting "DEBUG" False %}" === "True";
 
@@ -62,46 +62,46 @@
 
     // Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
     {% if not event.broadcaster.is_runner_live %}
-    videojs.Hls.xhr.beforeRequest = function (options) {
+      videojs.Hls.xhr.beforeRequest = function (options) {
 
-        if ('{{event.is_past }}' === 'False') {
+          if ('{{event.is_past }}' === 'False') {
 
-            // Reset counter if video state is ok
-            if (started && player.readyState() > 2) {
-                nbLoop = 0;
-            }
-            if (started && player.readyState() <= 2) {
-                // Check if .m3u8 exists, to be sure that live is stopped
-                fetch("{{event.broadcaster.get_stream_url|escapejs}}", {
-                    method: 'GET',
-                    {#crossDomain: true,#}
-                    headers: {
-                        'Accept': 'text/html',
-                        'Content-Type': 'text/html; charset=utf-8',
-                    }
-                }).then((response) => {
-                  stopped = !response.ok;
-                }).catch(() => {
-                    stopped = true;
-                });
-                if (stopped) {
-                    nbLoop = nbLoop + 1;
-                    // We're waiting a bit to make sure it's not a network / data flow issue...
-                    if (debug) {
-                        console.info("The streaming live stopped? Video state: " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4 times, we stop.");
-                    }
-                    if (nbLoop > 3) {
-                        // Display of a message of end of live and reload of the page in 9 seconds
-                        let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
-                        setTimeout(function () {
-                            location.reload();
-                        }, 9000);
-                    }
-                }
-            }
-        }
-        return options;
-    }
+              // Reset counter if video state is ok
+              if (started && player.readyState() > 2) {
+                  nbLoop = 0;
+              }
+              if (started && player.readyState() <= 2) {
+                  // Check if .m3u8 exists, to be sure that live is stopped
+                  fetch("{{event.broadcaster.get_stream_url|escapejs}}", {
+                      method: 'GET',
+                      {#crossDomain: true,#}
+                      headers: {
+                          'Accept': 'text/html',
+                          'Content-Type': 'text/html; charset=utf-8',
+                      }
+                  }).then((response) => {
+                    stopped = !response.ok;
+                  }).catch(() => {
+                      stopped = true;
+                  });
+                  if (stopped) {
+                      nbLoop = nbLoop + 1;
+                      // We're waiting a bit to make sure it's not a network / data flow issue...
+                      if (debug) {
+                          console.info("The streaming live stopped? Video state: " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4 times, we stop.");
+                      }
+                      if (nbLoop > 3) {
+                          // Display of a message of end of live and reload of the page in 9 seconds
+                          let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
+                          setTimeout(function () {
+                              location.reload();
+                          }, 9000);
+                      }
+                  }
+              }
+          }
+          return options;
+      }
     {% endif %}
 
     {% if event.is_current and not form %}
@@ -117,44 +117,44 @@
       });
 
       {% if event.broadcaster.is_runner_live %}
-      window.PodRunnerLive.start(player, {
-        onUnavailable: () => {
-          {% if event.video_on_hold.is_video %}
-            showWaitingVideo(false);
-          {% endif %}
-        },
-        onAvailable: () => {
-          const waitingPlayer = videojs.getPlayer('podvideoonholdplayer');
-          if (waitingPlayer) waitingPlayer.pause();
-          document.getElementById("divvideoonhold").style.display = "none";
-          document.getElementById("divvideoplayer").style.display = "block";
-          video_on_hold_is_displayed = false;
-        }
-      });
+        window.PodRunnerLive.start(player, {
+          onUnavailable: () => {
+            {% if event.video_on_hold.is_video %}
+              showWaitingVideo(false);
+            {% endif %}
+          },
+          onAvailable: () => {
+            const waitingPlayer = videojs.getPlayer('podvideoonholdplayer');
+            if (waitingPlayer) waitingPlayer.pause();
+            document.getElementById("divvideoonhold").style.display = "none";
+            document.getElementById("divvideoplayer").style.display = "block";
+            video_on_hold_is_displayed = false;
+          }
+        });
       {% else %}
-      player.on("error", function() {
-        // Handle successives errors to avoid multiple reload
-        if (typeof (errored) == "undefined" || !errored) {
-          let errored = true;
-          let modal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}');
-          setTimeout(function() {
-            errored = false;
-            modal.close();
-            player.src({
-              src: player.currentSrc(),
-              type: player.currentType(),
-              overrideNative: true
-            });
-          }, 10000);
+        player.on("error", function() {
+          // Handle successives errors to avoid multiple reload
+          if (typeof (errored) == "undefined" || !errored) {
+            let errored = true;
+            let modal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}');
+            setTimeout(function() {
+              errored = false;
+              modal.close();
+              player.src({
+                src: player.currentSrc(),
+                type: player.currentType(),
+                overrideNative: true
+              });
+            }, 10000);
 
 
-          // Chargement de la vidéo d'attente si le stream n'a pas commencé
-          {% if event.video_on_hold.is_video %}
-            modal.close();
-            showWaitingVideo(true);
-          {% endif %}
-        }
-      });
+            // Load the waiting video if the stream has not started
+            {% if event.video_on_hold.is_video %}
+              modal.close();
+              showWaitingVideo(true);
+            {% endif %}
+          }
+        });
       {% endif %}
 
       let liveUiInitialized = false;
@@ -174,19 +174,19 @@
           videojs(document.getElementById("divvideoonhold")).dispose();
         {% endif %}
 
-        // Affichage du flux direct
+        // Display the live stream
         started = true;
         document.getElementById("divvideoplayer").style.display = "block";
 
         if (liveUiInitialized) return;
         liveUiInitialized = true;
 
-        // Affichage du nombre de spectateurs
+        // Display the viewer count
         {% if event.broadcaster.enable_viewer_count %}
           player.videoJsViewerCount();
         {% endif %}
 
-        // Affichage des boutons de contrôle de l'enregistrement
+        // Display the recording controls
         {% if can_record %}
           document.getElementById("recording_btns").classList.remove("d-none");
           updateStreamStatus();
@@ -194,7 +194,7 @@
           setInterval(displayRecordingDuration, 1000); // every sec
         {% endif %}
 
-      // Transcription du live
+        // Live transcription
         {% if event.enable_transcription %}
           show_transcription();
         {% endif %}
@@ -873,5 +873,5 @@
         }, 1000);
     }
 
-</script>
+  </script>
 {% endif %}
