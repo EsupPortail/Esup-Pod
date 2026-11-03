@@ -8,6 +8,7 @@ from src.apps.completion.models import (
     Contribution,
     Document,
     Overlay,
+    Role,
 )
 
 
@@ -39,6 +40,16 @@ class ContributionAdmin(admin.ModelAdmin):
     search_fields = ("video__title", "contributor__last_name", "contributor__first_name")
     list_filter = ("role",)
     raw_id_fields = ("video", "contributor")
+
+
+@admin.register(Role)
+class RoleAdmin(admin.ModelAdmin):
+    """Admin interface for configurable contribution roles."""
+
+    list_display = ("code", "label", "is_active", "order")
+    list_editable = ("label", "is_active", "order")
+    search_fields = ("code", "label")
+    ordering = ("order", "label")
 
 
 @admin.register(Document)

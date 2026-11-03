@@ -18,7 +18,8 @@ from src.apps.video.models import Video
 User = get_user_model()
 
 
-class VideoNoteModelTests(APITestCase):
+class \
+        VideoNoteModelTests(APITestCase):
     """Tests for the VideoNote model."""
 
     def setUp(self):
