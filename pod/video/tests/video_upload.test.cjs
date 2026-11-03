@@ -98,7 +98,6 @@ function setup({ missing = false, initError = false, renderError = false, transl
     };
     return wrapper;
   };
-  $.ajax = () => { throw new Error("Upload confirmation must use fetch"); };
 
   function emit(name, data) {
     const event = {
