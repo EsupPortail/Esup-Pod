@@ -9,5 +9,5 @@ __all__ = [
     "ContributionSerializer",
     "DocumentSerializer",
     "OverlaySerializer",
-    "RoleSerializer"
+    "RoleSerializer",
 ]

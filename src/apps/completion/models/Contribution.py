@@ -69,7 +69,9 @@ class Contribution(models.Model):
         """
         super().clean()
 
-        if not (self.video_id and self.contributor_id and self.role_id): # Prevent crash when creating a new Contribution if contributor dosn't exist yet (in django admin)
+        if not (
+            self.video_id and self.contributor_id and self.role_id
+        ):  # Prevent crash when creating a new Contribution if contributor dosn't exist yet (in django admin)
             return
 
         if (
