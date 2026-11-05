@@ -68,6 +68,10 @@ class Contribution(models.Model):
         (unique_together handles this at DB level, clean handles it at form/serializer level)
         """
         super().clean()
+
+        if not (self.video_id and self.contributor_id and self.role_id): # Prevent crash when creating a new Contribution if contributor dosn't exist yet (in django admin)
+            return
+
         if (
             Contribution.objects.filter(
                 video=self.video, contributor=self.contributor, role=self.role
