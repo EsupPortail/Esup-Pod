@@ -18,6 +18,7 @@
     // Live seems stopped
     let stopped = false;
     let video_on_hold_is_displayed = false;
+    let waitingModal = null;
     let recordingDuration = 0;
     let options = {
         notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
@@ -62,7 +63,7 @@
 
     // Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
     {% if not event.broadcaster.is_runner_live %}
-      videojs.Hls.xhr.beforeRequest = function (options) {
+      videojs.Vhs.xhr.beforeRequest = function (options) {
 
           if ('{{event.is_past }}' === 'False') {
 
@@ -124,38 +125,56 @@
             {% endif %}
           },
           onAvailable: () => {
-            const waitingPlayer = videojs.getPlayer('podvideoonholdplayer');
-            if (waitingPlayer) waitingPlayer.pause();
-            document.getElementById("divvideoonhold").style.display = "none";
+            hideWaitingVideo();
             document.getElementById("divvideoplayer").style.display = "block";
-            video_on_hold_is_displayed = false;
           }
         });
       {% else %}
+        let retryTimer = null;
+        let retryModal = null;
+        const liveSource = {
+          src: "{{ event.broadcaster.get_stream_url|escapejs }}",
+          type: "application/x-mpegURL"
+        };
+
         player.on("error", function() {
-          // Handle successives errors to avoid multiple reload
-          if (typeof (errored) == "undefined" || !errored) {
-            let errored = true;
-            let modal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}');
-            setTimeout(function() {
-              errored = false;
-              modal.close();
-              player.src({
-                src: player.currentSrc(),
-                type: player.currentType(),
-                overrideNative: true
-              });
-            }, 10000);
+          // Keep one retry even when the same source raises successive errors.
+          if (retryTimer !== null) return;
+          started = false;
+          if (!showWaitingVideo(true)) {
+            retryModal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}', {pauseOnOpen: false});
+          }
+          retryTimer = setTimeout(function() {
+            retryTimer = null;
+            if (retryModal) {
+              retryModal.close();
+              retryModal = null;
+            }
+            // The failed player can have an empty currentSrc(). Keep the configured URL.
+            player.src(liveSource);
+          }, 10000);
+        });
 
+        player.on("dispose", function() {
+          clearTimeout(retryTimer);
+        });
 
-            // Load the waiting video if the stream has not started
-            {% if event.video_on_hold.is_video %}
-              modal.close();
-              showWaitingVideo(true);
-            {% endif %}
+        player.on(["loadeddata", "playing"], function() {
+          clearTimeout(retryTimer);
+          retryTimer = null;
+          if (retryModal) {
+            retryModal.close();
+            retryModal = null;
           }
         });
       {% endif %}
+
+      // Metadata does not guarantee that a video frame is available yet.
+      player.on(["loadeddata", "playing"], function() {
+        started = true;
+        hideWaitingVideo();
+        document.getElementById("divvideoplayer").style.display = "block";
+      });
 
       let liveUiInitialized = false;
       // Fire this event when live started
@@ -163,20 +182,6 @@
         if (debug) {
           console.info("Streaming live starts.");
         }
-
-        // dispose onHold resources
-        video_on_hold_is_displayed = false;
-        {% if event.broadcaster.is_runner_live %}
-          const waitingPlayer = videojs.getPlayer('podvideoonholdplayer');
-          if (waitingPlayer) waitingPlayer.pause();
-          document.getElementById("divvideoonhold").style.display = "none";
-        {% else %}
-          videojs(document.getElementById("divvideoonhold")).dispose();
-        {% endif %}
-
-        // Display the live stream
-        started = true;
-        document.getElementById("divvideoplayer").style.display = "block";
 
         if (liveUiInitialized) return;
         liveUiInitialized = true;
@@ -669,31 +674,55 @@
      * @param withModal if modal should be added on top.
      */
     function showWaitingVideo(withModal){
+        // Never replace a live stream that became ready before DOMContentLoaded.
+        if (started) return false;
         if (video_on_hold_is_displayed) {
-            return;
+            return true;
         }
 
-        options["loop"] = true;
-        let playerOnHold = videojs('podvideoonholdplayer', options, function () {
-         });
+        const waitingElement = document.getElementById("podvideoonholdplayer");
+        if (!waitingElement) return false;
 
+        const mp4_sources = {{event.video_on_hold.get_video_mp4_json|safe|default:'null'}};
+        let playerOnHold = videojs.getPlayer('podvideoonholdplayer');
+        if (!playerOnHold) {
+            playerOnHold = videojs('podvideoonholdplayer', {...options, loop: true});
+            playerOnHold.videoJsLogo({
+              imgsrc: '{% static LOGO_PLAYER %}',
+              linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
+              link: '{{ LINK_PLAYER }}'
+            });
+
+            // With no waiting video, keep the poster and the retry message only.
+            if (mp4_sources && mp4_sources.length) playerOnHold.src(mp4_sources);
+        }
         if (withModal)
-            playerOnHold.createModal('{% trans "Live not found, retry in 10 seconds" %}');
+            waitingModal = playerOnHold.createModal('{% trans "Live not found, retry in 10 seconds" %}', {pauseOnOpen: false});
 
-        playerOnHold.videoJsLogo({
-          imgsrc: '{% static LOGO_PLAYER %}',
-          linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
-          link: '{{ LINK_PLAYER }}'
-        });
-
-        let mp4_sources = {{event.video_on_hold.get_video_mp4_json|safe|default:'null'}};
-        playerOnHold.src(mp4_sources);
+        if (mp4_sources && mp4_sources.length) {
+            const playback = playerOnHold.play();
+            if (playback && playback.catch) playback.catch(() => {});
+        }
 
         document.getElementById("divvideoonhold").style.display = "block";
         if (document.getElementById("divvideoplayer"))
           document.getElementById("divvideoplayer").style.display = "none";
 
         video_on_hold_is_displayed = true;
+        return true;
+    }
+
+    /** Keep the waiting player reusable if the live stream fails again. */
+    function hideWaitingVideo() {
+        if (waitingModal) {
+            waitingModal.close();
+            waitingModal = null;
+        }
+        const waitingPlayer = videojs.getPlayer('podvideoonholdplayer');
+        if (waitingPlayer) waitingPlayer.pause();
+        const container = document.getElementById("divvideoonhold");
+        if (container) container.style.display = "none";
+        video_on_hold_is_displayed = false;
     }
 
     /**
