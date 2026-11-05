@@ -11,6 +11,7 @@ from django.shortcuts import render
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
+from src.apps.utils.files import file_size_mb
 
 from src.apps.video.models import (
     Video,
@@ -154,14 +155,6 @@ class VideoAdmin(admin.ModelAdmin):
             },
         ),
     )
-
-    def file_size_mb(self, obj):
-        if not obj.video_file:
-            return "-"
-        try:
-            return f"{obj.video_file.size / (1024 * 1024):.1f} Mo"
-        except (FileNotFoundError, OSError, ValueError):
-            return "Fichier manquant"
 
     file_size_mb.short_description = "Size (MB)"
 

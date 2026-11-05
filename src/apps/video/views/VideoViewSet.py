@@ -19,6 +19,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, ValidationError, NotFound
 
+
 from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth.hashers import check_password
 from drf_spectacular.utils import (
@@ -37,6 +38,7 @@ from src.apps.authentication.permissions import IsSuperUser
 from src.apps.video.conf import video_settings
 from src.apps.encoding.conf import encoding_settings
 from src.apps.video.filters import VideoFilterSet
+from src.apps.utils.files import safe_file_size
 
 from src.apps.video.services.duplicate import duplicate_video
 from django.db import transaction
@@ -150,26 +152,17 @@ class VideoViewSet(viewsets.ModelViewSet):
             authenticators = [QueryParameterJWTAuthentication()] + authenticators
         return authenticators
 
-    def safe_file_size(self, f) -> int:
-        """Taille du fichier en octets, 0 si absent ou inaccessible."""
-        if not f:
-            return 0
-        try:
-            return f.size
-        except (FileNotFoundError, OSError, ValueError):
-            return 0
-
     @transaction.atomic
     def perform_create(self, serializer):  # noqa: C901
         """Creates a new video, checking user quota and triggering encoding."""
 
         user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file="")
         total_bytes = sum(
-            self.safe_file_size(v.video_file) for v in user_videos if v.video_file
+            safe_file_size(v.video_file) for v in user_videos if v.video_file
         )
 
         incoming_file = self.request.FILES.get("video_file")
-        incoming_size = self.safe_file_size(incoming_file)
+        incoming_size = safe_file_size(incoming_file)
 
         max_quota_bytes = encoding_settings.user_quota_size_gb * 1024 * 1024 * 1024
 
