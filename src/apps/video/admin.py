@@ -65,7 +65,6 @@ class VideoAdmin(admin.ModelAdmin):
         "encoding_status",
         "is_360",
         "created_at",
-        "file_size_mb",
     )
     list_filter = ("status", "encoding_status", "is_360", "created_at", "sites")
     filter_horizontal = ("sites", "disciplines", "restricted_groups", "co_owners")
