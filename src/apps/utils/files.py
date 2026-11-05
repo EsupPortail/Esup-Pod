@@ -88,6 +88,7 @@ def check_file_exists(full_file_name: str, max_attempt: int = 10) -> None:
     """Check a file exists, retrying if needed."""
     return check_exists(full_file_name, False, max_attempt)
 
+
 def safe_file_size(f) -> int:
     """Taille du fichier en octets, 0 si absent ou inaccessible."""
     if not f:
@@ -96,6 +97,7 @@ def safe_file_size(f) -> int:
         return f.size
     except (FileNotFoundError, OSError, ValueError):
         return 0
+
 
 def file_size_mb(self, obj):
     if not obj.video_file:
