@@ -5,7 +5,7 @@ Esup-Pod - External authentication (OIDC/Shibboleth) serializers.
 from rest_framework import serializers
 from django.utils.translation import (
     gettext_lazy as _,
-)  # Ajout de l'import pour la traduction
+)
 
 
 class OIDCTokenObtainSerializer(serializers.Serializer):
