@@ -107,8 +107,6 @@ def file_size_mb(self, obj):
         return "-"
     try:
         size_mb = obj.video_file.size / (1024 * 1024)
-        return _("{size} MB").format(
-            size=number_format(size_mb, decimal_pos=1)
-        )
+        return _("{size} MB").format(size=number_format(size_mb, decimal_pos=1))
     except (FileNotFoundError, OSError, ValueError):
         return _("File not found")
