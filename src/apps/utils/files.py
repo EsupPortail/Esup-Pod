@@ -5,6 +5,8 @@ Esup-Pod - File utility functions.
 import logging
 import os
 from time import sleep
+from django.utils.translation import gettext as _
+from django.utils.formats import number_format
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +92,7 @@ def check_file_exists(full_file_name: str, max_attempt: int = 10) -> None:
 
 
 def safe_file_size(f) -> int:
-    """Taille du fichier en octets, 0 si absent ou inaccessible."""
+    """File size in bytes, 0 if missing or inaccessible."""
     if not f:
         return 0
     try:
@@ -100,9 +102,13 @@ def safe_file_size(f) -> int:
 
 
 def file_size_mb(self, obj):
+    """Returns the formatted size of the video file in megabytes (MB)."""
     if not obj.video_file:
         return "-"
     try:
-        return f"{obj.video_file.size / (1024 * 1024):.1f} Mo"
+        size_mb = obj.video_file.size / (1024 * 1024)
+        return _("{size} MB").format(
+            size=number_format(size_mb, decimal_pos=1)
+        )
     except (FileNotFoundError, OSError, ValueError):
-        return "Fichier manquant"
+        return _("File not found")
