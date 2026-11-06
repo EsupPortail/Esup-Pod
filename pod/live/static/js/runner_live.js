@@ -62,9 +62,15 @@ window.PodRunnerLive = {
     const showUnavailable = (state) => {
       playbackFailed = false;
       const reasons = {
-        pending: "starting", starting: "starting", running: "hls_waiting",
-        stopping: "ended", completed: "ended", stopped: "ended",
-        failed: "failed", unavailable: "unavailable", waiting_source: "waiting",
+        pending: "starting",
+        starting: "starting",
+        running: "hls_waiting",
+        stopping: "ended",
+        completed: "ended",
+        stopped: "ended",
+        failed: "failed",
+        unavailable: "unavailable",
+        waiting_source: "waiting",
       };
       const reason = reasons[state] || "unavailable";
       clear(reason, {}, reason === "failed" || reason === "unavailable");
@@ -94,11 +100,12 @@ window.PodRunnerLive = {
       player.src({ src: currentURL, type: "application/x-mpegURL" });
       const source = currentURL;
       const playing = player.play();
-      if (playing && playing.catch) playing.catch((error) => {
-        if (disposed || currentURL !== source) return;
-        if (error?.name === "NotAllowedError") showStatus("autoplay");
-        else if (error?.name !== "AbortError") onPlayerError();
-      });
+      if (playing && playing.catch)
+        playing.catch((error) => {
+          if (disposed || currentURL !== source) return;
+          if (error?.name === "NotAllowedError") showStatus("autoplay");
+          else if (error?.name !== "AbortError") onPlayerError();
+        });
     };
 
     /** Preserve actual media playback when discovery temporarily fails. */
@@ -112,12 +119,23 @@ window.PodRunnerLive = {
     /** Load the exact ready HLS address while making mixed content errors visible. */
     const applyStream = (data) => {
       const mediaURL = new URL(data.hls_url);
-      if (window.location.protocol === "https:" && mediaURL.protocol === "http:") {
+      if (
+        window.location.protocol === "https:" &&
+        mediaURL.protocol === "http:"
+      ) {
         playbackFailed = false;
-        clear("mixed_content", { page_scheme: "https", hls_scheme: "http" }, true);
+        clear(
+          "mixed_content",
+          { page_scheme: "https", hls_scheme: "http" },
+          true,
+        );
         return;
       }
-      if (currentURL !== data.hls_url || currentSession !== data.live_id || playbackFailed) {
+      if (
+        currentURL !== data.hls_url ||
+        currentSession !== data.live_id ||
+        playbackFailed
+      ) {
         currentURL = data.hls_url;
         currentSession = data.live_id;
         if (!playbackFailed) status.hidden = true;
@@ -132,7 +150,8 @@ window.PodRunnerLive = {
       let nextDelay = 5000;
       const requestController = new AbortController();
       controller = requestController;
-      const isCurrent = () => !disposed && !suspended && controller === requestController;
+      const isCurrent = () =>
+        !disposed && !suspended && controller === requestController;
       // Allow discovery and bounded master/media/segment probes to complete.
       const timeout = setTimeout(() => requestController.abort(), 30000);
       try {
@@ -145,7 +164,10 @@ window.PodRunnerLive = {
         if (!isCurrent()) return;
         if (!response.ok || response.redirected) {
           const details = { http_status: response.status };
-          if (response.redirected || (response.status < 500 && response.status !== 429)) {
+          if (
+            response.redirected ||
+            (response.status < 500 && response.status !== 429)
+          ) {
             clear("polling_error", details, true);
           } else {
             nextDelay = 10000;
@@ -155,9 +177,15 @@ window.PodRunnerLive = {
         }
         const data = await response.json();
         if (!isCurrent()) return;
-        const playable = data.state === "running" && data.hls_ready === true &&
-          typeof data.hls_url === "string" && Boolean(data.hls_url);
-        if (data.retryable === true && !["stopping", "completed", "failed", "stopped"].includes(data.state)) {
+        const playable =
+          data.state === "running" &&
+          data.hls_ready === true &&
+          typeof data.hls_url === "string" &&
+          Boolean(data.hls_url);
+        if (
+          data.retryable === true &&
+          !["stopping", "completed", "failed", "stopped"].includes(data.state)
+        ) {
           nextDelay = 10000;
           if (playable) applyStream(data);
           else keepPlayback("polling_error");
@@ -166,9 +194,12 @@ window.PodRunnerLive = {
         } else applyStream(data);
       } catch {
         nextDelay = 10000;
-        if (isCurrent()) keepPlayback("polling_error", {
-          failure: requestController.signal.aborted ? "timeout" : "network_or_response_error",
-        });
+        if (isCurrent())
+          keepPlayback("polling_error", {
+            failure: requestController.signal.aborted
+              ? "timeout"
+              : "network_or_response_error",
+          });
       } finally {
         clearTimeout(timeout);
         if (isCurrent()) timer = setTimeout(poll, nextDelay);
