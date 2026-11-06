@@ -1,8 +1,6 @@
 """Esup-Pod Video Search utilities."""
 
 from django.conf import settings
-from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import TransportError
 from django.utils import translation
 
 import json
@@ -18,12 +16,23 @@ ES_TIMEOUT = getattr(settings, "ES_TIMEOUT", 30)
 ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
 ES_VERSION = getattr(settings, "ES_VERSION", 6)
 ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
+USE_OPENSEARCH = getattr(settings, "USE_OPENSEARCH", False)
+
+# OpenSearch 1.x/2.x speaks the Elasticsearch 7 REST API, so when
+# USE_OPENSEARCH is set the search client is opensearch-py (install
+# requirements-opensearch.txt) and the ES7-level API is used.
+if USE_OPENSEARCH:
+    from opensearchpy import OpenSearch as SearchClient
+    from opensearchpy.exceptions import TransportError
+else:
+    from elasticsearch import Elasticsearch as SearchClient
+    from elasticsearch.exceptions import TransportError
 
 
 def index_es(video):
     """Get ElasticSearch index."""
     translation.activate(settings.LANGUAGE_CODE)
-    es = Elasticsearch(
+    es = SearchClient(
         ES_URL,
         timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
@@ -34,7 +43,7 @@ def index_es(video):
         try:
             data = video.get_json_to_index()
             if data != "{}":
-                if ES_VERSION in [7, 8]:
+                if USE_OPENSEARCH or ES_VERSION in [7, 8]:
                     res = es.index(index=ES_INDEX, id=video.id, body=data, refresh=True)
                 else:
                     res = es.index(
@@ -57,7 +66,7 @@ def index_es(video):
 
 def delete_es(video):
     """Delete an Elasticsearch video entry."""
-    es = Elasticsearch(
+    es = SearchClient(
         ES_URL,
         timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
@@ -66,7 +75,7 @@ def delete_es(video):
     )
     if es.ping():
         try:
-            if ES_VERSION in [7, 8]:
+            if USE_OPENSEARCH or ES_VERSION in [7, 8]:
                 delete = es.delete(
                     index=ES_INDEX, id=video.id, refresh=True, ignore=[400, 404]
                 )
@@ -90,14 +99,14 @@ def delete_es(video):
 
 def create_index_es():
     """Create ElasticSearch index."""
-    es = Elasticsearch(
+    es = SearchClient(
         ES_URL,
         timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
         **ES_OPTIONS,
     )
-    if ES_VERSION in [7, 8]:
+    if USE_OPENSEARCH or ES_VERSION in [7, 8]:
         template_file = "pod/video_search/search_template7.json"
     else:
         template_file = "pod/video_search/search_template.json"
@@ -121,7 +130,7 @@ def create_index_es():
 
 def delete_index_es():
     """Delete ElasticSearch index."""
-    es = Elasticsearch(
+    es = SearchClient(
         ES_URL,
         timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
