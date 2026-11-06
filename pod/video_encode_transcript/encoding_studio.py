@@ -72,7 +72,7 @@ def start_encode_video_studio(video_output, videos, subtime, presenter):
         )
 
     else:
-        subcmd = " -vsync 0 "
+        subcmd = " -fps_mode passthrough "
     subcmd += " -movflags +faststart -f mp4 "
 
     return launch_encode_video_studio(input_video, subtime, subcmd, video_output)
@@ -96,7 +96,7 @@ def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
             " -filter_complex "
             + '"[0:v]scale=-2:%(height)s[pres];[1:v]scale=-2:%(sh)s[pip];'
             % {"height": height, "sh": height / 4}
-            + '[pres][pip]overlay=W-w-10:H-h-10:shortest=1" -vsync 0 '
+            + '[pres][pip]overlay=W-w-10:H-h-10:shortest=1" -fps_mode passthrough '
         )
     if presenter == "piph":
         # trouver la bonne hauteur en fonction de la video de presentation
@@ -113,7 +113,7 @@ def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
             " -filter_complex "
             + '"[0:v]scale=-2:%(height)s[pres];[1:v]scale=-2:%(sh)s[pip];'
             % {"height": height, "sh": height / 4}
-            + '[pres][pip]overlay=W-w-10:10:shortest=1" -vsync 0 '
+            + '[pres][pip]overlay=W-w-10:10:shortest=1" -fps_mode passthrough '
         )
     if presenter == "mid":
         height = min_height if (min_height % 2) == 0 else min_height + 1
@@ -124,7 +124,7 @@ def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
             " -filter_complex "
             + '"[0:v]scale=-2:%(height)s[left];[1:v]scale=-2:%(height)s[right];'
             % {"height": height}
-            + '[left][right]hstack" -vsync 0 '
+            + '[left][right]hstack" -fps_mode passthrough '
         )
 
     return subcmd
