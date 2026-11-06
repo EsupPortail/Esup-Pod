@@ -1,3 +1,4 @@
+{# Esup-Pod: live event page. #}
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
@@ -70,7 +71,9 @@
             <video id="podvideoplayer" title="{{ event.slug }}"
                  class="video-js vjs-default-skin vjs-big-play-centered"
                  controls height="360" muted autoplay>
-              <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
+              {% if not event.broadcaster.is_runner_live %}
+                <source src="{{ event.broadcaster.get_stream_url }}" type="application/x-mpegURL">
+              {% endif %}
             </video>
           </div>
           {% if event.aside_iframe_url %}
@@ -85,6 +88,9 @@
         </div>
       </div>
 
+      {% if event.broadcaster.is_runner_live %}
+        {% include 'live/runner-live-status.html' %}
+      {% endif %}
       <div id="divvideoonhold" style="display:none">
         {# waiting video #}
         {% if event.video_on_hold.is_video %}
