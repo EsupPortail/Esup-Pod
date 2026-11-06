@@ -9,7 +9,6 @@ __pycache__/
 settings_local.py
 db.sqlite3
 db.sqlite3-journal
-media/
 staticfiles/
 src/apps/*/migrations/*_initial.py
 **/migrations/**

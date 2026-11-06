@@ -221,17 +221,25 @@ class VideoViewSetTests(APITestCase):
         self.assertIn("VIP Video", titles)
 
     def test_stream_video_owner(self):
-        """Verifies that the owner can successfully stream their video."""
+        """Verifies that the owner can successfully stream their video using an ephemeral token."""
         self.client.force_authenticate(user=self.user)
-        url = reverse("video-stream", kwargs={"slug": self.video.slug})
+
+        token_url = reverse("video-create-stream-token", kwargs={"slug": self.video.slug})
+        token_response = self.client.post(token_url)
+        self.assertEqual(token_response.status_code, status.HTTP_200_OK)
+        token = token_response.data["stream_token"]
+
+        url = f"{reverse('video-stream', kwargs={'slug': self.video.slug})}?token={token}"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response["Content-Type"], "video/mp4")
 
     def test_stream_video_unauthenticated_restricted(self):
-        """Verifies that unauthenticated users cannot stream restricted videos."""
-        url = reverse("video-stream", kwargs={"slug": self.restricted_video.slug})
-        response = self.client.get(url)
+        """Verifies that unauthenticated users cannot obtain a stream token for restricted videos."""
+        token_url = reverse(
+            "video-create-stream-token", kwargs={"slug": self.restricted_video.slug}
+        )
+        response = self.client.post(token_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_register_view(self):

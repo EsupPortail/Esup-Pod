@@ -6,8 +6,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
-from src.apps.completion.conf import completion_settings
-
 
 class Contribution(models.Model):
     """
@@ -27,9 +25,11 @@ class Contribution(models.Model):
         related_name="contributions",
         verbose_name=_("Contributor"),
     )
-    role = models.CharField(
-        max_length=200,
-        choices=completion_settings.role_choices,
+    role = models.ForeignKey(
+        "completion.Role",
+        on_delete=models.PROTECT,
+        related_name="contributions",
+        db_column="role",
         default="author",
         verbose_name=_("Role"),
     )
@@ -51,8 +51,16 @@ class Contribution(models.Model):
             ("add_contribution_anywhere", _("Can add/manage contributions on ANY video")),
         ]
 
+    def __init__(self, *args, **kwargs):
+        """Accept role codes when creating objects programmatically."""
+        role = kwargs.get("role")
+        if isinstance(role, str):
+            kwargs["role_id"] = role
+            del kwargs["role"]
+        super().__init__(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.contributor} - {self.get_role_display()} on {self.video}"
+        return f"{self.contributor} - {self.role} on {self.video}"
 
     def clean(self):
         """
@@ -60,6 +68,12 @@ class Contribution(models.Model):
         (unique_together handles this at DB level, clean handles it at form/serializer level)
         """
         super().clean()
+
+        if not (
+            self.video_id and self.contributor_id and self.role_id
+        ):  # Prevent crash when creating a new Contribution if contributor dosn't exist yet (in django admin)
+            return
+
         if (
             Contribution.objects.filter(
                 video=self.video, contributor=self.contributor, role=self.role

@@ -11,6 +11,7 @@ from django.shortcuts import render
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
+from src.apps.utils.files import file_size_mb
 
 from src.apps.video.models import (
     Video,
@@ -64,7 +65,6 @@ class VideoAdmin(admin.ModelAdmin):
         "encoding_status",
         "is_360",
         "created_at",
-        "file_size_mb",
     )
     list_filter = ("status", "encoding_status", "is_360", "created_at", "sites")
     filter_horizontal = ("sites", "disciplines", "restricted_groups", "co_owners")
@@ -154,12 +154,6 @@ class VideoAdmin(admin.ModelAdmin):
             },
         ),
     )
-
-    def file_size_mb(self, obj):
-        """Calculates and returns the file size of the video in Megabytes."""
-        if obj.video_file and hasattr(obj.video_file, "size"):
-            return f"{obj.video_file.size / (1024 * 1024):.2f} MB"
-        return "N/A"
 
     file_size_mb.short_description = "Size (MB)"
 

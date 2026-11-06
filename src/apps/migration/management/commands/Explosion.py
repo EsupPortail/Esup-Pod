@@ -21,7 +21,7 @@ class Command(BaseCommand):
             "--limit",
             type=int,
             default=0,
-            help="Nombre de vidéos à migrer (défaut: 10, 0 = toutes)",
+            help="Number of records to process in each migration step. Default is 0 (no limit).",
         )
 
     def handle(self, *args, **kwargs):

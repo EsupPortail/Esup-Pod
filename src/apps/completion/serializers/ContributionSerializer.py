@@ -3,12 +3,17 @@ Esup-Pod - Contribution serializer.
 """
 
 from rest_framework import serializers
-from src.apps.completion.models import Contribution
+from src.apps.completion.models import Contribution, Role
 from .ContributorSerializer import ContributorSerializer
 
 
 class ContributionSerializer(serializers.ModelSerializer):
     """Serializer for the Contribution model."""
+
+    role = serializers.SlugRelatedField(
+        slug_field="code",
+        queryset=Role.objects.filter(is_active=True),
+    )
 
     contributor_details = ContributorSerializer(source="contributor", read_only=True)
     contributor_id = serializers.PrimaryKeyRelatedField(

@@ -19,6 +19,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied, ValidationError, NotFound
 
+
 from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth.hashers import check_password
 from drf_spectacular.utils import (
@@ -26,6 +27,7 @@ from drf_spectacular.utils import (
     extend_schema_view,
     OpenApiParameter,
     OpenApiResponse,
+    OpenApiExample,
 )
 
 from src.apps.video.models import Video, ViewCount
@@ -36,6 +38,7 @@ from src.apps.authentication.permissions import IsSuperUser
 from src.apps.video.conf import video_settings
 from src.apps.encoding.conf import encoding_settings
 from src.apps.video.filters import VideoFilterSet
+from src.apps.utils.files import safe_file_size
 
 from src.apps.video.services.duplicate import duplicate_video
 from django.db import transaction
@@ -119,7 +122,12 @@ class VideoViewSet(viewsets.ModelViewSet):
 
         qs = Video.objects.filter(sites=current_site)
 
-        if getattr(self, "action", None) in ["stream", "unlock", "register_view"]:
+        if getattr(self, "action", None) in [
+            "stream",
+            "create_stream_token",
+            "unlock",
+            "register_view",
+        ]:
             return qs
 
         return (
@@ -149,10 +157,12 @@ class VideoViewSet(viewsets.ModelViewSet):
         """Creates a new video, checking user quota and triggering encoding."""
 
         user_videos = Video.objects.filter(owner=self.request.user).exclude(video_file="")
-        total_bytes = sum(v.video_file.size for v in user_videos if v.video_file)
+        total_bytes = sum(
+            safe_file_size(v.video_file) for v in user_videos if v.video_file
+        )
 
         incoming_file = self.request.FILES.get("video_file")
-        incoming_size = incoming_file.size if incoming_file else 0
+        incoming_size = safe_file_size(incoming_file)
 
         max_quota_bytes = encoding_settings.user_quota_size_gb * 1024 * 1024 * 1024
 
@@ -274,6 +284,47 @@ class VideoViewSet(viewsets.ModelViewSet):
         return video.video_file
 
     @extend_schema(
+        summary="Create an ephemeral stream token",
+        responses={
+            200: OpenApiResponse(
+                description="Token generated successfully.",
+                response=dict,
+                examples=[
+                    OpenApiExample(
+                        "Success response",
+                        value={"stream_token": "a1b2c3d4-e5f6-7890-abcd-1234567890ab"},
+                    )
+                ],
+            ),
+            403: OpenApiResponse(
+                description="Permission denied. The user is not allowed to stream this video."
+            ),
+        },
+    )
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[permissions.AllowAny],
+        url_path="create-stream-token",
+    )
+    def create_stream_token(self, request, slug=None):
+        """
+        Generates an ephemeral token (valid for 5 minutes) to securely access the stream endpoint.
+        This allows the video player to fetch the video stream using a short-lived token in the URL,
+        avoiding the need to pass the user's main JWT token or rely on session cookies.
+        """
+        video = self.get_object()
+        self._check_stream_permissions(request, video)
+
+        import uuid
+        from django.core.cache import cache
+
+        token = str(uuid.uuid4())
+        cache.set(f"stream_token_{token}", video.id, timeout=300)
+
+        return Response({"stream_token": token})
+
+    @extend_schema(
         summary="Stream video file",
         parameters=[
             OpenApiParameter(
@@ -301,7 +352,16 @@ class VideoViewSet(viewsets.ModelViewSet):
         """
         video = self.get_object()
 
-        self._check_stream_permissions(request, video)
+        from django.core.cache import cache
+
+        token = request.query_params.get("token")
+
+        if not token:
+            raise PermissionDenied(_("Missing stream token."))
+
+        cached_video_id = cache.get(f"stream_token_{token}")
+        if not cached_video_id or cached_video_id != video.id:
+            raise PermissionDenied(_("Invalid or expired stream token."))
 
         resolution = request.query_params.get("resolution")
         if resolution and not resolution.endswith("p"):

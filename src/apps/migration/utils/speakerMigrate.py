@@ -42,7 +42,7 @@ def _migrate_contributors(self, speakers, contributor_mapping):
 
         except Exception as e:
             errors += 1
-            self.stdout.write(self.style.ERROR(f"Erreur speaker {old_id}: {e}"))
+            self.stdout.write(self.style.ERROR(f"Error creating speaker {old_id}: {e}"))
 
     return created, errors
 
@@ -96,7 +96,7 @@ def _migrate_contributions(self, links, function_mapping, video_mapping):
             errors += 1
             self.stdout.write(
                 self.style.ERROR(
-                    f"Erreur Contribution video={old_video_id} function={old_function_id}: {e}"
+                    f"Error creating contribution video={old_video_id} function={old_function_id}: {e}"
                 )
             )
 
@@ -110,8 +110,8 @@ def speakerMigrate(self, *args, **kwargs):
     video_mapping = {m.old_id: m.new_id for m in VideoMapping.objects.all()}
     contributor_mapping = {m.old_id: m.new_id for m in CompletionMapping.objects.all()}
 
-    self.stdout.write(f"Videos mappées: {len(video_mapping)}")
-    self.stdout.write(f"Contributors déjà mappés: {len(contributor_mapping)}")
+    self.stdout.write(f"Videos mapped: {len(video_mapping)}")
+    self.stdout.write(f"Contributors already mapped: {len(contributor_mapping)}")
 
     # -------------------------
     # 1. SPEAKERS -> CONTRIBUTORS
@@ -126,7 +126,7 @@ def speakerMigrate(self, *args, **kwargs):
     created_contributors, contributor_errors = _migrate_contributors(
         self, speakers, contributor_mapping
     )
-    self.stdout.write(f"{created_contributors} contributors créés")
+    self.stdout.write(f"{created_contributors} contributors created")
 
     # -------------------------
     # 2. SPEAKERFUNCTION -> META INFOS
@@ -150,9 +150,9 @@ def speakerMigrate(self, *args, **kwargs):
 
     self.stdout.write(
         self.style.SUCCESS(
-            f"Terminé — {created_contributors} contributors, "
-            f"{created} contributions créées, "
-            f"{skipped} ignorées, "
-            f"{contributor_errors + contribution_errors} erreurs"
+            f"Finished — {created_contributors} contributors, "
+            f"{created} contributions created, "
+            f"{skipped} ignored, "
+            f"{contributor_errors + contribution_errors} errors"
         )
     )

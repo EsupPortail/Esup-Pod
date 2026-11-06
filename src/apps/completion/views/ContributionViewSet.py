@@ -16,7 +16,7 @@ class ContributionViewSet(viewsets.ModelViewSet):
     API view set for the Contribution model.
     """
 
-    queryset = Contribution.objects.all().select_related("video", "contributor")
+    queryset = Contribution.objects.all().select_related("video", "contributor", "role")
     serializer_class = ContributionSerializer
     permission_classes = [permissions.IsAuthenticated, CanManageContribution]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
