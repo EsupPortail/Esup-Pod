@@ -178,9 +178,7 @@ class RunnerLiveResolverTests(SimpleTestCase):
         self.discover(replacement, replacement)
         self.assertEqual(get_stream_info(self.broadcaster)["live_id"], "session-2")
         self.assertEqual(self.get.call_count, 4)
-        self.assertTrue(
-            self.get.call_args_list[2].args[0].endswith("/sources/source-A")
-        )
+        self.assertTrue(self.get.call_args_list[2].args[0].endswith("/sources/source-A"))
 
     def test_stop_then_republish_discovers_replacement_instead_of_pinning_old_id(self):
         """Discover a replacement session after stopping and republishing RTMP."""
@@ -370,14 +368,10 @@ class RunnerLiveResolverTests(SimpleTestCase):
             self.discover(session(state="completed"))
             get_stream_info(self.broadcaster)
             self.assertEqual(logs.info.call_count, 2)
-            self.discover(
-                session(live_id="new-session"), session(live_id="new-session")
-            )
+            self.discover(session(live_id="new-session"), session(live_id="new-session"))
             get_stream_info(self.broadcaster)
             self.assertEqual(logs.info.call_count, 3)
-            self.discover(
-                session(live_id="replacement"), session(live_id="replacement")
-            )
+            self.discover(session(live_id="replacement"), session(live_id="replacement"))
             get_stream_info(self.broadcaster)
             self.assertEqual(logs.info.call_count, 4)
         self.assertEqual(
@@ -533,9 +527,7 @@ class RunnerLiveConfigurationTests(RunnerLiveDatabaseTestCase):
                 with self.assertRaises(ValidationError):
                     self.broadcaster.full_clean(exclude=["piloting_implementation"])
         self.broadcaster.source_id = "source-A"
-        self.manager.site = Site.objects.create(
-            domain="other.example.com", name="Other"
-        )
+        self.manager.site = Site.objects.create(domain="other.example.com", name="Other")
         self.manager.save()
         with self.assertRaises(ValidationError) as error:
             self.broadcaster.full_clean(exclude=["piloting_implementation"])

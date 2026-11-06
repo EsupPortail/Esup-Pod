@@ -77,9 +77,7 @@ class UploadSessionTests(SimpleTestCase):
 
     def respond(self, request):
         """Resolve the test user only while its stored session remains valid."""
-        request.user = (
-            self.user if request.session.get(SESSION_KEY) else AnonymousUser()
-        )
+        request.user = self.user if request.session.get(SESSION_KEY) else AnonymousUser()
         return PodChunkedUploadView.as_view()(request)
 
     def send_chunk(self, content=b"video", start=None):

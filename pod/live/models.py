@@ -272,9 +272,7 @@ class Broadcaster(models.Model):
             if not self.runner_manager_id:
                 errors["runner_manager"] = _("Select a runner manager for Live mode.")
             elif not self.runner_manager.supports_live:
-                errors["runner_manager"] = _(
-                    "Select a manager that supports Live mode."
-                )
+                errors["runner_manager"] = _("Select a manager that supports Live mode.")
             if not self.source_id:
                 errors["source_id"] = _("Enter the source ID for Live mode.")
             if (

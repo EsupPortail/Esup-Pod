@@ -71,9 +71,7 @@ class SendEmailItemTests(SimpleTestCase):
 
     @override_settings(EMAIL_HOST="smtp.example.org", ADMINS=())
     @patch("pod.video_encode_transcript.utils.mail_admins")
-    def test_send_email_item_skips_when_admins_are_empty(
-        self, mock_mail_admins
-    ) -> None:
+    def test_send_email_item_skips_when_admins_are_empty(self, mock_mail_admins) -> None:
         """Do not attempt an SMTP send when no admin recipients are configured."""
         send_email_item("Task 42 failed", "Task", "task-42")
         mock_mail_admins.assert_not_called()
