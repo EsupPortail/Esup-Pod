@@ -1,0 +1,2 @@
+# Optional: only install when USE_OPENSEARCH = True in settings_local.py
+opensearch-py==2.8.0

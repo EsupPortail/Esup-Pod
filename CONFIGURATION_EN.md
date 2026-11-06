@@ -1145,6 +1145,14 @@ Set `USE_QUIZ` to True to activate this application.<br>
 * `ES_OPTIONS`
   > default value: `{}`
   >>
+* `USE_OPENSEARCH`
+  > default value: `False`
+  >> When `True`, the search is done with the
+  [opensearch-py](https://opensearch.org/docs/latest/clients/) client
+  (install `requirements-opensearch.txt`) and the Elasticsearch 7 API level,
+  which is the native API of OpenSearch 1.x/2.x. Authentication and SSL
+  options are then given through `ES_OPTIONS`.
+  >>
 
 ###
 

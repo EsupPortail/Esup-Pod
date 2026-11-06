@@ -1,9 +1,14 @@
 """create_pod_index management command."""
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from pod.video_search.utils import create_index_es, delete_index_es
-from elasticsearch import exceptions
 import logging
+
+if getattr(settings, "USE_OPENSEARCH", False):
+    from opensearchpy import exceptions
+else:
+    from elasticsearch import exceptions
 
 logger = logging.getLogger(__name__)
 
