@@ -1,4 +1,6 @@
 webvtt-py==0.5.1
 celery==5.4.0
+# Keep the Redis transport compatible with the pinned redis-py version.
+kombu[redis]==5.5.4
 redis==5.2.0
 requests==2.34.2

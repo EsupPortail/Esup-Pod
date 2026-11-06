@@ -1288,7 +1288,18 @@
                     }
                 },
                 "live": {
-                    "description": {},
+                    "description": {
+                        "en": [
+                            "The **Esup-Runner Live** mode is configured in each broadcaster’s administration form.",
+                            "Select the `runner_manager` receiving its RTMP stream and enter its `source_id`, independent of the Pod slug.",
+                            "Fixed URL mode remains the default; the URL is required only in this mode."
+                        ],
+                        "fr": [
+                            "Le mode **Esup-Runner Live** se configure dans l’administration de chaque broadcaster.",
+                            "Sélectionner le `runner_manager` recevant son RTMP et renseigner son `source_id`, indépendant du slug Pod.",
+                            "Le mode URL fixe reste le mode par défaut ; l’URL est obligatoire uniquement dans ce mode."
+                        ]
+                    },
                     "settings": {
                         "AFFILIATION_EVENT": {
                             "default_value": "['faculty', 'employee', 'staff']",
@@ -1390,6 +1401,66 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "ESUP_RUNNER_LIVE_CACHE_TIMEOUT": {
+                            "default_value": 10,
+                            "description": {
+                                "en": [
+                                    "Cache duration (in seconds) for unavailable streams and retries after temporary discovery errors.",
+                                    "During manager outages, the last confirmed URL is retained separately and offered again only when new accessible HLS segments are observed.",
+                                    "Ongoing playback continues independently of manager availability, without a fixed outage duration limit."
+                                ],
+                                "fr": [
+                                    "Durée (en secondes) du cache des flux indisponibles et des nouvelles tentatives après une erreur temporaire de découverte.",
+                                    "Pendant une panne du manager, la dernière URL confirmée est conservée séparément et proposée à nouveau uniquement si de nouveaux segments HLS accessibles sont observés.",
+                                    "La lecture en cours continue indépendamment de la disponibilité du manager, sans limite fixe de durée de panne."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.5.0"
+                        },
+                        "ESUP_RUNNER_LIVE_HLS_TIMEOUT": {
+                            "default_value": "(2, 2)",
+                            "description": {
+                                "en": [
+                                    "Connection and read timeouts (in seconds) for HLS checks during manager outages.",
+                                    "Checks follow a master playlist, observe media playlist progression and read at most the start of the latest segment, without manager credentials."
+                                ],
+                                "fr": [
+                                    "Délais de connexion et de lecture (en secondes) des vérifications HLS pendant une panne du manager.",
+                                    "Les vérifications suivent la playlist principale, observent la progression de la playlist média et lisent uniquement le début du dernier segment, sans les identifiants du manager."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.5.0"
+                        },
+                        "ESUP_RUNNER_LIVE_HTTP_TIMEOUT": {
+                            "default_value": "(2, 4)",
+                            "description": {
+                                "en": [
+                                    "Connection and read timeouts (in seconds) for HTTP requests to the Esup-Runner Live manager."
+                                ],
+                                "fr": [
+                                    "Délais de connexion et de lecture (en secondes) des requêtes HTTP au manager Esup-Runner Live."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.5.0"
+                        },
+                        "ESUP_RUNNER_LIVE_READY_CACHE_TIMEOUT": {
+                            "default_value": 20,
+                            "description": {
+                                "en": [
+                                    "Cache duration (in seconds) for ready HLS streams confirmed by the Esup-Runner Live manager.",
+                                    "Confirmed stops and access refusals invalidate the last known URL. Browser availability requests time out after 30 seconds."
+                                ],
+                                "fr": [
+                                    "Durée (en secondes) du cache des flux HLS prêts confirmés par le manager Esup-Runner Live.",
+                                    "Les arrêts confirmés et les refus d’accès invalident la dernière URL connue. Les requêtes de disponibilité du navigateur expirent après 30 secondes."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.5.0"
                         },
                         "EVENT_ACTIVE_AUTO_START": {
                             "default_value": false,
@@ -1560,7 +1631,7 @@
                         }
                     },
                     "title": {
-                        "en": "",
+                        "en": "Live application configuration",
                         "fr": "Configuration de l’application live"
                     }
                 },

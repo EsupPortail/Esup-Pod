@@ -1,5 +1,5 @@
 """
-Django global settings for pod_project.
+Esup-Pod global Django settings.
 
 Django version: 4.2.
 """
@@ -324,6 +324,14 @@ LOGGING = {
             "backupCount": 5,
             "formatter": "general",
         },
+        "live": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "live.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
     },
     "loggers": {
         "django": {
@@ -368,6 +376,11 @@ LOGGING = {
         },
         "pod.video_encode_transcript": {
             "handlers": ["video_encode_transcript"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "pod.live": {
+            "handlers": ["console", "live"],
             "level": "INFO",
             "propagate": False,
         },

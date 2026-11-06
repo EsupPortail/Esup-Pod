@@ -1069,3 +1069,55 @@ msgstr ""
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "Retry"
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "Checking your upload…"
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "Unable to confirm the upload. Check your dashboard before uploading the file again."
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "Uploading…"
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "Upload interrupted. Retrying automatically…"
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "Upload interrupted. Check your connection and click Retry."
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "The server rejected the upload. Please select the file again or contact support."
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "The selected file is empty. Please choose another file."
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "Preparing your file…"
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "Your file is ready to upload."
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "Unable to read the file. Please select it again."
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "You must accept the necessary authorizations to continue."
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "Upload a media file first."
+msgstr ""

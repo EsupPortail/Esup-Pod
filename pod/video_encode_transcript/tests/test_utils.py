@@ -5,6 +5,7 @@ Run with `python manage.py test pod.video_encode_transcript.tests.test_utils`
 """
 
 import unittest
+from smtplib import SMTPRecipientsRefused
 from unittest.mock import MagicMock, patch
 
 from django.core import mail
@@ -70,7 +71,9 @@ class SendEmailItemTests(SimpleTestCase):
 
     @override_settings(EMAIL_HOST="smtp.example.org", ADMINS=())
     @patch("pod.video_encode_transcript.utils.mail_admins")
-    def test_send_email_item_skips_when_admins_are_empty(self, mock_mail_admins) -> None:
+    def test_send_email_item_skips_when_admins_are_empty(
+        self, mock_mail_admins
+    ) -> None:
         """Do not attempt an SMTP send when no admin recipients are configured."""
         send_email_item("Task 42 failed", "Task", "task-42")
         mock_mail_admins.assert_not_called()
@@ -115,8 +118,9 @@ class CompletionEmailTests(SimpleTestCase):
     def test_subject_prefix_for_owner_and_managers(self) -> None:
         """Use the configured prefix once, with the site name as an empty fallback."""
         for prefix in ("[TESTpod] ", "[Custom] ", ""):
-            with self.subTest(prefix=prefix), override_settings(
-                EMAIL_SUBJECT_PREFIX=prefix
+            with (
+                self.subTest(prefix=prefix),
+                override_settings(EMAIL_SUBJECT_PREFIX=prefix),
             ):
                 mail.outbox.clear()
                 utils.send_email_encoding(self.video)
@@ -138,8 +142,9 @@ class CompletionEmailTests(SimpleTestCase):
             MANAGERS=(("university", "establishment@example.org"),),
         ):
             for prefix in ("[TESTpod] ", "[Custom] ", ""):
-                with self.subTest(prefix=prefix), override_settings(
-                    EMAIL_SUBJECT_PREFIX=prefix
+                with (
+                    self.subTest(prefix=prefix),
+                    override_settings(EMAIL_SUBJECT_PREFIX=prefix),
                 ):
                     mail.outbox.clear()
                     utils.send_email_encoding(self.video)
@@ -182,6 +187,47 @@ class CompletionEmailTests(SimpleTestCase):
                 for body in (manager_message.body, manager_message.alternatives[0][0]):
                     self.assertIn("Post by: Alice", body)
                     self.assertIn("the: 2026-09-16", body)
+
+    def test_completion_email_delivery_errors_are_logged(self) -> None:
+        """Log failed owner, manager and establishment email deliveries without raising."""
+        error = SMTPRecipientsRefused(
+            {self.video.owner.email: (550, b"5.1.2 Recipient domain not found")}
+        )
+        for sender in (utils.send_email_encoding, utils.send_email_transcript):
+            for delivery in (
+                "mail_managers",
+                "send_mail",
+                "EmailMultiAlternatives.send",
+            ):
+                with self.subTest(sender=sender.__name__, delivery=delivery):
+                    with (
+                        patch.multiple(
+                            utils,
+                            USE_ESTABLISHMENT_FIELD=delivery.startswith("Email"),
+                            MANAGERS=(("university", "establishment@example.org"),),
+                        ),
+                        patch(
+                            f"pod.video_encode_transcript.utils.{delivery}",
+                            side_effect=error,
+                        ),
+                        self.assertLogs(utils.logger, level="ERROR") as logs,
+                    ):
+                        sender(self.video)
+
+                    self.assertEqual(len(logs.records), 1)
+                    self.assertIn("video 42", logs.records[0].getMessage())
+                    self.assertIs(logs.records[0].exc_info[1], error)
+
+    @patch(
+        "pod.video_encode_transcript.utils.mail_managers",
+        side_effect=RuntimeError("Invalid email implementation"),
+    )
+    def test_completion_email_does_not_hide_programming_errors(
+        self, mock_mail_managers
+    ) -> None:
+        """Limit non-blocking errors to SMTP and connection failures."""
+        with self.assertRaisesRegex(RuntimeError, "Invalid email implementation"):
+            utils.send_email_encoding(self.video)
 
     @patch("pod.video_encode_transcript.utils.notify_user")
     def test_encoding_push_notification(self, mock_notify_user) -> None:
