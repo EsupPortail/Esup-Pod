@@ -1,4 +1,4 @@
-"""Views of the Meeting module."""
+"""Esup-Pod Meeting views."""
 
 import bleach
 import json
@@ -404,7 +404,7 @@ def join(
         direct_access += room
 
     if direct_access and direct_access != meeting.get_hashkey():
-        raise SuspiciousOperation("Invalid access")
+        return render(request, "meeting/access_denied.html", status=403)
 
     if meeting.get_is_meeting_running() is not True:
         return render(

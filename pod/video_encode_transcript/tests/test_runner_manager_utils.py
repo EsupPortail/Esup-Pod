@@ -1,8 +1,9 @@
-"""Regression tests for Runner Manager artifact persistence."""
+"""Esup-Pod regression tests for Runner Manager artifact persistence."""
 
 import json
 import shutil
 from pathlib import Path
+from smtplib import SMTPRecipientsRefused
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
@@ -148,3 +149,54 @@ class RunnerManagerArtifactPersistenceTests(TestCase):
             encoding_log = EncodingLog.objects.get(video=self.video).log
             self.assertIn("- persisted_thumbnail_id:\n%s" % thumbnail.id, encoding_log)
             self.assertIn("End:", encoding_log)
+
+    @patch("pod.video_encode_transcript.runner_manager_utils.USE_NOTIFICATIONS", False)
+    @patch("pod.video_encode_transcript.runner_manager_utils.USE_TRANSCRIPTION", False)
+    @patch(
+        "pod.video_encode_transcript.runner_manager_utils.EMAIL_ON_ENCODING_COMPLETION",
+        True,
+    )
+    @patch("pod.video_encode_transcript.utils.DEBUG", False)
+    @patch("pod.video_encode_transcript.utils.USE_ESTABLISHMENT_FIELD", False)
+    @patch("pod.video_encode_transcript.utils.mail_managers")
+    def test_email_delivery_failure_does_not_block_task_completion(
+        self, mock_mail_managers
+    ) -> None:
+        """Complete an imported task even when the owner's email cannot be delivered."""
+        self.user.email = "owner@example.invalid"
+        self.user.save(update_fields=["email"])
+        task = Task.objects.create(video=self.video, type="encoding", status="running")
+        info_video = {
+            "duration": 47,
+            "has_stream_video": False,
+            "has_stream_audio": False,
+            "has_stream_thumbnail": False,
+        }
+        errors = (
+            SMTPRecipientsRefused(
+                {self.user.email: (550, b"5.1.2 Recipient domain not found")}
+            ),
+            ConnectionRefusedError("SMTP server unavailable"),
+        )
+        with TemporaryDirectory() as media_root, self.settings(MEDIA_ROOT=media_root):
+            output_dir = Path(media_root) / f"{self.video.id:04d}"
+            output_dir.mkdir()
+            (output_dir / "info_video.json").write_text(
+                json.dumps(info_video), encoding="utf-8"
+            )
+            for error in errors:
+                with self.subTest(error=type(error).__name__):
+                    Task.objects.filter(pk=task.pk).update(status="running")
+                    task.refresh_from_db()
+                    with patch(
+                        "pod.video_encode_transcript.utils.send_mail", side_effect=error
+                    ) as send_mail:
+                        _finalize_task_import(task, str(output_dir), "")
+
+                    task.refresh_from_db()
+                    self.video.refresh_from_db()
+                    self.assertEqual(task.status, "completed")
+                    self.assertFalse(self.video.encoding_in_progress)
+                    self.assertEqual(self.video.duration, 47)
+                    self.assertEqual(self.video.encodingstep.num_step, 0)
+                    send_mail.assert_called_once()

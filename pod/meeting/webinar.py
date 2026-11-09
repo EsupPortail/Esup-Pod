@@ -1,4 +1,4 @@
-"""Management of webinars for the Meeting module."""
+"""Esup-Pod - Management of webinars for the Meeting module."""
 
 import json
 import logging
@@ -8,6 +8,7 @@ import time
 
 from django.contrib import messages
 from django.core.handlers.wsgi import WSGIRequest
+from django.db import transaction
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from pod.main.utils import display_message_with_icon
@@ -18,13 +19,21 @@ log = logging.getLogger("webinar")
 
 
 def start_webinar(request: WSGIRequest, meet_id: int) -> None:
-    """Start a webinar and send a thread to stop it automatically at the end."""
+    """Start a new webinar and send a thread to stop it automatically at the end."""
     try:
         # Get the current meeting
         meeting = Meeting.objects.get(id=meet_id)
 
-        # No thread for start the webinar
-        start_webinar_livestream(request.get_host(), meet_id)
+        with transaction.atomic():
+            # Share the startup state across browsers and serialize concurrent joins.
+            livestream = (
+                Livestream.objects.select_for_update().filter(meeting=meeting).first()
+            )
+            if livestream and livestream.status == 1:
+                return
+
+            # Roll back the live status if the gateway cannot be started.
+            start_webinar_livestream(request.get_host(), meet_id)
 
         # Thread for stop the webinar
         t_stop = threading.Thread(target=stop_webinar_livestream, args=[meet_id, False])

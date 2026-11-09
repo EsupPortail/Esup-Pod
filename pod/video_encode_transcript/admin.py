@@ -1,3 +1,5 @@
+"""Esup-Pod video encoding, transcription and Runner manager administration."""
+
 import requests
 from django.contrib import admin, messages
 from django.contrib.sites.models import Site
@@ -327,6 +329,7 @@ class RunnerManagerAdmin(admin.ModelAdmin):
         "id",
         "name",
         "active_badge",
+        "supports_live",
         "priority",
         "url",
         "runner_admin_link",
@@ -335,8 +338,8 @@ class RunnerManagerAdmin(admin.ModelAdmin):
     list_display_links = ("id", "name")
     ordering = ("-id", "priority")
     readonly_fields = []
-    search_fields = ["id", "name", "site"]
-    list_filter = ("is_active", "site")
+    search_fields = ["id", "name", "site__domain", "site__name"]
+    list_filter = ("is_active", "supports_live", "site")
 
     def get_urls(self):
         """Register the custom admin endpoint used to test runner connectivity."""
