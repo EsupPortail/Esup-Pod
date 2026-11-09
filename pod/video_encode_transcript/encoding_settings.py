@@ -18,7 +18,7 @@ FFMPEG_STUDIO_COMMAND = (
     " -hide_banner -threads %(nb_threads)s %(input)s %(subtime)s"
     + " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p"
     + " -crf %(crf)s -sc_threshold 0 -force_key_frames"
-    + ' "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 -deinterlace '
+    + ' "expr:gte(t,n_forced*1)" -max_muxing_queue_size 4000 '
 )
 
 FFMPEG_LIBX = "libx264"
@@ -29,7 +29,7 @@ FFMPEG_MP4_ENCODE = (
     + "-maxrate %(maxrate)s -bufsize %(bufsize)s "
     + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
     + "-max_muxing_queue_size 4000 "
-    + '-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -vsync 0 "%(output)s" '
+    + '-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -fps_mode passthrough "%(output)s" '
 )
 # https://gist.github.com/Andrey2G/78d42b5c87850f8fbadd0b670b0e6924
 FFMPEG_HLS_COMMON_PARAMS = (
@@ -60,19 +60,19 @@ FFMPEG_NB_THUMBNAIL = 3
 # FFMPEG_CREATE_THUMBNAIL =
 #  '-map 0:%(index)s -vframes 1 -an -ss %(time)s -y "%(output)s" '
 FFMPEG_CREATE_THUMBNAIL = (
-    '-vf "fps=1/(%(duration)s/%(nb_thumbnail)s)" -vsync vfr -y "%(output)s_%%04d.png"'
+    '-vf "fps=1/(%(duration)s/%(nb_thumbnail)s)" -fps_mode vfr -y "%(output)s_%%04d.png"'
 )
 FFMPEG_EXTRACT_SUBTITLE = '-map 0:%(index)s -f webvtt -y  "%(output)s" '
 
 FFMPEG_CREATE_OVERVIEW = (
-    " -vsync vfr -vf "
+    " -fps_mode vfr -vf "
     "'fps=fps=(%(image_count)s/%(duration)s), "
     "scale=%(width)sx%(height)s, "
     "tile=%(image_count)sx1' "
     "-frames:v 1 -y '%(output)s' "
 )
 
-FFMPEG_DRESSING_OUTPUT = ' -c:v libx264 -y -vsync 0 "%(output)s" '
+FFMPEG_DRESSING_OUTPUT = ' -c:v libx264 -y -fps_mode passthrough "%(output)s" '
 FFMPEG_DRESSING_INPUT = ' -i "%(input)s"'
 FFMPEG_DRESSING_FILTER_COMPLEX = ' -filter_complex "%(filter)s" '
 FFMPEG_DRESSING_WATERMARK = (
