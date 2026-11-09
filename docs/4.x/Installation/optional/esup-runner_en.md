@@ -30,7 +30,7 @@ This document explains:
 1. A user (or an internal process) triggers an encoding, transcription, or studio encoding task.
 2. Pod creates/sets a local `Task` with `pending` status.
 3. Pod attempts to send the task to a Runner Manager (`/task/execute`) using Bearer authentication.
-4. If no runner is reachable, the task remains `pending` (it will be retried by `process_tasks`).
+4. If no runner is reachable, the task remains `pending` (it will be retried by `process_tasks` job).
 5. The runner executes the task, then calls the Pod webhook `POST /runner/notify_task_end/`.
 6. Pod updates the task status, then, if `completed`, downloads results (`/task/result/<task_id>`) and imports artifacts.
 7. Pod finalizes the task as `completed` and updates business objects (encoded files, subtitles, studio video, etc.).
@@ -93,6 +93,10 @@ Best practices:
 - configure at least 2 runners for fault tolerance;
 - use priorities to control routing;
 - when priorities are equal, Pod applies round-robin rotation between runners in that group.
+
+The diagram below illustrates how Runner Managers are selected by priority: Pod first contacts the manager with priority `1`, then the manager with priority `2` if the first cannot accept the task (due to unavailability or insufficient capacity). A manager with priority `3`, hosted on shared infrastructure, can handle overflow when the previous levels cannot accept the task. This setup gives preference to the institution's resources while providing fallback options. The priority values are examples and can be configured in administration. Only one manager is selected per task; it then notifies Pod when processing is complete so that Pod can retrieve the results.
+
+![Runner Manager selection by priority, with fallback and overflow](esup-runner_screens/esup-pod-managers-priorities.png)
 
 ### 2. Test Connectivity
 

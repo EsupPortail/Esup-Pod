@@ -30,7 +30,7 @@ Ce document explique:
 1. Un utilisateur (ou un traitement interne) déclenche un encodage, une transcription ou un encodage studio.
 2. Pod crée/positionne une tâche locale `Task` en `pending`.
 3. Pod tente d'envoyer la tâche à un Runner Manager (`/task/execute`) avec authentification Bearer.
-4. Si aucun runner n'est joignable, la tâche reste `pending` (elle sera reprise par `process_tasks`).
+4. Si aucun runner n'est joignable, la tâche reste `pending` (elle sera reprise par le job `process_tasks`).
 5. Le runner exécute la tâche, puis appelle le webhook Pod `POST /runner/notify_task_end/`.
 6. Pod met à jour le statut de la tâche, puis, si `completed`, télécharge les résultats (`/task/result/<task_id>`) et importe les artefacts.
 7. Pod finalise la tâche en `completed` et met à jour les objets métiers (fichiers encodés, sous-titres, vidéo studio, etc.).
@@ -93,6 +93,10 @@ Bonnes pratiques:
 - configurer au moins 2 runners pour la tolérance aux pannes;
 - utiliser les priorités pour piloter le routage;
 - en cas de même priorité, Pod applique une rotation (round-robin) entre runners de ce groupe.
+
+Le schéma ci-dessous illustre la sélection des Runner Managers par priorité : Pod sollicite d'abord le manager de priorité `1`, puis celui de priorité `2` si le premier ne peut pas accepter la tâche (indisponibilité ou capacité insuffisante). Un manager de priorité `3`, hébergé sur une infrastructure mutualisée, peut servir de débordement si les niveaux précédents ne peuvent pas la prendre en charge. Cette organisation permet de privilégier les ressources de l'établissement tout en disposant de solutions de repli. Les valeurs de priorité sont données à titre d'exemple et se configurent dans l'administration. Un seul manager est retenu par tâche ; il notifie ensuite Pod de la fin du traitement pour permettre la récupération des résultats.
+
+![Sélection des Runner Managers par priorité, avec repli et débordement](esup-runner_screens/esup-pod-managers-priorites.png)
 
 ### 2. Tester la connectivité
 
