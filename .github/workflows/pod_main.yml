@@ -27,7 +27,9 @@ jobs:
             - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
             - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
             - run: echo "🚀 Run test for Python ${{ matrix.python-version }}"
-            - uses: actions/checkout@v6
+            - uses: actions/checkout@v7
+              with:
+                persist-credentials: false
             - name: Configure sysctl limits (for ES)
               run: |
                 sudo swapoff -a
@@ -36,7 +38,7 @@ jobs:
                 sudo sysctl -w vm.max_map_count=262144
 
             - name: Set up Python ${{ matrix.python-version }}
-              uses: actions/setup-python@v6
+              uses: actions/setup-python@v7
               with:
                 python-version: ${{ matrix.python-version }}
 
@@ -58,7 +60,7 @@ jobs:
 
             ## Start unit tests ##
             - name: Run Elasticsearch
-              uses: elastic/elastic-github-actions/elasticsearch@master
+              uses: elastic/elastic-github-actions/elasticsearch@98431b45a60cbb6ace481778827bc8e11f12fd65 # master at 2026-09-22
               with:
                 stack-version: 8.16.1
                 plugins: analysis-icu
