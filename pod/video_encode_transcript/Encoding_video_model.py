@@ -410,7 +410,7 @@ class Encoding_video_model(Encoding_video):
         if len(self.list_image_track) > 0:
             thumbnail_command = self.get_extract_thumbnail_command()
             return_value, return_msg = launch_cmd(thumbnail_command)
-            if not created:
+            if not created or not encoding_log.log:
                 encoding_log.log = ""
             encoding_log.log += "\n----------------------------------------"
             encoding_log.log += "\n extract_thumbnail_command"
@@ -423,6 +423,8 @@ class Encoding_video_model(Encoding_video):
             )
             if thumbnail_command:
                 return_value, return_msg = launch_cmd(thumbnail_command)
+                if not created or not encoding_log.log:
+                    encoding_log.log = ""
                 encoding_log.log += "\n----------------------------------------"
                 encoding_log.log += "\n create_thumbnail_command"
                 encoding_log.log += "\n %s" % thumbnail_command
