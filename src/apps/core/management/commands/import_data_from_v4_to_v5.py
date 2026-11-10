@@ -339,6 +339,7 @@ class Command(BaseCommand):
             data.get("video_encode_transcript_encodingvideo", []),
             batch_size,
         )
+        self.import_chapters(data.get("chapter_chapter", []), batch_size)
 
     # ------------------------------------------------------------------
     # Signal management
