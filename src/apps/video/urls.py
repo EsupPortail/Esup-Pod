@@ -12,6 +12,7 @@ from src.apps.video.views import (
     TagViewSet,
     TypeViewSet,
     VideoHyperlinkViewSet,
+    ChapterViewSet,
     VideoAccessTokenViewSet,
     DublinCoreViewSet,
     UserMarkerTimeViewSet,
@@ -32,6 +33,9 @@ if video_settings.use_hyperlinks:
     router.register(
         r"video-hyperlinks", VideoHyperlinkViewSet, basename="video-hyperlink"
     )
+
+if video_settings.use_chapters:
+    router.register(r"chapters", ChapterViewSet, basename="chapter")
 
 if video_settings.use_video_access_token:
     router.register(r"tokens", VideoAccessTokenViewSet, basename="video-token")
