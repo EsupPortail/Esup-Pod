@@ -51,6 +51,11 @@ class VideoConfig(BaseSettings):
         description=_("Enable video hyperlinks."),
         json_schema_extra={"public": True},
     )
+    use_chapters: bool = Field(
+        default=defaults.USE_CHAPTERS,
+        description=_("Enable video chapters."),
+        json_schema_extra={"public": True},
+    )
     use_video_access_token: bool = Field(
         default=defaults.USE_VIDEO_ACCESS_TOKEN,
         description=_("Enable secure video sharing via access tokens."),

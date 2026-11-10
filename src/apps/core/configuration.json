@@ -352,7 +352,7 @@
                   ""
                 ],
                 "fr": [
-                  "Si valeur vaut « True », le username de l’utilisateur ne sera pas visible sur la plate-forme Pod (RGPD)."
+                  "Si valeur vaut « True », le username de l’utilisateur ne sera pas visible sur la plate-forme Pod (RGPD)."
                 ]
               },
               "pod_version_init": "3.1.0"
@@ -369,7 +369,7 @@
                   "List of IPs and/or ranges from which “superuser” status is allowed."
                 ],
                 "fr": [
-                  "Liste d’IP et/ou de plages depuis lesquelles le statut « superuser » est autorisé."
+                  "Liste d’IP et/ou de plages depuis lesquelles le statut « superuser » est autorisé."
                 ]
               },
               "pod_version_init": "4.0.2"
@@ -494,7 +494,7 @@
                   ""
                 ],
                 "fr": [
-                  "Si valeur vaut « True », rajoute un attribut « establishment » à l’utilisateur Pod."
+                  "Si valeur vaut « True », rajoute un attribut « establishment » à l’utilisateur Pod."
                 ]
               },
               "pod_version_init": "3.1"
@@ -739,6 +739,18 @@
               },
               "pod_version_init": "5.0.0"
             },
+            "USE_CHAPTERS": {
+              "default_value": true,
+              "description": {
+                "en": [
+                  "Enable video chapters feature."
+                ],
+                "fr": [
+                  "Permet aux utilisateurs d'ajouter des chapitres sur une vidéo."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
             "USE_CUT": {
               "default_value": false,
               "description": {
@@ -902,7 +914,7 @@
                   ""
                 ],
                 "fr": [
-                  "Si True, seule les personnes « Staff » peuvent déposer des vidéos."
+                  "Si True, seule les personnes « Staff » peuvent déposer des vidéos."
                 ]
               },
               "pod_version_init": "3.1.0"
