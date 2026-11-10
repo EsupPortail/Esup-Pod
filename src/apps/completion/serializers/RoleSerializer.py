@@ -10,6 +10,8 @@ class RoleSerializer(serializers.ModelSerializer):
     """Serializer for the Role model."""
 
     class Meta:
+        """Role serializer metadata."""
+
         model = Role
         fields = [
             "code",
