@@ -41,6 +41,7 @@ from src.apps.encoding.conf import encoding_settings
 from src.apps.encoding.models import EncodingVideo
 from src.apps.video.models import (
     Video,
+    Chapter,
     Type,
     Discipline,
     ViewCount,
@@ -2242,4 +2243,60 @@ class Command(BaseCommand):
                 error_count += len(batch)
         self.stdout.write(
             f"Blocks imported: {success_count} success, {error_count} errors."
+        )
+
+    def import_chapters(self, items, batch_size):
+        """Import video chapters (v4 table chapter_chapter)."""
+        self.stdout.write("Importing Chapters...")
+        items_to_process = self._get_unprocessed_items("Chapter", items)
+        if not items_to_process:
+            self.stdout.write("All Chapters already migrated.")
+            return
+
+        existing_video_ids = set(Video.objects.values_list("id", flat=True))
+        success_count = 0
+        error_count = 0
+
+        for i in range(0, len(items_to_process), batch_size):
+            batch = items_to_process[i : i + batch_size]
+            try:
+                with transaction.atomic():
+                    instances, mappings = [], []
+                    for item in batch:
+                        video_id = item.get("video_id")
+                        if video_id not in existing_video_ids:
+                            mappings.append(
+                                MigrationMapping(
+                                    model_name="Chapter",
+                                    v4_id=item["id"],
+                                    status=MigrationMapping.Status.IGNORED,
+                                    message="video not migrated",
+                                )
+                            )
+                            continue
+                        instances.append(
+                            Chapter(
+                                id=item["id"],
+                                video_id=video_id,
+                                title=(item.get("title") or "")[:100],
+                                time_start=max(int(item.get("time_start") or 0), 0),
+                            )
+                        )
+                        mappings.append(
+                            MigrationMapping(
+                                model_name="Chapter",
+                                v4_id=item["id"],
+                                v5_id=item["id"],
+                                status=MigrationMapping.Status.SUCCESS,
+                            )
+                        )
+                    Chapter.objects.bulk_create(instances, ignore_conflicts=True)
+                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    success_count += len(instances)
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f"Error in Chapter batch: {e}"))
+                self._record_batch_errors("Chapter", batch, e)
+                error_count += len(batch)
+        self.stdout.write(
+            f"Chapters imported: {success_count} success, {error_count} errors."
         )

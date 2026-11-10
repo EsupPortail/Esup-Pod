@@ -3,6 +3,7 @@ Esup-Pod - Video application models.
 """
 
 from .Video import Video
+from .Chapter import Chapter
 from .Subtitle import Subtitle
 from .ViewCount import ViewCount
 from .Comment import Comment
@@ -19,6 +20,7 @@ from .VideoAccessToken import VideoAccessToken
 
 __all__ = [
     "Video",
+    "Chapter",
     "Subtitle",
     "ViewCount",
     "Comment",
