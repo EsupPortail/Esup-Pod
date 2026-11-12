@@ -26,6 +26,9 @@ from django.utils.translation import gettext_lazy as _
 from pod.video.models import Category, Discipline, Type, Video, VideoToDelete
 from pod.video_encode_transcript.models import EncodingAudio, EncodingVideo, PlaylistVideo
 
+from ftplib import FTP
+from pathlib import Path
+
 logger = logging.getLogger(__name__)
 User = get_user_model()
 
@@ -908,3 +911,34 @@ def archive_and_get_link(slug, sub_fold="tmp"):
     # remove old temp folder
     shutil.rmtree(media_package_dir)
     return vid, "%s%s/%s.zip" % (media_url, sub_fold, safe_slug)
+
+
+def upload_zip_to_ftp(file_path: str, ftp_host: str, ftp_user: str,
+                      ftp_password: str, remote_dir: str = "/") -> None:
+    """
+    Send a file to a FTP server.
+
+    :param file_path: Zip File local Path
+    :param ftp_host: FTP Host address
+    :param ftp_user: FTP user
+    :param ftp_password: FTP password
+    :param remote_dir: Remote directory
+    """
+
+    file_path = Path(file_path)
+
+    if not file_path.exists():
+        raise FileNotFoundError(f"Can't find the file : {file_path}")
+
+    if file_path.suffix.lower() != ".zip":
+        raise ValueError("The file must be a ZIP file")
+
+    with FTP(ftp_host) as ftp:
+        ftp.login(ftp_user, ftp_password)
+        ftp.cwd(remote_dir)
+
+        with file_path.open("rb") as file:
+            ftp.storbinary(
+                f"STORE {file_path.name}",
+                file
+            )

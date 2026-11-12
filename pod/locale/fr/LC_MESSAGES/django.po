@@ -9354,10 +9354,21 @@ msgstr "Choix en matière d’obsolescence"
 msgid "Your preference regarding the future of your video on this platform."
 msgstr "Vos préférences quant au futur de votre vidéo sur cette plateforme."
 
+#: pod/video/management/commands/arch_launcher.py
 #: pod/video/management/commands/check_obsolete_videos.py
 #: pod/video/management/commands/respite_launcher.py
 msgid "An Error occurred while processing."
 msgstr "Une erreur est survenue durant l’exécution du processus."
+
+#: pod/video/management/commands/arch_launcher.py
+#, python-format
+msgid "Archiving model not found: %(error)s"
+msgstr "Modèle d’archivage introuvable : %(error)s"
+
+#: pod/video/management/commands/arch_launcher.py
+#, python-format
+msgid "Archiving model import error: %(error)s"
+msgstr "Erreur d’importation du modèle d'archivage : %(error)s"
 
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid "USE_OBSOLESCENCE is FALSE"

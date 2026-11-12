@@ -8727,9 +8727,20 @@ msgstr ""
 msgid "Your preference regarding the future of your video on this platform."
 msgstr ""
 
+#: pod/video/management/commands/arch_launcher.py
 #: pod/video/management/commands/check_obsolete_videos.py
 #: pod/video/management/commands/respite_launcher.py
 msgid "An Error occurred while processing."
+msgstr ""
+
+#: pod/video/management/commands/arch_launcher.py
+#, python-format
+msgid "Archiving model not found: %(error)s"
+msgstr ""
+
+#: pod/video/management/commands/arch_launcher.py
+#, python-format
+msgid "Archiving model import error: %(error)s"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py

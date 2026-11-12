@@ -6,18 +6,24 @@ Test with `python manage.py test pod.video.tests.test_obsolescence  --settings=p
 import os
 import tempfile
 from datetime import date, timedelta
-from unittest.mock import patch
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
-from django.test import RequestFactory, TestCase, override_settings
+from django.test import RequestFactory, TestCase, override_settings, SimpleTestCase
 from django.utils.translation import gettext as _
 
 from pod.authentication.models import Owner
 
 from ..models import Type, Video, VideoToDelete
 from ..utils import archive_pack, check_csv_header, read_archived_csv
+
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from unittest.mock import MagicMock, patch
+
+from pod.video.management.commands.arch_launcher import Command
+from pod.video.utils import upload_zip_to_ftp
 
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
@@ -555,3 +561,182 @@ class ValidFormRespitTestCase(TestCase):
             os.remove("%s/%s.csv" % (settings.LOG_DIRECTORY, "archived"))
         except FileNotFoundError:
             pass
+
+
+class TestSendZip (SimpleTestCase):
+    """Send and upload zip test class"""
+
+    def setUp(self):
+        """Init before each test."""
+        # Paramètres communs
+        self.file_path = "/tmp/archive.zip"
+        self.sftp_host = "sftp.example.com"
+        self.sftp_user = "test_user"
+        self.sftp_password = "test_password"
+        self.remote_dir = "/uploads"
+
+        # Preparing STFP Mocks
+        self.transport_patcher = patch(
+            "pod.video.management.commands.arch_launcher.paramiko.Transport"
+        )
+        self.mock_transport_class = self.transport_patcher.start()
+        self.addCleanup(self.transport_patcher.stop)
+
+        self.mock_transport = MagicMock()
+        self.mock_transport_class.return_value = self.mock_transport
+
+        self.sftp_patcher = patch(
+            "pod.video.management.commands.arch_launcher.paramiko.SFTPClient"
+        )
+        self.mock_sftp_client_class = self.sftp_patcher.start()
+        self.addCleanup(self.sftp_patcher.stop)
+
+        self.mock_sftp = MagicMock()
+        self.mock_sftp_client_class.from_transport.return_value = (
+            self.mock_sftp
+        )
+
+        self.command = Command()
+
+        # Preparing temp ZIP files
+        self.temp_dir = TemporaryDirectory()
+        self.addCleanup(self.temp_dir.cleanup)
+
+        self.ftp_file_path = Path(self.temp_dir.name) / "archive.zip"
+        self.file_content = b"Fake content of ZIP file"
+        self.ftp_file_path.write_bytes(self.file_content)
+
+        # Preparing SFTP Mock
+        self.ftp_patcher = patch("pod.video.utils.FTP")
+        self.mock_ftp_class = self.ftp_patcher.start()
+        self.addCleanup(self.ftp_patcher.stop)
+
+        self.mock_ftp = MagicMock()
+        self.mock_ftp_class.return_value.__enter__.return_value = (
+            self.mock_ftp
+        )
+
+    def tearDown(self):
+        """Cleaning up after each test."""
+        # Clean by addCleanup().
+        pass
+
+    def test_send_zip_success(self):
+        """Check FTP Sending success"""
+        self.command.send_zip(
+            self.file_path,
+            self.sftp_host,
+            self.sftp_user,
+            self.sftp_password,
+            self.remote_dir,
+        )
+
+        self.mock_transport_class.assert_called_once_with(
+            (self.sftp_host, 22)
+        )
+
+        self.mock_transport.connect.assert_called_once_with(
+            username=self.sftp_user,
+            password=self.sftp_password,
+        )
+
+        self.mock_sftp_client_class.from_transport.assert_called_once_with(
+            self.mock_transport
+        )
+
+        self.mock_sftp.put.assert_called_once_with(
+            self.file_path,
+            "/uploads/archive.zip",
+        )
+
+        self.mock_sftp.close.assert_called_once()
+        self.mock_transport.close.assert_called_once()
+
+    def test_send_zip_closes_connections_on_error(self):
+        """Check SFTP Close in case of error"""
+        self.mock_sftp.put.side_effect = OSError("Transfer Error")
+
+        with self.assertRaises(OSError):
+            self.command.send_zip(
+                self.file_path,
+                self.sftp_host,
+                self.sftp_user,
+                self.sftp_password,
+                self.remote_dir,
+            )
+
+        self.mock_sftp.close.assert_called_once()
+        self.mock_transport.close.assert_called_once()
+
+    def test_upload_zip_to_ftp_success(self):
+        """Check sending of a ZIP file by FTP."""
+
+        # Catch file content during storbinary() call
+        def verifier_transfert(command, file):
+            self.assertEqual(command, "STORE archive.zip")
+            self.assertEqual(file.read(), self.file_content)
+
+        self.mock_ftp.storbinary.side_effect = verifier_transfert
+
+        upload_zip_to_ftp(
+            str(self.ftp_file_path),
+            self.sftp_host,
+            self.sftp_user,
+            self.sftp_password,
+            self.remote_dir,
+        )
+
+        # Check FTP Connection
+        self.mock_ftp_class.assert_called_once_with(self.sftp_host)
+
+        # Check Auth
+        self.mock_ftp.login.assert_called_once_with(
+            self.sftp_user,
+            self.sftp_password,
+        )
+
+        # Check Remote dir
+        self.mock_ftp.cwd.assert_called_once_with(self.remote_dir)
+
+        # Check file tranfer
+        self.mock_ftp.storbinary.assert_called_once_with(
+            "STORE archive.zip",
+            self.mock_ftp.storbinary.call_args.args[1],
+        )
+
+        # Check FTP close connection
+        self.mock_ftp_class.return_value.__exit__.assert_called_once()
+
+    def test_upload_zip_to_ftp_file_not_found(self):
+        """Check error if the file is missing."""
+        missing_file = Path(self.temp_dir.name) / "inexistant.zip"
+
+        with self.assertRaises(FileNotFoundError):
+            upload_zip_to_ftp(
+                str(missing_file),
+                self.sftp_host,
+                self.sftp_user,
+                self.sftp_password,
+                self.remote_dir,
+            )
+
+        self.mock_ftp_class.assert_not_called()
+
+    def test_upload_zip_to_ftp_invalid_extension(self):
+        """Check if this is not a zip file."""
+        invalid_file = Path(self.temp_dir.name) / "archive.txt"
+        invalid_file.write_text("Test content")
+
+        with self.assertRaisesRegex(
+                ValueError,
+                "The file must be a ZIP file",
+        ):
+            upload_zip_to_ftp(
+                str(invalid_file),
+                self.sftp_host,
+                self.sftp_user,
+                self.sftp_password,
+                self.remote_dir,
+            )
+
+        self.mock_ftp_class.assert_not_called()
