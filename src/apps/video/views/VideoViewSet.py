@@ -210,9 +210,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         if video.video_file:
             from src.apps.encoding.tasks import trigger_runner_encoding_task
 
-            source_url = (
-                f"{video_settings.site_url.rstrip('/')}{video.video_file.url}"
-            )
+            source_url = f"{video_settings.site_url.rstrip('/')}{video.video_file.url}"
 
             logger.debug("source_url: %s", source_url)
 
