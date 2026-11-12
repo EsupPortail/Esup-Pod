@@ -5,8 +5,8 @@ Esup-Pod - Dressing application signals.
 import logging
 from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
-from django.conf import settings
-
+from src.apps.video.conf import video_settings
+from apps.video.conf import video_settings
 from src.apps.dressing.models import Dressing
 
 logger = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ def trigger_encoding_for_video_ids(video_ids):
         try:
             video = Video.objects.get(pk=video_id)
             if video.video_file:
-                site_url = getattr(settings, "SITE_URL", "http://api:8000").rstrip("/")
+                site_url = video_settings.site_url.rstrip("/")
                 source_url = f"{site_url}{video.video_file.url}"
                 logger.info(
                     "Dressing signal: triggering encoding for video %s (source_url=%s)",
