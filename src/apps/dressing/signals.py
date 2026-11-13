@@ -7,7 +7,6 @@ import logging
 from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
 
-from apps.video.conf import video_settings
 from src.apps.dressing.models import Dressing
 from src.apps.video.conf import video_settings
 
