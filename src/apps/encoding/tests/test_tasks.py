@@ -5,15 +5,15 @@ This module validates the Celery tasks responsible for triggering encoding
 jobs on the remote runner manager.
 """
 
-from unittest.mock import patch, MagicMock
+import json
+from unittest.mock import MagicMock, patch
+
+from django.contrib.auth import get_user_model
+from django.test import TestCase
 from requests.exceptions import ConnectionError
 
-from django.test import TestCase
-from django.contrib.auth import get_user_model
-
-from src.apps.video.models import Video
 from src.apps.encoding.tasks import trigger_runner_encoding_task
-import json
+from src.apps.video.models import Video
 
 User = get_user_model()
 
@@ -55,6 +55,7 @@ class EncodingTaskTestCase(TestCase):
         )
 
         from django.conf import settings
+
         from config.env import env
 
         site_url = settings.SITE_URL.rstrip("/")

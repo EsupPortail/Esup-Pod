@@ -2,9 +2,9 @@
 Esup-Pod - Overlay model.
 """
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.core.exceptions import ValidationError
 
 from src.apps.completion.conf import completion_settings
 

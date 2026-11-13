@@ -3,8 +3,10 @@ Esup-Pod - Shibboleth authentication provider service.
 """
 
 from typing import Any, Dict
-from ...conf import auth_settings
+
 from django.contrib.auth import get_user_model
+
+from ...conf import auth_settings
 from ..tokens import get_tokens_for_user
 from ..users import UserPopulator
 

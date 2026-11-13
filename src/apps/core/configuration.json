@@ -28,7 +28,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "Enable CAS authentication in addition to local authentication."
                 ],
                 "fr": [
                   "Activation de l’authentification CAS en plus de l’authentification locale."
@@ -52,7 +52,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "Set to True to enable Shibboleth authentication."
                 ],
                 "fr": [
                   "Mettre à True pour utiliser l’authentification Shibboleth."
@@ -64,7 +64,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "Set to True to enable OpenID Connect authentication."
                 ],
                 "fr": [
                   "Mettre à True pour utiliser l’authentification OpenID Connect."
@@ -349,7 +349,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "If set to True, the user's username will not be visible on the Pod platform (GDPR)."
                 ],
                 "fr": [
                   "Si valeur vaut « True », le username de l’utilisateur ne sera pas visible sur la plate-forme Pod (RGPD)."
@@ -382,7 +382,7 @@
               ],
               "description": {
                 "en": [
-                  ""
+                  "People whose affiliation matches one of these values are automatically granted staff status."
                 ],
                 "fr": [
                   "Les personnes ayant pour affiliation ces valeurs ont automatiquement le statut staff à True."
@@ -394,7 +394,7 @@
               "default_value": true,
               "description": {
                 "en": [
-                  ""
+                  "If True, access groups are automatically created from affiliations."
                 ],
                 "fr": [
                   "Si True, des groupes d’accès sont créés automatiquement à partir des affiliations."
@@ -406,7 +406,7 @@
               "default_value": true,
               "description": {
                 "en": [
-                  ""
+                  "If True, groups are automatically created from remote groups (memberOf)."
                 ],
                 "fr": [
                   "Si True, des groupes sont créés automatiquement à partir des groupes distants (memberOf)."
@@ -418,7 +418,7 @@
               "default_value": [],
               "description": {
                 "en": [
-                  ""
+                  "Allow users from these domains to be granted staff status (Shibboleth)."
                 ],
                 "fr": [
                   "Permettre à l’utilisateur d’un domaine d’être membre du personnel (Shibboleth)."
@@ -491,7 +491,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "If set to True, add an establishment attribute to the Pod user."
                 ],
                 "fr": [
                   "Si valeur vaut « True », rajoute un attribut « establishment » à l’utilisateur Pod."
@@ -503,7 +503,7 @@
               "default_value": "REMOTE_USER",
               "description": {
                 "en": [
-                  ""
+                  "Name of the header attribute used to identify the Shibboleth user."
                 ],
                 "fr": [
                   "Nom de l’attribut dans les headers qui sert à identifier l’utilisateur Shibboleth."
@@ -555,7 +555,7 @@
               "default_value": "videos",
               "description": {
                 "en": [
-                  ""
+                  "Root directory for storing videos."
                 ],
                 "fr": [
                   "Répertoire racine pour le stockage des vidéos."
@@ -579,7 +579,7 @@
               "default_value": 1,
               "description": {
                 "en": [
-                  ""
+                  "Maximum size in gigabytes of files uploaded to the platform."
                 ],
                 "fr": [
                   "Taille maximum en Go des fichiers téléversés sur la plateforme."
@@ -635,7 +635,7 @@
               "default_value": [],
               "description": {
                 "en": [
-                  ""
+                  "Defines the required fields in the video editing form."
                 ],
                 "fr": [
                   "Permet de définir les champs obligatoires dans le formulaire d’édition d’une vidéo."
@@ -659,7 +659,7 @@
               "default_value": 100000,
               "description": {
                 "en": [
-                  ""
+                  "Size of each chunk when uploading a video."
                 ],
                 "fr": [
                   "Taille d’un fragment lors de l’envoi d’une vidéo."
@@ -671,7 +671,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "Enable detailed view statistics."
                 ],
                 "fr": [
                   "Permet d’activer la visualisation détaillée des statistiques de vue."
@@ -683,7 +683,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "Restrict access to statistics to authenticated users."
                 ],
                 "fr": [
                   "Réserve l’accès aux statistiques aux personnes authentifiées."
@@ -695,7 +695,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "Enable category management for users."
                 ],
                 "fr": [
                   "Permet d’activer la gestion de catégories par les utilisateurs."
@@ -707,7 +707,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "Enable WebTV mode (switch Pod to a WebTV application and hide login buttons)."
                 ],
                 "fr": [
                   "Mode webtv : bascule POD en application webtv (masque les boutons de connexion)."
@@ -719,7 +719,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "Allow users to duplicate a video."
                 ],
                 "fr": [
                   "Permet aux utilisateurs de dupliquer une vidéo."
@@ -731,10 +731,22 @@
               "default_value": false,
               "description": {
                 "en": [
-                  "Enable video hyperlinks feature."
+                  "Enable users to add hyperlinks on a video."
                 ],
                 "fr": [
                   "Permet aux utilisateurs d'ajouter des hyperliens sur une vidéo."
+                ]
+              },
+              "pod_version_init": "5.0.0"
+            },
+            "USE_CHAPTERS": {
+              "default_value": true,
+              "description": {
+                "en": [
+                  "Enable users to add chapters to a video."
+                ],
+                "fr": [
+                  "Permet aux utilisateurs d'ajouter des chapitres sur une vidéo."
                 ]
               },
               "pod_version_init": "5.0.0"
@@ -743,7 +755,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "Enable the video cutting application."
                 ],
                 "fr": [
                   "Activation de l’application de découpage (Cut)."
@@ -791,7 +803,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "If True, hide the video filter by user (GDPR)."
                 ],
                 "fr": [
                   "Si True, le filtre des vidéos par utilisateur ne sera plus visible (RGPD)."
@@ -803,7 +815,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "If True, hide the keyword cloud."
                 ],
                 "fr": [
                   "Si True, permet de ne pas afficher le nuage de mots clés."
@@ -815,7 +827,7 @@
               "default_value": true,
               "description": {
                 "en": [
-                  ""
+                  "Keywords are automatically converted to lowercase."
                 ],
                 "fr": [
                   "Les mots clés sont convertis automatiquement en minuscule."
@@ -827,7 +839,7 @@
               "default_value": 50,
               "description": {
                 "en": [
-                  ""
+                  "Maximum allowed length for a keyword."
                 ],
                 "fr": [
                   "Longueur maximale autorisée pour un mot-clé."
@@ -851,7 +863,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "If True, hide social media sharing links."
                 ],
                 "fr": [
                   "Si True, masque les liens de partage sur les réseaux sociaux."
@@ -863,7 +875,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "If True, hide disciplines in the right-hand column."
                 ],
                 "fr": [
                   "Si True, masque les disciplines dans la colonne de droite."
@@ -875,7 +887,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "If True, hide courses in the right-hand column."
                 ],
                 "fr": [
                   "Si True, masque les cursus dans la colonne de droite."
@@ -887,7 +899,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "If True, hide video types in the right-hand column."
                 ],
                 "fr": [
                   "Si True, masque les types de vidéos dans la colonne de droite."
@@ -899,7 +911,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "If True, only staff members can upload videos."
                 ],
                 "fr": [
                   "Si True, seule les personnes « Staff » peuvent déposer des vidéos."
@@ -911,7 +923,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  ""
+                  "Display password-protected videos on the homepage."
                 ],
                 "fr": [
                   "Afficher les vidéos protégées par mot de passe sur la page d’accueil."

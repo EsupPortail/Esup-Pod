@@ -3,6 +3,7 @@ Esup-Pod - Discipline serializer.
 """
 
 from rest_framework import serializers
+
 from src.apps.video.models import Discipline
 
 

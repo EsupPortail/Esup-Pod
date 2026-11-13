@@ -3,17 +3,19 @@ Esup-Pod - Video model.
 """
 
 from datetime import date
-from django.contrib.sites.models import Site
-from django.db.models import Q
-from django.db import models
-from django.conf import settings
-from django.utils.translation import gettext_lazy as _
-from django.utils import timezone
-from django.contrib.auth.hashers import make_password, identify_hasher
+
 import tagulous.models
+from django.conf import settings
+from django.contrib.auth.hashers import identify_hasher, make_password
+from django.contrib.sites.models import Site
+from django.db import models
+from django.db.models import Q
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+
 from src.apps.encoding.services.storage import (
-    get_storage_path_video,
     get_storage_path_image,
+    get_storage_path_video,
 )
 from src.apps.video.conf import video_settings
 
@@ -391,8 +393,8 @@ class Video(models.Model):
         self.set_password()
 
         if not self.id:
-            from src.apps.video.services.metadata import calculate_expiration_date
             from src.apps.video.models import License, Type
+            from src.apps.video.services.metadata import calculate_expiration_date
 
             self.date_to_delete = calculate_expiration_date(self.owner)
 

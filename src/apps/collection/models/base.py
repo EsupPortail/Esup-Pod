@@ -3,8 +3,9 @@ Esup-Pod - Base abstract models for collections.
 """
 
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
+
 from src.apps.collection.conf import collection_settings
 
 

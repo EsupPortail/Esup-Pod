@@ -13,6 +13,7 @@ from pydantic_settings import (
     PydanticBaseSettingsSource,
     SettingsConfigDict,
 )
+
 from src.apps.utils.conf import DjangoSettingsSource
 from src.config.defaults import dressing as defaults
 

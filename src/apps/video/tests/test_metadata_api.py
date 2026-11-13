@@ -7,8 +7,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from src.apps.video.models import Type
 from src.apps.video.apps import sync_metadata
+from src.apps.video.models import Type
 
 
 class MetadataAPITests(APITestCase):

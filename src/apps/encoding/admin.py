@@ -3,6 +3,7 @@ Esup-Pod - Admin configuration for the encoding app.
 """
 
 from django.contrib import admin
+
 from src.apps.encoding.models import EncodingVideo
 
 

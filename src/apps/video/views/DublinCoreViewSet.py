@@ -5,7 +5,7 @@ Esup-Pod - DublinCore viewset.
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
-from rest_framework import viewsets, permissions, status
+from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 
 from src.apps.video.conf import video_settings

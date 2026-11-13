@@ -7,14 +7,13 @@ Typed and validated configuration for the authentication app using pydantic-sett
 from typing import Dict, List, Optional, Tuple, Type
 
 from django.utils.translation import gettext_lazy as _
-
-
 from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
     PydanticBaseSettingsSource,
     SettingsConfigDict,
 )
+
 from src.apps.utils.conf import DjangoSettingsSource
 from src.config.defaults import authentication as defaults
 

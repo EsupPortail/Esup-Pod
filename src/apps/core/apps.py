@@ -2,10 +2,11 @@
 Esup-Pod - Core application configuration.
 """
 
+import logging
+import os
+
 from django.apps import AppConfig
 from django.conf import settings
-import os
-import logging
 
 logger = logging.getLogger(__name__)
 

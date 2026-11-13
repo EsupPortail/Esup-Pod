@@ -3,13 +3,13 @@
 Launch with `python3 manage.py createconfiguration $lang`
 """
 
-from django.core.management.base import BaseCommand, CommandError
-from django.utils import translation
-from django.utils.translation import gettext as _
 import json
 import os
 
 from django.conf import settings
+from django.core.management.base import BaseCommand, CommandError
+from django.utils import translation
+from django.utils.translation import gettext as _
 
 
 class Command(BaseCommand):

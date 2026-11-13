@@ -3,6 +3,7 @@ Esup-Pod - Tests for completion models.
 """
 
 import pytest
+
 from src.apps.completion.models import Contributor
 
 

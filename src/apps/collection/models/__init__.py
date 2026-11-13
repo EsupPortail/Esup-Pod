@@ -5,9 +5,9 @@ Exposes all collection-related models for easier imports.
 
 from .base import BaseContainer
 from .Channel import Channel
-from .Theme import Theme, ThemeItem
-from .Playlist import Playlist, PlaylistItem
 from .Favorite import Favorite
+from .Playlist import Playlist, PlaylistItem
+from .Theme import Theme, ThemeItem
 
 __all__ = [
     "BaseContainer",

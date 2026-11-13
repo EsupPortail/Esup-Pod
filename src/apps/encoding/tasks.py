@@ -4,17 +4,18 @@ Esup-Pod - Celery tasks for the encoding app.
 This module contains tasks for triggering and retrying encoding jobs.
 """
 
-import logging
 import json
-import requests.exceptions
+import logging
 
+import requests.exceptions
 from celery import shared_task
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
-from .conf import encoding_settings
-from config.env import env
 
+from config.env import env
 from src.apps.video.models import Video
+
+from .conf import encoding_settings
 from .services.runner_client import get_runner_client
 
 logger = logging.getLogger(__name__)

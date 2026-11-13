@@ -2,14 +2,14 @@
 Esup-Pod - Overlay viewset.
 """
 
-from rest_framework import viewsets, permissions, filters
-from rest_framework.exceptions import PermissionDenied
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, permissions, viewsets
+from rest_framework.exceptions import PermissionDenied
 
 from src.apps.completion.models import Overlay
-from src.apps.completion.serializers import OverlaySerializer
 from src.apps.completion.permissions import CanManageOverlay
+from src.apps.completion.serializers import OverlaySerializer
 
 
 class OverlayViewSet(viewsets.ModelViewSet):

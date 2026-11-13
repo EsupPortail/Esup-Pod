@@ -5,7 +5,7 @@ Esup-Pod - Import Video tests.
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 from rest_framework import status
-from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 
 from src.apps.import_video.models import ExternalRecording
 from src.apps.import_video.serializers import ExternalRecordingSerializer

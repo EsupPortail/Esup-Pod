@@ -7,9 +7,9 @@ and downloading results from the runner manager.
 
 import logging
 import tempfile
-import requests
-
 from typing import Any, Dict
+
+import requests
 from django.core.files import File
 
 logger = logging.getLogger(__name__)

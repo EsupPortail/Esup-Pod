@@ -7,7 +7,7 @@ from unittest.mock import patch
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 from rest_framework import status
-from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 
 from src.apps.notes.models import VideoNote
 from src.apps.notes.serializers import VideoNoteSerializer

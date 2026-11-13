@@ -9,52 +9,53 @@ import os
 from contextlib import nullcontext as dummy_context
 
 from django.conf import settings
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
 from django.core.management.base import BaseCommand
-from django.db import transaction, connection, models
-from django.db.models.signals import post_save, pre_save, post_delete
+from django.db import connection, models, transaction
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.utils.html import strip_tags
 from django.utils.text import slugify
-from django.utils.timezone import make_aware, is_naive
+from django.utils.timezone import is_naive, make_aware
 
-from src.apps.authentication.models import Owner, AccessGroup, GroupSite
-from src.apps.authentication.models.Owner import (
-    create_owner_profile,
-    default_site_owner,
-)
+from src.apps.authentication.models import AccessGroup, GroupSite, Owner
 from src.apps.authentication.models.GroupSite import (
     create_groupsite_profile,
     default_site_groupsite,
 )
+from src.apps.authentication.models.Owner import (
+    create_owner_profile,
+    default_site_owner,
+)
 from src.apps.collection.models import (
     Channel,
-    Theme,
-    ThemeItem,
     Playlist,
     PlaylistItem,
+    Theme,
+    ThemeItem,
 )
-from src.apps.layout.models import BlockConfig
 from src.apps.encoding.conf import encoding_settings
 from src.apps.encoding.models import EncodingVideo
+from src.apps.layout.models import BlockConfig
 from src.apps.video.models import (
-    Video,
-    Type,
-    Discipline,
-    ViewCount,
+    Chapter,
     Comment,
-    Vote,
+    Discipline,
     Subtitle,
+    Type,
+    Video,
+    ViewCount,
+    Vote,
 )
 from src.apps.video.signals import (
-    set_video_slug,
-    auto_delete_file_on_delete,
-    auto_delete_file_on_change,
-    video_post_save,
-    auto_assign_site_to_video,
     auto_assign_site_to_type,
+    auto_assign_site_to_video,
+    auto_delete_file_on_change,
+    auto_delete_file_on_delete,
+    set_video_slug,
+    video_post_save,
 )
 
 logger = logging.getLogger(__name__)
@@ -338,6 +339,7 @@ class Command(BaseCommand):
             data.get("video_encode_transcript_encodingvideo", []),
             batch_size,
         )
+        self.import_chapters(data.get("chapter_chapter", []), batch_size)
 
     # ------------------------------------------------------------------
     # Signal management
@@ -2242,4 +2244,60 @@ class Command(BaseCommand):
                 error_count += len(batch)
         self.stdout.write(
             f"Blocks imported: {success_count} success, {error_count} errors."
+        )
+
+    def import_chapters(self, items, batch_size):
+        """Import video chapters (v4 table chapter_chapter)."""
+        self.stdout.write("Importing Chapters...")
+        items_to_process = self._get_unprocessed_items("Chapter", items)
+        if not items_to_process:
+            self.stdout.write("All Chapters already migrated.")
+            return
+
+        existing_video_ids = set(Video.objects.values_list("id", flat=True))
+        success_count = 0
+        error_count = 0
+
+        for i in range(0, len(items_to_process), batch_size):
+            batch = items_to_process[i : i + batch_size]
+            try:
+                with transaction.atomic():
+                    instances, mappings = [], []
+                    for item in batch:
+                        video_id = item.get("video_id")
+                        if video_id not in existing_video_ids:
+                            mappings.append(
+                                MigrationMapping(
+                                    model_name="Chapter",
+                                    v4_id=item["id"],
+                                    status=MigrationMapping.Status.IGNORED,
+                                    message="video not migrated",
+                                )
+                            )
+                            continue
+                        instances.append(
+                            Chapter(
+                                id=item["id"],
+                                video_id=video_id,
+                                title=(item.get("title") or "")[:100],
+                                time_start=max(int(item.get("time_start") or 0), 0),
+                            )
+                        )
+                        mappings.append(
+                            MigrationMapping(
+                                model_name="Chapter",
+                                v4_id=item["id"],
+                                v5_id=item["id"],
+                                status=MigrationMapping.Status.SUCCESS,
+                            )
+                        )
+                    Chapter.objects.bulk_create(instances, ignore_conflicts=True)
+                    MigrationMapping.objects.bulk_create(mappings, ignore_conflicts=True)
+                    success_count += len(instances)
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f"Error in Chapter batch: {e}"))
+                self._record_batch_errors("Chapter", batch, e)
+                error_count += len(batch)
+        self.stdout.write(
+            f"Chapters imported: {success_count} success, {error_count} errors."
         )

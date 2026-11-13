@@ -12,8 +12,8 @@ Migration des commentaires webtv -> Pod.
 from django.db import connections, transaction
 from django.utils import timezone
 
+from src.apps.migration.models import CommentMapping, UserMapping, VideoMapping
 from src.apps.video.models.Comment import Comment
-from src.apps.migration.models import UserMapping, VideoMapping, CommentMapping
 
 
 def _parse_added_date(date_added):

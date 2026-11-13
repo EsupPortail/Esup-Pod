@@ -7,11 +7,12 @@ la limite du modèle), et Ze4fg_video_speaker crée les Contribution
 (role="speaker") reliant Contributor et Video.
 """
 
-from django.db import connections, transaction
 from html import unescape
 
-from src.apps.completion.models import Contributor, Contribution
-from src.apps.migration.models import VideoMapping, CompletionMapping
+from django.db import connections, transaction
+
+from src.apps.completion.models import Contribution, Contributor
+from src.apps.migration.models import CompletionMapping, VideoMapping
 
 
 def _migrate_contributors(self, speakers, contributor_mapping):

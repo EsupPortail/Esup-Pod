@@ -6,12 +6,13 @@ import logging
 import os
 
 from django.contrib.sites.models import Site
-from django.db.models.signals import post_save, post_delete, pre_save
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
-from src.apps.video.models import Video, Type, Subtitle
-from src.apps.video.services.metadata import extract_video_duration
+
 from src.apps.utils.files import safe_remove_file
+from src.apps.video.models import Subtitle, Type, Video
+from src.apps.video.services.metadata import extract_video_duration
 
 logger = logging.getLogger(__name__)
 

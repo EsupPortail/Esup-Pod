@@ -3,9 +3,10 @@ Esup-Pod - Video Cut API tests.
 """
 
 from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
 from rest_framework import status
-from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
 
 from src.apps.video.apps import sync_metadata
 from src.apps.video.models import Video, VideoCut

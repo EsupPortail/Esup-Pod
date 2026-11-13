@@ -14,10 +14,9 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
+from .conf import auth_settings
 from .forms import GroupAdminForm, GroupSiteAdminForm, OwnerAdminForm
 from .models import AccessGroup, GroupSite, Owner, ServerRole
-
-from .conf import auth_settings
 
 
 class GroupSiteInline(admin.StackedInline):

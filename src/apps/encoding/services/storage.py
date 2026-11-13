@@ -5,9 +5,10 @@ This module defines naming conventions for video, image, and other files stored 
 respecting the V4 directory structure for backward compatibility.
 """
 
+import hashlib
 import os
 import uuid
-import hashlib
+
 from django.utils import timezone
 
 

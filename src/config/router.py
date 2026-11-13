@@ -3,7 +3,8 @@ Esup-Pod - API router configuration.
 """
 
 from rest_framework import routers
-from src.apps.video.views import VideoViewSet, SubtitleViewSet
+
+from src.apps.video.views import SubtitleViewSet, VideoViewSet
 
 router = routers.SimpleRouter()
 router.register(r"videos", VideoViewSet, basename="video")

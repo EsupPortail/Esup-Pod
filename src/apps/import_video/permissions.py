@@ -3,6 +3,7 @@ Esup-Pod - Import Video permissions.
 """
 
 from rest_framework import permissions
+
 from src.apps.import_video.conf import import_video_settings
 
 

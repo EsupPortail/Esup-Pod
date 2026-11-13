@@ -2,11 +2,12 @@
 Esup-Pod - Generic video downloader service.
 """
 
-import os
 import logging
-import requests
+import os
 
+import requests
 from django.utils.translation import gettext_lazy as _
+
 from src.apps.import_video.conf import import_video_settings
 
 logger = logging.getLogger(__name__)

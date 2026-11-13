@@ -7,10 +7,10 @@ through the REST API using django-filters. Supports multi-value parameters
 """
 
 import django_filters
-from django_filters import rest_framework as filters
 from django.utils.translation import gettext_lazy as _
+from django_filters import rest_framework as filters
 
-from src.apps.video.models import Video, Discipline
+from src.apps.video.models import Discipline, Video
 
 
 class MultiValueCharFilter(filters.BaseInFilter, filters.CharFilter):

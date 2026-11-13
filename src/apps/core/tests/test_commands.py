@@ -7,10 +7,12 @@ ensure_superuser, validate_config, and createconfiguration.
 
 import os
 from io import StringIO
-from django.core.management import call_command
-from django.test import TestCase
+
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
+from django.core.management import call_command
+from django.test import TestCase
+
 from src.apps.authentication.models import Owner
 
 User = get_user_model()

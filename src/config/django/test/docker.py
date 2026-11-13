@@ -11,11 +11,11 @@ Usage:
 """
 
 from config.django.test.init_env import *  # noqa: F401, F403 # isort:skip
+import os
+import tempfile
+
 from config.django.dev.docker import *  # noqa: F401, F403
 from config.env import env
-
-import tempfile
-import os
 
 DEBUG = False
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"

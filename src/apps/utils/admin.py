@@ -3,6 +3,7 @@ Esup-Pod - Admin configuration for utils app.
 """
 
 from django.contrib import admin
+
 from src.apps.utils.models.CustomImageModel import CustomImageModel
 
 

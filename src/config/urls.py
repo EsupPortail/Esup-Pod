@@ -7,6 +7,8 @@ and Swagger/Redoc documentation. Dynamically configures authentication routes
 """
 
 import django_cas_ng.views
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
@@ -16,9 +18,8 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+
 from src.apps.authentication.conf import auth_settings
-from django.conf import settings
-from django.conf.urls.static import static
 
 urlpatterns = [
     # Redirection to Swagger

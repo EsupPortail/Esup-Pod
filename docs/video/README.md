@@ -17,6 +17,7 @@ The **Video** application is the core module of Pod V5. It manages the full life
 | **Video Cut**         | Trim a video virtually using a start and end time (clears chapters/notes).          |
 | **Marker Time**       | Automatically saves and retrieves the user's video playback position.               |
 | **Hyperlinks**        | Add interactive links (timecodes, external resources) to videos.                    |
+| **Chapters**          | Split a video into titled chapters, each starting at a given time.                  |
 | **Completion Data**   | Contributions, overlays, and documents are embedded in the video response.          |
 | **Categorization**    | Organize videos with Types, Disciplines, and Tags.                                  |
 | **Comments & Votes**  | Engage users with a commenting and upvote/downvote system.                          |
@@ -60,6 +61,7 @@ A video passes through the following states:
 | **UserMarkerTime** | Stores the last playback position for a user on a specific video.            |
 | **VideoCut**       | Trimming definition (start/end in seconds) associated with a video.          |
 | **VideoHyperlink** | Interactive links attached to a video at specific time intervals.            |
+| **Chapter**        | A titled chapter starting at a given time (in seconds) of a video.           |
 | **ViewCount**      | Stores the number of views per day, per video.                               |
 
 ## API Endpoints
@@ -85,6 +87,9 @@ A video passes through the following states:
 | **DELETE**    | `/api/cut/{slug}/delete/`           | Delete the cut associated with the video.          |
 | **POST**      | `/api/hyperlinks/`                  | Create a hyperlink (video owner/co-owner only).    |
 | **PATCH/DEL** | `/api/hyperlinks/{id}/`             | Modify or delete a hyperlink.                      |
+| **GET**       | `/api/chapters/`                    | List chapters (filter: `?video_id=`, `?video_slug=`). |
+| **POST**      | `/api/chapters/`                    | Create a chapter (video owner/co-owner/collaborator). |
+| **PATCH/DEL** | `/api/chapters/{id}/`               | Modify or delete a chapter.                        |
 | **GET**       | `/api/subtitles/`                   | List subtitles (filterable by `?video_id=`).       |
 | **POST**      | `/api/subtitles/`                   | Attach a subtitle to a video.                      |
 | **DELETE**    | `/api/subtitles/{id}/`              | Delete a subtitle (video owner only).              |

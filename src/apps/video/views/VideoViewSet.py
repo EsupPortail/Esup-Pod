@@ -2,46 +2,41 @@
 Esup-Pod - Video viewset.
 """
 
-import os
 import hashlib
 import logging
-
-
+import os
 from datetime import date, timedelta
-from django.db.models import Q, F, Sum
+
 from django.conf import settings
-from django.contrib.sites.shortcuts import get_current_site
-from django.utils.translation import gettext_lazy as _
-from django.http import FileResponse, Http404
-
-from rest_framework import viewsets, permissions, parsers, filters, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.exceptions import PermissionDenied, ValidationError, NotFound
-
-
-from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth.hashers import check_password
+from django.contrib.sites.shortcuts import get_current_site
+from django.db import transaction
+from django.db.models import F, Q, Sum
+from django.http import FileResponse, Http404
+from django.utils.translation import gettext_lazy as _
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import (
-    extend_schema,
-    extend_schema_view,
+    OpenApiExample,
     OpenApiParameter,
     OpenApiResponse,
-    OpenApiExample,
+    extend_schema,
+    extend_schema_view,
 )
+from rest_framework import filters, parsers, permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
+from rest_framework.response import Response
 
-from src.apps.video.models import Video, ViewCount
-from src.apps.video.serializers import VideoSerializer, DublinCoreSerializer
-from src.apps.video.permissions import IsOwnerOrCoOwnerOrChannelCollaborator
-from src.apps.video.tasks import task_bulk_update_videos, task_bulk_delete_videos
 from src.apps.authentication.permissions import IsSuperUser
-from src.apps.video.conf import video_settings
 from src.apps.encoding.conf import encoding_settings
-from src.apps.video.filters import VideoFilterSet
 from src.apps.utils.files import safe_file_size
-
+from src.apps.video.conf import video_settings
+from src.apps.video.filters import VideoFilterSet
+from src.apps.video.models import Video, ViewCount
+from src.apps.video.permissions import IsOwnerOrCoOwnerOrChannelCollaborator
+from src.apps.video.serializers import DublinCoreSerializer, VideoSerializer
 from src.apps.video.services.duplicate import duplicate_video
-from django.db import transaction
+from src.apps.video.tasks import task_bulk_delete_videos, task_bulk_update_videos
 
 logger = logging.getLogger(__name__)
 
@@ -210,7 +205,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         if video.video_file:
             from src.apps.encoding.tasks import trigger_runner_encoding_task
 
-            source_url = self.request.build_absolute_uri(video.video_file.url)
+            source_url = f"{video_settings.site_url.rstrip('/')}{video.video_file.url}"
 
             logger.debug("source_url: %s", source_url)
 
@@ -317,6 +312,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         self._check_stream_permissions(request, video)
 
         import uuid
+
         from django.core.cache import cache
 
         token = str(uuid.uuid4())
@@ -541,7 +537,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         """
         Returns available choices for License, Cursus, and Status to help the frontend.
         """
-        from src.apps.video.models import License, Cursus, Language
+        from src.apps.video.models import Cursus, Language, License
 
         return Response(
             {

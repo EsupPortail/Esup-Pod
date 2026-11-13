@@ -2,11 +2,12 @@
 Esup-Pod - BlockConfig ViewSet.
 """
 
-from rest_framework import viewsets, permissions
 from drf_spectacular.utils import extend_schema, extend_schema_view
+from rest_framework import permissions, viewsets
+
+from src.apps.layout.conf import layout_settings
 from src.apps.layout.models import BlockConfig
 from src.apps.layout.serializers import BlockConfigSerializer
-from src.apps.layout.conf import layout_settings
 
 
 @extend_schema_view(

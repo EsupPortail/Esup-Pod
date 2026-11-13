@@ -3,15 +3,17 @@ Esup-Pod - OIDC authentication provider service.
 """
 
 import logging
-import requests
+from typing import Any, Dict
 
-from ...conf import auth_settings
+import requests
+from django.contrib.auth import get_user_model
+
 from config.env import env
 from src.config.defaults import authentication as defaults
+
+from ...conf import auth_settings
 from ..tokens import get_tokens_for_user
 from ..users import UserPopulator
-from django.contrib.auth import get_user_model
-from typing import Any, Dict
 
 UserModel = get_user_model()
 logger = logging.getLogger(__name__)

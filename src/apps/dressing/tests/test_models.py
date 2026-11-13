@@ -4,6 +4,7 @@ Esup-Pod - Dressing model tests.
 
 import pytest
 from django.contrib.auth import get_user_model
+
 from src.apps.dressing.models import Dressing
 
 User = get_user_model()
@@ -42,9 +43,11 @@ class TestDressingModel:
     def test_watermark_filesystem_lifecycle(self):
         """Test that watermark upload path matches V4 structure and deletion removes the file."""
         import os
+
         from django.core.files.base import ContentFile
-        from src.apps.utils.models import CustomImageModel
+
         from src.apps.authentication.models import Owner
+        from src.apps.utils.models import CustomImageModel
 
         user = User.objects.create(username="filesystemuser")
         owner, _ = Owner.objects.get_or_create(user=user)

@@ -2,8 +2,9 @@
 Esup-Pod - Tests for URLs legacy compatibility between V4 and V5.
 """
 
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
+
 from src.apps.video.models import Video
 
 User = get_user_model()

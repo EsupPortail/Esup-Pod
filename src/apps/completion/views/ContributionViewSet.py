@@ -2,13 +2,13 @@
 Esup-Pod - Contribution viewset.
 """
 
-from rest_framework import viewsets, permissions, filters
-from rest_framework.exceptions import PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, permissions, viewsets
+from rest_framework.exceptions import PermissionDenied
 
 from src.apps.completion.models import Contribution
-from src.apps.completion.serializers import ContributionSerializer
 from src.apps.completion.permissions import CanManageContribution
+from src.apps.completion.serializers import ContributionSerializer
 
 
 class ContributionViewSet(viewsets.ModelViewSet):
