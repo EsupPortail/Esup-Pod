@@ -13,7 +13,7 @@ User = get_user_model()
 
 # ggignore-start
 # gitguardian:ignore
-PWD = "password"
+PWD = "password" # nosec
 # ggignore-end
 
 
@@ -23,13 +23,13 @@ class ChapterAPITests(APITestCase):
     def setUp(self):
         """Create users, a published video, a draft video and one chapter."""
         self.factory = APIRequestFactory()
-        self.owner = User.objects.create_user(username="owner", password=PWD)  # nosec
+        self.owner = User.objects.create_user(username="owner", password=PWD)
         self.other_user = User.objects.create_user(
             username="other", password=PWD
-        )  # nosec
+        )
         self.superuser = User.objects.create_superuser(
             username="admin", password=PWD
-        )  # nosec
+        )
         self.video = Video.objects.create(
             title="Published video",
             owner=self.owner,
