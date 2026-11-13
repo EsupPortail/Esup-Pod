@@ -1,3 +1,4 @@
+{# Esup-Pod: broadcaster live playback page. #}
 {% extends 'base.html' %}
 {% load i18n event_tags %}
 {% load static %}
@@ -37,11 +38,16 @@
         <video id="podvideoplayer"
            class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered"
            controls height="360" poster="{{ broadcaster.get_poster_url }}" title="{{ broadcaster.slug }}" muted autoplay>
-          <source src="{{ broadcaster.url }}" type="application/x-mpegURL">
+          {% if not broadcaster.is_runner_live %}
+            <source src="{{ broadcaster.get_stream_url }}" type="application/x-mpegURL">
+          {% endif %}
         </video>
 
       </div>
     </div>
+    {% if broadcaster.is_runner_live %}
+      {% include 'live/runner-live-status.html' %}
+    {% endif %}
     <div id="viewers-list">
       <ul id="viewers-ul"></ul>
     </div>
@@ -159,6 +165,9 @@
 {% endblock page_aside %}
 
 {% block more_script %}
+{% if broadcaster.is_runner_live %}
+  <script src="{% static 'js/runner_live.js' %}?ver={{ VERSION }}"></script>
+{% endif %}
 <script>
   // Debug if necessary, depends on the settings_local
   {% if debug %}
@@ -189,12 +198,13 @@
   }
 
   // Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
+  {% if not broadcaster.is_runner_live %}
   videojs.Hls.xhr.beforeRequest = function(options) {
     // Reset counter if video state is ok
     if (started && player.readyState() > 2) { nbLoop = 0; }
     if (started && player.readyState() <= 2) {
       // Check if .m3u8 exists, to be sure that live is stopped
-      $.ajax({ url: '{{broadcaster.url}}',
+      $.ajax({ url: '{{broadcaster.get_stream_url|escapejs}}',
         type: 'GET',
         crossDomain: true,
         dataType: 'html',
@@ -220,6 +230,7 @@
     }
     return options;
   }
+  {% endif %}
 
   // Management of the streaming live
   var player = videojs('podvideoplayer', options, function(){});
@@ -232,6 +243,9 @@
     linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
     link: '{{ LINK_PLAYER }}'
   });
+  {% if broadcaster.is_runner_live %}
+    window.PodRunnerLive.start(player);
+  {% else %}
   player.on('error', function() {
     // Handle successives errors to avoid multiple reload
     if (typeof(errored) == 'undefined' || !errored) {
@@ -248,6 +262,7 @@
       }, 10000)
     }
   })
+  {% endif %}
 
 
   // Fire this event when live started

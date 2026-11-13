@@ -3,9 +3,9 @@
 ## Informations générales
 
 La plateforme Esup-Pod se base sur le framework Django écrit en Python.<br>
-Elle est compatible avec les versions 3.10 et 3.12 de Python.<br>
-> Attention : à partir d’Esup-Pod version 4.2,<br>
- la version 3.9 de Python n’est plus supportée.<br>
+Elle est compatible avec les versions 3.11 et 3.12 de Python.<br>
+> Attention : à partir d’Esup-Pod version 4.5,<br>
+ la version 3.10 de Python n’est plus supportée.<br>
 
 **Django Version : 4.2 LTS**<br>
 
@@ -1158,6 +1158,10 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
 ### Configuration de l’application live
 
+Le mode **Esup-Runner Live** se configure dans l’administration de chaque broadcaster.<br>
+Sélectionner le `runner_manager` recevant son RTMP et renseigner son `source_id`, indépendant du slug Pod.<br>
+Le mode URL fixe reste le mode par défaut ; l’URL est obligatoire uniquement dans ce mode.<br>
+
 * `AFFILIATION_EVENT`
   > valeur par défaut : `['faculty', 'employee', 'staff']`
   >> Groupes ou affiliations des personnes autorisées à créer un évènement.<br>
@@ -1189,6 +1193,22 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
   > valeur par défaut : `True`
   >> Si True, un courriel est envoyé aux managers et à l’auteur<br>
   >> (si DEBUG est à False) à la création/modification d’un event.<br>
+* `ESUP_RUNNER_LIVE_CACHE_TIMEOUT`
+  > valeur par défaut : `10`
+  >> Durée (en secondes) du cache des flux indisponibles et des nouvelles tentatives après une erreur temporaire de découverte.<br>
+  >> Pendant une panne du manager, la dernière URL confirmée est conservée séparément et proposée à nouveau uniquement si de nouveaux segments HLS accessibles sont observés.<br>
+  >> La lecture en cours continue indépendamment de la disponibilité du manager, sans limite fixe de durée de panne.<br>
+* `ESUP_RUNNER_LIVE_HLS_TIMEOUT`
+  > valeur par défaut : `(2, 2)`
+  >> Délais de connexion et de lecture (en secondes) des vérifications HLS pendant une panne du manager.<br>
+  >> Les vérifications suivent la playlist principale, observent la progression de la playlist média et lisent uniquement le début du dernier segment, sans les identifiants du manager.<br>
+* `ESUP_RUNNER_LIVE_HTTP_TIMEOUT`
+  > valeur par défaut : `(2, 4)`
+  >> Délais de connexion et de lecture (en secondes) des requêtes HTTP au manager Esup-Runner Live.<br>
+* `ESUP_RUNNER_LIVE_READY_CACHE_TIMEOUT`
+  > valeur par défaut : `20`
+  >> Durée (en secondes) du cache des flux HLS prêts confirmés par le manager Esup-Runner Live.<br>
+  >> Les arrêts confirmés et les refus d’accès invalident la dernière URL connue. Les requêtes de disponibilité du navigateur expirent après 30 secondes.<br>
 * `EVENT_ACTIVE_AUTO_START`
   > valeur par défaut : `False`
   >> Permet de lancer automatiquement l’enregistrement sur l’interface utilisée<br>

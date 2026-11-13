@@ -1,0 +1,16 @@
+{# Esup-Pod: waiting status for automatic Esup-Runner Live playback. #}
+{% load i18n %}
+<p id="runner-live-status" role="status" class="alert alert-info mt-2"
+   data-stream-url="{{ request.path }}?stream=1"
+   data-waiting-message="{% trans 'Waiting for the live stream. Playback will start when it is ready.' %}"
+   data-starting-message="{% trans 'The live stream is starting. Playback will start when it is ready.' %}"
+   data-hls-waiting-message="{% trans 'The live stream is running, but its media is not ready yet.' %}"
+   data-ended-message="{% trans 'The live stream has ended. Waiting for a new session.' %}"
+   data-failed-message="{% trans 'The live stream failed. Waiting for a new session.' %}"
+   data-unavailable-message="{% trans 'The live stream is temporarily unavailable. Retrying automatically.' %}"
+   data-mixed-content-message="{% trans 'This live stream uses HTTP and cannot be played on this HTTPS page. Contact the live administrator.' %}"
+   data-playback-error-message="{% trans 'Unable to play the live stream. Check your connection or contact the live administrator.' %}"
+   data-polling-error-message="{% trans 'Unable to check live stream availability. Retrying automatically.' %}"
+   data-autoplay-message="{% trans 'The live stream is ready. Press Play to start playback.' %}">
+  {% trans "Waiting for the live stream. Playback will start when it is ready." %}
+</p>
