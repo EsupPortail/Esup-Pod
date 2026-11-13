@@ -731,7 +731,7 @@
               "default_value": false,
               "description": {
                 "en": [
-                  "Enable video hyperlinks feature."
+                  "Enable users to add hyperlinks on a video."
                 ],
                 "fr": [
                   "Permet aux utilisateurs d'ajouter des hyperliens sur une vidéo."
@@ -743,7 +743,7 @@
               "default_value": true,
               "description": {
                 "en": [
-                  "Enable video chapters feature."
+                  "Enable users to add chapters to a video."
                 ],
                 "fr": [
                   "Permet aux utilisateurs d'ajouter des chapitres sur une vidéo."
