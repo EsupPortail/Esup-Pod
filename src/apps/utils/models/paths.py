@@ -3,6 +3,7 @@ Esup-Pod - Storage path helpers for models.
 """
 
 import os
+
 from django.template.defaultfilters import slugify
 
 

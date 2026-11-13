@@ -6,9 +6,10 @@ from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-from src.apps.video.models import Video
+
 from src.apps.encoding.services.storage import get_storage_path_encoded_video
 from src.apps.utils.files import safe_remove_file
+from src.apps.video.models import Video
 
 
 class EncodingVideo(models.Model):

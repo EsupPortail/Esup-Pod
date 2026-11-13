@@ -5,8 +5,9 @@ Esup-Pod - File utility functions.
 import logging
 import os
 from time import sleep
-from django.utils.translation import gettext as _
+
 from django.utils.formats import number_format
+from django.utils.translation import gettext as _
 
 logger = logging.getLogger(__name__)
 

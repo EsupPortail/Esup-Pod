@@ -2,21 +2,21 @@
 Esup-Pod - Video application models.
 """
 
-from .Video import Video
 from .Chapter import Chapter
-from .Subtitle import Subtitle
-from .ViewCount import ViewCount
 from .Comment import Comment
-from .Vote import Vote
-from .Type import Type
+from .Cursus import Cursus
 from .Discipline import Discipline
-from .VideoHyperlink import VideoHyperlink
-from .UserMarkerTime import UserMarkerTime
-from .VideoCut import VideoCut
 from .Language import Language
 from .License import License
-from .Cursus import Cursus
+from .Subtitle import Subtitle
+from .Type import Type
+from .UserMarkerTime import UserMarkerTime
+from .Video import Video
 from .VideoAccessToken import VideoAccessToken
+from .VideoCut import VideoCut
+from .VideoHyperlink import VideoHyperlink
+from .ViewCount import ViewCount
+from .Vote import Vote
 
 __all__ = [
     "Video",

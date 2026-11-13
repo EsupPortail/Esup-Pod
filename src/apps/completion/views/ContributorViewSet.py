@@ -2,12 +2,12 @@
 Esup-Pod - Contributor viewset.
 """
 
-from rest_framework import viewsets, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, permissions, viewsets
 
+from src.apps.authentication.permissions import IsSuperUser
 from src.apps.completion.models import Contributor
 from src.apps.completion.serializers import ContributorSerializer
-from src.apps.authentication.permissions import IsSuperUser
 
 
 class ContributorViewSet(viewsets.ModelViewSet):

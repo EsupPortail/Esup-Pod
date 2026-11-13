@@ -3,6 +3,7 @@ Esup-Pod - Notes administrator interface.
 """
 
 from django.contrib import admin
+
 from src.apps.notes.models import VideoNote
 
 

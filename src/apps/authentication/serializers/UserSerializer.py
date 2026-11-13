@@ -5,6 +5,7 @@ Esup-Pod - Detailed user serializer.
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
+
 from src.apps.authentication.models import ServerRole
 
 User = get_user_model()

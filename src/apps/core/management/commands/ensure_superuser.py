@@ -5,9 +5,10 @@ Launch with `python3 manage.py ensure_superuser`.
 
 import os
 
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
+from django.core.management.base import BaseCommand
+
 from src.apps.authentication.models import Owner
 
 
@@ -72,6 +73,7 @@ class Command(BaseCommand):
         owner = Owner.objects.filter(user=user).first()
         if not owner:
             import hashlib
+
             from src.apps.authentication.models.utils import SECRET_KEY
 
             h = hashlib.sha256((SECRET_KEY + user.username).encode("utf-8")).hexdigest()

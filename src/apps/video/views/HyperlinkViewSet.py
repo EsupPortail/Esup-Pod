@@ -4,14 +4,14 @@ Esup-Pod - ViewSet for the VideoHyperlink model.
 - Write/Delete: Allowed only if the user is the owner of the linked video.
 """
 
-from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.exceptions import PermissionDenied
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 
-from src.apps.video.models import VideoHyperlink, Video
+from src.apps.video.models import Video, VideoHyperlink
 from src.apps.video.serializers import VideoHyperlinkSerializer
 
 

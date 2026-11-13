@@ -2,10 +2,11 @@
 Esup-Pod - Dressing signals tests.
 """
 
-import pytest
 from unittest.mock import patch
-from django.core.files.base import ContentFile
+
+import pytest
 from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
 
 from src.apps.dressing.models import Dressing
 from src.apps.video.models import Video

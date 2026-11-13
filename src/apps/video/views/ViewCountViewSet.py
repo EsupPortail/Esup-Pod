@@ -3,7 +3,7 @@ Esup-Pod - ViewCount viewset.
 """
 
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
 from rest_framework.filters import OrderingFilter
 
 from src.apps.video.conf import video_settings

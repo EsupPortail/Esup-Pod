@@ -4,22 +4,23 @@ Esup-Pod - Video application URL configuration.
 
 from django.urls import path
 from rest_framework.routers import SimpleRouter
+
+from src.apps.video.conf import video_settings
 from src.apps.video.views import (
-    VideoViewSet,
-    SubtitleViewSet,
+    ChapterViewSet,
     CommentViewSet,
     DisciplineViewSet,
+    DublinCoreViewSet,
+    SubtitleViewSet,
     TagViewSet,
     TypeViewSet,
-    VideoHyperlinkViewSet,
-    ChapterViewSet,
-    VideoAccessTokenViewSet,
-    DublinCoreViewSet,
     UserMarkerTimeViewSet,
+    VideoAccessTokenViewSet,
     VideoCutViewSet,
+    VideoHyperlinkViewSet,
+    VideoViewSet,
     ViewCountViewSet,
 )
-from src.apps.video.conf import video_settings
 
 router = SimpleRouter()
 router.register(r"videos", VideoViewSet, basename="video")

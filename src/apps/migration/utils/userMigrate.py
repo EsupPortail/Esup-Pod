@@ -2,8 +2,9 @@
 Esup-Pod - WebTV V4 to V5 user migration.
 """
 
-from django.db import connections, transaction
 from django.contrib.auth.models import User
+from django.db import connections, transaction
+
 from src.apps.authentication.models.Owner import Owner
 from src.apps.migration.models import UserMapping
 

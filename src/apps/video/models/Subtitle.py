@@ -3,8 +3,10 @@ Esup-Pod - Video subtitle model.
 """
 
 from django.db import models
+
 from src.apps.encoding.services.storage import get_storage_path_transcript
 from src.config.defaults import video as defaults
+
 from .Video import Video
 
 

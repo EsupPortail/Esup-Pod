@@ -3,7 +3,9 @@ Esup-Pod - Contribution serializer.
 """
 
 from rest_framework import serializers
+
 from src.apps.completion.models import Contribution, Role
+
 from .ContributorSerializer import ContributorSerializer
 
 

@@ -3,11 +3,13 @@ Esup-Pod - Dressing application signals.
 """
 
 import logging
+
 from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
-from src.apps.video.conf import video_settings
+
 from apps.video.conf import video_settings
 from src.apps.dressing.models import Dressing
+from src.apps.video.conf import video_settings
 
 logger = logging.getLogger(__name__)
 
@@ -16,8 +18,8 @@ def trigger_encoding_for_video_ids(video_ids):
     """
     Helper function to trigger the Celery encoding task for a list of video IDs.
     """
-    from src.apps.video.models import Video
     from src.apps.encoding.tasks import trigger_runner_encoding_task
+    from src.apps.video.models import Video
 
     for video_id in video_ids:
         try:

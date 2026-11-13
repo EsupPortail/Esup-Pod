@@ -9,53 +9,53 @@ import os
 from contextlib import nullcontext as dummy_context
 
 from django.conf import settings
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
 from django.core.management.base import BaseCommand
-from django.db import transaction, connection, models
-from django.db.models.signals import post_save, pre_save, post_delete
+from django.db import connection, models, transaction
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.utils.html import strip_tags
 from django.utils.text import slugify
-from django.utils.timezone import make_aware, is_naive
+from django.utils.timezone import is_naive, make_aware
 
-from src.apps.authentication.models import Owner, AccessGroup, GroupSite
-from src.apps.authentication.models.Owner import (
-    create_owner_profile,
-    default_site_owner,
-)
+from src.apps.authentication.models import AccessGroup, GroupSite, Owner
 from src.apps.authentication.models.GroupSite import (
     create_groupsite_profile,
     default_site_groupsite,
 )
+from src.apps.authentication.models.Owner import (
+    create_owner_profile,
+    default_site_owner,
+)
 from src.apps.collection.models import (
     Channel,
-    Theme,
-    ThemeItem,
     Playlist,
     PlaylistItem,
+    Theme,
+    ThemeItem,
 )
-from src.apps.layout.models import BlockConfig
 from src.apps.encoding.conf import encoding_settings
 from src.apps.encoding.models import EncodingVideo
+from src.apps.layout.models import BlockConfig
 from src.apps.video.models import (
-    Video,
     Chapter,
-    Type,
-    Discipline,
-    ViewCount,
     Comment,
-    Vote,
+    Discipline,
     Subtitle,
+    Type,
+    Video,
+    ViewCount,
+    Vote,
 )
 from src.apps.video.signals import (
-    set_video_slug,
-    auto_delete_file_on_delete,
-    auto_delete_file_on_change,
-    video_post_save,
-    auto_assign_site_to_video,
     auto_assign_site_to_type,
+    auto_assign_site_to_video,
+    auto_delete_file_on_change,
+    auto_delete_file_on_delete,
+    set_video_slug,
+    video_post_save,
 )
 
 logger = logging.getLogger(__name__)

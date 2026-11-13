@@ -3,14 +3,15 @@ Esup-Pod - Collection application tests (Refactored for 4 distinct models).
 """
 
 from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.core.files.base import ContentFile
+
 from src.apps.collection.models import (
     Channel,
-    Theme,
     Playlist,
+    Theme,
 )
 from src.apps.video.models import Video
 

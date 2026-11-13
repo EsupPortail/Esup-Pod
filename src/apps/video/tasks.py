@@ -18,6 +18,7 @@ def task_bulk_update_videos(video_ids: list, fields: dict, user_id: int) -> None
     Applied when more than BULK_ASYNC_THRESHOLD videos are selected.
     """
     from django.db import transaction
+
     from src.apps.video.models import Video
 
     try:
@@ -50,6 +51,7 @@ def task_bulk_delete_videos(video_ids: list, user_id: int) -> None:
     Applied when more than BULK_ASYNC_THRESHOLD videos are selected.
     """
     from django.db import transaction
+
     from src.apps.video.models import Video
 
     try:

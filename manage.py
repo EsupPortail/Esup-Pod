@@ -3,10 +3,11 @@
 
 import os
 import sys
+from pathlib import Path
+
+from environ import ImproperlyConfigured
 
 from src.config.env import env
-from pathlib import Path
-from environ import ImproperlyConfigured
 
 
 def main():

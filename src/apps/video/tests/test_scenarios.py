@@ -1,17 +1,19 @@
 """Esup-Pod - Video integration scenario tests."""
 
+import shutil
+import tempfile
+import unittest
+from datetime import timedelta
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
+
 from src.apps.video.models import Video
-import tempfile
-import shutil
-from django.test import override_settings
-from datetime import timedelta
-from django.utils import timezone
-from unittest.mock import patch
-import unittest
 
 User = get_user_model()
 # ggignore-start

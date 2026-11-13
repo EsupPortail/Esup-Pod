@@ -3,8 +3,9 @@ Esup-Pod - Layout tests.
 """
 
 import pytest
-from rest_framework.test import APIClient
 from django.urls import reverse
+from rest_framework.test import APIClient
+
 from src.apps.layout.models import BlockConfig
 
 

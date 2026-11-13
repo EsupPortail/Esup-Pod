@@ -2,13 +2,14 @@
 Esup-Pod - URL configuration for the collection app.
 """
 
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
 from src.apps.collection.views import (
     ChannelViewSet,
-    ThemeViewSet,
-    PlaylistViewSet,
     FavoriteViewSet,
+    PlaylistViewSet,
+    ThemeViewSet,
 )
 
 router = DefaultRouter()

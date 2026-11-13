@@ -1,5 +1,5 @@
-from .ContributorViewSet import ContributorViewSet
 from .ContributionViewSet import ContributionViewSet
+from .ContributorViewSet import ContributorViewSet
 from .DocumentViewSet import DocumentViewSet
 from .OverlayViewSet import OverlayViewSet
 from .RoleViewSet import RoleViewSet

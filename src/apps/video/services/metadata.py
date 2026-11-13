@@ -2,13 +2,15 @@
 Esup-Pod - Video metadata extraction services.
 """
 
-import logging
-import subprocess
 import json
+import logging
 import math
-from pathlib import Path  # noqa #F401
+import subprocess
 from datetime import date
+from pathlib import Path  # noqa #F401
+
 from django.utils import timezone
+
 from src.apps.video.conf import video_settings
 
 logger = logging.getLogger(__name__)

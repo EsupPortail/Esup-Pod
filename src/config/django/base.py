@@ -12,7 +12,6 @@ should be placed in `src/config/settings/{app_name}.py`.
 
 import logging
 
-
 from config.env import BASE_DIR, env
 
 logger = logging.getLogger(__name__)

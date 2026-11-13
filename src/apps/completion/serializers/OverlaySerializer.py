@@ -2,10 +2,12 @@
 Esup-Pod - Overlay serializer.
 """
 
-from rest_framework import serializers
-from src.apps.completion.models import Overlay
 import re
+
+from rest_framework import serializers
+
 from src.apps.completion.conf import completion_settings
+from src.apps.completion.models import Overlay
 
 
 class OverlaySerializer(serializers.ModelSerializer):

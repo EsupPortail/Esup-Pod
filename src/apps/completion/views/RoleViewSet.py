@@ -2,12 +2,12 @@
 Esup-Pod - Role viewset.
 """
 
-from rest_framework import viewsets, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, permissions, viewsets
 
+from src.apps.authentication.permissions import IsSuperUser
 from src.apps.completion.models import Role
 from src.apps.completion.serializers import RoleSerializer
-from src.apps.authentication.permissions import IsSuperUser
 
 
 class RoleViewSet(viewsets.ModelViewSet):

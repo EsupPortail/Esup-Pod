@@ -6,7 +6,7 @@ Esup-Pod - ViewSet for the Chapter model.
 """
 
 from django.contrib.sites.shortcuts import get_current_site
-from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
 from rest_framework import permissions, viewsets
 from rest_framework.exceptions import PermissionDenied
 

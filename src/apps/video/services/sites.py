@@ -2,8 +2,8 @@
 Esup-Pod - Site assignment utilities.
 """
 
-from django.contrib.sites.models import Site
 from django.conf import settings
+from django.contrib.sites.models import Site
 
 
 def assign_default_site(video):

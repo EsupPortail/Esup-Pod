@@ -5,20 +5,21 @@ This module provides the view to receive and process encoding task results
 from the runner manager.
 """
 
+import contextlib
 import logging
 import os
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.core.exceptions import ObjectDoesNotExist
-import contextlib
-from drf_spectacular.utils import extend_schema, OpenApiResponse
 
-from src.apps.video.models import Video
+from django.core.exceptions import ObjectDoesNotExist
+from drf_spectacular.utils import OpenApiResponse, extend_schema
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from config.env import env
-from src.apps.encoding.services.runner_client import get_runner_client
 from src.apps.encoding.conf import encoding_settings
 from src.apps.encoding.models import EncodingVideo
+from src.apps.encoding.services.runner_client import get_runner_client
+from src.apps.video.models import Video
 
 logger = logging.getLogger(__name__)
 

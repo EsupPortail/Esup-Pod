@@ -7,13 +7,12 @@ Typed and validated configuration for the encoding app using pydantic-settings.
 from typing import List, Tuple, Type
 
 from django.utils.translation import gettext_lazy as _
-
-
 from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
     PydanticBaseSettingsSource,
 )
+
 from src.apps.utils.conf import DjangoSettingsSource
 from src.config.defaults import encoding as defaults
 

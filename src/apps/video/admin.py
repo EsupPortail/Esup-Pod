@@ -3,32 +3,31 @@ Esup-Pod - Video administrator interface.
 """
 
 import tagulous.admin
-from django.contrib import admin
 from django import forms
-from django.contrib import messages
+from django.contrib import admin, messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
-from django.core.exceptions import ObjectDoesNotExist
-from src.apps.utils.files import file_size_mb
 
+from src.apps.utils.files import file_size_mb
 from src.apps.video.models import (
-    Video,
-    Type,
-    Discipline,
-    Subtitle,
+    Chapter,
     Comment,
-    ViewCount,
-    Vote,
+    Cursus,
+    Discipline,
     Language,
     License,
-    Cursus,
-    VideoHyperlink,
-    Chapter,
-    VideoCut,
-    VideoAccessToken,
+    Subtitle,
+    Type,
     UserMarkerTime,
+    Video,
+    VideoAccessToken,
+    VideoCut,
+    VideoHyperlink,
+    ViewCount,
+    Vote,
 )
 
 

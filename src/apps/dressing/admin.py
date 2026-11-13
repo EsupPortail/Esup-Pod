@@ -3,6 +3,7 @@ Esup-Pod - Dressing administrator interface.
 """
 
 from django.contrib import admin
+
 from src.apps.dressing.models import Dressing
 
 
