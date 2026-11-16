@@ -3,6 +3,7 @@
 *  run with 'python manage.py test pod.video_search.tests.test_utils'
 """
 
+from django.conf import settings
 from django.test import TestCase
 from django.contrib.auth.models import User
 from elasticsearch import Elasticsearch
@@ -10,6 +11,7 @@ from elasticsearch import Elasticsearch
 from pod.video.models import Video, Type
 from .. import utils
 from ..utils import index_es, delete_es
+import pod.video_search.utils as utils
 
 
 class VideoSearchTestUtils(TestCase):
@@ -65,3 +67,10 @@ class VideoSearchTestUtils(TestCase):
         self.assertEqual(delete["result"], "deleted")
         self.assertEqual(delete["_id"], str(self.v.id))
         print("--> test_index_and_delete_es ok! ")
+
+    def test_search_client_follows_use_opensearch(self):
+        """The client class must match the USE_OPENSEARCH setting."""
+        self.assertEqual(
+            utils.SearchClient.__module__.startswith("opensearchpy"),
+            bool(settings.USE_OPENSEARCH),
+        )

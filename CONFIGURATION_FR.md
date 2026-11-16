@@ -2267,6 +2267,13 @@ Esup-Runner, avec utilisation de runner managers. Sinon, il est aussi possible d
   >> Options d’ElasticSearch, notamment utilisées pour ES8 en SSL et avec un user en paramètre<br>
   >> Voir [www.elastic.co](https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/config.html)<br>
   >> pour plus d’informations.<br>
+* `USE_OPENSEARCH`
+  > valeur par défaut : `False`
+  >> Si `True`, la recherche est faite avec le client
+  [opensearch-py](https://opensearch.org/docs/latest/clients/)
+  (installer `requirements-opensearch.txt`) et l’API niveau Elasticsearch 7,<br>
+  >> qui est l’API native d’OpenSearch 1.x/2.x. L’authentification et SSL<br>
+  >> se donnent alors via `ES_OPTIONS`.<br>
 
 ### Configuration de l’application xapi
 

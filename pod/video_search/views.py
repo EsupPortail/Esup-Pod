@@ -1,7 +1,6 @@
 """Pod video_search views."""
 
 from django.shortcuts import render
-from elasticsearch import Elasticsearch
 from pod.video_search.forms import SearchForm
 from django.conf import settings
 from django.contrib import messages
@@ -18,6 +17,14 @@ ES_TIMEOUT = getattr(settings, "ES_TIMEOUT", 30)
 ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
 ES_VERSION = getattr(settings, "ES_VERSION", 8)
 ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
+USE_OPENSEARCH = getattr(settings, "USE_OPENSEARCH", False)
+
+# Keep in line with pod/video_search/utils.py: OpenSearch 1.x/2.x speaks
+# the Elasticsearch 7 REST API.
+if USE_OPENSEARCH:
+    from opensearchpy import OpenSearch as SearchClient
+else:
+    from elasticsearch import Elasticsearch as SearchClient
 
 
 def get_filter_search(selected_facets, start_date, end_date):
@@ -100,7 +107,7 @@ def get_search_page(request) -> int:
 
 def search_videos(request):
     """Send a search request to ES."""
-    es = Elasticsearch(
+    es = SearchClient(
         ES_URL,
         request_timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,

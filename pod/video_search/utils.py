@@ -1,8 +1,6 @@
 """Esup-Pod Video Search utilities."""
 
 from django.conf import settings
-from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import TransportError
 from django.utils import translation
 
 import json
@@ -18,6 +16,17 @@ ES_TIMEOUT = getattr(settings, "ES_TIMEOUT", 30)
 ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
 ES_VERSION = getattr(settings, "ES_VERSION", 8)
 ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
+USE_OPENSEARCH = getattr(settings, "USE_OPENSEARCH", False)
+
+# OpenSearch 1.x/2.x speaks the Elasticsearch 7 REST API, so when
+# USE_OPENSEARCH is set the search client is opensearch-py (install
+# requirements-opensearch.txt) and the ES7-level API is used.
+if USE_OPENSEARCH:
+    from opensearchpy import OpenSearch as SearchClient
+    from opensearchpy.exceptions import TransportError
+else:
+    from elasticsearch import Elasticsearch as SearchClient
+    from elasticsearch.exceptions import TransportError
 
 if DEBUG:
     logger.setLevel(logging.DEBUG)
@@ -26,7 +35,7 @@ if DEBUG:
 def index_es(video):
     """Get ElasticSearch index."""
     translation.activate(settings.LANGUAGE_CODE)
-    es = Elasticsearch(
+    es = SearchClient(
         ES_URL,
         request_timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
@@ -39,6 +48,8 @@ def index_es(video):
             if data != "{}":
                 res = es.index(index=ES_INDEX, id=video.id, body=data, refresh=True)
                 logger.debug(res)
+                if DEBUG:
+                    logger.info(res)
                 return res
         except TransportError as e:
             logger.error(
@@ -55,7 +66,7 @@ def index_es(video):
 
 def delete_es(video_id):
     """Delete an Elasticsearch video entry by video id."""
-    es = Elasticsearch(
+    es = SearchClient(
         ES_URL,
         request_timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
@@ -79,7 +90,7 @@ def delete_es(video_id):
 
 def create_index_es():
     """Create ElasticSearch index."""
-    es = Elasticsearch(
+    es = SearchClient(
         ES_URL,
         request_timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
@@ -99,7 +110,7 @@ def create_index_es():
 
 def delete_index_es():
     """Delete ElasticSearch index."""
-    es = Elasticsearch(
+    es = SearchClient(
         ES_URL,
         request_timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
