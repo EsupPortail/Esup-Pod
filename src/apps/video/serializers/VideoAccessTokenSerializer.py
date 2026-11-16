@@ -17,6 +17,7 @@ class VideoAccessTokenSerializer(serializers.ModelSerializer):
 
     is_valid = serializers.SerializerMethodField()
     token_url = serializers.SerializerMethodField()
+    embed_url = serializers.SerializerMethodField()
 
     class Meta:
         """Meta options for VideoAccessTokenSerializer."""
@@ -34,6 +35,7 @@ class VideoAccessTokenSerializer(serializers.ModelSerializer):
             "last_used_at",
             "created_at",
             "token_url",
+            "embed_url",
         ]
         read_only_fields = [
             "id",
@@ -43,6 +45,7 @@ class VideoAccessTokenSerializer(serializers.ModelSerializer):
             "last_used_at",
             "created_at",
             "token_url",
+            "embed_url",
         ]
 
     def get_is_valid(self, obj):
@@ -55,6 +58,13 @@ class VideoAccessTokenSerializer(serializers.ModelSerializer):
         if request:
             return request.build_absolute_uri(f"/video/token/{obj.token}/")
         return f"/video/token/{obj.token}/"
+
+    def get_embed_url(self, obj):
+        """Builds the absolute URL for embedding the video via this token."""
+        request = self.context.get("request")
+        if request:
+            return request.build_absolute_uri(f"/video/embed/{obj.token}/")
+        return f"/video/embed/{obj.token}/"
 
     def validate_expires_at(self, value):
         """Ensures the expiry date is in the future and within max validity."""

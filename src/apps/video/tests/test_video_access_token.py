@@ -79,6 +79,10 @@ class VideoAccessTokenTests(APITestCase):
             ).exists()
         )
         self.assertIn("token", response.data)
+        self.assertEqual(
+            response.data["embed_url"],
+            f"http://testserver/video/embed/{response.data['token']}/",
+        )
 
     def test_non_owner_cannot_create_token(self):
         """A user who is not owner/co-owner cannot create a token for the video."""
