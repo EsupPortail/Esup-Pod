@@ -14,7 +14,7 @@ from ralph.models.validator import Validator
 
 """
 To use Ralph:
-pip3 install ralph-malph==3.3.0
+pip3 install ralph-malph==5.0.1
 from ralph.models.xapi.fields.actors import AccountActorField
 from ralph.models.xapi.video.statements import VideoPlayed
 actor = AccountActorField(
@@ -25,7 +25,7 @@ actor = AccountActorField(
     },
 )
 To test with celery:
-(django_pod3) pod@pod:/.../podv3$
+(django_pod) pod@pod:/.../podv4$
     celery -A pod.xapi.xapi_tasks -l INFO -Q xapi --concurrency 1 -n xapi
 """
 XAPI_ANONYMIZE_ACTOR = getattr(settings, "XAPI_ANONYMIZE_ACTOR", True)

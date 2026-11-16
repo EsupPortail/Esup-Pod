@@ -1,10 +1,13 @@
 """Unit tests for dressing models."""
 
 import os
+import json
+import unittest
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
+
 from pod.video.models import Type, Video
 from pod.dressing.models import Dressing
 
@@ -17,11 +20,16 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
 
+USE_DRESSING = getattr(settings, "USE_DRESSING", False)
 
+
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class DressingModelTest(TestCase):
     """Test case for Pod dressing models."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up DressingModel Tests."""
         owner = User.objects.create(username="pod")
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -51,6 +59,11 @@ class DressingModelTest(TestCase):
             video="test.mp4",
             duration=20,
         )
+        videofile = video.video.path
+        video_dir = os.path.join(os.path.dirname(videofile), "%04d" % video.id)
+        os.makedirs(video_dir, exist_ok=True)
+        with open(os.path.join(video_dir, "info_video.json"), "w") as f:
+            json.dump({"list_audio_track": ["0"]}, f)
         video2 = Video.objects.create(
             title="video2",
             type=videotype,
@@ -58,6 +71,11 @@ class DressingModelTest(TestCase):
             video="test2.mp4",
             duration=20,
         )
+        videofile2 = video2.video.path
+        video_dir2 = os.path.join(os.path.dirname(videofile2), "%04d" % video2.id)
+        os.makedirs(video_dir2, exist_ok=True)
+        with open(os.path.join(video_dir2, "info_video.json"), "w") as f:
+            json.dump({"list_audio_track": []}, f)
         dressing = Dressing.objects.create(
             title="Test Dressing",
             watermark=customImage,
@@ -69,7 +87,7 @@ class DressingModelTest(TestCase):
         dressing.owners.set([owner])
         dressing.users.set([owner])
 
-    def test_attributs_full(self):
+    def test_attributs_full(self) -> None:
         dressing = Dressing.objects.get(id=1)
         owner = User.objects.get(username="pod")
         video = Video.objects.get(id=1)
@@ -85,7 +103,7 @@ class DressingModelTest(TestCase):
         self.assertEqual(dressing.ending_credits, video2)
         print(" ---> test_attributs_full: OK! --- DressingModelTest")
 
-    def test_dressing_to_json(self):
+    def test_dressing_to_json(self) -> None:
         """Test the to_json function."""
         dressing = Dressing.objects.get(id=1)
         dressing_json = dressing.to_json()
@@ -106,8 +124,12 @@ class DressingModelTest(TestCase):
             "opacity": 50,
             "opening_credits": video.slug,
             "opening_credits_video": (dressing.opening_credits.video.name),
+            "opening_credits_video_duration": 20,
+            "opening_credits_video_hasaudio": True,
             "ending_credits": video2.slug,
             "ending_credits_video": (dressing.ending_credits.video.name),
+            "ending_credits_video_duration": 20,
+            "ending_credits_video_hasaudio": False,
         }
         self.assertEqual(dressing_json, expected_json)
         print(" ---> test_dressing_to_json: OK! --- DressingModelTest")

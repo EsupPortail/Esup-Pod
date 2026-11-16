@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-20 09:49+0100\n"
+"POT-Creation-Date: 2026-09-16 12:34+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.9\n"
 
 #: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
 msgid "No discipline"
@@ -118,6 +118,10 @@ msgid "Not a valid time track file."
 msgstr "Fichier de traduction invalide."
 
 #: pod/completion/static/js/caption_maker.js
+msgid "Creating new track…"
+msgstr "Création d’une nouvelle piste…"
+
+#: pod/completion/static/js/caption_maker.js
 msgid "error during exchange"
 msgstr "erreur durant le téléversement"
 
@@ -190,7 +194,7 @@ msgstr "Une légende / sous-titre ne peut comporter plus de 110 caractères."
 
 #: pod/completion/static/js/caption_maker.js
 msgid ""
-"For your video's accessibility, we recommend a maximum of 80 characters."
+"For your video’s accessibility, we recommend a maximum of 80 characters."
 msgstr ""
 "Pour l’accessibilité de votre vidéo, nous recommandons un maximum de 80 "
 "caractères."
@@ -260,6 +264,10 @@ msgid "Are you sure you want to delete this overlay?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cette superposition ?"
 
 #: pod/completion/static/js/completion.js
+msgid "Are you sure you want to delete this hyperlink?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer cet hyperlien ?"
+
+#: pod/completion/static/js/completion.js
 msgid "Please enter a name from 2 to 100 caracteres."
 msgstr "Veuillez entrer un nom entre 2 et 200 caractères."
 
@@ -305,8 +313,16 @@ msgid "Please select a document"
 msgstr "Veuillez sélectionner un document"
 
 #: pod/completion/static/js/completion.js
+msgid "There is already the same document in the list."
+msgstr "Il y a déjà le même document dans la liste."
+
+#: pod/completion/static/js/completion.js
 msgid "Iframe and Script tags are not allowed."
 msgstr "Les balises Iframe et Script ne sont pas autorisées."
+
+#: pod/completion/static/js/completion.js
+msgid "There is already the same speaker with this job in the list."
+msgstr "Il y a déjà le même intervenant avec cette fonction dans la liste."
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct start from 0 to "
@@ -317,8 +333,8 @@ msgid "Please enter a correct end from 1 to "
 msgstr "Veuillez entrer un correct temps de fin compris entre 1 et "
 
 #: pod/enrichment/static/js/enrichment.js
-msgid "Please enter a correct image."
-msgstr "Veuillez joindre une image correct."
+msgid "Please attach an image."
+msgstr "Veuillez joindre une image."
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct richtext."
@@ -333,20 +349,20 @@ msgid "Weblink must be less than 200 characters."
 msgstr "Un lien web doit contenir moins de 200 caractères."
 
 #: pod/enrichment/static/js/enrichment.js
-msgid "Please select a document."
+msgid "Please attach a document."
 msgstr "Veuillez joindre un document."
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct embed."
-msgstr "Veuillez entrer une intégration correct."
+msgstr "Veuillez entrer un code d’intégration correct."
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "Embed field must be less than 200 characters."
 msgstr "Un code d’intégration doit comporter moins de 200 caractères."
 
 #: pod/enrichment/static/js/enrichment.js
-msgid "Please enter a type in index field."
-msgstr "Veuillez entrer un type."
+msgid "Please choose a type for this enrichment."
+msgstr "Veuillez choisir un type pour cet enrichissement."
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "The start field value is greater than the end field one."
@@ -428,8 +444,9 @@ msgstr "Pas de diffuseur pour ce bâtiment"
 msgid "An error occurred during broadcasters loading…"
 msgstr "Une erreur s’est produite lors du chargement des diffuseurs…"
 
-#: pod/live/static/js/filter_aside_event_list.js
+#: pod/live/static/js/filter_aside_event_list.js pod/main/static/js/infinite.js
 #: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
+#: pod/playlist/static/playlist/js/utils-playlist.js
 #: pod/video/static/js/filter_aside_video_list_refresh.js
 #: pod/video/static/js/video_category.js
 msgid "An Error occurred while processing."
@@ -443,7 +460,7 @@ msgstr "Tri descendant"
 msgid "Ascending sort"
 msgstr "Tri ascendant"
 
-#: pod/main/static/js/main.js
+#: pod/main/static/js/main.js pod/video/static/js/filter.js
 msgid "User not found"
 msgstr "Utilisateur non trouvé"
 
@@ -519,6 +536,10 @@ msgid "Unable to find information about the meeting"
 msgstr "Impossible de trouver des informations sur la réunion"
 
 #: pod/meeting/static/js/my_meetings.js
+msgid "Display/hide the chat"
+msgstr "Afficher/cacher le chat"
+
+#: pod/meeting/static/js/my_meetings.js
 msgid "Restart only the live"
 msgstr "Redémarrer seulement le direct"
 
@@ -541,6 +562,11 @@ msgstr "Texte copié."
 #: pod/meeting/static/js/my_meetings.js
 msgid "Something went wrong."
 msgstr "Quelque-chose s’est mal passé."
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "Functionality accessible only in HTTPS, on a recent browser."
+msgstr ""
+"Fonctionnalité accessible uniquement en HTTPS, sur un navigateur récent."
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid "<strong>Public:</strong> the playlist can be accessed by anyone."
@@ -567,14 +593,30 @@ msgstr "Sauvegarder votre réorganisation"
 msgid "Save"
 msgstr "Sauvegarder"
 
-#: pod/playlist/static/playlist/js/video-favorites-remove-card.js
-msgid "Network response was not ok."
-msgstr "La réponse du réseau n’était pas correcte."
+#: pod/playlist/static/playlist/js/utils-playlist.js
+msgid "Remove from favorite"
+msgstr "Retirer des favoris"
+
+#: pod/playlist/static/playlist/js/utils-playlist.js
+msgid "Add in favorite"
+msgstr "Ajouter aux favoris"
+
+#: pod/playlist/static/playlist/js/utils-playlist.js
+msgid "Remove the video from this playlist"
+msgstr "Supprimer la vidéo de cette liste de lecture"
+
+#: pod/playlist/static/playlist/js/utils-playlist.js
+msgid "Add the video in this playlist"
+msgstr "Ajouter la vidéo à cette liste de lecture"
 
 #: pod/podfile/static/podfile/js/filewidget.js
 #: pod/video/static/js/change_video_owner.js
 msgid "Loading…"
 msgstr "Chargement en cours…"
+
+#: pod/podfile/static/podfile/js/filewidget.js
+msgid "Open file in a new tab"
+msgstr "Ouvrir le fichier dans un nouvel onglet"
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
@@ -583,10 +625,6 @@ msgstr "Changer d’image"
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change file"
 msgstr "Changer de fichier"
-
-#: pod/podfile/static/podfile/js/filewidget.js
-msgid "Open file in a new tab"
-msgstr "Ouvrir le fichier dans un nouvel onglet"
 
 #: pod/podfile/static/podfile/js/filewidget.js
 #, javascript-format
@@ -617,6 +655,10 @@ msgstr "Erreur du serveur"
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Are you sure you want to delete this folder?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce dossier ?"
+
+#: pod/podfile/static/podfile/js/filewidget.js
+msgid "Two folders cannot have the same name."
+msgstr "Deux dossiers ne peuvent pas avoir le même nom."
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "See more"
@@ -745,15 +787,46 @@ msgstr "Modifier l’intervenant"
 msgid "Add a speaker"
 msgstr "Ajouter un intervenant"
 
+#: pod/video/static/js/FilterManager.js
+#, javascript-format
+msgid "Show or hide filter options for %s"
+msgstr "Afficher ou masquer les options du filtre %s"
+
+#: pod/video/static/js/FilterManager.js
+#, javascript-format
+msgid "Search for a %s"
+msgstr "Rechercher un/e %s"
+
+#: pod/video/static/js/FilterManager.js
+#, javascript-format
+msgid "Filter option for %s"
+msgstr "Options de filtre pour %s"
+
+#: pod/video/static/js/FilterManager.js
+msgid "Filter: %(name)s - %(label)s"
+msgstr "Filtre : %(name)s - %(label)s"
+
+#: pod/video/static/js/FilterManager.js
+msgid "%(name)s: %(label)s"
+msgstr "%(name)s : %(label)s"
+
+#: pod/video/static/js/FilterManager.js
+msgid "Remove filter"
+msgstr "Effacer le filtre"
+
+#: pod/video/static/js/FilterManager.js
+msgid "Click to remove the filter: %(name)s - %(label)s"
+msgstr "Cliquez pour supprimer le filtre : %(name)s - %(label)s"
+
 #: pod/video/static/js/ajax-display-channels.js
-msgid "%(count)s channel"
-msgid_plural "%(count)s channels"
-msgstr[0] "%(count)s chaîne"
-msgstr[1] "%(count)s chaînes"
+msgid "%(title)s (%(count)s channel)"
+msgid_plural "%(title)s (%(count)s channels)"
+msgstr[0] "%(title)s (%(count)s chaîne)"
+msgstr[1] "%(title)s (%(count)s chaînes)"
 
 #: pod/video/static/js/ajax-display-channels.js
 msgid "No channels found"
-msgstr "Aucun chaîne trouvée"
+msgstr "Aucune chaîne trouvée"
 
 #: pod/video/static/js/ajax-display-channels.js
 #: pod/video/static/js/video_select.js
@@ -761,6 +834,10 @@ msgid "%(count)s video"
 msgid_plural "%(count)s videos"
 msgstr[0] "%(count)s vidéo"
 msgstr[1] "%(count)s vidéos"
+
+#: pod/video/static/js/ajax-display-channels.js
+msgid "Channel list"
+msgstr "Liste des chaînes"
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
@@ -785,6 +862,14 @@ msgstr "Réponses"
 #: pod/video/static/js/comment-script.js
 msgid "Cancel"
 msgstr "Annuler"
+
+#: pod/video/static/js/comment-script.js
+msgid "Not voted"
+msgstr "Non voté"
+
+#: pod/video/static/js/comment-script.js
+msgid "Voted"
+msgstr "Voté"
 
 #: pod/video/static/js/comment-script.js
 #, javascript-format
@@ -860,6 +945,26 @@ msgid_plural "Please confirm the deletion of the following videos:"
 msgstr[0] "Veuillez confirmer la suppression de la vidéo suivante :"
 msgstr[1] "Veuillez confirmer la suppression des vidéos suivantes :"
 
+#: pod/video/static/js/filter.js
+msgid "User"
+msgstr "Utilisateur"
+
+#: pod/video/static/js/filter.js
+msgid "Type"
+msgstr "Type"
+
+#: pod/video/static/js/filter.js
+msgid "Discipline"
+msgstr "Discipline"
+
+#: pod/video/static/js/filter.js
+msgid "Tag"
+msgstr "Mot clé"
+
+#: pod/video/static/js/filter.js
+msgid "Category"
+msgstr "Catégorie"
+
 #: pod/video/static/js/filter_aside_video_list_refresh.js
 msgid "%(count)s video found"
 msgid_plural "%(count)s videos found"
@@ -925,6 +1030,10 @@ msgstr "Avancer de 10 secondes dans la video"
 #: pod/video/static/js/video-show.js
 msgid "Quality"
 msgstr "Qualité"
+
+#: pod/video/static/js/video_category.js
+msgid "At least one video must be associated with this category."
+msgstr "Au moins une vidéo doit être associée à cette catégorie."
 
 #: pod/video/static/js/video_edit.js
 msgid "Select the general type of the video."
@@ -996,6 +1105,15 @@ msgstr "Ajouts en favoris total depuis la création"
 msgid "Slug"
 msgstr "Titre court"
 
+#~ msgid "Network response was not ok."
+#~ msgstr "La réponse du réseau n’était pas correcte."
+
+#~ msgid "Please enter a correct image."
+#~ msgstr "Veuillez joindre une image."
+
+#~ msgid "Please enter a type in index field."
+#~ msgstr "Veuillez entrer un type."
+
 #~ msgid "Change"
 #~ msgstr "Changer"
 
@@ -1004,3 +1122,55 @@ msgstr "Titre court"
 
 #~ msgid "Long answer"
 #~ msgstr "Réponse longue"
+
+#: pod/video/static/js/video_upload.js
+msgid "Retry"
+msgstr "Réessayer"
+
+#: pod/video/static/js/video_upload.js
+msgid "Checking your upload…"
+msgstr "Vérification de votre envoi…"
+
+#: pod/video/static/js/video_upload.js
+msgid "Unable to confirm the upload. Check your dashboard before uploading the file again."
+msgstr "Impossible de confirmer l’envoi. Vérifiez votre tableau de bord avant d’envoyer à nouveau le fichier."
+
+#: pod/video/static/js/video_upload.js
+msgid "Uploading…"
+msgstr "Envoi en cours…"
+
+#: pod/video/static/js/video_upload.js
+msgid "Upload interrupted. Retrying automatically…"
+msgstr "Envoi interrompu. Nouvelle tentative automatique…"
+
+#: pod/video/static/js/video_upload.js
+msgid "Upload interrupted. Check your connection and click Retry."
+msgstr "Envoi interrompu. Vérifiez votre connexion et cliquez sur Réessayer."
+
+#: pod/video/static/js/video_upload.js
+msgid "The server rejected the upload. Please select the file again or contact support."
+msgstr "Le serveur a refusé l’envoi. Sélectionnez à nouveau le fichier ou contactez l’assistance."
+
+#: pod/video/static/js/video_upload.js
+msgid "The selected file is empty. Please choose another file."
+msgstr "Le fichier sélectionné est vide. Veuillez choisir un autre fichier."
+
+#: pod/video/static/js/video_upload.js
+msgid "Preparing your file…"
+msgstr "Préparation de votre fichier…"
+
+#: pod/video/static/js/video_upload.js
+msgid "Your file is ready to upload."
+msgstr "Votre fichier est prêt à être envoyé."
+
+#: pod/video/static/js/video_upload.js
+msgid "Unable to read the file. Please select it again."
+msgstr "Impossible de lire le fichier. Veuillez le sélectionner à nouveau."
+
+#: pod/video/static/js/video_upload.js
+msgid "You must accept the necessary authorizations to continue."
+msgstr "Vous devez confirmer disposer des autorisations nécessaires pour continuer."
+
+#: pod/video/static/js/video_upload.js
+msgid "Upload a media file first."
+msgstr "Sélectionnez d’abord un fichier multimédia."

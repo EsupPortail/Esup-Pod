@@ -1,7 +1,12 @@
 """Unit tests for Esup-Pod playlist utilities."""
 
 import hashlib
-from django.test import TestCase
+from django.test import TestCase, override_settings
+from django.contrib.auth.hashers import (
+    check_password as django_check_password,
+    identify_hasher,
+    make_password,
+)
 from django.contrib.auth.models import User
 from pod.video.models import Type, Video
 from pod.playlist.models import Playlist, PlaylistContent
@@ -388,6 +393,73 @@ class PlaylistTestUtils(TestCase):
         self.assertTrue(check_password("good_password", protected_playlist))
 
         print(" --->  test_check_password ok")
+
+    @override_settings(
+        PASSWORD_HASHERS=["django.contrib.auth.hashers.PBKDF2PasswordHasher"]
+    )
+    def test_legacy_password_is_upgraded_only_after_success(self):
+        """Upgrade a valid legacy hash using the configured Django password hasher."""
+        legacy_hash = hashlib.sha256(b"legacy password").hexdigest()
+        self.playlist.password = legacy_hash
+        self.playlist.save()
+        with self.assertNumQueries(0):
+            self.assertFalse(check_password("wrong password", self.playlist))
+        self.playlist.refresh_from_db()
+        self.assertEqual(self.playlist.password, legacy_hash)
+
+        self.assertTrue(check_password("legacy password", self.playlist))
+        encoded = self.playlist.password
+        self.playlist.refresh_from_db()
+        self.assertEqual(self.playlist.password, encoded)
+        self.assertEqual(identify_hasher(encoded).algorithm, "pbkdf2_sha256")
+        self.assertTrue(django_check_password("legacy password", encoded))
+
+    def test_django_password_verification_does_not_write_or_rehash(self):
+        """Accept Django hashes without database queries or session invalidation."""
+        encoded = make_password("current password")
+        self.playlist.password = encoded
+        with self.assertNumQueries(0):
+            self.assertFalse(check_password("wrong password", self.playlist))
+            self.assertTrue(check_password("current password", self.playlist))
+        self.assertEqual(self.playlist.password, encoded)
+
+    def test_invalid_password_hashes_deny_access(self):
+        """Reject empty, unusable, plaintext and malformed encoded passwords."""
+        for encoded in ("", "!disabled", "plaintext", "0" * 64, "pbkdf2_sha256$broken"):
+            with self.subTest(encoded=encoded):
+                self.playlist.password = encoded
+                self.assertFalse(check_password("plaintext", self.playlist))
+
+    def test_legacy_upgrade_does_not_overwrite_a_concurrent_password_change(self):
+        """Reject a stale password if the owner changed it before the upgrade."""
+        self.playlist.password = hashlib.sha256(b"old password").hexdigest()
+        self.playlist.save()
+        new_hash = make_password("new password")
+        Playlist.objects.filter(pk=self.playlist.pk).update(password=new_hash)
+
+        self.assertFalse(check_password("old password", self.playlist))
+        self.playlist.refresh_from_db()
+        self.assertEqual(self.playlist.password, new_hash)
+        self.assertTrue(check_password("new password", self.playlist))
+
+    def test_concurrent_legacy_upgrade_keeps_the_existing_new_hash(self):
+        """Accept another visitor's upgrade without replacing its hash or sessions."""
+        self.playlist.password = hashlib.sha256(b"legacy password").hexdigest()
+        self.playlist.save()
+        encoded = make_password("legacy password")
+        Playlist.objects.filter(pk=self.playlist.pk).update(password=encoded)
+
+        self.assertTrue(check_password("legacy password", self.playlist))
+        self.assertEqual(self.playlist.password, encoded)
+        self.playlist.refresh_from_db()
+        self.assertEqual(self.playlist.password, encoded)
+
+    def test_legacy_upgrade_denies_access_after_concurrent_deletion(self):
+        """Reject a deleted playlist without crashing during a legacy upgrade."""
+        self.playlist.password = hashlib.sha256(b"legacy password").hexdigest()
+        self.playlist.save()
+        Playlist.objects.filter(pk=self.playlist.pk).delete()
+        self.assertFalse(check_password("legacy password", self.playlist))
 
     def test_sort_playlist_list(self):
         """Test if test_sort_playlist_list works correctly."""

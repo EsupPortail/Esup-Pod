@@ -85,6 +85,8 @@ FFMPEG_DRESSING_SCALE = (
     + "pad=ceil(16/9*%(height)s):%(height)s:(ow-iw)/2:(oh-ih)/2[%(name)s]"
 )
 FFMPEG_DRESSING_CONCAT = "%(params)sconcat=n=%(number)s:v=1:a=1:unsafe=1[v][a]"
+FFMPEG_DRESSING_SILENT = " -f lavfi -t %(duration)s -i anullsrc=r=44100:cl=stereo"
+FFMPEG_DRESSING_AUDIO = "[%(param_in)s]anull[%(param_out)s]"
 
 VIDEO_RENDITIONS = [
     {

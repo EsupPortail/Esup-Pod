@@ -1,7 +1,6 @@
 """URLs for Meeting module."""
 
-from django.conf.urls import url
-from django.urls import path
+from django.urls import path, re_path
 
 from . import views
 
@@ -50,12 +49,13 @@ if not views.MEETING_DISABLE_RECORD:
 
 if views.USE_MEETING_WEBINAR:
     urlpatterns += [
+        path("toggle_chat/<slug:meeting_id>/", views.toggle_chat, name="toggle_chat"),
         path("restart_live/<slug:meeting_id>/", views.restart_live, name="restart_live"),
         path("end_live/<slug:meeting_id>/", views.end_live, name="end_live"),
         path(
             "<slug:meeting_id>/<slug:direct_access>/<slug:room>", views.join, name="join"
         ),
-        url(
+        re_path(
             r"^live_publish_chat/(?P<id>[\d]+)/$",
             views.live_publish_chat,
             name="live_publish_chat",

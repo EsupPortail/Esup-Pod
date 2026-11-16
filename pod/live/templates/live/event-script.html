@@ -1,7 +1,12 @@
+{# Esup-Pod: live event playback and interaction scripts. #}
 {% load custom_tags %}
 {% load i18n %}
 {% load static %}
-<script>
+{% if not form %}
+  {% if event.is_current and not form and event.broadcaster.is_runner_live %}
+    <script src="{% static 'js/runner_live.js' %}?ver={{ VERSION }}"></script>
+  {% endif %}
+  <script>
     // Debug if necessary, depends on the settings_local
     const debug = "{% get_setting "DEBUG" False %}" === "True";
 
@@ -13,6 +18,7 @@
     // Live seems stopped
     let stopped = false;
     let video_on_hold_is_displayed = false;
+    let waitingModal = null;
     let recordingDuration = 0;
     let options = {
         notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
@@ -56,48 +62,50 @@
     }
 
     // Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
-    videojs.Hls.xhr.beforeRequest = function (options) {
+    {% if not event.broadcaster.is_runner_live %}
+      videojs.Vhs.xhr.beforeRequest = function (options) {
 
-        if ('{{event.is_past }}' === 'False') {
+          if ('{{event.is_past }}' === 'False') {
 
-            // Reset counter if video state is ok
-            if (started && player.readyState() > 2) {
-                nbLoop = 0;
-            }
-            if (started && player.readyState() <= 2) {
-                // Check if .m3u8 exists, to be sure that live is stopped
-                fetch("{{event.broadcaster.url}}", {
-                    method: 'GET',
-                    {#crossDomain: true,#}
-                    headers: {
-                        'Accept': 'text/html',
-                        'Content-Type': 'text/html; charset=utf-8',
-                    }
-                }).then((response) => {
-                  stopped = !response.ok;
-                }).catch(() => {
-                    stopped = true;
-                });
-                if (stopped) {
-                    nbLoop = nbLoop + 1;
-                    // We're waiting a bit to make sure it's not a network / data flow issue...
-                    if (debug) {
-                        console.info("The streaming live stopped? Video state: " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4 times, we stop.");
-                    }
-                    if (nbLoop > 3) {
-                        // Display of a message of end of live and reload of the page in 9 seconds
-                        let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
-                        setTimeout(function () {
-                            location.reload();
-                        }, 9000);
-                    }
-                }
-            }
-        }
-        return options;
-    }
+              // Reset counter if video state is ok
+              if (started && player.readyState() > 2) {
+                  nbLoop = 0;
+              }
+              if (started && player.readyState() <= 2) {
+                  // Check if .m3u8 exists, to be sure that live is stopped
+                  fetch("{{event.broadcaster.get_stream_url|escapejs}}", {
+                      method: 'GET',
+                      {#crossDomain: true,#}
+                      headers: {
+                          'Accept': 'text/html',
+                          'Content-Type': 'text/html; charset=utf-8',
+                      }
+                  }).then((response) => {
+                    stopped = !response.ok;
+                  }).catch(() => {
+                      stopped = true;
+                  });
+                  if (stopped) {
+                      nbLoop = nbLoop + 1;
+                      // We're waiting a bit to make sure it's not a network / data flow issue...
+                      if (debug) {
+                          console.info("The streaming live stopped? Video state: " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4 times, we stop.");
+                      }
+                      if (nbLoop > 3) {
+                          // Display of a message of end of live and reload of the page in 9 seconds
+                          let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
+                          setTimeout(function () {
+                              location.reload();
+                          }, 9000);
+                      }
+                  }
+              }
+          }
+          return options;
+      }
+    {% endif %}
 
-    {% if event.is_current %}
+    {% if event.is_current and not form %}
 
       // Management of the streaming live
       let player = videojs("podvideoplayer", options, function() {
@@ -109,50 +117,81 @@
         link: '{{ LINK_PLAYER }}'
       });
 
-      player.on("error", function() {
-        // Handle successives errors to avoid multiple reload
-        if (typeof (errored) == "undefined" || !errored) {
-          let errored = true;
-          let modal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}');
-          setTimeout(function() {
-            errored = false;
-            modal.close();
-            player.src({
-              src: player.currentSrc(),
-              type: player.currentType(),
-              overrideNative: true
-            });
+      {% if event.broadcaster.is_runner_live %}
+        window.PodRunnerLive.start(player, {
+          onUnavailable: () => {
+            {% if event.video_on_hold.is_video %}
+              showWaitingVideo(false);
+            {% endif %}
+          },
+          onAvailable: () => {
+            hideWaitingVideo();
+            document.getElementById("divvideoplayer").style.display = "block";
+          }
+        });
+      {% else %}
+        let retryTimer = null;
+        let retryModal = null;
+        const liveSource = {
+          src: "{{ event.broadcaster.get_stream_url|escapejs }}",
+          type: "application/x-mpegURL"
+        };
+
+        player.on("error", function() {
+          // Keep one retry even when the same source raises successive errors.
+          if (retryTimer !== null) return;
+          started = false;
+          if (!showWaitingVideo(true)) {
+            retryModal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}', {pauseOnOpen: false});
+          }
+          retryTimer = setTimeout(function() {
+            retryTimer = null;
+            if (retryModal) {
+              retryModal.close();
+              retryModal = null;
+            }
+            // The failed player can have an empty currentSrc(). Keep the configured URL.
+            player.src(liveSource);
           }, 10000);
+        });
 
+        player.on("dispose", function() {
+          clearTimeout(retryTimer);
+        });
 
-          // Chargement de la vidéo d'attente si le stream n'a pas commencé
-          {% if event.video_on_hold.is_video %}
-            modal.close();
-            showWaitingVideo(true);
-          {% endif %}
-        }
+        player.on(["loadeddata", "playing"], function() {
+          clearTimeout(retryTimer);
+          retryTimer = null;
+          if (retryModal) {
+            retryModal.close();
+            retryModal = null;
+          }
+        });
+      {% endif %}
+
+      // Metadata does not guarantee that a video frame is available yet.
+      player.on(["loadeddata", "playing"], function() {
+        started = true;
+        hideWaitingVideo();
+        document.getElementById("divvideoplayer").style.display = "block";
       });
 
+      let liveUiInitialized = false;
       // Fire this event when live started
       player.on("loadedmetadata", function() {
         if (debug) {
           console.info("Streaming live starts.");
         }
 
-        // dispose onHold resources
-        video_on_hold_is_displayed = false;
-        videojs(document.getElementById("divvideoonhold")).dispose();
+        if (liveUiInitialized) return;
+        liveUiInitialized = true;
 
-        // Affichage du flux direct
-        started = true;
-        document.getElementById("divvideoplayer").style.display = "block";
-
-        // Affichage du nombre de spectateurs
+        // Display the viewer count
         {% if event.broadcaster.enable_viewer_count %}
           player.videoJsViewerCount();
         {% endif %}
 
-        // Affichage des boutons de contrôle de l'enregistrement
+        // Display the recording controls
         {% if can_record %}
           document.getElementById("recording_btns").classList.remove("d-none");
           updateStreamStatus();
@@ -160,7 +199,7 @@
           setInterval(displayRecordingDuration, 1000); // every sec
         {% endif %}
 
-      // Transcription du live
+        // Live transcription
         {% if event.enable_transcription %}
           show_transcription();
         {% endif %}
@@ -635,39 +674,63 @@
      * @param withModal if modal should be added on top.
      */
     function showWaitingVideo(withModal){
+        // Never replace a live stream that became ready before DOMContentLoaded.
+        if (started) return false;
         if (video_on_hold_is_displayed) {
-            return;
+            return true;
         }
 
-        options["loop"] = true;
-        let playerOnHold = videojs('podvideoonholdplayer', options, function () {
-         });
+        const waitingElement = document.getElementById("podvideoonholdplayer");
+        if (!waitingElement) return false;
 
+        const mp4_sources = {{event.video_on_hold.get_video_mp4_json|safe|default:'null'}};
+        let playerOnHold = videojs.getPlayer('podvideoonholdplayer');
+        if (!playerOnHold) {
+            playerOnHold = videojs('podvideoonholdplayer', {...options, loop: true});
+            playerOnHold.videoJsLogo({
+              imgsrc: '{% static LOGO_PLAYER %}',
+              linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
+              link: '{{ LINK_PLAYER }}'
+            });
+
+            // With no waiting video, keep the poster and the retry message only.
+            if (mp4_sources && mp4_sources.length) playerOnHold.src(mp4_sources);
+        }
         if (withModal)
-            playerOnHold.createModal('{% trans "Live not found, retry in 10 seconds" %}');
+            waitingModal = playerOnHold.createModal('{% trans "Live not found, retry in 10 seconds" %}', {pauseOnOpen: false});
 
-        playerOnHold.videoJsLogo({
-          imgsrc: '{% static LOGO_PLAYER %}',
-          linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
-          link: '{{ LINK_PLAYER }}'
-        });
-
-        let mp4_sources = {{event.video_on_hold.get_video_mp4_json|safe|default:'null'}};
-        playerOnHold.src(mp4_sources);
+        if (mp4_sources && mp4_sources.length) {
+            const playback = playerOnHold.play();
+            if (playback && playback.catch) playback.catch(() => {});
+        }
 
         document.getElementById("divvideoonhold").style.display = "block";
         if (document.getElementById("divvideoplayer"))
           document.getElementById("divvideoplayer").style.display = "none";
 
         video_on_hold_is_displayed = true;
+        return true;
+    }
+
+    /** Keep the waiting player reusable if the live stream fails again. */
+    function hideWaitingVideo() {
+        if (waitingModal) {
+            waitingModal.close();
+            waitingModal = null;
+        }
+        const waitingPlayer = videojs.getPlayer('podvideoonholdplayer');
+        if (waitingPlayer) waitingPlayer.pause();
+        const container = document.getElementById("divvideoonhold");
+        if (container) container.style.display = "none";
+        video_on_hold_is_displayed = false;
     }
 
     /**
      * Reloads the page if the event has started or ended while viewing.
      */
     function reloadIfNeeded() {
-        const start = new Date("{{ event.start_date }}")
-        const end = new Date("{{ event.end_date }}")
+        const start = new Date("{{ event.start_date|date:'c' }}")
+        const end = new Date("{{ event.end_date|date:'c' }}")
         {% if event.is_coming %}
             setInterval(() => {
                 if (new Date() >= start) {
@@ -765,7 +828,7 @@
             {% endif %}
         {% endif %}
 
-        {% if event.is_current %}
+        {% if event.is_current and not form and not event.broadcaster.is_runner_live %}
             showWaitingVideo(true);
         {% endif %}
 
@@ -839,4 +902,5 @@
         }, 1000);
     }
 
-</script>
+  </script>
+{% endif %}

@@ -1,19 +1,18 @@
-from django.core.management.base import BaseCommand, CommandError
-
-from django.conf import settings
-from django.core.files.temp import NamedTemporaryFile
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
-from pod.video.models import Video, Type
-from pod.video_encode_transcript import encode
-from pod.video_encode_transcript.models import EncodingVideo
-from pod.video_encode_transcript.models import PlaylistVideo
-from pod.completion.models import Track
-
-import shutil
 import os
+import shutil
 import time
+
 import coverage
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.files.temp import NamedTemporaryFile
+from django.core.management.base import BaseCommand, CommandError
+from rest_framework.authtoken.models import Token
+
+from pod.completion.models import Track
+from pod.video.models import Type, Video
+from pod.video_encode_transcript import encode
+from pod.video_encode_transcript.models import EncodingVideo, PlaylistVideo
 
 VIDEO_TEST = "pod/main/static/video_test/video_test_encodage_transcription.webm"
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
@@ -29,7 +28,7 @@ if USE_TRANSCRIPTION:
 class Command(BaseCommand):
     help = "launch of video encoding and transcripting for video test: %s" % VIDEO_TEST
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         cov = coverage.coverage()
         cov.start()
         user, created = User.objects.update_or_create(
@@ -60,7 +59,7 @@ class Command(BaseCommand):
         cov.html_report()
         print("\n -----> End of Encoding/transcripting video test")
 
-    def test_transcripting(self, video):
+    def test_transcripting(self, video) -> None:
         print("\n ---> Start Transcripting video test")
         if video.get_video_mp3() and not video.encoding_in_progress:
             video.transcript = "fr"
@@ -82,11 +81,11 @@ class Command(BaseCommand):
             raise CommandError("No mp3 found!!!")
         print("\n ---> End of transcripting video test")
 
-    def test_result_transcripting(self, video):
+    def test_result_transcripting(self, video) -> None:
         if not Track.objects.filter(video=video, lang="fr").exists():
             raise CommandError("Error while transcripting!!!")
 
-    def test_encoding(self, video):
+    def test_encoding(self, video) -> None:
         print("\n ---> Start Encoding video test")
         encode_video = getattr(encode, ENCODE_VIDEO)
         encode_video(video.id, threaded=False)
@@ -103,7 +102,7 @@ class Command(BaseCommand):
         self.test_result_encoding(video)
         print("\n ---> End of Encoding video test")
 
-    def test_result_encoding(self, video):
+    def test_result_encoding(self, video) -> None:
         list_mp2t = EncodingVideo.objects.filter(
             video=video, encoding_format="video/mp2t"
         )

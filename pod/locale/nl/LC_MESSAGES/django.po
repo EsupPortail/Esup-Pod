@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-20 09:49+0100\n"
-"PO-Revision-Date: 2024-07-04 17:54+0200\n"
+"POT-Creation-Date: 2026-10-29 10:14+0100\n"
+"PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.7\n"
 
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
@@ -95,22 +95,25 @@ msgstr ""
 #: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
 #: pod/main/models.py pod/main/views.py pod/playlist/forms.py
 #: pod/playlist/models.py pod/quiz/forms.py pod/quiz/models.py
-#: pod/speaker/models.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
+#: pod/speaker/models.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Title"
 msgstr "Titel"
 
-#: pod/ai_enhancement/forms.py pod/playlist/forms.py pod/quiz/forms.py
-#: pod/quiz/models.py
+#: pod/ai_enhancement/forms.py pod/playlist/forms.py pod/playlist/models.py
+#: pod/quiz/forms.py pod/quiz/models.py
 #, python-format
 msgid "Please choose a title between 1 and %(max)s characters."
 msgstr ""
 
-#: pod/ai_enhancement/forms.py pod/live/models.py pod/main/forms.py
-#: pod/main/models.py pod/playlist/forms.py pod/playlist/models.py
-#: pod/video/forms.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
+#: pod/ai_enhancement/forms.py
+#: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#: pod/live/models.py pod/main/forms.py pod/main/models.py
+#: pod/playlist/forms.py pod/playlist/models.py pod/video/forms.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/dashboard.html
 msgid "Description"
 msgstr ""
@@ -183,7 +186,8 @@ msgstr ""
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz.html pod/recorder/models.py
 #: pod/video/models.py pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
+#: pod/video/templates/videos/videos.html pod/video_encode_transcript/admin.py
+#: pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr ""
 
@@ -224,8 +228,8 @@ msgid "Enter the ID of the enhancement in Aristote"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
-#: pod/dressing/models.py pod/video/apps.py pod/video/models.py
-#: pod/video/templates/videos/video_breadcrumbs.html
+#: pod/dressing/models.py pod/video/admin.py pod/video/apps.py
+#: pod/video/models.py pod/video/templates/videos/video_breadcrumbs.html
 #: pod/video/templates/videos/videos.html
 msgid "Videos"
 msgstr ""
@@ -241,6 +245,10 @@ msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
 msgid "Import the quiz"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Import transcript"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
@@ -387,9 +395,15 @@ msgstr ""
 #: pod/live/templates/live/event-script.html pod/main/context_processors.py
 #: pod/main/templates/base.html pod/main/templates/navbar.html
 #: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
-#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
-#: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/utils.py
+#: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/videos/video-script.html
+#: pod/video/utils.py pod/video/views.py
+#: pod/video_encode_transcript/runner_manager.py
+#: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
+#: pod/video_encode_transcript/templates/admin_runnermanager_change_list.html
+#: pod/video_encode_transcript/templates/admin_task_change_list.html
+#: pod/video_encode_transcript/utils.py
 msgid "Home"
 msgstr ""
 
@@ -411,19 +425,33 @@ msgstr ""
 
 #: pod/ai_enhancement/utils.py
 #, python-format
-msgid "IA improvement #%(content_id)s completed"
+msgid ""
+"Something went wrong with AI improvement on “%(content_title)s”. Suggestions "
+"for improvement can’t be available on %(site_title)s."
 msgstr ""
 
-#: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
-#: pod/video_encode_transcript/utils.py
-msgid "Hello,"
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid "AI improvement #%(content_id)s completed"
 msgstr ""
 
 #: pod/ai_enhancement/utils.py
 #, python-format
 msgid ""
-"IA improvement “%(content_title)s” has been completed, and is now available "
+"AI improvement “%(content_title)s” has been completed, and is now available "
 "on %(site_title)s."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid ""
+"Something went wrong with AI improvement on “%(content_title)s”  on "
+"%(site_title)s."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
+#: pod/video_encode_transcript/utils.py
+msgid "Hello,"
 msgstr ""
 
 #: pod/ai_enhancement/utils.py pod/meeting/utils.py
@@ -491,7 +519,12 @@ msgstr ""
 
 #: pod/ai_enhancement/views.py
 msgid "You cannot use AI to improve this video."
-msgstr "Vous ne pouvez pas utiliser l'IA pour améliorer cette vidéo."
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgctxt "document filename"
+msgid "Transcription"
+msgstr ""
 
 #: pod/ai_enhancement/views.py
 msgid "Video Caption Maker - Aristote AI Version"
@@ -499,6 +532,11 @@ msgstr ""
 
 #: pod/ai_enhancement/views.py
 msgid "Quiz successfully imported."
+msgstr ""
+
+#: pod/authentication/IPRestrictionMiddleware.py
+#, python-format
+msgid "%(last_name)s (Restricted - IP %(ip)s not allowed)"
 msgstr ""
 
 #: pod/authentication/admin.py pod/main/forms.py
@@ -595,8 +633,9 @@ msgid "Receive push notifications on your devices."
 msgstr ""
 
 #: pod/authentication/models.py pod/live/models.py pod/meeting/models.py
-#: pod/podfile/models.py pod/video/admin.py pod/video/models.py
-#: pod/video/templates/videos/dashboard.html
+#: pod/podfile/models.py pod/video/admin.py
+#: pod/video/management/commands/check_video_owner_exists.py
+#: pod/video/models.py pod/video/templates/videos/dashboard.html
 #: pod/video_search/templates/search/search.html
 msgid "Owner"
 msgstr ""
@@ -665,12 +704,14 @@ msgid "Change your picture"
 msgstr ""
 
 #: pod/authentication/templates/userpicture/userpicture.html
+#: pod/completion/templates/delete_modal.html
 #: pod/completion/templates/video_caption_maker.html
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-iframe.html
 #: pod/live/templates/live/event-info.html pod/main/templates/base.html
-#: pod/main/templates/navbar.html pod/main/templates/navbar_collapse.html
+#: pod/main/templates/mastodon.html pod/main/templates/navbar.html
+#: pod/main/templates/navbar_collapse.html
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/meeting/templates/meeting/my_meetings.html
 #: pod/playlist/templates/playlist/playlist-list-modal.html
@@ -707,8 +748,8 @@ msgid "The file must be in VTT format."
 msgstr ""
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
-#: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
-#: pod/video_encode_transcript/utils.py
+#: pod/playlist/templates/playlist/playlist_card.html pod/video/admin.py
+#: pod/video/models.py
 msgid "video"
 msgstr ""
 
@@ -773,6 +814,9 @@ msgstr ""
 #: pod/dressing/templates/dressing_edit.html
 #: pod/enrichment/templates/enrichment/form_enrichment.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/hyperlinks/templates/hyperlinks/add_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/edit_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/form_hyperlink.html
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/playlist/templates/playlist/add_or_edit.html
@@ -790,10 +834,14 @@ msgstr ""
 
 #: pod/chapter/templates/chapter/form_chapter.html
 #: pod/completion/templates/contributor/form_contributor.html
+#: pod/completion/templates/delete_modal.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
 #: pod/enrichment/templates/enrichment/form_enrichment.html
+#: pod/hyperlinks/templates/hyperlinks/add_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/edit_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/form_hyperlink.html
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/speaker/templates/speaker/form_speaker.html
 #: pod/speaker/templates/speaker/speaker_modal.html
@@ -821,6 +869,8 @@ msgstr ""
 #: pod/completion/templates/track/list_track.html
 #: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
+#: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
 #: pod/speaker/templates/speaker/list_speaker.html
 #: pod/speaker/templates/speaker/speakers_management.html
 #: pod/video/templates/channel/list_theme.html
@@ -855,12 +905,13 @@ msgstr ""
 #: pod/completion/templates/overlay/list_overlay.html
 #: pod/dressing/templates/dressing_delete.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
+#: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
 #: pod/live/templates/live/event_delete.html
 #: pod/meeting/templates/meeting/delete.html
 #: pod/playlist/templates/playlist/delete.html
 #: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/recorder/templates/recorder/record_delete.html
-#: pod/speaker/templates/speaker/list_speaker.html
+#: pod/speaker/templates/speaker/list_speaker.html pod/video/forms.py
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard.html
@@ -976,7 +1027,7 @@ msgstr ""
 msgid "Designer"
 msgstr ""
 
-#: pod/completion/models.py
+#: pod/completion/models.py pod/completion/tests/test_views.py
 msgid "Editor"
 msgstr ""
 
@@ -1271,10 +1322,16 @@ msgid ""
 "time end values."
 msgstr ""
 
+#: pod/completion/permissions/video.py
+#, python-format
+msgid "%(func_name)s: Permission denied for user %(user_pk)s."
+msgstr ""
+
 #: pod/completion/templates/contributor/form_contributor.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
+#: pod/hyperlinks/templates/hyperlinks/form_hyperlink.html
 #: pod/speaker/templates/speaker/form_speaker.html
 msgid "Your form contains errors:"
 msgstr ""
@@ -1306,6 +1363,15 @@ msgstr ""
 msgid "Delete the contributor “%(contributor_name)s”"
 msgstr ""
 
+#: pod/completion/templates/delete_modal.html
+msgid "Delete?"
+msgstr ""
+
+#: pod/completion/templates/delete_modal.html
+#: pod/completion/templates/track/list_track.html
+msgid "Remove"
+msgstr ""
+
 #: pod/completion/templates/document/list_document.html
 msgid "List of additional resources"
 msgstr ""
@@ -1313,6 +1379,18 @@ msgstr ""
 #: pod/completion/templates/document/list_document.html
 #: pod/video/templates/videos/video-info.html
 msgid "Public document"
+msgstr ""
+
+#: pod/completion/templates/document/list_document.html
+#, python-format
+msgid "Download the additional resource “%(document_name)s”"
+msgstr ""
+
+#: pod/completion/templates/document/list_document.html
+#: pod/live/templates/live/event-info.html
+#: pod/podfile/templates/podfile/list_folder_files.html
+#: pod/video/templates/videos/video-info.html
+msgid "Download"
 msgstr ""
 
 #: pod/completion/templates/document/list_document.html
@@ -1353,10 +1431,6 @@ msgid "Delete the overlay “%(overlay_title)s”"
 msgstr ""
 
 #: pod/completion/templates/track/list_track.html
-msgid "List of subtitle or caption files"
-msgstr ""
-
-#: pod/completion/templates/track/list_track.html
 msgid "Video track file"
 msgstr ""
 
@@ -1380,10 +1454,6 @@ msgid "Remove the subtitle or caption file “%(track_name)s”"
 msgstr ""
 
 #: pod/completion/templates/track/list_track.html
-msgid "Remove"
-msgstr ""
-
-#: pod/completion/templates/track/list_track.html
 msgid "menu"
 msgstr ""
 
@@ -1397,10 +1467,8 @@ msgid "File"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
-#, fuzzy
-#| msgid "title"
 msgid "Subtitles"
-msgstr "titel"
+msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
 msgid "Captions"
@@ -1547,6 +1615,10 @@ msgstr ""
 msgid "Subtitle(s) and Caption(s)"
 msgstr ""
 
+#: pod/completion/templates/video_completion.html
+msgid "List of subtitle or caption files"
+msgstr ""
+
 #: pod/completion/templates/video_completion.html pod/completion/views.py
 msgid "Video caption maker"
 msgstr ""
@@ -1573,6 +1645,14 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid "Add a new overlay"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
+msgid "Hyperlinks"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
+msgid "Add a new hyperlink"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html pod/quiz/apps.py
@@ -1675,12 +1755,17 @@ msgid ""
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid ""
-"A Quiz allow you to test the memorization and comprehension of your video."
+msgid "Hyperlinks allow you to add external links related to your video."
 msgstr ""
 
-#: pod/completion/tests/test_views.py
-msgid "editor"
+#: pod/completion/templates/video_completion.html
+msgid ""
+"You can add hyperlinks to this video by providing the URL and a description."
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
+msgid ""
+"A Quiz allow you to test the memorization and comprehension of your video."
 msgstr ""
 
 #: pod/completion/utils.py pod/completion/views.py
@@ -1701,7 +1786,7 @@ msgid "The file has been saved."
 msgstr ""
 
 #: pod/completion/views.py
-msgid "The file has not been saved."
+msgid "The file has NOT been saved."
 msgstr ""
 
 #: pod/completion/views.py
@@ -1729,6 +1814,20 @@ msgstr ""
 
 #: pod/completion/views.py
 msgid "The speaker has been saved."
+msgstr ""
+
+#: pod/completion/views.py
+#, python-format
+msgid "Add a new hyperlink to the video “%s”"
+msgstr ""
+
+#: pod/completion/views.py
+msgid "The hyperlink has been saved."
+msgstr ""
+
+#: pod/completion/views.py
+#, python-format
+msgid "Edit the hyperlink “%s”"
 msgstr ""
 
 #: pod/cut/apps.py pod/cut/models.py
@@ -2055,7 +2154,7 @@ msgid "Dress the video “%s”"
 msgstr ""
 
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
-#: pod/meeting/views.py pod/video/views.py
+#: pod/meeting/views.py pod/video/tests/test_views.py pod/video/views.py
 msgid "The changes have been saved."
 msgstr ""
 
@@ -2311,6 +2410,11 @@ msgid "Editing group for the enrichment of the video"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/group_enrichment.html
+#, python-format
+msgid "Editing group for the enrichment of the video “%(video_title)s”"
+msgstr ""
+
+#: pod/enrichment/templates/enrichment/group_enrichment.html
 msgid "back to editing enrichment"
 msgstr ""
 
@@ -2342,8 +2446,67 @@ msgstr ""
 msgid "Enrichment of the video “%s”"
 msgstr ""
 
-#: pod/enrichment/views.py pod/video/views.py
-msgid "You cannot access this playlist because it is private."
+#: pod/hyperlinks/admin.py
+msgid "Hyperlink Description"
+msgstr ""
+
+#: pod/hyperlinks/admin.py
+msgid "Hyperlink URL"
+msgstr ""
+
+#: pod/hyperlinks/forms.py
+msgid "You can search hyperlink by URL or description."
+msgstr ""
+
+#: pod/hyperlinks/templates/hyperlinks/add_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+msgid "Add Hyperlink"
+msgstr ""
+
+#: pod/hyperlinks/templates/hyperlinks/edit_hyperlink.html
+msgid "Edit Hyperlink"
+msgstr ""
+
+#: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+msgid "List of hyperlinks"
+msgstr ""
+
+#: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#: pod/live/models.py pod/video/management/commands/check_video_owner_exists.py
+msgid "URL"
+msgstr ""
+
+#: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
+#, python-format
+msgid "Delete the hyperlink “%(hyperlink_description)s”"
+msgstr ""
+
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+msgid "Manage Hyperlinks"
+msgstr ""
+
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+msgid "List of hyperlinks I can manage."
+msgstr ""
+
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#, python-format
+msgid "Edit the hyperlink “%(hyperlink_url)s”"
+msgstr ""
+
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+msgid "Please confirm you want to delete the hyperlink"
+msgstr ""
+
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+#, python-format
+msgid "Delete the hyperlink “%(hyperlink_url)s”"
+msgstr ""
+
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlinks.html
+msgid "No hyperlinks found."
 msgstr ""
 
 #: pod/import_video/apps.py
@@ -2369,6 +2532,7 @@ msgstr ""
 
 #: pod/import_video/models.py pod/meeting/models.py pod/playlist/models.py
 #: pod/recorder/models.py pod/video/models.py
+#: pod/video_encode_transcript/models.py
 msgid "User"
 msgstr ""
 
@@ -2377,7 +2541,7 @@ msgid "User who create this recording"
 msgstr ""
 
 #: pod/import_video/models.py pod/meeting/models.py pod/playlist/models.py
-#: pod/video/models.py
+#: pod/video/models.py pod/video_encode_transcript/models.py
 msgid "Site"
 msgstr ""
 
@@ -2575,6 +2739,7 @@ msgstr ""
 #: pod/import_video/templates/import_video/filter_aside.html
 #: pod/main/templates/navbar_collapse.html
 #: pod/meeting/templates/meeting/filter_aside_recording.html
+#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/filter_aside.html
 #: pod/video/templates/videos/filter_aside_category.html
 #: pod/video_search/forms.py pod/video_search/templates/search/search.html
@@ -2677,7 +2842,7 @@ msgid "Delete the external recording"
 msgstr ""
 
 #: pod/import_video/tests/test_views.py pod/import_video/utils.py
-#: pod/import_video/views.py pod/meeting/views.py
+#: pod/import_video/views.py pod/live/views.py pod/meeting/views.py
 msgid "Unable to upload the video to Pod"
 msgstr ""
 
@@ -2688,6 +2853,37 @@ msgstr ""
 #: pod/import_video/tests/test_views.py pod/import_video/views.py
 msgid ""
 "Impossible to upload to Pod the video, the link provided does not seem valid."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Forbidden address"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid ""
+"This address points to a local, private, or otherwise forbidden network "
+"resource."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Use a public URL or ask an administrator to authorize this host."
+msgstr ""
+
+#: pod/import_video/utils.py
+#, python-format
+msgid "The remote host could not be resolved: %(host)s"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Only HTTP and HTTPS addresses are allowed for remote imports."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Authenticated URLs are not allowed for remote imports."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Too many redirects were encountered for this address."
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -2710,6 +2906,14 @@ msgstr ""
 msgid ""
 "In the case of a video from a Pod platform, please enter the source file "
 "address, available in the video edition."
+msgstr ""
+
+#: pod/import_video/utils.py pod/import_video/views.py
+msgid "Impossible to upload to Pod the video"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Forbidden destination path."
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -2741,6 +2945,30 @@ msgstr ""
 msgid "The video file for this recording was not found."
 msgstr ""
 
+#: pod/import_video/utils.py
+#, python-format
+msgid "Forbidden source path: %s"
+msgstr ""
+
+#: pod/import_video/utils.py
+#, python-format
+msgid "Forbidden destination path: %s"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "Forbidden move path."
+msgstr ""
+
+#: pod/import_video/utils.py
+#, python-format
+msgid "The source file “%s” does not exist."
+msgstr ""
+
+#: pod/import_video/utils.py
+#, python-format
+msgid "Error moving the file: %s"
+msgstr ""
+
 #: pod/import_video/views.py
 msgid "You cannot view this recording."
 msgstr ""
@@ -2762,10 +2990,6 @@ msgstr ""
 
 #: pod/import_video/views.py
 msgid "Impossible to create the external recording"
-msgstr ""
-
-#: pod/import_video/views.py
-msgid "Impossible to upload to Pod the video"
 msgstr ""
 
 #: pod/import_video/views.py pod/meeting/views.py
@@ -2790,9 +3014,15 @@ msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
-msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+msgid "YouTube error “%s”"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "This content does not appear to be publicly available."
+msgstr ""
+
+#: pod/import_video/views.py
+msgid "Try changing the address of this recording."
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2811,15 +3041,9 @@ msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
-msgid "YouTube error “%s”"
-msgstr ""
-
-#: pod/import_video/views.py
-msgid "This content does not appear to be publicly available."
-msgstr ""
-
-#: pod/import_video/views.py
-msgid "Try changing the address of this recording."
+msgid ""
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2848,7 +3072,7 @@ msgstr ""
 #, python-format
 msgid ""
 "This video “%(name)s” was uploaded to Pod; its origin is PeerTube: <a "
-"href='%(url)s' target='blank'>%(url)s</a>."
+"href=\"%(url)s\" target=\"blank\">%(url)s</a>."
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2987,6 +3211,14 @@ msgstr ""
 msgid "Buildings"
 msgstr ""
 
+#: pod/live/models.py
+msgid "Fixed URL"
+msgstr ""
+
+#: pod/live/models.py
+msgid "Esup-Runner Live"
+msgstr ""
+
 #: pod/live/models.py pod/recorder/models.py
 msgid "description"
 msgstr ""
@@ -2996,11 +3228,27 @@ msgid "Poster"
 msgstr ""
 
 #: pod/live/models.py
-msgid "URL"
+msgid "Stream mode"
 msgstr ""
 
 #: pod/live/models.py
-msgid "Url of the stream"
+msgid "Fixed stream URL. Required only in fixed URL mode."
+msgstr ""
+
+#: pod/live/models.py pod/video_encode_transcript/models.py
+msgid "Runner manager"
+msgstr ""
+
+#: pod/live/models.py
+msgid "Select the manager receiving this broadcaster's RTMP stream."
+msgstr ""
+
+#: pod/live/models.py
+msgid "Live source ID"
+msgstr ""
+
+#: pod/live/models.py
+msgid "Source identifier on the manager, may match this broadcaster's slug."
 msgstr ""
 
 #: pod/live/models.py
@@ -3060,6 +3308,26 @@ msgstr ""
 
 #: pod/live/models.py pod/video/forms.py
 msgid "Select the main language used in the content."
+msgstr ""
+
+#: pod/live/models.py
+msgid "Select a runner manager for Live mode."
+msgstr ""
+
+#: pod/live/models.py
+msgid "Select a manager that supports Live mode."
+msgstr ""
+
+#: pod/live/models.py
+msgid "Enter the source ID for Live mode."
+msgstr ""
+
+#: pod/live/models.py
+msgid "The manager must belong to a building site."
+msgstr ""
+
+#: pod/live/models.py
+msgid "Enter a stream URL for fixed URL mode."
 msgstr ""
 
 #: pod/live/models.py
@@ -3297,8 +3565,8 @@ msgid "Sorry, no buildings found."
 msgstr ""
 
 #: pod/live/templates/live/event-all-info.html
-#: pod/live/templates/live/event-info.html
-msgid "Summary"
+#: pod/video/templates/videos/video-info.html
+msgid "Number of views"
 msgstr ""
 
 #: pod/live/templates/live/event-all-info.html
@@ -3333,11 +3601,13 @@ msgid "Event is finished at:"
 msgstr ""
 
 #: pod/live/templates/live/event-iframe.html pod/live/templates/live/event.html
-msgid "The event is scheduled from:"
+#, python-format
+msgid "The event is scheduled from %(start_date)s to %(end_date)s"
 msgstr ""
 
-#: pod/live/templates/live/event-iframe.html pod/live/templates/live/event.html
-msgid "to"
+#: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
+msgid "Infos"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -3363,6 +3633,12 @@ msgstr ""
 #: pod/video/templates/videos/video_opengraph.html
 #: pod/video/templates/videos/video_page_content.html
 msgid "Added by:"
+msgstr ""
+
+#: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
+#, python-format
+msgid "Show video list of user “%(video_user_name)s”"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -3399,7 +3675,7 @@ msgid "Social Networks"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html pod/main/templates/aside.html
-#: pod/video/templates/videos/video-info.html
+#: pod/main/templates/mastodon.html pod/video/templates/videos/video-info.html
 msgid "Share on"
 msgstr ""
 
@@ -3420,12 +3696,6 @@ msgstr ""
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
 msgid "Download this QR code"
-msgstr ""
-
-#: pod/live/templates/live/event-info.html
-#: pod/podfile/templates/podfile/list_folder_files.html
-#: pod/video/templates/videos/video-info.html
-msgid "Download"
 msgstr ""
 
 #: pod/live/templates/live/event-script.html
@@ -3489,6 +3759,14 @@ msgstr ""
 
 #: pod/live/templates/live/event.html
 msgid "The event ended on:"
+msgstr ""
+
+#: pod/live/templates/live/event.html
+msgid "Aside site"
+msgstr ""
+
+#: pod/live/templates/live/event.html
+msgid "Additional site"
 msgstr ""
 
 #: pod/live/templates/live/event.html
@@ -3699,6 +3977,50 @@ msgstr ""
 msgid "Past events"
 msgstr ""
 
+#: pod/live/templates/live/runner-live-status.html
+msgid "Waiting for the live stream. Playback will start when it is ready."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "The live stream is starting. Playback will start when it is ready."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "The live stream is running, but its media is not ready yet."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "The live stream has ended. Waiting for a new session."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "The live stream failed. Waiting for a new session."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "The live stream is temporarily unavailable. Retrying automatically."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid ""
+"This live stream uses HTTP and cannot be played on this HTTPS page. Contact "
+"the live administrator."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid ""
+"Unable to play the live stream. Check your connection or contact the live "
+"administrator."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "Unable to check live stream availability. Retrying automatically."
+msgstr ""
+
+#: pod/live/templates/live/runner-live-status.html
+msgid "The live stream is ready. Press Play to start playback."
+msgstr ""
+
 #: pod/live/templates/meeting/meeting_live_form.html
 msgid "Send message"
 msgstr ""
@@ -3764,7 +4086,7 @@ msgstr ""
 msgid "You cannot watch this event."
 msgstr ""
 
-#: pod/live/views.py pod/playlist/views.py pod/video/views.py
+#: pod/live/views.py pod/playlist/utils.py pod/video/views.py
 msgid "The password is incorrect."
 msgstr ""
 
@@ -3840,6 +4162,14 @@ msgstr ""
 
 #: pod/main/forms.py
 msgid "Other (please specify)"
+msgstr ""
+
+#: pod/main/forms.py
+msgid "File not in media directory"
+msgstr ""
+
+#: pod/main/forms.py
+msgid "File not found"
 msgstr ""
 
 #: pod/main/forms.py
@@ -4470,7 +4800,7 @@ msgstr ""
 msgid "Get the file name"
 msgstr ""
 
-#: pod/main/models.py
+#: pod/main/models.py pod/video/models.py
 msgid "order"
 msgstr ""
 
@@ -4712,7 +5042,7 @@ msgstr ""
 msgid "Django administration"
 msgstr ""
 
-#: pod/main/templates/aside.html
+#: pod/main/templates/aside.html pod/main/templates/mastodon.html
 msgid "Share"
 msgstr ""
 
@@ -4720,6 +5050,14 @@ msgstr ""
 #: pod/video/models.py pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/filter_aside.html
 msgid "Disciplines"
+msgstr ""
+
+#: pod/main/templates/base.html
+msgid "Main navigation"
+msgstr ""
+
+#: pod/main/templates/base.html
+msgid "Breadcrumb"
 msgstr ""
 
 #: pod/main/templates/base.html
@@ -4731,16 +5069,14 @@ msgid "Toggle side menu"
 msgstr ""
 
 #: pod/main/templates/base.html
-msgid "Breadcrumb"
-msgstr ""
-
-#: pod/main/templates/base.html
 msgid ""
 "We use third party cookies to personalize content, manage session and "
 "analyze site traffic."
 msgstr ""
 
 #: pod/main/templates/base.html
+#: pod/recorder/templates/recorder/claim_record.html
+#: pod/video/templates/videos/video-element.html
 msgid "Learn more"
 msgstr ""
 
@@ -4799,8 +5135,8 @@ msgstr ""
 msgid "Esup-Pod Project"
 msgstr ""
 
-#: pod/main/templates/footer.html pod/video/feeds.py
-msgid "video platform of"
+#: pod/main/templates/footer.html
+msgid "Video platform"
 msgstr ""
 
 #: pod/main/templates/footer.html
@@ -4858,6 +5194,7 @@ msgstr ""
 
 #: pod/main/templates/mail/mail_sender.html
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 msgid "Regards"
 msgstr ""
 
@@ -4876,11 +5213,28 @@ msgid ""
 msgstr ""
 
 #: pod/main/templates/maintenance.html
+#: pod/video/templates/videos/archive_download.html
 msgid "Return to homepage"
 msgstr ""
 
 #: pod/main/templates/maintenance.html pod/main/views.py
 msgid "Contact us"
+msgstr ""
+
+#: pod/main/templates/mastodon.html
+msgid "Please enter your Mastodon instance URL:"
+msgstr ""
+
+#: pod/main/templates/mastodon.html
+msgid "your.instance"
+msgstr ""
+
+#: pod/main/templates/mastodon.html
+msgid "Remember this instance"
+msgstr ""
+
+#: pod/main/templates/mastodon.html
+msgid "Please provide your instance URL."
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -4930,6 +5284,8 @@ msgid "Add a new video on"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+#: pod/video/templates/videos/video_list_grid_selectable.html
+#: pod/video/templates/videos/video_list_table_selectable.html
 msgid "Add a video"
 msgstr ""
 
@@ -5048,6 +5404,10 @@ msgstr ""
 msgid "Speakers management"
 msgstr ""
 
+#: pod/main/templates/navbar.html
+msgid "Hyperlinks management"
+msgstr ""
+
 #: pod/main/templates/navbar.html pod/progressive_web_app/templates/debug.html
 msgid "Notifications settings"
 msgstr ""
@@ -5097,6 +5457,14 @@ msgid "This view cannot be accessed directly."
 msgstr ""
 
 #: pod/main/views.py
+msgid "File does not exist or is outside media."
+msgstr ""
+
+#: pod/main/views.py
+msgid "Invalid file request."
+msgstr ""
+
+#: pod/main/views.py
 msgid "Link"
 msgstr ""
 
@@ -5117,11 +5485,11 @@ msgid "Webinar options"
 msgstr ""
 
 #: pod/meeting/admin.py
-msgid "Mode insert, nothing to display"
+msgid "Moderators"
 msgstr ""
 
 #: pod/meeting/admin.py
-msgid "Moderators"
+msgid "Mode insert, nothing to display"
 msgstr ""
 
 #: pod/meeting/admin.py
@@ -5357,7 +5725,7 @@ msgstr ""
 msgid ""
 "\n"
 "        BigBlueButton will accept Office documents (.doc .docx .pptx),\n"
-"        text documents(.txt), images (.png ,.jpg) and Adobe Acrobat "
+"        text documents(.txt), images (.png, .jpg) and Adobe Acrobat "
 "documents (.pdf);\n"
 "        we recommend converting documents to .pdf prior to uploading for "
 "best results.\n"
@@ -5570,7 +5938,7 @@ msgstr ""
 msgid "Meeting session logs"
 msgstr ""
 
-#: pod/meeting/models.py
+#: pod/meeting/models.py pod/video_encode_transcript/admin.py
 msgid "Recording ID"
 msgstr ""
 
@@ -5594,8 +5962,9 @@ msgstr ""
 msgid "URL of the SIPMediaGW server"
 msgstr ""
 
-#: pod/meeting/models.py
-msgid "Example format: https://sipmediagw.univ.fr"
+#: pod/meeting/models.py pod/video_encode_transcript/models.py
+#, python-format
+msgid "Example format: %(url)s"
 msgstr ""
 
 #: pod/meeting/models.py
@@ -5654,6 +6023,24 @@ msgstr ""
 msgid "Livestreams"
 msgstr ""
 
+#: pod/meeting/templates/meeting/access_denied.html
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Access denied"
+msgstr ""
+
+#: pod/meeting/templates/meeting/access_denied.html
+msgid "The security key in this link is invalid."
+msgstr ""
+
+#: pod/meeting/templates/meeting/access_denied.html
+msgid "Please ask the meeting owner for a new link."
+msgstr ""
+
+#: pod/meeting/templates/meeting/access_denied.html
+#: pod/meeting/templates/meeting/join.html
+msgid "Back to home"
+msgstr ""
+
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/meeting/templates/meeting/link_meeting.html pod/meeting/views.py
 msgid "Edit the meeting"
@@ -5703,6 +6090,7 @@ msgid "To delete the meeting, please check the box in and click delete."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside.html pod/video/views.py
+#: pod/video_encode_transcript/admin.py
 msgid "Status"
 msgstr ""
 
@@ -5757,8 +6145,8 @@ msgstr ""
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
 "Shortly after clicking the “Start the webinar” button, the live stream will "
-"be available to users on the <i class='bi bi-broadcast mx-1' aria-"
-"hidden='true'></i> <strong>Lives</strong> page."
+"be available to users on the <i class=\"bi bi-broadcast mx-1\" aria-"
+"hidden=\"true\"></i> <strong>Lives</strong> page."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
@@ -5780,15 +6168,15 @@ msgstr ""
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
 "Once started, you can access the webinar information and additional actions "
-"via <i class='bi bi-person-video2 pod-add mx-1' aria-hidden='true'></i> "
+"via <i class=\"bi bi-person-video2 pod-add mx-1\" aria-hidden=\"true\"></i> "
 "<strong>Show webinar informations</strong> in the meetings list."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
 "As you have the appropriate rights, once the webinar has been created, you "
-"can access additional settings for the created event via <i class='bi bi-"
-"broadcast mx-1' aria-hidden='true'></i> <strong>My Events</strong> in the "
+"can access additional settings for the created event via <i class=\"bi bi-"
+"broadcast mx-1\" aria-hidden=\"true\"></i> <strong>My Events</strong> in the "
 "main menu."
 msgstr ""
 
@@ -5865,16 +6253,13 @@ msgid "Unable to access to this meeting"
 msgstr ""
 
 #: pod/meeting/templates/meeting/join.html
-msgid "Back to home"
-msgstr ""
-
-#: pod/meeting/templates/meeting/join.html
 msgid "The meeting has not started yet."
 msgstr ""
 
 #: pod/meeting/templates/meeting/join.html
 #, python-format
-msgid "It is scheduled for <b>%(start_date)s</b> at <u>%(start_time)s</u>."
+msgid ""
+"It is scheduled for <strong>%(start_date)s</strong> at <i>%(start_time)s</i>."
 msgstr ""
 
 #: pod/meeting/templates/meeting/join.html
@@ -6040,6 +6425,7 @@ msgid "Has user joined?"
 msgstr ""
 
 #: pod/meeting/views.py pod/recorder/models.py
+#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
 msgid "Recording"
 msgstr ""
 
@@ -6203,6 +6589,10 @@ msgid "You can’t end this webinar live."
 msgstr ""
 
 #: pod/meeting/views.py
+msgid "You can’t toggle chat for this webinar live."
+msgstr ""
+
+#: pod/meeting/views.py
 msgid "You can’t restart this webinar live."
 msgstr ""
 
@@ -6224,6 +6614,18 @@ msgstr ""
 #: pod/meeting/webinar.py
 #, python-format
 msgid "Error to stop webinar mode for “%(name)s” meeting: %(exc)s"
+msgstr ""
+
+#: pod/meeting/webinar.py
+#, python-format
+msgid ""
+"The option to show/hide the chat has been taken into account for “%(name)s” "
+"meeting."
+msgstr ""
+
+#: pod/meeting/webinar.py
+#, python-format
+msgid "Error to toggle chat for “%(name)s” meeting: %(exc)s"
 msgstr ""
 
 #: pod/meeting/webinar.py
@@ -6533,7 +6935,7 @@ msgid "Remove video from this playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-list-modal.html
-msgid "Add video in this playlist"
+msgid "Add the video in this playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-list-modal.html
@@ -6545,10 +6947,7 @@ msgid "Manage playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-videos-list.html
-#: pod/video/templates/videos/video_list.html
-#: pod/video/templates/videos/video_list_grid_selectable.html
-#: pod/video/templates/videos/video_list_table_selectable.html
-#: pod/video/views.py
+#: pod/video/templates/videos/video_list.html pod/video/views.py
 msgid "Sorry, no video found."
 msgstr ""
 
@@ -6595,16 +6994,15 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlist.html
 msgid "Select the video to move by clicking and holding."
-msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
+msgstr ""
 
 #: pod/playlist/templates/playlist/playlist.html
 msgid "While holding down the video, drag it to the desired location."
 msgstr ""
-"Tout en maintenant la vidéo, faites-la glisser vers l'emplacement souhaité."
 
 #: pod/playlist/templates/playlist/playlist.html
 msgid "Drop the video on another to swap their position."
-msgstr "Déposez la vidéo sur une autre pour échanger leur position."
+msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_card.html
 #, python-format
@@ -6727,16 +7125,12 @@ msgstr ""
 msgid "Playlist: %(name)s"
 msgstr ""
 
-#: pod/playlist/tests/test_views.py pod/playlist/views.py
+#: pod/playlist/tests/test_views.py pod/playlist/utils.py
 msgid "You cannot access this playlist."
 msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
-msgstr ""
-
-#: pod/playlist/views.py
-msgid "Delete the playlist"
 msgstr ""
 
 #: pod/playlist/views.py
@@ -7127,7 +7521,7 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: pod/quiz/models.py pod/quiz/tests/test_models.py
+#: pod/quiz/models.py
 msgid "Quiz of video"
 msgstr ""
 
@@ -7166,8 +7560,8 @@ msgstr ""
 
 #: pod/quiz/models.py
 msgid ""
-"Choices must be like this: {'choice 1': true, 'choice 2': false, ...} | true "
-"for the right choice, false for the wrong choices."
+"Choices must be like this: {\"choice 1\": true, \"choice 2\": false, …} | "
+"true for the right choice, false for the wrong choices."
 msgstr ""
 
 #: pod/quiz/models.py
@@ -7188,8 +7582,8 @@ msgstr ""
 
 #: pod/quiz/models.py
 msgid ""
-"Choices must be like this: {'choice 1': true, 'choice 2': true, 'choice 3': "
-"false, ...} | true for the right choice, false for the wrong choices."
+"Choices must be like this: {\"choice 1\": true, \"choice 2\": true, \"choice "
+"3\": false, …} | true for the right choice, false for the wrong choices."
 msgstr ""
 
 #: pod/quiz/models.py
@@ -7420,6 +7814,25 @@ msgstr ""
 #: pod/quiz/views.py
 #, python-format
 msgid "Quiz edition for the video “%s”"
+msgstr ""
+
+#: pod/recorder/admin.py
+msgid "Encode selected recordings and create new video"
+msgstr ""
+
+#: pod/recorder/admin.py
+#, python-format
+msgid "Studio recording %(itemid)s encoding started"
+msgstr ""
+
+#: pod/recorder/admin.py
+#, python-format
+msgid "Recording %(itemid)s is not a studio recording and can’t be encoded"
+msgstr ""
+
+#: pod/recorder/admin.py
+#, python-format
+msgid "Error for %(item)s: %(error)s"
 msgstr ""
 
 #: pod/recorder/admin.py
@@ -7670,6 +8083,7 @@ msgstr ""
 #: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/video_row_select.html
 #: pod/video/templates/videos/video_sort_select.html
+#: pod/video_encode_transcript/models.py
 msgid "Date added"
 msgstr ""
 
@@ -7709,6 +8123,14 @@ msgstr ""
 msgid "Recording files"
 msgstr ""
 
+#: pod/recorder/plugins/type_studio.py pod/recorder/views.py
+msgid "Path traversal detected."
+msgstr ""
+
+#: pod/recorder/plugins/type_studio.py
+msgid "Unsafe recorder file path."
+msgstr ""
+
 #: pod/recorder/templates/recorder/add_recording.html
 msgid "Adding a new record"
 msgstr ""
@@ -7740,8 +8162,7 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that supports HTML5 video."
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7791,6 +8212,22 @@ msgstr ""
 msgid "Sorry, no record found"
 msgstr ""
 
+#: pod/recorder/utils.py
+msgid "Missing upload file."
+msgstr ""
+
+#: pod/recorder/utils.py
+msgid "Invalid filename."
+msgstr ""
+
+#: pod/recorder/utils.py
+msgid "Invalid upload path."
+msgstr ""
+
+#: pod/recorder/utils.py
+msgid "Access denied: ID mismatch."
+msgstr ""
+
 #: pod/recorder/views.py
 msgid "Recorder should be indicated."
 msgstr ""
@@ -7809,7 +8246,8 @@ msgstr ""
 
 #: pod/recorder/views.py
 msgid ""
-"Your publication is saved. Adding it to your videos will be in a few minutes."
+"Your video has been received and is being processed. It will appear in the "
+"dashboard once processing is complete."
 msgstr ""
 
 #: pod/recorder/views.py
@@ -7836,6 +8274,11 @@ msgstr ""
 
 #: pod/recorder/views.py
 msgid "Recorder for Studio not found."
+msgstr ""
+
+#: pod/recorder/views.py
+#, python-format
+msgid "%(name)s set to %(state)s"
 msgstr ""
 
 #: pod/speaker/forms.py
@@ -7887,10 +8330,8 @@ msgid "Jobs"
 msgstr ""
 
 #: pod/speaker/templates/speaker/speaker_modal.html
-#, fuzzy
-#| msgid "title"
 msgid "Job title"
-msgstr "titel"
+msgstr ""
 
 #: pod/speaker/templates/speaker/speaker_modal.html
 msgid "Remove job"
@@ -7980,6 +8421,14 @@ msgstr ""
 
 #: pod/video/admin.py
 msgid "Change video owner"
+msgstr ""
+
+#: pod/video/context_processors.py
+msgid "days"
+msgstr ""
+
+#: pod/video/feeds.py
+msgid "video platform of"
 msgstr ""
 
 #: pod/video/forms.py
@@ -8145,6 +8594,10 @@ msgid ""
 "people who are in these groups."
 msgstr ""
 
+#: pod/video/forms.py
+msgid "Invalid media path."
+msgstr ""
+
 #: pod/video/forms.py pod/video/templates/videos/add_video.html
 msgid ""
 "Transcription is a speech recognition technology that transforms an oral "
@@ -8227,19 +8680,60 @@ msgstr ""
 msgid "A comment can’t be empty"
 msgstr ""
 
+#: pod/video/forms.py pod/video/templates/videos/archive_or_not.html
+msgid "Archive"
+msgstr ""
+
+#: pod/video/forms.py
+#, python-format
+msgid "Extend (Automatically by %(rrd)s days)"
+msgstr ""
+
+#: pod/video/forms.py
+#, python-format
+msgid ""
+"Select this option if you want to extend the publication of your video by "
+"%(rrd)s days."
+msgstr ""
+
+#: pod/video/forms.py
+msgid "Select this option if you want to archive your video."
+msgstr ""
+
+#: pod/video/forms.py pod/video/templates/videos/archive_or_not.html
+msgid ""
+"It will then be unpublished and will no longer be accessible to the public."
+msgstr ""
+
+#: pod/video/forms.py
+msgid ""
+"However, it will remain on the video server for a certain period, during "
+"which time a publication can be reactivated upon request to a manager."
+msgstr ""
+
+#: pod/video/forms.py
+msgid ""
+"Select this option if you decide to permanently delete your video from the "
+"server, along with its metadata. You should only do this after careful "
+"consideration. It is therefore essential that you download the video and its "
+"metadata first."
+msgstr ""
+
+#: pod/video/forms.py
+msgid "Obsolescence choice"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "Your preference regarding the future of your video on this platform."
+msgstr ""
+
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/respite_launcher.py
 msgid "An Error occurred while processing."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid "USE_OBSOLESCENCE is FALSE"
-msgstr ""
-
-#: pod/video/management/commands/check_obsolete_videos.py
-#: pod/video/management/commands/create_archive_package.py
-#: pod/video/management/commands/unarchive_video.py
-#: pod/video/tests/test_obsolescence.py
-msgid "Archived"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -8253,6 +8747,21 @@ msgid "%s video(s) archived."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+msgid "You can choose to do an action on your video:"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "Choose an action for my video"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid ""
+"Unless you take action, your video will be archived (unpublished) and may be "
+"deleted."
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello %(name)s,"
 msgstr ""
@@ -8260,53 +8769,73 @@ msgstr ""
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid ""
-"Your video intitled <a href=\"//%(url)s\">\"%(title)s\"</a> will soon arrive "
-"at the deletion deadline."
+"Your video entitled <a href=\"%(scheme)s:%(url)s\">“%(title)s”</a> will soon "
+"arrive at the deletion deadline."
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+#, python-format
+msgid "It will be unpublished on <strong>%(date_delete)s</strong>."
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid ""
+"If you want to keep it, you can change the removal date by editing your "
+"video:"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid ""
-"It will be deleted on %(date_delete)s.<br>\n"
-"If you want to keep it, "
+"Your video entitled “%(title)s” will soon arrive at the deletion deadline."
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+#, python-format
+msgid "It will be deleted on %(date_delete)s."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid ""
-"you can change the removal date by editing your video:</p>\n"
-"<p><a href='%(scheme)s:%(url)s' rel='noopener' target='_blank'>%(scheme)s:"
-"%(url)s</a></p>\n"
+"If you want to keep it, please contact the manager(s) in charge of your "
+"establishment at this address(es): %(email_address)s."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-#, python-format
-msgid ""
-"Your video intitled \"%(title)s\" will soon arrive at the deletion deadline."
-msgstr ""
-
-#: pod/video/management/commands/check_obsolete_videos.py
-#, python-format
-msgid ""
-"please contact the manager(s) in charge of your establishment at this "
-"address(es): %(email_address)s</p>\n"
-msgstr ""
-
-#: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Sending mail to %(to_email)s for video %(title)s."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "Your video will be obsolete"
+msgid "Your video will be obsolete soon"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+msgid "archive it (it will be unpublished and no longer accessible)"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "postpone it’s deletion date"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "delete it (after saving it)"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "download it along with all its associated data"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello manager(s) of %(estab)s on %(site_title)s,"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/check_video_owner_exists.py
 #, python-format
 msgid "Hello manager(s) of %(site_title)s,"
 msgstr ""
@@ -8341,7 +8870,7 @@ msgid "Manager of “%(et)s” notified for %(nb)s deleted video(s)."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "For information, you will find below the list of archived video."
+msgid "For information, you will find below the list of archived videos."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -8356,6 +8885,50 @@ msgstr ""
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid "In %(deadline)s days:"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "For information, you will find below the list of reaffected videos."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "id"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "Replaced by"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "The reaffected videos on Pod"
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, python-format
+msgid "Manager(s) of “%(et)s” notified for %(nb)s reaffected video(s)."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+#, python-format
+msgid ""
+"You are now the owner of the video <a href=\"%(scheme)s:"
+"%(url)s\">“%(title)s”</a>."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid ""
+"You were automatically designated as the owner because the previous owner is "
+"no longer at the institution and you were previously an additional owner."
+msgstr ""
+
+#: pod/video/management/commands/check_video_owner_exists.py
+msgid "You have been designated as the owner of a video"
+msgstr ""
+
+#: pod/video/management/commands/create_archive_package.py
+#: pod/video/management/commands/unarchive_video.py
+#: pod/video/tests/test_obsolescence.py pod/video/utils.py
+msgid "Archived"
 msgstr ""
 
 #: pod/video/management/commands/create_archive_package.py
@@ -8380,6 +8953,13 @@ msgid ""
 msgstr ""
 
 #: pod/video/management/commands/create_archive_package.py
+#, python-format
+msgid ""
+"For your information, below is the list of archived videos that have been "
+"packaged in your ARCHIVE_ROOT folder, and definitely deleted from %s."
+msgstr ""
+
+#: pod/video/management/commands/create_archive_package.py
 msgid ""
 "And below is the list of ignored videos that were not packaged because they "
 "have been recently viewed."
@@ -8388,6 +8968,37 @@ msgstr ""
 #: pod/video/management/commands/create_archive_package.py
 #, python-format
 msgid "Packaging %s archived videos on Pod"
+msgstr ""
+
+#: pod/video/management/commands/respite_launcher.py
+#, python-format
+msgid "Respite model not found: %(error)s"
+msgstr ""
+
+#: pod/video/management/commands/respite_launcher.py
+#, python-format
+msgid "Respite model import error: %(error)s"
+msgstr ""
+
+#: pod/video/management/commands/respite_launcher.py
+msgid "DRY MODE. This is only a simulation of what would be done."
+msgstr ""
+
+#: pod/video/management/commands/respite_launcher.py
+#, python-format
+msgid ""
+"Hello! The deadline for the following videos has been postponed according to "
+"the model’s guidelines: <strong>%s</strong>"
+msgstr ""
+
+#: pod/video/management/commands/respite_launcher.py
+msgid ""
+"Be careful: BASE mode is just a proof of concept, not intented to be used in "
+"production."
+msgstr ""
+
+#: pod/video/management/commands/respite_launcher.py
+msgid "Have a good day."
 msgstr ""
 
 #: pod/video/models.py pod/video/views.py
@@ -8672,7 +9283,7 @@ msgstr "Categorie titel"
 msgid "Category"
 msgstr ""
 
-#: pod/video/models.py pod/video/templates/videos/filter_aside_category.html
+#: pod/video/models.py pod/video/templates/videos/filter_aside_dashboard.html
 msgid "Categories"
 msgstr ""
 
@@ -8931,6 +9542,39 @@ msgstr ""
 msgid "The file extension is not in the allowed extension:"
 msgstr ""
 
+#: pod/video/templates/videos/archive_download.html
+msgid "Archive Download"
+msgstr ""
+
+#: pod/video/templates/videos/archive_download.html
+#: pod/video/templates/videos/archive_or_not.html
+#: pod/video/templates/videos/prolong_or_not.html
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Link to the video:"
+msgstr ""
+
+#: pod/video/templates/videos/archive_download.html
+#: pod/video/templates/videos/archive_or_not.html
+#: pod/video/templates/videos/prolong_or_not.html
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Date to delete:"
+msgstr ""
+
+#: pod/video/templates/videos/archive_download.html
+msgid "Download video archive"
+msgstr ""
+
+#: pod/video/templates/videos/archive_download.html
+#: pod/video/templates/videos/archive_or_not.html
+#: pod/video/templates/videos/prolong_or_not.html
+msgid "Back to choices"
+msgstr ""
+
+#: pod/video/templates/videos/archive_or_not.html
+#: pod/video/tests/test_obsolescence.py
+msgid "Are you sure you want to archive this video?"
+msgstr ""
+
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
 msgid "This content contains a quiz."
@@ -8945,6 +9589,12 @@ msgstr ""
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
 msgid "This content has restricted access."
+msgstr ""
+
+#: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
+#: pod/video/templates/videos/video_row_select.html
+msgid "This content has an encoding error."
 msgstr ""
 
 #: pod/video/templates/videos/card.html
@@ -9001,18 +9651,40 @@ msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Filter by title"
-msgstr "Filter op titel"
+msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Select video(s) to edit"
 msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
+#: pod/video/templates/videos/dashboard.html
 msgid "Select/Deselect all videos"
 msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Submit changes"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Enter video title"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Use the search field to find a video by its title in your dashboard"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Search for a video by title from your dashboard"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Clear all filters"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+#: pod/video/templates/videos/filter_aside_category.html
+msgid "Clear filters"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
@@ -9024,8 +9696,8 @@ msgstr ""
 msgid ""
 "To edit several videos at the same time, you can check the ones you want "
 "then select an action to perform using the drop-down menu below, finally "
-"apply the modification. You can also refine your video search using the "
-"filters in the right menu."
+"apply the modification. You can also use the filters at the top of the page "
+"to refine your video selection."
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
@@ -9066,17 +9738,23 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Video controls"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
 msgid "Select all"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
-msgid "Clear selection"
+msgid "Select videos to enable bulk actions."
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
-msgid ""
-"You have not uploaded any videos yet, please use the ”Add a new video” "
-"button to add one"
+msgid "Go to ”Multiple actions”"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Display mode"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
@@ -9085,6 +9763,10 @@ msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
 msgid "List display mode"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Sort videos"
 msgstr ""
 
 #: pod/video/templates/videos/filter_aside.html
@@ -9123,6 +9805,12 @@ msgstr ""
 msgid "Type at least 3 chars to filter categories"
 msgstr ""
 
+#: pod/video/templates/videos/filter_aside_dashboard.html
+msgid ""
+"You can create categories and link them to your videos. Then, use the search "
+"field below to easily find a category so you can edit or delete it."
+msgstr ""
+
 #: pod/video/templates/videos/footer_link.html
 msgid "Links"
 msgstr ""
@@ -9155,7 +9843,7 @@ msgid "Original version"
 msgstr ""
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
-msgid "Enhance the video with AI"
+msgid "Complete the video with AI"
 msgstr ""
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
@@ -9181,6 +9869,20 @@ msgstr ""
 #: pod/video/templates/videos/link_video_dropdown_menu.html
 #: pod/video/templates/videos/video_edit.html
 msgid "Delete the video"
+msgstr ""
+
+#: pod/video/templates/videos/prolong_or_not.html
+#: pod/video/tests/test_obsolescence.py
+msgid "Are you sure to want to extend this video life span?"
+msgstr ""
+
+#: pod/video/templates/videos/prolong_or_not.html
+#, python-format
+msgid "This will extend the video life span by %(rrd)s days."
+msgstr ""
+
+#: pod/video/templates/videos/prolong_or_not.html
+msgid "Extend"
 msgstr ""
 
 #: pod/video/templates/videos/video-all-info.html
@@ -9238,10 +9940,6 @@ msgid "Duration:"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
-msgid "Number of views"
-msgstr ""
-
-#: pod/video/templates/videos/video-info.html
 msgid "Show details of view statistics"
 msgstr ""
 
@@ -9281,15 +9979,6 @@ msgid "No information available"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
-msgid "Infos"
-msgstr ""
-
-#: pod/video/templates/videos/video-info.html
-#, python-format
-msgid "Show video list of user “%(video_user_name)s”"
-msgstr ""
-
-#: pod/video/templates/videos/video-info.html
 msgid "Additional owner(s):"
 msgstr ""
 
@@ -9311,7 +10000,7 @@ msgid "Speaker(s):"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
-msgid "Updated on:"
+msgid "Added on:"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
@@ -9327,6 +10016,10 @@ msgstr ""
 
 #: pod/video/templates/videos/video-info.html
 msgid "Main language:"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
+msgid "Hyperlinks:"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
@@ -9527,6 +10220,33 @@ msgstr ""
 
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
+msgid ""
+"The source file does not appear to be a valid video file. Please re-upload a "
+"valid video file."
+msgstr ""
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"The input video duration is 0 seconds. Please re-upload a valid video file."
+msgstr ""
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"Part of the video is missing: the resulting video is shorter than expected. "
+"Please check the source file and re-upload a valid, complete video file."
+msgstr ""
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"An error occurred while processing this video. Our administrators have "
+"already been notified."
+msgstr ""
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently being transcripted."
 msgstr ""
 
@@ -9675,6 +10395,42 @@ msgstr ""
 msgid "The form does not contain a video."
 msgstr ""
 
+#: pod/video/templates/videos/video_queue_runner_manager.html
+msgid "Queue rank:"
+msgstr ""
+
+#: pod/video/templates/videos/video_queue_runner_manager.html
+msgid "Total number of videos in the queue:"
+msgstr ""
+
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Your video will soon be deleted, what do you want do?"
+msgstr ""
+
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Apply my choice"
+msgstr ""
+
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "Export this video"
+msgstr ""
+
+#: pod/video/templates/videos/video_respite_choice.html
+msgid ""
+"This link allows you to export your video, along with its metadata and "
+"attached files, as a ZIP file so you can save them to your storage space. We "
+"strongly recommend using this option before permanently deleting your video "
+"from the server."
+msgstr ""
+
+#: pod/video/templates/videos/video_respite_choice.html pod/video/views.py
+msgid "This service is not available."
+msgstr ""
+
+#: pod/video/templates/videos/video_respite_choice.html
+msgid "The video does not belong to you or has already been processed."
+msgstr ""
+
 #: pod/video/templates/videos/video_row_select.html
 msgid "Selected"
 msgstr ""
@@ -9711,58 +10467,40 @@ msgstr ""
 msgid "This content is not chaptered."
 msgstr ""
 
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "tags_for_model tag was given an invalid model: %s"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%s tag requires either three or five arguments"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "second argument to %s tag must be “as”"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "if given, fourth argument to %s tag must be “with”"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "if given, fifth argument to %s tag must be “counts”"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%s tag requires either three or between five and seven arguments"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%(tag)s tag was given an invalid option: “%(option)s”"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%(tag)s tag was given a badly formatted option: “%(option)s”"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%(tag)s tag’s “%(option)s” option was not a valid integer: “%(value)s”"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%(tag)s tag’s “%(option)s” option was not a valid choice: “%(value)s”"
-msgstr ""
-
 #: pod/video/tests/test_models.py pod/video/translation.py
 msgid "-- sorry, no translation provided --"
+msgstr ""
+
+#: pod/video/tests/test_obsolescence.py pod/video/views.py
+msgid "This video is not approaching its obsolescence date."
+msgstr ""
+
+#: pod/video/tests/test_obsolescence.py pod/video/views.py
+msgid "This action is forbidden."
+msgstr ""
+
+#: pod/video/tests/test_obsolescence.py pod/video/views.py
+msgid "You cannot delete a media that is being encoded."
+msgstr ""
+
+#: pod/video/tests/test_obsolescence.py pod/video/views.py
+msgid "You are not logged in. Please log in first."
+msgstr ""
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "The note has been saved."
+msgstr ""
+
+#: pod/video/tests/test_views.py
+msgid "Method not allowed: Please use post method"
+msgstr ""
+
+#: pod/video/tests/test_views.py
+msgid "One or more videos not updated"
+msgstr ""
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "Update successfully"
 msgstr ""
 
 #: pod/video/tests/test_views.py pod/video/views.py
@@ -9793,6 +10531,18 @@ msgstr ""
 #: pod/video/views.py
 #, python-format
 msgid "Editing the channel “%s”"
+msgstr ""
+
+#: pod/video/views.py
+msgid "No videos matched your filters. Please try adjusting them."
+msgstr ""
+
+#: pod/video/views.py
+msgid "You haven’t uploaded any videos yet."
+msgstr ""
+
+#: pod/video/views.py
+msgid "Click on “Add a video” to start populating your dashboard."
 msgstr ""
 
 #: pod/video/views.py
@@ -9841,13 +10591,7 @@ msgid "Deleting the media \"%(vtitle)s\""
 msgstr ""
 
 #: pod/video/views.py
-#, fuzzy
-#| msgid "You cannot use AI to improve this video."
 msgid "You cannot delete this media."
-msgstr "Vous ne pouvez pas utiliser l'IA pour améliorer cette vidéo."
-
-#: pod/video/views.py
-msgid "You cannot delete a media that is being encoded."
 msgstr ""
 
 #: pod/video/views.py
@@ -9906,10 +10650,6 @@ msgstr ""
 
 #: pod/video/views.py
 msgid "Your comment has been saved."
-msgstr ""
-
-#: pod/video/views.py
-msgid "The note has been saved."
 msgstr ""
 
 #: pod/video/views.py
@@ -9979,6 +10719,13 @@ msgstr ""
 
 #: pod/video/views.py
 #, python-format
+msgid ""
+"The following “%(target)s” type target does not exist or contains no videos: "
+"%(slug)s."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
 msgid "The following video does not exist: %s"
 msgstr ""
 
@@ -10004,7 +10751,15 @@ msgid "Title field is required"
 msgstr "Titelveld is verplicht"
 
 #: pod/video/views.py
+msgid "At least one video must be associated with this category."
+msgstr ""
+
+#: pod/video/views.py
 msgid "One or many videos already have a category."
+msgstr ""
+
+#: pod/video/views.py
+msgid "A category with the same name already exists."
 msgstr ""
 
 #: pod/video/views.py
@@ -10028,15 +10783,138 @@ msgid "You do not have rights to delete this category"
 msgstr ""
 
 #: pod/video/views.py
-msgid "Update successfully"
+msgid "Server error while processing filter."
+msgstr ""
+
+#: pod/video/views.py
+msgid "Server error while fetching user videos."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
+msgid "Impossible to archive video “%(slug)s”."
+msgstr ""
+
+#: pod/video/views.py
+msgid ""
+"This video does not exist on this site. Maybe it has already been deleted or "
+"archived."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
+msgid "Your video “%(slug)s” has NOT been archived."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
+msgid "Your video “%(slug)s” has been archived."
+msgstr ""
+
+#: pod/video/views.py
+msgid "It may be already extended, archived or deleted."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
+msgid "Impossible to extend video %s."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
+msgid "The video life span was extended to %(date)s."
+msgstr ""
+
+#: pod/video_encode_transcript/Encoding_video_model.py
+#, python-format
+msgid "Unsafe path for encoding output: %s"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
+#: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
+#: pod/video_encode_transcript/templates/admin_runnermanager_change_list.html
+#: pod/video_encode_transcript/templates/admin_task_change_list.html
+msgid "Runner managers"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
+msgid "resolution"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py pod/video_encode_transcript/models.py
+msgid "Active"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+msgid "Inactive"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#: pod/video_encode_transcript/templates/admin_test_connection.html
+msgid "Runner administration"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+msgid "Open runner administration"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+msgid "Runner manager not found."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid ""
+"Unable to reach runner manager “%(name)s” at %(url)s. Check the URL and "
+"network access. Error: %(error)s"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid ""
+"Runner manager “%(name)s” responded but rejected authentication (HTTP "
+"%(status)s). Check the bearer token."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid "Connection to runner manager “%(name)s” succeeded (HTTP %(status)s)."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid ""
+"Runner manager “%(name)s” is reachable but endpoint %(url)s was not found "
+"(HTTP 404). Check the configured URL."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid ""
+"Runner manager “%(name)s” is reachable but returned an unexpected response "
+"(HTTP %(status)s)."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+msgid "Video ID"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+msgid "Restart selected tasks"
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid "%(count)s task(s) relaunched immediately."
+msgstr ""
+
+#: pod/video_encode_transcript/admin.py
+#, python-format
+msgid "%(count)s task(s) skipped (duplicate or missing source)."
 msgstr ""
 
 #: pod/video_encode_transcript/apps.py
 msgid "Video encoding and transcription"
-msgstr ""
-
-#: pod/video_encode_transcript/models.py
-msgid "resolution"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
@@ -10135,6 +11013,185 @@ msgstr ""
 msgid "Video Playlists"
 msgstr ""
 
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager name"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority of the runner manager. Lower values indicate higher priority."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "If checked, this runner manager can be used to process tasks."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Live support"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Allow this manager to be selected for Esup-Runner Live broadcasters."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "URL of the runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "URL of the runner administration"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Leave blank to use the runner manager URL followed by /admin."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Bearer token for the runner manager."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Example format: 6YqG_73xt-9s8v5aBz"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "User with absolute task queue priority (priority 0)."
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority user"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Priority users"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Encoding task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Studio task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Transcription task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task type"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task pending"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task in progress"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task completed"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task failed"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task timeouted"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task status"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task identifier from runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Identifier of the task provided by the runner manager"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Video associated to the task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Studio recording associated to the task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager that manages this task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager that achieves this task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Queue rank"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Rank of the task in the pending queue"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Script output"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Output from the runner manager script"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Task"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Tasks"
+msgstr ""
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "Unsafe temporary path."
+msgstr ""
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "Video not being encoded."
+msgstr ""
+
+#: pod/video_encode_transcript/rest_views.py
+#, python-format
+msgid "Different video id: %(expected)s - %(received)s"
+msgstr ""
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "Missing video output path."
+msgstr ""
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "Invalid video output path."
+msgstr ""
+
+#: pod/video_encode_transcript/rest_views.py
+msgid "No safe base directory configured."
+msgstr ""
+
+#: pod/video_encode_transcript/templates/admin_priorityuser_change_list.html
+msgid ""
+"Users listed here are processed first in the task queue (priority 0), before "
+"normal and student priorities."
+msgstr ""
+
+#: pod/video_encode_transcript/templates/admin_test_connection.html
+msgid "Test connection"
+msgstr ""
+
 #: pod/video_encode_transcript/utils.py
 msgid "Encoding"
 msgstr "Videocodering"
@@ -10145,33 +11202,25 @@ msgstr ""
 
 #: pod/video_encode_transcript/utils.py
 #, python-format
-msgid ""
-"%(content_type)s “%(content_title)s” has been %(action)s, and is now "
-"available on %(site_title)s."
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "The content"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "The video"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "automatically transcripted"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "encoded to Web formats"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "content"
+msgid "Encoding #%(content_id)s completed"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py
 msgid "Transcripting"
+msgstr ""
+
+#: pod/video_encode_transcript/utils.py
+#, python-format
+msgid ""
+"The content “%(content_title)s” has been automatically transcribed, and is "
+"now available on %(site_title)s."
+msgstr ""
+
+#: pod/video_encode_transcript/utils.py
+#, python-format
+msgid ""
+"The video “%(content_title)s” has been encoded to Web formats, and is now "
+"available on %(site_title)s."
 msgstr ""
 
 #: pod/video_search/apps.py
@@ -10201,6 +11250,9 @@ msgstr ""
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr ""
+
+#~ msgid "Please Wait."
+#~ msgstr "Voer een titel in."
 
 #~ msgid "category title"
 #~ msgstr "categorie titel"

@@ -1,5 +1,7 @@
 """Unit tests for Pod recorder."""
 
+from unittest.mock import patch
+
 from django.test import TestCase
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
@@ -110,6 +112,10 @@ class RecordingTestCase(TestCase):
 
     def setUp(self):
         """Create models to be tested."""
+        # The recording fixture must not start a worker if its source exists.
+        process = patch("pod.recorder.plugins.type_video.process")
+        process.start()
+        self.addCleanup(process.stop)
         other_type = Type.objects.create(title="others")
         user = User.objects.create(username="pod")
         recorder1 = Recorder.objects.create(
@@ -156,10 +162,8 @@ class RecordingTestCase(TestCase):
         recording.source_file = ""
         recording.save()
         self.assertEqual(2, len(recording.verify_attributs()))
-        print(
-            "   --->  test_verifying_attributs_fst_cases \
-            of RecordingTestCase: OK!"
-        )
+        print("   --->  test_verifying_attributs_fst_cases \
+            of RecordingTestCase: OK!")
 
     # Testing the two elif cases of verify_attibuts method
     def test_verifying_attributs_snd_cases(self):
@@ -169,10 +173,8 @@ class RecordingTestCase(TestCase):
         recording.source_file = "/home/pod/files/somefile.mp4"
         recording.save()
         self.assertEqual(2, len(recording.verify_attributs()))
-        print(
-            "   --->  test_verifying_attributs_snd_cases \
-            of RecordingTestCase: OK!"
-        )
+        print("   --->  test_verifying_attributs_snd_cases \
+            of RecordingTestCase: OK!")
 
     def test_clean_raise_exception(self):
         """Test method clean()."""

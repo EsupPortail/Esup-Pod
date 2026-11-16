@@ -26,7 +26,8 @@ def timestring(seconds: int) -> str:
     return "%i:%02i:%06.3f" % (hours, minutes, seconds)
 
 
-def transcribe(url, slug, model, filepath):  # noqa: C901
+def transcribe(url, slug, model, filepath) -> None:
+    """Transcribe a live video."""
     # if url.endswith(".m3u8"):
     #    url = url.split(".m3u8")[0] + "_mid/index.m3u8"
     trans_model = Model(model)
@@ -80,29 +81,8 @@ def transcribe(url, slug, model, filepath):  # noqa: C901
                 # end = timestring(words[-1]["end"])
                 content = " ".join([w["word"] for w in words])
                 caption_text += content + " "
-            if last_caption:
-                last_caption_text, current_caption_text = (
-                    last_caption.text.strip(),
-                    caption_text.strip(),
-                )
-                last_caption_words, current_caption_words = last_caption_text.split(
-                    " "
-                ), current_caption_text.split(" ")
-                current_caption_words1 = current_caption_words[
-                    1 : len(current_caption_words)
-                ]
 
-                for i in range(len(last_caption_words) - 1, 0, -1):
-                    if (
-                        last_caption_words[-i:] == current_caption_words[:i]
-                        or last_caption_words[-i:] == current_caption_words1[:i]
-                    ):
-                        caption_text = " ".join(current_caption_words[i:])
-                        break
-                if last_caption_text in caption_text:
-                    caption_text = caption_text.replace(last_caption_text, "").strip()
-                if caption_text in last_caption_text:
-                    caption_text = caption_text.replace(caption_text, "").strip()
+            caption_text = handle_last_caption(last_caption, caption_text)
 
             current_start = timestring(0)
             current_end = timestring(86400)
@@ -123,7 +103,34 @@ def transcribe(url, slug, model, filepath):  # noqa: C901
     vtt.save(filepath)
 
 
-def transcribe_live(url, slug, status, lang, filepath):
+def handle_last_caption(last_caption, caption_text) -> None:
+    """Handle the last caption."""
+
+    if last_caption:
+        last_caption_text, current_caption_text = (
+            last_caption.text.strip(),
+            caption_text.strip(),
+        )
+        last_caption_words, current_caption_words = last_caption_text.split(
+            " "
+        ), current_caption_text.split(" ")
+        current_caption_words1 = current_caption_words[1 : len(current_caption_words)]
+
+        for i in range(len(last_caption_words) - 1, 0, -1):
+            if (
+                last_caption_words[-i:] == current_caption_words[:i]
+                or last_caption_words[-i:] == current_caption_words1[:i]
+            ):
+                caption_text = " ".join(current_caption_words[i:])
+                break
+        if last_caption_text in caption_text:
+            caption_text = caption_text.replace(last_caption_text, "").strip()
+        if caption_text in last_caption_text:
+            caption_text = caption_text.replace(caption_text, "").strip()
+    return caption_text
+
+
+def transcribe_live(url, slug, status, lang, filepath) -> None:
     if LIVE_VOSK_MODEL and LIVE_VOSK_MODEL.get(lang):
         model = LIVE_VOSK_MODEL.get(lang).get("model")
         if LIVE_CELERY_TRANSCRIPTION:
@@ -137,7 +144,7 @@ def transcribe_live(url, slug, status, lang, filepath):
             if status:
                 # print("main process")
                 t = threading.Thread(target=transcribe, args=(url, slug, model, filepath))
-                t.setDaemon(True)
+                t.daemon = True
                 t.start()
                 # get id of the thread
                 threads[slug] = t.ident

@@ -211,7 +211,7 @@ class Command(BaseCommand):
 
         return newdata
 
-    def add_data_to_video(self, type_to_import, obj, data):
+    def add_data_to_video(self, type_to_import, obj, data) -> None:
         """Add related data (docs, tags, track, enrich) to video."""
         if type_to_import in ("docpods",):
             self.add_doc_to_video(obj, data)
@@ -222,7 +222,7 @@ class Command(BaseCommand):
         if type_to_import in ("enrichpods",):
             self.add_enrich_to_video(obj, data)
 
-    def add_tag_to_video(self, video_id, list_tag):
+    def add_tag_to_video(self, video_id, list_tag) -> None:
         """Add tags to video."""
         try:
             video = Video.objects.get(id=video_id)
@@ -231,7 +231,7 @@ class Command(BaseCommand):
         except ObjectDoesNotExist:
             print(video_id, " does not exist")
 
-    def add_doc_to_video(self, video_id, list_doc):
+    def add_doc_to_video(self, video_id, list_doc) -> None:
         """Add docs to video."""
         print(video_id, list_doc)
         try:

@@ -9,7 +9,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from pod.video.models import Video
 from pod.video.remote_transcript import store_remote_transcripting_video
 
-
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 
 

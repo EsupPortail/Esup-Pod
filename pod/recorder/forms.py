@@ -1,12 +1,11 @@
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.sites.models import Site
 from .models import Recording, Recorder
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from django_select2 import forms as s2forms
-
 
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
 ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = getattr(

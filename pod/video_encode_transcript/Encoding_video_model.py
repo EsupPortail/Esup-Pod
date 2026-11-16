@@ -1,31 +1,39 @@
 """Model for video encoding."""
 
+import json
+import logging
 import os
 import re
+import time
+
 from django.conf import settings
-from .models import EncodingVideo
-from .models import EncodingAudio
-from .models import VideoRendition
-from .models import PlaylistVideo
-from .models import EncodingLog
-from pod.video.models import Video
-from pod.completion.models import Track
 from django.core.files import File
+from django.utils.translation import gettext_lazy as _
+
+from pod.completion.models import Track
+from pod.video.models import LANG_CHOICES, Video
+
+from .encoding_utils import check_file, launch_cmd
 from .Encoding_video import (
-    Encoding_video,
-    FFMPEG_NB_THUMBNAIL,
-    FFMPEG_CREATE_THUMBNAIL,
     FFMPEG_CMD,
+    FFMPEG_CREATE_THUMBNAIL,
     FFMPEG_INPUT,
     FFMPEG_NB_THREADS,
+    FFMPEG_NB_THUMBNAIL,
+    Encoding_video,
 )
-from pod.video.models import LANG_CHOICES
-import json
-import time
-from .encoding_utils import (
-    launch_cmd,
-    check_file,
+from .models import (
+    EncodingAudio,
+    EncodingLog,
+    EncodingVideo,
+    PlaylistVideo,
+    VideoRendition,
 )
+
+DEBUG = getattr(settings, "DEBUG", True)
+logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
 
 ENCODING_CHOICES = getattr(
     settings,
@@ -47,16 +55,29 @@ DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
-    from pod.podfile.models import CustomImageModel
-    from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import CustomFileModel, CustomImageModel
 else:
     __FILEPICKER__ = False
-    from pod.main.models import CustomImageModel
-    from pod.main.models import CustomFileModel
+    from pod.main.models import CustomFileModel, CustomImageModel
 
 
 class Encoding_video_model(Encoding_video):
     """Encoding video model."""
+
+    def _safe_output_path(self, filepath: str) -> str:
+        """Return a normalized path constrained to the current encoding output dir."""
+        output_dir = os.path.realpath(self.get_output_dir())
+        candidate_path = os.path.realpath(filepath)
+        try:
+            is_in_output_dir = (
+                os.path.commonpath([candidate_path, output_dir]) == output_dir
+            )
+        except ValueError as err:
+            raise ValueError(_("Unsafe path for encoding output: %s") % filepath) from err
+
+        if not is_in_output_dir:
+            raise ValueError(_("Unsafe path for encoding output: %s") % filepath)
+        return candidate_path
 
     def remove_old_data(self) -> None:
         """Remove data from previous encoding."""
@@ -238,7 +259,7 @@ class Encoding_video_model(Encoding_video):
                 podfile = CustomFileModel()
                 podfile.file = self.get_true_path(list_subtitle_files[sub][1])
 
-            print("subtitle lang: %s " % list_subtitle_files[sub][0])
+            logger.debug("subtitle lang: %s " % list_subtitle_files[sub][0])
 
             sub_lang = list_subtitle_files[sub][0]
             track_lang = (
@@ -292,19 +313,30 @@ class Encoding_video_model(Encoding_video):
         return video
 
     def wait_for_file(self, filepath) -> None:
+        safe_filepath = self._safe_output_path(filepath)
+        output_dir = os.path.realpath(self.get_output_dir())
+        if os.path.commonpath([safe_filepath, output_dir]) != output_dir:
+            raise ValueError(_("Unsafe path for encoding output: %s") % filepath)
         time_to_wait = 40
         time_counter = 0
-        while not os.path.exists(filepath):
+        logger.info("wait_for_file: %s" % safe_filepath)
+        while not os.path.exists(safe_filepath):
             time.sleep(1)
             time_counter += 1
-            print("wait...")
+            print(".", end="")
             if time_counter > time_to_wait:
                 break
-        print("infovideojsonfilepath : %s" % filepath)
 
     def store_json_info(self) -> Video:
         """Open json file and store its data in current instance."""
-        infovideojsonfilepath = os.path.join(self.get_output_dir(), "info_video.json")
+        infovideojsonfilepath = self._safe_output_path(
+            os.path.join(self.get_output_dir(), "info_video.json")
+        )
+        output_dir = os.path.realpath(self.get_output_dir())
+        if os.path.commonpath([infovideojsonfilepath, output_dir]) != output_dir:
+            raise ValueError(
+                _("Unsafe path for encoding output: %s") % infovideojsonfilepath
+            )
         if not check_file(infovideojsonfilepath):
             self.wait_for_file(infovideojsonfilepath)
 
@@ -326,7 +358,7 @@ class Encoding_video_model(Encoding_video):
 
     def get_create_thumbnail_command_from_video(self, video_to_encode):
         """Create command line to generate thumbnails from video."""
-        thumbnail_command = "%s " % FFMPEG_CMD
+        thumbnail_cmd_parts = [FFMPEG_CMD]
         ev = EncodingVideo.objects.filter(
             video=video_to_encode, encoding_format="video/mp4"
         )
@@ -340,22 +372,29 @@ class Encoding_video_model(Encoding_video):
             return ""
         video_mp4 = sorted(ev, key=lambda m: m.height)[0]
         input_file = video_mp4.source_file.path
-        thumbnail_command += FFMPEG_INPUT % {
-            "input": input_file,
-            "nb_threads": FFMPEG_NB_THREADS,
-        }
+        thumbnail_cmd_parts.append(
+            FFMPEG_INPUT
+            % {
+                "input": input_file,
+                "nb_threads": FFMPEG_NB_THREADS,
+            }
+        )
         output_file = os.path.join(self.output_dir, "thumbnail")
-        thumbnail_command += FFMPEG_CREATE_THUMBNAIL % {
-            "duration": self.duration,
-            "nb_thumbnail": FFMPEG_NB_THUMBNAIL,
-            "output": output_file,
-        }
+        thumbnail_cmd_parts.append(
+            FFMPEG_CREATE_THUMBNAIL
+            % {
+                "duration": self.duration,
+                "nb_thumbnail": FFMPEG_NB_THUMBNAIL,
+                "output": output_file,
+            }
+        )
         for nb in range(0, FFMPEG_NB_THUMBNAIL):
             num_thumb = str(nb + 1)
             self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (
                 output_file,
                 num_thumb,
             )
+        thumbnail_command = " ".join(thumbnail_cmd_parts)
         encoding_log.log += "\n %s" % thumbnail_command
         encoding_log.save()
         return thumbnail_command
@@ -394,6 +433,6 @@ class Encoding_video_model(Encoding_video):
             info_video["list_thumbnail_files"] = self.list_thumbnail_files
             self.store_json_list_thumbnail_files(info_video)
 
-    def encode_video(self):
+    def encode_video(self) -> None:
         """Start video encoding."""
         self.start_encode()

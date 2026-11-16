@@ -1,39 +1,39 @@
 """Esup-Pod transcript video functions."""
 
+import importlib.util
+
 from django.conf import settings
 from django.core.files import File
 from pod.completion.models import Track
 from pod.main.tasks import task_start_transcript
 from webvtt import Caption, WebVTT
 
+from ..video.models import Video
 from .utils import (
+    add_encoding_log,
+    change_encoding_step,
     send_email,
     send_email_transcript,
-    change_encoding_step,
-    add_encoding_log,
 )
-from ..video.models import Video
-import importlib.util
 
 if (
     importlib.util.find_spec("vosk") is not None
-    or importlib.util.find_spec("stt") is not None
     or importlib.util.find_spec("whisper") is not None
 ):
     from .transcript_model import start_transcripting
+else:
+
+    def start_transcripting(*args, **kwargs):
+        raise NotImplementedError("No transcription engine available.")
 
 
-from .encoding_utils import sec_to_timestamp
-
+import logging
 import os
+import threading
 import time
-
 from tempfile import NamedTemporaryFile
 
-import threading
-import logging
-
-DEBUG = getattr(settings, "DEBUG", True)
+from .encoding_utils import sec_to_timestamp
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
@@ -47,8 +47,9 @@ EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
 )
 TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
-if USE_TRANSCRIPTION:
-    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
+TRANSCRIPTION_TYPE = (
+    getattr(settings, "TRANSCRIPTION_TYPE", "WHISPER") if USE_TRANSCRIPTION else None
+)
 TRANSCRIPTION_NORMALIZE = getattr(settings, "TRANSCRIPTION_NORMALIZE", False)
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
@@ -63,44 +64,71 @@ CAPTIONS_STRICT_ACCESSIBILITY = getattr(
     "CAPTIONS_STRICT_ACCESSIBILITY",
     False,
 )
+USE_RUNNER_MANAGER = getattr(settings, "USE_RUNNER_MANAGER", False)
 
 log = logging.getLogger(__name__)
 
-"""
-TO TEST IN THE SHELL -->
-from pod.video.transcript import *
-stt_model = get_model("fr")
-msg, webvtt, all_text = main_stt_transcript(
-    "/test/audio_192k_pod.mp3", # file
-    177, # file duration
-    stt_model # model stt loaded
-)
-print(webvtt)
-"""
+
+def resolve_transcription_language(video: Video, lang_code: str | None = None) -> str:
+    """Resolve transcription language with fallbacks.
+
+    Priority:
+    1. Explicit lang_code argument.
+    2. Video.transcript field.
+    3. Last existing subtitle track language for this video.
+    4. Video.main_lang.
+    5. DEFAULT_LANG_TRACK setting (fallback "fr").
+    """
+    if lang_code:
+        return lang_code
+
+    if getattr(video, "transcript", None):
+        return str(video.transcript)
+
+    track_lang = (
+        Track.objects.filter(video=video, kind="subtitles")
+        .exclude(lang__isnull=True)
+        .exclude(lang="")
+        .order_by("-id")
+        .values_list("lang", flat=True)
+        .first()
+    )
+    if track_lang:
+        return str(track_lang)
+
+    if getattr(video, "main_lang", None):
+        return str(video.main_lang)
+
+    return str(getattr(settings, "DEFAULT_LANG_TRACK", "fr"))
 
 
-# ##########################################################################
-# TRANSCRIPT VIDEO: THREAD TO LAUNCH TRANSCRIPT
-# ##########################################################################
-def start_transcript(video_id, threaded=True):
+def start_transcript(video_id, threaded=True) -> None:
     """
     Call to start transcript main function.
 
     Will launch transcript mode depending on configuration.
     """
-    if threaded:
-        if CELERY_TO_ENCODE:
-            task_start_transcript.delay(video_id)
-        else:
-            log.info("START TRANSCRIPT VIDEO %s" % video_id)
-            t = threading.Thread(target=main_threaded_transcript, args=[video_id])
-            t.setDaemon(True)
-            t.start()
+    if USE_RUNNER_MANAGER:
+        log.info("Start transcription, with runner manager, for id: %s" % video_id)
+        # Load module here to prevent circular import
+        from .runner_manager import transcript_video
+
+        transcript_video(video_id)
     else:
-        main_threaded_transcript(video_id)
+        log.info("Start transcription, without runner manager, for id: %s" % video_id)
+        if threaded:
+            if CELERY_TO_ENCODE:
+                task_start_transcript.delay(video_id)
+            else:
+                log.info("START TRANSCRIPT VIDEO %s" % video_id)
+                t = threading.Thread(target=main_threaded_transcript, args=[video_id])
+                t.daemon = True
+                t.start()
+        else:
+            main_threaded_transcript(video_id)
 
 
-def main_threaded_transcript(video_to_encode_id):
+def main_threaded_transcript(video_to_encode_id) -> None:
     """
     Transcript main function.
 
@@ -108,14 +136,16 @@ def main_threaded_transcript(video_to_encode_id):
     """
     change_encoding_step(video_to_encode_id, 5, "transcripting audio")
 
+    # Set encoding in progress to avoid multiple transcript at the same time for the same video
+    Video.objects.filter(id=video_to_encode_id).update(encoding_in_progress=True)
+
     video_to_encode = Video.objects.get(id=video_to_encode_id)
-    video_to_encode.encoding_in_progress = True
-    video_to_encode.save()
+
     msg = ""
     lang = video_to_encode.transcript
     # check if TRANSCRIPTION_MODEL_PARAM [lang] exist
     if not TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE].get(lang):
-        msg += "\n no stt model found for lang: %s." % lang
+        msg += "\n no transcript model found for lang: %s." % lang
         msg += "Please add it in TRANSCRIPTION_MODEL_PARAM."
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
@@ -143,22 +173,36 @@ def main_threaded_transcript(video_to_encode_id):
     add_encoding_log(video_to_encode.id, msg)
 
 
-def save_vtt_and_notify(video_to_encode, msg, webvtt):
+def save_vtt_and_notify(video_to_encode, msg, webvtt) -> None:
     """Call save vtt file function and notify by mail at the end."""
     msg += save_vtt(video_to_encode, webvtt)
     change_encoding_step(video_to_encode.id, 0, "done")
+    Video.objects.filter(id=video_to_encode.id).update(encoding_in_progress=False)
     video_to_encode.encoding_in_progress = False
-    video_to_encode.save()
     # envois mail fin transcription
     if EMAIL_ON_TRANSCRIPTING_COMPLETION:
         send_email_transcript(video_to_encode)
     add_encoding_log(video_to_encode.id, msg)
 
 
-def save_vtt(video: Video, webvtt: WebVTT, lang_code: str = None):
+def save_vtt_and_notify_with_lang(
+    video_to_encode, msg, webvtt, lang_code: str = None
+) -> None:
+    """Call save vtt file function and notify by mail at the end."""
+    msg += save_vtt(video_to_encode, webvtt, lang_code)
+    change_encoding_step(video_to_encode.id, 0, "done")
+    Video.objects.filter(id=video_to_encode.id).update(encoding_in_progress=False)
+    video_to_encode.encoding_in_progress = False
+    # envois mail fin transcription
+    if EMAIL_ON_TRANSCRIPTING_COMPLETION:
+        send_email_transcript(video_to_encode)
+    add_encoding_log(video_to_encode.id, msg)
+
+
+def save_vtt(video: Video, webvtt: WebVTT, lang_code: str = None) -> str:
     """Save webvtt file with the video."""
     msg = "\nSAVE TRANSCRIPT WEBVTT : %s" % time.ctime()
-    lang = lang_code if lang_code else video.transcript
+    lang = resolve_transcription_language(video, lang_code)
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:
@@ -216,11 +260,11 @@ def remove_unnecessary_spaces(text: str) -> str:
 
 def improve_captions_accessibility(
     webvtt, strict_accessibility=CAPTIONS_STRICT_ACCESSIBILITY
-):
+) -> None:
     """
     Parse the vtt file in argument to render the caption conform to accessibility.
 
-    - see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md` # noqa: E501
+    - see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md`
     - 40 car maximum per line (CPL)
     - 2 lines max by caption
 

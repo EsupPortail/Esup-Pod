@@ -1,20 +1,21 @@
 """Util functions and classes for ai_enhancement module."""
 
 import json
+import logging
+
 import bleach
 import requests
-import logging
 from django.conf import settings
-from requests import Response
+from django.core.mail import EmailMultiAlternatives, mail_managers, send_mail
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
+from requests import Response
+from webpush.models import PushInformation
+
 from pod.ai_enhancement.models import AIEnhancement
 from pod.main.utils import extract_json_from_str
+from pod.progressive_web_app.utils import notify_user as pwa_notify_user
 from pod.video.models import Discipline, Video
-from webpush.models import PushInformation
-from django.core.mail import send_mail
-from django.core.mail import mail_managers
-from django.core.mail import EmailMultiAlternatives
 
 DEBUG = getattr(settings, "DEBUG", True)
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
@@ -27,7 +28,7 @@ SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
 AI_ENHANCEMENT_API_URL = getattr(settings, "AI_ENHANCEMENT_API_URL", "")
 AI_ENHANCEMENT_API_VERSION = getattr(settings, "AI_ENHANCEMENT_API_VERSION", "")
-USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", True)
+USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", False)
 EMAIL_ON_ENHANCEMENT_COMPLETION = getattr(
     settings, "EMAIL_ON_ENHANCEMENT_COMPLETION", True
 )
@@ -63,7 +64,7 @@ logger = logging.getLogger(__name__)
 class AristoteAI:
     """Aristote AI Enhancement utilities."""
 
-    def __init__(self, client_id, client_secret):
+    def __init__(self, client_id, client_secret) -> None:
         self.client_id = client_id
         self.client_secret = client_secret
         self.token = None
@@ -74,7 +75,7 @@ class AristoteAI:
             self.connect_to_api()
         return self.token
 
-    def connect_to_api(self) -> Response or None:
+    def connect_to_api(self) -> Response | None:
         """Connect to the API."""
         path = "/token"
         data = {
@@ -102,7 +103,7 @@ class AristoteAI:
             logger.error(f"Request Exception: {e}")
             return None
 
-    def get_response(self, path: str) -> dict or None:
+    def get_response(self, path: str) -> dict | None:
         """
         Get the AI response.
 
@@ -127,12 +128,12 @@ class AristoteAI:
             logger.error(f"Request Exception: {e}")
             return None
 
-    def get_ai_enhancements(self) -> dict or None:
+    def get_ai_enhancements(self) -> dict | None:
         """Get the AI enhancements."""
         path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments"
         return self.get_response(path)
 
-    def get_specific_ai_enhancement(self, enhancement_id: str) -> dict or None:
+    def get_specific_ai_enhancement(self, enhancement_id: str) -> dict | None:
         """
         Get a specific AI enhancement.
 
@@ -148,7 +149,7 @@ class AristoteAI:
         media_types: list,
         end_user_identifier: str,
         notification_webhook_url: str,
-    ) -> dict or None:
+    ) -> dict | None:
         """Create an enhancement from a file."""
         if Discipline.objects.count() > 0:
             path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/url"
@@ -190,7 +191,7 @@ class AristoteAI:
         else:
             raise ValueError("No discipline in the database.")
 
-    def get_latest_enhancement_version(self, enhancement_id: str) -> dict or None:
+    def get_latest_enhancement_version(self, enhancement_id: str) -> dict | None:
         """Get the latest enhancement version."""
         path = (
             f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions/latest"
@@ -199,19 +200,19 @@ class AristoteAI:
 
     def get_enhancement_versions(
         self, enhancement_id: str, with_transcript: bool = True
-    ) -> dict or None:
+    ) -> dict | None:
         """Get the enhancement versions."""
         path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions?withTranscript={with_transcript}"
         return self.get_response(path)
 
     def get_specific_enhancement_version(
         self, enhancement_id: str, version_id: str
-    ) -> dict or None:
+    ) -> dict | None:
         """Get a specific version."""
         path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions/{version_id}"
         return self.get_response(path)
 
-    def delete_request(self, path: str) -> dict or None:
+    def delete_request(self, path: str) -> dict | None:
         """
         Send delete request.
 
@@ -236,7 +237,7 @@ class AristoteAI:
             logger.error(f"Request Exception: {e}")
             return None
 
-    def delete_enhancement(self, enhancement_id: str) -> dict or None:
+    def delete_enhancement(self, enhancement_id: str) -> dict | None:
         """Delete the specific enhancement."""
         path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}"
         return self.delete_request(path)
@@ -252,19 +253,19 @@ def enhancement_is_ready(video: Video) -> bool:
     return AIEnhancement.objects.filter(video=video, is_ready=True).exists()
 
 
-def notify_user(video: Video):
+def notify_user(video: Video, success: bool = True):
     """Notify user at the end of enhancement."""
     if (
         USE_NOTIFICATIONS
         and video.owner.owner.accepts_notifications
         and PushInformation.objects.filter(user=video.owner).exists()
     ):
-        send_notification_enhancement(video)
+        send_notification_enhancement(video, success)
     if EMAIL_ON_ENHANCEMENT_COMPLETION:
-        send_email_enhancement(video)
+        send_email_enhancement(video, success)
 
 
-def send_notification_enhancement(video):
+def send_notification_enhancement(video, success: bool = True):
     """Send push notification on video encoding or transcripting completion."""
     subject = "[%s] %s" % (
         __TITLE_SITE__,
@@ -278,8 +279,16 @@ def send_notification_enhancement(video):
         "content_title": video.title,
         "site_title": __TITLE_SITE__,
     }
+    if not success:
+        message = _(
+            "Something went wrong with AI improvement on “%(content_title)s”."
+            + " Suggestions for improvement can’t be available on %(site_title)s."
+        ) % {
+            "content_title": video.title,
+            "site_title": __TITLE_SITE__,
+        }
 
-    notify_user(
+    pwa_notify_user(
         video.owner,
         subject,
         message,
@@ -287,30 +296,38 @@ def send_notification_enhancement(video):
     )
 
 
-def send_email_enhancement(video):
+def send_email_enhancement(video, success: bool = True) -> None:
     """Send email notification on video improvement completion."""
     if DEBUG:
-        logger.info("SEND EMAIL ON IA IMPROVEMENT COMPLETION")
+        logger.info("SEND EMAIL ON AI IMPROVEMENT COMPLETION %s", success)
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
     content_url = "%s:%s" % (url_scheme, video.get_full_url())
     subject = "[%s] %s" % (
         __TITLE_SITE__,
-        _("IA improvement #%(content_id)s completed") % {"content_id": video.id},
+        _("AI improvement #%(content_id)s completed") % {"content_id": video.id},
     )
+    main_text = _(
+        "AI improvement “%(content_title)s” has been completed"
+        + ", and is now available on %(site_title)s."
+    ) % {
+        "content_title": "<strong>%s</strong>" % video.title,
+        "site_title": __TITLE_SITE__,
+    }
+    if not success:
+        main_text = _(
+            "Something went wrong with AI improvement on “%(content_title)s” "
+            + " on %(site_title)s."
+        ) % {
+            "content_title": "<strong>%s</strong>" % video.title,
+            "site_title": __TITLE_SITE__,
+        }
 
     html_message = (
         '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
                 </p><p>%s</p>'
         % (
             _("Hello,"),
-            _(
-                "IA improvement “%(content_title)s” has been completed"
-                + ", and is now available on %(site_title)s."
-            )
-            % {
-                "content_title": "<strong>%s</strong>" % video.title,
-                "site_title": __TITLE_SITE__,
-            },
+            main_text,
             _("You will find it here:"),
             content_url,
             content_url,

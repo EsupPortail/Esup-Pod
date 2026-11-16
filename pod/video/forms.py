@@ -1,42 +1,54 @@
 """Forms for Esup-Pod video app."""
 
-from django import forms
-from django.contrib.admin import widgets
-from django.contrib.auth.models import User
-from django.conf import settings
-from django.core.validators import FileExtensionValidator
-from django.core.exceptions import ValidationError
-from django.forms.widgets import ClearableFileInput
-from django.utils.deconstruct import deconstructible
-from django.utils.translation import ugettext_lazy as _
-from django.template.defaultfilters import filesizeformat
-from .models import Video, VideoVersion, get_storage_path_video
-from .models import Channel
-from .models import Theme
-from .models import Type
-from .models import Discipline
-from .models import Notes, AdvancedNotes, NoteComments
-from pod.video_encode_transcript.models import PlaylistVideo
-from pod.video_encode_transcript import encode
-from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
-from django.contrib.sites.models import Site
-from django.db.models.query import QuerySet
-
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-from django.contrib.sites.shortcuts import get_current_site
-from pod.main.forms_utils import add_placeholder_and_asterisk, add_describedby_attr
-
-from ckeditor.widgets import CKEditorWidget
-from collections import OrderedDict
-from django_select2 import forms as s2forms
-
 import datetime
-from dateutil.relativedelta import relativedelta
 import os
 import re
+from collections import OrderedDict
+
+from dateutil.relativedelta import relativedelta
+from django import forms
+from django.conf import settings
+from django.contrib.admin import widgets
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import SuspiciousFileOperation, ValidationError
+from django.core.validators import FileExtensionValidator
+from django.db.models.query import QuerySet
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.forms.widgets import ClearableFileInput, Media
+from django.template.defaultfilters import filesizeformat
+from django.utils._os import safe_join
+from django.utils.deconstruct import deconstructible
+from django.utils.translation import gettext_lazy as _
+from django_select2 import forms as s2forms
+from tinymce.widgets import TinyMCE
+
+from pod.main.forms_utils import add_describedby_attr, add_placeholder_and_asterisk
+from pod.video_encode_transcript import encode
+from pod.video_encode_transcript.models import EncodingAudio, EncodingVideo, PlaylistVideo
+
+from .models import (
+    AdvancedNotes,
+    Channel,
+    Discipline,
+    NoteComments,
+    Notes,
+    Theme,
+    Type,
+    Video,
+    VideoVersion,
+    get_storage_path_video,
+)
+from .widgets import HelpedRadioSelect
 
 __FILEPICKER__ = False
+
+PROLONGATION_GRANTED = getattr(settings, "PROLONGATION_GRANTED", False)
+DELETION_GRANTED = getattr(settings, "DELETION_GRANTED", False)
+EXTEND_RESPITE_DAYS = getattr(settings, "EXTEND_RESPITE_DAYS", 365)
+
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
     from pod.podfile.widgets import CustomFileWidget
@@ -52,6 +64,8 @@ USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 
 USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
+
+ENABLE_PAGE_OBSO_MAIL = getattr(settings, "ENABLE_PAGE_OBSO_MAIL", False)
 
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 
@@ -321,6 +335,31 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
         ]
     ),
 )
+
+
+def safe_media_path(relative_path: str) -> str:
+    """Resolve a path under ``MEDIA_ROOT`` and block path traversal attempts.
+
+    Args:
+        relative_path (str): Relative file or directory path from ``MEDIA_ROOT``.
+
+    Returns:
+        str: Canonical absolute path inside ``MEDIA_ROOT``.
+
+    Raises:
+        ValidationError: If the path is invalid or escapes ``MEDIA_ROOT``.
+    """
+    media_root = os.path.realpath(settings.MEDIA_ROOT)
+    try:
+        full_path = os.path.realpath(
+            safe_join(settings.MEDIA_ROOT, os.fspath(relative_path))
+        )
+        if os.path.commonpath([full_path, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
+    except (SuspiciousFileOperation, TypeError, ValueError):
+        raise ValidationError(_("Invalid media path."))
+    return full_path
+
 
 if USE_TRANSCRIPTION:
     from ..video_encode_transcript import transcript
@@ -665,6 +704,7 @@ class VideoForm(forms.ModelForm):
                 "fields": [
                     "channel",
                     "theme",
+                    "order",
                 ],
             },
         ),
@@ -675,7 +715,7 @@ class VideoForm(forms.ModelForm):
                 "classes": "show",
                 "fields": [
                     "visibility",
-                    "is_draft",
+                    # "is_draft",
                     "is_restricted",
                     "restrict_access_to_groups",
                     "password",
@@ -687,10 +727,27 @@ class VideoForm(forms.ModelForm):
             {
                 "legend": _("Advanced options"),
                 "classes": "",
-                "fields": ["allow_downloading", "is_360", "disable_comment", "order"],
+                "fields": ["allow_downloading", "is_360", "disable_comment"],
             },
         ),
     )
+
+    @property
+    def media(self) -> Media:
+        """Return all media required to render the widgets on this form."""
+        # Get the default media
+        default_media = super().media
+
+        # Reorder select2/i18n js to be sure it is after all JS
+        # (prevent a bug when the form contains admin select 2 + tagulous select2)
+        new_js = [
+            x for x in default_media._js if "admin/js/vendor/select2/i18n/" not in x
+        ]
+        new_js += [x for x in default_media._js if "admin/js/vendor/select2/i18n/" in x]
+
+        media = Media(css=default_media._css, js=new_js)
+
+        return media
 
     def filter_fields_admin(form) -> None:
         """Hide fields reserved for admins."""
@@ -715,20 +772,26 @@ class VideoForm(forms.ModelForm):
     def move_video_source_file(self, new_path, new_dir, old_dir) -> None:
         """Move video source file in a new dir."""
         # create user repository
-        dest_file = os.path.join(settings.MEDIA_ROOT, new_path)
+        dest_file = safe_media_path(new_path)
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
+        source_file = safe_media_path(self.cleaned_data["video"].name)
+        media_root = os.path.realpath(settings.MEDIA_ROOT)
+        if os.path.commonpath([source_file, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
+        if os.path.commonpath([dest_file, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
         # move video
-        os.rename(
-            os.path.join(settings.MEDIA_ROOT, self.cleaned_data["video"].name),
-            dest_file,
-        )
+        os.rename(source_file, dest_file)
         # change path for video
         self.instance.video = new_path
         # Move Dir
-        os.rename(
-            os.path.join(settings.MEDIA_ROOT, old_dir),
-            os.path.join(settings.MEDIA_ROOT, new_dir),
-        )
+        old_dir_path = safe_media_path(old_dir)
+        new_dir_path = safe_media_path(new_dir)
+        if os.path.commonpath([old_dir_path, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
+        if os.path.commonpath([new_dir_path, media_root]) != media_root:
+            raise ValidationError(_("Invalid media path."))
+        os.rename(old_dir_path, new_dir_path)
         # Overview
         if self.instance.overview:
             self.instance.overview = self.instance.overview.name.replace(old_dir, new_dir)
@@ -742,7 +805,7 @@ class VideoForm(forms.ModelForm):
                 encoding.source_file = encoding.source_file.name.replace(old_dir, new_dir)
                 encoding.save()
 
-    def save_visibility(self):
+    def save_visibility(self) -> None:
         """Save video access fields depends on the visibility field value."""
         visibility = self.cleaned_data.get("visibility")
         if visibility == "public":
@@ -922,7 +985,7 @@ class VideoForm(forms.ModelForm):
         super(VideoForm, self).__init__(*args, **kwargs)
 
         self.custom_video_form()
-        # change ckeditor, thumbnail and date delete config for non staff user
+        # change WYSIWYG, thumbnail and date delete config for non staff user
         self.set_nostaff_config()
         # hide default language
         self.hide_default_language()
@@ -949,6 +1012,15 @@ class VideoForm(forms.ModelForm):
                 self.remove_field("video")  # .widget = forms.HiddenInput()
                 self.remove_field("thumbnail")
 
+        if (
+            self.is_bound
+            and self.instance.pk
+            and self.add_prefix("thumbnail") not in self.data
+        ):
+            # A form opened during encoding has no thumbnail field. If encoding
+            # finishes before POST, preserve its thumbnail instead of clearing it.
+            self.remove_field("thumbnail")
+
         # remove required=True for videofield if instance
         if self.fields.get("video") and self.instance and self.instance.video:
             # remove del self.fields["video"].widget.attrs["required"]
@@ -959,7 +1031,7 @@ class VideoForm(forms.ModelForm):
             )
         self.__init_instance__()
 
-    def __init_instance__(self):
+    def __init_instance__(self) -> None:
         """Initialize a new VideoForm instance for visibility field."""
         if self.instance:
             if self.instance.is_draft:
@@ -993,13 +1065,15 @@ class VideoForm(forms.ModelForm):
         if self.is_staff is False:
             del self.fields["thumbnail"]
 
-            self.fields["description"].widget = CKEditorWidget(config_name="default")
+            self.fields["description"].widget = TinyMCE()
             for key, _value in settings.LANGUAGES:
-                self.fields["description_%s" % key.replace("-", "_")].widget = (
-                    CKEditorWidget(config_name="default")
-                )
+                self.fields["description_%s" % key.replace("-", "_")].widget = TinyMCE()
         if self.fields.get("date_delete"):
-            if self.is_staff is False or USE_OBSOLESCENCE is False:
+            if (
+                self.is_staff is False
+                or USE_OBSOLESCENCE is False
+                or ENABLE_PAGE_OBSO_MAIL is True
+            ):
                 del self.fields["date_delete"]
             else:
                 self.fields["date_delete"].widget = forms.DateInput(
@@ -1159,16 +1233,14 @@ class ChannelForm(forms.ModelForm):
                 owner__sites=Site.objects.get_current()
             )
 
-        # change ckeditor config for no staff user
+        # change WYSIWYG config for no staff user
         if not hasattr(self, "admin_form") and (
             self.is_staff is False and self.is_superuser is False
         ):
             del self.fields["headband"]
-            self.fields["description"].widget = CKEditorWidget(config_name="default")
+            self.fields["description"].widget = TinyMCE()
             for key, _value in settings.LANGUAGES:
-                self.fields["description_%s" % key.replace("-", "_")].widget = (
-                    CKEditorWidget(config_name="default")
-                )
+                self.fields["description_%s" % key.replace("-", "_")].widget = TinyMCE()
         # hide default langage
         self.fields["description_%s" % settings.LANGUAGE_CODE].widget = (
             forms.HiddenInput()
@@ -1234,12 +1306,10 @@ class FrontThemeForm(ThemeForm):
 
         self.fields["channel"].widget = forms.HiddenInput()
         # self.fields["parentId"].label = _('Theme parent')
-        # Add CKEditor when edit a theme
-        self.fields["description"].widget = CKEditorWidget(config_name="complete")
+        # Add WYSIWYG when edit a theme
+        self.fields["description"].widget = TinyMCE()
         for key, _value in settings.LANGUAGES:
-            self.fields["description_%s" % key.replace("-", "_")].widget = CKEditorWidget(
-                config_name="complete"
-            )
+            self.fields["description_%s" % key.replace("-", "_")].widget = TinyMCE()
 
         if "channel" in self.initial.keys():
             themes_queryset = Theme.objects.filter(channel=self.initial["channel"])
@@ -1377,9 +1447,7 @@ class NoteCommentsForm(forms.ModelForm):
         super(NoteCommentsForm, self).__init__(*args, **kwargs)
         # self.fields["user"].widget = forms.HiddenInput()
         # self.fields["note"].widget = forms.HiddenInput()
-        self.fields["comment"].widget.attrs[
-            "class"
-        ] = "form-control \
+        self.fields["comment"].widget.attrs["class"] = "form-control \
             input_comment"
         self.fields["comment"].widget.attrs["autocomplete"] = "off"
         self.fields["comment"].widget.attrs["rows"] = 3
@@ -1393,3 +1461,58 @@ class NoteCommentsForm(forms.ModelForm):
 
         model = NoteComments
         fields = ["comment", "status"]
+
+
+class ArchiveChoiceForm(forms.Form):
+    """Video respite management form."""
+
+    CHOICES = [("Archive", _("Archive"))]
+    if PROLONGATION_GRANTED:
+        CHOICES += [
+            (
+                "Extend",
+                _("Extend (Automatically by %(rrd)s days)")
+                % {"rrd": EXTEND_RESPITE_DAYS},
+            )
+        ]
+    if DELETION_GRANTED:
+        CHOICES += [("Delete", _("Delete"))]
+
+    choices_help_texts = {
+        "Extend": _(
+            "Select this option if you want to extend the publication of your video by %(rrd)s days."
+        )
+        % {"rrd": EXTEND_RESPITE_DAYS},
+        "Archive": _("Select this option if you want to archive your video.")
+        + " "
+        + _("It will then be unpublished and will no longer be accessible to the public.")
+        + " "
+        + _(
+            "However, it will remain on the video server for a certain period, during which time a publication can be reactivated upon request to a manager."
+        ),
+        "Delete": _(
+            "Select this option if you decide to permanently delete your video from the server, along with its metadata. You should only do this after careful consideration. It is therefore essential that you download the video and its metadata first."
+        ),
+    }
+
+    action = forms.ChoiceField(
+        choices=CHOICES,
+        widget=HelpedRadioSelect(help_texts=choices_help_texts),
+        required=True,
+        label=_("Obsolescence choice"),
+        help_text=_(
+            "Your preference regarding the future of your video on this platform."
+        ),
+    )
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Initialize the choices for a video, based on its archiving authorization status."""
+        archiving_authorized = kwargs.pop("archiving_authorized", True)
+        super().__init__(*args, **kwargs)
+
+        if not archiving_authorized:
+            self.fields["action"].choices = [
+                (value, label)
+                for value, label in self.fields["action"].choices
+                if value != "Archive"
+            ]

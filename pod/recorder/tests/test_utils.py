@@ -2,7 +2,8 @@
 
 import os
 import time
-from xml.dom import minidom  # nosec
+from unittest.mock import patch
+from xml.dom import minidom
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -35,6 +36,10 @@ class UtilsTestCase(TestCase):
 
     def setUp(self) -> None:
         """Create models to be tested."""
+        # The recording fixture must not start a worker if its source exists.
+        process = patch("pod.recorder.plugins.type_video.process")
+        process.start()
+        self.addCleanup(process.stop)
         r_type = Type.objects.create(title="others")
         user = User.objects.create(username="pod")
         recorder1 = Recorder.objects.create(

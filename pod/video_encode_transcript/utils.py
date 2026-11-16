@@ -1,22 +1,30 @@
 """Esup-Pod video encoding and transcripting utilities."""
 
+import logging
 import os
-import bleach
 import time
+from smtplib import SMTPException
 
-from django.urls import reverse
+import bleach
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
-from django.core.mail import mail_admins
-from django.core.mail import send_mail
-from django.core.mail import mail_managers
-from django.core.mail import EmailMultiAlternatives
-from pod.video.models import Video
+from django.core.mail import (
+    EmailMultiAlternatives,
+    mail_admins,
+    mail_managers,
+    send_mail,
+)
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+
 from pod.progressive_web_app.utils import notify_user
-from .models import EncodingStep
-from .models import EncodingLog
+from pod.video.models import Video
+
+from .models import EncodingLog, EncodingStep
 
 DEBUG = getattr(settings, "DEBUG", True)
+logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
@@ -45,6 +53,8 @@ __TITLE_SITE__ = (
 )
 
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
+DEFAULT_PLACEHOLDER_EMAIL_HOST = "smtp.univ.fr"
+DEFAULT_PLACEHOLDER_ADMINS = (("Name", "adminmail@univ.fr"),)
 
 USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 
@@ -52,6 +62,30 @@ MANAGERS = getattr(settings, "MANAGERS", {})
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
+MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
+DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "")
+
+
+def _is_safe_file_path(path_file) -> bool:
+    """Return whether a path resolves inside an authorized local root."""
+    if not path_file:
+        return False
+    try:
+        candidate = os.path.realpath(os.fspath(path_file))
+    except (TypeError, ValueError, OSError):
+        return False
+
+    allowed_roots = [MEDIA_ROOT, DEFAULT_RECORDER_PATH, "/tmp"]
+    for root in allowed_roots:
+        if not root:
+            continue
+        root_real = os.path.realpath(root)
+        try:
+            if os.path.commonpath([candidate, root_real]) == root_real:
+                return True
+        except ValueError:
+            continue
+    return False
 
 
 # ##########################################################################
@@ -59,7 +93,7 @@ VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 # ##########################################################################
 
 
-def change_encoding_step(video_id, num_step, desc):
+def change_encoding_step(video_id: int, num_step: int, desc: str) -> None:
     """Change encoding step."""
     encoding_step, created = EncodingStep.objects.get_or_create(
         video=Video.objects.get(id=video_id)
@@ -67,12 +101,10 @@ def change_encoding_step(video_id, num_step, desc):
     encoding_step.num_step = num_step
     encoding_step.desc_step = desc[:255]
     encoding_step.save()
-
-    if DEBUG:
-        print("step: %d - desc: %s" % (num_step, desc))
+    logger.debug("Video: %s - step: %d - desc: %s" % (video_id, num_step, desc))
 
 
-def add_encoding_log(video_id, log):
+def add_encoding_log(video_id, log) -> None:
     """Add message in video_id encoding log."""
     encoding_log, created = EncodingLog.objects.get_or_create(
         video=Video.objects.get(id=video_id)
@@ -82,15 +114,22 @@ def add_encoding_log(video_id, log):
     else:
         encoding_log.log += "\n\n%s" % log
     encoding_log.save()
-    if DEBUG:
-        print(log)
+    logger.debug(log)
 
 
-def check_file(path_file):
+def check_file(path_file) -> bool:
     """Check if path_file is accessible and is not null."""
-    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
-        return True
-    return False
+    if not _is_safe_file_path(path_file):
+        return False
+    safe_path = os.path.realpath(os.fspath(path_file))
+    try:
+        return (
+            os.path.isfile(safe_path)
+            and os.access(safe_path, os.F_OK)
+            and os.stat(safe_path).st_size > 0
+        )
+    except (OSError, ValueError):
+        return False
 
 
 def create_outputdir(video_id, video_path):
@@ -107,8 +146,38 @@ def create_outputdir(video_id, video_path):
 ###############################################################
 
 
-def send_email_item(msg, item, item_id):
+def _admin_failure_emails_are_enabled() -> bool:
+    """Return True when admin alert emails should be sent.
+
+    The project ships with placeholder SMTP/admin settings. When those defaults
+    are still in place, trying to send a failure email only triggers an
+    unnecessary SMTP connection attempt.
+    """
+    admins = tuple(getattr(settings, "ADMINS", ()) or ())
+    if not admins:
+        return False
+    if admins == DEFAULT_PLACEHOLDER_ADMINS:
+        return False
+
+    email_host = str(getattr(settings, "EMAIL_HOST", "") or "").strip()
+    if not email_host:
+        return False
+    if email_host == DEFAULT_PLACEHOLDER_EMAIL_HOST:
+        return False
+
+    return True
+
+
+def send_email_item(msg, item, item_id) -> None:
     """Send email notification when encoding fails for a specific item."""
+    if not _admin_failure_emails_are_enabled():
+        logger.warning(
+            "Skipping admin alert email for %s %s because SMTP/admin email settings are not configured.",
+            item,
+            item_id,
+        )
+        return
+
     subject = "[" + __TITLE_SITE__ + "] Error Encoding %s id: %s" % (item, item_id)
     message = "Error Encoding %s id: %s\n%s" % (item, item_id, msg)
     html_message = "<p>Error Encoding %s id: %s</p><p>%s</p>" % (
@@ -119,69 +188,80 @@ def send_email_item(msg, item, item_id):
     mail_admins(subject, message, fail_silently=False, html_message=html_message)
 
 
-def send_email_recording(msg, recording_id):
+def send_email_recording(msg, recording_id) -> None:
     """Send email notification when recording encoding failed."""
     send_email_item(msg, "Recording", recording_id)
 
 
-def send_email_encoding(video_to_encode):
+def send_email_encoding(video_to_encode) -> None:
     """Send email on encoding completion."""
     subject_prefix = _("Encoding")
     send_notification_email(video_to_encode, subject_prefix)
 
 
-def send_notification_encoding(video_to_encode):
+def send_notification_encoding(video_to_encode) -> None:
     """Send push notification on encoding completion."""
     subject_prefix = _("Encoding")
     send_notification(video_to_encode, subject_prefix)
 
 
-def send_email(msg, video_id):
+def send_email(msg, video_id) -> None:
     """Send email notification when video encoding failed."""
     send_email_item(msg, "Video", video_id)
 
 
-def send_email_transcript(video_to_encode):
+def send_email_transcript(video_to_encode) -> None:
     """Send email on transcripting completion."""
     subject_prefix = _("The transcripting of content")
     send_notification_email(video_to_encode, subject_prefix)
 
 
-def send_notification_email(video_to_encode, subject_prefix):
-    """Send email notification on video encoding or transcripting completion."""
-    if DEBUG:
-        print("SEND EMAIL ON %s COMPLETION" % subject_prefix.upper())
+def _completion_subject(content_id, subject_prefix) -> str:
+    """Translate the completion subject with the appropriate grammatical agreement."""
+    if subject_prefix == _("Encoding"):
+        return _("Encoding #%(content_id)s completed") % {"content_id": content_id}
+    return _("%(subject)s #%(content_id)s completed") % {
+        "subject": subject_prefix,
+        "content_id": content_id,
+    }
+
+
+def _completion_message(content_title, subject_prefix) -> str:
+    """Translate a complete sentence so each language can use the correct agreement."""
+    if subject_prefix in (_("The transcripting of content"), _("Transcripting")):
+        message = _(
+            "The content “%(content_title)s” has been automatically transcribed, "
+            "and is now available on %(site_title)s."
+        )
+    else:
+        message = _(
+            "The video “%(content_title)s” has been encoded to Web formats, "
+            "and is now available on %(site_title)s."
+        )
+    return message % {
+        "content_title": content_title,
+        "site_title": __TITLE_SITE__,
+    }
+
+
+def send_notification_email(video_to_encode, subject_prefix) -> None:
+    """Send a completion email without letting delivery errors interrupt processing."""
+    logger.debug("SEND EMAIL ON %s COMPLETION" % subject_prefix.upper())
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
     content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
-    subject = "[%s] %s" % (
-        __TITLE_SITE__,
-        _("%(subject)s #%(content_id)s completed")
-        % {"subject": subject_prefix, "content_id": video_to_encode.id},
-    )
+    subject = _completion_subject(video_to_encode.id, subject_prefix)
+    email_subject_prefix = settings.EMAIL_SUBJECT_PREFIX
+    if not email_subject_prefix:
+        subject = "[%s] %s" % (__TITLE_SITE__, subject)
+    # mail_managers adds EMAIL_SUBJECT_PREFIX itself; direct sends do not.
+    direct_subject = "%s%s" % (email_subject_prefix, subject)
 
     html_message = (
         '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
                 </p><p>%s</p>'
         % (
             _("Hello,"),
-            _(
-                "%(content_type)s “%(content_title)s” has been %(action)s"
-                + ", and is now available on %(site_title)s."
-            )
-            % {
-                "content_type": (
-                    _("The content")
-                    if subject_prefix == _("The transcripting of content")
-                    else _("The video")
-                ),
-                "content_title": "<b>%s</b>" % video_to_encode.title,
-                "action": (
-                    _("automatically transcripted")
-                    if (subject_prefix == _("The transcripting of content"))
-                    else _("encoded to Web formats")
-                ),
-                "site_title": __TITLE_SITE__,
-            },
+            _completion_message("<b>%s</b>" % video_to_encode.title, subject_prefix),
             _("You will find it here:"),
             content_url,
             content_url,
@@ -189,7 +269,7 @@ def send_notification_email(video_to_encode, subject_prefix):
         )
     )
 
-    full_html_message = html_message + "<br>%s%s<br>%s%s" % (
+    full_html_message = html_message + "<br>%s %s<br>%s %s" % (
         _("Post by:"),
         video_to_encode.owner,
         _("the:"),
@@ -203,63 +283,53 @@ def send_notification_email(video_to_encode, subject_prefix):
     to_email = []
     to_email.append(video_to_encode.owner.email)
 
-    if (
-        USE_ESTABLISHMENT_FIELD
-        and MANAGERS
-        and video_to_encode.owner.owner.establishment.lower() in dict(MANAGERS)
-    ):
-        bcc_email = []
-        video_estab = video_to_encode.owner.owner.establishment.lower()
-        manager = dict(MANAGERS)[video_estab]
-        if isinstance(manager, (list, tuple)):
-            bcc_email = manager
-        elif isinstance(manager, str):
-            bcc_email.append(manager)
-        msg = EmailMultiAlternatives(
-            subject, message, from_email, to_email, bcc=bcc_email
-        )
-        msg.attach_alternative(html_message, "text/html")
-        msg.send()
-    else:
-        mail_managers(
-            subject,
-            full_message,
-            fail_silently=False,
-            html_message=full_html_message,
-        )
-        if not DEBUG:
-            send_mail(
-                subject,
-                message,
-                from_email,
-                to_email,
-                fail_silently=False,
-                html_message=html_message,
+    try:
+        if (
+            USE_ESTABLISHMENT_FIELD
+            and MANAGERS
+            and video_to_encode.owner.owner.establishment.lower() in dict(MANAGERS)
+        ):
+            bcc_email = []
+            video_estab = video_to_encode.owner.owner.establishment.lower()
+            manager = dict(MANAGERS)[video_estab]
+            if isinstance(manager, (list, tuple)):
+                bcc_email = manager
+            elif isinstance(manager, str):
+                bcc_email.append(manager)
+            msg = EmailMultiAlternatives(
+                direct_subject, message, from_email, to_email, bcc=bcc_email
             )
+            msg.attach_alternative(html_message, "text/html")
+            msg.send()
+        else:
+            mail_managers(
+                subject,
+                full_message,
+                fail_silently=False,
+                html_message=full_html_message,
+            )
+            if not DEBUG:
+                send_mail(
+                    direct_subject,
+                    message,
+                    from_email,
+                    to_email,
+                    fail_silently=False,
+                    html_message=html_message,
+                )
+    except (SMTPException, OSError):
+        logger.exception(
+            "Could not send completion email for video %s", video_to_encode.id
+        )
 
 
-def send_notification(video_to_encode, subject_prefix):
+def send_notification(video_to_encode, subject_prefix) -> None:
     """Send push notification on video encoding or transcripting completion."""
     subject = "[%s] %s" % (
         __TITLE_SITE__,
-        _("%(subject)s #%(content_id)s completed")
-        % {"subject": subject_prefix, "content_id": video_to_encode.id},
+        _completion_subject(video_to_encode.id, subject_prefix),
     )
-    message = _(
-        "%(content_type)s “%(content_title)s” has been %(action)s"
-        + ", and is now available on %(site_title)s."
-    ) % {
-        "content_type": (
-            _("content") if subject_prefix == _("Transcripting") else _("video")
-        ),
-        "content_title": video_to_encode.title,
-        "action": (
-            _("automatically transcripted")
-            if (subject_prefix == _("Transcripting"))
-            else _("encoded to Web formats")
-        ),
-        "site_title": __TITLE_SITE__,
-    }
+    message = _completion_message(video_to_encode.title, subject_prefix)
 
     notify_user(
         video_to_encode.owner,
@@ -269,7 +339,7 @@ def send_notification(video_to_encode, subject_prefix):
     )
 
 
-def time_to_seconds(a_time):
+def time_to_seconds(a_time) -> int:
     """Convert a time to seconds."""
     seconds = time.strptime(str(a_time), "%H:%M:%S")
     seconds = seconds.tm_sec + seconds.tm_min * 60 + seconds.tm_hour * 3600

@@ -7,11 +7,10 @@ from django.core.files import File
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from django.utils.translation import ugettext as _
-from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.template.defaultfilters import slugify
 
-from ckeditor.fields import RichTextField
+from tinymce.models import HTMLField
 from tempfile import NamedTemporaryFile
 from webvtt import WebVTT, Caption
 
@@ -38,12 +37,12 @@ __NAME__ = _("Enrichment")
 def enrichment_to_vtt(list_enrichment, video) -> str:
     webvtt = WebVTT()
     for enrich in list_enrichment:
-        start = datetime.datetime.fromtimestamp(enrich.start, tz=timezone.utc).strftime(
-            "%H:%M:%S.%f"
-        )[:-3]
-        end = datetime.datetime.fromtimestamp(enrich.end, tz=timezone.utc).strftime(
-            "%H:%M:%S.%f"
-        )[:-3]
+        start = datetime.datetime.fromtimestamp(
+            enrich.start, tz=datetime.timezone.utc
+        ).strftime("%H:%M:%S.%f")[:-3]
+        end = datetime.datetime.fromtimestamp(
+            enrich.end, tz=datetime.timezone.utc
+        ).strftime("%H:%M:%S.%f")[:-3]
         url = enrichment_to_vtt_type(enrich)
         caption = Caption(
             "{0}".format(start),
@@ -87,6 +86,7 @@ def enrichment_to_vtt(list_enrichment, video) -> str:
 
 
 def enrichment_to_vtt_type(enrich):
+    """Return enrichment content."""
     if enrich.type == "image":
         return enrich.image.file.url
     elif enrich.type == "document":
@@ -156,7 +156,7 @@ class Enrichment(models.Model):
         on_delete=models.CASCADE,
         help_text=_("Integrate a document (PDF, text, html)"),
     )
-    richtext = RichTextField(_("Richtext"), config_name="complete", blank=True)
+    richtext = HTMLField(_("Richtext"), blank=True)
     weblink = models.URLField(_("Web link"), max_length=200, null=True, blank=True)
     embed = models.TextField(
         _("Embed code"),

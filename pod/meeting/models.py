@@ -1,4 +1,4 @@
-"""Models for the Meeting module."""
+"""Esup-Pod models for the Meeting module."""
 
 import hashlib
 import random
@@ -15,7 +15,7 @@ import xml.etree.ElementTree as et
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
@@ -277,21 +277,19 @@ class Meeting(models.Model):
         null=True,
         blank=True,
         verbose_name=_("Slides"),
-        help_text=_(
-            """
+        help_text=_("""
         BigBlueButton will accept Office documents (.doc .docx .pptx),
-        text documents(.txt), images (.png ,.jpg) and Adobe Acrobat documents (.pdf);
+        text documents(.txt), images (.png, .jpg) and Adobe Acrobat documents (.pdf);
         we recommend converting documents to .pdf prior to uploading for best results.
         Maximum size is 30 MB or 150 pages per document.
-        """
-        ),
+        """),
         on_delete=models.CASCADE,
     )
     site = models.ForeignKey(Site, verbose_name=_("Site"), on_delete=models.CASCADE)
 
     # #################### Configs
     max_participants = models.IntegerField(
-        default=150, verbose_name=_("Max Participants")
+        default=250, verbose_name=_("Max Participants")
     )
     welcome_text = models.TextField(
         default=_("Welcome!"), verbose_name=_("Meeting Text in Bigbluebutton")
@@ -465,7 +463,7 @@ class Meeting(models.Model):
         self.nb_occurrences = 1
         self.recurring_until = self.start
 
-    def check_recurrence(self):  # noqa: C901
+    def check_recurrence(self) -> None:
         """
         Compute the `recurring_until` field.
 
@@ -488,30 +486,32 @@ class Meeting(models.Model):
             else:
                 self.weekdays = None
             if self.recurrence:
-                if self.recurring_until:
-                    if self.recurring_until < self.start:
-                        self.recurring_until = self.start
-                    all_occurrences = self.get_occurrences(
-                        self.start, self.recurring_until
-                    )
-                    self.nb_occurrences = len(all_occurrences)
-                    # Correct the date of end of recurrence
-                    self.recurring_until = all_occurrences[-1]
-                    if self.nb_occurrences <= 1:
-                        self.reset_recurrence()
-
-                elif self.nb_occurrences is not None:
-                    if self.nb_occurrences <= 1:
-                        self.reset_recurrence()
-                    next_occurrence = self.start
-                    for _i in range(self.nb_occurrences - 1):
-                        next_occurrence = self.next_occurrence(next_occurrence)
-                    self.recurring_until = next_occurrence
-                # Infinite recurrence... do nothing
+                self.compute_recurrence_end()
             else:
                 self.reset_recurrence()
         else:
             self.reset_recurrence()
+
+    def compute_recurrence_end(self) -> None:
+        """Compute the end of recurrence."""
+        if self.recurring_until:
+            if self.recurring_until < self.start:
+                self.recurring_until = self.start
+            all_occurrences = self.get_occurrences(self.start, self.recurring_until)
+            self.nb_occurrences = len(all_occurrences)
+            # Correct the date of end of recurrence
+            self.recurring_until = all_occurrences[-1]
+            if self.nb_occurrences <= 1:
+                self.reset_recurrence()
+
+        elif self.nb_occurrences is not None:
+            if self.nb_occurrences <= 1:
+                self.reset_recurrence()
+            next_occurrence = self.start
+            for _i in range(self.nb_occurrences - 1):
+                next_occurrence = self.next_occurrence(next_occurrence)
+            self.recurring_until = next_occurrence
+        # Infinite recurrence... do nothing
 
     def save(self, *args, **kwargs) -> None:
         """Store a meeting object in db."""
@@ -548,7 +548,7 @@ class Meeting(models.Model):
                 return self.start_at
         return self.next_occurrence(timezone.now().date())
 
-    def next_occurrence(self, current_date):  # noqa: C901
+    def next_occurrence(self, current_date):
         """
         Take as assumption that the current date passed in argument IS valid occurrence.
 
@@ -559,48 +559,52 @@ class Meeting(models.Model):
             return current_date + timedelta(days=self.frequency)
 
         if self.recurrence == Meeting.WEEKLY:
-            increment = 1
-            # Look in the current week
-            weekday = current_date.weekday()
-            while weekday + increment <= 6:
-                if str(weekday + increment) in self.weekdays:
-                    return current_date + timedelta(days=increment)
-                increment += 1
-            # Skip the weeks not covered by frequency
-            next_date = (
-                current_date
-                + timedelta(days=increment)
-                + timedelta(weeks=self.frequency - 1)
-            )
-            # Look in this week and be sure to find
-            weekday = 0
-            increment = 0
-            while weekday + increment <= 6:
-                if str(weekday + increment) in self.weekdays:
-                    return next_date + timedelta(days=increment)
-                increment += 1
-            raise RuntimeError("You should have found the next weekly occurrence by now.")
+            return self.next_weekly_occurrence(current_date)
 
         if self.recurrence == Meeting.MONTHLY:
-            next_date = current_date + relativedelta(months=self.frequency)
-            if self.monthly_type == Meeting.DATE_DAY:
-                return next_date
-
-            if self.monthly_type == Meeting.NTH_DAY:
-                weekday = current_date.weekday()
-                week_number = get_nth_week_number(current_date)
-                return get_weekday_in_nth_week(
-                    next_date.year, next_date.month, week_number, weekday
-                )
-
-            raise RuntimeError(
-                "You should have found the next monthly occurrence by now."
-            )
+            return self.next_monthly_occurrence(current_date)
 
         if self.recurrence == Meeting.YEARLY:
             return current_date + relativedelta(years=self.frequency)
 
         raise RuntimeError("Non recurrent meetings don't have next occurences.")
+
+    def next_monthly_occurrence(self, current_date):
+        """Return the next monthly occurrence after the current date."""
+        next_date = current_date + relativedelta(months=self.frequency)
+        if self.monthly_type == Meeting.DATE_DAY:
+            return next_date
+
+        if self.monthly_type == Meeting.NTH_DAY:
+            weekday = current_date.weekday()
+            week_number = get_nth_week_number(current_date)
+            return get_weekday_in_nth_week(
+                next_date.year, next_date.month, week_number, weekday
+            )
+
+        raise RuntimeError("You should have found the next monthly occurrence by now.")
+
+    def next_weekly_occurrence(self, current_date):
+        """Return the next weekly occurrence after the current date."""
+        increment = 1
+        # Look in the current week
+        weekday = current_date.weekday()
+        while weekday + increment <= 6:
+            if str(weekday + increment) in self.weekdays:
+                return current_date + timedelta(days=increment)
+            increment += 1
+        # Skip the weeks not covered by frequency
+        next_date = (
+            current_date + timedelta(days=increment) + timedelta(weeks=self.frequency - 1)
+        )
+        # Look in this week and be sure to find
+        weekday = 0
+        increment = 0
+        while weekday + increment <= 6:
+            if str(weekday + increment) in self.weekdays:
+                return next_date + timedelta(days=increment)
+            increment += 1
+        raise RuntimeError("You should have found the next weekly occurrence by now.")
 
     def get_occurrences(self, start, end=None):
         """
@@ -781,9 +785,7 @@ class Meeting(models.Model):
         """
         if role not in ["MODERATOR", "VIEWER"]:
             msg = {}
-            msg[
-                "error"
-            ] = """
+            msg["error"] = """
                 Define user role for the meeting. Valid values are MODERATOR or VIEWER
             """
             msg["returncode"] = ""
@@ -1269,7 +1271,7 @@ class LiveGateway(models.Model):
     sipmediagw_server_url = models.CharField(
         _("URL of the SIPMediaGW server"),
         max_length=200,
-        help_text=_("Example format: https://sipmediagw.univ.fr"),
+        help_text=_("Example format: %(url)s") % {"url": "https://sipmediagw.univ.fr"},
         default="https://sipmediagw.univ.fr",
     )
 

@@ -1,8 +1,13 @@
+"""Esup-Pod vido context processor."""
+
 from django.conf import settings as django_settings
+from django.utils.translation import gettext_lazy as _
 
 from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.models import Video
+
+from pod.video.utils import get_tag_cloud
 
 from django.db.models import Count, Sum
 from django.db.models import Q
@@ -82,6 +87,14 @@ def context_video_settings(request):
 
 def context_video_data(request):
     """Get video data in cache, if not, create and add it in cache."""
+
+    from pod.video.views import get_videos_categories_list
+
+    category = cache.get("CATEGORY")
+    if category is None:
+        category = get_videos_categories_list(request)
+        cache.set("CATEGORY", category, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
+
     types = cache.get("TYPES")
     if types is None:
         types = (
@@ -94,6 +107,11 @@ def context_video_data(request):
             .annotate(video_count=Count("video", distinct=True))
         )
         cache.set("TYPES", types, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
+
+    tags = cache.get("TAGS")
+    if tags is None:
+        tags = get_tag_cloud()
+        cache.set("TAGS", tags, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
 
     disciplines = cache.get("DISCIPLINES")
     if disciplines is None:
@@ -120,14 +138,20 @@ def context_video_data(request):
         VIDEOS_DURATION = (
             str(timedelta(seconds=aggregate_videos["duration"]))
             if aggregate_videos["duration"]
-            else 0
+            else "0"
         )
-        cache.set("VIDEOS_DURATION", VIDEOS_DURATION, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
+        VIDEOS_DURATION_TR = VIDEOS_DURATION.replace("days", str(_("days")))
+
+        cache.set(
+            "VIDEOS_DURATION", VIDEOS_DURATION_TR, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT
+        )
 
     return {
         "TYPES": types,
         "DISCIPLINES": disciplines,
+        "CATEGORY": category,
         "VIDEOS_COUNT": VIDEOS_COUNT,
         "VIDEOS_DURATION": VIDEOS_DURATION,
         "CHANNELS_PER_BATCH": CHANNELS_PER_BATCH,
+        "TAGS": tags,
     }

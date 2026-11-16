@@ -1,11 +1,17 @@
 """
-Django global settings for pod_project.
+Esup-Pod global Django settings.
 
-Django version: 3.2.
+Django version: 4.2.
 """
 
-import os
 import importlib.util
+import os
+import sys
+
+# As a comment until a new version of django-chunked-upload is released on pypi
+# See requirements.txt (django-chunked-upload==2.0.0 replaced by
+# git+https://github.com/juliomalegria/django-chunked-upload.git@master)
+# django.utils.translation.ugettext = gettext
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
@@ -13,9 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-
-VERSION = "3.8.4"
-
+VERSION = "4.4.0"
 
 ##
 # Installed applications list
@@ -33,10 +37,11 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.flatpages",
     # Exterior Applications
-    "ckeditor",
+    "tinymce",
     "sorl.thumbnail",
-    "tagging",
-    "cas",
+    # "tagging",
+    "tagulous",
+    "django_cas_ng",
     "captcha",
     "rest_framework",
     "rest_framework.authtoken",
@@ -46,7 +51,7 @@ INSTALLED_APPS = [
     "chunked_upload",
     "mozilla_django_oidc",
     "honeypot",
-    "lti_provider",
+    # "lti_provider", (wait until lti_provider has been upgraded > 1.0, with upgraded oauth2)
     "pwa",
     "webpush",
     # Pod Applications
@@ -75,6 +80,7 @@ INSTALLED_APPS = [
     "pod.speaker",
     "pod.custom",
     "pod.duplicate",
+    "pod.hyperlinks",
 ]
 
 ##
@@ -137,6 +143,7 @@ TEMPLATES = [
                 "pod.cut.context_processors.context_settings",
                 "pod.speaker.context_processors.context_settings",
                 "pod.duplicate.context_processors.context_settings",
+                "pod.hyperlinks.context_processors.context_settings",
             ],
         },
     },
@@ -144,7 +151,7 @@ TEMPLATES = [
 
 ##
 # Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.{0}".format(validator)}
     for validator in [
@@ -157,9 +164,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 ##
 # Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
 USE_I18N = True
-USE_L10N = True
 LOCALE_PATHS = (os.path.join(BASE_DIR, "pod", "locale"),)
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
@@ -181,13 +187,13 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAdminUser",),
-    "DEFAULT_PAGINATION_CLASS": ("rest_framework.pagination.PageNumberPagination"),
+    "DEFAULT_PAGINATION_CLASS": "pod.main.rest_pagination.CustomPagination",
     "PAGE_SIZE": 12,
 }
 
 
 ##
-# Logging configuration https://docs.djangoproject.com/en/3.2/topics/logging/
+# Logging configuration https://docs.djangoproject.com/en/4.2/topics/logging/
 #
 LOG_DIRECTORY = os.path.join(BASE_DIR, "pod", "log")
 if not os.path.exists(LOG_DIRECTORY):
@@ -309,6 +315,23 @@ LOGGING = {
             "backupCount": 5,
             "formatter": "general",
         },
+        "video_encode_transcript": {
+            "level": "INFO",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "video_encode_transcript.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
+        "live": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "live.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
     },
     "loggers": {
         "django": {
@@ -350,6 +373,16 @@ LOGGING = {
         "api": {
             "handlers": ["api"],
             "level": "ERROR",
+        },
+        "pod.video_encode_transcript": {
+            "handlers": ["video_encode_transcript"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "pod.live": {
+            "handlers": ["console", "live"],
+            "level": "INFO",
+            "propagate": False,
         },
         "py.warnings": {
             "handlers": ["console"],
@@ -432,12 +465,13 @@ def update_settings(local_settings):
     # AUTH
     #
     if local_settings.get("USE_CAS", False):
-        local_settings["AUTHENTICATION_BACKENDS"] += ("cas.backends.CASBackend",)
-        local_settings["CAS_RESPONSE_CALLBACKS"] = (
-            "pod.authentication.populatedCASbackend.populateUser",
-            # function call to add some information to user login by CAS
+        local_settings["AUTHENTICATION_BACKENDS"] += (
+            "django.contrib.auth.backends.ModelBackend",
+            "django_cas_ng.backends.CASBackend",
         )
-        local_settings["MIDDLEWARE"].append("cas.middleware.CASMiddleware")
+        local_settings["MIDDLEWARE"].append("django_cas_ng.middleware.CASMiddleware")
+        if local_settings.get("POPULATE_USER", None) == "CAS":
+            local_settings["CAS_APPLY_ATTRIBUTES_TO_USER"] = True
 
     if local_settings.get("USE_SHIB", False):
         local_settings["AUTHENTICATION_BACKENDS"] += (
@@ -446,6 +480,12 @@ def update_settings(local_settings):
         local_settings["MIDDLEWARE"].append(
             "pod.authentication.shibmiddleware.ShibbMiddleware"
         )
+
+    if local_settings.get("ALLOWED_SUPERUSER_IPS", False):
+        local_settings["MIDDLEWARE"].append(
+            "pod.authentication.IPRestrictionMiddleware.IPRestrictionMiddleware"
+        )
+
     if local_settings.get("USE_OIDC", False):
         local_settings["AUTHENTICATION_BACKENDS"] += (
             "pod.authentication.backends.OIDCBackend",
@@ -480,6 +520,7 @@ if (
     locals()["DEBUG"] is True
     and importlib.util.find_spec("debug_toolbar") is not None
     and locals()["USE_DEBUG_TOOLBAR"]
+    and "test" not in sys.argv
 ):
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE = [
@@ -498,3 +539,18 @@ if (
     and importlib.util.find_spec("django_extensions") is not None
 ):
     INSTALLED_APPS.append("django_extensions")
+
+
+# Django Tag manager
+SERIALIZATION_MODULES = {
+    "xml": "tagulous.serializers.xml_serializer",
+    "json": "tagulous.serializers.json",
+    "python": "tagulous.serializers.python",
+    "yaml": "tagulous.serializers.pyyaml",
+}
+# see https://django-tagulous.readthedocs.io/en/latest/installation.html#settings
+TAGULOUS_NAME_MAX_LENGTH = 80
+"""
+TAGULOUS_SLUG_MAX_LENGTH = 50
+TAGULOUS_LABEL_MAX_LENGTH = TAGULOUS_NAME_MAX_LENGTH
+"""

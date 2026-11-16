@@ -4,7 +4,7 @@ import hashlib
 import html
 import random
 import string
-from datetime import date, datetime
+from datetime import date
 from html.parser import HTMLParser
 
 from django import template
@@ -14,7 +14,7 @@ from django.core.cache import cache
 from django.db.models import Q, Sum
 from django.template import loader
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pod.live.models import Event
 from pod.video.models import Video
@@ -285,7 +285,7 @@ def render_next_events(uniq_id, params, current_site, debug_elts):
 
     query = (
         Event.objects.filter(is_draft=False)
-        .exclude(end_date__lt=datetime.now())
+        .exclude(end_date__lt=timezone.now())
         .filter(broadcaster__building__sites__exact=current_site)
     )
 

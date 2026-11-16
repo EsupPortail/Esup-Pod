@@ -40,11 +40,13 @@
                   <h3 class="video_title">
                     {{ element.title|capfirst|truncatechars:43 }}
                   </h3>
-                  <p class="video_desc text-muted">
+                  <p class="video-desc text-muted">
                     {{ element.description|metaformat|safe|striptags|truncatechars:250 }}
                   </p>
                   {% if type == 'video' %}
-                  <small class="video_time text-muted time d-none d-md-block">{{ element.duration_in_time }}</small>
+                    <small class="video-time text-muted time d-none d-md-block">
+                      {{ element.duration_in_time }}
+                    </small>
                   {% endif %}
                 </div>
               </a>
@@ -87,15 +89,15 @@
     {% endif %}
   </div>
   <script type="text/javascript">
-    const container = document.querySelector("#carousel_{{ container.slug }}_{{ uniq_id }}");
-    let items = container.querySelectorAll('.carousel .carousel-item')
-    items.forEach((el) => {
+    const container_{{ uniq_id }} = document.querySelector("#carousel_{{ container.slug }}_{{ uniq_id }}");
+    const items_{{ uniq_id }} = container_{{ uniq_id }}.querySelectorAll('.carousel .carousel-item')
+    items_{{ uniq_id }}.forEach((el) => {
         const minPerSlide = {{ multi_carousel_nb_card }};
         let next = el.nextElementSibling;
         for (var i=1; i<minPerSlide; i++) {
             if (!next) {
                 // wrap carousel by using first child
-            	next = items[0]
+            	next = items_{{ uniq_id }}[0]
           	}
             let cloneChild = next.cloneNode(true)
             el.appendChild(cloneChild.children[0])

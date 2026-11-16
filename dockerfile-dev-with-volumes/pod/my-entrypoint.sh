@@ -3,7 +3,6 @@ echo "Launching commands into pod-dev"
 mkdir -p pod/node_modules
 mkdir -p pod/db_migrations && touch pod/db_migrations/__init__.py
 ln -fs /tmp/node_modules/* pod/node_modules
-until nc -z elasticsearch 9200; do echo waiting for elasticsearch; sleep 10; done;
 # Mise en route
 # Base de données SQLite intégrée
 BDD_FILE=/usr/src/app/pod/db.sqlite3

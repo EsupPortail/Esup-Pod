@@ -1,4 +1,4 @@
-"""Management of webinars for the Meeting module."""
+"""Esup-Pod - Management of webinars for the Meeting module."""
 
 import json
 import logging
@@ -8,8 +8,9 @@ import time
 
 from django.contrib import messages
 from django.core.handlers.wsgi import WSGIRequest
+from django.db import transaction
 from django.utils.html import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from pod.main.utils import display_message_with_icon
 from pod.meeting.models import Meeting, Livestream
 from pod.meeting.utils import slash_join
@@ -18,17 +19,25 @@ log = logging.getLogger("webinar")
 
 
 def start_webinar(request: WSGIRequest, meet_id: int) -> None:
-    """Start a webinar and send a thread to stop it automatically at the end."""
+    """Start a new webinar and send a thread to stop it automatically at the end."""
     try:
         # Get the current meeting
         meeting = Meeting.objects.get(id=meet_id)
 
-        # No thread for start the webinar
-        start_webinar_livestream(request.get_host(), meet_id)
+        with transaction.atomic():
+            # Share the startup state across browsers and serialize concurrent joins.
+            livestream = (
+                Livestream.objects.select_for_update().filter(meeting=meeting).first()
+            )
+            if livestream and livestream.status == 1:
+                return
+
+            # Roll back the live status if the gateway cannot be started.
+            start_webinar_livestream(request.get_host(), meet_id)
 
         # Thread for stop the webinar
         t_stop = threading.Thread(target=stop_webinar_livestream, args=[meet_id, False])
-        t_stop.setDaemon(True)
+        t_stop.daemon = True
         t_stop.start()
         display_message_with_icon(
             request,
@@ -77,6 +86,36 @@ def stop_webinar(request: WSGIRequest, meet_id: int) -> None:
             request,
             messages.ERROR,
             _("Error to stop webinar mode for “%(name)s” meeting: %(exc)s")
+            % {"name": meeting.name, "exc": str(exc)},
+        )
+
+
+def toggle_chat_webinar(request: WSGIRequest, meet_id: int) -> None:
+    """Toggle (hide/display) chat for a webinar."""
+    try:
+        # Get the current meeting
+        meeting = Meeting.objects.get(id=meet_id)
+
+        # No thread for toggle chat
+        toggle_rtmp_gateway(meet_id)
+
+        display_message_with_icon(
+            request,
+            messages.INFO,
+            _(
+                "The option to show/hide the chat has been taken into account for “%(name)s” meeting."
+            )
+            % {"name": meeting.name},
+        )
+    except Exception as exc:
+        log.error(
+            "Error to toggle chat for “%(id)s” meeting: %(exc)s"
+            % {"id": meet_id, "exc": str(exc)}
+        )
+        display_message_with_icon(
+            request,
+            messages.ERROR,
+            _("Error to toggle chat for “%(name)s” meeting: %(exc)s")
             % {"name": meeting.name, "exc": str(exc)},
         )
 
@@ -232,7 +271,7 @@ def start_rtmp_gateway(pod_host: str, meet_id: int, livestream_id: int) -> None:
         raise ValueError(mark_safe(message))
 
 
-def stop_rtmp_gateway(meet_id: int, livestream_id: int):
+def stop_rtmp_gateway(meet_id: int, livestream_id: int) -> None:
     """Run the stop command for SIPMediaGW RTMP gateway."""
     # Get the current meeting
     meeting = Meeting.objects.get(id=meet_id)

@@ -6,6 +6,7 @@ import json
 
 import qrcode
 
+from datetime import datetime, date
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
@@ -118,6 +119,15 @@ def secure_post_request(request) -> None:
             request, messages.WARNING, _("This view cannot be accessed directly.")
         )
         raise PermissionDenied
+
+
+def to_date(v):
+    """Convert a datetime or date to a date object."""
+    if isinstance(v, datetime):
+        return v.date()
+    if isinstance(v, date):
+        return v
+    raise TypeError(f"Unexpected date type: {type(v)}")
 
 
 def generate_qrcode(url: str, alt: str, request=None):

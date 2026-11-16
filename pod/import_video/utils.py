@@ -1,21 +1,24 @@
 """Esup-Pod meeting and import_video utils."""
 
+import ipaddress
 import json
 import os
-import requests
 import shutil
-
+import socket
 from datetime import datetime as dt
+from html.parser import HTMLParser
+from urllib.parse import parse_qs, urljoin, urlparse
+
+import requests
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
-from html.parser import HTMLParser
-from pod.meeting.utils import slash_join
-from pod.video.models import Video
-from pod.video.models import Type
-from urllib.parse import parse_qs, urlparse
 from requests import Session
+from requests.adapters import HTTPAdapter
+
+from pod.meeting.utils import slash_join
+from pod.video.models import Type, Video
 
 MAX_UPLOAD_SIZE_ON_IMPORT = getattr(settings, "MAX_UPLOAD_SIZE_ON_IMPORT", 4)
 
@@ -48,6 +51,8 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
 )
 
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
+MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
+IMPORT_VIDEO_BBB_RECORDER_PATH = getattr(settings, "IMPORT_VIDEO_BBB_RECORDER_PATH", "")
 
 # The meeting application is activated?
 USE_MEETING = getattr(settings, "USE_MEETING", False)
@@ -55,7 +60,207 @@ USE_MEETING = getattr(settings, "USE_MEETING", False)
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 
 
-def secure_request_for_upload(request):
+def _is_path_within(path: str, allowed_roots) -> bool:
+    """Return True when path resolves under one of the allowed root directories."""
+    candidate = os.path.realpath(path)
+    for allowed_root in allowed_roots:
+        if not allowed_root:
+            continue
+        root = os.path.realpath(allowed_root)
+        try:
+            if os.path.commonpath([candidate, root]) == root:
+                return True
+        except ValueError:
+            continue
+    return False
+
+
+def get_remote_url_error_message(message=None) -> dict:
+    """Build a standard error message for invalid remote URLs."""
+    return {
+        "error": _("Forbidden address"),
+        "message": message
+        or _(
+            "This address points to a local, private, or otherwise forbidden "
+            "network resource."
+        ),
+        "proposition": _(
+            "Use a public URL or ask an administrator to authorize this host."
+        ),
+    }
+
+
+def _normalize_remote_hostname(hostname: str) -> str:
+    """Normalize a hostname before validation."""
+    return hostname.lower().rstrip(".")
+
+
+def _resolve_remote_addresses(hostname: str):
+    """Resolve a hostname to every reachable IP address."""
+    try:
+        return {ipaddress.ip_address(hostname)}
+    except ValueError:
+        pass
+
+    try:
+        addrinfo = socket.getaddrinfo(hostname, None, type=socket.SOCK_STREAM)
+    except socket.gaierror as exc:
+        raise ValueError(
+            get_remote_url_error_message(
+                _("The remote host could not be resolved: %(host)s") % {"host": hostname}
+            )
+        ) from exc
+
+    addresses = set()
+    for info in addrinfo:
+        sockaddr = info[4]
+        if sockaddr and sockaddr[0]:
+            addresses.add(ipaddress.ip_address(sockaddr[0]))
+
+    if not addresses:
+        raise ValueError(
+            get_remote_url_error_message(
+                _("The remote host could not be resolved: %(host)s") % {"host": hostname}
+            )
+        )
+
+    return addresses
+
+
+def validate_remote_import_url(source_url: str):
+    """Validate a remote import URL against SSRF constraints."""
+    if not isinstance(source_url, str):
+        raise ValueError(
+            get_remote_url_error_message(
+                _("Only HTTP and HTTPS addresses are allowed for remote imports.")
+            )
+        )
+
+    url = urlparse(source_url)
+
+    if url.scheme not in ("http", "https") or not url.hostname:
+        raise ValueError(
+            get_remote_url_error_message(
+                _("Only HTTP and HTTPS addresses are allowed for remote imports.")
+            )
+        )
+
+    if url.username or url.password:
+        raise ValueError(
+            get_remote_url_error_message(
+                _("Authenticated URLs are not allowed for remote imports.")
+            )
+        )
+
+    hostname = _normalize_remote_hostname(url.hostname)
+    if (
+        hostname == "localhost"
+        or hostname.endswith(".localhost")
+        or hostname.endswith(".local")
+    ):
+        raise ValueError(get_remote_url_error_message())
+
+    addresses = _resolve_remote_addresses(hostname)
+    for address in addresses:
+        if not address.is_global:
+            raise ValueError(get_remote_url_error_message())
+
+    return url, addresses
+
+
+def _get_pinned_url(parsed_url, selected_ip):
+    """Replace an URL's host with the validated IP, preserving its port."""
+    if selected_ip.version == 6:
+        netloc_ip = f"[{selected_ip.compressed}]"
+    else:
+        netloc_ip = selected_ip.compressed
+    if parsed_url.port:
+        netloc_ip = f"{netloc_ip}:{parsed_url.port}"
+    return parsed_url._replace(netloc=netloc_ip).geturl()
+
+
+class PinnedIPAdapter(HTTPAdapter):
+    """Connect to a validated IP while retaining the original TLS hostname."""
+
+    def __init__(self, selected_ip):
+        self.selected_ip = selected_ip
+        super().__init__()
+
+    def build_connection_pool_key_attributes(self, request, verify, cert=None):
+        """Pin the connection without changing certificate verification settings."""
+        host_params, pool_kwargs = super().build_connection_pool_key_attributes(
+            request, verify, cert
+        )
+        if host_params["scheme"] == "https":
+            pool_kwargs["server_hostname"] = host_params["host"]
+            pool_kwargs["assert_hostname"] = host_params["host"]
+        host_params["host"] = self.selected_ip.compressed
+        return host_params, pool_kwargs
+
+    def request_url(self, request, proxies):
+        """Also pin absolute HTTP URLs forwarded through a proxy."""
+        request_url = super().request_url(request, proxies)
+        if request_url.startswith("http://"):
+            return _get_pinned_url(urlparse(request_url), self.selected_ip)
+        return request_url
+
+
+def get_secure_response(parsed_url, session, selected_ip, method, user_headers, **kwargs):
+    """Preserve the URL and cookies while connecting only to the validated IP."""
+    request_url = requests.Request(method, parsed_url.geturl()).prepare().url
+    request_headers = dict(user_headers)
+    request_headers["Host"] = urlparse(request_url).netloc
+    adapter = PinnedIPAdapter(selected_ip)
+    previous_adapters = session.adapters
+    session.adapters = {f"{parsed_url.scheme}://": adapter}
+    try:
+        return session.request(
+            method,
+            request_url,
+            allow_redirects=False,
+            headers=request_headers,
+            **kwargs,
+        )
+    finally:
+        session.adapters = previous_adapters
+        adapter.close()
+
+
+def safe_request(method: str, source_url: str, session: Session = None, **kwargs):
+    """Perform an HTTP request after validating the target and redirects."""
+    if session is None:
+        with Session() as owned_session:
+            return safe_request(method, source_url, session=owned_session, **kwargs)
+
+    parsed_url, addresses = validate_remote_import_url(source_url)
+    current_url = parsed_url.geturl()
+    remaining_redirects = 5
+
+    user_headers = kwargs.pop("headers", {}) or {}
+    while True:
+        selected_ip = next(iter(addresses))
+        response = get_secure_response(
+            parsed_url, session, selected_ip, method, user_headers, **kwargs
+        )
+        redirect_url = response.headers.get("Location")
+        if response.is_redirect and redirect_url:
+            if remaining_redirects <= 0:
+                response.close()
+                raise ValueError(
+                    get_remote_url_error_message(
+                        _("Too many redirects were encountered for this address.")
+                    )
+                )
+            next_url = urljoin(current_url, redirect_url)
+            response.close()
+            parsed_url, addresses = validate_remote_import_url(next_url)
+            current_url = parsed_url.geturl()
+            remaining_redirects -= 1
+            continue
+        return response
+
+
+def secure_request_for_upload(request) -> None:
     """Check that the request is correct for uploading a recording.
 
     Args:
@@ -89,41 +294,52 @@ def parse_remote_file(session: Session, source_html_url: str):
         String: name of the video found in the page
     """
     try:
-        response = session.get(source_html_url)
-        if response.status_code != 200:
-            # No more informations needed for common error
-            msg = ""
-            raise ValueError(msg)
-
-        # Parse the BBB video HTML file
-        parser = create_parser(response)
-
-        # Video file found
-        if parser.video_check:
-            # Security check about extensions
-            extension = parser.video_file.split(".")[-1].lower()
-            if extension not in VIDEO_ALLOWED_EXTENSIONS:
-                msg = {}
-                msg["error"] = _(
-                    "The video file for this recording was not found in the HTML file."
-                )
-                msg["message"] = _("The found file is not a valid video.")
+        with safe_request("get", source_html_url, session=session) as response:
+            if response.status_code != 200:
+                # No more informations needed for common error
+                msg = ""
                 raise ValueError(msg)
 
-            # Returns the name of the video (if necessary, title is parser.title)
-            return parser.video_file
-        else:
-            msg = ""
-            # Useful tips for Pod links
-            if (
-                source_html_url.find("/video/") != -1
-                or source_html_url.find("/media/videos/") != -1
-            ):
-                msg = _(
-                    "In the case of a video from a Pod platform, please enter "
-                    "the source file address, available in the video edition."
+            # Parse the BBB video HTML file
+            parser = create_parser(response)
+
+            # Video file found
+            if parser.video_check:
+                # Security check about extensions
+                extension = parser.video_file.split(".")[-1].lower()
+                if extension not in VIDEO_ALLOWED_EXTENSIONS:
+                    msg = {}
+                    msg["error"] = _(
+                        "The video file for this recording was not found in the HTML file."
+                    )
+                    msg["message"] = _("The found file is not a valid video.")
+                    raise ValueError(msg)
+
+                # Returns the name of the video (if necessary, title is parser.title)
+                return parser.video_file
+            else:
+                msg = ""
+                # Useful tips for Pod links
+                if (
+                    source_html_url.find("/video/") != -1
+                    or source_html_url.find("/media/videos/") != -1
+                ):
+                    msg = _(
+                        "In the case of a video from a Pod platform, please enter "
+                        "the source file address, available in the video edition."
+                    )
+                raise ValueError(
+                    "<div role='alert' class='alert alert-info'>%s</div>" % msg
                 )
-            raise ValueError("<div role='alert' class='alert alert-info'>%s</div>" % msg)
+    except ValueError as exc:
+        if exc.args and isinstance(exc.args[0], dict):
+            raise
+        msg = {}
+        msg["error"] = _(
+            "The video file for this recording was not found in the HTML file."
+        )
+        msg["message"] = mark_safe(str(exc))
+        raise ValueError(msg)
     except Exception as exc:
         msg = {}
         msg["error"] = _(
@@ -215,11 +431,13 @@ def manage_download(
         source_video_url = manage_recording_url(source_url, video_file_add)
         download_video_file(session, source_video_url, dest_file)
         return source_video_url
+    except ValueError:
+        raise
     except Exception as exc:
         raise ValueError(mark_safe(str(exc)))
 
 
-def download_video_file(session: Session, source_video_url: str, dest_file: str):
+def download_video_file(session: Session, source_video_url: str, dest_file: str) -> None:
     """Download video file.
 
     Args:
@@ -232,7 +450,23 @@ def download_video_file(session: Session, source_video_url: str, dest_file: str)
     """
     # Check if video file exists
     try:
-        with session.get(source_video_url, timeout=(10, 180), stream=True) as response:
+        dest_file = os.path.realpath(dest_file)
+        media_root_real = os.path.realpath(MEDIA_ROOT)
+        if not _is_path_within(dest_file, (MEDIA_ROOT,)) or (
+            os.path.commonpath([dest_file, media_root_real]) != media_root_real
+        ):
+            msg = {}
+            msg["error"] = _("Impossible to upload to Pod the video")
+            msg["message"] = _("Forbidden destination path.")
+            raise ValueError(msg)
+
+        with safe_request(
+            "get",
+            source_video_url,
+            session=session,
+            timeout=(10, 180),
+            stream=True,
+        ) as response:
             # Can be useful to debug
             # print(session.cookies.get_dict())
             if response.status_code != 200:
@@ -251,13 +485,15 @@ def download_video_file(session: Session, source_video_url: str, dest_file: str)
                 # file.write(response.content)
                 # Method 3: The fastest
                 shutil.copyfileobj(response.raw, file)
+    except ValueError:
+        raise
     except Exception as exc:
         raise ValueError(mark_safe(str(exc)))
 
 
 def save_video(
     user: User, dest_path: str, recording_name: str, description: str, date_evt=None
-):
+) -> None:
     """Save and encode the Pod video file.
 
     Args:
@@ -300,16 +536,16 @@ def check_url_exists(source_url: str) -> bool:
         Boolean: URL exists (True) or not (False)
     """
     try:
-        response = requests.head(source_url, timeout=2)
-        if response.status_code < 400:
-            return True
-        else:
-            return False
+        response = safe_request("head", source_url, timeout=2)
+        try:
+            return response.status_code < 400
+        finally:
+            response.close()
     except Exception:
         return False
 
 
-def verify_video_exists_and_size(video_url: str):
+def verify_video_exists_and_size(video_url: str) -> None:
     """Check that the video file exists and its size does not exceed the limit.
 
     Args:
@@ -319,16 +555,21 @@ def verify_video_exists_and_size(video_url: str):
         ValueError: exception raised if no video found in this URL or video oversized
     """
     try:
-        response = requests.head(video_url, timeout=2)
-        if response.status_code < 400:
-            # Video file size
-            size = int(response.headers.get("Content-Length", "0"))
-            check_video_size(size)
-        else:
-            msg = {}
-            msg["error"] = _("No video file found.")
-            msg["message"] = _("No video file found for this address.")
-            raise ValueError(msg)
+        response = safe_request("head", video_url, timeout=2)
+        try:
+            if response.status_code < 400:
+                # Video file size
+                size = int(response.headers.get("Content-Length", "0"))
+                check_video_size(size)
+            else:
+                msg = {}
+                msg["error"] = _("No video file found.")
+                msg["message"] = _("No video file found for this address.")
+                raise ValueError(msg)
+        finally:
+            response.close()
+    except ValueError:
+        raise
     except Exception:
         msg = {}
         msg["error"] = _("No video file found.")
@@ -336,7 +577,7 @@ def verify_video_exists_and_size(video_url: str):
         raise ValueError(msg)
 
 
-def check_video_size(video_size: int):
+def check_video_size(video_size: int) -> None:
     """Check that the video file size does not exceed the limit.
 
     Args:
@@ -502,30 +743,69 @@ def define_dest_file_and_path(user: User, id: str, extension: str):
         user.owner.hashkey,
         os.path.basename("%s-%s.%s" % (discrim, id, extension)),
     )
+    media_root_real = os.path.realpath(MEDIA_ROOT)
+    if not _is_path_within(dest_file, (MEDIA_ROOT,)) or (
+        os.path.commonpath([os.path.realpath(dest_file), media_root_real])
+        != media_root_real
+    ):
+        msg = {}
+        msg["error"] = _("Impossible to upload to Pod the video")
+        msg["message"] = _("Forbidden destination path.")
+        raise ValueError(msg)
     os.makedirs(os.path.dirname(dest_file), exist_ok=True)
     return dest_file, dest_path
 
 
 def check_file_exists(source: str) -> bool:
     """Check that a local file exists."""
-    if os.path.exists(source):
+    if _is_path_within(
+        source,
+        (MEDIA_ROOT, IMPORT_VIDEO_BBB_RECORDER_PATH),
+    ) and os.path.exists(source):
         return True
     else:
         return False
 
 
-def move_file(source: str, destination: str):
+def move_file(source: str, destination: str) -> None:
     """Move a file from a source to another destination."""
     try:
+        source = os.path.realpath(source)
+        destination = os.path.realpath(destination)
+        media_root_real = os.path.realpath(MEDIA_ROOT)
+        recorder_path_real = (
+            os.path.realpath(IMPORT_VIDEO_BBB_RECORDER_PATH)
+            if IMPORT_VIDEO_BBB_RECORDER_PATH
+            else None
+        )
+        source_in_media = os.path.commonpath([source, media_root_real]) == media_root_real
+        source_in_recorder = (
+            recorder_path_real is not None
+            and os.path.commonpath([source, recorder_path_real]) == recorder_path_real
+        )
+        destination_in_media = (
+            os.path.commonpath([destination, media_root_real]) == media_root_real
+        )
+        if not _is_path_within(source, (MEDIA_ROOT, IMPORT_VIDEO_BBB_RECORDER_PATH)):
+            print(_("Forbidden source path: %s") % source)
+            return
+        if not _is_path_within(destination, (MEDIA_ROOT,)):
+            print(_("Forbidden destination path: %s") % destination)
+            return
+        if (not source_in_media and not source_in_recorder) or not destination_in_media:
+            print(_("Forbidden move path."))
+            return
+
         # Ensure that the source file exists
         if not check_file_exists(source):
-            print(f"The source file '{source}' does not exist.")
+            print(_("The source file “%s” does not exist.") % source)
             return
 
         # Move the file to the destination directory
+        os.makedirs(os.path.dirname(destination), exist_ok=True)
         shutil.move(source, destination)
     except Exception as e:
-        print(f"Error moving the file: {e}")
+        print(_("Error moving the file: %s") % e)
 
 
 def check_url_format_presentation(source_url: str) -> bool:
@@ -616,7 +896,7 @@ class TypeSourceURL:
     # API URL if supplied
     api_url = ""
 
-    def __init__(self, type, url, extension, api_url):
+    def __init__(self, type, url, extension, api_url) -> None:
         """Initialize."""
         self.type = type
         self.url = url
@@ -632,7 +912,7 @@ class video_parser(HTMLParser):
         HTMLParser (_type_): _description_
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize video parser."""
         super().__init__()
         self.reset()
@@ -644,7 +924,7 @@ class video_parser(HTMLParser):
         self.video_file = ""
         self.video_type = ""
 
-    def handle_starttag(self, tag, attrs):
+    def handle_starttag(self, tag, attrs) -> None:
         """Parse BBB Web page and search video file."""
         attrs = dict(attrs)
         # Search for source tag
@@ -660,7 +940,7 @@ class video_parser(HTMLParser):
             # Found the title line
             self.title_check = True
 
-    def handle_data(self, data):
+    def handle_data(self, data) -> None:
         """Search for title tag."""
         if self.title_check:
             # Get the title that corresponds to recording's name
@@ -696,7 +976,7 @@ class StatelessRecording:
     # Recording id (BBB format), when created on the same BBB infra as meeting module
     recordingId = ""
 
-    def __init__(self, id, name, state):
+    def __init__(self, id, name, state) -> None:
         """Initiliaze."""
         self.id = id
         self.name = name
@@ -710,11 +990,11 @@ class StatelessRecording:
         """Return BBB epoch in milliseconds."""
         return dt.fromtimestamp(float(self.endTime) / 1000)
 
-    def get_duration(self):
+    def get_duration(self) -> str:
         """Return duration."""
         return str(self.get_end_time() - self.get_start_time()).split(".")[0]
 
-    def to_json(self):
+    def to_json(self) -> str:
         """Return recording data (without uploadedToPodBy) in JSON format."""
         exclusion_list = ["uploadedToPodBy"]
         return json.dumps(

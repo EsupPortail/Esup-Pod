@@ -39,9 +39,16 @@
       <i class="bi bi-file-text" aria-hidden="true"></i>&nbsp;{% trans "Import subtitle" %}
     </a>
   </span>
+  {% if USE_QUIZ %}
   <span>
     <a href="{% url 'ai_enhancement:enhance_quiz' video_slug=video.slug %}" class="btn btn-primary btn-sm m-2">
       <i class="bi bi-patch-question" aria-hidden="true"></i>&nbsp;{% trans "Import the quiz" %}
+    </a>
+  </span>
+  {% endif %}
+  <span>
+    <a href="{% url 'ai_enhancement:enhance_video_transcript_json' video_slug=video.slug %}" class="btn btn-primary btn-sm m-2">
+      <i class="bi bi-file-text" aria-hidden="true"></i>&nbsp;{% trans "Import transcript" %}
     </a>
   </span>
   <span>
@@ -120,6 +127,6 @@
   {{ form.media }}
   <script src="{% static 'ai_enhancement/js/enrich-form.js' %}?ver={{ VERSION }}"></script>
   <script>
-    addEventListeners("{{ video.slug }}", "{{ video.title }}", "{{ video.description|safe }}", "{{ video.disciplines }}", "{% url 'ai_enhancement:enhance_video_json' video_slug=video.slug %}");
+    addEventListeners("{{ video.slug }}", "{{ video.title|escapejs }}", "{{ video.description|escapejs  }}", "{{ video.disciplines|escapejs }}", "{% url 'ai_enhancement:enhance_video_json' video_slug=video.slug %}");
   </script>
 {% endblock more_script %}

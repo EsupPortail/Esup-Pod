@@ -1,89 +1,94 @@
 """Esup-Pod video encoding."""
 
+import argparse
 import json
+import logging
 import os
 import time
-from webvtt import WebVTT, Caption
-import argparse
 import unicodedata
 
+from webvtt import Caption, WebVTT
+
 if __name__ == "__main__":
+    from encoding_settings import (
+        FFMPEG_AUDIO_BITRATE,
+        FFMPEG_CMD,
+        FFMPEG_CREATE_OVERVIEW,
+        FFMPEG_CREATE_THUMBNAIL,
+        FFMPEG_CRF,
+        FFMPEG_DRESSING_AUDIO,
+        FFMPEG_DRESSING_CONCAT,
+        FFMPEG_DRESSING_FILTER_COMPLEX,
+        FFMPEG_DRESSING_INPUT,
+        FFMPEG_DRESSING_OUTPUT,
+        FFMPEG_DRESSING_SCALE,
+        FFMPEG_DRESSING_SILENT,
+        FFMPEG_DRESSING_WATERMARK,
+        FFMPEG_EXTRACT_SUBTITLE,
+        FFMPEG_EXTRACT_THUMBNAIL,
+        FFMPEG_HLS_COMMON_PARAMS,
+        FFMPEG_HLS_ENCODE_PARAMS,
+        FFMPEG_HLS_TIME,
+        FFMPEG_INPUT,
+        FFMPEG_LEVEL,
+        FFMPEG_LIBX,
+        FFMPEG_M4A_ENCODE,
+        FFMPEG_MP3_ENCODE,
+        FFMPEG_MP4_ENCODE,
+        FFMPEG_NB_THREADS,
+        FFMPEG_NB_THUMBNAIL,
+        FFMPEG_PRESET,
+        FFMPEG_PROFILE,
+        FFPROBE_CMD,
+        FFPROBE_GET_INFO,
+    )
     from encoding_utils import (
+        check_file,
         get_dressing_position_value,
         get_info_from_video,
         get_list_rendition,
         launch_cmd,
-        check_file,
-    )
-    from encoding_settings import (
-        FFMPEG_CMD,
-        FFPROBE_CMD,
-        FFPROBE_GET_INFO,
-        FFMPEG_CRF,
-        FFMPEG_PRESET,
-        FFMPEG_PROFILE,
-        FFMPEG_LEVEL,
-        FFMPEG_HLS_TIME,
-        FFMPEG_INPUT,
-        FFMPEG_LIBX,
-        FFMPEG_MP4_ENCODE,
-        FFMPEG_HLS_COMMON_PARAMS,
-        FFMPEG_HLS_ENCODE_PARAMS,
-        FFMPEG_MP3_ENCODE,
-        FFMPEG_M4A_ENCODE,
-        FFMPEG_NB_THREADS,
-        FFMPEG_AUDIO_BITRATE,
-        FFMPEG_EXTRACT_THUMBNAIL,
-        FFMPEG_NB_THUMBNAIL,
-        FFMPEG_CREATE_THUMBNAIL,
-        FFMPEG_CREATE_OVERVIEW,
-        FFMPEG_EXTRACT_SUBTITLE,
-        FFMPEG_DRESSING_INPUT,
-        FFMPEG_DRESSING_OUTPUT,
-        FFMPEG_DRESSING_WATERMARK,
-        FFMPEG_DRESSING_FILTER_COMPLEX,
-        FFMPEG_DRESSING_SCALE,
-        FFMPEG_DRESSING_CONCAT,
     )
 else:
+    from .encoding_settings import (
+        FFMPEG_AUDIO_BITRATE,
+        FFMPEG_CMD,
+        FFMPEG_CREATE_OVERVIEW,
+        FFMPEG_CREATE_THUMBNAIL,
+        FFMPEG_CRF,
+        FFMPEG_DRESSING_AUDIO,
+        FFMPEG_DRESSING_CONCAT,
+        FFMPEG_DRESSING_FILTER_COMPLEX,
+        FFMPEG_DRESSING_INPUT,
+        FFMPEG_DRESSING_OUTPUT,
+        FFMPEG_DRESSING_SCALE,
+        FFMPEG_DRESSING_SILENT,
+        FFMPEG_DRESSING_WATERMARK,
+        FFMPEG_EXTRACT_SUBTITLE,
+        FFMPEG_EXTRACT_THUMBNAIL,
+        FFMPEG_HLS_COMMON_PARAMS,
+        FFMPEG_HLS_ENCODE_PARAMS,
+        FFMPEG_HLS_TIME,
+        FFMPEG_INPUT,
+        FFMPEG_LEVEL,
+        FFMPEG_LIBX,
+        FFMPEG_M4A_ENCODE,
+        FFMPEG_MP3_ENCODE,
+        FFMPEG_MP4_ENCODE,
+        FFMPEG_NB_THREADS,
+        FFMPEG_NB_THUMBNAIL,
+        FFMPEG_PRESET,
+        FFMPEG_PROFILE,
+        FFPROBE_CMD,
+        FFPROBE_GET_INFO,
+    )
     from .encoding_utils import (
+        check_file,
         get_dressing_position_value,
         get_info_from_video,
         get_list_rendition,
         launch_cmd,
-        check_file,
     )
-    from .encoding_settings import (
-        FFMPEG_CMD,
-        FFPROBE_CMD,
-        FFPROBE_GET_INFO,
-        FFMPEG_CRF,
-        FFMPEG_PRESET,
-        FFMPEG_PROFILE,
-        FFMPEG_LEVEL,
-        FFMPEG_HLS_TIME,
-        FFMPEG_INPUT,
-        FFMPEG_LIBX,
-        FFMPEG_MP4_ENCODE,
-        FFMPEG_HLS_COMMON_PARAMS,
-        FFMPEG_HLS_ENCODE_PARAMS,
-        FFMPEG_MP3_ENCODE,
-        FFMPEG_M4A_ENCODE,
-        FFMPEG_NB_THREADS,
-        FFMPEG_AUDIO_BITRATE,
-        FFMPEG_EXTRACT_THUMBNAIL,
-        FFMPEG_NB_THUMBNAIL,
-        FFMPEG_CREATE_THUMBNAIL,
-        FFMPEG_CREATE_OVERVIEW,
-        FFMPEG_EXTRACT_SUBTITLE,
-        FFMPEG_DRESSING_INPUT,
-        FFMPEG_DRESSING_OUTPUT,
-        FFMPEG_DRESSING_WATERMARK,
-        FFMPEG_DRESSING_FILTER_COMPLEX,
-        FFMPEG_DRESSING_SCALE,
-        FFMPEG_DRESSING_CONCAT,
-    )
-
 
 __author__ = "Nicolas CAN <nicolas.can@univ-lille.fr>"
 __license__ = "LGPL v3"
@@ -149,8 +154,20 @@ try:
     FFMPEG_DRESSING_CONCAT = getattr(
         settings, "FFMPEG_DRESSING_CONCAT", FFMPEG_DRESSING_CONCAT
     )
+    FFMPEG_DRESSING_SILENT = getattr(
+        settings, "FFMPEG_DRESSING_SILENT", FFMPEG_DRESSING_SILENT
+    )
+    FFMPEG_DRESSING_AUDIO = getattr(
+        settings, "FFMPEG_DRESSING_AUDIO", FFMPEG_DRESSING_AUDIO
+    )
+    DEBUG = getattr(settings, "DEBUG", True)
 except ImportError:  # pragma: no cover
+    DEBUG = True
     pass
+
+logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
 
 
 class Encoding_video:
@@ -181,8 +198,14 @@ class Encoding_video:
     dressing_input = ""
 
     def __init__(
-        self, id=0, video_file="", start=0, stop=0, json_dressing=None, dressing_input=""
-    ):
+        self,
+        id=0,
+        video_file="",
+        start=0,
+        stop=0,
+        json_dressing=None,
+        dressing_input="",
+    ) -> None:
         """Initialize a new Encoding_video object."""
         self.id = id
         self.video_file = video_file
@@ -212,13 +235,13 @@ class Encoding_video:
         """Check if current encoding correspond to a video."""
         return len(self.list_video_track) > 0
 
-    def get_subtime(self, clip_begin, clip_end):
+    def get_subtime(self, clip_begin, clip_end) -> str:
         subtime = ""
         if clip_begin != 0 or clip_end != 0:
             subtime += "-ss %s " % str(clip_begin) + "-to %s " % str(clip_end)
         return subtime
 
-    def get_video_data(self):
+    def get_video_data(self) -> None:
         """Get alls tracks from video source and put it in object passed in parameter."""
         msg = "--> get_info_video\n"
         probe_cmd = FFPROBE_GET_INFO % {
@@ -234,7 +257,11 @@ class Encoding_video:
         msg += return_msg + "\n"
         self.add_encoding_log("probe_cmd", probe_cmd, True, msg)
         try:
-            duration = int(float("%s" % info["format"]["duration"]))
+            fmt = info.get("format") if info else None
+            if fmt and fmt.get("duration") is not None:
+                duration = int(float("%s" % fmt.get("duration")))
+            else:
+                raise KeyError("duration")
         except (RuntimeError, KeyError, AttributeError, ValueError, TypeError) as err:
             msg = "\nUnexpected error: {0}".format(err)
             self.add_encoding_log("duration", "", True, msg)
@@ -245,20 +272,22 @@ class Encoding_video:
         for stream in streams:
             self.add_stream(stream)
 
-    def fix_duration(self, input_file):
+    def fix_duration(self, input_file) -> None:
         msg = "--> get_info_video\n"
         probe_cmd = 'ffprobe -v quiet -show_entries format=duration -hide_banner  \
                     -of default=noprint_wrappers=1:nokey=1 -print_format json -i \
-                    "{}"'.format(
-            input_file
-        )
+                    "{}"'.format(input_file)
         info, return_msg = get_info_from_video(probe_cmd)
         msg += json.dumps(info, indent=2)
         msg += " \n"
         msg += return_msg + "\n"
         duration = 0
         try:
-            duration = int(float("%s" % info["format"]["duration"]))
+            fmt = info.get("format") if info else None
+            if fmt and fmt.get("duration") is not None:
+                duration = int(float("%s" % fmt.get("duration")))
+            else:
+                raise KeyError("duration")
         except (RuntimeError, KeyError, AttributeError, ValueError, TypeError) as err:
             msg += "\nUnexpected error: {0}".format(err)
         self.add_encoding_log("fix_duration", "", True, msg)
@@ -298,14 +327,14 @@ class Encoding_video:
         dirname = os.path.dirname(self.video_file)
         return os.path.join(dirname, "%04d" % int(self.id))
 
-    def create_output_dir(self):
+    def create_output_dir(self) -> None:
         output_dir = self.get_output_dir()
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         self.output_dir = output_dir
 
     def get_mp4_command(self) -> str:
-        mp4_command = "%s " % FFMPEG_CMD
+        mp4_cmd_parts = [FFMPEG_CMD]
         list_rendition = get_list_rendition()
         # remove rendition if encode_mp4 == False
         for rend in list_rendition.copy():
@@ -314,25 +343,31 @@ class Encoding_video:
         if len(list_rendition) == 0:
             return ""
         first_item = list_rendition.popitem(last=False)
-        mp4_command += FFMPEG_INPUT % {
-            "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS,
-        }
+        mp4_cmd_parts.append(
+            FFMPEG_INPUT
+            % {
+                "input": self.video_file,
+                "nb_threads": FFMPEG_NB_THREADS,
+            }
+        )
         output_file = os.path.join(self.output_dir, "%sp.mp4" % first_item[0])
-        mp4_command += FFMPEG_MP4_ENCODE % {
-            "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
-            "map_audio": "-map 0:a:0" if len(self.list_audio_track) > 0 else "",
-            "libx": FFMPEG_LIBX,
-            "height": first_item[0],
-            "preset": FFMPEG_PRESET,
-            "profile": FFMPEG_PROFILE,
-            "level": FFMPEG_LEVEL,
-            "crf": FFMPEG_CRF,
-            "maxrate": first_item[1]["maxrate"],
-            "bufsize": first_item[1]["maxrate"],
-            "ba": first_item[1]["audio_bitrate"],
-            "output": output_file,
-        }
+        mp4_cmd_parts.append(
+            FFMPEG_MP4_ENCODE
+            % {
+                "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
+                "map_audio": "-map 0:a:0" if len(self.list_audio_track) > 0 else "",
+                "libx": FFMPEG_LIBX,
+                "height": first_item[0],
+                "preset": FFMPEG_PRESET,
+                "profile": FFMPEG_PROFILE,
+                "level": FFMPEG_LEVEL,
+                "crf": FFMPEG_CRF,
+                "maxrate": first_item[1]["maxrate"],
+                "bufsize": first_item[1]["maxrate"],
+                "ba": first_item[1]["audio_bitrate"],
+                "output": output_file,
+            }
+        )
         self.list_mp4_files[first_item[0]] = output_file
         """
         il est possible de faire ainsi :
@@ -348,30 +383,38 @@ class Encoding_video:
             )
             if in_height >= resolution_threshold:
                 output_file = os.path.join(self.output_dir, "%sp.mp4" % rend)
-                mp4_command += FFMPEG_MP4_ENCODE % {
-                    "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
-                    "map_audio": "-map 0:a:0" if len(self.list_audio_track) > 0 else "",
-                    "libx": FFMPEG_LIBX,
-                    "height": min(rend, in_height),
-                    "preset": FFMPEG_PRESET,
-                    "profile": FFMPEG_PROFILE,
-                    "level": FFMPEG_LEVEL,
-                    "crf": FFMPEG_CRF,
-                    "maxrate": list_rendition[rend]["maxrate"],
-                    "bufsize": list_rendition[rend]["maxrate"],
-                    "ba": list_rendition[rend]["audio_bitrate"],
-                    "output": output_file,
-                }
+                mp4_cmd_parts.append(
+                    FFMPEG_MP4_ENCODE
+                    % {
+                        "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
+                        "map_audio": (
+                            "-map 0:a:0" if len(self.list_audio_track) > 0 else ""
+                        ),
+                        "libx": FFMPEG_LIBX,
+                        "height": min(rend, in_height),
+                        "preset": FFMPEG_PRESET,
+                        "profile": FFMPEG_PROFILE,
+                        "level": FFMPEG_LEVEL,
+                        "crf": FFMPEG_CRF,
+                        "maxrate": list_rendition[rend]["maxrate"],
+                        "bufsize": list_rendition[rend]["maxrate"],
+                        "ba": list_rendition[rend]["audio_bitrate"],
+                        "output": output_file,
+                    }
+                )
                 self.list_mp4_files[rend] = output_file
-        return mp4_command
+        return " ".join(mp4_cmd_parts)
 
     def get_hls_command(self) -> str:
-        hls_command = "%s " % FFMPEG_CMD
+        hls_cmd_parts = [FFMPEG_CMD]
         list_rendition = get_list_rendition()
-        hls_command += FFMPEG_INPUT % {
-            "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS,
-        }
+        hls_cmd_parts.append(
+            FFMPEG_INPUT
+            % {
+                "input": self.video_file,
+                "nb_threads": FFMPEG_NB_THREADS,
+            }
+        )
         hls_common_params = FFMPEG_HLS_COMMON_PARAMS % {
             "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
             "libx": FFMPEG_LIBX,
@@ -380,7 +423,7 @@ class Encoding_video:
             "level": FFMPEG_LEVEL,
             "crf": FFMPEG_CRF,
         }
-        hls_command += hls_common_params
+        hls_cmd_parts.append(hls_common_params)
         in_height = list(self.list_video_track.items())[0][1]["height"]
         for index, rend in enumerate(list_rendition):
             resolution_threshold = rend - rend * (
@@ -388,17 +431,20 @@ class Encoding_video:
             )
             if in_height >= resolution_threshold or index == 0:
                 output_file = os.path.join(self.output_dir, "%sp.m3u8" % rend)
-                hls_command += hls_common_params
-                hls_command += FFMPEG_HLS_ENCODE_PARAMS % {
-                    "height": min(rend, in_height),
-                    "maxrate": list_rendition[rend]["maxrate"],
-                    "bufsize": list_rendition[rend]["maxrate"],
-                    "ba": list_rendition[rend]["audio_bitrate"],
-                    "hls_time": FFMPEG_HLS_TIME,
-                    "output": output_file,
-                }
+                hls_cmd_parts.append(hls_common_params)
+                hls_cmd_parts.append(
+                    FFMPEG_HLS_ENCODE_PARAMS
+                    % {
+                        "height": min(rend, in_height),
+                        "maxrate": list_rendition[rend]["maxrate"],
+                        "bufsize": list_rendition[rend]["maxrate"],
+                        "ba": list_rendition[rend]["audio_bitrate"],
+                        "hls_time": FFMPEG_HLS_TIME,
+                        "output": output_file,
+                    }
+                )
                 self.list_hls_files[rend] = output_file
-        return hls_command
+        return " ".join(hls_cmd_parts)
 
     def get_dressing_file(self) -> str:
         """Create or replace the dressed video file."""
@@ -408,99 +454,219 @@ class Encoding_video:
         return output_file
 
     def get_dressing_command(self) -> str:
-        """Get the command based on the dressing object parameters."""
-        height = str(list(self.list_video_track.items())[0][1]["height"])
-        order_opening_credits = 0
-        dressing_command_params = "[vid][0:a]"
-        number_concat = 1
-        dressing_command = "%s " % FFMPEG_CMD
-        dressing_command += FFMPEG_INPUT % {
-            "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS,
-        }
+        """
+        Generate the FFMPEG command based on the dressing object parameters.
 
-        dressing_command += self.dressing_input
-        dressing_command_filter = []
-        dressing_command_filter.append(
-            FFMPEG_DRESSING_SCALE
+        Returns:
+            A string representing the complete FFMPEG command.
+        """
+        height = str(list(self.list_video_track.items())[0][1]["height"])
+        dressing_cmd_parts = [FFMPEG_CMD]
+        dressing_cmd_parts.append(
+            FFMPEG_INPUT
             % {
-                "number": "0",
-                "height": height,
-                "name": "vid",
+                "input": self.video_file,
+                "nb_threads": FFMPEG_NB_THREADS,
             }
         )
-        if self.json_dressing["watermark"]:
-            dressing_command_params = "[video][0:a]"
-            order_opening_credits = order_opening_credits + 1
-            name_out = ""
-            if (
-                self.json_dressing["opening_credits"]
-                or self.json_dressing["ending_credits"]
-            ):
-                name_out = "[video]"
-            dressing_command_filter.append(
-                FFMPEG_DRESSING_WATERMARK
-                % {
-                    "opacity": self.json_dressing["opacity"] / 100.0,
-                    "position": get_dressing_position_value(
-                        self.json_dressing["position_orig"], height
-                    ),
-                    "name_out": name_out,
-                }
-            )
-        if self.json_dressing["opening_credits"]:
-            order_opening_credits = order_opening_credits + 1
-            number_concat = number_concat + 1
-            dressing_command_params = (
-                "[debut][" + str(order_opening_credits) + ":a]" + dressing_command_params
-            )
-            dressing_command_filter.append(
-                FFMPEG_DRESSING_SCALE
-                % {
-                    "number": str(order_opening_credits),
-                    "height": height,
-                    "name": "debut",
-                }
-            )
-        if self.json_dressing["ending_credits"]:
-            number_concat = number_concat + 1
-            dressing_command_params = (
-                dressing_command_params
-                + "[fin]["
-                + str(order_opening_credits + 1)
-                + ":a]"
-            )
-            dressing_command_filter.append(
-                FFMPEG_DRESSING_SCALE
-                % {
-                    "number": str(order_opening_credits + 1),
-                    "height": str(list(self.list_video_track.items())[0][1]["height"]),
-                    "name": "fin",
-                }
-            )
-        if self.json_dressing["opening_credits"] or self.json_dressing["ending_credits"]:
-            dressing_command_filter.append(
-                FFMPEG_DRESSING_CONCAT
-                % {
-                    "params": dressing_command_params,
-                    "number": number_concat,
-                }
-            )
 
-        dressing_command += FFMPEG_DRESSING_FILTER_COMPLEX % {
-            "filter": ";".join(dressing_command_filter),
-        }
+        dressing_cmd_parts.append(self.dressing_input)
 
-        if self.json_dressing["opening_credits"] or self.json_dressing["ending_credits"]:
-            dressing_command += " -map '[v]' -map '[a]' "
+        # Handle opening and ending credits
+        dressing_cmd_parts.append(self.handle_dressing_credits())
+
+        # Apply filters
+        dressing_command_filter, dressing_command_params = self.build_dressing_filters(
+            height
+        )
+
+        dressing_cmd_parts.append(
+            FFMPEG_DRESSING_FILTER_COMPLEX
+            % {
+                "filter": ";".join(dressing_command_filter),
+            }
+        )
+
+        if self.json_dressing.get("opening_credits") or self.json_dressing.get(
+            "ending_credits"
+        ):
+            dressing_cmd_parts.append("-map '[v]' -map '[a]'")
 
         output_file = self.get_dressing_file()
-        dressing_command += FFMPEG_DRESSING_OUTPUT % {
-            "output": output_file,
-        }
-        return dressing_command
+        dressing_cmd_parts.append(FFMPEG_DRESSING_OUTPUT % {"output": output_file})
 
-    def encode_video_dressing(self):
+        return " ".join(dressing_cmd_parts)
+
+    def handle_dressing_credits(self) -> str:
+        """
+        Handle the addition of opening and ending credits to the command.
+
+        Returns:
+            A string with the FFMPEG commands for silent credits if required.
+        """
+        command = ""
+        for credit_type in ["opening_credits", "ending_credits"]:
+            if self.json_dressing.get(credit_type):
+                has_audio_key = f"{credit_type}_video_hasaudio"
+                duration_key = f"{credit_type}_video_duration"
+
+                if not self.json_dressing.get(has_audio_key, True):
+                    duration = self.json_dressing.get(duration_key)
+
+                    try:
+                        duration = int(duration) if duration and int(duration) > 0 else 1
+                    except (ValueError, TypeError):
+                        duration = 1
+
+                    command += FFMPEG_DRESSING_SILENT % {"duration": duration}
+
+        return command
+
+    def build_dressing_filters(self, height: str):
+        """
+        Build the filters for video processing.
+
+        Args:
+            height: The height of the video for scaling purposes.
+
+        Returns:
+            A tuple containing the list of filters and the filter parameters.
+        """
+        filters = []
+        params = ""
+        order = 0
+        interval_silent = 0
+        concat_number = 1
+
+        # Base video track
+        filters.append(
+            FFMPEG_DRESSING_SCALE % {"number": "0", "height": height, "name": "vid"}
+        )
+        params = "[vid][0:a]"
+        order = order + 1
+
+        # Watermark if present
+        if self.json_dressing.get("watermark"):
+            filters.append(self.apply_dressing_watermark(height))
+            params = "[video][0:a]"
+            order = order + 1
+
+        interval_silent = order
+        # Opening credits
+        if self.json_dressing.get("opening_credits"):
+            if self.json_dressing.get("ending_credits"):
+                interval_silent = interval_silent + 1
+            filters, params, interval_silent = self.add_dressing_credits(
+                filters,
+                params,
+                height,
+                "opening_credits",
+                "debut",
+                order,
+                interval_silent,
+            )
+            order = order + 1
+            concat_number = concat_number + 1
+
+        # Ending credits
+        if self.json_dressing.get("ending_credits"):
+            filters, params, interval_silent = self.add_dressing_credits(
+                filters, params, height, "ending_credits", "fin", order, interval_silent
+            )
+            concat_number = concat_number + 1
+
+        # Concatenate if needed
+        if self.json_dressing.get("opening_credits") or self.json_dressing.get(
+            "ending_credits"
+        ):
+            filters.append(
+                FFMPEG_DRESSING_CONCAT % {"params": params, "number": concat_number}
+            )
+
+        return filters, params
+
+    def apply_dressing_watermark(self, height: str) -> str:
+        """
+        Apply the watermark to the video.
+
+        Args:
+            height: The height of the video to position the watermark correctly.
+
+        Returns:
+            A string representing the FFMPEG command for applying the watermark.
+        """
+        if not self.json_dressing:
+            return ""
+        opacity = self.json_dressing.get("opacity", 100) / 100.0
+        position = get_dressing_position_value(
+            self.json_dressing.get("position_orig", "center"), height
+        )
+        name_out = (
+            "[video]"
+            if self.json_dressing.get("opening_credits")
+            or self.json_dressing.get("ending_credits")
+            else ""
+        )
+
+        return FFMPEG_DRESSING_WATERMARK % {
+            "opacity": opacity,
+            "position": position,
+            "name_out": name_out,
+        }
+
+    def add_dressing_credits(
+        self,
+        filters: list,
+        params: str,
+        height: str,
+        credit_type: str,
+        name: str,
+        order: int,
+        interval_silent: int,
+    ):
+        """
+        Add opening or ending credits to the FFmpeg command by updating the filters and parameters.
+
+        Args:
+            filters (list): A list of existing FFmpeg filters to which new filters will be appended.
+            params (str): The current filter parameters string that will be updated to include the credits.
+            height (str): The height of the video used for scaling the credit overlay.
+            credit_type (str): Specifies the type of credits to add, either 'opening_credits' or 'ending_credits'.
+            name (str): The identifier for the credit video or overlay to be used in the FFmpeg filter graph.
+            order (int): The position identifier for the audio stream, used to sync audio with the credits.
+            interval_silent (int): Counter indicating the number of silent audio intervals inserted, used when adding silent audio tracks.
+
+        Returns:
+            tuple:
+                - Updated list of filters with the added credit filters.
+                - Updated filter parameter string reflecting the new credit positioning.
+                - Updated interval_silent value if a silent audio track was added.
+        """
+        audio_out = f"{order}:a"
+
+        if not self.json_dressing.get(f"{credit_type}_video_hasaudio"):
+            audio_out = f"a{order}"
+            filters.append(
+                FFMPEG_DRESSING_AUDIO
+                % {
+                    "param_in": f"{interval_silent + 1}:a",
+                    "param_out": audio_out,
+                }
+            )
+            interval_silent = interval_silent + 1
+
+        if credit_type == "opening_credits":
+            params = f"[{name}][{audio_out}]{params}"
+        else:
+            params = f"{params}[{name}][{audio_out}]"
+
+        filters.append(
+            FFMPEG_DRESSING_SCALE % {"number": str(order), "height": height, "name": name}
+        )
+
+        return filters, params, interval_silent
+
+    def encode_video_dressing(self) -> None:
         """Encode the dressed video."""
         dressing_command = self.get_dressing_command()
         return_value, return_msg = launch_cmd(dressing_command)
@@ -509,7 +675,7 @@ class Encoding_video:
         )
         self.video_file = self.get_dressing_file()
 
-    def encode_video_part(self):
+    def encode_video_part(self) -> None:
         """Encode the video part of a file."""
         mp4_command = self.get_mp4_command()
         return_value, return_msg = launch_cmd(mp4_command)
@@ -526,7 +692,7 @@ class Encoding_video:
             self.create_main_livestream()
         self.add_encoding_log("hls_command", hls_command, return_value, return_msg)
 
-    def create_main_livestream(self):
+    def create_main_livestream(self) -> None:
         list_rendition = get_list_rendition()
         livestream_content = ""
         for index, rend in enumerate(list_rendition):
@@ -548,36 +714,48 @@ class Encoding_video:
         livestream_file.close()
 
     def get_mp3_command(self) -> str:
-        mp3_command = "%s " % FFMPEG_CMD
-        mp3_command += FFMPEG_INPUT % {
-            "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS,
-        }
+        mp3_cmd_parts = [FFMPEG_CMD]
+        mp3_cmd_parts.append(
+            FFMPEG_INPUT
+            % {
+                "input": self.video_file,
+                "nb_threads": FFMPEG_NB_THREADS,
+            }
+        )
         output_file = os.path.join(self.output_dir, "audio_%s.mp3" % FFMPEG_AUDIO_BITRATE)
-        mp3_command += FFMPEG_MP3_ENCODE % {
-            # "audio_bitrate": AUDIO_BITRATE,
-            "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
-            "output": output_file,
-        }
+        mp3_cmd_parts.append(
+            FFMPEG_MP3_ENCODE
+            % {
+                # "audio_bitrate": AUDIO_BITRATE,
+                "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
+                "output": output_file,
+            }
+        )
         self.list_mp3_files[FFMPEG_AUDIO_BITRATE] = output_file
-        return mp3_command
+        return " ".join(mp3_cmd_parts)
 
     def get_m4a_command(self) -> str:
-        m4a_command = "%s " % FFMPEG_CMD
-        m4a_command += FFMPEG_INPUT % {
-            "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS,
-        }
+        m4a_cmd_parts = [FFMPEG_CMD]
+        m4a_cmd_parts.append(
+            FFMPEG_INPUT
+            % {
+                "input": self.video_file,
+                "nb_threads": FFMPEG_NB_THREADS,
+            }
+        )
         output_file = os.path.join(self.output_dir, "audio_%s.m4a" % FFMPEG_AUDIO_BITRATE)
-        m4a_command += FFMPEG_M4A_ENCODE % {
-            "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
-            "audio_bitrate": FFMPEG_AUDIO_BITRATE,
-            "output": output_file,
-        }
+        m4a_cmd_parts.append(
+            FFMPEG_M4A_ENCODE
+            % {
+                "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
+                "audio_bitrate": FFMPEG_AUDIO_BITRATE,
+                "output": output_file,
+            }
+        )
         self.list_m4a_files[FFMPEG_AUDIO_BITRATE] = output_file
-        return m4a_command
+        return " ".join(m4a_cmd_parts)
 
-    def encode_audio_part(self):
+    def encode_audio_part(self) -> None:
         """Encode the audio part of a video."""
         mp3_command = self.get_mp3_command()
         return_value, return_msg = launch_cmd(mp3_command)
@@ -591,41 +769,56 @@ class Encoding_video:
             self.add_encoding_log("m4a_command", m4a_command, return_value, return_msg)
 
     def get_extract_thumbnail_command(self) -> str:
-        thumbnail_command = "%s " % FFMPEG_CMD
-        thumbnail_command += FFMPEG_INPUT % {
-            "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS,
-        }
+        thumbnail_cmd_parts = [FFMPEG_CMD]
+        thumbnail_cmd_parts.append(
+            FFMPEG_INPUT
+            % {
+                "input": self.video_file,
+                "nb_threads": FFMPEG_NB_THREADS,
+            }
+        )
         for img in self.list_image_track:
             output_file = os.path.join(self.output_dir, "thumbnail_%s.png" % img)
-            thumbnail_command += FFMPEG_EXTRACT_THUMBNAIL % {
-                "index": img,
-                "output": output_file,
-            }
+            thumbnail_cmd_parts.append(
+                FFMPEG_EXTRACT_THUMBNAIL
+                % {
+                    "index": img,
+                    "output": output_file,
+                }
+            )
             self.list_thumbnail_files[img] = output_file
-        return thumbnail_command
+        return " ".join(thumbnail_cmd_parts)
 
     def get_create_thumbnail_command(self) -> str:
-        thumbnail_command = "%s " % FFMPEG_CMD
+        thumbnail_cmd_parts = [FFMPEG_CMD]
         first_item = self.get_first_item()
+        if not first_item or first_item[0] not in self.list_mp4_files:
+            logger.error("No MP4 rendition available to create thumbnails.")
+            return ""
         input_file = self.list_mp4_files[first_item[0]]
-        thumbnail_command += FFMPEG_INPUT % {
-            "input": input_file,
-            "nb_threads": FFMPEG_NB_THREADS,
-        }
+        thumbnail_cmd_parts.append(
+            FFMPEG_INPUT
+            % {
+                "input": input_file,
+                "nb_threads": FFMPEG_NB_THREADS,
+            }
+        )
         output_file = os.path.join(self.output_dir, "thumbnail")
-        thumbnail_command += FFMPEG_CREATE_THUMBNAIL % {
-            "duration": self.duration,
-            "nb_thumbnail": FFMPEG_NB_THUMBNAIL,
-            "output": output_file,
-        }
+        thumbnail_cmd_parts.append(
+            FFMPEG_CREATE_THUMBNAIL
+            % {
+                "duration": self.duration,
+                "nb_thumbnail": FFMPEG_NB_THUMBNAIL,
+                "output": output_file,
+            }
+        )
         for nb in range(0, FFMPEG_NB_THUMBNAIL):
             num_thumb = str(nb + 1)
             self.list_thumbnail_files[num_thumb] = "%s_000%s.png" % (
                 output_file,
                 num_thumb,
             )
-        return thumbnail_command
+        return " ".join(thumbnail_cmd_parts)
 
     def get_first_item(self):
         """Get the first mp4 render from setting."""
@@ -638,8 +831,11 @@ class Encoding_video:
         else:
             return list_rendition.popitem(last=False)
 
-    def create_overview(self):
+    def create_overview(self) -> None:
         first_item = self.get_first_item()
+        if not first_item or first_item[0] not in self.list_mp4_files:
+            logger.error("No MP4 rendition available to create overview.")
+            return
         # overview combine for 160x90
         in_height = list(self.list_video_track.items())[0][1]["height"]
         in_width = list(self.list_video_track.items())[0][1]["width"]
@@ -669,7 +865,7 @@ class Encoding_video:
         )
         return_value, output_message = launch_cmd(overview_image_command)
         if not return_value or not check_file(overviewimagefilename):
-            print(f"FFmpeg failed with output: {output_message}")
+            logger.error(f"FFmpeg failed with output: {output_message}")
 
         overviewfilename = os.path.join(self.output_dir, "overview.vtt")
         image_url = os.path.basename(overviewimagefilename)
@@ -699,7 +895,7 @@ class Encoding_video:
         else:
             self.add_encoding_log("create_overview", "", False, "")
 
-    def encode_image_part(self):
+    def encode_image_part(self) -> None:
         if len(self.list_image_track) > 0:
             thumbnail_command = self.get_extract_thumbnail_command()
             return_value, return_msg = launch_cmd(thumbnail_command)
@@ -718,22 +914,28 @@ class Encoding_video:
             self.create_overview()
 
     def get_extract_subtitle_command(self) -> str:
-        subtitle_command = "%s " % FFMPEG_CMD
-        subtitle_command += FFMPEG_INPUT % {
-            "input": self.video_file,
-            "nb_threads": FFMPEG_NB_THREADS,
-        }
+        subtitle_cmd_parts = [FFMPEG_CMD]
+        subtitle_cmd_parts.append(
+            FFMPEG_INPUT
+            % {
+                "input": self.video_file,
+                "nb_threads": FFMPEG_NB_THREADS,
+            }
+        )
         for sub in self.list_subtitle_track:
             lang = self.list_subtitle_track[sub]["language"]
             output_file = os.path.join(self.output_dir, "subtitle_%s.vtt" % lang)
-            subtitle_command += FFMPEG_EXTRACT_SUBTITLE % {
-                "index": sub,
-                "output": output_file,
-            }
+            subtitle_cmd_parts.append(
+                FFMPEG_EXTRACT_SUBTITLE
+                % {
+                    "index": sub,
+                    "output": output_file,
+                }
+            )
             self.list_subtitle_files[sub] = [lang, output_file]
-        return subtitle_command
+        return " ".subtitle_cmd_parts
 
-    def get_subtitle_part(self):
+    def get_subtitle_part(self) -> None:
         if len(self.list_subtitle_track) > 0:
             subtitle_command = self.get_extract_subtitle_command()
             return_value, return_msg = launch_cmd(subtitle_command)
@@ -741,32 +943,39 @@ class Encoding_video:
                 "subtitle_command", subtitle_command, return_value, return_msg
             )
 
-    def export_to_json(self):
+    def export_to_json(self) -> None:
         data_to_dump = {}
         for attribute, value in self.__dict__.items():
             data_to_dump[attribute] = value
         with open(self.output_dir + "/info_video.json", "w") as outfile:
             json.dump(data_to_dump, outfile, indent=2)
 
-    def add_encoding_log(self, title, command, result, msg):
+    def add_encoding_log(self, title, command, result, msg) -> None:
         """Add Encoding step to the encoding_log dict."""
         self.encoding_log[title] = {"command": command, "result": result, "msg": msg}
         if result is False and self.error_encoding is False:
             self.error_encoding = True
 
-    def start_encode(self):
+    def start_encode(self) -> None:
         self.start = time.ctime()
         self.create_output_dir()
         self.get_video_data()
         if self.json_dressing is not None:
             self.encode_video_dressing()
-        print(self.id, self.video_file, self.duration)
+        logger.info(
+            "start_encode {id: %s, file: %s, duration: %s}"
+            % (self.id, self.video_file, self.duration)
+        )
         if self.is_video():
+            logger.debug("* encode_video_part")
             self.encode_video_part()
         if len(self.list_audio_track) > 0:
+            logger.debug("* encode_audio_part")
             self.encode_audio_part()
+        logger.debug("* encode_image_part")
         self.encode_image_part()
         if len(self.list_subtitle_track) > 0:
+            logger.debug("* get_subtitle_part")
             self.get_subtitle_part()
         self.stop = time.ctime()
         self.export_to_json()
@@ -792,7 +1001,7 @@ def fix_input(input) -> str:
             path_file,
             filename,
         )
-        print("Encoding file {} \n".format(filename))
+        logger.info("Encoding file {} \n".format(filename))
     return filename
 
 
@@ -809,10 +1018,16 @@ if __name__ == "__main__":
     parser.add_argument("--dressing", required=False, help="Dressing for the video")
 
     args = parser.parse_args()
-    print(args.start)
+    logger.debug(args.start)
     filename = fix_input(args.input)
+    dressing_data = None
+    if args.dressing:
+        try:
+            dressing_data = json.loads(args.dressing)
+        except json.JSONDecodeError:
+            logger.error("Invalid dressing JSON provided, ignoring it.")
     encoding_video = Encoding_video(
-        args.id, filename, args.start, args.stop, args.dressing
+        args.id, filename, args.start, args.stop, dressing_data
     )
     # error if uncommented
     # encoding_video.encoding_log += start

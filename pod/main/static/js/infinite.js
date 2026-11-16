@@ -48,8 +48,14 @@ function detect_visibility() {
 }
 */
 
+/**
+ * Checks if a specific footer element is at least 5% visible in the viewport.
+ *
+ * @function
+ * @returns {boolean} Returns true if the footer is visible in the viewport, otherwise false.
+ */
 const isElementXPercentInViewport = function () {
-  const percentVisible = 95;
+  const percentVisible = 5;
   var footer = document.querySelector(
     "footer.container-fluid.pod-footer-container",
   );
@@ -64,6 +70,30 @@ const isElementXPercentInViewport = function () {
   );
 };
 
+/**
+ * InfiniteLoader handles infinite scrolling and dynamic loading of paginated content.
+ *
+ * @class
+ * @param {string} url - The base URL to fetch paginated data from.
+ * @param {Function} callBackBeforeLoad - Callback function executed before loading new content.
+ * @param {Function} callBackAfterLoad - Callback function executed after new content is loaded.
+ * @param {boolean} [nextPage=true] - Indicates if there is a next page to load.
+ * @param {number} [page=2] - The initial page number to start loading from.
+ *
+ * @property {HTMLElement} infinite_loading - The loader element shown during loading.
+ * @property {HTMLElement} videos_list - The container element for the loaded content.
+ * @property {number} next_page_number - The next page number to load.
+ * @property {number} current_page_number - The current page number loaded.
+ * @property {boolean|string} nextPage - Indicates if there is a next page to load.
+ * @property {Function} callBackBeforeLoad - Callback before loading new content.
+ * @property {Function} callBackAfterLoad - Callback after loading new content.
+ * @property {string} url - The base URL for fetching data.
+ * @property {Function} scroller_init - The scroll event handler for triggering loading.
+ *
+ * @method initMore - Loads the next page of content and updates the DOM.
+ * @method removeLoader - Removes the scroll event listener to stop infinite loading.
+ * @method getData - Fetches data for a given page from the server.
+ */
 class InfiniteLoader {
   constructor(
     url,
@@ -77,6 +107,8 @@ class InfiniteLoader {
     this.next_page_number = page;
     this.current_page_number = page - 1;
     this.nextPage = nextPage;
+    this.stopped = false;
+    this.loading = false;
     this.callBackBeforeLoad = callBackBeforeLoad;
     this.callBackAfterLoad = callBackAfterLoad;
     this.url = url;
@@ -96,44 +128,85 @@ class InfiniteLoader {
     };
     window.addEventListener("scroll", this.scroller_init);
   }
+
+  /**
+   * Loads the next page of content and updates the DOM.
+   */
   async initMore() {
+    if (this.stopped || this.loading) return;
+    this.loading = true;
     this.callBackBeforeLoad();
     let url = this.url;
-    this.getData(url, this.next_page_number, this.nextPage).then((data) => {
-      if (data !== null && data !== undefined) {
-        const html = new DOMParser().parseFromString(data, "text/html");
-        if (html.getElementById("videos_list").dataset.nextpage !== "True") {
-          this.nextPage = false;
-        }
-        this.nextPage = html.getElementById("videos_list").dataset.nextpage;
-        let element = this.videos_list;
+    return this.getData(url, this.next_page_number, this.nextPage)
+      .then((data) => {
+        if (this.stopped) return;
+        if (data !== null && data !== undefined) {
+          const html = new DOMParser().parseFromString(data, "text/html");
+          const newList = html.getElementById("videos_list");
+          if (!newList) throw new Error("Missing video list");
+          this.nextPage = newList.dataset.nextpage === "true";
+          let element = this.videos_list;
 
-        element.innerHTML += html.getElementById("videos_list").innerHTML;
-        this.next_page_number += 1;
-        const favoritesButtons =
-          document.getElementsByClassName("favorite-btn-link");
-        for (let btn of favoritesButtons) {
-          preventRefreshButton(btn, true);
+          element.innerHTML += newList.innerHTML;
+          this.next_page_number += 1;
+          const favoritesButtons =
+            document.getElementsByClassName("favorite-btn-link");
+          for (let btn of favoritesButtons) {
+            if (typeof preventRefreshButton === "function")
+              preventRefreshButton(btn, true);
+          }
         }
-      }
-      this.callBackAfterLoad();
-      /* Refresh Bootstrap tooltips after load */
-      const tooltipTriggerList = document.querySelectorAll(
-        '[data-bs-toggle="tooltip"], [data-pod-tooltip="true"]',
-      );
-      [...tooltipTriggerList].map(
-        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
-      );
-    });
+        /* Refresh Bootstrap tooltips after load */
+        const tooltipTriggerList = document.querySelectorAll(
+          '[data-bs-toggle="tooltip"], [data-pod-tooltip="true"]',
+        );
+        [...tooltipTriggerList].map(
+          (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
+        );
+        // Hide empty menu
+        hideEmptyDropdowns();
+      })
+      .catch((error) => {
+        if (this.stopped) return;
+        this.current_page_number = this.next_page_number - 1;
+        console.error("Video pagination failed:", error);
+        if (typeof showalert === "function") {
+          showalert(
+            gettext("An Error occurred while processing."),
+            "alert-danger",
+          );
+        }
+      })
+      .finally(() => {
+        this.loading = false;
+        if (!this.stopped) this.callBackAfterLoad();
+      });
   }
 
+  /**
+   * Removes the scroll event listener to stop infinite loading.
+   */
   removeLoader() {
+    if (this.stopped) return;
+    this.stopped = true;
     window.removeEventListener("scroll", this.scroller_init);
+    if (this.loading) {
+      this.loading = false;
+      this.callBackAfterLoad();
+    }
   }
 
+  /**
+   * Asynchronously fetches data from a given URL with pagination and CSRF protection.
+   *
+   * @param {string} url - The base URL to fetch data from.
+   * @param {string|number} page - The page identifier or number to append to the URL.
+   * @param {string} nextPage - Indicates if there is a next page; if "false", the request is aborted.
+   * @returns {Promise<string|undefined>} The response text from the fetch request, or undefined if the request is not made.
+   */
   async getData(url, page, nextPage) {
     if (!url) return;
-    if (nextPage == "false") return;
+    if (nextPage === false || nextPage === "false") return;
     url = url + page;
     const response = await fetch(url, {
       method: "GET",
@@ -143,6 +216,7 @@ class InfiniteLoader {
       },
       credentials: "same-origin",
     });
+    if (!response.ok) throw new Error("Video pagination request failed");
     const data = await response.text();
     return data;
   }

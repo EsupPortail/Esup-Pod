@@ -155,31 +155,41 @@
 
   (function() {
     body_element = document.querySelector("body");
-    body_element.addEventListener('DOMSubtreeModified', function () {
-      let inputTitle = document.querySelector("input[name='title'][type='text']");
-      let renderTypeInput = document.getElementById("render_type");
-      // If we are at last step and renderTypeInput has not been injected yet.
-      if (inputTitle && !renderTypeInput) {
-        // If we have 2 video sources
-        if (document.querySelectorAll("#root video").length == 2) {
-          let parent_div = inputTitle.parentNode.parentNode;
-          renderTypeDiv.classList.add(parent_div.className);
-          renderTypeLabel.classList.add(parent_div.firstChild.className);
-          parent_div.parentNode.insertBefore(renderTypeDiv, parent_div.nextSibling);
-          renderTypeInput = document.getElementById("render_type");
-          renderTypeInput.addEventListener("change", (event) => {
-            // call ajax to send value
-            send_presenter_value(event.target.value);
-          });
-          send_presenter_value(renderTypeInput.value);
+    const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList' || mutation.type === 'subtree') {
+              let inputTitle = document.querySelector("input[name='title'][type='text']");
+              let renderTypeInput = document.getElementById("render_type");
+              // If we are at last step and renderTypeInput has not been injected yet.
+              if (inputTitle && !renderTypeInput) {
+                // If we have 2 video sources
+                if (document.querySelectorAll("#root video").length == 2) {
+                  let parent_div = inputTitle.parentNode.parentNode;
+                  renderTypeDiv.classList.add(parent_div.className);
+                  renderTypeLabel.classList.add(parent_div.firstChild.className);
+                  parent_div.parentNode.insertBefore(renderTypeDiv, parent_div.nextSibling);
+                  renderTypeInput = document.getElementById("render_type");
+                  renderTypeInput.addEventListener("change", (event) => {
+                    // call ajax to send value
+                    send_presenter_value(event.target.value);
+                  });
+                  send_presenter_value(renderTypeInput.value);
+                }
+              }
+            }
         }
-      }
-    }, false);
+    });
+
+    observer.observe(body_element, {
+        childList: true,
+        subtree: true
+    });
   })();
 
   /**
-   * [send_presenter_value description]
-   * @param  {[type]} val [description]
+  * Sends the selected presenter value to the server using an AJAX POST request.
+  * On success, it resets the `data_send` flag to `false`.
+   * @param  {[type]} val the selected presenter value
    */
   function send_presenter_value(val) {
     // console.log("[send_presenter_value] VAL: " + val);

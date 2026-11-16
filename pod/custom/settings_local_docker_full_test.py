@@ -16,16 +16,21 @@ DATABASES = {
         'TEST': {
             'NAME': '/usr/src/app/pod/db_remote.sqlite3',
         },
+        "OPTIONS": {
+            "timeout": 60.0,  # in seconds
+            # see also https://docs.python.org/3.10/library/sqlite3.html#sqlite3.connect
+        },
     }
 }
 
+USE_CUT = True
 USE_PODFILE = True
 USE_NOTIFICATIONS = False
 EMAIL_ON_ENCODING_COMPLETION = False
 SECRET_KEY = 'A_CHANGER'
 
-# We specify here that we're using ES version 7\n
-ES_VERSION = 7
+# ElasticSearch version
+ES_VERSION = 8
 ES_URL = ['http://elasticsearch.localhost:9200/']
 CACHES = {
     'default': {

@@ -1,21 +1,40 @@
-import subprocess
-import shlex
 import json
+import logging
+import os
+import shlex
+import subprocess
 from collections import OrderedDict
 from timeit import default_timer as timer
-import os
 
 try:
     from .encoding_settings import VIDEO_RENDITIONS
 except (ImportError, ValueError):
     from encoding_settings import VIDEO_RENDITIONS
 
+try:
+    from django.conf import settings
 
-def sec_to_timestamp(total_seconds):
+    VIDEO_RENDITIONS = getattr(settings, "VIDEO_RENDITIONS", VIDEO_RENDITIONS)
+    DEBUG = getattr(settings, "DEBUG", True)
+    MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
+    DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "")
+except ImportError:  # pragma: no cover
+    DEBUG = True
+    MEDIA_ROOT = ""
+    DEFAULT_RECORDER_PATH = ""
+
+logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
+
+
+def sec_to_timestamp(total_seconds) -> str:
     """Format time for webvtt caption."""
-    hours = int(total_seconds / 3600)
-    minutes = int(total_seconds / 60 - hours * 60)
-    seconds = total_seconds - hours * 3600 - minutes * 60
+    if total_seconds < 0:
+        total_seconds = 0
+    hours = int(total_seconds // 3600)
+    minutes = int((total_seconds % 3600) // 60)
+    seconds = total_seconds % 60
     return "{:02d}:{:02d}:{:06.3f}".format(hours, minutes, seconds)
 
 
@@ -39,12 +58,14 @@ def get_dressing_position_value(position: str, height: str) -> str:
         return "overlay=main_w-overlay_w-" + height + ":main_h-overlay_h-" + height
     elif position == "bottom_left":
         return "overlay=" + height + ":main_h-overlay_h-" + height
+    return ""
 
 
 def get_renditions():
     try:
-        from .models import VideoRendition
         from django.core import serializers
+
+        from .models import VideoRendition
 
         renditions = json.loads(
             serializers.serialize("json", VideoRendition.objects.all())
@@ -57,10 +78,55 @@ def get_renditions():
         return VIDEO_RENDITIONS
 
 
-def check_file(path_file):
-    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
-        return True
+def _is_safe_file_path(path_file) -> bool:
+    """Return whether a path resolves inside an authorized local root.
+
+    Authorized roots are `MEDIA_ROOT` & `DEFAULT_RECORDER_PATH`.
+    """
+    if not path_file:
+        return False
+    try:
+        candidate = os.path.abspath(os.path.realpath(os.fspath(path_file)))
+    except (TypeError, ValueError, OSError):
+        return False
+
+    if not os.path.isabs(candidate):
+        return False
+
+    return _is_safe_candidate(candidate, [MEDIA_ROOT, DEFAULT_RECORDER_PATH])
+
+
+def _is_safe_candidate(candidate, allowed_roots) -> bool:
+    """Return whether candidate path is inside any allowed root."""
+    for root in allowed_roots:
+        if not root:
+            continue
+
+        try:
+            root_real = os.path.abspath(os.path.realpath(os.fspath(root)))
+        except (TypeError, ValueError, OSError):
+            continue
+        try:
+            if os.path.commonpath([candidate, root_real]) == root_real:
+                return True
+        except ValueError:
+            continue
     return False
+
+
+def check_file(path_file) -> bool:
+    """Return whether a path is authorized, existing, and non-empty."""
+    if not _is_safe_file_path(path_file):
+        return False
+    safe_path = os.path.realpath(os.fspath(path_file))
+    try:
+        return (
+            os.path.isfile(safe_path)
+            and os.access(safe_path, os.F_OK)
+            and os.stat(safe_path).st_size > 0
+        )
+    except (OSError, ValueError):
+        return False
 
 
 def get_list_rendition():
@@ -92,11 +158,14 @@ def get_info_from_video(probe_cmd):
 
 def launch_cmd(cmd):
     if cmd == "":
-        return False, "No cmd to launch"
+        msg = "No cmd to launch"
+        logger.warning(msg)
+        return False, msg
     msg = ""
     encode_start = timer()
     return_value = False
     try:
+        logger.debug("launch_cmd: %s" % cmd)
         output = subprocess.run(
             shlex.split(cmd),
             stdout=subprocess.PIPE,
@@ -119,5 +188,7 @@ def launch_cmd(cmd):
         # raise RuntimeError('ffmpeg returned non-zero status: {}'.format(
         # e.stderr))
         msg += 20 * "////" + "\n"
-        msg += "Runtime or OsError Error: {0}\n".format(e)
+        err_msg = "Runtime or OS Error: {0}\n".format(e)
+        msg += err_msg
+        logger.error(err_msg)
     return return_value, msg

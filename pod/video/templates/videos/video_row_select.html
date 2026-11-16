@@ -1,7 +1,4 @@
-{% load i18n %}
-{% load favorites_playlist %}
-{% load playlist_buttons %}
-{% load video_tags %}
+{% load i18n favorites_playlist playlist_buttons video_tags %}
 
 {% spaceless %}
   {% if playlist %}
@@ -69,6 +66,14 @@
         aria-hidden="true"></i>
     </span>
 
+    {% if video.get_encoding_step|slice:":2" == "-1" %}
+      <span title="{% trans 'This content has an encoding error.' %}"
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom">
+        <i class="bi bi-exclamation-triangle-fill text-danger" aria-hidden="true"></i>
+      </span>
+    {% endif %}
+
     <span title="{{ video_infos.chaptered.translation }}"
         data-bs-toggle="tooltip"
         data-bs-placement="bottom">
@@ -100,4 +105,3 @@
     {% include 'videos/link_video_dropdown_menu.html' %}
   </div>
 {% endspaceless %}
-

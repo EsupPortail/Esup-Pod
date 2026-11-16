@@ -4,7 +4,6 @@ import os
 import re
 import time
 import uuid
-from typing import Optional
 import unicodedata
 import json
 import logging
@@ -12,7 +11,7 @@ import hashlib
 
 from django.db import models
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.translation import get_language
 from django.template.defaultfilters import slugify
 from django.db.models import Sum
@@ -24,13 +23,14 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete, post_delete
-from tagging.models import Tag
+
+# from tagging.models import Tag
+from tagulous.models import TagField
 from datetime import date
 from django.utils import timezone
 from django.utils.html import format_html, escape
 from django.utils.text import capfirst
-from ckeditor.fields import RichTextField
-from tagging.fields import TagField
+from tinymce.models import HTMLField
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
@@ -214,7 +214,7 @@ DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
     TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", {})
-    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
+    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "WHISPER")
 
 # FUNCTIONS
 
@@ -304,9 +304,8 @@ class Channel(models.Model):
         ),
         editable=False,
     )
-    description = RichTextField(
+    description = HTMLField(
         _("Description"),
-        config_name="complete",
         blank=True,
         help_text=_(
             "In this field you can describe your content, "
@@ -373,7 +372,10 @@ class Channel(models.Model):
     class Meta:
         """Metadata subclass for Channel object."""
 
-        ordering = ["title"]
+        # Do NOT set ordering on Channel, to avoid a
+        # "django.db.utils.DatabaseError: ORDER BY not allowed in subqueries of compound statements."
+        # When adding a channel to a video on a SQlite DB
+        # ordering = ["title"]
         verbose_name = _("Channel")
         verbose_name_plural = _("Channels")
         constraints = [
@@ -524,7 +526,9 @@ class Theme(models.Model):
         children = [self]
         try:
             child_list = self.children.all()
-        except AttributeError:
+        except ValueError:
+            # ValueError: 'Theme' instance needs to have a
+            # primary key value before this relationship can be used.
             return children
         for child in child_list:
             children.extend(child.get_all_children_flat())
@@ -726,9 +730,8 @@ class Video(models.Model):
             + "that they can’t delete this media."
         ),
     )
-    description = RichTextField(
+    description = HTMLField(
         _("Description"),
-        config_name="complete",
         blank=True,
         help_text=_(
             "Describe your content, add all needed related information, "
@@ -765,6 +768,7 @@ class Video(models.Model):
             "Separate tags with spaces, "
             "enclose the tags consist of several words in quotation marks."
         ),
+        blank=True,
         verbose_name=_("Tags"),
     )
     discipline = models.ManyToManyField(
@@ -919,7 +923,6 @@ class Video(models.Model):
             newid = self.id
         newid = "%04d" % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
-        self.tags = remove_accents(self.tags)
         # self.set_password()
         super(Video, self).save(*args, **kwargs)
         # Ensure video folder will accord access to additional owners
@@ -1027,7 +1030,7 @@ class Video(models.Model):
             # Handle exception to avoid sending an error email
             try:
                 im = get_thumbnail(self.thumbnail.file, size, crop="center", quality=80)
-                thumbnail_url = im.url
+                thumbnail_url = "".join(["//", get_current_site(request).domain, im.url])
             except Exception as e:
                 logger.error(
                     "An error occured during get_thumbnail_url"
@@ -1080,11 +1083,8 @@ class Video(models.Model):
             # height="{{ im.height }}" loading="lazy">
         else:
             thumbnail_url = static(DEFAULT_THUMBNAIL)
-        return (
-            '<img class="pod-thumbnail" src="%s" alt="%s"\
-            loading="lazy">'
-            % (thumbnail_url, self.title)
-        )
+        return '<img class="pod-thumbnail" src="%s" alt="%s"\
+            loading="lazy">' % (thumbnail_url, self.title)
 
     @property
     def duration_in_time(self) -> str:
@@ -1118,9 +1118,11 @@ class Video(models.Model):
         for app in THIRD_PARTY_APPS:
             mod = importlib.import_module("pod.%s.models" % app)
             if hasattr(mod, capfirst(app)):
-                video_app = eval(
-                    "mod.%s.objects.filter(video__id=%s).all()" % (capfirst(app), self.id)
-                )
+                model = getattr(mod, capfirst(app))
+                # Playlist queries preload existence without loading enrichment payloads.
+                video_app = getattr(self, f"_has_{app}_version", None)
+                if video_app is None:
+                    video_app = model.objects.filter(video__id=self.pk)
                 if (
                     app == "interactive"
                     and video_app.first() is not None
@@ -1141,7 +1143,7 @@ class Video(models.Model):
                     )
         return version
 
-    def get_default_version_link(self, slug_private: str = None) -> Optional[str]:
+    def get_default_version_link(self, slug_private: str = None):
         """
         Get link of the version of a video.
 
@@ -1298,12 +1300,7 @@ class Video(models.Model):
                 "description": "%s" % self.description,
                 "thumbnail": "%s" % self.get_thumbnail_url(),
                 "duration": "%s" % self.duration,
-                "tags": list(
-                    [
-                        {"name": name[0], "slug": slugify(name)}
-                        for name in Tag.objects.get_for_object(self).values_list("name")
-                    ]
-                ),
+                "tags": list(self.tags.all().values("name", "slug")),
                 "type": {"title": self.type.title, "slug": self.type.slug},
                 "disciplines": list(
                     self.discipline.all()
@@ -1462,6 +1459,10 @@ class Video(models.Model):
                 name=self.slug, owner=self.owner
             )
             return videodir
+
+    def get_tag_list(self) -> str:
+        """Return a list of comma separated tag names."""
+        return ", ".join(tag.name for tag in self.tags.all())
 
     def update_additional_owners_rights(self) -> None:
         """Update folder rights for additional video owners."""

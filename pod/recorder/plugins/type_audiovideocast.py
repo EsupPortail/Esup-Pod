@@ -36,7 +36,7 @@ log = logging.getLogger(__name__)
 def process(recording) -> None:
     log.info("START PROCESS OF RECORDING %s" % recording)
     t = threading.Thread(target=encode_recording, args=[recording])
-    t.setDaemon(True)
+    t.daemon = True
     t.start()
 
 
@@ -74,7 +74,7 @@ def save_video(recording, video_data, video_src) -> Video:
     # Choix des cursus
     video.cursus = recorder.cursus
     # mot clefs
-    video.tags = recorder.tags
+    video.tags = recorder.tags.get_tag_list()
     # transcript
     if getattr(settings, "USE_TRANSCRIPTION", False):
         video.transcript = recorder.transcript

@@ -5,7 +5,8 @@ from pod.video_search.forms import SearchForm
 from django.conf import settings
 from django.contrib import messages
 from pod.video.models import Video
-from django.utils.translation import ugettext_lazy as _
+from pod.main.utils import is_ajax
+from django.utils.translation import gettext_lazy as _
 from django.utils.html import strip_tags
 
 # import json
@@ -14,7 +15,7 @@ ES_URL = getattr(settings, "ES_URL", ["http://elasticsearch.localhost:9200/"])
 ES_INDEX = getattr(settings, "ES_INDEX", "pod")
 ES_TIMEOUT = getattr(settings, "ES_TIMEOUT", 30)
 ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
-ES_VERSION = getattr(settings, "ES_VERSION", 6)
+ES_VERSION = getattr(settings, "ES_VERSION", 8)
 ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
 USE_OPENSEARCH = getattr(settings, "USE_OPENSEARCH", False)
 
@@ -93,7 +94,7 @@ def get_result_aggregations(result, selected_facets):
     return result["aggregations"]
 
 
-def get_search_page(request):
+def get_search_page(request) -> int:
     """Return page number to start search from Elasticsearch."""
     page = request.GET.get("page", "0")
     page = int(page) if page.isdigit() else 0
@@ -108,7 +109,7 @@ def search_videos(request):
     """Send a search request to ES."""
     es = SearchClient(
         ES_URL,
-        timeout=ES_TIMEOUT,
+        request_timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
         **ES_OPTIONS,
@@ -179,7 +180,7 @@ def search_videos(request):
         "highlight": {
             "pre_tags": ["<mark>"],
             "post_tags": ["</mark>"],
-            "fields": {"title": {"force_source": "true"}},
+            "fields": {"title": {}},
         },
     }
 
@@ -218,10 +219,10 @@ def search_videos(request):
 
     # add cursus and main_lang 'cursus', 'main_lang',
     bodysearch["aggs"]["cursus"] = {
-        "terms": {"field": "cursus", "size": 5, "order": {"_count": "desc"}}
+        "terms": {"field": "cursus.keyword", "size": 5, "order": {"_count": "desc"}}
     }
     bodysearch["aggs"]["main_lang"] = {
-        "terms": {"field": "main_lang", "size": 5, "order": {"_count": "desc"}}
+        "terms": {"field": "main_lang.keyword", "size": 5, "order": {"_count": "desc"}}
     }
 
     # if settings.DEBUG:
@@ -244,14 +245,13 @@ def search_videos(request):
     list_videos_id = [hit["_id"] for hit in result["hits"]["hits"]]
     videos = Video.objects.filter(id__in=list_videos_id)
     num_result = 0
-    if USE_OPENSEARCH or ES_VERSION in [7, 8]:
-        num_result = result["hits"]["total"]["value"]
-    else:
-        num_result = result["hits"]["total"]
+    # In case of desynchronization with Elasticsearch, this result could be false.
+    # So, don't forget to reindex if necessary
+    num_result = result["hits"]["total"]["value"]
     videos.has_next = ((page + 1) * size) < num_result
     videos.next_page_number = page + 1
 
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             "videos/video_list.html",

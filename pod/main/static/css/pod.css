@@ -32,38 +32,47 @@
    * Esup-Pod default colors
    ***/
 
-  /*** couleur de fond du site ***/
+  /*** site background color ***/
   --pod-background: #fff;
   --pod-background-dark: #222831;
 
-  /*** couleur du texte des boutons principaux ***/
+  /*** main button text color ***/
   --pod-btn-text: #fff;
   --pod-btn-text-dark: #fff;
 
-  /**** couleur de police ****/
+  /**** font color ****/
   --pod-font-color: #000;
   --pod-font-color-dark: #f8f9fa;
 
-  /**** couleur neutre pour fond de bloc (ex jumbotron) ***/
+  /**** neutral color for block background (e.g. jumbotron) ***/
   --pod-background-neutre1-bloc: #ddd;
   --pod-background-neutre1-bloc-dark: #393e46;
   --pod-background-neutre1-bloc-hover: #e5f1fa;
 
-  /**** couleur neutre 2 pour fond de bloc ***/
+  /**** second neutral color for block background ***/
   --pod-background-neutre2-bloc: #f5f5f5;
   --pod-background-neutre2-bloc-dark: #161c26;
 
-  /**** couleur des liens *****/
+  /*** breadcrumb border color ***/
+  --pod-navbar-breadcrumb-border: #ced4da;
+  --pod-navbar-breadcrumb-border-dark: #8e969d;
+
+  /**** link colors *****/
   --pod-link-color: var(--pod-primary);
   --pod-link-color-rgb: var(--pod-primary-rgb);
   --pod-activelink-color: var(--pod-primary-darken);
 
-  /* couleur d'un élément actif (ex. : survol de bouton) */
+  /* active element color (e.g., button hover) */
   --pod-primary-focus: var(--pod-primary-darken);
 
-  /* Couleur d'alerte */
+  /* alert color */
   --pod-alert: #fc8670;
   --pod-alert-dark: #b11030;
+
+  /* Tag cloud colors */
+  --pod-tag-color1: 16, 131, 22;
+  --pod-tag-color2: 51, 51, 170;
+  --pod-tag-color3: 197, 53, 143;
 
   /**** font family ****/
 
@@ -76,6 +85,7 @@
 
   /* BOOTSTRAP COLORS */
   --bs-primary-rgb: var(--pod-primary-rgb);
+  --bs-dropdown-link-active-bg: var(--pod-primary);
   --bs-light: #f8f9fa;
   --bs-dark: #343a40;
   --bs-link-color: var(--pod-link-color);
@@ -91,8 +101,9 @@
   --bs-orange: #c85208;
 
   /* Use system font (faster load) */
-  --font-family-sans-serif: -apple-system, system-ui, "BlinkMacSystemFont",
-    "Segoe UI", "Roboto", "Verdana", sans-serif;
+  --font-family-sans-serif:
+    -apple-system, system-ui, "BlinkMacSystemFont", "Segoe UI", "Roboto",
+    "Verdana", sans-serif;
 
   /** reinit before cleaning all old css vars ***/
   --primary-background-color: var(--pod-background-neutre1-bloc) !important;
@@ -113,11 +124,6 @@
   background-color: #f8d7da;
   border-color: #f5c6cb;
   color: #721c24;
-}
-
-tr,
-.rowl {
-  display: table-row !important;
 }
 
 .table-hover tbody tr {
@@ -160,6 +166,64 @@ tr,
 .title-chaine > a {
   margin-left: 0.5em;
   margin-right: 0.5em;
+}
+
+.pod-skip-link {
+  display: none;
+  position: static;
+  left: auto;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  margin-left: 0.5rem;
+  text-decoration: none;
+  border-radius: 0.25rem;
+}
+
+.pod-skip-link.is-visible,
+.pod-skip-link:focus {
+  display: inline-flex;
+}
+
+/** TAGs Cloud */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.tag-cloud > a {
+  line-height: 1.5;
+}
+
+.tag-cloud > *:nth-child(2n + 1) {
+  --bs-link-color-rgb: var(--pod-tag-color1);
+}
+.tag-cloud > *:nth-child(3n + 1) {
+  --bs-link-color-rgb: var(--pod-tag-color2);
+}
+.tag-cloud > *:nth-child(4n + 1) {
+  --bs-link-color-rgb: var(--pod-tag-color3);
+}
+
+.tag-1 {
+  font-size: 1em;
+}
+.tag-2 {
+  font-size: 1.1em;
+}
+.tag-3 {
+  font-size: 1.2em;
+}
+.tag-4 {
+  font-size: 1.3em;
+}
+.tag-5 {
+  font-size: 1.4em;
+}
+.tag-6 {
+  font-size: 1.5em;
 }
 
 .pod-card--video a:not(.btn) {
@@ -240,6 +304,44 @@ a:not(.btn, .dropdown-item):focus {
 .list-group-item {
   background: var(--pod-background);
   padding: 0.25rem 1.25rem;
+}
+
+.pod-navbar-breadcrumb {
+  background-color: var(--pod-background-neutre2-bloc);
+  border-bottom: 1px solid var(--pod-navbar-breadcrumb-border);
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.pod-navbar-breadcrumb .breadcrumb {
+  margin-bottom: 0;
+}
+
+.pod-navbar {
+  background: var(--pod-background);
+  border-bottom: 1px solid var(--pod-navbar-breadcrumb-border);
+}
+
+.pod-navbar .btn {
+  border-radius: var(--bs-border-radius-xl);
+  padding: 0.4rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pod-navbar .btn i {
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 576px) {
+  .pod-navbar .btn {
+    font-size: 0.9rem;
+    padding: 0.25rem 0.75rem;
+  }
 }
 
 /***
@@ -441,7 +543,7 @@ a.btn-outline-primary:not(:hover) svg {
 /*** modif taille logo ***/
 @media (max-width: 576px) {
   .navbar-brand img {
-    height: 35px;
+    height: 30px;
   }
 }
 
@@ -553,9 +655,15 @@ a.btn-outline-primary:not(:hover) svg {
 }
 
 .pod-card--video .video-title {
-  line-height: 1.2;
+  line-height: 1.2em;
   display: inline-block;
+  overflow: hidden;
   max-width: 100%;
+}
+
+/* For "2 lines" identical height */
+#videos_list .pod-card--video .video-title {
+  height: 2.4em;
 }
 
 #videos_list .video-title a {
@@ -591,7 +699,7 @@ div.card a img {
 .card-footer-pod {
   position: absolute;
   bottom: 3.5rem;
-  right: 1rem;
+  right: 1px;
   border: none;
   border-radius: 0.375rem;
   display: flex;
@@ -637,10 +745,6 @@ div.card a img {
   bottom: 0;
 }
 
-#resetFilters {
-  margin-left: auto !important;
-}
-
 #filterType div.collapse:not(.show),
 #filterDiscipline div.collapse:not(.show),
 #filterCursus div.collapse:not(.show),
@@ -673,16 +777,52 @@ div.card a img {
   content: "▲";
 }
 
-/** ckeditor **/
-.django-ckeditor-widget {
-  width: 100%;
+/** Dashboard **/
+
+#selectedTags .btn-secondary {
+  --bs-btn-color: var(--bs-body-color);
+  --bs-btn-bg: var(--pod-background-neutre2-bloc);
+  --bs-btn-border-color: var(--bs-gray-400);
 }
 
-/** Dashboard **/
 #bulk-update-container {
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-20px);
+  max-height: 0;
+  margin-bottom: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease,
+    max-height 0.4s ease,
+    margin-bottom 0.4s ease;
   background-color: var(--pod-background-neutre2-bloc);
+  border: 2px solid var(--bs-gray-400);
+  color: var(--bs-body-color);
+}
+
+#bulk-update-container > * {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.3s ease,
+    max-height 0.3s ease;
+}
+
+#bulk-update-container.visible > * {
+  opacity: 1;
+  max-height: 1000px;
+}
+
+#bulk-update-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 500px;
+  margin-bottom: 1em;
+  visibility: visible;
   padding: 1em;
-  border-radius: var(--bs-border-radius);
 }
 
 #bulk-update-container .select2 {
@@ -699,6 +839,7 @@ div.card a img {
 }
 
 /* Dashboard infinite container */
+
 .dashboard-container {
   margin: 1rem 0;
 }
@@ -871,6 +1012,10 @@ span[data-bs-placement] {
   margin-bottom: 0;
 }
 
+header > .alert {
+  --bs-border-radius: 0;
+}
+
 #base-message-alert,
 #formalertdiv {
   position: fixed;
@@ -978,9 +1123,12 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   min-height: 100vh;
-  padding-top: 3.1rem;
   color: var(--pod-font-color);
   background-color: var(--pod-background);
+}
+
+main {
+  padding-top: 3em;
 }
 
 /*** reinit bootstrap 5 ***/
@@ -1168,13 +1316,6 @@ body {
   }
 }
 
-.pod-navbar {
-  background: var(--pod-background);
-  box-shadow:
-    0 1px 3px rgb(0 0 0 / 12%),
-    0 1px 2px rgb(0 0 0 / 24%);
-}
-
 .pod-info-video {
   margin-top: 1.5rem;
 }
@@ -1195,10 +1336,8 @@ body {
 }
 
 .video-info_duration-view-share {
-  display: flex;
   font-size: 90%;
   gap: 0.75rem;
-  align-items: center;
   justify-content: flex-start;
   border-bottom: 1px solid var(--pod-background-neutre1-bloc);
   padding-bottom: 0.75rem;
@@ -1242,10 +1381,6 @@ body {
   margin-left: auto;
 }
 
-.pod-info-video__buttons {
-  margin-left: auto;
-}
-
 .pod-btn-share i,
 .pod-info-video__signal i {
   transition: all 0.2s ease-in;
@@ -1279,6 +1414,13 @@ body {
   gap: 0.5rem;
   color: var(--pod-font-color) !important;
   transition: transform 0.4s ease;
+  font-size: 1.755rem;
+}
+
+@media (width <= 576px) {
+  .pod-navbar__brand {
+    font-size: 1.25rem;
+  }
 }
 
 .pod-navbar__brand:hover,
@@ -1342,12 +1484,51 @@ body {
 
 .pod-navbar__form {
   margin-left: auto;
+  margin-right: auto;
 }
 
 @media (width >= 992px) {
   .pod-navbar__form {
     flex-basis: 350px;
   }
+}
+
+/* Pod Sliders */
+
+.slider {
+  background-color: var(--pod-background-neutre1-bloc);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-around;
+  inset: 0;
+  position: absolute;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.slider:focus,
+.slider:hover {
+  box-shadow: 0 0 3px var(--pod-primary-lighten);
+}
+
+.slider::before {
+  background-color: var(--bs-white);
+  bottom: 2px;
+  content: "";
+  height: 20px;
+  left: 2px;
+  position: absolute;
+  transition: 0.4s;
+  width: 20px;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--pod-primary);
+}
+
+input:checked + .slider::before {
+  transform: translateX(26px);
 }
 
 /* small screens */
@@ -1466,13 +1647,20 @@ Commented in 3.6.0
 .pod-navbar__button-toggler {
   color: var(--pod-font-color);
   padding: 0;
-  font-size: 1.8rem;
+  font-size: 2rem;
   margin: 0;
   border: 0;
-  margin-right: 0.3rem;
+  margin-right: 1rem;
   background: none;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: auto;
+  height: auto;
+}
+
+@media (width <= 576px) {
+  .pod-navbar__button-toggler {
+    font-size: 2rem;
+    margin-right: 0.5rem;
+  }
 }
 
 .pod-camera-video {
@@ -1633,10 +1821,6 @@ table .alert.alert-danger.btn.pod-btn-social {
 .calendarbox {
   z-index: 3000;
   background-color: var(--pod-background) !important;
-}
-
-#mainbreadcrumb {
-  margin-right: 2.7rem;
 }
 
 div.disabled,

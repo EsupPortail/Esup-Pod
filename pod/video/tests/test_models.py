@@ -10,7 +10,8 @@ from django.db.models.fields.files import ImageFieldFile
 from django.db.utils import IntegrityError
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -306,7 +307,7 @@ class VideoTestCase(TestCase):
             type=type,
             title="Video2",
             password=None,
-            date_added=datetime.today(),
+            date_added=timezone.now(),
             encoding_in_progress=False,
             owner=user,
             date_evt=datetime.today(),
@@ -343,7 +344,7 @@ class VideoTestCase(TestCase):
         self.assertFalse(video.allow_downloading)
         self.assertEqual(video.description, "")
         self.assertEqual(video.slug, "%04d-%s" % (video.id, slugify(video.title)))
-        date = datetime.today()
+        date = timezone.now()
         self.assertEqual(video.owner, User.objects.get(username="pod"))
         self.assertEqual(video.date_added.year, date.year)
         self.assertEqual(video.date_added.month, date.month)
@@ -523,10 +524,8 @@ class VideoRenditionTestCase(TestCase):
             "VideoRendition num %s with resolution %s" % ("%04d" % vr.id, vr.resolution),
         )
         vr.clean()
-        print(
-            " --->  test_VideoRendition_creation_by_default of \
-            VideoRenditionTestCase: OK!"
-        )
+        print(" --->  test_VideoRendition_creation_by_default of \
+            VideoRenditionTestCase: OK!")
 
     def test_VideoRendition_creation_with_values(self) -> None:
         # print("check resolution error")
@@ -574,10 +573,8 @@ class VideoRenditionTestCase(TestCase):
             "VideoRendition num %s with resolution %s" % ("%04d" % vr.id, vr.resolution),
         )
         self.assertRaises(ValidationError, vr.clean)
-        print(
-            " --->  test_VideoRendition_creation_with_values of \
-            VideoRenditionTestCase: OK!"
-        )
+        print(" --->  test_VideoRendition_creation_with_values of \
+            VideoRenditionTestCase: OK!")
 
     def test_delete_object(self) -> None:
         self.create_video_rendition(resolution="640x365")

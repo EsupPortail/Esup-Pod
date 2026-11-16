@@ -1,4 +1,16 @@
-<p class="">
-    {{ date_label }} {% with widget=widget.subwidgets.0 %}{% include widget.template_name %}{% endwith %}<br>
-    {{ time_label }} {% with widget=widget.subwidgets.1 %}{% include widget.template_name %}{% endwith %}
-</p>
+<div class="pod-split-datetime ms-1 border-start ps-2">
+  {% with widget=widget.subwidgets.0 %}
+    <label for="{{ widget.attrs.id }}">
+      <i class="bi bi-calendar" aria-hidden="true"></i>
+      {{ date_label }}
+    </label>
+    {% include widget.template_name %}
+  {% endwith %}
+  {% with widget=widget.subwidgets.1 %}
+    <label for="{{ widget.attrs.id }}">
+      <i class="bi bi-clock" aria-hidden="true"></i>
+      {{ time_label }}
+    </label>
+    {% include widget.template_name %}
+  {% endwith %}
+</div>

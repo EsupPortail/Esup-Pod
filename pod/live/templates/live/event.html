@@ -1,3 +1,4 @@
+{# Esup-Pod: live event page. #}
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
@@ -25,7 +26,7 @@
 
 {% block page_content %}
   {% csrf_token %}
-  <h1 class="h2" id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast pe-2" aria-hidden="true"></i>{{ event.title|title }}</h1>
+  <h1 class="h2" id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast pe-2" aria-hidden="true"></i>{{ event.title }}</h1>
 
   {% if form %}
     {% include 'live/event-form.html' %}
@@ -37,7 +38,7 @@
       </div>
     {% elif event.is_coming %}
       <div class="p-3 mb-2 bg-warning text-dark" style="width:fit-content">
-        {% trans 'The event is scheduled from:' %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
+        {% blocktrans with start_date=event.start_date end_date=event.end_date %}The event is scheduled from {{start_date}} to {{end_date}}{% endblocktrans %}
       </div>
 
       {# waiting video #}
@@ -67,16 +68,18 @@
       <div id="divvideoplayer" style="display:block">
         <div class="row">
           <div class="col">
-            <video id="podvideoplayer"
+            <video id="podvideoplayer" title="{{ event.slug }}"
                  class="video-js vjs-default-skin vjs-big-play-centered"
                  controls height="360" muted autoplay>
-              <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
+              {% if not event.broadcaster.is_runner_live %}
+                <source src="{{ event.broadcaster.get_stream_url }}" type="application/x-mpegURL">
+              {% endif %}
             </video>
           </div>
           {% if event.aside_iframe_url %}
             <div class="col">
-              <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
-                  title="Inline Frame Example" loading="lazy"
+              <iframe style="padding: 0; margin: 0; border:0; width: 100%;"
+                  title="{% trans 'Aside site' %}" loading="lazy"
                   height="100%"
                   src="{{ event.aside_iframe_url }}">
               </iframe>
@@ -85,6 +88,9 @@
         </div>
       </div>
 
+      {% if event.broadcaster.is_runner_live %}
+        {% include 'live/runner-live-status.html' %}
+      {% endif %}
       <div id="divvideoonhold" style="display:none">
         {# waiting video #}
         {% if event.video_on_hold.is_video %}
@@ -116,8 +122,8 @@
       </div>
 
       {% if event.iframe_url != "" and event.iframe_url != None %}
-        <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
-            title="Inline Frame Example" loading="lazy"
+        <iframe style="padding: 0; margin: 0; border:0; width: 100%;"
+            title="{% trans 'Additional site' %}" loading="lazy"
             height="{{ event.iframe_height }}"
             src="{{ event.iframe_url }}">
         </iframe>
@@ -129,11 +135,6 @@
 
       <div id="viewers-list"><ul id="viewers-ul"></ul></div>
 
-{#        {% else %}#}
-{#            <div id="divvideoonhold" style="display:none"></div>#}
-{#            <div id="divvideoplayer" style="display:none">#}
-{#                <video id="podvideoplayer"></video>#}
-{#            </div>#}
     {% endif %}
 
     {% if not request.GET.is_iframe %}

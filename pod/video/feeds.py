@@ -5,7 +5,7 @@ from django.utils.feedgenerator import Rss201rev2Feed
 
 # from datetime import datetime
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
@@ -18,7 +18,6 @@ from pod.video.models import Theme
 
 import re
 import os
-
 
 ##
 # Settings exposed in templates
@@ -250,7 +249,7 @@ class RssSiteVideosFeed(Feed):
             )
         return ""
 
-    def item_categories(self, item) -> tuple:
+    def item_categories(self, item):
         return (item.type,)
 
     def item_copyright(self, obj):

@@ -1,14 +1,170 @@
-from django.contrib import admin
+"""Esup-Pod video encoding, transcription and Runner manager administration."""
 
-from django.contrib.sites.shortcuts import get_current_site
+import requests
+from django.contrib import admin, messages
 from django.contrib.sites.models import Site
-from .models import EncodingAudio, EncodingVideo, VideoRendition
-from .models import EncodingLog
-from .models import EncodingStep
-from .models import PlaylistVideo
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseRedirect
+from django.urls import path, reverse
+from django.utils import timezone
+from django.utils.html import format_html
+from django.utils.text import Truncator
+from django.utils.translation import gettext_lazy as _
+
 from pod.video.models import Video
 
+from .models import (
+    EncodingAudio,
+    EncodingLog,
+    EncodingStep,
+    EncodingVideo,
+    PlaylistVideo,
+    PriorityUser,
+    RunnerManager,
+    Task,
+    VideoRendition,
+)
+from .task_queue import refresh_pending_task_ranks
 
+RUNNER_MANAGER_SOURCE_APP_LABEL = "video_encode_transcript"
+RUNNER_MANAGER_SECTION_APP_LABEL = "runner_managers"
+RUNNER_MANAGER_SECTION_MODEL_NAMES = {"RunnerManager", "Task", "PriorityUser"}
+RUNNER_MANAGER_PRIMARY_MODEL_NAME = "RunnerManager"
+# The health endpoint depends on the Esup-Runner manager version:
+# /api/health since 1.8.0, /manager/health for older versions.
+RUNNER_MANAGER_HEALTH_ENDPOINTS = ("api/health", "manager/health")
+
+
+def _admin_or_add_url(model):
+    """Return a model admin URL fallbacking to the add URL."""
+    return model.get("admin_url") or model.get("add_url")
+
+
+def _extract_runner_manager_models_from_app(app, section_url):
+    """Split a source app into remaining models and runner manager models."""
+    runner_manager_models = []
+    remaining_models = []
+    extracted_section_url = section_url
+
+    for model in app["models"]:
+        if model["object_name"] in RUNNER_MANAGER_SECTION_MODEL_NAMES:
+            runner_manager_models.append(model)
+            if extracted_section_url is None:
+                extracted_section_url = _admin_or_add_url(model)
+            continue
+        remaining_models.append(model)
+
+    extracted_section_url = extracted_section_url or app.get("app_url")
+    remaining_app = {**app, "models": remaining_models} if remaining_models else None
+    return remaining_app, runner_manager_models, extracted_section_url
+
+
+def _resolve_runner_manager_section_url(runner_manager_models, fallback_url):
+    """Prefer the RunnerManager changelist URL for the section header link."""
+    primary_model = next(
+        (
+            model
+            for model in runner_manager_models
+            if model["object_name"] == RUNNER_MANAGER_PRIMARY_MODEL_NAME
+        ),
+        None,
+    )
+    if primary_model is None:
+        return fallback_url
+    return _admin_or_add_url(primary_model) or fallback_url
+
+
+def _build_runner_manager_section_entry(runner_manager_models, section_url):
+    """Create the synthetic admin section for runner manager objects."""
+    return {
+        "name": _("Runner managers"),
+        "app_label": RUNNER_MANAGER_SECTION_APP_LABEL,
+        "app_url": section_url or reverse("admin:index"),
+        "has_module_perms": True,
+        "models": runner_manager_models,
+    }
+
+
+def _remove_runner_manager_models_from_source_app_list(app_list):
+    """Remove runner manager models from the source app section."""
+    filtered_app_list = []
+    for app in app_list:
+        if app["app_label"] != RUNNER_MANAGER_SOURCE_APP_LABEL:
+            filtered_app_list.append(app)
+            continue
+
+        remaining_models = [
+            model
+            for model in app["models"]
+            if model["object_name"] not in RUNNER_MANAGER_SECTION_MODEL_NAMES
+        ]
+        if remaining_models:
+            filtered_app_list.append({**app, "models": remaining_models})
+    return filtered_app_list
+
+
+def _build_runner_manager_admin_section(app_list):
+    """Move runner manager models from video encoding app to a dedicated section."""
+    reorganized_apps = []
+    runner_manager_models = []
+    runner_manager_section_url = None
+
+    for app in app_list:
+        if app["app_label"] != RUNNER_MANAGER_SOURCE_APP_LABEL:
+            reorganized_apps.append(app)
+            continue
+
+        (
+            remaining_app,
+            extracted_models,
+            runner_manager_section_url,
+        ) = _extract_runner_manager_models_from_app(app, runner_manager_section_url)
+        runner_manager_models.extend(extracted_models)
+        if remaining_app:
+            reorganized_apps.append(remaining_app)
+
+    if not runner_manager_models:
+        return app_list
+
+    runner_manager_models.sort(key=lambda model: model["name"])
+    runner_manager_section_url = _resolve_runner_manager_section_url(
+        runner_manager_models,
+        runner_manager_section_url,
+    )
+    reorganized_apps.append(
+        _build_runner_manager_section_entry(
+            runner_manager_models,
+            runner_manager_section_url,
+        )
+    )
+    reorganized_apps.sort(key=lambda app: app["name"].lower())
+    return reorganized_apps
+
+
+if not hasattr(admin.AdminSite, "_runner_manager_original_get_app_list"):
+    # Keep a stable pointer to Django's original implementation so this
+    # module can safely wrap it without losing baseline admin behavior.
+    # The hasattr guard also prevents stacking wrappers on autoreload/imports.
+    admin.AdminSite._runner_manager_original_get_app_list = admin.AdminSite.get_app_list
+
+    def _runner_manager_grouped_get_app_list(self, request, app_label=None):
+        """Customize admin sections on dashboard and source app index."""
+        app_list = self._runner_manager_original_get_app_list(request, app_label)
+        # On the source app page, hide runner-manager-related models from the
+        # original section to avoid duplicate navigation entries.
+        if app_label == RUNNER_MANAGER_SOURCE_APP_LABEL:
+            return _remove_runner_manager_models_from_source_app_list(app_list)
+        # For other app-specific pages, keep Django's default app list.
+        if app_label:
+            return app_list
+        # On the admin index, build the synthetic "Runner managers" section.
+        return _build_runner_manager_admin_section(app_list)
+
+    admin.AdminSite.get_app_list = _runner_manager_grouped_get_app_list
+
+
+@admin.register(EncodingVideo)
 class EncodingVideoAdmin(admin.ModelAdmin):
     """Admin model for EncodingVideo."""
 
@@ -16,11 +172,10 @@ class EncodingVideoAdmin(admin.ModelAdmin):
     list_filter = ["encoding_format", "rendition"]
     search_fields = ["id", "video__id", "video__title"]
 
+    @admin.display(description=_("resolution"))
     def get_resolution(self, obj):
         """Get the resolution of the video rendition."""
         return obj.rendition.resolution
-
-    get_resolution.short_description = "resolution"
 
     def get_queryset(self, request):
         """Get the queryset based on the request."""
@@ -40,6 +195,7 @@ class EncodingVideoAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+@admin.register(EncodingAudio)
 class EncodingAudioAdmin(admin.ModelAdmin):
     """Admin model for EncodingAudio."""
 
@@ -61,6 +217,7 @@ class EncodingAudioAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+@admin.register(EncodingLog)
 class EncodingLogAdmin(admin.ModelAdmin):
     """Admin model for EncodingLog."""
 
@@ -84,6 +241,7 @@ class EncodingLogAdmin(admin.ModelAdmin):
         return qs
 
 
+@admin.register(EncodingStep)
 class EncodingStepAdmin(admin.ModelAdmin):
     """Admin model for EncodingStep."""
 
@@ -99,6 +257,7 @@ class EncodingStepAdmin(admin.ModelAdmin):
         return qs
 
 
+@admin.register(VideoRendition)
 class VideoRenditionAdmin(admin.ModelAdmin):
     """Admin model for VideoRendition."""
 
@@ -133,6 +292,7 @@ class VideoRenditionAdmin(admin.ModelAdmin):
         return qs
 
 
+@admin.register(PlaylistVideo)
 class PlaylistVideoAdmin(admin.ModelAdmin):
     autocomplete_fields = ["video"]
     list_display = ("name", "video", "encoding_format")
@@ -140,21 +300,392 @@ class PlaylistVideoAdmin(admin.ModelAdmin):
     list_filter = ["encoding_format"]
 
     def get_queryset(self, request):
+        """Limit queryset to objects linked to the current site for non-superusers."""
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
             qs = qs.filter(video__sites=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """Restrict selectable videos to those available on the current site."""
         if (db_field.name) == "video":
             kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
-admin.site.register(EncodingVideo, EncodingVideoAdmin)
-admin.site.register(EncodingAudio, EncodingAudioAdmin)
-admin.site.register(EncodingLog, EncodingLogAdmin)
-admin.site.register(EncodingStep, EncodingStepAdmin)
-admin.site.register(VideoRendition, VideoRenditionAdmin)
-admin.site.register(PlaylistVideo, PlaylistVideoAdmin)
+@admin.register(RunnerManager)
+class RunnerManagerAdmin(admin.ModelAdmin):
+    """Administration for runner managers.
+
+    Args:
+        admin (ModelAdmin): admin model
+    """
+
+    change_list_template = "admin_runnermanager_change_list.html"
+    change_form_template = "admin_test_connection.html"
+
+    list_display = (
+        "id",
+        "name",
+        "active_badge",
+        "supports_live",
+        "priority",
+        "url",
+        "runner_admin_link",
+        "site",
+    )
+    list_display_links = ("id", "name")
+    ordering = ("-id", "priority")
+    readonly_fields = []
+    search_fields = ["id", "name", "site__domain", "site__name"]
+    list_filter = ("is_active", "supports_live", "site")
+
+    def get_urls(self):
+        """Register the custom admin endpoint used to test runner connectivity."""
+        custom_urls = [
+            path(
+                "<path:object_id>/test-connection/",
+                self.admin_site.admin_view(self.test_connection_view),
+                name="video_encode_transcript_runnermanager_test_connection",
+            ),
+        ]
+        return custom_urls + super().get_urls()
+
+    def changelist_view(self, request, extra_context=None):
+        """Hide the source app index link from the runner manager changelist sidebar."""
+        response = super().changelist_view(request, extra_context=extra_context)
+        context_data = getattr(response, "context_data", None)
+        if context_data is None:
+            return response
+
+        context_data["available_apps"] = [
+            app
+            for app in context_data.get("available_apps", [])
+            if app.get("app_label") != RUNNER_MANAGER_SOURCE_APP_LABEL
+        ]
+        return response
+
+    def _health_urls(self, runner_manager: RunnerManager) -> tuple[str, ...]:
+        """Build health URLs for current and pre-1.8.0 manager versions."""
+        base_url = runner_manager.url.rstrip("/")
+        return tuple(
+            f"{base_url}/{endpoint}" for endpoint in RUNNER_MANAGER_HEALTH_ENDPOINTS
+        )
+
+    def _auth_headers(self, runner_manager: RunnerManager) -> dict[str, str]:
+        """Build headers used for the runner manager availability check."""
+        return {
+            "Accept": "application/json",
+            "Authorization": f"Bearer {runner_manager.token}",
+        }
+
+    def _request_health(
+        self, runner_manager: RunnerManager
+    ) -> tuple[str, requests.Response]:
+        """Try health endpoints from the current one to the legacy one."""
+        current_health_url, legacy_health_url = self._health_urls(runner_manager)
+        response = requests.get(
+            current_health_url,
+            headers=self._auth_headers(runner_manager),
+            timeout=15,
+        )
+        if response.status_code != 404:
+            return current_health_url, response
+        return legacy_health_url, requests.get(
+            legacy_health_url,
+            headers=self._auth_headers(runner_manager),
+            timeout=15,
+        )
+
+    def _change_url(self, runner_manager: RunnerManager) -> str:
+        """Build the admin change URL for a runner manager instance."""
+        return reverse(
+            "admin:video_encode_transcript_runnermanager_change",
+            args=[runner_manager.pk],
+        )
+
+    def _runner_admin_url(self, runner_manager: RunnerManager) -> str:
+        """Return the runner manager administration URL."""
+        return runner_manager.runner_admin_url
+
+    @admin.display(description=_("Status"), ordering="is_active")
+    def active_badge(self, obj):
+        """Render runner manager activation status with a colored badge."""
+        if obj.is_active:
+            return format_html('<span class="badge bg-success">{}</span>', _("Active"))
+        return format_html('<span class="badge bg-secondary">{}</span>', _("Inactive"))
+
+    @admin.display(description=_("Runner administration"))
+    def runner_admin_link(self, obj):
+        """Render link to the remote runner manager administration."""
+        return format_html(
+            '<a class="runner-admin-list-link" href="{}" target="_blank" rel="noopener noreferrer" title="{}">'
+            '<i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>'
+            '<span class="visually-hidden">{}</span>'
+            "</a>",
+            self._runner_admin_url(obj),
+            _("Open runner administration"),
+            _("Open runner administration"),
+        )
+
+    def test_connection_view(self, request, object_id):
+        """Call the runner health endpoint and show the result in admin messages."""
+        runner_manager = self.get_object(request, object_id)
+        if runner_manager is None:
+            self.message_user(
+                request,
+                _("Runner manager not found."),
+                level=messages.ERROR,
+            )
+            return HttpResponseRedirect(
+                reverse("admin:video_encode_transcript_runnermanager_changelist")
+            )
+        if not self.has_change_permission(request, runner_manager):
+            raise PermissionDenied
+
+        try:
+            health_url, response = self._request_health(runner_manager)
+        except requests.RequestException as exc:
+            self.message_user(
+                request,
+                _(
+                    "Unable to reach runner manager “%(name)s” at %(url)s. "
+                    "Check the URL and network access. Error: %(error)s"
+                )
+                % {
+                    "name": runner_manager.name,
+                    "url": runner_manager.url,
+                    "error": str(exc),
+                },
+                level=messages.ERROR,
+            )
+            return HttpResponseRedirect(self._change_url(runner_manager))
+
+        if response.status_code in (401, 403):
+            self.message_user(
+                request,
+                _(
+                    "Runner manager “%(name)s” responded but rejected authentication "
+                    "(HTTP %(status)s). Check the bearer token."
+                )
+                % {"name": runner_manager.name, "status": response.status_code},
+                level=messages.ERROR,
+            )
+        elif response.status_code in (200, 204):
+            self.message_user(
+                request,
+                _(
+                    "Connection to runner manager “%(name)s” succeeded "
+                    "(HTTP %(status)s)."
+                )
+                % {"name": runner_manager.name, "status": response.status_code},
+                level=messages.SUCCESS,
+            )
+        elif response.status_code == 404:
+            self.message_user(
+                request,
+                _(
+                    "Runner manager “%(name)s” is reachable but endpoint %(url)s "
+                    "was not found (HTTP 404). Check the configured URL."
+                )
+                % {"name": runner_manager.name, "url": health_url},
+                level=messages.ERROR,
+            )
+        else:
+            self.message_user(
+                request,
+                _(
+                    "Runner manager “%(name)s” is reachable but returned an "
+                    "unexpected response (HTTP %(status)s)."
+                )
+                % {"name": runner_manager.name, "status": response.status_code},
+                level=messages.WARNING,
+            )
+
+        return HttpResponseRedirect(self._change_url(runner_manager))
+
+
+@admin.register(PriorityUser)
+class PriorityUserAdmin(admin.ModelAdmin):
+    """Administration for users with absolute queue priority."""
+
+    change_list_template = "admin_priorityuser_change_list.html"
+    autocomplete_fields = ("user",)
+    list_display = ("id", "user", "date_added")
+    search_fields = (
+        "user__username",
+        "user__email",
+        "user__first_name",
+        "user__last_name",
+    )
+    readonly_fields = ("date_added",)
+    list_select_related = ("user",)
+    ordering = ("user__username", "id")
+
+
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    """Administration for runner manager tasks.
+
+    Args:
+        admin (ModelAdmin): admin model
+    """
+
+    change_list_template = "admin_task_change_list.html"
+    list_display = (
+        "id",
+        "video_id_display",
+        "video_label",
+        "recording_id_display",
+        "recording_label",
+        "type",
+        "status_badge",
+        "task_id",
+        "date_added",
+        "runner_manager",
+    )
+    list_display_links = ("id",)
+    ordering = ("-id",)
+    readonly_fields = ["date_added"]
+    fields = (
+        "type",
+        "status",
+        "date_added",
+        "task_id",
+        "video",
+        "recording",
+        "runner_manager",
+        "script_output",
+    )
+    search_fields = [
+        "id",
+        "task_id",
+        "video__id",
+        "video__title",
+        "recording__id",
+        "recording__title",
+        "runner_manager__name",
+    ]
+    actions = ["relaunch_selected_tasks"]
+
+    def get_readonly_fields(self, request, obj=None):
+        """Keep type and status immutable after task creation."""
+        if obj is None:
+            return self.readonly_fields
+        return [*self.readonly_fields, "type", "status"]
+
+    def _truncate_label(self, label):
+        """Return a short label for list display."""
+        return Truncator(label).chars(50)
+
+    @admin.display(description=_("Video ID"), ordering="video__id")
+    def video_id_display(self, obj):
+        """Display the related video identifier, or '-' when absent."""
+        if not obj.video_id:
+            return "-"
+        return obj.video_id
+
+    @admin.display(description=_("Video"), ordering="video__title")
+    def video_label(self, obj):
+        """Display a truncated video title, or '-' when no video is linked."""
+        if not obj.video_id:
+            return "-"
+        return self._truncate_label(obj.video.title)
+
+    @admin.display(description=_("Recording ID"), ordering="recording__id")
+    def recording_id_display(self, obj):
+        """Display the related recording identifier, or '-' when absent."""
+        if not obj.recording_id:
+            return "-"
+        return obj.recording_id
+
+    @admin.display(description=_("Recording"), ordering="recording__title")
+    def recording_label(self, obj):
+        """Display a truncated recording title, or '-' when not linked."""
+        if not obj.recording_id:
+            return "-"
+        return self._truncate_label(obj.recording.title)
+
+    @admin.display(description=_("Status"), ordering="status")
+    def status_badge(self, obj):
+        """Render task status with a colored badge in list display."""
+        badge_map = {
+            "pending": "bg-secondary",
+            "running": "bg-warning text-dark",
+            "failed": "bg-danger",
+            "timeout": "bg-danger",
+            "completed": "bg-success",
+        }
+        badge_class = badge_map.get(obj.status, "bg-secondary")
+        status_label = obj.get_status_display()
+        return format_html(
+            '<span class="badge {}">{}</span>',
+            badge_class,
+            status_label,
+        )
+
+    @admin.action(description=_("Restart selected tasks"))
+    def relaunch_selected_tasks(self, request, queryset):
+        """Reset selected tasks and relaunch one job per unique source."""
+        from .runner_manager import (
+            encode_studio_recording,
+            encode_video,
+            transcript_video,
+        )
+
+        relaunched_count = 0
+        skipped_count = 0
+        launched_sources = set()
+
+        for task in queryset:
+            source_key = (task.type, task.video_id, task.recording_id)
+            if source_key in launched_sources:
+                skipped_count += 1
+                continue
+
+            # Force selected task as pending so runner_manager helpers update this row
+            # instead of creating a new pending task.
+            task.status = "pending"
+            task.task_id = None
+            task.runner_manager = None
+            task.rank = None
+            task.script_output = None
+            task.date_added = timezone.now()
+            task.save(
+                update_fields=[
+                    "status",
+                    "task_id",
+                    "runner_manager",
+                    "rank",
+                    "script_output",
+                    "date_added",
+                ]
+            )
+
+            if task.type == "encoding" and task.video_id:
+                encode_video(task.video_id)
+            elif task.type == "transcription" and task.video_id:
+                transcript_video(task.video_id)
+            elif task.type == "studio" and task.recording_id:
+                encode_studio_recording(task.recording_id)
+            else:
+                skipped_count += 1
+                continue
+
+            launched_sources.add(source_key)
+            relaunched_count += 1
+
+        refresh_pending_task_ranks()
+        self.message_user(
+            request,
+            _("%(count)s task(s) relaunched immediately.") % {"count": relaunched_count},
+            level=messages.SUCCESS,
+        )
+        if skipped_count:
+            self.message_user(
+                request,
+                _("%(count)s task(s) skipped (duplicate or missing source).")
+                % {"count": skipped_count},
+                level=messages.WARNING,
+            )

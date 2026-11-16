@@ -1,26 +1,22 @@
 """Esup-Pod video cutting app views."""
 
-from django.shortcuts import render
-from pod.main.views import in_maintenance
-from django.shortcuts import redirect
-from django.urls import reverse
-from django.shortcuts import get_object_or_404
-from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.decorators import login_required
-from django.utils.translation import ugettext as _
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.http import QueryDict
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_protect
 
-from pod.video_encode_transcript.encode import start_encode
+from pod.main.views import in_maintenance
 from pod.video.models import Video
 
-from .models import CutVideo
 from .forms import CutVideoForm
+from .models import CutVideo
 from .utils import clean_database
-
-from django.conf import settings
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -29,7 +25,7 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def cut_video(request, slug):  # noqa: C901
+def cut_video(request, slug):
     """View for video cutting."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
@@ -77,10 +73,11 @@ def cut_video(request, slug):  # noqa: C901
 
             clean_database(video.id)
 
-            start_encode(video.id)
+            video.launch_encode = True
+            video.save()
 
             messages.add_message(request, messages.SUCCESS, _("The cut was made."))
-            return redirect(reverse("video:dashboard"))
+            return redirect("video:dashboard")
 
         else:
             messages.add_message(

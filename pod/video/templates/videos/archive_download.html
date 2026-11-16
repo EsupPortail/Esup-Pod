@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block page_content %}
+  <h1>{% trans "Archive Download" %}</h1>
+
+  <ul>
+    <li>
+      {% trans "Link to the video:" %}
+      <a href="{% url 'video:video' slug=video.slug %}">{{ video.title }}</a>
+    </li><li>
+      {% trans "Date to delete:" %}
+      <strong>{{ video.date_delete }}</strong>
+    </li>
+  </ul>
+
+  <div class="text-center mb-3">
+    <a href="{{ url }}" class="btn btn-lg btn-primary">
+      <i class="bi bi-archive" aria-hidden="true"></i>
+      {% trans "Download video archive" %}
+    </a>
+  </div>
+
+  <div class="text-center mt-1">
+    <a href="/video/respite/{{ video.slug }}/" class="btn btn-secondary">
+      {% trans "Back to choices" %}
+    </a>
+    <a href="/" class="btn btn-secondary">
+      {% trans "Return to homepage" %}
+    </a>
+  </div>
+
+{% endblock page_content %}

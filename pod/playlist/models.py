@@ -7,13 +7,12 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Max
 from django.utils import timezone
-from django.utils.translation import ugettext as _
+from django.utils.crypto import salted_hmac
+from django.utils.translation import gettext as _
 from django.template.defaultfilters import slugify
 
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video
-from pod.video.utils import sort_videos_list
-
 
 SITE_ID = getattr(settings, "SITE_ID")
 
@@ -32,9 +31,8 @@ class Playlist(models.Model):
         verbose_name=_("Title"),
         max_length=__MAX_LENGTH_FOR_PLAYLIST_NAME__,
         default=_("Playlist"),
-        help_text=_(
-            f"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} characters."
-        ),
+        help_text=_("Please choose a title between 1 and %(max)s characters.")
+        % {"max": __MAX_LENGTH_FOR_PLAYLIST_NAME__},
     )
     description = models.TextField(
         verbose_name=_("Description"),
@@ -125,6 +123,7 @@ class Playlist(models.Model):
         verbose_name_plural = _("Playlists")
 
     def save(self, *args, **kwargs) -> None:
+        """Generate the slug from the playlist identifier and name before saving."""
         newid = -1
         if not self.id:
             try:
@@ -141,6 +140,7 @@ class Playlist(models.Model):
         super().save(*args, **kwargs)
 
     def clean(self) -> None:
+        """Validate password protection and restrict promotion to public playlists."""
         if self.visibility == "protected" and not self.password:
             raise ValidationError(
                 _("Password is required for a password-protected playlist.")
@@ -158,15 +158,29 @@ class Playlist(models.Model):
 
         return get_number_video_in_playlist(self)
 
-    def get_first_video(self, request=None) -> Video:
+    def get_first_video(self, request=None) -> Video | None:
         """Get the first video."""
         from .utils import get_video_list_for_playlist, user_can_see_playlist_video
 
-        if request is not None:
-            for video in sort_videos_list(get_video_list_for_playlist(self), "rank"):
-                if user_can_see_playlist_video(request, video, self):
-                    return video
-        return sort_videos_list(get_video_list_for_playlist(self), "rank").first()
+        videos = get_video_list_for_playlist(
+            self, prefetch_access=request is not None
+        ).order_by("rank", "pk")
+        if request is None:
+            return videos.first()
+        return next(
+            (
+                video
+                for video in videos.iterator(chunk_size=100)
+                if user_can_see_playlist_video(request, video, self)
+            ),
+            None,
+        )
+
+    def get_session_auth_hash(self) -> str:
+        """Invalidate session access when the playlist password changes."""
+        return salted_hmac(
+            "pod.playlist.access", f"{self.pk}:{self.password}"
+        ).hexdigest()
 
 
 class PlaylistContent(models.Model):
@@ -197,6 +211,7 @@ class PlaylistContent(models.Model):
         verbose_name_plural = _("Playlist contents")
 
     def save(self, *args, **kwargs) -> None:
+        """Assign a rank after the playlist's last item before saving."""
         try:
             last_rank = PlaylistContent.objects.filter(playlist=self.playlist).aggregate(
                 Max("rank")

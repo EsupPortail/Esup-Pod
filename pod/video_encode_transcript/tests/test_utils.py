@@ -1,14 +1,26 @@
-"""Unit tests for Esup-Pod dressing utilities."""
+"""
+Unit tests for Esup-Pod video encoding utilities.
+
+Run with `python manage.py test pod.video_encode_transcript.tests.test_utils`
+"""
 
 import unittest
-from ..encoding_utils import get_dressing_position_value
+from smtplib import SMTPRecipientsRefused
+from unittest.mock import MagicMock, patch
+
+from django.core import mail
+from django.test import SimpleTestCase, override_settings
+
+from .. import utils
+from ..encoding_utils import get_dressing_position_value, sec_to_timestamp
+from ..utils import send_email_item
 
 
 class EncodingUtilitiesTests(unittest.TestCase):
     """TestCase for Esup-Pod encoding utilities."""
 
     def test_dressing_position_value(self) -> None:
-        """Test for the get_position_value function."""
+        """Return the expected ffmpeg overlay expression for each watermark corner."""
         result = get_dressing_position_value("top_right", "720")
         self.assertEqual(result, "overlay=main_w-overlay_w-36.0:36.0")
 
@@ -22,3 +34,226 @@ class EncodingUtilitiesTests(unittest.TestCase):
         self.assertEqual(result, "overlay=36.0:main_h-overlay_h-36.0")
 
         print(" ---> get_dressing_position_value: OK! --- EncodginUtilsTest")
+
+    def test_sec_to_timestamp(self) -> None:
+        """Convert seconds to a normalized HH:MM:SS.mmm timestamp string."""
+        self.assertEqual(sec_to_timestamp(-1), "00:00:00.000")
+        self.assertEqual(sec_to_timestamp(60.000), "00:01:00.000")
+        print(" ---> sec_to_timestamp: OK! --- EncodginUtilsTest")
+
+
+class SendEmailItemTests(SimpleTestCase):
+    """Test admin alert email guards."""
+
+    @override_settings(
+        EMAIL_HOST="smtp.univ.fr",
+        ADMINS=(("Name", "adminmail@univ.fr"),),
+    )
+    @patch("pod.video_encode_transcript.utils.mail_admins")
+    def test_send_email_item_skips_placeholder_smtp_settings(
+        self, mock_mail_admins
+    ) -> None:
+        """Do not attempt an SMTP send when project placeholder settings are unchanged."""
+        send_email_item("Task 42 failed", "Task", "task-42")
+        mock_mail_admins.assert_not_called()
+
+    @override_settings(
+        EMAIL_HOST="smtp.example.org",
+        ADMINS=(("Ops", "ops@example.org"),),
+    )
+    @patch("pod.video_encode_transcript.utils.mail_admins")
+    def test_send_email_item_uses_configured_smtp_settings(
+        self, mock_mail_admins
+    ) -> None:
+        """Keep sending admin alert emails when SMTP settings are explicitly configured."""
+        send_email_item("Task 42 failed", "Task", "task-42")
+        mock_mail_admins.assert_called_once()
+
+    @override_settings(EMAIL_HOST="smtp.example.org", ADMINS=())
+    @patch("pod.video_encode_transcript.utils.mail_admins")
+    def test_send_email_item_skips_when_admins_are_empty(self, mock_mail_admins) -> None:
+        """Do not attempt an SMTP send when no admin recipients are configured."""
+        send_email_item("Task 42 failed", "Task", "task-42")
+        mock_mail_admins.assert_not_called()
+
+    @override_settings(EMAIL_HOST="", ADMINS=(("Ops", "ops@example.org"),))
+    @patch("pod.video_encode_transcript.utils.mail_admins")
+    def test_send_email_item_skips_when_email_host_is_empty(
+        self, mock_mail_admins
+    ) -> None:
+        """Do not attempt an SMTP send when the SMTP host is not configured."""
+        send_email_item("Task 42 failed", "Task", "task-42")
+        mock_mail_admins.assert_not_called()
+
+
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    EMAIL_SUBJECT_PREFIX="[TESTpod] ",
+    MANAGERS=(("Manager", "manager@example.org"),),
+    LANGUAGE_CODE="en",
+)
+class CompletionEmailTests(SimpleTestCase):
+    """Check completion messages as received by owners and managers."""
+
+    def setUp(self) -> None:
+        """Prepare a video without database access or external email delivery."""
+        self.video = MagicMock(id=42, title="example.mp4", slug="0042-example")
+        self.video.owner.email = "owner@example.org"
+        self.video.owner.__str__.return_value = "Alice"
+        self.video.owner.owner.establishment = "university"
+        self.video.date_added = "2026-09-16"
+        self.video.get_full_url.return_value = "//example.org/video/0042-example/"
+        patcher = patch.multiple(
+            utils,
+            DEBUG=False,
+            __TITLE_SITE__="TESTpod",
+            USE_ESTABLISHMENT_FIELD=False,
+            MANAGERS=(),
+        )
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_subject_prefix_for_owner_and_managers(self) -> None:
+        """Use the configured prefix once, with the site name as an empty fallback."""
+        for prefix in ("[TESTpod] ", "[Custom] ", ""):
+            with (
+                self.subTest(prefix=prefix),
+                override_settings(EMAIL_SUBJECT_PREFIX=prefix),
+            ):
+                mail.outbox.clear()
+                utils.send_email_encoding(self.video)
+
+                self.assertEqual(len(mail.outbox), 2)
+                self.assertEqual(mail.outbox[0].to, ["manager@example.org"])
+                self.assertEqual(mail.outbox[1].to, ["owner@example.org"])
+                for message in mail.outbox:
+                    self.assertEqual(
+                        message.subject,
+                        (prefix or "[TESTpod] ") + "Encoding #42 completed",
+                    )
+
+    def test_subject_prefix_for_establishment_managers(self) -> None:
+        """Apply the same prefix to messages sent with establishment managers in BCC."""
+        with patch.multiple(
+            utils,
+            USE_ESTABLISHMENT_FIELD=True,
+            MANAGERS=(("university", "establishment@example.org"),),
+        ):
+            for prefix in ("[TESTpod] ", "[Custom] ", ""):
+                with (
+                    self.subTest(prefix=prefix),
+                    override_settings(EMAIL_SUBJECT_PREFIX=prefix),
+                ):
+                    mail.outbox.clear()
+                    utils.send_email_encoding(self.video)
+
+                    self.assertEqual(len(mail.outbox), 1)
+                    self.assertEqual(mail.outbox[0].to, ["owner@example.org"])
+                    self.assertEqual(mail.outbox[0].bcc, ["establishment@example.org"])
+                    self.assertEqual(
+                        mail.outbox[0].subject,
+                        (prefix or "[TESTpod] ") + "Encoding #42 completed",
+                    )
+
+    def test_completion_email_messages(self) -> None:
+        """Render encoding and transcription messages with their content and metadata."""
+        cases = (
+            (
+                utils.send_email_encoding,
+                "The video “example.mp4” has been encoded to Web formats, "
+                "and is now available on TESTpod.",
+            ),
+            (
+                utils.send_email_transcript,
+                "The content “example.mp4” has been automatically transcribed, "
+                "and is now available on TESTpod.",
+            ),
+        )
+        for send_email, expected_message in cases:
+            with self.subTest(notification=send_email.__name__):
+                mail.outbox.clear()
+                send_email(self.video)
+
+                self.assertEqual(len(mail.outbox), 2)
+                for message in mail.outbox:
+                    self.assertIn(expected_message, message.body)
+                    self.assertIn(
+                        expected_message.replace("example.mp4", "<b>example.mp4</b>"),
+                        message.alternatives[0][0],
+                    )
+                manager_message = mail.outbox[0]
+                for body in (manager_message.body, manager_message.alternatives[0][0]):
+                    self.assertIn("Post by: Alice", body)
+                    self.assertIn("the: 2026-09-16", body)
+
+    def test_completion_email_delivery_errors_are_logged(self) -> None:
+        """Log failed owner, manager and establishment email deliveries without raising."""
+        error = SMTPRecipientsRefused(
+            {self.video.owner.email: (550, b"5.1.2 Recipient domain not found")}
+        )
+        for sender in (utils.send_email_encoding, utils.send_email_transcript):
+            for delivery in (
+                "mail_managers",
+                "send_mail",
+                "EmailMultiAlternatives.send",
+            ):
+                with self.subTest(sender=sender.__name__, delivery=delivery):
+                    with (
+                        patch.multiple(
+                            utils,
+                            USE_ESTABLISHMENT_FIELD=delivery.startswith("Email"),
+                            MANAGERS=(("university", "establishment@example.org"),),
+                        ),
+                        patch(
+                            f"pod.video_encode_transcript.utils.{delivery}",
+                            side_effect=error,
+                        ),
+                        self.assertLogs(utils.logger, level="ERROR") as logs,
+                    ):
+                        sender(self.video)
+
+                    self.assertEqual(len(logs.records), 1)
+                    self.assertIn("video 42", logs.records[0].getMessage())
+                    self.assertIs(logs.records[0].exc_info[1], error)
+
+    @patch(
+        "pod.video_encode_transcript.utils.mail_managers",
+        side_effect=RuntimeError("Invalid email implementation"),
+    )
+    def test_completion_email_does_not_hide_programming_errors(
+        self, mock_mail_managers
+    ) -> None:
+        """Limit non-blocking errors to SMTP and connection failures."""
+        with self.assertRaisesRegex(RuntimeError, "Invalid email implementation"):
+            utils.send_email_encoding(self.video)
+
+    @patch("pod.video_encode_transcript.utils.notify_user")
+    def test_encoding_push_notification(self, mock_notify_user) -> None:
+        """Include the site name and encoded video details in push notifications."""
+        utils.send_notification_encoding(self.video)
+
+        mock_notify_user.assert_called_once()
+        self.assertEqual(
+            mock_notify_user.call_args.args[1],
+            "[TESTpod] Encoding #42 completed",
+        )
+        self.assertEqual(
+            mock_notify_user.call_args.args[2],
+            "The video “example.mp4” has been encoded to Web formats, "
+            "and is now available on TESTpod.",
+        )
+
+    @patch("pod.video_encode_transcript.utils.notify_user")
+    def test_transcription_push_notification(self, mock_notify_user) -> None:
+        """Use the complete transcription sentence for both existing subject labels."""
+        for subject in ("The transcripting of content", "Transcripting"):
+            with self.subTest(subject=subject):
+                mock_notify_user.reset_mock()
+                utils.send_notification(self.video, subject)
+
+                mock_notify_user.assert_called_once()
+                self.assertEqual(
+                    mock_notify_user.call_args.args[2],
+                    "The content “example.mp4” has been automatically transcribed, "
+                    "and is now available on TESTpod.",
+                )

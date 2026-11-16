@@ -6,18 +6,20 @@
             id="folder_{{user_home_folder.id}}"
             class="{% if user_home_folder == current_session_folder%}font-weight-bold{% endif %} folder btn btn-link"
             data-id="{{user_home_folder.id}}"
-            data-target="{% if type %}{% url 'podfile:get_folder_files' id=user_home_folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=user_home_folder.id %}{% endif %}"
+            data-target="{% if type == "image" or type == "file" %}{% url 'podfile:get_folder_files' id=user_home_folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=user_home_folder.id %}{% endif %}"
         >
             <i class="home-directory bi bi-house-door-fill" aria-hidden="true"></i>
             {% trans "Home folder" %}
         </a>
+        {# Remove data-bs-toggle="modal" and data-bs-target="#folderModalCenter". #}
+        {# As we can't use an external events manager, use new setModalAction function. #}
         <button
+            id="addfolder"
             type="button"
             class="btn btn-link btn-sm add-folder-btn"
-            data-bs-toggle="modal"
-            data-bs-target="#folderModalCenter"
             data-oldname=""
             data-folderid=""
+            onClick="javascript:setModalAction('addfolder');"
         >
             <i class="add-folder bi bi-folder-plus" aria-hidden="true"></i>
             {% trans "Add new folder" %}
@@ -40,7 +42,7 @@
     </div>
   {% endif %}
 <div class="flex display-vertical">
-    <div class="list_folders" id="list_folders_sub" data-type="{{type}}">&nbsp;</div>
+    <div class="list_folders" id="list_folders_sub" data-type="{% if type == "image" or type == "file" %}{{type}}{% endif %}">&nbsp;</div>
 </div>
 <style>
     #formalertdiv{

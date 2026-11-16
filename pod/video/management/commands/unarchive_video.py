@@ -10,7 +10,7 @@ from django.core.management.base import BaseCommand
 from django.utils.translation import gettext as _
 from django.utils.translation import activate
 
-from pod.video.management.commands.create_archive_package import read_archived_csv
+from pod.video.utils import read_archived_csv
 from pod.video.models import Video, default_date_delete
 
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")

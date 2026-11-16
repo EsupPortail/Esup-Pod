@@ -3,7 +3,8 @@
  */
 
 /* exported getParents slideToggle fadeOut linkTo_UnCryptMailto showLoader videocheck */
-/* exported  send_form_data_vanilla decodeString */
+/* exported send_form_data_vanilla decodeString get_list */
+/* exported update_theme channel_callback init_theme_selector */
 
 // Read-only globals defined in video-script.html
 /* global player */
@@ -148,10 +149,9 @@ var slideToggle = (target, duration = 500) => {
 };
 
 /**
- * [fadeIn description]
- * @param  {[type]} el      [description]
- * @param  {[type]} display [description]
- * @return {[type]}         [description]
+ * Show HTML element whith fade effect
+ * @param  {HTMLElement} el Dom element to show
+ * @param  {string} display Display property (default: block)
  */
 function fadeIn(el, display) {
   el.style.opacity = 0;
@@ -159,7 +159,7 @@ function fadeIn(el, display) {
   el.style.display = display || "block";
   (function fade() {
     var val = parseFloat(el.style.opacity);
-    if (!((val += 0.1) > 1)) {
+    if (!((val += 0.04) > 1)) {
       el.style.opacity = val;
       requestAnimationFrame(fade);
     }
@@ -167,15 +167,14 @@ function fadeIn(el, display) {
 }
 
 /**
- * [fadeOut description]
- * @param  {[type]} elem  [description]
- * @param  {[type]} speed [description]
- * @return {[type]}       [description]
+ * Hide element whith fade effect
+ * @param {HTMLElement} elem Dom element to hide
+ * @param {number} speed Speed of the fadeout
  */
 function fadeOut(elem, speed) {
   if (!elem.style.opacity) {
     elem.style.opacity = 1;
-  } // end if
+  }
 
   var outInterval = setInterval(function () {
     elem.style.opacity -= 0.02;
@@ -185,9 +184,10 @@ function fadeOut(elem, speed) {
         elem.style.opacity = Number(elem.style.opacity) + 0.02;
         if (elem.style.opacity >= 1) clearInterval(inInterval);
       }, speed / 50);
-    } // end if
+    }
   }, speed / 50);
 }
+
 /**
  * [isJson description]
  * @param  {[type]}  str [description]
@@ -236,7 +236,6 @@ Number.prototype.toHHMMSS = function () {
 
 /**
  * Edit the iframe and share link code
- * @return {[type]} [description]
  */
 function writeInFrame() {
   // Iframe
@@ -297,9 +296,12 @@ function writeInFrame() {
   document.getElementById("txtpartage").value = link;
 
   var img = document.getElementById("qrcode");
-  var imgsrc = "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl=" + link;
-  if (img.getAttribute("src") === "") img.setAttribute("data-src", imgsrc);
-  else img.src = imgsrc;
+  img.src = "/static/img/logoPod_animated.svg";
+  setTimeout(function () {
+    img.src =
+      "//quickchart.io/chart?cht=qr&chs=200x200&chl=" +
+      encodeURIComponent(link);
+  }, 2000);
 }
 
 if (localStorage.getItem("autoshowsubtitles")) {
@@ -313,15 +315,6 @@ document.addEventListener("change", (e) => {
       ? localStorage.setItem("autoshowsubtitles", "on")
       : localStorage.removeItem("autoshowsubtitles");
   }
-});
-
-document.addEventListener("shown.bs.collapse", (e) => {
-  if (e.target.id === "qrcode")
-    e.target.setAttribute("src", e.target.getAttribute("data-src"));
-});
-
-document.addEventListener("hidden.bs.collapse", (e) => {
-  if (e.target.id === "qrcode") e.target.setAttribute("src", "");
 });
 
 if (document.getElementById("btn-download-qr-code") !== null) {
@@ -394,8 +387,12 @@ document.addEventListener("change", (e) => {
   txtpartage.value = link;
 
   var img = document.getElementById("qrcode");
-  img.src =
-    "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl=" + txtpartage.value;
+  img.src = "/static/img/logoPod_animated.svg";
+  setTimeout(function () {
+    img.src =
+      "//quickchart.io/chart?cht=qr&chs=200x200&chl=" +
+      encodeURIComponent(txtpartage.value);
+  }, 2000);
 });
 
 /**
@@ -577,6 +574,7 @@ function manageDisableBtn(element, condition) {
     ? element.removeAttribute("disabled")
     : element.setAttribute("disabled", "");
 }
+
 /** MENU ASIDE **/
 document.addEventListener("DOMContentLoaded", function () {
   //.collapseAside is on the toggle button
@@ -1104,6 +1102,7 @@ var append_picture_form = async function (data) {
     userPictureModal.show();
   }
 };
+
 /**
  * [show_form_theme description]
  * @param  {[type]} data [description]
@@ -1112,21 +1111,37 @@ var append_picture_form = async function (data) {
 function show_form_theme(data) {
   let div_form = document.getElementById("div_form_theme");
   div_form.style.display = "none";
+
+  // Destroy all WYSIWYG before replacing content
+  var theme_descriptions = document.querySelectorAll(
+    "textarea[id^='id_description']",
+  );
+
+  theme_descriptions.forEach((el) => {
+    let t = tinyMCE.get(el.id);
+    if (t) {
+      t.remove();
+    }
+  });
+
   div_form.innerHTML = data;
+
+  // Reinit WYSIWYG on newly loaded textarea
+  theme_descriptions = document.querySelectorAll(
+    "textarea[id^='id_description']",
+  );
+
+  theme_descriptions.forEach((el) => {
+    let mce_conf = JSON.parse(el.dataset.mceConf);
+    tinyMCE.init(mce_conf);
+  });
+
   fadeIn(div_form);
   if (data != "")
     document.querySelector("form.get_form_theme").style.display = "none";
   window.scrollTo({
     top: parseInt(document.getElementById("div_form_theme").offsetTop, 10),
     behavior: "smooth",
-  });
-  // Add CKEditor when edit a theme
-  // For all descriptions, except description help
-  const theme_descriptions = document.querySelectorAll(
-    "textarea[id^='id_description']",
-  );
-  theme_descriptions.forEach((theme_description) => {
-    CKEDITOR.replace(theme_description.id);
   });
 }
 /**
@@ -1265,30 +1280,50 @@ var showalert = function (message, alertType, idAlertType = "formalertdiv") {
     "alert-info": "info-fill",
     "alert-warning": "exclamation-triangle-fill",
     "alert-danger": "exclamation-triangle-fill",
+    "alert-error": "exclamation-triangle-fill",
   };
+  const safeAlertType = Object.prototype.hasOwnProperty.call(
+    icon_types,
+    alertType,
+  )
+    ? alertType
+    : "alert-info";
+  const alertElement = document.createElement("div");
+  alertElement.id = idAlertType;
+  alertElement.classList.add(
+    "alert",
+    safeAlertType,
+    "alert-dismissible",
+    "fade",
+    "show",
+  );
+  alertElement.setAttribute("role", "alert");
 
-  let textHtml =
-    "<div id=" +
-    idAlertType +
-    ' class="alert ' +
-    alertType +
-    ' alert-dismissible fade show" role="alert">' +
-    '<i aria-hidden="true" class="bi bi-' +
-    icon_types[alertType] +
-    ' me-2"></i>' +
-    '<span class="alert-message">' +
-    message +
-    "</span>" +
-    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="' +
-    gettext("Close") +
-    '"></button></div>';
+  const icon = document.createElement("i");
+  icon.setAttribute("aria-hidden", "true");
+  icon.classList.add("bi", `bi-${icon_types[safeAlertType]}`, "me-2");
+  alertElement.appendChild(icon);
 
-  let parsedHTML = new DOMParser().parseFromString(textHtml, "text/html").body
-    .firstChild;
+  const messageElement = document.createElement("span");
+  messageElement.classList.add("alert-message");
+  String(message)
+    .split(/<br\s*\/?>/i)
+    .forEach((line, index) => {
+      if (index > 0) messageElement.appendChild(document.createElement("br"));
+      messageElement.appendChild(document.createTextNode(line));
+    });
+  alertElement.appendChild(messageElement);
 
-  document.body.appendChild(parsedHTML);
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.classList.add("btn-close");
+  closeButton.dataset.bsDismiss = "alert";
+  closeButton.setAttribute("aria-label", gettext("Close"));
+  alertElement.appendChild(closeButton);
+
+  document.body.appendChild(alertElement);
   // Auto dismiss success and info types
-  if (["alert-success", "alert-info"].includes(alertType)) {
+  if (["alert-success", "alert-info"].includes(safeAlertType)) {
     setTimeout(function () {
       let formalertdiv = document.getElementById(idAlertType);
       window.setTimeout(function () {
@@ -1420,9 +1455,12 @@ function remove_quotes(text) {
 }
 
 let mainCollapseButton = document.getElementById("collapse-button");
-mainCollapseButton.addEventListener("click", () => {
-  window.scrollTo(0, 0);
-});
+// No collapse-button on admin pages
+if (mainCollapseButton) {
+  mainCollapseButton.addEventListener("click", () => {
+    window.scrollTo(0, 0);
+  });
+}
 
 /**
  * Remove accents and convert to lowercase.
@@ -1451,4 +1489,110 @@ function decodeString(str) {
     String.fromCharCode(parseInt(p1, 10)),
   );
   return str;
+}
+
+/**
+ * Save all themes in tab_initial array,
+ * then remove all themes options from selection list
+ * @return {[type]} [description]
+ */
+function update_theme(id_theme) {
+  let tab_initial = [];
+  if (id_theme) {
+    for (let i = 0; i < id_theme.options.length; i++) {
+      if (id_theme.options[i].selected) {
+        tab_initial.push(id_theme.options[i].value);
+      }
+    }
+    // Remove all id_theme options
+    while (id_theme.options.length > 0) id_theme.options.remove(0);
+  }
+  return tab_initial;
+}
+
+/**
+ * Append theme options using DOM text nodes so labels are never parsed as HTML.
+ * @param {HTMLSelectElement} id_theme Theme selector
+ * @param {Array} themes Themes to append
+ * @param {Array} selectedThemes Initially selected theme identifiers
+ * @param {string} channelLabel Channel label prefix
+ * @param {number} level Theme nesting level
+ */
+function appendThemeOptions(
+  id_theme,
+  themes,
+  selectedThemes,
+  channelLabel,
+  level = 0,
+) {
+  let prefix = "";
+  for (let i = 0; i < level; i++) prefix += "\u00a0\u00a0";
+  if (level !== 0) prefix += "|-";
+
+  themes.forEach((theme) => {
+    const option = document.createElement("option");
+    option.value = String(theme.id);
+    option.id = `theme_${theme.id}`;
+    option.selected = selectedThemes.includes(String(theme.id));
+    option.textContent = `${prefix} ${channelLabel}${theme.title}`;
+    id_theme.appendChild(option);
+
+    if (theme.child && Object.keys(theme.child).length > 0) {
+      appendThemeOptions(
+        id_theme,
+        theme.child,
+        selectedThemes,
+        channelLabel,
+        level + 1,
+      );
+    }
+  });
+}
+
+/**
+ * Callback function to execute when channel selector changes
+ * @param {HTMLElement} id_channel select-multiple for Channel
+ * @param {HTMLElement} id_theme   select-multiple for Theme
+ * @param {Object} listTheme List af all channels and their associated themes
+ */
+function channel_callback(id_channel, id_theme, listTheme) {
+  const tab_initial = update_theme(id_theme);
+  const channels = id_channel.parentElement.querySelectorAll(
+    ".select2-selection__choice",
+  );
+  for (let i = 0; i < channels.length; i++) {
+    for (let j = 0; j < id_channel.options.length; j++) {
+      if (channels[i].title === id_channel.options[j].text) {
+        if (listTheme["channel_" + id_channel.options[j].value]) {
+          appendThemeOptions(
+            id_theme,
+            listTheme["channel_" + id_channel.options[j].value],
+            tab_initial,
+            id_channel.options[j].text + ": ",
+          );
+        }
+      }
+    }
+  }
+  flashing(id_theme, 1000);
+}
+
+/**
+ * Initialize theme selector values
+ * @param {HTMLElement} id_channel select-multiple for Channel
+ * @param {HTMLElement} id_theme   select-multiple for Theme
+ * @param {Object} listTheme List af all channels and their associated themes
+ */
+function init_theme_selector(id_channel, id_theme, listTheme) {
+  const tab_initial = update_theme(id_theme);
+  for (let i = 0; i < id_channel.options.length; i++) {
+    if (listTheme["channel_" + id_channel.options[i].value]) {
+      appendThemeOptions(
+        id_theme,
+        listTheme["channel_" + id_channel.options[i].value],
+        tab_initial,
+        id_channel.options[i].text + ": ",
+      );
+    }
+  }
 }

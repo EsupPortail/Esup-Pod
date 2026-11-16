@@ -3,7 +3,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.urls import reverse
 from django.test import Client
 
@@ -246,6 +246,39 @@ class FileViewTestCase(TestCase):
 
         print(" ---> test_list_files: OK!")
 
+    def test_unknown_image_extension_has_badge_in_file_widget(self) -> None:
+        """An image preview keeps its extension badge in the modal file picker."""
+        user = User.objects.get(username="pod")
+        user.is_staff = True
+        user.save()
+        self.client.force_login(user)
+
+        currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        image = SimpleUploadedFile(
+            name="thumbnail.webp",
+            content=open(os.path.join(currentdir, "tests", "testimage.jpg"), "rb").read(),
+            content_type="image/webp",
+        )
+        folder = UserFolder.objects.get(owner=user, name="home")
+        CustomImageModel.objects.create(
+            name="thumbnail", created_by=user, folder=folder, file=image
+        )
+
+        response = self.client.get(
+            reverse(
+                "podfile:get_folder_files",
+                kwargs={"id": folder.id, "type": "image"},
+            )
+        )
+
+        self.assertEqual(response.status_code, 200)
+        rendered_files = json.loads(force_str(response.content))["list_element"]
+        self.assertIn(
+            'class="badge text-bg-secondary podfile-extension-badge">WEBP</span>',
+            rendered_files,
+        )
+        self.assertEqual(rendered_files.count("podfile-extension-badge"), 1)
+
     def test_edit_files(self) -> None:
         self.client = Client()
         self.user = User.objects.get(username="pod")
@@ -267,12 +300,12 @@ class FileViewTestCase(TestCase):
                 "folderid": folder.id,
             },
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
 
         self.assertEqual(response.status_code, 200)  # ajax with post data
 
-        result = json.loads(force_text(response.content))
+        result = json.loads(force_str(response.content))
 
         self.assertTrue(result["list_element"])
         self.assertEqual(folder.customfilemodel_set.all().count(), nbfile + 1)
@@ -295,6 +328,6 @@ class FileViewTestCase(TestCase):
                 "folderid": 999,
             },
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, 404)  # folder not exist

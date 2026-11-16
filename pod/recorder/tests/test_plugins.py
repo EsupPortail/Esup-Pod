@@ -1,8 +1,12 @@
-"""Unit test for Pod recorder plugins."""
+"""Unit test for Pod recorder plugins.
+
+*  run with 'python manage.py test pod.recorder.tests.test_plugins'
+"""
 
 import os
 import shutil
 import importlib
+from unittest.mock import patch
 from defusedxml import minidom
 
 from django.conf import settings
@@ -27,7 +31,12 @@ class PluginVideoTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
+        # Existing source files must not start workers during fixture creation.
+        for plugin in ("video", "audiovideocast"):
+            process = patch("pod.recorder.plugins.type_%s.process" % plugin)
+            process.start()
+            self.addCleanup(process.stop)
         mediatype = Type.objects.create(title="others")
         Type.objects.create(title="second")
         user = User.objects.create(username="pod", is_staff=True)
@@ -72,17 +81,19 @@ class PluginVideoTestCase(TestCase):
 
         print(" --->  SetUp of PluginVideoTestCase: OK!")
 
-    def test_type_video_published_attributs(self):
+    def test_type_video_published_attributs(self) -> None:
         recording = Recording.objects.get(id=1)
         recorder = recording.recorder
         shutil.copyfile(VIDEO_TEST, recording.source_file)
         mod = importlib.import_module("pod.recorder.plugins.type_%s" % ("video"))
         nbnow = Video.objects.all().count()
         nbtest = nbnow + 1
-        mod.encode_recording(recording)
+        with patch.object(mod.encode, mod.ENCODE_VIDEO) as start_encode:
+            mod.encode_recording(recording)
         # print("Number of video after encode: ", Video.objects.all().count())
         self.assertEqual(Video.objects.all().count(), nbtest)
         video = Video.objects.last()
+        start_encode.assert_called_once_with(video.id)
         self.assertEqual(video.is_draft, recorder.is_draft)
         self.assertEqual(video.channel.all().count(), recorder.channel.all().count())
         self.assertEqual(video.theme.all().count(), recorder.theme.all().count())
@@ -95,17 +106,19 @@ class PluginVideoTestCase(TestCase):
 
         print("   --->  test_type_video_published_attributs of PluginVideoTestCase: OK!")
 
-    def test_type_audiovideocast_published_attributs(self):
+    def test_type_audiovideocast_published_attributs(self) -> None:
         recording = Recording.objects.get(id=2)
         recorder = recording.recorder
         shutil.copyfile(AUDIOVIDEOCAST_TEST, recording.source_file)
         mod = importlib.import_module("pod.recorder.plugins.type_%s" % "audiovideocast")
         nbnow = Video.objects.all().count()
         nbtest = nbnow + 1
-        mod.encode_recording(recording)
+        with patch.object(mod.encode, mod.ENCODE_VIDEO) as start_encode:
+            mod.encode_recording(recording)
         # print("Number of video after encode: ", Video.objects.all().count())
         self.assertEqual(Video.objects.all().count(), nbtest)
         video = Video.objects.last()
+        start_encode.assert_called_once_with(video.id)
         # print("Number of slide after encode: ",
         #       video.enrichment_set.all().count())
         self.assertEqual((video.enrichment_set.all().count() > 0), True)
@@ -123,33 +136,33 @@ class PluginVideoTestCase(TestCase):
             "of PluginAudioVideoCastTestCase: OK!"
         )
 
-    def test_change_title(self):
+    def test_change_title(self) -> None:
         """Test method change_title."""
         from ..plugins.type_studio import change_title
 
         recording = Recording.objects.get(id=1)
         title = "A new title"
-        self.assertNotEquals(recording.title, title)
+        self.assertNotEqual(recording.title, title)
 
         change_title(recording, title)
         recording = Recording.objects.get(id=1)
-        self.assertEquals(recording.title, title)
+        self.assertEqual(recording.title, title)
         print("   --->  test_change_title of PluginVideoTestCase: OK!")
 
-    def test_change_user(self):
+    def test_change_user(self) -> None:
         """Test method change_user."""
         from ..plugins.type_studio import change_user
 
         recording = Recording.objects.get(id=1)
         user2 = User.objects.create(username="another_user", is_staff=True)
-        self.assertNotEquals(recording.user, user2)
+        self.assertNotEqual(recording.user, user2)
 
         change_user(recording, user2.username)
         recording = Recording.objects.get(id=1)
-        self.assertEquals(recording.user, user2)
+        self.assertEqual(recording.user, user2)
         print("   --->  test_change_user of PluginVideoTestCase: OK!")
 
-    def test_link_video_to_event(self):
+    def test_link_video_to_event(self) -> None:
         """Test method link_video_to_event."""
         from ..plugins.type_studio import link_video_to_event
 
@@ -224,7 +237,7 @@ class PluginVideoTestCase(TestCase):
 
         print("   --->  test_link_video_to_event of PluginVideoTestCase: OK!")
 
-    def test_get_attribute_by_name(self):
+    def test_get_attribute_by_name(self) -> None:
         """Test method getAttributeByName."""
         from ..plugins.type_studio import getAttributeByName
 
@@ -254,7 +267,7 @@ class PluginVideoTestCase(TestCase):
         self.assertIsNone(non_existing_attribute_2)
         print("   --->  test_get_attribute_by_name of PluginVideoTestCase: OK!")
 
-    def test_get_elements_by_name(self):
+    def test_get_elements_by_name(self) -> None:
         """Test method getElementsByName."""
         from ..plugins.type_studio import getElementsByName
 
@@ -303,7 +316,7 @@ class PluginVideoTestCase(TestCase):
         self.assertEqual(elements, expected_elements)
         print("   --->  test_get_elements_by_name of PluginVideoTestCase: OK!")
 
-    def test_getElementValueByName(self):
+    def test_getElementValueByName(self) -> None:
         """Test method getElementValueByName."""
         from ..plugins.type_studio import getElementValueByName
 

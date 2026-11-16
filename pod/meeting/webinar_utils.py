@@ -5,7 +5,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.mail import mail_admins
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from .models import Meeting, LiveGateway, Livestream
 from pod.live.models import Event
 from pod.main.views import TEMPLATE_VISIBLE_SETTINGS
@@ -39,7 +39,7 @@ def get_webinar_overlapping(meeting, webinar):
 
 def search_for_available_livegateway(
     request: WSGIRequest, meeting: Meeting
-) -> LiveGateway:  # noqa: C901
+) -> LiveGateway:
     """Search and returns a live gateway available during the period of the webinar.
 
     If more webinars are created than live gateways, an email is sent to warn administrators.
@@ -158,9 +158,7 @@ def update_livestream_event(livestream, meeting) -> None:
     livestream.event.save()
 
 
-def manage_webinar(
-    meeting: Meeting, created: bool, live_gateway: LiveGateway
-):  # noqa: C901
+def manage_webinar(meeting: Meeting, created: bool, live_gateway: LiveGateway) -> None:
     """Manage the livestream and the event when a webinar is created or updated."""
     # When created a webinar
     if meeting.is_webinar and created:

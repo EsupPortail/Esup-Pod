@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_protect
 from pod.video.models import Video
 from pod.chapter.models import Chapter
@@ -17,8 +17,6 @@ from django.middleware.csrf import get_token
 from django.contrib.sites.shortcuts import get_current_site
 from pod.main.utils import is_ajax
 import json
-
-__AVAILABLE_ACTIONS__ = ["new", "save", "modify", "delete", "cancel", "import", "export"]
 
 
 @csrf_protect
@@ -39,20 +37,25 @@ def video_chapter(request, slug):
 
     list_chapter = video.chapter_set.all()
 
-    if request.method == "POST":
-        if (
-            request.POST.get("action")
-            and request.POST.get("action") in __AVAILABLE_ACTIONS__
-        ):
-            return eval(
-                "video_chapter_{0}(request, video)".format(request.POST.get("action"))
-            )
-    else:
-        return render(
-            request,
-            "video_chapter.html",
-            {"video": video, "list_chapter": list_chapter},
-        )
+    if request.method == "POST" and request.POST.get("action"):
+        action = request.POST["action"]
+        ACTION_HANDLERS = {
+            "new": video_chapter_new,
+            "save": video_chapter_save,
+            "modify": video_chapter_modify,
+            "delete": video_chapter_delete,
+            "cancel": video_chapter_cancel,
+            "import": video_chapter_import,
+        }
+        if action in ACTION_HANDLERS:
+            handler = ACTION_HANDLERS.get(action)
+            if handler:
+                return handler(request, video)
+    return render(
+        request,
+        "video_chapter.html",
+        {"video": video, "list_chapter": list_chapter},
+    )
 
 
 def video_chapter_new(request, video):

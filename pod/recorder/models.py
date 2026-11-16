@@ -3,10 +3,10 @@
 import os
 import importlib
 
-from ckeditor.fields import RichTextField
+from tinymce.models import HTMLField
 from django.db import models
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.dispatch import receiver
@@ -23,7 +23,7 @@ from pod.video.models import LANG_CHOICES as __LANG_CHOICES__
 from pod.video.models import CURSUS_CODES as __CURSUS_CODES__
 from pod.video.models import LICENCE_CHOICES as __LICENCE_CHOICES__
 from pod.video.models import RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY as __REVATSO__
-from tagging.fields import TagField
+from tagulous.models import TagField
 from django.utils.translation import get_language
 
 LANG_CHOICES = getattr(
@@ -42,7 +42,7 @@ __LANG_CHOICES_DICT__ = {
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
     TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", {})
-    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
+    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "WHISPER")
 
 # FUNCTIONS
 
@@ -89,7 +89,7 @@ class Recorder(models.Model):
     # Recorder name
     name = models.CharField(_("name"), max_length=200, unique=True)
     # Description of the recorder
-    description = RichTextField(_("description"), config_name="complete", blank=True)
+    description = HTMLField(_("description"), blank=True)
     # IP address of the recorder
     address_ip = models.GenericIPAddressField(
         _("Address IP"), unique=True, help_text=_("IP address of the recorder.")
@@ -295,6 +295,10 @@ class Recorder(models.Model):
                 cred_error["salt"] = cred_msg
             raise ValidationError(cred_error)
 
+    def get_tag_list(self) -> str:
+        """Return a list of comma separated tag names."""
+        return ", ".join(tag.name for tag in self.tags.all())
+
     class Meta:
         verbose_name = _("Recorder")
         verbose_name_plural = _("Recorders")
@@ -383,6 +387,7 @@ class RecordingFileTreatment(models.Model):
         recursive=True,
         unique=True,
         help_text=_("Source file of the published video."),
+        max_length=200,
     )
     file_size = models.BigIntegerField(_("File size"), default=0)
     recorder = models.ForeignKey(

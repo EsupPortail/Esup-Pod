@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import authenticate
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from pod.video.models import Video, Type
 from ..models import Contributor
 from ..models import Document
@@ -160,7 +160,7 @@ class CompletionContributorViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_contributor")
+        self.assertContains(response, "form-contributor")
         response = self.client.post(
             url,
             data={
@@ -197,7 +197,7 @@ class CompletionContributorViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_contributor")
+        self.assertContains(response, "form-contributor")
         response = self.client.post(
             url,
             data={
@@ -218,7 +218,7 @@ class CompletionContributorViewsTestCase(TestCase):
             data={"action": "modify", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_contributor")
+        self.assertContains(response, "form-contributor")
         response = self.client.post(
             url,
             data={
@@ -234,7 +234,7 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list-contributor")
         self.assertContains(response, "testcontributor2")
-        self.assertContains(response, _("editor"))
+        self.assertContains(response, _("Editor"))
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor2")
 
@@ -253,7 +253,7 @@ class CompletionContributorViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_contributor")
+        self.assertContains(response, "form-contributor")
         response = self.client.post(
             url,
             data={
@@ -339,7 +339,7 @@ class CompletionTrackViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_track")
+        self.assertContains(response, "form-track")
         testfile = SimpleUploadedFile(
             name="testfile.vtt",
             content=open("./pod/completion/tests/testfile.vtt", "rb").read(),
@@ -390,7 +390,7 @@ class CompletionTrackViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_track")
+        self.assertContains(response, "form-track")
         testfile = SimpleUploadedFile(
             name="testfile.vtt",
             content=open("./pod/completion/tests/testfile.vtt", "rb").read(),
@@ -427,7 +427,7 @@ class CompletionTrackViewsTestCase(TestCase):
             data={"action": "modify", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_track")
+        self.assertContains(response, "form-track")
         response = self.client.post(
             url,
             data={
@@ -460,7 +460,7 @@ class CompletionTrackViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_track")
+        self.assertContains(response, "form-track")
         testfile = SimpleUploadedFile(
             name="testfile.vtt",
             content=open("./pod/completion/tests/testfile.vtt", "rb").read(),
@@ -561,7 +561,7 @@ class CompletionDocumentViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_document")
+        self.assertContains(response, "form-document")
         testfile = SimpleUploadedFile(
             name="testfile.vtt",
             content=open("./pod/completion/tests/testfile.vtt", "rb").read(),
@@ -610,7 +610,7 @@ class CompletionDocumentViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_document")
+        self.assertContains(response, "form-document")
         testfile = SimpleUploadedFile(
             name="testfile.vtt",
             content=open("./pod/completion/tests/testfile.vtt", "rb").read(),
@@ -647,7 +647,7 @@ class CompletionDocumentViewsTestCase(TestCase):
             data={"action": "modify", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_document")
+        self.assertContains(response, "form-document")
         testfile = SimpleUploadedFile(
             name="testfile2.vtt",
             content=open("./pod/completion/tests/testfile.vtt", "rb").read(),
@@ -670,7 +670,8 @@ class CompletionDocumentViewsTestCase(TestCase):
                 "action": "save",
                 "document": document.id,
                 "video": 1,
-                "document_id": result.id,
+                "id-instance-document": result.id,
+                "private": True,
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -693,7 +694,7 @@ class CompletionDocumentViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_document")
+        self.assertContains(response, "form-document")
         testfile = SimpleUploadedFile(
             name="testfile.vtt",
             content=open("./pod/completion/tests/testfile.vtt", "rb").read(),
@@ -786,7 +787,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         )
         response = self.client.post(url, data={"action": "new"})
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_overlay")
+        self.assertContains(response, "form-overlay")
         response = self.client.post(
             url,
             data={
@@ -821,7 +822,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         )
         response = self.client.post(url, data={"action": "new"})
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_overlay")
+        self.assertContains(response, "form-overlay")
         response = self.client.post(
             url,
             data={
@@ -845,7 +846,7 @@ class CompletionOverlayViewsTestCase(TestCase):
             data={"action": "modify", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_overlay")
+        self.assertContains(response, "form-overlay")
         response = self.client.post(
             url,
             data={
@@ -882,7 +883,7 @@ class CompletionOverlayViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_overlay")
+        self.assertContains(response, "form-overlay")
         response = self.client.post(
             url,
             data={

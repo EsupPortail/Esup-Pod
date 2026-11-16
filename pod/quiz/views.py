@@ -2,13 +2,13 @@
 
 import ast
 import json
-from typing import Optional
 from django.forms import formset_factory
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_protect
 from pod.main.views import in_maintenance
@@ -228,9 +228,7 @@ def get_question(question_type: str, question_id: int, quiz: Quiz):
     return question
 
 
-def create_or_edit_quiz_instance(
-    video: Video, quiz_form: QuizForm, action: str
-) -> Optional[Quiz]:
+def create_or_edit_quiz_instance(video: Video, quiz_form: QuizForm, action: str):
     """
     Create a new quiz instance or update an existing one based on the provided action.
 
@@ -240,7 +238,7 @@ def create_or_edit_quiz_instance(
         action (str): The action to perform - "create" or "edit".
 
     Returns:
-        Optional[Quiz]: The created or updated quiz instance, or None if the action is invalid.
+        [Quiz | None]: The created or updated quiz instance, or None if the action is invalid.
     """
     if action == "create":
         return Quiz.objects.create(
@@ -396,10 +394,14 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         raise Http404()
 
     if quiz.connected_user_only and not request.user.is_authenticated:
-        return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
+        return redirect_to_login(
+            request.get_full_path(),
+            login_url=settings.LOGIN_URL,
+            redirect_field_name="referrer",
+        )
 
     if request.method == "POST":
-        (percentage_score, questions_stats, questions_answers, questions_form_errors) = (
+        percentage_score, questions_stats, questions_answers, questions_form_errors = (
             process_quiz_submission(request, quiz)
         )
         form_submitted = True

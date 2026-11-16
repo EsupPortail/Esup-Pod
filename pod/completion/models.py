@@ -2,16 +2,17 @@
 
 import base64
 
-from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.db import models
 from django.template.defaultfilters import slugify
-from ckeditor.fields import RichTextField
+from django.utils.translation import gettext_lazy as _
+from tinymce.models import HTMLField
+
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+from pod.main.models import get_nextautoincrement
 from pod.video.models import Video
 from pod.video.utils import verify_field_length
-from pod.main.models import get_nextautoincrement
-from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomFileModel
@@ -209,7 +210,7 @@ class EnrichModelQueue(models.Model):
     title = models.TextField(_("Title"), null=True, blank=True)
     text = models.TextField(_("Text"), null=False, blank=False)
     model_type = models.CharField(
-        _("Model Type"), null=False, blank=False, max_length=100, default="STT"
+        _("Model Type"), null=False, blank=False, max_length=100, default="WHISPER"
     )
     lang = models.CharField(
         _("Language"), max_length=2, choices=LANG_CHOICES, default="fr"
@@ -312,7 +313,12 @@ class Track(models.Model):
         return msg
 
     def __str__(self) -> str:
-        return "{0} - File: {1} - Video: {2}".format(self.kind, self.src.name, self.video)
+        # Be defensive: `src` can be None (no file attached yet),
+        # so use getattr to avoid AttributeError during logging.
+        src_name = ""
+        if getattr(self, "src", None):
+            src_name = getattr(self.src, "name", "")
+        return "{0} - File: {1} - Video: {2}".format(self.kind, src_name, self.video)
 
 
 class Overlay(models.Model):
@@ -352,7 +358,7 @@ class Overlay(models.Model):
         default=2,
         help_text=_("End time of the overlay, in seconds."),
     )
-    content = RichTextField(_("Content"), null=False, blank=False, config_name="complete")
+    content = HTMLField(_("Content"), null=False, blank=False)
     position = models.CharField(
         _("Position"),
         max_length=100,

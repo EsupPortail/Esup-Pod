@@ -1,11 +1,12 @@
 # video type process
-import threading
-import logging
 import datetime
+import logging
 import os
 import shutil
+import threading
 
 from django.conf import settings
+
 from pod.video.models import Video, get_storage_path_video
 from pod.video_encode_transcript import encode
 
@@ -15,13 +16,13 @@ log = logging.getLogger(__name__)
 
 
 def process(recording):
-    log.info("START PROCESS OF RECORDING %s" % recording)
+    log.info("START PROCESS OF RECORDING (type_video) %s" % recording)
     t = threading.Thread(target=encode_recording, args=[recording])
-    t.setDaemon(True)
+    t.daemon = True
     t.start()
 
 
-def encode_recording(recording):
+def encode_recording(recording) -> None:
     recorder = recording.recorder
     video = Video()
     video.title = recording.title
@@ -58,7 +59,7 @@ def encode_recording(recording):
     # Choix des cursus
     video.cursus = recorder.cursus
     # mot clefs
-    video.tags = recorder.tags
+    video.tags = recorder.tags.get_tag_list()
     # transcript
     if getattr(settings, "USE_TRANSCRIPTION", False):
         video.transcript = recorder.transcript

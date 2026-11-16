@@ -46,13 +46,11 @@ class PlaylistConfig(AppConfig):
         """Save previous data from favorites table."""
         try:
             with connection.cursor() as c:
-                c.execute(
-                    """
+                c.execute("""
                     SELECT owner_id, date_added, rank, video_id
                     FROM favorite_favorite
                     ORDER BY owner_id
-                    """
-                )
+                    """)
                 results = c.fetchall()
                 for res in results:
                     owner_id = res[0]

@@ -48,7 +48,7 @@ function showInfoVideo() {
  * Resize responsively the Pod video Information panel
  */
 function resizeInfo() {
-  const ihead = document.querySelector("#info-video-wrapper > .iframe-header");
+  const ihead = document.querySelector("#info-video-wrapper .iframe-header");
   const ph = player.el().offsetHeight;
   const pb = parseInt(player.el().style.top, 10) + ph - 30;
   const pw = ph * hdres; // ('#podvideoplayer .vjs-poster').width()

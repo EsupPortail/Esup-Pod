@@ -2,7 +2,7 @@
 
 from django.conf import settings
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Overlay
@@ -25,7 +25,7 @@ if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
 
 DEBUG = getattr(settings, "DEBUG", True)
-TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
+TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "WHISPER")
 TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", {})
 MODEL_COMPILE_DIR = getattr(settings, "MODEL_COMPILE_DIR", "")
 
@@ -45,6 +45,7 @@ class ContributorInline(admin.TabularInline):
         return False
 
 
+@admin.register(Contributor)
 class ContributorAdmin(admin.ModelAdmin):
     list_display = (
         "name",
@@ -71,9 +72,6 @@ class ContributorAdmin(admin.ModelAdmin):
         return qs
 
 
-admin.site.register(Contributor, ContributorAdmin)
-
-
 class DocumentInline(admin.TabularInline):
     model = Document
     readonly_fields = (
@@ -86,6 +84,7 @@ class DocumentInline(admin.TabularInline):
         return False
 
 
+@admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
     if __FILEPICKER__:
         form = DocumentAdminForm
@@ -124,9 +123,6 @@ class DocumentAdmin(admin.ModelAdmin):
         )
 
 
-admin.site.register(Document, DocumentAdmin)
-
-
 class TrackInline(admin.TabularInline):
     model = Track
     readonly_fields = (
@@ -142,6 +138,7 @@ class TrackInline(admin.TabularInline):
         return False
 
 
+@admin.register(EnrichModelQueue)
 class EnrichModelQueueAdmin(admin.ModelAdmin):
     list_display = (
         "title",
@@ -150,9 +147,7 @@ class EnrichModelQueueAdmin(admin.ModelAdmin):
     list_filter = ("in_treatment",)
 
 
-admin.site.register(EnrichModelQueue, EnrichModelQueueAdmin)
-
-
+@admin.register(Track)
 class TrackAdmin(admin.ModelAdmin):
     def debug(text) -> None:
         if DEBUG:
@@ -261,7 +256,7 @@ class TrackAdmin(admin.ModelAdmin):
         if not TrackAdmin.check_if_treatment_in_progress():
             if TRANSCRIPTION_TYPE == "VOSK":
                 t = threading.Thread(target=TrackAdmin.enrich_kaldi_model_launch, args=[])
-                t.setDaemon(True)
+                t.daemon = True
                 t.start()
 
     if __FILEPICKER__:
@@ -311,9 +306,6 @@ class TrackAdmin(admin.ModelAdmin):
         )
 
 
-admin.site.register(Track, TrackAdmin)
-
-
 class OverlayInline(admin.TabularInline):
     model = Overlay
     readonly_fields = (
@@ -332,6 +324,7 @@ class OverlayInline(admin.TabularInline):
         return False
 
 
+@admin.register(Overlay)
 class OverlayAdmin(admin.ModelAdmin):
     list_display = (
         "title",
@@ -354,6 +347,3 @@ class OverlayAdmin(admin.ModelAdmin):
 
     # class Media:
     #     css = {"all": ("css/pod.css",)}
-
-
-admin.site.register(Overlay, OverlayAdmin)

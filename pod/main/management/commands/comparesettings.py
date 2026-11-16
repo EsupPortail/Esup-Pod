@@ -1,4 +1,7 @@
-from typing import List
+"""
+Esup-pod comparesettings command
+"""
+
 from django.core.management.base import BaseCommand
 
 # import re
@@ -36,11 +39,11 @@ class Command(BaseCommand):
         json_settings += __OLD_SETTINGS__
         new_settings = list(set(local_settings_list) - set(json_settings))
         new_settings.sort()
-        self.print_log("Local setting not in global configuration file : ", new_settings)
+        self.print_log("Local settings not in global configuration file", new_settings)
         # raise CommandError('Poll "%s" does not exist' % poll_id)
         # self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % poll_id))
 
-    def print_log(self, title: str, data: List[str]) -> None:
+    def print_log(self, title: str, data: list[str]) -> None:
         print(20 * "-")
         print(f"{title}:")
         print("\n    - " + "\n    - ".join(data))

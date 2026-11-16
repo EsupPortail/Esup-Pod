@@ -1,21 +1,34 @@
 """Esup-Pod video utilities."""
 
-from django.db.models.functions import Lower
+import csv
+import importlib
+import json
+import logging
 import os
 import re
 import shutil
+from datetime import date
 from math import ceil
 
-from django.urls import reverse
+from defusedxml import minidom
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.core.exceptions import SuspiciousOperation
+from django.core.serializers import serialize
+from django.db.models import Count, Q, prefetch_related_objects
+from django.db.models.functions import Lower
 from django.http import JsonResponse
-from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
-from .models import Video
+from pod.video.models import Category, Discipline, Type, Video, VideoToDelete
+from pod.video_encode_transcript.models import EncodingAudio, EncodingVideo, PlaylistVideo
 
+logger = logging.getLogger(__name__)
+User = get_user_model()
 
-DEBUG = getattr(settings, "DEBUG", True)
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
@@ -50,11 +63,125 @@ USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 MANAGERS = getattr(settings, "MANAGERS", {})
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
+
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
+BASE_DIR = getattr(settings, "BASE_DIR", "/")
+
+NUMBER_TAGS_CLOUD = getattr(settings, "NUMBER_TAGS_CLOUD", 20)
+
+ARCHIVE_CSV = "%s/archived.csv" % settings.LOG_DIRECTORY
+ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
+ARCHIVE_ROOT = getattr(settings, "ARCHIVE_ROOT", "/video_archiving")
+
+USE_RESPITE = getattr(settings, "USE_RESPITE", False)
+RESPITE_MODEL = getattr(settings, "RESPITE_MODEL", "base")
+
+
+def is_in_video_groups(user, video) -> bool:
+    """Match prefetched video restrictions against the user's cached access groups."""
+    group_ids = {group.pk for group in video.restrict_access_to_groups.all()}
+    if not group_ids:
+        return False
+    owner = user.owner
+    groups = owner.accessgroup_set
+    if groups.prefetch_cache_name not in getattr(owner, "_prefetched_objects_cache", {}):
+        prefetch_related_objects([owner], "accessgroup_set")
+    return any(group.pk in group_ids for group in groups.all())
+
+
+def get_video_access(request, video, slug_private):
+    """Apply the same draft, login and group access rules to every video player."""
+    is_restricted_to_group = video.restrict_access_to_groups.exists()
+    if not (video.is_draft or video.is_restricted or is_restricted_to_group):
+        return True
+
+    user = request.user
+    access_granted_for_private = slug_private and slug_private == video.get_hashkey()
+    access_granted_for_draft = user.is_authenticated and (
+        user.pk == video.owner_id
+        or user.is_superuser
+        or user.has_perm("video.change_video")
+        or user in video.additional_owners.all()
+    )
+    if video.is_draft:
+        return bool(access_granted_for_private or access_granted_for_draft)
+    if access_granted_for_draft:
+        return True
+    access_granted_for_restricted = user.is_authenticated and not is_restricted_to_group
+    access_granted_for_group = (
+        (user.is_authenticated and is_in_video_groups(user, video))
+        or user.pk == video.owner_id
+        or user.is_superuser
+        or user.has_perm("recorder.add_recording")
+        or user in video.additional_owners.all()
+    )
+    return (
+        access_granted_for_private
+        or (video.is_restricted and access_granted_for_restricted)
+        or (is_restricted_to_group and access_granted_for_group)
+    )
+
+
+def is_archiving_authorized(vid: Video) -> bool:
+    """Check if video owner's affiliation is allowed to archive."""
+    if vid is None:
+        logger.info("[is_archiving_authorized] video is None.")
+        return False
+
+    POD_ARCHIVE_AFFILIATION = getattr(settings, "POD_ARCHIVE_AFFILIATION", [])
+    if not POD_ARCHIVE_AFFILIATION:
+        logger.info("[is_archiving_authorized] POD_ARCHIVE_AFFILIATION is empty.")
+        return False
+
+    owner = getattr(vid.owner, "owner", None)
+    owner_affiliation = getattr(owner, "affiliation", "")
+    if not owner_affiliation:
+        logger.info("[is_archiving_authorized] owner %s has no affiliation." % owner)
+        return False
+
+    if owner_affiliation.strip() not in POD_ARCHIVE_AFFILIATION:
+        logger.info(
+            "[is_archiving_authorized] owner’s affiliation (%s) not in POD_ARCHIVE_AFFILIATION."
+            % owner_affiliation.strip()
+        )
+        return False
+
+    allowed_video = False
+    # Check if the video can be archived.
+    if USE_RESPITE:
+        try:
+            mod = importlib.import_module(
+                "pod.video.management.commands.respite_model." + RESPITE_MODEL
+            )
+            allowed_video = mod.can_video_be_archived(vid)
+        except (ImportError, ModuleNotFoundError):
+            logger.error(
+                "An Error occurred while importing respite model `%s`." % RESPITE_MODEL
+            )
+    else:
+        allowed_video = True
+
+    return allowed_video
+
 
 ###############################################################
 # EMAIL
 ###############################################################
+
+
+def resolution_to_int(resolution: str | None) -> int:
+    """Convert a textual resolution like ``1080p`` or ``1080i`` into an integer."""
+    if not isinstance(resolution, str):
+        return 0
+
+    match = re.fullmatch(r"(\d+)[piPI]", resolution.strip())
+    if match is None:
+        return 0
+
+    try:
+        return int(match.group(1))
+    except ValueError:
+        return 0
 
 
 def pagination_data(request_path, offset, limit, total_count):
@@ -144,7 +271,17 @@ def move_video_file(video, new_owner) -> None:
         )
         video_playlist_master.save()
 
-    # update video path
+    # Change the path of encodings related to a video
+    models_to_update = [EncodingVideo, EncodingAudio, PlaylistVideo]
+    for model in models_to_update:
+        encodings = model.objects.filter(video=video)
+        for encoding in encodings:
+            encoding.source_file = re.sub(
+                r"\w{64}", new_owner.owner.hashkey, encoding.source_file.name.__str__()
+            )
+            encoding.save()
+
+    # Update video path
     video_file_pattern = r"[\w-]+\.\w+"
     old_video_path = video.video.path
     new_video_path = re.sub(r"\w{64}", new_owner.owner.hashkey, old_video_path)
@@ -180,13 +317,20 @@ def get_videos(
     count = videos.count()
     results = list(
         map(
-            lambda v: {"id": v.id, "title": v.title, "thumbnail": v.get_thumbnail_url()},
+            lambda v: {
+                "id": v.id,
+                "title": v.title,
+                "thumbnail": v.get_thumbnail_url(),
+            },
             videos[offset : limit + offset],
         )
     )
 
     next_url, previous_url, page_infos = pagination_data(
-        reverse("video:filter_videos", kwargs={"user_id": user_id}), offset, limit, count
+        reverse("video:filter_videos", kwargs={"user_id": user_id}),
+        offset,
+        limit,
+        count,
     )
 
     response = {
@@ -197,6 +341,20 @@ def get_videos(
         "results": results,
     }
     return JsonResponse(response, safe=False)
+
+
+def get_tag_cloud() -> list:
+    """Get a list of the most popular tags (weight concept)."""
+    # Convert tag cloud to list of dict, so it can be stored in CACHE
+    tags = []
+    for tag in Video.tags.tag_model.objects.weight():
+        tags.append({"name": tag.name, "weight": tag.weight, "slug": tag.slug})
+
+    # Sort tags by weight in descending order
+    tags_sorted = sorted(tags, key=lambda x: x["weight"], reverse=True)
+
+    # Return only the top tags
+    return tags_sorted[:NUMBER_TAGS_CLOUD]
 
 
 def sort_videos_list(videos_list: list, sort_field: str, sort_direction: str = ""):
@@ -286,3 +444,467 @@ def verify_field_length(field, field_name: str = "title", max_length: int = 100)
             )
         )
     return msg
+
+
+def has_audio(video) -> bool:
+    """
+    Checks if a video contains an audio track.
+
+    Args:
+        video (:class:`pod.video.models`): The video object.
+
+    Returns:
+        bool: True if the video has an audio track, False otherwise.
+    """
+    try:
+        # Get the path of the video file
+        video_path = video.video.path
+
+        # Build the path to the output directory
+        output_dir = os.path.join(os.path.dirname(video_path), f"{video.id:04d}")
+
+        # Path to the info_video.json file
+        info_file = os.path.join(output_dir, "info_video.json")
+
+        # Read the JSON file
+        with open(info_file, "r", encoding="utf-8") as json_file:
+            info_video = json.load(json_file)
+
+        # Check if the "list_audio_track" key exists and the list is not empty
+        if len(info_video["list_audio_track"]) > 0:
+            return True
+        else:
+            return False
+
+    except FileNotFoundError:
+        logger.error("Error: info_video.json file not found.")
+    except json.JSONDecodeError:
+        logger.error("Error: Malformed JSON file.")
+    except KeyError:
+        logger.error("Error: 'list_audio_track' key missing in JSON file.")
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+
+    # Default to True if an error occurs
+    return True
+
+
+def get_base_queryset_for_taxonomies(model, user_videos):
+    """
+    Crée le QuerySet de base pour les filtres de taxonomies (Type, Discipline)
+    liés aux vidéos d'un utilisateur.
+    """
+    return (
+        model.objects.filter(video__in=user_videos)
+        .distinct()
+        .annotate(video_count=Count("video", filter=Q(video__in=user_videos)))
+    )
+
+
+def apply_search_order_limit_for_taxonomies(
+    qs, search_term, field_name="title", order_by_field="title", limit=20
+):
+    """
+    Apply the search filter (on field_name), order, and limit
+    for taxonomies returning id, slug, field_name, and video_count.
+    """
+    if search_term:
+        search_filter = {f"{field_name}__icontains": search_term}
+        qs = qs.filter(**search_filter)
+    return list(
+        qs.order_by(order_by_field).values("id", "slug", field_name, "video_count")[
+            :limit
+        ]
+    )
+
+
+def get_filtered_categories_for_user(user, search_term=None, limit=20):
+    """Retrieves and filters categories for a user."""
+    if not getattr(settings, "USE_CATEGORY", True):
+        return []
+    qs = Category.objects.filter(owner=user).prefetch_related("video")
+    if search_term:
+        qs = qs.filter(title__icontains=search_term)
+    return list(qs.order_by("title").values("id", "slug", "title")[:limit])
+
+
+def get_filtered_types_for_videos(user_videos, search_term=None, limit=20):
+    """Retrieves and filters types associated with a list of videos."""
+    if not getattr(settings, "USE_TYPES", True):
+        return []
+    qs = get_base_queryset_for_taxonomies(Type, user_videos)
+    return apply_search_order_limit_for_taxonomies(
+        qs, search_term, "title", "title", limit
+    )
+
+
+def get_filtered_disciplines_for_videos(user_videos, search_term=None, limit=20):
+    """Retrieves and filters the disciplines associated with a list of videos."""
+    if not getattr(settings, "USE_DISCIPLINES", True):
+        return []
+    qs = get_base_queryset_for_taxonomies(Discipline, user_videos)
+    return apply_search_order_limit_for_taxonomies(
+        qs, search_term, "title", "title", limit
+    )
+
+
+def get_filtered_tags_for_videos(user_videos, search_term=None, limit=20):
+    """Retrieves and filters tags associated with a list of videos."""
+    if not getattr(settings, "USE_TAGS", True):
+        return []
+    TagModel = Video.tags.tag_model
+    qs = TagModel.objects.filter(video__in=user_videos).distinct()
+    if search_term:
+        qs = qs.filter(name__icontains=search_term)
+    return list(qs.order_by("name").values("name", "slug")[:limit])
+
+
+def get_filtered_owners_for_videos(user_videos, search_term=None, limit=20):
+    """Retrieves and filters owners (owner + additional) associated with a list of videos."""
+    primary_owner_ids = set(user_videos.values_list("owner_id", flat=True))
+    additional_owner_ids = set(
+        user_videos.values_list("additional_owners__id", flat=True)
+    )
+    user_ids = {
+        uid for uid in primary_owner_ids.union(additional_owner_ids) if uid is not None
+    }
+
+    if not user_ids:
+        return []
+
+    users_qs = User.objects.filter(id__in=list(user_ids))
+
+    if getattr(settings, "MENUBAR_HIDE_INACTIVE_OWNERS", False):
+        users_qs = users_qs.filter(is_active=True)
+    if getattr(settings, "MENUBAR_SHOW_STAFF_OWNERS_ONLY", False):
+        users_qs = users_qs.filter(is_staff=True)
+
+    if search_term:
+        users_qs = users_qs.filter(
+            Q(username__icontains=search_term)
+            | Q(first_name__icontains=search_term)
+            | Q(last_name__icontains=search_term)
+        )
+
+    return list(
+        users_qs.order_by("username").values("id", "username", "first_name", "last_name")[
+            :limit
+        ]
+    )
+
+
+def archive_video(vid):
+    """
+    It Allows the archive process without launching 'get_video archived deleted treatment' in the purpose to be used in other functions
+    """
+    write_in_csv(vid, "archived")
+    archive_user, created = User.objects.get_or_create(
+        username=ARCHIVE_OWNER_USERNAME,
+    )
+    # Rename video and change owner.
+    vid.owner = archive_user
+    vid.is_draft = True
+    vid.title = "%s %s %s" % (
+        _("Archived"),
+        date.today(),
+        vid.title,
+    )
+    # Trunc title to 250 chars max.
+    vid.title = vid.title[:250]
+    vid.save()
+
+    # add video to delete
+    vid_delete, created = VideoToDelete.objects.get_or_create(
+        date_deletion=vid.date_delete
+    )
+    vid_delete.video.add(vid)
+    vid_delete.save()
+
+
+def check_csv_header(csv_file: str, fieldnames: list) -> None:
+    """Check for (and add) missing columns in an existing CSV file."""
+    with open(csv_file, "r") as f:
+        lines = f.readlines()
+    if len(lines[0].split(";")) < len(fieldnames):
+        logger.info("Adding missing header columns in %s." % csv_file)
+        lines[0] = ";".join(fieldnames) + "\n"
+        with open(csv_file, "w") as f:
+            f.writelines(lines)
+
+
+def write_in_csv(vid: Video, arch_type: str) -> None:
+    """Add in `type`.csv file informations about the video."""
+    file = "%s/%s.csv" % (settings.LOG_DIRECTORY, arch_type)
+    exists = os.path.isfile(file)
+
+    fieldnames = [
+        "Date",
+        "User name",
+        "User email",
+        "User Affiliation",
+        "User Establishment",
+        "Video Id",
+        "Video title",
+        "Video URL",
+        "Video type",
+        "Date added",
+        "Source file",
+        "Description",
+        "Views",
+    ]
+    if exists:
+        check_csv_header(file, fieldnames)
+
+    with open(file, "a", newline="", encoding="utf-8") as csvfile:
+        writer = csv.DictWriter(csvfile, delimiter=";", fieldnames=fieldnames)
+
+        if not exists:
+            writer.writeheader()
+
+        # Force the username attribute even if HIDE_USERNAME is true whereas the __str__ method
+        # of Owner Class used by vid.owner.owner doesn't do so
+        user_name = "%s %s (%s)" % (
+            vid.owner.first_name,
+            vid.owner.last_name,
+            vid.owner.username,
+        )
+
+        writer.writerow(
+            {
+                "Date": date.today(),
+                "User name": user_name,
+                "User email": vid.owner.email,
+                "User Affiliation": vid.owner.owner.affiliation,
+                "User Establishment": vid.owner.owner.establishment,
+                "Video Id": vid.id,
+                "Video title": vid.title,
+                "Video URL": "https:%s" % vid.get_full_url(),
+                "Video type": vid.type.title,
+                "Date added": "%s" % vid.date_added.strftime("%Y/%m/%d"),
+                "Source file": vid.video,
+                "Description": vid.description.replace(";", "$semic$")
+                .replace("\r", "")
+                .replace("\n\n", "\n")
+                .replace("\n", "$newl$"),
+                "Views": vid.viewcount,
+            }
+        )
+
+
+def store_as_dublincore(vid: Video, mediaPackage_dir: str, user_name: str) -> None:
+    """Store video metadata as Dublin Core Format in mediaPackage_dir."""
+    xmlcontent = '<?xml version="1.0" encoding="utf-8"?>\n'
+    xmlcontent += (
+        "<!DOCTYPE rdf:RDF PUBLIC " '"-//DUBLIN CORE//DCMES DTD 2002/07/31//EN" \n'
+    )
+    xmlcontent += (
+        '"http://dublincore.org/documents/2002/07' '/31/dcmes-xml/dcmes-xml-dtd.dtd">\n'
+    )
+    xmlcontent += (
+        "<rdf:RDF xmlns:rdf="
+        '"http://www.w3.org/1999/02/22-rdf-syntax-ns#"'
+        ' xmlns:dc ="http://purl.org/dc/elements/1.1/">\n'
+    )
+    rendered = render_to_string(
+        "videos/dublincore.html", {"video": vid, "xml": True}, None
+    )
+    xmlcontent += rendered
+    xmlcontent += "</rdf:RDF>"
+    # complete creator
+    mediaPackage_content = minidom.parseString(xmlcontent)
+
+    dc_creator = mediaPackage_content.getElementsByTagName("dc.creator")[0]
+
+    if dc_creator.firstChild is None:
+        new_node = mediaPackage_content.createTextNode(user_name)
+        dc_creator.appendChild(new_node)
+    else:
+        dc_creator.firstChild.replaceWholeText(user_name)
+
+    mediaPackage_file = os.path.join(mediaPackage_dir, "dublincore.xml")
+    with open(mediaPackage_file, "w") as f:
+        f.write(
+            minidom.parseString(
+                mediaPackage_content.toxml().replace("\n", "")
+            ).toprettyxml()
+        )
+
+
+def read_archived_csv() -> dict:
+    """Get data from ARCHIVE_CSV."""
+    csv_data = {}
+    if os.access(ARCHIVE_CSV, os.F_OK):
+        with open(ARCHIVE_CSV, "r", newline="", encoding="utf-8") as csvfile:
+            fieldnames = [
+                "Date",
+                "User name",
+                "User email",
+                "User Affiliation",
+                "User Establishment",
+                "Video Id",
+                "Video title",
+                "Video URL",
+                "Video type",
+                "Date added",
+            ]
+            reader = csv.DictReader(
+                csvfile, skipinitialspace=True, delimiter=";", fieldnames=fieldnames
+            )
+            for row in reader:
+                dico = {k: v for k, v in row.items()}
+                csv_data[dico["Video Id"]] = dico
+
+    return csv_data
+
+
+def export_complement(
+    folder: str, export_type: str, export_objects: list, dry_mode: bool = True
+) -> None:
+    """Store a video complement as json."""
+    if len(export_objects) > 0:
+        export_file = _safe_join_under_root(folder, "%s.json" % export_type)
+        logger.debug(" * Export %s %s(s)." % (len(export_objects), export_type))
+        if not dry_mode:
+            with open(export_file, "w") as out:
+                content = serialize("json", export_objects)
+                out.write(content)
+
+
+def _safe_join_under_root(root_path: str, *parts: str) -> str:
+    """Join path parts and ensure resulting path stays under root_path."""
+    normalized_root = os.path.realpath(root_path)
+    candidate = os.path.realpath(os.path.join(normalized_root, *parts))
+    if os.path.commonpath([normalized_root, candidate]) != normalized_root:
+        raise SuspiciousOperation("Unsafe path detected outside allowed root.")
+    return str(candidate)
+
+
+def move_video_to_archive(
+    mediaPackage_dir: str, vid: Video, dry_mode: bool = True
+) -> None:
+    """Move video source file to mediaPackage_dir."""
+    if os.access(vid.video.path, os.F_OK):
+        destination = _safe_join_under_root(
+            mediaPackage_dir, os.path.basename(vid.video.name)
+        )
+        logger.info("  * Moving %s to %s" % (vid.video.path, destination))
+        if not dry_mode:
+            shutil.move(
+                vid.video.path,
+                destination,
+            )
+            # Delete Video object
+            vid.delete()
+        # Deletes the video object and the associated folder (encoding, logs, etc.)
+        # Remove thumbnails (x3)
+    else:
+        logger.error("ERROR: Cannot access to file '%s'." % vid.video.path)
+
+
+def copy_archive_to(media_package_dir: str, vid: Video) -> None:
+    """Move video source file to mediaPackage_dir."""
+    if os.access(vid.video.path, os.F_OK):
+        destination = _safe_join_under_root(
+            media_package_dir, os.path.basename(vid.video.name)
+        )
+        shutil.copy(
+            vid.video.path,
+            destination,
+        )
+    else:
+        logger.error("ERROR: Cannot access to file '%s'." % vid.video.path)
+
+
+def archive_pack(
+    media_package_dir: str,
+    user_name: str,
+    vid: Video,
+    only_copy: bool = True,
+    dry_mode: bool = True,
+) -> None:
+    """Create a archive package for Video vid."""
+    from pod.chapter.models import Chapter
+    from pod.completion.models import Contributor, Document, Overlay, Track
+    from pod.enrichment.models import Enrichment
+    from pod.video.models import AdvancedNotes, Comment, Notes, ViewCount
+
+    # Create directory to store all the data
+    os.makedirs(media_package_dir, exist_ok=True)
+
+    # Move video file
+    store_as_dublincore(vid, media_package_dir, user_name)
+
+    # Store Video complements as json
+    for model in [
+        Chapter,
+        Contributor,
+        Overlay,
+        Enrichment,
+        Notes,
+        AdvancedNotes,
+        Comment,
+        ViewCount,
+    ]:
+        # nb: contributors are already exported in dublincore.xml
+        export_complement(
+            media_package_dir, model.__name__, model.objects.filter(video=vid), dry_mode
+        )
+    # Export also the video itself as json
+    export_complement(media_package_dir, "Video", [vid], dry_mode)
+
+    # Store also files linked to Enrichments
+    for enrich in Enrichment.objects.filter(video=vid):
+        if enrich.document:
+            logger.info("  * Copying %s..." % enrich.document.file.path)
+            shutil.copy(enrich.document.file.path, media_package_dir)
+        if enrich.image:
+            logger.info("  * Copying %s..." % enrich.image.file.path)
+            shutil.copy(enrich.image.file.path, media_package_dir)
+
+    # Store file complements.
+    for file in Document.objects.filter(video=vid):
+        logger.info("  * Copying %s..." % file.document.file.path)
+        shutil.copy(file.document.file.path, media_package_dir)
+
+    # Store additional tracks (caption / subtitles)
+    for track in Track.objects.filter(video=vid):
+        logger.info("  * Copying %s..." % track.src.file.path)
+        shutil.copy(track.src.file.path, media_package_dir)
+
+    # TODO:
+    # - Que faire du fichier CSV ? il faudrait y retirer toutes les
+    # lignes supprimées, quitte à faire un nouveau CSV
+
+    # You can decide if you simply copy the video or if you move it to the archive.
+    if only_copy:
+        copy_archive_to(media_package_dir, vid)
+    else:
+        move_video_to_archive(media_package_dir, vid, dry_mode)
+
+
+def archive_and_get_link(slug, sub_fold="tmp"):
+    """Generate a zip archive of the video and metadata from the concerned media folder"""
+    media_url = getattr(settings, "MEDIA_URL", "/media/")
+    media_root = getattr(settings, "MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
+
+    # Restrict slug to safe characters to avoid path manipulation.
+    safe_slug = slugify(str(slug))
+    if not safe_slug or safe_slug != str(slug):
+        raise SuspiciousOperation("Invalid archive slug.")
+
+    archive_base_dir = _safe_join_under_root(os.path.realpath(media_root), sub_fold)
+    media_package_dir = _safe_join_under_root(archive_base_dir, safe_slug)
+    # Check that user-provided value does not let directory traversal
+    if os.path.commonpath([archive_base_dir, media_package_dir]) != archive_base_dir:
+        raise SuspiciousOperation("Invalid archive path.")
+
+    vid = Video.objects.filter(slug=safe_slug).first()
+    if vid is None:
+        raise ValueError("Video %(slug)s not found" % {"slug": safe_slug})
+    archive_pack(media_package_dir, "", vid, only_copy=True, dry_mode=False)
+
+    shutil.make_archive(media_package_dir, "zip", media_package_dir)
+
+    # remove old temp folder
+    shutil.rmtree(media_package_dir)
+    return vid, "%s%s/%s.zip" % (media_url, sub_fold, safe_slug)

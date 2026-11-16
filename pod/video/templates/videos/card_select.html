@@ -1,6 +1,4 @@
-{% load i18n %}
-{% load video_tags %}
-{% load video_quiz %}
+{% load i18n video_tags video_quiz %}
 
 {% spaceless %}
 <div class="card box-shadow pod-card--video video-card">
@@ -50,6 +48,11 @@
           {% if video.is_draft %}
             <span title="{% trans 'This content is in draft.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
               <i class="bi bi-incognito" aria-hidden="true"></i>
+            </span>
+          {% endif %}
+          {% if video.get_encoding_step|slice:":2" == "-1" %}
+            <span title="{% trans 'This content has an encoding error.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
+              <i class="bi bi-exclamation-triangle-fill text-danger" aria-hidden="true"></i>
             </span>
           {% endif %}
           {% if video.chapter_set.all %}

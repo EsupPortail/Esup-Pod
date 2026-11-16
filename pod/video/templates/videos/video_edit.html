@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% load tagging_tags %}
+
+{% block page_extra_head %}
+  {# form.media.css #}
+  <!--link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}"-->
+  <link rel="stylesheet" type="text/css" media="all"
+        href="{% static 'tagulous/lib/select2-4/css/select2.min.css' %}?ver={{VERSION}}">
+{% endblock %}
 
 {% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans "Dashboard" %}</a></li>
@@ -29,7 +35,7 @@
           <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "View the video" %}
         </a>
         {% if form.instance.encoded and form.instance.encoding_in_progress is False %}
-        <a href="{% url 'video:video_delete' slug=form.instance.slug %}" class="btn btn btn-danger btn-sm m-2">
+        <a href="{% url 'video:video_delete' slug=form.instance.slug %}" class="btn btn-danger btn-sm m-2">
           <i class="bi bi-trash" aria-hidden="true"></i>&nbsp;{% trans "Delete the video" %}
         </a>
         {% endif %}
@@ -49,7 +55,6 @@
       {% endif %}
       accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
       {% csrf_token %}
-      <!--<div class="group-video-edit">-->
 
       {% if form.errors %}
         <div class="text-danger">
@@ -59,16 +64,37 @@
           {% endfor %}
         </div>
       {% endif %}
-  
+
       {% if form.instance.id and form.instance.get_encoding_step == "" %}
         <div class="alert alert-warning" role="alert">
           {% trans "The video is currently waiting for encoding." %}
+          {% if USE_RUNNER_MANAGER %}
+            {% include "videos/video_queue_runner_manager.html" %}
+          {% endif %}
         </div>
       {% endif %}
 
       {% if form.instance.encoding_in_progress %}
         <div class="alert alert-warning" role="alert">
           {% trans "The video is currently being encoded." %}
+        </div>
+      {% endif %}
+
+      {% if form.instance.get_encoding_step|slice:":2" == "-1" %}
+        <div class="alert alert-danger" role="alert">
+          {% if 'source file does not appear to be a valid video file' in form.instance.get_encoding_step|lower %}
+            <i class="bi bi-file-earmark-x" aria-hidden="true"></i>
+            <strong>{% trans "The source file does not appear to be a valid video file. Please re-upload a valid video file." %}</strong>
+          {% elif 'input video duration is 0 seconds' in form.instance.get_encoding_step|lower %}
+            <i class="bi bi-clock-history" aria-hidden="true"></i>
+            <strong>{% trans "The input video duration is 0 seconds. Please re-upload a valid video file." %}</strong>
+          {% elif 'encoding incomplete:' in form.instance.get_encoding_step|lower %}
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            <strong>{% trans "Part of the video is missing: the resulting video is shorter than expected. Please check the source file and re-upload a valid, complete video file." %}</strong>
+          {% else %}
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            <strong>{% trans "An error occurred while processing this video. Our administrators have already been notified." %}</strong>
+          {% endif %}
         </div>
       {% endif %}
 
@@ -100,7 +126,6 @@
             <legend>{{ options.legend|safe }}</legend>
           {% endif %}
 
-
       {% for field in form.visible_fields %}
         {% if field.name in options.fields %}
         <div class="mt-3 field-{{ field.name }} {% if 'description_' in field.name or 'title_'  in field.name %}collapse ms-4{% endif %}{% if 'description_' in field.name %} description{% endif %}{% if 'title_' in field.name %} title{% endif %}{% with 'is_restricted restrict_access_to_groups password' as res %} {% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
@@ -129,7 +154,7 @@
               {% if field.name == "transcript"  %}
                 {% if form.instance.id and form.instance.get_encoding_step == ""  or form.instance.encoding_in_progress %}
                 {% else %}
-                  {% if form.instance.slug != '' and form.instance.get_encoding_step|slice:":1" == '0' or 'no stt model' in form.instance.get_encoding_step %}
+                  {% if form.instance.slug != '' and form.instance.get_encoding_step|slice:":1" == '0' or 'no transcript model' in form.instance.get_encoding_step %}
                     <a class="btn btn-primary btn-sm ps-2 pe-2 m-1" type="button" href="{% url 'video:video_transcript' form.instance.slug %}" id="restart_transcript">
                       <i class="bi bi-translate" aria-hidden="true"></i>
                       {% trans "Restart transcription" %}
@@ -255,13 +280,12 @@
 
 {% block more_script %}
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+  {{ listTheme|json_script:"list-theme-data" }}
   <script>
-    var listTheme = {{listTheme | safe}};
+    const listTheme = JSON.parse(document.getElementById("list-theme-data").textContent);
   </script>
+  {{ form.media.js }}
   <script defer src="{% static 'js/video_edit.js' %}?ver={{VERSION}}"></script>
-  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
-  {{form.media}}
-
   <script>
     var slug = "{{ form.instance.slug }}";
     let id_video = document.getElementById("id_video")

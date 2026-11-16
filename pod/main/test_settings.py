@@ -2,15 +2,30 @@
 
 # test_settings.py
 # from ..settings import *
-from ..settings import BASE_DIR as settings_base_dir
-from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
-from ..settings import LOCALE_PATHS, STATICFILES_DIRS, DEFAULT_AUTO_FIELD
-from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N
-from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
-from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
 import os
-from bs4 import BeautifulSoup
+
 import requests
+from bs4 import BeautifulSoup
+
+from ..settings import AUTH_PASSWORD_VALIDATORS, AUTHENTICATION_BACKENDS
+from ..settings import BASE_DIR as settings_base_dir
+from ..settings import (
+    DEFAULT_AUTO_FIELD,
+    INSTALLED_APPS,
+    LOCALE_PATHS,
+    LOG_DIRECTORY,
+    LOGGING,
+    MIDDLEWARE,
+    REST_FRAMEWORK,
+    ROOT_URLCONF,
+    SERIALIZATION_MODULES,
+    STATICFILES_DIRS,
+    TAGULOUS_NAME_MAX_LENGTH,
+    TEMPLATES,
+    USE_I18N,
+    USE_TZ,
+    WSGI_APPLICATION,
+)
 
 USE_OPENCAST_STUDIO = True
 
@@ -20,16 +35,17 @@ TEMPLATES[0]["DIRS"].append(
     os.path.join(settings_base_dir, "custom", "static", "opencast")
 )
 USE_DOCKER = True
-path = "pod/custom/settings_local.py"
 ES_URL = ["http://elasticsearch.localhost:9200/"]
-ES_VERSION = 6
+ES_VERSION = 8
+ES_INDEX = "pod"
+ES_OPTIONS = {}
+path = "pod/custom/settings_local.py"
 if os.path.exists(path):
     _temp = __import__("pod.custom", globals(), locals(), ["settings_local"])
-    USE_DOCKER = getattr(_temp.settings_local, "USE_DOCKER", True)
-    ES_URL = getattr(
-        _temp.settings_local, "ES_URL", ["http://elasticsearch.localhost:9200/"]
-    )
-    ES_VERSION = getattr(_temp.settings_local, "ES_VERSION", 6)
+    USE_DOCKER = getattr(_temp.settings_local, "USE_DOCKER", USE_DOCKER)
+    ES_URL = getattr(_temp.settings_local, "ES_URL", ES_URL)
+    ES_VERSION = getattr(_temp.settings_local, "ES_VERSION", ES_VERSION)
+    ES_OPTIONS = getattr(_temp.settings_local, "ES_OPTIONS", ES_OPTIONS)
 
 for application in INSTALLED_APPS:
     if application.startswith("pod"):
@@ -45,7 +61,8 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": "db-test.sqlite",
         "OPTIONS": {
-            "timeout": 30,
+            "timeout": 60.0,  # in seconds
+            # see also https://docs.python.org/3.10/library/sqlite3.html#sqlite3.connect
         },
     }
 }
@@ -53,8 +70,11 @@ DATABASES = {
 LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]
-USE_PODFILE = True
+USE_CUT = True
+USE_DRESSING = True
+USE_DUPLICATE = True
 USE_FAVORITES = True
+USE_PODFILE = True
 USE_PLAYLIST = True
 USE_PROMOTED_PLAYLIST = True
 RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY = False
@@ -111,7 +131,6 @@ XAPI_LRS_PWD = ""
 USE_MEETING_WEBINAR = True
 MEETING_WEBINAR_AFFILIATION = ["faculty", "employee", "staff"]
 
-# Uniquement lors d'environnement conteneurisé
 if USE_DOCKER:
     MIGRATION_MODULES = {"flatpages": "pod.db_migrations"}
     MIGRATION_DIRECTORY = os.path.join(settings_base_dir, "db_migrations")

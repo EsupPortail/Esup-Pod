@@ -14,20 +14,21 @@ var name = "";
 function show_form(data, form) {
   let form_el = document.getElementById(form);
   form_el.style.display = "none";
-  //form_el.innerHTML = data;
   form_el.innerHTML = data;
-  form_el.querySelectorAll("script").forEach((item) => {
-    if (item.src) {
-      // external script
-      let script = document.createElement("script");
-      script.src = item.src;
-      document.body.appendChild(script);
-    } else {
-      // inline script
-      (0, eval)(item.innerHTML);
-    }
-  });
-
+  const scripts = form_el.querySelectorAll("script");
+  if (scripts.length > 0) {
+    scripts.forEach((item) => {
+      if (item.src) {
+        // external script
+        let script = document.createElement("script");
+        script.src = item.src;
+        document.body.appendChild(script);
+      } else {
+        // inline script
+        (0, eval)(item.innerHTML);
+      }
+    });
+  }
   fadeIn(form_el);
   if (form === "form_track")
     document.getElementById("form_track").style.width = "100%";
@@ -44,23 +45,42 @@ var ajaxfail = function (data, form) {
   );
 };
 
-//SUBMIT
+// Hide/Show the add hyperlink button (maybe unused...)
+// Check if .add-hyperlink-btn button exist before use to avoid console error
+// It seems to not exist anymore on completion page...
+// So those following 6 lines could maybe be removed
+if (document.getElementById("add-hyperlink-btn")) {
+  document
+    .getElementById("add-hyperlink-btn")
+    .addEventListener("click", function () {
+      document.getElementById("hyperlink-form").style.display = "block";
+      this.style.display = "none";
+    });
+}
 
+// SUBMIT
 document.addEventListener("submit", (e) => {
   if (
-    e.target.id !== "form_new_contributor" &&
-    e.target.id !== "form_new_speaker" &&
-    e.target.id !== "form_new_document" &&
-    e.target.id !== "form_new_track" &&
-    e.target.id !== "form_new_overlay" &&
+    e.target.id !== "form-new-contributor" &&
+    e.target.id !== "form-contributor" &&
+    e.target.id !== "form-new-speaker" &&
+    e.target.id !== "form-speaker" &&
+    e.target.id !== "form-new-document" &&
+    e.target.id !== "form-document" &&
+    e.target.id !== "form-new-track" &&
+    e.target.id !== "form-track" &&
+    e.target.id !== "form-new-overlay" &&
+    e.target.id !== "form-overlay" &&
+    e.target.id !== "form-new-hyperlink" &&
+    e.target.id !== "form-hyperlink" &&
     !e.target.matches(".form_change") &&
+    !e.target.matches(".form_modif") &&
     !e.target.matches(".form_delete")
   )
     return;
 
   e.preventDefault();
-  // var jqxhr = "";
-  var exp = /_([a-z]*)\s?/g;
+  var exp = /-([a-z]*)\s?/g;
   var id_form = e.target.getAttribute("id");
   var name_form = "";
   var result_regexp = "";
@@ -74,8 +94,8 @@ document.addEventListener("submit", (e) => {
     result_regexp = id_form.split(exp);
     name_form = result_regexp[result_regexp.length - 2];
   }
-  var form = "form_" + name_form;
-  var list = "list_" + name_form;
+  var form = "form-" + name_form;
+  var list = "list-" + name_form;
   var action = e.target.querySelector("input[name=action]").value;
   sendAndGetForm(e.target, action, name_form, form, list)
     .then(() => "")
@@ -112,7 +132,6 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         }).hide();
       });
     /* Display associated help in side menu */
-    console.log("name", name);
     var compInfo = document.querySelector(`#${name}-info>.collapse`);
     try {
       bootstrap.Collapse.getOrCreateInstance(compInfo).show();
@@ -166,11 +185,6 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         if (form) form.style.display = "none";
       });
     });
-
-    document.querySelectorAll("a.title").forEach(function (element) {
-      element.style.display = "none";
-    });
-    //hide_others_sections(name);
   }
   if (action == "modify" || action == "form_save_modify") {
     let id = elt.querySelector("input[name=id]").value;
@@ -206,75 +220,103 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         document.querySelector("form.form_new").style.display = "block";
         document.getElementById(form).textContent = "";
       });
-
-    document.querySelector("a.title").style.display = "none";
+    // Check if a.title exist before use to avoid console error
+    // It seems to not exist anymore on completion page...
+    // So those following 3 lines could maybe be removed
+    if (document.querySelector("a.title")) {
+      document.querySelector("a.title").style.display = "none";
+    }
     // hide_others_sections(name);
   }
   if (action === "delete") {
-    var deleteConfirm = "";
+    var deleteConfirm = new bootstrap.Modal(
+      document.getElementById("deleteConfirmModal"),
+    );
+    var messageElement = document.getElementById("modalMessage");
+
+    let confirmationMessage;
     if (name === "track") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this file?"),
+      confirmationMessage = gettext(
+        "Are you sure you want to delete this file?",
       );
     } else if (name === "contributor") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this contributor?"),
+      confirmationMessage = gettext(
+        "Are you sure you want to delete this contributor?",
       );
     } else if (name === "speaker") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this speaker?"),
+      confirmationMessage = gettext(
+        "Are you sure you want to delete this speaker?",
       );
     } else if (name === "document") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this document?"),
+      confirmationMessage = gettext(
+        "Are you sure you want to delete this document?",
       );
     } else if (name === "overlay") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this overlay?"),
+      confirmationMessage = gettext(
+        "Are you sure you want to delete this overlay?",
+      );
+    } else if (name === "hyperlink") {
+      confirmationMessage = gettext(
+        "Are you sure you want to delete this hyperlink?",
       );
     }
-    if (deleteConfirm) {
-      let id = elt.querySelector("input[name=id]").value;
-      url = window.location.origin + href;
-      token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
-      let form_data = new FormData();
-      form_data.append("action", action);
-      form_data.append("id", id);
 
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": token,
-          "X-Requested-With": "XMLHttpRequest",
-        },
-        body: form_data,
-      })
-        .then((response) => response.text())
-        .then((data) => {
-          data = JSON.parse(data);
-          if (data.list_data) {
-            refresh_list(data, form, list);
-          } else {
-            showalert(
-              gettext(
-                "You are no longer authenticated. Please log in again.",
-                "alert-danger",
-              ),
-            );
-          }
+    messageElement.innerText = confirmationMessage;
+    deleteConfirm.show();
+
+    var confirmButton = document.getElementById("confirmDeleteButton");
+    var newConfirmButton = confirmButton.cloneNode(true);
+    confirmButton.replaceWith(newConfirmButton);
+    confirmButton = newConfirmButton;
+
+    confirmButton.addEventListener(
+      "click",
+      async function () {
+        let id = elt.querySelector("input[name=id]").value;
+        url = window.location.origin + href;
+        token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
+        let form_data = new FormData();
+        form_data.append("action", action);
+        form_data.append("id", id);
+
+        await fetch(url, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": token,
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          body: form_data,
         })
-        .catch((error) => {
-          ajaxfail(error, form);
-        });
-    }
+          .then((response) => response.text())
+          .then((data) => {
+            data = JSON.parse(data);
+            if (data.list_data) {
+              refresh_list(data, form, list);
+            } else {
+              showalert(
+                gettext(
+                  "You are no longer authenticated. Please log in again.",
+                  "alert-danger",
+                ),
+              );
+            }
+          })
+          .catch((error) => {
+            ajaxfail(error, form);
+          });
+        deleteConfirm.hide();
+      },
+      { once: true },
+    );
   }
   if (action == "save") {
-    let form_group = document.querySelector(".form-help-inline");
-    form_group.closest("div.form-group").classList.remove("has-error");
+    //let form_group = document.querySelector(".form-help-inline");
+    //form_group.closest("div.form-group").classList.remove("has-error");
 
-    document.querySelector(".form-help-inline").remove();
+    //document.querySelector(".form-help-inline").remove();
     if (verify_fields(form)) {
-      var form_el = document.getElementById(form);
+      //var form_el = document.getElementById(form);
+      var form_el = document.querySelector(`form#${form}`);
       let data_form = new FormData(form_el);
       let url = window.location.origin + href;
       let token = document.querySelector(
@@ -293,11 +335,15 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         .then((data) => {
           if (data.list_data || data.form) {
             if (data.errors) {
-              document.getElementById("fomeModal_id_src").remove();
+              const formAlert = document.getElementById("formalertdiv");
+              if (formAlert) {
+                formAlert.remove();
+              }
               show_form(data.form, form);
             } else {
               refresh_list(data, form, list);
-              window.scrollTop(100);
+              //window.scrollTop(100);
+              window.scrollTo(0, 100);
             }
           } else {
             showalert(
@@ -311,10 +357,6 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         .catch((error) => {
           ajaxfail(error, form);
         });
-
-      document.querySelector("form.form_new").style.display = "none";
-      document.querySelector("form.form_modif").style.display = "none";
-      document.querySelector("form.form_delete").style.display = "none";
     }
   }
 };
@@ -348,8 +390,8 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
 
 // Refreshes the list
 function refresh_list(data, form, list) {
-  document.getElementById(form).html = "";
-  document.querySelector("form.form_new").style.display = "block";
+  document.getElementById(form).innerHTML = "";
+  //document.querySelector("form.form_new").style.display = "block";
   document.querySelectorAll("form").forEach(function (element) {
     element.style.display = "block";
   });
@@ -363,14 +405,15 @@ function refresh_list(data, form, list) {
 // Check fields
 function verify_fields(form) {
   var error = false;
-  if (form == "form_contributor") {
+  if (form == "form-contributor") {
     if (
       document.getElementById("id_name").value == "" ||
       document.getElementById("id_name").value.length < 2 ||
       document.getElementById("id_name").length > 200
     ) {
-      let input = document.getElementById("id_name");
-      input.parentNode.append(
+      let id_name = document.getElementById("id_name");
+      id_name.insertAdjacentHTML(
+        "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
           gettext("Please enter a name from 2 to 100 caracteres.") +
           "</span>",
@@ -409,7 +452,7 @@ function verify_fields(form) {
     var id = parseInt(document.getElementById("id_contributor").value, 10);
     var new_role = document.getElementById("id_role").value;
     var new_name = document.getElementById("id_name").value;
-    document.querySelectorAll("#list-contributor tbody > tr").forEach((tr) => {
+    document.querySelectorAll("#table-contributor tbody > tr").forEach((tr) => {
       if (
         id != tr.querySelector("input[name=id]").value &&
         tr.querySelector("td[class=contributor-name]").innerHTML == new_name &&
@@ -422,7 +465,7 @@ function verify_fields(form) {
         error = true;
       }
     });
-  } else if (form == "form_track") {
+  } else if (form == "form-track") {
     var element = document.getElementById("id_kind");
     var value = element.options[element.selectedIndex].value
       .trim()
@@ -493,12 +536,12 @@ function verify_fields(form) {
           kind === elt.textContent.trim().toLowerCase() &&
           lang ===
             elt.parentNode
-              .querySelector("#" + elt.get("id") + ".track-kind.lang")
+              .querySelector("#" + elt.getAttribute("id") + ".track-kind.lang")
               .textContent.trim()
               .toLowerCase() &&
           file_name ===
             elt.parentNode
-              .querySelector("#" + elt.get("id") + ".track-kind.file")
+              .querySelector("#" + elt.getAttribute("id") + ".track-kind.file")
               .textContent.trim()
               .split(" ")[0]
               .toLowerCase()
@@ -520,30 +563,69 @@ function verify_fields(form) {
       form_group.classList.add("has-error");
       error = true;
     }
-  } else if (form == "form_document") {
-    if (
-      document
-        .getElementById("id_document_thumbnail_img")
-        .getAttribute("src") == "/static/icons/nofile_48x48.png"
-    ) {
-      let id_document_thumbnail = document.getElementById(
-        "id_document_thubmanil_img",
-      );
-      id_document_thumbnail.insertAdjacentHTML(
+  } else if (form == "form-document") {
+    if (document.getElementById("id_document").value == "") {
+      let id_document = document.getElementById("id_document");
+      id_document.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
           gettext("Please select a document") +
           "</span>",
       );
-      let form_group = id_document_thumbnail.closest("div.form-group");
+      //   if (
+      //     document
+      //       .getElementById("id_document_thumbnail_img")
+      //       .getAttribute("src") == "/static/icons/nofile_48x48.png"
+      //   ) {
+      //     let id_document_thumbnail = document.getElementById(
+      //       "id_document_thumbnail_img",
+      //     );
+      //     id_document_thumbnail.insertAdjacentHTML(
+      //       "afterend",
+      //       "<span class='form-help-inline'>" +
+      //         gettext("Please select a document") +
+      //         "</span>",
+      //     );
+      let form_group = id_document.closest("div.form-group");
       form_group.classList.add("has-error");
 
       error = true;
     }
-  } else if (form == "form_overlay") {
-    var tags = /<script.+?>|<iframe.+?>/;
-    if (tags.exec(document.getElementById("id_content").value) != null) {
-      let id_content = document.getElementById("id_content");
+    let idDocumentInput = document
+      .querySelector(`form#${form}`)
+      .querySelector("input[id=id_document]");
+    let idInstanceDocumentInput = document
+      .querySelector(`form#${form}`)
+      .querySelector("input[id=id-instance-document]");
+
+    let id_document = idDocumentInput ? idDocumentInput.value : null;
+    let id_instance_document = idInstanceDocumentInput
+      ? idInstanceDocumentInput.value
+      : null;
+
+    if (id_document) {
+      document.querySelectorAll("#table-document tbody > tr").forEach((tr) => {
+        let trInstanceId = tr.getAttribute("data-id-instance");
+        let trDocumentTd = tr.querySelector(".document_name");
+        let trDocumentId = trDocumentTd
+          ? trDocumentTd.getAttribute("data-id-document")
+          : null;
+
+        if (
+          trDocumentId === id_document &&
+          trInstanceId !== id_instance_document
+        ) {
+          let text = gettext("There is already the same document in the list.");
+          showalert(text, "alert-danger");
+          error = true;
+        }
+      });
+    }
+  } else if (form == "form-overlay") {
+    const id_content = document.getElementById("id_content");
+    const contentValue = id_content.value || "";
+    const hasForbiddenTags = /<\s*(script|iframe)\b/i.test(contentValue);
+    if (hasForbiddenTags) {
       id_content.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
@@ -551,11 +633,27 @@ function verify_fields(form) {
           "</span>",
       );
       let form_group = id_content.closest("div.form-group");
-      form_group.forEach(function (element) {
-        element.classList.add("has-error");
-      });
+      if (form_group) {
+        form_group.classList.add("has-error");
+      }
       error = true;
     }
+  } else if (form == "form-speaker") {
+    id_job = document
+      .querySelector(`form#${form}`)
+      .querySelector("#id_job").value;
+    document.querySelectorAll("#table-speaker tbody > tr").forEach((tr) => {
+      let trId = tr.id;
+      let currentId = trId.replace("job_", "");
+
+      if (currentId === id_job) {
+        var text = gettext(
+          "There is already the same speaker with this job in the list.",
+        );
+        showalert(text, "alert-danger");
+        error = true;
+      }
+    });
   }
   return !error;
 }

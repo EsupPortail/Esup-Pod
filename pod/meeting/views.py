@@ -1,4 +1,4 @@
-"""Views of the Meeting module."""
+"""Esup-Pod Meeting views."""
 
 import bleach
 import json
@@ -17,6 +17,7 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import SuspiciousOperation
@@ -42,12 +43,12 @@ from pod.import_video.utils import StatelessRecording
 from pod.import_video.utils import manage_download, parse_remote_file
 from pod.import_video.utils import save_video, secure_request_for_upload
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
-from pod.main.utils import secure_post_request, display_message_with_icon
-from pod.meeting.webinar import chat_rtmp_gateway, start_webinar, stop_webinar
+from pod.main.utils import secure_post_request, display_message_with_icon, is_ajax
+from pod.meeting.webinar import chat_rtmp_gateway, toggle_chat_webinar
+from pod.meeting.webinar import start_webinar, stop_webinar
 from pod.meeting.webinar_utils import search_for_available_livegateway, manage_webinar
 from pod.live.models import Event
 from pod.live.views import can_manage_event
-
 
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
@@ -176,7 +177,7 @@ def manage_personal_meeting_room(request: WSGIRequest):
             site=site,
             attendee_password=get_random_string(8),
             moderator_password=get_random_string(8),
-            start_at=datetime.now().replace(minute=0, second=0, microsecond=0),
+            start_at=timezone.now().replace(minute=0, second=0, microsecond=0),
             recurrence=None,
             is_personal=True,
         )
@@ -403,7 +404,7 @@ def join(
         direct_access += room
 
     if direct_access and direct_access != meeting.get_hashkey():
-        raise SuspiciousOperation("Invalid access")
+        return render(request, "meeting/access_denied.html", status=403)
 
     if meeting.get_is_meeting_running() is not True:
         return render(
@@ -508,7 +509,11 @@ def check_user(request: WSGIRequest) -> HttpResponse:
         )
         raise PermissionDenied
     else:
-        return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
+        return redirect_to_login(
+            request.get_full_path(),
+            login_url=settings.LOGIN_URL,
+            redirect_field_name="referrer",
+        )
 
 
 def check_form(
@@ -648,7 +653,7 @@ def end(request: WSGIRequest, meeting_id: str) -> HttpResponse:
         for key in args:
             msg += "<b>%s:</b> %s<br>" % (key, args[key])
         msg = mark_safe(msg)
-    if request.is_ajax():
+    if is_ajax(request):
         return JsonResponse({"end": meeting.end(), "msg": msg}, safe=False)
     else:
         if msg != "":
@@ -687,7 +692,7 @@ def get_meeting_info(request: WSGIRequest, meeting_id: str) -> JsonResponse:
         for key in args:
             msg += "<b>%s:</b> %s<br>" % (key, args[key])
         msg = mark_safe(msg)
-    if request.is_ajax():
+    if is_ajax(request):
         return JsonResponse({"info": info, "msg": msg}, safe=False)
     else:
         if msg != "":
@@ -823,7 +828,7 @@ def internal_recording(
     recordings = get_internal_recordings(request, meeting_id, recording_id)
     # JSON format
     data = recordings[0].to_json()
-    if request.is_ajax():
+    if is_ajax(request):
         return HttpResponse(data, content_type="application/json")
     else:
         return HttpResponseBadRequest()
@@ -1036,8 +1041,7 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
     )
     if meeting.recurrence:
         html_content = (
-            _(
-                """
+            _("""
             <p>Hello,</p>
             <p>%(owner)s invites you to a recurring meeting %(meeting_title)s.</p>
             <p>Start date: %(start_date_time)s</p>
@@ -1046,8 +1050,7 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
             <p>Here is the link to join the meeting: %(join_link)s</p>
             <p>You need this password to enter: %(password)s</p>
             <p>Regards</p>
-        """
-            )
+        """)
             % {
                 "owner": full_name,
                 "meeting_title": meeting.name,
@@ -1062,16 +1065,14 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
     else:
         if meeting.is_personal:
             html_content = (
-                _(
-                    """
+                _("""
                 <p>Hello,</p>
                 <p>%(owner)s invites you to the meeting <strong>%(meeting_title)s</strong>.</p>
                 <p>here the link to join the meeting:
                 <a href="%(join_link)s">%(join_link)s</a></p>
                 <p>You need this password to enter: <strong>%(password)s</strong></p>
                 <p>Regards</p>
-            """
-                )
+            """)
                 % {
                     "owner": full_name,
                     "meeting_title": meeting.name,
@@ -1085,8 +1086,7 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
             )
         else:
             html_content = (
-                _(
-                    """
+                _("""
                 <p>Hello,</p>
                 <p>%(owner)s invites you to the meeting <strong>%(meeting_title)s</strong>.</p>
                 <p>Start date: %(start_date_time)s </p>
@@ -1095,8 +1095,7 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
                 <a href="%(join_link)s">%(join_link)s</a></p>
                 <p>You need this password to enter: <strong>%(password)s</strong></p>
                 <p>Regards</p>
-            """
-                )
+            """)
                 % {
                     "owner": full_name,
                     "meeting_title": meeting.name,
@@ -1120,15 +1119,10 @@ def create_ics(request: WSGIRequest, meeting: Meeting) -> str:
         "owner": meeting.owner.get_full_name(),
         "meeting_title": meeting.name,
     }
-    description = (
-        _(
-            """
+    description = _("""
         Here is the link to join the meeting: %(join_link)s
         You need this password to enter: %(password)s
-    """
-        )
-        % {"join_link": join_link, "password": meeting.attendee_password}
-    )
+    """) % {"join_link": join_link, "password": meeting.attendee_password}
     event_description = "\\n".join(
         line for line in description.replace("    ", "").split("\n")
     )
@@ -1589,6 +1583,37 @@ def end_live(request: WSGIRequest, meeting_id: str) -> HttpResponse:
         raise PermissionDenied
     # Stop also webinar, if necessary
     stop_webinar_mode(request, meeting)
+    return redirect(reverse("meeting:my_meetings"))
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def toggle_chat(request: WSGIRequest, meeting_id: str) -> HttpResponse:
+    """Toggle (hide/display) chat for a webinar."""
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+
+    if request.user != meeting.owner and not (
+        request.user.is_superuser or request.user.has_perm("meeting.end_meeting")
+    ):
+        display_message_with_icon(
+            request, messages.ERROR, _("You can’t toggle chat for this webinar live.")
+        )
+        raise PermissionDenied
+    msg = ""
+    try:
+        if meeting.is_webinar:
+            # Send a toggle chat request to SIPMediaGW
+            toggle_chat_webinar(request, meeting.id)
+    except ValueError as ve:
+        args = ve.args[0]
+        for key in args:
+            msg += "<b>%s:</b> %s<br>" % (key, args[key])
+        msg = mark_safe(msg)
+    if msg != "":
+        display_message_with_icon(request, messages.ERROR, msg)
     return redirect(reverse("meeting:my_meetings"))
 
 

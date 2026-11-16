@@ -1,4 +1,4 @@
-# This repository adheres to the publiccode.yml standard by including this 
+# This repository adheres to the publiccode.yml standard by including this
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
 
@@ -18,47 +18,47 @@ platforms:
 softwareType: standalone/web
 usedBy:
   - |-
-    Ministère de l'Éducation Nationale de la Jeunesse et des Sports (Direction
-    du numérique pour l'éducation)
+    Ministère de l’Éducation Nationale de la Jeunesse et des Sports (Direction
+    du numérique pour l’éducation)
   - Aix-Marseille université
-  - La Rochelle Université 
-  - Le Mans Université 
-  - Université Côte d’Azur (Nice) 
-  - Université d'Artois 
-  - Université d'Avignon 
-  - Université de Bordeaux 
-  - Université de Bretagne Occidentale (Brest) 
-  - Université de Caen Normandie 
+  - La Rochelle Université
+  - Le Mans Université
+  - Université Côte d’Azur (Nice)
+  - Université d’Artois
+  - Université d’Avignon
+  - Université de Bordeaux
+  - Université de Bretagne Occidentale (Brest)
+  - Université de Caen Normandie
   - Université de Haute-Alsace
-  - Université de Lille 
-  - Université de Lorraine 
-  - Université de Montpellier 
-  - Université de Pau 
-  - Université de Strasbourg 
-  - Université de Technologie de Belfort Montbéliard 
-  - Université de Technologie de Compiègne 
-  - Université de Technologie de Troyes 
-  - Université de Toulon 
-  - Université des Antilles 
-  - Université du Littoral Côte d'Opale 
+  - Université de Lille
+  - Université de Lorraine
+  - Université de Montpellier
+  - Université de Pau
+  - Université de Strasbourg
+  - Université de Technologie de Belfort Montbéliard
+  - Université de Technologie de Compiègne
+  - Université de Technologie de Troyes
+  - Université de Toulon
+  - Université des Antilles
+  - Université du Littoral Côte d’Opale
   - |-
-    Université Européenne pour un Littoral Urbain Durable et Intelligent 
-    (EU-CONEXUS - La Rochelle Université) 
-  - Université Grenoble Alpes 
-  - Université Paris 1 
-  - Université Paris-Est Créteil - Pod U-PEC 
-  - Université Paul-Valéry Montpellier 3 
-  - Université Polynésie Française 
-  - Université Polytechnique Hauts-de-France 
-  - Université Saint Étienne 
-  - UVSQ Université de Versailles Saint-Quentin-en-Yvelines 
-  - CNAM'IDS France (Pod 25 tenants) 
+    Université Européenne pour un Littoral Urbain Durable et Intelligent
+    (EU-CONEXUS - La Rochelle Université)
+  - Université Grenoble Alpes
+  - Université Paris 1
+  - Université Paris-Est Créteil - Pod U-PEC
+  - Université Paul-Valéry Montpellier 3
+  - Université Polynésie Française
+  - Université Polytechnique Hauts-de-France
+  - Université Saint Étienne
+  - UVSQ Université de Versailles Saint-Quentin-en-Yvelines
+  - CNAM’IDS France (Pod 25 tenants)
   - Inserm
-  - École nationale de la magistrature (Ministère de la justice) 
-  - INSA Rennes 
-  - Institut Mines-Télécom (IMT) 
-  - IMT Mines Albi 
-  - INSPE de Paris 
+  - École nationale de la magistrature (Ministère de la justice)
+  - INSA Rennes
+  - Institut Mines-Télécom (IMT)
+  - IMT Mines Albi
+  - INSPE de Paris
   - Académie de Normandie
   - Académie de Rennes
   - GIP RECIA
@@ -107,28 +107,28 @@ description:
     documentation: 'https://www.esup-portail.org/wiki/display/ES/Esup-Pod'
     longDescription: |
       Créé en 2014, le projet Pod a connu de nombreux changements ces
-      dernières années. Initié à l'Université de Lille
+      dernières années. Initié à l’Université de Lille
       (https://www.univ-lille.fr), il est depuis septembre 2015 piloté
       par le consortium Esup Portail (https://www.esup-portail.org) et
-      soutenu également par le Ministère de l'Enseignement supérieur
+      soutenu également par le Ministère de l’Enseignement supérieur
       et de la Recherche (https://www.enseignementsup-recherche.gouv.fr/fr/esup-pod-plateforme-de-gestion-de-video-90260).
 
-      Le projet et la plateforme, qui portent le même nom, ont pour but de 
-      faciliter la mise à disposition de vidéos et de ce fait, d'encourager 
-      l'utilisation de celles-ci dans le cadre de l'enseignement et la 
-      recherche (ESR). La plateforme est utilisée par plus d'une cinquantaine 
-      d'établissements de l'ESR mais également des académies et des instituts.
+      Le projet et la plateforme, qui portent le même nom, ont pour but de
+      faciliter la mise à disposition de vidéos et de ce fait, d’encourager
+      l’utilisation de celles-ci dans le cadre de l’enseignement et la
+      recherche (ESR). La plateforme est utilisée par plus d’une cinquantaine
+      d’établissements de l’ESR mais également des académies et des instituts.
     shortDescription: Plateforme de gestion de fichier vidéo
     features:
       - 'Dépôt, encodage et diffusion de vidéos '
       - |-
-        Complétion des vidéos :  Contributeurs, sous-titrage, documents et
+        Complétion des vidéos : Contributeurs, sous-titrage, documents et
         superpositions
       - 'Découpe, Habillage, Chapitrage, Indexation '
       - |-
-        Enrichissement des vidéos : Synchronisation et affichage de média avec
+        Enrichissement des vidéos : Synchronisation et affichage de média avec
         la vidéo
-      - 'Diffusion en direct, liste de lecture, etc * Ne fais pas le café !'
+      - 'Diffusion en direct, liste de lecture, etc. * Ne fais pas le café !'
     videos:
       - ""
     screenshots:

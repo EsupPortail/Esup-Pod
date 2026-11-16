@@ -1,28 +1,30 @@
 # Configuration de la plateforme Esup-Pod
 
-## Information générale
+## Informations générales
 
 La plateforme Esup-Pod se base sur le framework Django écrit en Python.<br>
-Elle est compatible avec les versions 3.8, 3.9 et 3.10 de Python.<br>
+Elle est compatible avec les versions 3.11 et 3.12 de Python.<br>
+> Attention : à partir d’Esup-Pod version 4.5,<br>
+ la version 3.10 de Python n’est plus supportée.<br>
 
-**Django Version : 3.2 LTS**<br>
+**Django Version : 4.2 LTS**<br>
 
-> La documentation complète du framework : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/)<br><br>
-> L’ensemble des variables de configuration du framework est accessible à cette adresse : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/)<br>
+> La documentation complète du framework : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/)<br><br>
+> L’ensemble des variables de configuration du framework est accessible à cette adresse : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/)<br>
 
 Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
 
 * `CAS`
-  > valeur par défaut : `1.5.2`
+  > valeur par défaut : `1.5.3`
   >> Système d’authentification SSO_CAS<br>
   >> [kstateome/django-cas](https://github.com/kstateome/django-cas)<br>
 * `ModelTranslation`
-  > valeur par défaut : `0.18.7`
+  > valeur par défaut : `0.19.11`
   >> L’application modeltranslation est utilisée pour traduire le contenu dynamique<br>
   >> des modèles Django existants<br>
   >> [django-modeltranslation.readthedocs.io](https://django-modeltranslation.readthedocs.io/en/latest/installation.html#configuration)<br>
 * `captcha`
-  > valeur par défaut : `0.5.17`
+  > valeur par défaut : `0.6.0`
   >> Gestion du captcha du formulaire de contact<br>
   >> [django-simple-captcha.readthedocs.io](https://django-simple-captcha.readthedocs.io/en/latest/usage.html)<br>
 * `chunked_upload`
@@ -31,23 +33,24 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   >> [juliomalegria/django-chunked-upload](https://github.com/juliomalegria/django-chunked-upload)<br>
 * `ckeditor`
   > valeur par défaut : `6.3.0`
-  >> Application permettant d’ajouter un éditeur CKEditor dans certains champs<br>
-  >> [django-ckeditor.readthedocs.io](https://django-ckeditor.readthedocs.io/en/latest/#installation)<br>
+  >> ATTENTION. django-ckeditor integre la version gratuite de CKEditor 4.22.1,<br>
+  >> qui n'est plus prise en charge et qui présente des problèmes de sécurité non résolus,<br>
+  >> voir par exemple <https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS>.<br>
 * `django_select2`
   > valeur par défaut : `latest`
   >> Recherche et completion dans les formulaires<br>
   >> [django-select2.readthedocs.io](https://django-select2.readthedocs.io/en/latest/)<br>
 * `honeypot`
-  > valeur par défaut : `1.0.3`
+  > valeur par défaut : `1.2.1`
   >> Utilisé pour le formulaire de contact de Pod -<br>
   >> ajoute un champ caché pour diminuer le spam<br>
   >> [jamesturk/django-honeypot](https://github.com/jamesturk/django-honeypot/)<br>
 * `mozilla_django_oidc`
-  > valeur par défaut : `3.0.0`
+  > valeur par défaut : `4.0.1`
   >> Système d’authentification OpenID Connect<br>
   >> [mozilla-django-oidc.readthedocs.io](https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html)<br>
 * `pwa`
-  > valeur par défaut : `1.1.0`
+  > valeur par défaut : `2.0.1`
   >> Mise en place du mode PWA grâce à l’application Django-pwa<br>
   >> Voici la configuration par défaut pour Pod,<br>
   >> vous pouvez surcharger chaque variable dans votre fichier de configuration.<br>
@@ -73,21 +76,25 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   >>
   >> Pour en savoir plus : [silviolleite/django-pwa](https://github.com/silviolleite/django-pwa)<br>
 * `rest_framework`
-  > valeur par défaut : `3.14.0`
-  >> version 3.14.0 : mise en place de l’API rest pour l’application<br>
+  > valeur par défaut : `3.15.2`
+  >> mise en place de l’API rest pour l’application<br>
   >> [django-rest-framework.org](https://www.django-rest-framework.org/)<br>
 * `shibboleth`
   > valeur par défaut : `latest`
   >> Système d’authentification Shibboleth<br>
   >> [Brown-University-Library/django-shibboleth-remoteuser](https://github.com/Brown-University-Library/django-shibboleth-remoteuser)<br>
 * `sorl.thumbnail`
-  > valeur par défaut : `12.9.0`
+  > valeur par défaut : `12.11.0`
   >> Utilisée pour la génération de miniature des images<br>
   >> [sorl-thumbnail.readthedocs.io](https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html)<br>
 * `tagging`
   > valeur par défaut : `0.5.0`
   >> Gestion des mots-clés associés à une vidéo // voir pour référencer une nouvelle application<br>
   >> [django-tagging.readthedocs.io](https://django-tagging.readthedocs.io/en/develop/#settings)<br>
+* `tagulous`
+  > valeur par défaut : `2.1.0`
+  >> Gestion des mots-clés associés à un objet Django.<br>
+  >> [django-tagulous.readthedocs.io](https://django-tagulous.readthedocs.io)<br>
 
 ## Configuration générale de la plateforme Esup_Pod
 
@@ -110,7 +117,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   >> C’est un dictionnaire imbriqué dont les contenus font correspondre<br>
   >> l’alias de base de données avec un dictionnaire contenant<br>
   >> les options de chacune des bases de données.<br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#databases)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#databases)_<br>
   >> valeur par défaut : une base de données au format sqlite<br>
   >> Voici un exemple de configuration pour utiliser une base MySQL :<br>
   >>
@@ -148,7 +155,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
 * `EMAIL_HOST`
   > valeur par défaut : `smtp.univ.fr`
   >> nom du serveur smtp<br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#email-host)_<br>
 * `EMAIL_PORT`
   > valeur par défaut : `25`
   >> Port d’écoute du serveur SMTP.<br>
@@ -269,6 +276,30 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
 * `FFPROBE_GET_INFO`
   > valeur par défaut : `%(ffprobe)s -v quiet -show_format -show_streams %(select_streams)s -print_format json -i %(source)s`
   >>
+* `FFMPEG_DRESSING_OUTPUT`
+  > valeur par défaut : ` -c:v libx264 -y -vsync 0 "%(output)s" `
+  >> Spécifie les paramètres d'encodage de sortie FFmpeg pour générer le fichier vidéo temporaire d'habillage, utilisant le codec H.264 avec écrasement forcé et synchronisation de la sortie vidéo.<br>
+* `FFMPEG_DRESSING_INPUT`
+  > valeur par défaut : ` -i "%(input)s" `
+  >> Définit le fichier d'entrée pour le traitement FFmpeg de la vidéo intermédiaire d'habillage.<br>
+* `FFMPEG_DRESSING_FILTER_COMPLEX`
+  > valeur par défaut : ` -filter_complex "%(filter)s" `
+  >> Applique des chaînes de filtres complexes à la vidéo intermédiaire d'habillage avec FFmpeg.<br>
+* `FFMPEG_DRESSING_WATERMARK`
+  > valeur par défaut : ` [1]format=rgba,colorchannelmixer=aa=%(opacity)s[logo]; [logo][vid]scale2ref=oh*mdar:ih*0.1[logo][video2]; [video2][logo]%(position)s%(name_out)s `
+  >> Ajoute un filigrane à la vidéo intermédiaire d'habillage avec une opacité et une position personnalisables.<br>
+* `FFMPEG_DRESSING_SCALE`
+  > valeur par défaut : `[%(number)s]scale=w='if(gt(a,16/9),16/9*%(height)s,-2)':h='if(gt(a,16/9),-2,%(height)s)',pad=ceil(16/9*%(height)s):%(height)s:(ow-iw)/2:(oh-ih)/2[%(name)s]`
+  >> Redimensionne la vidéo intermédiaire d'habillage pour maintenir un ratio d'aspect 16:9 avec ajout de bordures si nécessaire.<br>
+* `FFMPEG_DRESSING_CONCAT`
+  > valeur par défaut : `%(params)sconcat=n=%(number)s:v=1:a=1:unsafe=1[v][a]`
+  >> Concatène plusieurs flux vidéo et audio en une seule sortie de vidéo temporaire d'habillage.<br>
+* `FFMPEG_DRESSING_SILENT`
+  > valeur par défaut : ` -f lavfi -t %(duration)s -i anullsrc=r=44100:cl=stereo`
+  >> Génère un audio silencieux d'une durée spécifiée pour la vidéo temporaire d'habillage.<br>
+* `FFMPEG_DRESSING_AUDIO`
+  > valeur par défaut : `[%(param_in)s]anull[%(param_out)s]`
+  >> Traite l'audio sans modifications pour l'inclure dans la vidéo temporaire d'habillage.<br>
 
 ### Gestion des fichiers
 
@@ -283,16 +314,16 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   >> Le répertoire dans lequel stocker temporairement les données<br>
   >> (typiquement pour les fichiers plus grands que `FILE_UPLOAD_MAX_MEMORY_SIZE`)<br>
   >> lors des téléversements de fichiers.<br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#file-upload-temp-dir)_<br>
 * `MEDIA_ROOT`
   > valeur par défaut : `/pod/media`
   >> Chemin absolu du système de fichiers pointant vers le répertoire qui contiendra<br>
   >> les fichiers téléversés par les utilisateurs.<br><br>
   >> Attention, ce répertoire doit exister.<br><br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-MEDIA_ROOT)_<br>
 * `MEDIA_URL`
   > valeur par défaut : `/media/`
-  >> prefix url utilisé pour accéder aux fichiers du répertoire media<br>
+  >> préfixe d’url utilisé pour accéder aux fichiers du répertoire media<br>
 * `STATICFILES_STORAGE`
   > valeur par défaut : ``
   >> Indique à django de compresser automatiquement les fichiers css/js<br>
@@ -304,7 +335,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   >> Le chemin absolu vers le répertoire dans lequel collectstatic rassemble<br>
   >> les fichiers statiques en vue du déploiement.<br>
   >> Ce chemin sera précisé dans le fichier de configurtation du vhost nginx.<br><br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-STATIC_ROOT)_<br>
 * `STATIC_URL`
   > valeur par défaut : `/static/`
   >> prefix url utilisé pour accèder aux fichiers static<br>
@@ -341,13 +372,13 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> Exemple : `[('John', 'john@example.com'), ('Mary', 'mary@example.com')]`<br><br>
   >> Dans Pod, les "admins" sont également destinataires des courriels de contact,<br>
   >> d’encodage ou de flux RSS si la variable `CONTACT_US_EMAIL` n’est pas renseignée.<br><br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#admins)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#admins)_<br>
 * `ALLOWED_HOSTS`
   > valeur par défaut : `['pod.localhost']`
   >> Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.<br><br>
   >> C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP,<br>
   >> qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.<br><br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#allowed-hosts)_<br>
 * `BASE_DIR`
   > valeur par défaut : `os.path.dirname(os.path.dirname(os.path.abspath(__file__)))`
   >> répertoire de base<br>
@@ -384,12 +415,12 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> l’ensemble des requetes en https.<br>
   >> Idem pour les cookies de session et de cross-sites qui seront également sécurisés<br><br>
   >> Il faut les passer à False en cas d’usage du runserver (phase de développement / debugage)<br><br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#secure-ssl-redirect)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#secure-ssl-redirect)_<br>
 * `DEBUG`
   > valeur par défaut : `True`
   >> Une valeur booléenne qui active ou désactive le mode de débogage.<br><br>
   >> Ne déployez jamais de site en production avec le réglage DEBUG activé.<br><br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#debug)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#debug)_<br>
 * `USE_DEBUG_TOOLBAR`
   > valeur par défaut : `True`
   >> Une valeur booléenne qui active ou désactive l’outil de débogage.<br><br>
@@ -398,7 +429,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
 * `LOGIN_URL`
   > valeur par défaut : `/authentication_login/`
   >> url de redirection pour l’authentification de l’utilisateur<br>
-  >> voir : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#login-url)<br>
+  >> voir : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#login-url)<br>
 * `MANAGERS`
   > valeur par défaut : `[]`
   >> Dans Pod, les "managers" sont destinataires des courriels de fin d’encodage<br>
@@ -406,7 +437,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> Le premier manager renseigné est également contact des flus RSS.<br><br>
   >> Ils sont aussi destinataires des courriels de contact<br>
   >> si la variable `CONTACT_US_EMAIL` n’est pas renseignée.<br><br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#managers)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#managers)_<br>
 * `PROXY_HOST`
   > valeur par défaut : ``
   >> Utilisation du proxy - host<br>
@@ -419,7 +450,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> Elle est utilisée dans le contexte de la signature cryptographique,<br>
   >> et doit être définie à une valeur unique et non prédictible.<br><br>
   >> Vous pouvez utiliser ce site pour en générer une : [djecrety.ir](https://djecrety.ir/)<br><br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#secret-key)_<br>
 * `SECURE_SSL_REDIRECT`
   > valeur par défaut : `False`
   >> À moins que votre site ne doive être disponible sur des connexions SSL et non SSL,<br>
@@ -433,7 +464,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> Cette option empêche le cookie d’être envoyé dans les requêtes inter-sites,<br>
   >> ce qui prévient les attaques CSRF et rend impossible<br>
   >> certaines méthodes de vol du cookie de session.<br>
-  >> Voir [docs.djangoproject.com](https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-SESSION_COOKIE_SAMESITE)<br>
+  >> Voir [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std-setting-SESSION_COOKIE_SAMESITE)<br>
 * `SESSION_COOKIE_SECURE`
   > valeur par défaut : `not DEBUG`
   >>
@@ -445,7 +476,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> L’identifiant (nombre entier) du site actuel.<br>
   >> Peut être utilisé pour mettre en place une instance multi-tenant<br>
   >> et ainsi gérer dans une même base de données du contenu pour plusieurs sites.<br><br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#site-id)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#site-id)_<br>
 * `TEST_SETTINGS`
   > valeur par défaut : `False`
   >> Permet de vérifier si la configuration de la plateforme est en mode test.<br>
@@ -460,7 +491,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
 * `TIME_ZONE`
   > valeur par défaut : `UTC`
   >> Une chaîne représentant le fuseau horaire pour cette installation.<br><br>
-  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE)_<br>
+  >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-TIME_ZONE)_<br>
   >> Liste des adresses destinataires des courriels de contact<br>
 
 ### Obsolescence
@@ -478,9 +509,12 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
 * `ARCHIVE_OWNER_USERNAME`
   > valeur par défaut : `"archive"`
   >> Nom de l’utilisateur pour l’archivage des vidéos.<br>
+* `ARCHIVE_ROOT`
+  > valeur par défaut : `'/video_archiving'`
+  >> Dossier dans lequel sont déplacées les vidéos après ARCHIVE_HOW_MANY_DAYS jours.<br>
 * `ARCHIVE_HOW_MANY_DAYS`
   > valeur par défaut : `365`
-  >> Délai avant qu'une vidéo archivée ne soit déplacée vers archive_ROOT.<br>
+  >> Délai avant qu'une vidéo archivée ne soit déplacée vers ARCHIVE_ROOT.<br>
 * `POD_ARCHIVE_AFFILIATION`
   > valeur par défaut : `[]`
   >> Affiliations pour lesquelles on souhaite archiver la vidéo plutôt que de la supprimer.<br>
@@ -491,7 +525,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> Enfin, elles sont également ajoutées à l’ensemble `Vidéo à Supprimer`<br>
   >> (accessible via l’interface d’admin).<br>
   >>
-  >> ```python
+  >> ```py
   >> POD_ARCHIVE_AFFILIATION = ['faculty',
   >>                            'staff',
   >>                            'employee',
@@ -511,6 +545,46 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> Liste de jours de délais avant l’obsolescence de la vidéo.<br>
   >> À chaque délai, le propriétaire reçoit un mail d’avertissement<br>
   >> pour éventuellement changer la date d’obsolescence de sa vidéo.<br>
+* `RESPITE_MODEL`
+  > valeur par défaut : `base`
+  >> Choix du mode de calcul pour le répit des vidéos obsolètes.<br>
+  >> C’est le script qui va être exécuté par la commande `respit_launcher`<br>
+  >> dans le but d’étendre la durée de vie de la vidéo avec un mode de calcul<br>
+  >> personnalisé. 'base' et 'criteria_model' sont des exemples dont vous<br>
+  >> pouvez vous inspirer pour proposer votre propre modèle de répit.<br>
+* `RESPITE_MODEL_PARAMETERS`
+  > valeur par défaut : `{'respite_criteria_parameter': [], 'archiving_criteria_parameter': {'excluded_title_terms': [],'excluded_discipline_terms': []}}`
+  >> Ensemble des paramètres qui vont pouvoir être utilisés par RESPITE_MODEL.<br>
+  >> Ces paramètres sont au format JSON et dépendent du modèle choisi.<br>
+  >> Pour `criteria_model`, il sera de la forme :<br>
+  >>
+  >> ```json
+  >> {
+  >>    'respite_criteria_parameter': [...],
+  >>    'archiving_criteria_parameter': {
+  >>        'minimum_expected_score': value,
+  >>        'attribute_scores': [
+  >>            'title': 2,
+  >>            'description',: 3,
+  >>            'discipline',: 2,
+  >>            'tags',: 2,
+  >>            'date_evt',: 1,
+  >>        ],
+  >>        'excluded_title_terms': [...],
+  >>        'excluded_discipline_terms': [...],
+  >>    }
+  >> }
+  >> ```
+  >>
+* `ENABLE_PAGE_OBSO_MAIL`
+  > valeur par défaut : `False`
+  >> Active l’envoi d’un lien pour prendre une décision sur le futur de la vidéo durant la campagne de rappel instanciée par check_obsolete_video.<br>
+* `PROLONGATION_GRANTED`
+  > valeur par défaut : `False`
+  >> Autorise l’utilisateur à étendre lui-même la durée de vie de ses vidéos à travers le courriel de rappel.<br>
+* `DELETION_GRANTED`
+  > valeur par défaut : `False`
+  >> Autorise l’utilisateur à supprimer lui-même ses vidéos à travers le courriel de rappel.<br>
 
 ### Modèle
 
@@ -520,11 +594,12 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> sur la boite de dialogue d’information sur l’usage des cookies dans Pod.<br>
   >> On peut préciser un lien vers les mentions légales ou page DPO.<br>
 * `DARKMODE_ENABLED`
-  > valeur par défaut : `False`
-  >> Activation du mode sombre<br>
+  > valeur par défaut : `True`
+  >> Permet aux utilisateurs d’activer un mode sombre.<br>
 * `DYSLEXIAMODE_ENABLED`
-  > valeur par défaut : `False`
-  >> Activation du mode dyslexie<br>
+  > valeur par défaut : `True`
+  >> Permet d’utiliser une police de caractères plus adaptée<br>
+  >> aux personnes atteintes de dyslexie.<br>
 * `HIDE_CHANNEL_TAB`
   > valeur par défaut : `False`
   >> Si True, permet de cacher l’onglet chaine dans la barre de menu du haut.<br>
@@ -646,7 +721,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> # ce template soit affiché en haut de votre page, le code est ajouté
   >> #  juste après la balise body.(Hors iframe)
   >> # Si le fichier créé est
-  >> # '/opt/django_projects/podv3/pod/custom/templates/custom/preheader.html'
+  >> # '/opt/django_projects/podv4/pod/custom/templates/custom/preheader.html'
   >> # alors la variable doit prendre la valeur 'custom/preheader.html'
   >> 'PRE_HEADER_TEMPLATE': '',
   >>  
@@ -669,24 +744,29 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   > valeur par défaut : `600`
   >> Découpage de l’audio pour la transcription.<br>
 * `TRANSCRIPTION_MODEL_PARAM`
-  > valeur par défaut : `{}`
+  > valeur par défaut : ``
   >> Paramétrage des modèles pour la transcription<br>
-  >> Voir la documentation à cette adresse : [www.esup-portail.org/wiki](https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3)<br>
-  >> Pour télécharger les Modeles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)<br>
+  >> Voir la documentation à cette adresse :<br>
+  >> [esupportail.github.io](https://esupportail.github.io/Esup-Pod/4.x/Installation/optional/auto-transcription-install_fr)<br>
+  >> Pour télécharger les modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)<br>
   >>
   >> ```python
   >> TRANSCRIPTION_MODEL_PARAM = {
-  >>     # le modèle stt
-  >>     'STT': {
-  >>         'fr': {
-  >>             'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite",
-  >>             'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer",
-  >>         }
-  >>     },
   >>     # le modèle vosk
   >>     'VOSK': {
   >>         'fr': {
   >>             'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
+  >>         }
+  >>     }
+  >>     # le modèle Whisper
+  >>     'WHISPER': {
+  >>         'fr': {
+  >>             'model': "small",
+  >>             'download_root': "/pod-transcription/transcription/whisper/",
+  >>         },
+  >>         'en': {
+  >>             'model': "small",
+  >>             'download_root': "/pod-transcription/transcription/whisper/",
   >>         }
   >>     }
   >> }
@@ -706,8 +786,8 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   > valeur par défaut : `2`
   >> Temps en secondes maximum pour une phrase lors de la transcription avec l’outil STT.<br>
 * `TRANSCRIPTION_TYPE`
-  > valeur par défaut : `STT`
-  >> Choix de l’outil pour la transcription : `STT`, `VOSK`ou `WHISPER`.<br>
+  > valeur par défaut : `WHISPER`
+  >> Choix de l’outil pour la transcription : `VOSK`ou `WHISPER`.<br>
 * `TRANSCRIPT_VIDEO`
   > valeur par défaut : `start_transcript`
   >> Fonction appelée pour lancer la transcription des vidéos.<br>
@@ -725,20 +805,20 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `AI_ENHANCEMENT_API_URL`
   > valeur par défaut : ``
   >> L’URL de l’API pour l’IA d’amélioration des vidéos.<br>
-  >> Exemple : 'https://aristote.univ.fr/api'<br>
-  >> Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+  >> Exemple : '<https://aristote.univ.fr/api>'<br>
+  >> Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
 * `AI_ENHANCEMENT_API_VERSION`
   > valeur par défaut : ``
   >> La version de l’API pour l’IA d’amélioration des vidéos.<br>
 * `AI_ENHANCEMENT_CGU_URL`
   > valeur par défaut : ``
   >> L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.<br>
-  >> Exemple : '<https://aristote.univ.fr/cgu>'<br>
-  >> Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
+  >> Exemple : '<https://aristote.univ.fr/cgu>'<br>
+  >> Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
 * `AI_ENHANCEMENT_CLIENT_ID`
   > valeur par défaut : `mocked_id`
   >> L’ID du client de l’IA d’amélioration des vidéos.<br>
-  >> Exemple : 'v1'<br>
+  >> Exemple : 'v1'<br>
 * `AI_ENHANCEMENT_CLIENT_SECRET`
   > valeur par défaut : `mocked_secret`
   >> Le mot de passe secret du client de l’IA d’amélioration des vidéos.<br>
@@ -751,7 +831,7 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `AI_ENHANCEMENT_PROXY_URL`
   > valeur par défaut : ``
   >> L’URL du serveur proxy pour les requêtes venant d'Aristote.<br>
-  >> Exemple : '<https://proxy_aristote.univ.fr>'<br>
+  >> Exemple : '<https://proxy_aristote.univ.fr>'<br>
 
 ### Configuration de l’application authentification
 
@@ -766,6 +846,11 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
   >> Les personnes ayant pour affiliation les valeurs<br>
   >> renseignées dans cette variable ont automatiquement<br>
   >> la valeur staff de leur compte à True.<br>
+* `ALLOWED_SUPERUSER_IPS`
+  > valeur par défaut : `[]`
+  >> Liste d’IP et/ou de plages depuis lesquelles le statut 'superuser'<br>
+  >> est autorisé.<br>
+  >> Laissez vide pour autoriser toutes les sources.<br>
 * `AUTH_CAS_USER_SEARCH`
   > valeur par défaut : `user`
   >> Variable utilisée pour trouver les informations de l’individu<br>
@@ -790,20 +875,32 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `CAS_FORCE_LOWERCASE_USERNAME`
   > valeur par défaut : `False`
   >> Forcer le passage en minuscule du nom d’utilisateur CAS<br>
-  >> (permet de prévenir des doubles créations de comptes dans certain cas).<br>
+  >> (permet de prévenir des doubles créations de comptes dans certains cas).<br>
+  >> OBSOLÈTE à partir de Pod 4.0. Utilisez `CAS_FORCE_CHANGE_USERNAME_CASE`<br>
+* `CAS_FORCE_CHANGE_USERNAME_CASE`
+  > valeur par défaut : `False`
+  >> Forcer la casse (minuscules ou majuscules) du nom d’utilisateur CAS<br>
+  >> (permet de prévenir des doubles créations de comptes dans certains cas).<br>
+  >> Valeurs possibles : `lower`, `upper`, `False`.<br>
 * `CAS_GATEWAY`
   > valeur par défaut : `False`
   >> Si True, authentifie automatiquement l’individu<br>
   >> si déjà authentifié sur le serveur CAS<br>
+  >> OBSOLÈTE à partir de Pod 4.0<br>
 * `CAS_LOGOUT_COMPLETELY`
   > valeur par défaut : `True`
   >> Voir [kstateome/django-cas](https://github.com/kstateome/django-cas)<br>
 * `CAS_SERVER_URL`
   > valeur par défaut : `sso_cas`
-  >> Url du serveur CAS de l’établissement. Format http://url_cas<br>
+  >> Url du serveur CAS de l’établissement. Format `http://url_cas`<br>
+* `CAS_MAP_AFFILIATIONS`
+  > valeur par défaut : `False`
+  >> Si True, des `groupes` d’utilisateurs sont créés automatiquement<br>
+  >> à partir des affiliations CAS des individus qui se connectent sur la plateforme<br>
+  >> et l’individu qui se connecte est ajouté automatiquement à ces groupes.<br>
 * `CREATE_GROUP_FROM_AFFILIATION`
   > valeur par défaut : `False`
-  >> Si True, des groupes sont créés automatiquement<br>
+  >> Si True, des `groupes d’accès` sont créés automatiquement<br>
   >> à partir des affiliations des individus qui se connectent sur la plateforme<br>
   >> et l’individu qui se connecte est ajouté automatiquement à ces groupes.<br>
 * `CREATE_GROUP_FROM_GROUPS`
@@ -920,6 +1017,7 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
   > valeur par défaut : ``
   >> Liste de correspondance entre les champs d’un compte de Pod<br>
   >> et les champs renvoyés par le CAS.<br>
+  >> OBSOLÈTE. Utilisez désormais `CAS_RENAME_ATTRIBUTES`.<br>
 * `USER_LDAP_MAPPING_ATTRIBUTES`
   > valeur par défaut : ``
   >> Liste de correspondance entre les champs d’un compte de Pod<br>
@@ -973,45 +1071,6 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `ROLE_CHOICES`
   > valeur par défaut : ``
   >> Liste de rôles possibles pour un contributeur.<br>
-* `TRANSCRIPTION_MODEL_PARAM`
-  > valeur par défaut : ``
-  >> Paramétrage des modèles pour la transcription<br>
-  >> Voir la documentation à cette adresse :<br>
-  >> [esup-portail.org/wiki](https://www.esup-portail.org/wiki/display/ES/Installation+de+l%27autotranscription+en+Pod+V3)<br>
-  >> Pour télécharger les modèles Vosk : [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)<br>
-  >>
-  >> ```python
-  >> TRANSCRIPTION_MODEL_PARAM = {
-  >>     # le modèle stt
-  >>     'STT': {
-  >>         'fr': {
-  >>             'model': "/path/to/project/Esup-Pod/transcription/model_fr/stt/output_graph.tflite",
-  >>             'scorer': "/path/to/project/Esup-Pod/transcription/model_fr/stt/kenlm.scorer",
-  >>         }
-  >>     },
-  >>     # le modèle vosk
-  >>     'VOSK': {
-  >>         'fr': {
-  >>             'model': "/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0",
-  >>         }
-  >>     }
-  >>     # le modèle Whisper
-  >>     'WHISPER': {
-  >>         'fr': {
-  >>             'model': "small",
-  >>             'download_root': "/pod-transcription/transcription/whisper/",
-  >>         },
-  >>         'en': {
-  >>             'model': "small",
-  >>             'download_root': "/pod-transcription/transcription/whisper/",
-  >>         }
-  >>     }
-  >> }
-  >> ```
-  >>
-* `TRANSCRIPTION_TYPE`
-  > valeur par défaut : `STT`
-  >> STT, VOSK ou WHISPER (à partir de Pod 3.5.0)<br>
 * `USE_ENRICH_READY`
   > valeur par défaut : `False`
   >> voir `ACTIVE_MODEL_ENRICH`<br>
@@ -1022,7 +1081,7 @@ Application Cut permettant de découper des vidéos.<br>
 Mettre `USE_CUT` à True pour activer cette application.<br>
 
 * `USE_CUT`
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
   >> Activation de l’application Cut<br>
 
 ### Configuration de l’application dressing
@@ -1031,7 +1090,7 @@ Application Dressing pour customiser une vidéo avec un filigrane et des crédit
 Mettre `USE_DRESSING` à True pour activer cette application.<br>
 
 * `USE_DRESSING`
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
   >> Activation des habillages.<br>
   >> Permet aux utilisateurs de customiser une vidéo avec un filigrane et des crédits.<br>
 
@@ -1044,6 +1103,15 @@ Mettre `USE_DUPLICATE` à True pour activer cette application.<br>
   > valeur par défaut : `False`
   >> Activation de duplicate.<br>
   >> Permet aux utilisateurs de dupliquer une vidéo<br>
+
+### Configuration de l’application Liens
+
+Application Liens permettant d'ajouter des liens à la vidéo.<br>
+Mettre `USE_HYPERLINKS` à True pour activer cette application.<br>
+
+* `USE_HYPERLINKS`
+  > valeur par défaut : `False`
+  >> Activation de l’application Liens<br>
 
 ### Configuration de l’application enrichment
 
@@ -1073,7 +1141,7 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
   > valeur par défaut : `True`
   >> Seuls les utilisateurs "staff" pourront importer des vidéos<br>
 * `USE_IMPORT_VIDEO`
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
   >> Activation de l’application d’import des vidéos<br>
 * `USE_IMPORT_VIDEO_BBB_RECORDER`
   > valeur par défaut : `False`
@@ -1085,10 +1153,14 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
   >> bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d’encodage.<br>
   >> bbb-recorder crée un répertoire Downloads, au même niveau, qui nécessite de l’espace disque.<br>
 * `IMPORT_VIDEO_BBB_RECORDER_PATH`
-  > valeur par défaut : `True`
+  > valeur par défaut : `/data/bbb-recorder/media/`
   >> Répertoire qui contiendra les fichiers vidéo générés par bbb-recorder.<br>
 
 ### Configuration de l’application live
+
+Le mode **Esup-Runner Live** se configure dans l’administration de chaque broadcaster.<br>
+Sélectionner le `runner_manager` recevant son RTMP et renseigner son `source_id`, indépendant du slug Pod.<br>
+Le mode URL fixe reste le mode par défaut ; l’URL est obligatoire uniquement dans ce mode.<br>
 
 * `AFFILIATION_EVENT`
   > valeur par défaut : `['faculty', 'employee', 'staff']`
@@ -1121,6 +1193,22 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
   > valeur par défaut : `True`
   >> Si True, un courriel est envoyé aux managers et à l’auteur<br>
   >> (si DEBUG est à False) à la création/modification d’un event.<br>
+* `ESUP_RUNNER_LIVE_CACHE_TIMEOUT`
+  > valeur par défaut : `10`
+  >> Durée (en secondes) du cache des flux indisponibles et des nouvelles tentatives après une erreur temporaire de découverte.<br>
+  >> Pendant une panne du manager, la dernière URL confirmée est conservée séparément et proposée à nouveau uniquement si de nouveaux segments HLS accessibles sont observés.<br>
+  >> La lecture en cours continue indépendamment de la disponibilité du manager, sans limite fixe de durée de panne.<br>
+* `ESUP_RUNNER_LIVE_HLS_TIMEOUT`
+  > valeur par défaut : `(2, 2)`
+  >> Délais de connexion et de lecture (en secondes) des vérifications HLS pendant une panne du manager.<br>
+  >> Les vérifications suivent la playlist principale, observent la progression de la playlist média et lisent uniquement le début du dernier segment, sans les identifiants du manager.<br>
+* `ESUP_RUNNER_LIVE_HTTP_TIMEOUT`
+  > valeur par défaut : `(2, 4)`
+  >> Délais de connexion et de lecture (en secondes) des requêtes HTTP au manager Esup-Runner Live.<br>
+* `ESUP_RUNNER_LIVE_READY_CACHE_TIMEOUT`
+  > valeur par défaut : `20`
+  >> Durée (en secondes) du cache des flux HLS prêts confirmés par le manager Esup-Runner Live.<br>
+  >> Les arrêts confirmés et les refus d’accès invalident la dernière URL connue. Les requêtes de disponibilité du navigateur expirent après 30 secondes.<br>
 * `EVENT_ACTIVE_AUTO_START`
   > valeur par défaut : `False`
   >> Permet de lancer automatiquement l’enregistrement sur l’interface utilisée<br>
@@ -1206,13 +1294,13 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 * `USE_BBB`
   > valeur par défaut : `True`
   >> Utilisation de BigBlueButton<br>
-  >> [TODO] À retirer dans les futures versions de Pod<br>
+  >> Module obsolète.<br>
 * `USE_BBB_LIVE`
   > valeur par défaut : `False`
   >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton<br>
   >> [TODO] À retirer dans les futures versions de Pod<br>
 * `USE_IMPORT_VIDEO`
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
   >> Activation de l’application d’import des vidéos<br>
 * `USE_MEETING`
   > valeur par défaut : `False`
@@ -1226,6 +1314,9 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 * `WEBTV_MODE`
   > valeur par défaut : `False`
   >> Mode webtv permet de basculer POD en une application webtv ensupprimant les boutons de connexions par exemple<br>
+* `SOCIAL_SHARE`
+  > valeur par défaut : `['X', 'FACEBOOK', 'LINKEDIN', 'BLUESKY', 'MASTODON']`
+  >> Choix d'affichage des liens de partage des réseaux sociaux<br>
 
 ### Configuration de l’application meeting
 
@@ -1398,14 +1489,14 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   >> Restreindre l’accès à la création de listes de lecture promues<br>
   >> au staff uniquement.<br>
 * `USE_FAVORITES`
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
   >> Activation des vidéos favorites.<br>
   >> Permet aux utilisateurs d’ajouter des vidéos dans leurs favoris.<br>
 * `USE_PLAYLIST`
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
   >> Activation des playlist. Permet aux utilisateurs d’ajouter des vidéos dans une playlist.<br>
 * `USE_PROMOTED_PLAYLIST`
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
   >> Activation des playlist promues.<br>
   >> Permet aux utilisateurs d'utiliser les listes de lecture promues.<br>
 
@@ -1432,7 +1523,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
 ### Configuration de l’application progressive_web_app
 
 * `USE_NOTIFICATIONS`
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
   >> Activation des notifications, attention, elles sont actives par défaut.<br>
 * `WEBPUSH_SETTINGS`
   > valeur par défaut :
@@ -1454,7 +1545,7 @@ Application Quiz pour ajouter des questions sur les vidéos.<br>
 Mettre `USE_QUIZ` à True pour activer cette application.<br>
 
 * `USE_QUIZ`
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
   >> Activation des quiz. Permet aux utilisateurs de créer, répondre et utiliser des quiz dans les vidéos.<br>
 
 ### Configuration de l’application recorder
@@ -1599,6 +1690,10 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
 * `DEFAULT_YEAR_DATE_DELETE`
   > valeur par défaut : `2`
   >> Durée d’obsolescence par défaut (en années après la date d’ajout).<br>
+* `DEFAULT_OWNER_USERNAME`
+  > valeur par défaut : `"default_owner"`
+  >> Nom de l’utilisateur propriétaire par défaut des vidéos dont le propriétaire<br>
+  >> existant aurait quitté l'établissement (cf. commande check_video_owner_exists)<br>
 * `FORCE_LOWERCASE_TAGS`
   > valeur par défaut : `True`
   >> Les mots clés saisis lors de l’ajout de vidéo sont convertis automatiquement en minuscule.<br>
@@ -1631,7 +1726,11 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
   >> Par défaut : 10 (Année courante + 10 ans).<br>
 * `MAX_TAG_LENGTH`
   > valeur par défaut : `50`
-  >> Les mots clés saisis lors de l’ajout de vidéo ne peuvent dépasser cette longueur.<br>
+  >> Les mots-clés saisis lors de l’ajout de vidéo ne peuvent dépasser cette longueur.<br>
+* `NUMBER_TAGS_CLOUD`
+  > valeur par défaut : `20`
+  >> Nombre de mots-clés les plus importants affichés dans le nuage de la page d'accueil.<br>
+  >> Les paramètres TAGULOUS_WEIGHT_MIN et TAGULOUS_WEIGHT_MAX ne sont pas utilisés.<br>
 * `NOTES_STATUS`
   > valeur par défaut : `()`
   >> Valeurs possible pour l’accès à une note.<br>
@@ -2009,8 +2108,20 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
 
 Application pour l’encodage et la transcription de vidéo.<br>
 Il est possible d’encoder en local ou en distant.<br>
-Attention, il faut configurer Celery pour l’envoi des instructions pour l’encodage distant.<br>
+Pour l’encodage distant, il est préférable d’utiliser le système d’externalisation des encodages et transcriptions, <br>
+Esup-Runner, avec utilisation de runner managers. Sinon, il est aussi possible d’utiliser Celery dans ce cas là.<br>
 
+* `USE_RUNNER_MANAGER`
+  > valeur par défaut : `False`
+  >> Si True, Pod utilise le système d’externalisation des encodages et transcriptions,<br>
+  >> Esup-Runner, avec utilisation de runner managers. Les encodages et transcriptions<br>
+  >> sont totalement délégués à ce système. Cf. https://github.com/EsupPortail/esup-runner.<br>
+  >> Dans ce cas là, il n'est plus utile de configurer Celery pour l’encodage et la transcription à distance.<br>
+* `RM_TASKS_DELETED_AFTER_DAYS`
+  > valeur par défaut : `0`
+  >> Paramètre utilisé seulement quand USE_RUNNER_MANAGER = True.<br>
+  >> Il correspond au nombre de jours après lesquels les tâches terminées sont supprimées<br>
+  >> dans la base de données (0 signifiant que les tâches terminées sont conservées indéfiniment).<br>
 * `CAPTIONS_STRICT_ACCESSIBILITY`
   > valeur par défaut : `False`
   >> Si True, les sous-titres seront générés en respectant strictement les normes<br>
@@ -2144,12 +2255,11 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l’en
   >> Adresse du ou des instances d’Elasticsearch utilisées pour<br>
   >> l’indexation et la recherche de vidéo.<br>
 * `ES_VERSION`
-  > valeur par défaut : `6`
+  > valeur par défaut : `8`
   >> Version d’ElasticSearch.<br>
-  >> valeurs possibles 6, 7 ou 8 correspondant à la version du Elasticsearch utilisé.<br>
-  >> Pour utiliser la version 7 ou 8, faire une mise à jour du paquet elasticsearch-py<br>
-  >> Pour la 7, `pip3 install elasticsearch==7.17.7`,<br>
-  >> et pour la 8, `pip3 install elasticsearch==8.8.1`.<br>
+  >> valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.<br>
+  >> Attention, le paquet elasticsearch-py doit correspondre à la version du serveur.<br>
+  >> pour la 8, `pip3 install elasticsearch==8.17.2`.<br>
   >> Voir [elasticsearch-py.readthedocs.io](https://elasticsearch-py.readthedocs.io/)<br>
   >> pour plus d’information.<br>
 * `ES_OPTIONS`

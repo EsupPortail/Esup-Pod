@@ -6,7 +6,6 @@ from pod.quiz.utils import get_video_quiz
 
 from pod.video.models import Video
 
-
 register = Library()
 
 

@@ -2,17 +2,45 @@
 {% load static %}
 {% spaceless %}
 
-<div id="videos_list" class="pod-infinite-container pod-infinite-grid-container-dashbord infinite-container dashboard-container" data-nextpage="{{ videos.has_next|yesno:'true,false' }}" data-countvideos="{{ count_videos }}">
-  {% for video in videos %}
-    <div class="infinite-item" data-slug={{video.slug}} tabindex="0">
-      {% include "videos/card_select.html" %}
-    </div>
-  {% empty %}
-    <div>
-      <p>{% trans "Sorry, no video found." %}</p>
-    </div>
-  {% endfor %}
-</div>
+{% if videos %}
+  <div
+    id="videos_list"
+    class="pod-infinite-container pod-infinite-grid-container-dashbord infinite-container dashboard-container"
+    data-nextpage="{{ videos.has_next|yesno:'true,false' }}"
+    data-countvideos="{{ count_videos }}"
+  >
+    {% for video in videos %}
+      <div class="infinite-item" data-slug="{{ video.slug }}" tabindex="0">
+        {% include "videos/card_select.html" %}
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <ul
+    id="videos_list"
+    class="pod-infinite-list-container-dashboard infinite-container list-group list-group-action dashboard-container"
+    data-nextpage="false"
+    data-countvideos="0"
+  >
+  {% if error_message %}
+    <li class="list-group-item p-0 border-0">
+      <div class="alert alert-info d-flex align-items-center mt-4 mb-0" role="alert">
+        <i class="bi bi-info-circle-fill me-2 fs-3"></i>
+        <div>
+          <p class="mb-0">{% trans error_message.main %}</p>
+          <small class="text-muted">{% trans error_message.types %}</small>
+        </div>
+        {% if error_message.types %}
+          <a href="{% url 'video:video_add' %}" class="btn btn-primary btn-sm ms-auto">
+            <i class="bi bi-plus-lg me-1"></i> {% trans "Add a video" %}
+          </a>
+        {% endif %}
+      </div>
+    </li>
+  {% endif %}
+  </ul>
+{% endif %}
+
 {% if videos.has_next %}
   <a
     style="display:none"

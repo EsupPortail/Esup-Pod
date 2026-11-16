@@ -2,8 +2,8 @@
 
 from django import forms
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
-from tagging.fields import TagField
+from django.utils.translation import gettext_lazy as _
+from tagulous.models import TagField
 
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.video.models import Video, Discipline
@@ -85,12 +85,10 @@ class AIEnhancementChoice(forms.ModelForm):
     )
 
     tags = TagField(
-        help_text=_(
-            """
+        help_text=_("""
             Please choose tags for your video.
             Separate tags with spaces, enclose the tags consist of several words in quotation marks.
-        """
-        ),
+        """),
         verbose_name=_("Tags"),
     )
 

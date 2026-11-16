@@ -14,36 +14,34 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with Esup-Pod. If not, see <https://www.gnu.org/licenses/>.
-import bleach
+import json
+import mimetypes
+import os
+from wsgiref.util import FileWrapper
 
-from .forms import ContactUsForm, SUBJECT_CHOICES
-from .forms import DownloadFileForm
-from django.shortcuts import render
-from django.contrib.sites.shortcuts import get_current_site
-from django.contrib import messages
+import bleach
 from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
+from django.core.mail import EmailMultiAlternatives
+from django.db.models import Count, Q, Sum
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.shortcuts import redirect, render
+from django.template import loader
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_GET
-from django.template import loader
-from django.core.mail import EmailMultiAlternatives
-from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import redirect
-from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied, SuspiciousOperation
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.http import JsonResponse
-from wsgiref.util import FileWrapper
-from django.db.models import Q, Count
-from pod.video.models import Video, remove_accents
-from pod.authentication.forms import FrontOwnerForm, SetNotificationForm
-from django.db.models import Sum
-import os
-import mimetypes
-import json
-from django.contrib.auth.decorators import login_required
-from .models import Configuration
 from honeypot.decorators import check_honeypot
 
+from pod.authentication.forms import FrontOwnerForm, SetNotificationForm
+from pod.video.models import Video, remove_accents
+
+from .forms import SUBJECT_CHOICES, ContactUsForm, DownloadFileForm
+from .models import Configuration
+from .utils import is_ajax
 
 ##
 # Settings exposed in templates
@@ -105,26 +103,32 @@ def in_maintenance():
 def download_file(request):
     """Direct download of requested file."""
     if request.POST and request.POST.get("filename"):
-        filename = os.path.join(settings.MEDIA_ROOT, request.POST.get("filename"))
-        form = DownloadFileForm({"filename": filename})
+        form = DownloadFileForm({"filename": request.POST.get("filename")})
         if form.is_valid():
             cleaned_filename = form.cleaned_data["filename"]
-            if os.path.isfile(cleaned_filename) and cleaned_filename.startswith(
-                settings.MEDIA_ROOT
+            media_root = os.path.realpath(settings.MEDIA_ROOT)
+            normalized_path = os.path.realpath(cleaned_filename)
+            if (
+                os.path.isfile(normalized_path)
+                and os.path.commonpath([normalized_path, media_root]) == media_root
             ):
-                wrapper = FileWrapper(open(filename, "rb"))
+                wrapper = FileWrapper(open(normalized_path, "rb"))
                 response = HttpResponse(
-                    wrapper, content_type=mimetypes.guess_type(filename)[0]
+                    wrapper,
+                    content_type=(
+                        mimetypes.guess_type(normalized_path)[0]
+                        or "application/octet-stream"
+                    ),
                 )
-                response["Content-Length"] = os.path.getsize(filename)
+                response["Content-Length"] = os.path.getsize(normalized_path)
                 response["Content-Disposition"] = (
-                    'attachment; filename="%s"' % os.path.basename(filename)
+                    'attachment; filename="%s"' % os.path.basename(normalized_path)
                 )
                 return response
             else:
-                raise SuspiciousOperation("file not exist or not in media")
+                raise SuspiciousOperation(_("File does not exist or is outside media."))
         else:
-            raise SuspiciousOperation("not valid file")
+            raise SuspiciousOperation(_("Invalid file request."))
     else:
         raise PermissionDenied
 
@@ -230,7 +234,7 @@ def contact_us(request):
     prefix = "https://" if request.is_secure() else "http://"
     home_page = "".join([prefix, get_current_site(request).domain])
     url_referrer = (
-        request.META["HTTP_REFERER"] if request.META.get("HTTP_REFERER") else home_page
+        request.headers["referer"] if request.headers.get("referer") else home_page
     )
 
     form = ContactUsForm(
@@ -324,7 +328,7 @@ def contact_us(request):
 @login_required(redirect_field_name="referrer")
 def user_autocomplete(request):
     """Search for users with partial names, for autocompletion."""
-    if request.is_ajax():
+    if is_ajax(request):
         additional_filters = {
             "video__is_draft": False,
             "owner__sites": get_current_site(request),

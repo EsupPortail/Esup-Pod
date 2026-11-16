@@ -26,8 +26,8 @@ https://www.esup-portail.org/wiki/x/DgB8Lw
 This script must be executed regularly (for an example, with a CRON task).
 Example: crontab -e */5 * * * * /usr/bin/bash -c '
 export WORKON_HOME=/data/www/%userpod%/.virtualenvs;
-export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.6;
-cd /data/www/%userpod%/django_projects/podv3;
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.10;
+cd /data/www/%userpod%/django_projects/podv4;
 source /usr/bin/virtualenvwrapper.sh; workon django_pod;
 python manage.py recorder checkDirectory'
 """
@@ -346,7 +346,7 @@ def case_studio_recording(
         # Cursus
         video.cursus = recorder.cursus
         # Tags
-        video.tags = recorder.tags
+        video.tags = recorder.tags.get_tag_list()
         # Transcription
         if getattr(settings, "USE_TRANSCRIPTION", False):
             video.transcript = recorder.transcript

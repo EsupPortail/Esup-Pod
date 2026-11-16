@@ -59,6 +59,7 @@ else:
     admin.site.register(Enrichment)
 
 
+@admin.register(EnrichmentGroup)
 class EnrichmentGroupAdmin(admin.ModelAdmin):
     list_display = ("video", "get_groups")
     autocomplete_fields = ["video"]
@@ -88,6 +89,7 @@ class EnrichmentGroupAdmin(admin.ModelAdmin):
         return "\n".join([g.name for g in obj.groups.all()])
 
 
+@admin.register(EnrichmentVtt)
 class EnrichmentVttAdmin(admin.ModelAdmin):
     form = EnrichmentVttAdminForm
     list_display = ("video", "src", "get_file_name")
@@ -115,7 +117,3 @@ class EnrichmentVttAdmin(admin.ModelAdmin):
             "podfile/js/filewidget.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
-
-
-admin.site.register(EnrichmentGroup, EnrichmentGroupAdmin)
-admin.site.register(EnrichmentVtt, EnrichmentVttAdmin)

@@ -1,6 +1,6 @@
 # Utilitaires shell pour Esup-Pod
 
-# Ne pas oublier de lancer un `workon django_pod` avant toute commande.
+# Ne pas oublier de lancer un `workon django_pod4` avant toute commande.
 # Lancer via `make $cmd`
 # (en remplacant $cmd par une commande ci-dessous)
 
@@ -10,18 +10,23 @@ help:
 	@echo "Syntax: [make target] where target is in this list:"
 	@awk '/^#/{c=substr($$0,3);next}c&&/^[[:alpha:]][[:alnum:]_-]+:/{print substr($$1,1,index($$1,":")),c}1{c=0}' $(MAKEFILE_LIST) | column -s: -t
 
+# Affiche la doc technique de Pod v4
+doc:
+	open https://esupportail.github.io/Esup-Pod/4.x/index
+
 # Démarre le serveur de test
 start:
 	(sleep 15 ; open http://pod.localhost:8000) &
-	python3 manage.py runserver pod.localhost:8000 --insecure
+	python3 -Wd manage.py runserver pod.localhost:8000 --insecure
 	# --insecure let serve static files even when DEBUG=False
+	# -Wd enable default warning mode (Warn once per call location)
 
 # Démarre le serveur de test en https auto-signé
 starts:
 	# nécessite les django-extensions
 	# cf https://timonweb.com/django/https-django-development-server-ssl-certificate/
 	(sleep 15 ; open https://pod.localhost:8000) &
-	python3 manage.py runserver_plus pod.localhost:8000 --cert-file cert.pem --key-file key.pem
+	python3 -Wd manage.py runserver_plus pod.localhost:8000 --cert-file cert.pem --key-file key.pem
 
 # Première installation de pod (BDD SQLite intégrée)
 install:
@@ -32,7 +37,7 @@ install:
 
 # Mise à jour de Pod
 upgrade:
-	git pull origin master
+	git pull origin main
 	python3 -m pip install -r requirements.txt
 	make updatedb
 	make migrate
@@ -40,11 +45,12 @@ upgrade:
 
 # Création des données initiales dans la BDD SQLite intégrée
 createDB:
-	find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+	python3 manage.py delete_flatpages_migrations
+	find . -path "*/migrations/*.py" -not -name "__init__.py" -not -path "./.venv/*" -delete
 	find . -path "*/migrations/*.pyc" -delete
 	make updatedb
 	make migrate
-	python3 manage.py loaddata initial_data
+	python3 -Wd manage.py loaddata initial_data
 
 # Mise à jour des fichiers de langue
 lang:
@@ -53,9 +59,14 @@ lang:
 	echo "Processing javascript files..."
 	python3 manage.py makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"  -i "node_modules/*" -i "pod/custom/*" --add-location=file
 
-#compilation des fichiers de langue
+# Compilation des fichiers de langue
 compilelang:
 	python3 manage.py compilemessages -l fr -l nl
+
+# Suppression des sessions inutilisées
+clearsessions:
+	python3 manage.py clearsessions
+	python3 manage.py django_cas_ng_clean_sessions
 
 # Look for changes to apply in DB
 updatedb:
@@ -72,6 +83,7 @@ tests:
 
 # Ensure coherence of all code style
 pystyle:
+	black . -l 90
 	flake8
 
 # Collects all static files inside all apps and put a copy inside the static directory declared in settings.py
@@ -82,8 +94,12 @@ statics:
 
 # Generate configuration docs in .MD format
 createconfigs:
-	python3 manage.py createconfiguration fr
-	python3 manage.py createconfiguration en
+	python3 -Wd manage.py createconfiguration fr
+	python3 -Wd manage.py createconfiguration en
+
+# Create a superuser
+createsuperuser:
+	python3 manage.py createsuperuser
 
 # -- Docker
 # Use for docker run and docker exec commands
@@ -144,8 +160,6 @@ else ifeq ($(DOCKER_ENV), full-test)
 else
 	@$(COMPOSE) up
 endif
-	# Vous devriez obtenir ce message une fois esup-pod lancé
-	# $ pod-dev-with-volumes        | Superuser created successfully.
 
 # Arrête le serveur de test
 docker-stop:

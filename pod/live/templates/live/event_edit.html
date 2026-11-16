@@ -9,6 +9,8 @@
       display: block !important;
     }
   </style>
+  <link rel="stylesheet" href="{% static 'css/pod-admin.css' %}?ver={{VERSION}}" media="screen">
+
 {% endblock %}
 
 {% block breadcrumbs %}{{ block.super }}
@@ -32,7 +34,8 @@
 
   {% if access_not_allowed == True %}
     <p class="text-info-emphasis">
-      <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% trans "Access to adding event has been restricted. If you want to add events on the platform, please" %}
+      <i class="bi bi-info-circle" aria-hidden="true"></i>
+      {% trans "Access to adding event has been restricted. If you want to add events on the platform, please" %}
       <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
     </p>
   {% else %}

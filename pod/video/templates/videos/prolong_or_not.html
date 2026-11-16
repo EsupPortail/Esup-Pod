@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_content %}
+  <h1 class="h2">{% trans "Are you sure to want to extend this video life span?" %}</h1>
+  <p class="form-text">
+    {% blocktrans with rrd=EXTEND_RESPITE_DAYS %}This will extend the video life span by {{ rrd }} days.{% endblocktrans %}
+  </p>
+  <ul>
+    <li>
+      {% trans "Link to the video:" %}
+      <a href="{% url 'video:video' slug=video.slug %}">{{ video.title }}</a>
+    </li><li>
+      {% trans "Date to delete:" %}
+      <strong>{{ video.date_delete }}</strong>
+    </li>
+  </ul>
+
+  <div class="text-center mt-1">
+    <a href="/video/go/prolong/{{ slug }}/"><button class="btn btn-primary">{% trans "Extend" %}</button></a>
+    <a href="/video/respite/{{ slug }}/" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom">
+        {% trans "Back to choices" %}
+    </a>
+  </div>
+{% endblock page_content %}

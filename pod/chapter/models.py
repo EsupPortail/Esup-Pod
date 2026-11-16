@@ -5,7 +5,7 @@ import time
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.template.defaultfilters import slugify
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from pod.video.models import Video
 from pod.video.utils import verify_field_length

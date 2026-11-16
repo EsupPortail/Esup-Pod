@@ -15,11 +15,10 @@ from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
 from django.forms import CharField, Textarea
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.main.forms_utils import OwnerWidget, AddOwnerWidget
 from pod.meeting.webinar import start_webinar, stop_webinar, toggle_rtmp_gateway
-
 
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
@@ -322,6 +321,7 @@ class MeetingForm(forms.ModelForm):
 
         if not self.cleaned_data.get("recurring_until"):
             self.instance.recurring_until = None
+            self.instance.nb_occurrences = None
 
     def clean_add_owner(self):
         """Check if meeting owner not in additional owners."""
@@ -457,6 +457,7 @@ class MeetingForm(forms.ModelForm):
             and getattr(self.instance, "recurrence", None) is None
         ):
             self.initial["recurring_until"] = None
+            self.initial["nb_occurrences"] = None
 
         # MEETING_DISABLE_RECORD
         if MEETING_DISABLE_RECORD:

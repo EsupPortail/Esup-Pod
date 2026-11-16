@@ -1,3 +1,5 @@
+"""Esup-Pod views for editing and displaying video enrichments."""
+
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.sites.shortcuts import get_current_site
@@ -7,15 +9,15 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from pod.playlist.models import Playlist
-from pod.playlist.utils import get_video_list_for_playlist, playlist_can_be_displayed
+from pod.playlist.utils import get_video_list_for_playlist
 from pod.video.models import Video
-from pod.video.utils import sort_videos_list
 from pod.video.views import render_video
+from pod.main.utils import is_ajax
 
 from .models import Enrichment, EnrichmentGroup
 from .forms import EnrichmentForm, EnrichmentGroupForm
@@ -24,13 +26,12 @@ from .forms import EnrichmentForm, EnrichmentGroupForm
 
 import json
 
-__AVAILABLE_ACTIONS__ = ["new", "save", "modify", "delete", "cancel"]
-
 
 @csrf_protect
 @ensure_csrf_cookie
 @staff_member_required(redirect_field_name="referrer")
 def group_enrichment(request, slug):
+    """Display and update the groups allowed to enrich a video after checking rights."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     enrichmentGroup, created = EnrichmentGroup.objects.get_or_create(video=video)
     if (
@@ -58,6 +59,7 @@ def group_enrichment(request, slug):
 
 
 def check_enrichment_group(request, video):
+    """Return whether the user belongs to a group allowed to enrich the video."""
     if not hasattr(video, "enrichmentgroup"):
         return False
     if not request.user.groups.filter(
@@ -71,6 +73,7 @@ def check_enrichment_group(request, video):
 @ensure_csrf_cookie
 @staff_member_required(redirect_field_name="referrer")
 def edit_enrichment(request, slug):
+    """Check editing rights and dispatch enrichment actions or display the editor."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     if (
         request.user != video.owner
@@ -88,27 +91,35 @@ def edit_enrichment(request, slug):
 
     list_enrichment = video.enrichment_set.all()
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __AVAILABLE_ACTIONS__:
-            return eval(
-                "edit_enrichment_{0}(request, video)".format(request.POST["action"])
-            )
-    else:
-        return render(
-            request,
-            "enrichment/edit_enrichment.html",
-            {
-                "video": video,
-                "list_enrichment": list_enrichment,
-                "page_title": _("Enrichment of the video “%s”") % video.title,
-            },
-        )
+        action = request.POST["action"]
+        ACTION_HANDLERS = {
+            "new": edit_enrichment_new,
+            "save": edit_enrichment_save,
+            "modify": edit_enrichment_modify,
+            "delete": edit_enrichment_delete,
+            "cancel": edit_enrichment_cancel,
+        }
+        if action in ACTION_HANDLERS:
+            handler = ACTION_HANDLERS.get(action)
+            if handler:
+                return handler(request, video)
+    return render(
+        request,
+        "enrichment/edit_enrichment.html",
+        {
+            "video": video,
+            "list_enrichment": list_enrichment,
+            "page_title": _("Enrichment of the video “%s”") % video.title,
+        },
+    )
 
 
 def edit_enrichment_new(request, video):
+    """Render a new enrichment form as a page or AJAX fragment."""
     list_enrichment = video.enrichment_set.all()
 
     form_enrichment = EnrichmentForm(initial={"video": video, "start": 0, "end": 1})
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             "enrichment/form_enrichment.html",
@@ -127,6 +138,7 @@ def edit_enrichment_new(request, video):
 
 
 def edit_enrichment_save(request, video):
+    """Save a valid enrichment form or return its validation errors."""
     list_enrichment = video.enrichment_set.all()
 
     form_enrichment = None
@@ -143,7 +155,7 @@ def edit_enrichment_save(request, video):
         form_enrichment.save()
         # list_enrichment = video.enrichment_set.all()
         # enrichment_to_vtt(list_enrichment, video)
-        if request.is_ajax():
+        if is_ajax(request):
             some_data_to_dump = {
                 "list_enrichment": render_to_string(
                     "enrichment/list_enrichment.html",
@@ -160,7 +172,7 @@ def edit_enrichment_save(request, video):
                 {"video": video, "list_enrichment": list_enrichment},
             )
     else:
-        if request.is_ajax():
+        if is_ajax(request):
             some_data_to_dump = {
                 "errors": "{0}".format(_("Please correct errors.")),
                 "form": render_to_string(
@@ -184,11 +196,12 @@ def edit_enrichment_save(request, video):
 
 
 def edit_enrichment_modify(request, video):
+    """Render the editing form for the selected enrichment."""
     list_enrichment = video.enrichment_set.all()
 
     enrich = get_object_or_404(Enrichment, id=request.POST["id"])
     form_enrichment = EnrichmentForm(instance=enrich)
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             "enrichment/form_enrichment.html",
@@ -207,12 +220,13 @@ def edit_enrichment_modify(request, video):
 
 
 def edit_enrichment_delete(request, video):
+    """Delete the selected enrichment and return the updated enrichment list."""
     enrich = get_object_or_404(Enrichment, id=request.POST["id"])
     enrich.delete()
     list_enrichment = video.enrichment_set.all()
     # if list_enrichment:
     #    enrichment_to_vtt(list_enrichment, video)
-    if request.is_ajax():
+    if is_ajax(request):
         some_data_to_dump = {
             "list_enrichment": render_to_string(
                 "enrichment/list_enrichment.html",
@@ -231,6 +245,7 @@ def edit_enrichment_delete(request, video):
 
 
 def edit_enrichment_cancel(request, video):
+    """Return to the enrichment list without saving form changes."""
     list_enrichment = video.enrichment_set.all()
     return render(
         request,
@@ -267,17 +282,15 @@ def video_enrichment(
     """
     params = {}
     if request.GET.get("playlist"):
-        playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-        if playlist_can_be_displayed(request, playlist):
-            videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
-            params = {
-                "playlist_in_get": playlist,
-                "videos": videos,
-            }
-        else:
-            raise PermissionDenied(
-                _("You cannot access this playlist because it is private.")
-            )
+        playlist = get_object_or_404(
+            Playlist, slug=request.GET.get("playlist"), site=get_current_site(request)
+        )
+        params = {
+            "playlist_in_get": playlist,
+            "videos": get_video_list_for_playlist(
+                playlist, prefetch_access=True
+            ).order_by("rank", "pk"),
+        }
     template_video = (
         "enrichment/video_enrichment-iframe.html"
         if (request.GET.get("is_iframe"))
@@ -289,6 +302,7 @@ def video_enrichment(
     except ValueError:
         raise SuspiciousOperation("Invalid video id")
 
+    # The shared renderer checks playlist membership, passwords and video access.
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 

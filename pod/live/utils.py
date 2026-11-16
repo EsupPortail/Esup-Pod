@@ -13,7 +13,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMultiAlternatives, mail_managers
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pod.main.views import TEMPLATE_VISIBLE_SETTINGS
 
@@ -32,7 +32,7 @@ EVENT_CHECK_MAX_ATTEMPT = getattr(settings, "EVENT_CHECK_MAX_ATTEMPT", 10)
 logger = logging.getLogger(__name__)
 
 
-def send_email_confirmation(event):
+def send_email_confirmation(event) -> None:
     """Send an email on creation/modification event."""
     if DEBUG:
         print("SEND EMAIL ON EVENT SCHEDULING")

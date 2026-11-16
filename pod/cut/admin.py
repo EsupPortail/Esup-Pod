@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import CutVideo
 
 
+@admin.register(CutVideo)
 class CutVideoAdmin(admin.ModelAdmin):
     def start_seconds(self, obj):
         return obj.start.strftime("%H:%M:%S")
@@ -13,6 +14,3 @@ class CutVideoAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request, obj=None):
         return False
-
-
-admin.site.register(CutVideo, CutVideoAdmin)

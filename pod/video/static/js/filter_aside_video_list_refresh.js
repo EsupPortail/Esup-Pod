@@ -16,24 +16,30 @@
 /* global setSelectedVideos */
 
 var infinite;
-var checkedInputs = [];
+var videoListRequestId = 0;
 
 let infiniteLoading = document.querySelector(".infinite-loading");
-let ownerBox = document.getElementById("ownerbox");
-let filterOwnerContainer = document.getElementById("collapseFilterOwner");
 
 function onBeforePageLoad() {
-  infiniteLoading.style.display = "block";
+  if (infiniteLoading) {
+    infiniteLoading.style.display = "block";
+  }
 }
 function onAfterPageLoad() {
   if (
+    typeof urlVideos !== "undefined" &&
     urlVideos === "/video/dashboard/" &&
+    typeof selectedVideos !== "undefined" &&
+    typeof videosListContainerId !== "undefined" &&
+    typeof setSelectedVideos === "function" &&
     selectedVideos[videosListContainerId] &&
     selectedVideos[videosListContainerId].length !== 0
   ) {
     setSelectedVideos(videosListContainerId);
   }
-  infiniteLoading.style.display = "none";
+  if (infiniteLoading) {
+    infiniteLoading.style.display = "none";
+  }
   let footer = document.querySelector("footer.static-pod");
   if (!footer) return;
   footer.classList.add("small");
@@ -46,12 +52,12 @@ function onAfterPageLoad() {
     document.scrollHeight,
     document.offsetHeight,
   );
-  document.querySelector("footer.static-pod .hidden-pod").style.display =
-    "none";
+  const hiddenFooter = document.querySelector("footer.static-pod .hidden-pod");
+  if (!hiddenFooter) return;
+  hiddenFooter.style.display = "none";
   window.addEventListener("scroll", function () {
-    if (window.innerHeight + window.scrollTop() === docHeight) {
-      document.querySelector("footer.static-pod .hidden-pod").style.display =
-        "block";
+    if (window.innerHeight + window.scrollY >= docHeight) {
+      hiddenFooter.style.display = "block";
       footer.setAttribute("style", "height:auto;");
       footer.classList.remove("fixed-bottom");
     }
@@ -63,7 +69,8 @@ function onAfterPageLoad() {
  * @param url
  * @param nextPage
  */
-function refreshInfiniteLoader(url, nextPage) {
+function refreshInfiniteLoader(url, nextPage, nextPageNumber = 2) {
+  if (typeof InfiniteLoader !== "function") return;
   if (infinite !== undefined) {
     infinite.removeLoader();
   }
@@ -72,7 +79,8 @@ function refreshInfiniteLoader(url, nextPage) {
     url,
     onBeforePageLoad,
     onAfterPageLoad,
-    (page = nextPage),
+    nextPage,
+    nextPageNumber,
   );
 }
 
@@ -87,19 +95,81 @@ function replaceCountVideos(newCount) {
     newCount,
   );
   videoFoundStr = interpolate(videoFoundStr, { count: newCount }, true);
-  document.getElementById("video_count").textContent = videoFoundStr;
+  const videoCount = document.getElementById("video_count");
+  if (videoCount) {
+    videoCount.textContent = videoFoundStr;
+  }
+  if (typeof resetDashboardElements === "function") {
+    resetDashboardElements();
+  }
 }
 
 /**
+ * Add click event listener to manage sort direction
+ */
+const sortDirectionLabel = document.getElementById("sort_direction_label");
+
+if (sortDirectionLabel) {
+  sortDirectionLabel.addEventListener("click", function (e) {
+    e.preventDefault();
+    toggleSortDirection();
+    refreshVideosSearch();
+  });
+}
+
+/**
+ * Handles the search form submission.
+ * Prevents default behavior, gets the title input,
+ */
+function handleSearch(e) {
+  e.preventDefault();
+  refreshVideosSearch();
+}
+
+document.getElementById("searchForm")?.addEventListener("submit", handleSearch);
+
+document
+  .getElementById("titleSearchBtn")
+  ?.addEventListener("click", handleSearch);
+
+document.getElementById("titlebox")?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") handleSearch(e);
+});
+
+/**
+ * Retrieves the current value entered in the video title search input field.
+ *
+ * @returns {string} The current value of the search input with ID "titlebox".
+ */
+function getSearchValue() {
+  const input = document.getElementById("titleSearchBox");
+  if (!input) return "";
+  const value = input.value.trim();
+  return value;
+}
+
+/**
+ * Show or hide the video list loader when the page provides one.
+ * @param {boolean} show - Whether to display the loader.
+ */
+function toggleVideosListLoader(show) {
+  if (typeof videosListLoader !== "undefined" && videosListLoader) {
+    showLoader(videosListLoader, show);
+  }
+}
+
+/*
  * Async request to refresh view with filtered and sorted video list
  */
 function refreshVideosSearch() {
+  const requestId = ++videoListRequestId;
+  if (infinite) infinite.removeLoader();
   // Erase videos list and show loader
   document.getElementById("videos_list").textContent = "";
-  showLoader(videosListLoader, true);
+  toggleVideosListLoader(true);
   let url = getUrlForRefresh();
   // Async GET request wth parameters by fetch method
-  fetch(url, {
+  return fetch(url, {
     method: "GET",
     headers: {
       "X-CSRFToken": "{{ csrf_token }}",
@@ -108,25 +178,38 @@ function refreshVideosSearch() {
     dataType: "html",
     cache: "no-store",
   })
-    .then((response) => response.text())
+    .then((response) => {
+      if (!response.ok) throw new Error("Video list request failed");
+      return response.text();
+    })
     .then((data) => {
+      if (requestId !== videoListRequestId) return;
       // parse data into html and replace videos list
       let parser = new DOMParser();
       let html = parser.parseFromString(data, "text/html").body;
-      document.getElementById("videos_list").outerHTML = html.innerHTML;
+      const newList = html.querySelector("#videos_list");
+      if (!newList) throw new Error("Missing video list");
+      document.getElementById("videos_list").replaceWith(newList);
+      const nextLink = html.querySelector("a.infinite-more-link");
+      document.querySelector("a.infinite-more-link")?.remove();
+      if (nextLink) newList.after(nextLink);
       replaceCountVideos(
         document.getElementById("videos_list").dataset.countvideos,
       );
       nextPage =
         document.getElementById("videos_list").dataset.nextpage === "true";
       window.history.pushState({}, "", url);
-      if (nextPage) {
-        pageNext = document.querySelector("a.infinite-more-link").dataset
-          .nextpagenumber;
-        refreshInfiniteLoader(url, pageNext);
-      }
+      const pageNext = Number(
+        document.querySelector("a.infinite-more-link")?.dataset
+          .nextpagenumber || 2,
+      );
+      refreshInfiniteLoader(url, nextPage, pageNext);
       if (
+        typeof urlVideos !== "undefined" &&
         urlVideos === "/video/dashboard/" &&
+        typeof selectedVideos !== "undefined" &&
+        typeof videosListContainerId !== "undefined" &&
+        typeof setSelectedVideos === "function" &&
         selectedVideos[videosListContainerId] &&
         selectedVideos[videosListContainerId].length !== 0
       ) {
@@ -134,187 +217,126 @@ function refreshVideosSearch() {
       }
     })
     .catch(() => {
+      if (requestId !== videoListRequestId) return;
       document.getElementById("videos_list").textContent = gettext(
         "An Error occurred while processing.",
       );
     })
     .finally(() => {
+      if (requestId !== videoListRequestId) return;
       // Finally re-enable inputs and dismiss loader
       disabledInputs(false);
-      showLoader(videosListLoader, false);
+      toggleVideosListLoader(false);
     });
 }
 
-/**
- * Add click event listener to manage sort direction
- */
-document
-  .getElementById("sort_direction_label")
-  .addEventListener("click", function (e) {
-    e.preventDefault();
-    toggleSortDirection();
-    refreshVideosSearch();
+// Function to get the URL to refresh the page with applied filters
+function normalizeMultiValues(urlParams, multiKeys) {
+  multiKeys.forEach((key) => {
+    if (urlParams.has(key)) {
+      const values = urlParams
+        .get(key)
+        .split(",")
+        .filter((v) => v);
+      urlParams.delete(key);
+      values.forEach((val) => urlParams.append(key, val));
+    }
   });
+  return urlParams;
+}
 
 /**
  * Get built url with filter and sort and page parameters
  * @returns {string}
  */
 function getUrlForRefresh() {
-  let newUrl = window.location.pathname;
-  // Add sort-related parameters
-  newUrl += "?sort=" + document.getElementById("sort").value + "&";
-  var sortDirectionAsc = document.getElementById("sort_direction").checked;
+  const baseUrl = window.location.pathname;
+  let urlParams = new URLSearchParams(window.location.search);
 
-  if (sortDirectionAsc) {
-    newUrl +=
-      "sort_direction=" + document.getElementById("sort_direction").value + "&";
-  }
-  // Add dashboard display mode param
-  if (urlVideos === "/video/dashboard/" && displayMode !== undefined) {
-    newUrl += "display_mode=" + displayMode + "&";
-  }
-  // Add categories checked if exists
-  if (document.querySelectorAll(".categories-list-item.active").length !== 0) {
-    Array.from(
-      document.querySelectorAll(".categories-list-item.active"),
-    ).forEach((cat) => {
-      newUrl += "categories=" + cat.firstElementChild["dataset"]["slug"] + "&";
-    });
-  }
-  // Add all other parameters (filters)
-  checkedInputs.forEach((input) => {
-    newUrl += input.name + "=" + input.value + "&";
-  });
-  // Add page parameter
-  newUrl += "page=";
-  return newUrl;
-}
+  // Normalize multi-value parameters
+  const safeFiltersConfig = Array.isArray(globalThis.filtersConfig)
+    ? globalThis.filtersConfig
+    : [];
+  const multiFilters = [
+    ...new Set(safeFiltersConfig.map((filter) => filter.param)),
+  ];
+  urlParams = normalizeMultiValues(urlParams, multiFilters);
 
-/**
- * Add change event listener on inputs (filters, sort column and sort direction) to refresh video list
- * @param el
- */
-function setListenerChangeInputs(el) {
-  el.addEventListener("change", (e) => {
-    checkedInputs = [];
-    disabledInputs(true);
-    document
-      .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
-      .forEach((e) => {
-        checkedInputs.push(e);
-      });
-    refreshVideosSearch();
-  });
-}
+  const sort = document.getElementById("sort")?.value;
+  if (sort) {
+    urlParams.set("sort", sort);
+  } else {
+    urlParams.delete("sort");
+  }
 
-/**
- * Add event listener to search user input to create checkboxes
- */
-if (ownerBox) {
-  ownerBox.addEventListener("input", () => {
-    if (ownerBox.value && ownerBox.value.length > 2) {
-      var searchTerm = ownerBox.value;
-      getSearchListUsers(searchTerm).then((users) => {
-        filterOwnerContainer.textContent = "";
-        users.forEach((user) => {
-          filterOwnerContainer.appendChild(createUserCheckBox(user));
-          setListenerChangeInputs(
-            document.getElementById("id" + user.username),
-          );
-        });
-      });
-    } else {
-      filterOwnerContainer.textContent = "";
+  const sortDirectionEl = document.getElementById("sort_direction");
+  if (sortDirectionEl?.checked) {
+    urlParams.set("sort_direction", sortDirectionEl.value);
+  } else {
+    urlParams.delete("sort_direction");
+  }
+
+  const newTitle = getSearchValue();
+  if (newTitle) {
+    urlParams.set("title", newTitle);
+  } else {
+    urlParams.delete("title");
+  }
+
+  if (typeof displayMode !== "undefined") {
+    urlParams.set("display_mode", displayMode);
+  }
+
+  urlParams.delete("page");
+
+  const query = urlParams.toString();
+  const fullUrl = `${baseUrl}?${query ? query + "&" : ""}page=`;
+
+  if (fullUrl.includes("undefined")) {
+    const debugParams = [];
+    for (const [key, value] of urlParams.entries()) {
+      if (value === "undefined") debugParams.push(key);
     }
-  });
+    console.warn(
+      "getUrlForRefresh(): Detected 'undefined' in URL. Affected parameters:",
+      debugParams,
+    );
+  }
+
+  return fullUrl;
 }
 
 /**
- * Create checkbox for user search
- * @param user
- * @returns {HTMLDivElement}
- */
-function createUserCheckBox(user) {
-  let div = document.createElement("div");
-  div.classList.add("form-check");
-  let checkbox = document.createElement("input");
-  checkbox.classList.add("form-check-input");
-  checkbox.type = "checkbox";
-  checkbox.name = "owner";
-  checkbox.value = user.username;
-  checkbox.id = "id" + user.username;
-  let label = document.createElement("label");
-  label.classList.add("form-check-label");
-  label.setAttribute("for", "id" + user.username);
-  if (user.first_name !== "" && user.last_name !== "") {
-    label.innerHTML = user.first_name + " " + user.last_name + " ";
-  }
-  label.innerHTML += "(" + user.username + ")";
-  div.appendChild(checkbox);
-  div.appendChild(label);
-  return div;
-}
-
-/**
- * Add click event listener to manage reset of filters
- */
-document.getElementById("resetFilters").addEventListener("click", function () {
-  checkedInputs = [];
-  document
-    .querySelectorAll(
-      "#filters input[type=checkbox]:checked[class=form-check-input]",
-    )
-    .forEach((checkBox) => {
-      checkBox.checked = false;
-    });
-  document.querySelectorAll("#filters .categories-list-item").forEach((c_p) => {
-    c_p.classList.remove("active");
-  });
-  if (filterOwnerContainer && ownerBox) {
-    filterOwnerContainer.textContent = "";
-    ownerBox.value = "";
-  }
-  window.history.pushState("", "", window.location.pathname);
-  refreshVideosSearch();
-});
-
-/**
- * Toggle (enable/disable) inputs to prevent user actions during loading
- * @param value
+ * Disables or enables checkboxes during loading.
+ * @param {boolean} value - `true` to disable, `false` to enable.
  */
 function disabledInputs(value) {
   document
-    .querySelectorAll("input[type=checkbox][class=form-check-input]")
-    .forEach((checkbox) => {
-      checkbox.disabled = value;
-    });
+    .querySelectorAll("input.form-check-input")
+    .forEach((cb) => (cb.disabled = value));
 }
 
-document
-  .querySelectorAll("#filters .form-check-input,#sort,#sort_direction")
-  .forEach((el) => {
-    setListenerChangeInputs(el);
-  });
-
-document
-  .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
-  .forEach((e) => {
-    checkedInputs.push(e);
-  });
-
 // First launch of the infinite scroll
-infinite = new InfiniteLoader(
-  getUrlForRefresh(),
-  onBeforePageLoad,
-  onAfterPageLoad,
-  nextPage,
-  (page = 2),
-);
+if (typeof InfiniteLoader === "function") {
+  infinite = new InfiniteLoader(
+    getUrlForRefresh(),
+    onBeforePageLoad,
+    onAfterPageLoad,
+    typeof nextPage !== "undefined" ? nextPage : true,
+    Number(
+      document.querySelector("a.infinite-more-link")?.dataset.nextpagenumber ||
+        2,
+    ),
+  );
+}
 
 // Check and clean url to avoid owner parameter if not authorized
 var urlParams = new URLSearchParams(window.location.search);
-if (urlParams.has("owner") && !ownerFilter) {
+if (
+  urlParams.has("owner") &&
+  typeof ownerFilter !== "undefined" &&
+  !ownerFilter
+) {
   urlParams.delete("owner");
   window.history.pushState(
     null,

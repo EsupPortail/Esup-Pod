@@ -1,17 +1,17 @@
-"""Esup-Pod tests for Video views."""
+"""Esup-Pod tests for Video views.
+*  run with 'python manage.py test pod.video.tests.test_views'
+"""
 
-from django.conf import settings
 from django.http import JsonResponse
-from django.test import Client
-from django.test import TestCase, override_settings, TransactionTestCase
+from django.test import Client, TestCase, override_settings, TransactionTestCase
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
 from pod.authentication.models import AccessGroup
 from django.contrib.sites.models import Site
 from django.contrib.messages import get_messages
-from django.core.files.temp import NamedTemporaryFile
-from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from pod.main.models import AdditionalChannelTab
 
@@ -22,20 +22,19 @@ from ..models import Channel
 from ..models import Discipline
 from ..models import AdvancedNotes
 from ..models import VideoAccessToken
-from pod.video_encode_transcript import encode
+from pod.video_encode_transcript.models import EncodingAudio
 from pod.video_encode_transcript.models import VideoRendition
 from pod.video_encode_transcript.models import EncodingVideo
+from .. import forms as video_forms
 from .. import views
 
 import re
 import json
 from http import HTTPStatus
 from importlib import reload
-import shutil
-import os
 import uuid
-
-AUDIO_TEST = getattr(settings, "AUDIO_TEST", "pod/main/static/video_test/pod.mp3")
+from datetime import timedelta
+from unittest.mock import patch
 
 
 class ChannelTestView(TestCase):
@@ -96,6 +95,62 @@ class ChannelTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         print("   --->  test_channel_with_theme_in_argument of ChannelTestView: OK!")
 
+    def test_channel_and_theme_video_order(self) -> None:
+        """Order channel and theme videos by position, then newest first."""
+        now = timezone.now()
+        self.v.order = 2
+        self.v.date_added = now
+        self.v.save()
+        earlier = Video.objects.create(
+            title="Earlier video",
+            owner=self.v.owner,
+            video="test.mp4",
+            is_draft=False,
+            type=self.v.type,
+            order=1,
+            date_added=now - timedelta(days=2),
+        )
+        later = Video.objects.create(
+            title="Later video",
+            owner=self.v.owner,
+            video="test.mp4",
+            is_draft=False,
+            type=self.v.type,
+            order=1,
+            date_added=now - timedelta(days=1),
+        )
+        rendition = VideoRendition.objects.get(resolution__contains="x360")
+        for video in (earlier, later):
+            video.channel.add(self.c)
+            EncodingVideo.objects.create(
+                name="360p",
+                video=video,
+                rendition=rendition,
+                encoding_format="video/mp4",
+                source_file="360p.mp4",
+            )
+
+        for target in (self.c, self.theme):
+            if target == self.theme:
+                child = Theme.objects.create(
+                    title="Child theme", channel=self.c, parentId=self.theme
+                )
+                for video in (self.v, earlier, later):
+                    video.theme.add(self.theme, child)
+            for organize_by_theme in (False, True):
+                for ajax in (False, True):
+                    with self.subTest(
+                        target=target, organize_by_theme=organize_by_theme, ajax=ajax
+                    ), patch.object(views, "ORGANIZE_BY_THEME", organize_by_theme):
+                        headers = {"x-requested-with": "XMLHttpRequest"} if ajax else {}
+                        response = self.client.get(
+                            target.get_absolute_url(), headers=headers
+                        )
+                        self.assertEqual(response.status_code, HTTPStatus.OK)
+                        self.assertEqual(
+                            list(response.context["videos"]), [later, earlier, self.v]
+                        )
+
     @override_settings(ORGANIZE_BY_THEME=True)
     def test_regroup_videos_by_theme(self) -> None:
         reload(views)
@@ -130,7 +185,7 @@ class ChannelTestView(TestCase):
         # Test ajax request, get videos and themes from channel view
         self.client = Client()
         response = self.client.get(
-            "/%s/" % self.c.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            "/%s/" % self.c.slug, headers={"x-requested-with": "XMLHttpRequest"}
         )
         expected["videos"] = [
             {
@@ -163,7 +218,7 @@ class ChannelTestView(TestCase):
         response = self.client.get(
             "/%s/" % self.c.slug,
             {"target": "themes"},
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         expected.pop("next_videos", None)
         expected.pop("has_more_videos", None)
@@ -177,7 +232,7 @@ class ChannelTestView(TestCase):
         response = self.client.get(
             "/%s/" % self.c.slug,
             {"target": "videos"},
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         expected["next_videos"] = None
         expected["has_more_videos"] = False
@@ -198,6 +253,59 @@ class ChannelTestView(TestCase):
             b'id="videos_list" data-nextpage="false" data-countvideos="">'
             in response.content
         )
+
+    @patch.object(views, "ORGANIZE_BY_THEME", True)
+    def test_regroup_shared_video_by_current_channel(self) -> None:
+        """A theme in one channel must not hide a video in another channel."""
+        self.v.channel.add(self.c2)
+        self.v.theme.add(self.theme)
+
+        for url, expected_videos in (
+            (self.c2.get_absolute_url(), [self.v]),
+            (self.c.get_absolute_url(), []),
+            (self.theme.get_absolute_url(), [self.v]),
+        ):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, HTTPStatus.OK)
+                self.assertEqual(response.context["videos"], expected_videos)
+                self.assertEqual(response.context["count_videos"], len(expected_videos))
+
+    @patch.object(views, "ORGANIZE_BY_THEME", True)
+    def test_regroup_shared_video_ajax(self) -> None:
+        """Both AJAX video responses keep videos themed in another channel."""
+        self.v.channel.add(self.c2)
+        self.v.theme.add(self.theme)
+
+        for params in ({}, {"target": "videos"}):
+            with self.subTest(params=params):
+                response = self.client.get(
+                    self.c2.get_absolute_url(),
+                    params,
+                    headers={"x-requested-with": "XMLHttpRequest"},
+                )
+                self.assertEqual(response.status_code, HTTPStatus.OK)
+                self.assertEqual(list(response.context["videos"]), [self.v])
+                self.assertEqual(response.context["videos"].paginator.count, 1)
+
+    @patch.object(views, "ORGANIZE_BY_THEME", True)
+    def test_regroup_shared_video_with_theme_in_both_channels(self) -> None:
+        """A local subtheme still excludes a shared video from the channel root."""
+        theme = Theme.objects.create(title="Theme2", channel=self.c2)
+        child = Theme.objects.create(title="ChildTheme2", channel=self.c2, parentId=theme)
+        self.v.channel.add(self.c2)
+        self.v.theme.add(self.theme, child)
+
+        for url, expected_videos in (
+            (self.c2.get_absolute_url(), []),
+            (theme.get_absolute_url(), []),
+            (child.get_absolute_url(), [self.v]),
+        ):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, HTTPStatus.OK)
+                self.assertEqual(response.context["videos"], expected_videos)
+                self.assertEqual(response.context["count_videos"], len(expected_videos))
 
 
 class MyChannelsTestView(TestCase):
@@ -290,7 +398,7 @@ class ChannelEditTestView(TestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
+        self.assertContains(response, _("The changes have been saved."))
         c = Channel.objects.get(title="ChannelTest1")
         self.assertEqual(c.description, "<p>bl</p>")
         print("   --->  test_channel_edit_post_request of ChannelEditTestView: OK!")
@@ -351,7 +459,7 @@ class ThemeEditTestView(TestCase):
             url,
             {"action": "new"},
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channel"], channel)
@@ -361,7 +469,7 @@ class ThemeEditTestView(TestCase):
             url,
             {"action": "modify", "id": 1},
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channel"], channel)
@@ -373,7 +481,7 @@ class ThemeEditTestView(TestCase):
             url,
             {"action": "delete", "id": 1},
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channel"], channel)
@@ -390,7 +498,7 @@ class ThemeEditTestView(TestCase):
                 "channel": Channel.objects.get(title="ChannelTest1").id,
             },
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channel"], channel)
@@ -408,7 +516,7 @@ class ThemeEditTestView(TestCase):
                 "channel": Channel.objects.get(title="ChannelTest1").id,
             },
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channel"], channel)
@@ -567,6 +675,17 @@ class VideosTestView(TestCase):
         response = self.client.get(url + "?type=type2&type=type1")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 4)
+        type1_id = Type.objects.get(slug="type1").id
+        type2_id = Type.objects.get(slug="type2").id
+        response = self.client.get(url + f"?type={type1_id}")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["videos"].paginator.count, 3)
+        response = self.client.get(url + f"?type={type2_id}&type={type1_id}")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["videos"].paginator.count, 4)
+        response = self.client.get(url + f"?type={type2_id},{type1_id}")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["videos"].paginator.count, 4)
         # discipline
         response = self.client.get(url + "?discipline=discipline1")
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -575,6 +694,19 @@ class VideosTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 2)
         response = self.client.get(url + "?discipline=discipline1&discipline=discipline2")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["videos"].paginator.count, 3)
+        discipline1_id = Discipline.objects.get(slug="discipline1").id
+        discipline2_id = Discipline.objects.get(slug="discipline2").id
+        response = self.client.get(url + f"?discipline={discipline1_id}")
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["videos"].paginator.count, 2)
+        response = self.client.get(
+            url + f"?discipline={discipline1_id}&discipline={discipline2_id}"
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["videos"].paginator.count, 3)
+        response = self.client.get(url + f"?discipline={discipline1_id},{discipline2_id}")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 3)
         # owner
@@ -600,7 +732,7 @@ class VideosTestView(TestCase):
         self.assertEqual(response.context["videos"].paginator.count, 2)
         response = self.client.get(url + "?tag=tag1&tag=tag2")
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context["videos"].paginator.count, 3)
+        self.assertEqual(response.context["videos"].paginator.count, 1)
         print(" --->  test_get_videos_view of VideosTestView: OK!")
 
 
@@ -810,6 +942,14 @@ class VideoEditTestView(TestCase):
         user3.owner.sites.add(Site.objects.get_current())
         user3.owner.save()
 
+        channel1 = Channel.objects.create(
+            title="ChannelTest1",
+            visible=True,
+        )
+        channel1.save()
+        channel1.owners.add(user)
+        channel1.users.add(user, user2)
+
         print(" --->  SetUp of VideoEditTestView: OK!")
 
     def test_video_edit_get_request(self) -> None:
@@ -850,115 +990,96 @@ class VideoEditTestView(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_video_edit_get_request of VideoEditTestView: OK!")
 
-    def test_video_edit_post_request(self) -> None:
+    @patch.object(video_forms.encode, video_forms.ENCODE_VIDEO)
+    def test_video_edit_post_request(self, mock_start_encode) -> None:
+
+        # Force user `pod` login
         self.client = Client()
-        video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        # modify one
+
+        video_data = {
+            "title": "VideoTest1",
+            "description": "<p>bl</p>\r\n",
+            "main_lang": "fr",
+            "cursus": "0",
+            "type": 1,
+            "visibility": "public",
+        }
+
+        # Modify some attrs (title, desc...) on Video1
+        video = Video.objects.get(title="Video1")
         url = reverse("video:video_edit", kwargs={"slug": video.slug})
         response = self.client.post(
             url,
-            {
-                "title": "VideoTest1",
-                "description": "<p>bl</p>\r\n",
-                "main_lang": "fr",
-                "cursus": "0",
-                "type": 1,
-                "visibility": "public",
-            },
+            video_data,
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
-
+        self.assertContains(response, _("The changes have been saved."))
+        # Check that the newly modified video has proper attrs
         v = Video.objects.get(title="VideoTest1")
         self.assertEqual(v.description, "<p>bl</p>")
+        mock_start_encode.assert_not_called()
+
+        # Replace video source file
         video_file = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
         )
         url = reverse("video:video_edit", kwargs={"slug": v.slug})
+        video_data["video"] = video_file
+        del video_data["description"]
         response = self.client.post(
             url,
-            {
-                "video": video_file,
-                "title": "VideoTest1",
-                "main_lang": "fr",
-                "cursus": "0",
-                "type": 1,
-                "visibility": "public",
-            },
+            video_data,
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
+        self.assertContains(response, _("The changes have been saved."))
         v = Video.objects.get(title="VideoTest1")
         p = re.compile(r"^videos/([\d\w]+)/file([_\d\w]*).mp4$")
         self.assertRegex(v.video.name, p)
-        # new one
-        video_file = SimpleUploadedFile(
-            "file.mp4", b"file_content", content_type="video/mp4"
-        )
-        url = reverse("video:video_edit", kwargs={})
-        self.client.post(
-            url,
-            {
-                "video": video_file,
-                "title": "VideoTest2",
-                "description": "<p>coucou</p>\r\n",
-                "main_lang": "fr",
-                "cursus": "0",
-                "type": 1,
-                "visibility": "public",
-            },
-        )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
-        v = Video.objects.get(title="VideoTest2")
-        # Additional owners
+        mock_start_encode.assert_called_once_with(v.id)
+
+        # Force user `pod2` login
         self.client = Client()
-        video = Video.objects.get(title="VideoWithAdditionalOwners")
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
-        # modify one
-        url = reverse("video:video_edit", kwargs={"slug": video.slug})
-        response = self.client.post(
-            url,
-            {
-                "title": "VideoTest3",
-                "description": "<p>bl</p>\r\n",
-                "main_lang": "fr",
-                "cursus": "0",
-                "type": 1,
-                "additional_owners": [self.user.pk],
-                "visibility": "public",
-            },
-            follow=True,
-        )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
 
-        v = Video.objects.get(title="VideoTest3")
-        self.assertEqual(v.description, "<p>bl</p>")
-        video_file = SimpleUploadedFile(
-            "file.mp4", b"file_content", content_type="video/mp4"
-        )
-        url = reverse("video:video_edit", kwargs={"slug": v.slug})
+        # Check video additional owners
+        video_data["title"] = "VideoWithAdditionalOwners"
+        video = Video.objects.get(title=video_data["title"])
+        url = reverse("video:video_edit", kwargs={"slug": video.slug})
+        video_data["description"] = "<p>bl</p>\r\n"
+        video_data["additional_owners"] = [self.user.pk]
+        del video_data["video"]
         response = self.client.post(
             url,
-            {
-                "video": video_file,
-                "title": "VideoTest3",
-                "main_lang": "fr",
-                "cursus": "0",
-                "type": 1,
-                "additional_owners": [self.user.pk],
-                "visibility": "public",
-            },
+            video_data,
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The changes have been saved." in response.content)
+        self.assertContains(response, _("The changes have been saved."))
+        # Check video has been modified
+        v = Video.objects.get(title=video_data["title"])
+        self.assertEqual(v.description, "<p>bl</p>")
+
+        # Modify this video again.
+        url = reverse("video:video_edit", kwargs={"slug": v.slug})
+        video_data["video"] = video_file
+        video_data["channel"] = [1]
+        del video_data["description"]
+        response = self.client.post(
+            url,
+            video_data,
+            follow=True,
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertContains(response, _("The changes have been saved."))
+
+        # Check changes have been made.
+        v = Video.objects.get(title=video_data["title"])
+        self.assertEqual(v.channel.all().count(), 1)
         print("   --->  test_video_edit_post_request of VideoEditTestView: OK!")
 
 
@@ -1125,7 +1246,7 @@ class video_notesTestView(TestCase):
             },
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertTrue(b"The note has been saved." in response.content)
+        self.assertContains(response, _("The note has been saved."))
         note = AdvancedNotes.objects.get(
             user=User.objects.get(id=self.user.id),
             video=video,
@@ -1285,7 +1406,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         expected = {
             "success": False,
-            "detail": "Method not allowed: Please use post method",
+            "detail": _("Method not allowed: Please use post method"),
         }
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
@@ -1301,7 +1422,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
             ),
             content_type="application/json",
         )
-        expected = {"success": True, "detail": "One or more videos not updated"}
+        expected = {"success": True, "detail": _("One or more videos not updated")}
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
@@ -1312,7 +1433,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
             content_type="application/json",
         )
 
-        expected = {"success": True, "detail": "Update successfully"}
+        expected = {"success": True, "detail": _("Update successfully")}
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
         self.assertEqual(Video.objects.filter(owner=self.simple_user).count(), 2)
@@ -1404,6 +1525,20 @@ class VideoTestFiltersViews(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
+    def test_filter_owners_does_not_expose_exception_details(self) -> None:
+        """Internal exception messages must not be sent to API clients."""
+        self.client.force_login(self.admin)
+        url = reverse("video:filter_owners")
+
+        with patch(
+            "pod.video.views.auth_get_owners",
+            side_effect=RuntimeError("private database details"),
+        ):
+            response = self.client.get(url)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertNotIn("private database details", response.json()["detail"])
+
     def test_filter_videos(self) -> None:
         url = reverse("video:filter_videos", kwargs={"user_id": self.admin.id})
 
@@ -1449,6 +1584,87 @@ class VideoTestFiltersViews(TestCase):
         }
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+    def test_filter_videos_does_not_expose_exception_details(self) -> None:
+        """Internal exception messages must not be sent to API clients."""
+        self.client.force_login(self.admin)
+        url = reverse("video:filter_videos", kwargs={"user_id": self.admin.id})
+
+        with patch(
+            "pod.video.views.video_get_videos",
+            side_effect=RuntimeError("private storage details"),
+        ):
+            response = self.client.get(url)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertNotIn("private storage details", response.json()["detail"])
+
+    def test_available_filters_endpoint(self):
+        """API available_filters should return the expected structure."""
+        Site.objects.get_or_create(domain="example.com", name="example.com")
+        url = reverse("video:dashboard-filters")
+
+        # Authenticate the test client using self.admin
+        self.client.force_login(self.admin)
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        payload = json.loads(response.content.decode("utf-8"))
+        expected_keys = {
+            "type",
+            "discipline",
+            "categories",
+            "tag",
+            "videos_count",
+            "videos_duration",
+        }
+        self.assertTrue(expected_keys.issubset(set(payload.keys())))
+        self.assertIsInstance(payload.get("type"), list)
+        self.assertIsInstance(payload.get("discipline"), list)
+        self.assertIsInstance(payload.get("tag"), list)
+        self.assertIsInstance(payload.get("videos_count"), int)
+        self.assertIsInstance(payload.get("videos_duration"), str)
+        print(" --->  test_available_filters_endpoint: OK!")
+
+    def test_available_filter_by_type_various_keys(self):
+        """available_filter_by_type should handle multiple filter_name and errors correctly."""
+        Site.objects.get_or_create(domain="example.com", name="example.com")
+        url_base = "video:dashboard-filter-by-name"
+        self.user = User.objects.create_user(username="testuser", password="password")
+        self.client.force_login(self.user)
+        valid_filters = ["type", "discipline", "categories", "tag", "owner"]
+
+        for filter_name in valid_filters:
+            with self.subTest(filter=filter_name):
+                response = self.client.get(reverse(url_base, args=[filter_name]))
+                self.assertEqual(
+                    response.status_code,
+                    HTTPStatus.OK,
+                    f"Failed for filter: {filter_name}",
+                )
+                try:
+                    payload = json.loads(response.content.decode("utf-8"))
+                except json.JSONDecodeError:
+                    self.fail(f"Invalid JSON response for filter: {filter_name}")
+
+                self.assertIn(
+                    filter_name,
+                    payload,
+                    f"Key '{filter_name}' not in response for filter: {filter_name}",
+                )
+                self.assertIsInstance(
+                    payload[filter_name],
+                    list,
+                    f"Value for '{filter_name}' is not a list for filter: {filter_name}",
+                )
+
+        response = self.client.get(reverse(url_base, args=["i_dont_exist"]))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        payload = json.loads(response.content.decode("utf-8"))
+        self.assertIn("i_dont_exist", payload)
+        self.assertIsInstance(payload["i_dont_exist"], list)
+        self.assertEqual(payload["i_dont_exist"], [])
+        print(" --->  test_available_filter_by_type_various_keys: OK!")
 
     def tearDown(self) -> None:
         super(VideoTestFiltersViews, self).tearDown()
@@ -1607,6 +1823,7 @@ class VideoTranscriptTestView(TestCase):
 
     @override_settings(
         USE_TRANSCRIPTION=True,
+        TRANSCRIPT_VIDEO="start_transcript",
         TRANSCRIPTION_TYPE="VOSK",
         TRANSCRIPTION_MODEL_PARAM={
             # les modèles Vosk
@@ -1620,12 +1837,17 @@ class VideoTranscriptTestView(TestCase):
             }
         },
     )
-    def test_video_transcript_get_request_transcription(self) -> None:
+    @patch("pod.video_encode_transcript.transcript.start_transcript")
+    def test_video_transcript_get_request_transcription(
+        self, mock_start_transcript
+    ) -> None:
         """Check response for get request with use transcription."""
+        # Test dispatch without a worker accessing SQLite's uncommitted test data.
+        self.addCleanup(reload, views)
         reload(views)
 
         def inner_get_transcription_choices() -> list:
-            return [("fr", "French"), ("en", "english")]
+            return [("fr", "French"), ("en", "English")]
 
         views.get_transcription_choices = inner_get_transcription_choices
         video = Video.objects.get(title="Video1")
@@ -1659,14 +1881,16 @@ class VideoTranscriptTestView(TestCase):
             owner=self.user,
             video="test.mp3",
             type=Type.objects.get(id=1),
+            encoding_in_progress=False,
         )
-        tempfile = NamedTemporaryFile(delete=True)
-        audio.video.save("test.mp3", tempfile)
-        dest = os.path.join(settings.MEDIA_ROOT, audio.video.name)
-        shutil.copyfile(AUDIO_TEST, dest)
-        print("\n ---> Start Encoding audio")
-        encode.encode_video(audio.id)
-        print("\n ---> End Encoding audio")
+        # The view needs encoded audio records, not an actual FFmpeg run.
+        for extension, encoding_format in (("m4a", "video/mp4"), ("mp3", "audio/mp3")):
+            EncodingAudio.objects.create(
+                video=audio,
+                name="audio",
+                encoding_format=encoding_format,
+                source_file="audio.%s" % extension,
+            )
         url = reverse("video:video_transcript", kwargs={"slug": audio.slug})
         response = self.client.get(url)
         messages = list(get_messages(response.wsgi_request))
@@ -1675,6 +1899,7 @@ class VideoTranscriptTestView(TestCase):
             str_messages.append(str(message))
         check_message = "An available transcription language must be specified."
         self.assertTrue(check_message in str_messages)
+        mock_start_transcript.assert_not_called()
         url = reverse("video:video_transcript", kwargs={"slug": audio.slug})
         url += "?lang=fr"
         response = self.client.get(url)
@@ -1693,6 +1918,7 @@ class VideoTranscriptTestView(TestCase):
         )
         audio.refresh_from_db()
         self.assertEqual(audio.transcript, "fr")
+        mock_start_transcript.assert_called_once_with(audio.id)
         print(" ---> test_video_transcript_get_request_transcription: OK!")
 
 

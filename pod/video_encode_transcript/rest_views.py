@@ -1,27 +1,47 @@
-from rest_framework import serializers, viewsets
-from django.conf import settings
-from .models import EncodingVideo, EncodingAudio, VideoRendition, PlaylistVideo
-from pod.video.models import Video
-from pod.recorder.models import Recording
-from pod.video.rest_views import VideoSerializer
+import json
+import logging
+import os
 
-from rest_framework.decorators import action
-from rest_framework.decorators import api_view
+import webvtt
+from django.conf import settings
+from django.core.exceptions import SuspiciousFileOperation, SuspiciousOperation
+from django.shortcuts import get_object_or_404
+from django.utils._os import safe_join
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import serializers, viewsets
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
-from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
-from django.core.exceptions import SuspiciousOperation
+from pod.recorder.models import Recording
+from pod.video.models import Video
+from pod.video.rest_views import VideoSerializer
 
-import json
-import os
-import webvtt
+from .models import EncodingAudio, EncodingVideo, PlaylistVideo, VideoRendition
 
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
     from pod.video_encode_transcript.transcript import start_transcript
 
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
+DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "")
+
+DEBUG = getattr(settings, "DEBUG", True)
+logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
+
+
+def _safe_temp_media_path(filename: str) -> str:
+    """Resolve a temporary media file path and keep it under MEDIA_ROOT/temp."""
+    media_temp_dir = os.path.realpath(os.path.join(MEDIA_ROOT, "temp"))
+    try:
+        filepath = os.path.realpath(safe_join(media_temp_dir, filename))
+        if os.path.commonpath([filepath, media_temp_dir]) != media_temp_dir:
+            raise SuspiciousOperation(_("Unsafe temporary path."))
+    except (SuspiciousFileOperation, ValueError) as exc:
+        raise SuspiciousOperation(_("Unsafe temporary path.")) from exc
+    return filepath
 
 
 class VideoRenditionSerializer(serializers.HyperlinkedModelSerializer):
@@ -179,23 +199,24 @@ def launch_transcript_view(request):
 @api_view(["POST"])
 def store_remote_encoded_video(request):
     """View API for storing remote encoded videos."""
+    from .encode import end_of_encoding, store_encoding_info
     from .Encoding_video_model import Encoding_video_model
-    from .encode import store_encoding_info, end_of_encoding
 
     video_id = request.GET.get("id", 0)
+    logger.info("Start importing encoding data for video: %s" % video_id)
     video = get_object_or_404(Video, id=video_id)
     # start_store_remote_encoding_video(video_id)
     # check if video is encoding!!!
     data = json.loads(request.body.decode("utf-8"))
     if video.encoding_in_progress is False:
-        raise SuspiciousOperation("video not encoding in progress")
+        raise SuspiciousOperation(_("Video not being encoded."))
     if str(video_id) != str(data["video_id"]):
         raise SuspiciousOperation(
-            "different video id: %s - %s" % (video_id, data["video_id"])
+            _("Different video id: %(expected)s - %(received)s")
+            % {"expected": video_id, "received": data["video_id"]}
         )
-    print("Start the importing of the video: %s" % video_id)
     encoding_video = Encoding_video_model(
-        video_id, data["video_path"], data["cut_start"], data["cut_end"]
+        video_id, video.video.path, data["cut_start"], data["cut_end"]
     )
     encoding_video.start = data["start"]
     encoding_video.stop = data["stop"]
@@ -212,8 +233,29 @@ def store_remote_encoded_video_studio(request):
     recording_id = request.GET.get("recording_id", 0)
     get_object_or_404(Recording, id=recording_id)
     data = json.loads(request.body.decode("utf-8"))
-    store_encoding_studio_info(recording_id, data["video_output"], data["msg"])
+    safe_video_output = _get_safe_video_output(data)
+    store_encoding_studio_info(recording_id, safe_video_output, data["msg"])
     return Response("ok")
+
+
+def _get_safe_video_output(data):
+    """Return a safe absolute video output path within allowed base dirs."""
+    raw_video_output = str(data.get("video_output", ""))
+    if not raw_video_output:
+        raise SuspiciousOperation(_("Missing video output path."))
+    normalized_video_output = os.path.normpath(raw_video_output)
+    if os.path.isabs(normalized_video_output) or normalized_video_output.startswith(".."):
+        raise SuspiciousFileOperation(_("Invalid video output path."))
+    base_output_dir = DEFAULT_RECORDER_PATH or MEDIA_ROOT
+    if not base_output_dir:
+        raise SuspiciousOperation(_("No safe base directory configured."))
+    try:
+        safe_video_output = safe_join(base_output_dir, normalized_video_output)
+    except SuspiciousFileOperation:
+        raise SuspiciousFileOperation(_("Invalid video output path."))
+    if not safe_video_output:
+        raise SuspiciousFileOperation(_("Invalid video output path."))
+    return safe_video_output
 
 
 @csrf_exempt
@@ -228,12 +270,15 @@ def store_remote_transcripted_video(request):
     data = json.loads(request.body.decode("utf-8"))
     if str(video_id) != str(data["video_id"]):
         raise SuspiciousOperation(
-            "different video id: %s - %s" % (video_id, data["video_id"])
+            _("Different video id: %(expected)s - %(received)s")
+            % {"expected": video_id, "received": data["video_id"]}
         )
-    print("Start the import of transcription of the video: %s" % video_id)
+    logger.info("Start importing transcription data for video: %s" % video_id)
     filename = os.path.basename(data["temp_vtt_file"])
-    media_temp_dir = os.path.join(MEDIA_ROOT, "temp")
-    filepath = os.path.join(media_temp_dir, filename)
+    filepath = _safe_temp_media_path(filename)
+    media_temp_dir = os.path.realpath(os.path.join(MEDIA_ROOT, "temp"))
+    if os.path.commonpath([filepath, media_temp_dir]) != media_temp_dir:
+        raise SuspiciousOperation(_("Unsafe temporary path."))
     new_vtt = webvtt.read(filepath)
     save_vtt_and_notify(video, data["msg"], new_vtt)
     os.remove(filepath)

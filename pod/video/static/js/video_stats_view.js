@@ -21,6 +21,9 @@ function linkedCell(cellValue, options, rowObject) {
 }
 
 $(() => {
+  if (!document.getElementById("grid")) {
+    return;
+  }
   let data_url = window.location.href;
   $("#grid").jqGrid({
     url: data_url,
@@ -114,11 +117,16 @@ $(() => {
       try {
         // Set min date
         let min_date = data.filter((obj) => {
-          return obj.min_date != undefined;
+          return obj.min_date !== undefined;
         });
         // remove date_min in data
         data.pop();
-        document.getElementById("jsperiode").min = min_date[0].min_date;
+        const dateInput = document.getElementById("jsperiode");
+        if (min_date[0].min_date) {
+          dateInput.min = min_date[0].min_date;
+        } else {
+          dateInput.removeAttribute("min");
+        }
       } catch (uselesserr) {
         /* empty */
       }

@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
@@ -12,8 +12,7 @@ from django.db.models.signals import post_save
 from django.db.models import Max
 import os
 import mimetypes
-from ckeditor.fields import RichTextField
-
+from tinymce.models import HTMLField
 
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
@@ -91,6 +90,10 @@ class CustomFileModel(models.Model):
         blank=True,
         max_length=255,
     )
+
+    @property
+    def file_ext(self) -> str:
+        return self.file.path.rpartition(".")[-1].lower()
 
     @property
     def file_type(self) -> str:
@@ -289,8 +292,7 @@ class Block(models.Model):
         help_text=_("Select the playlist you want to link with."),
     )
 
-    html = RichTextField(
-        config_name="complete",
+    html = HTMLField(
         verbose_name=_("HTML"),
         null=True,
         blank=True,

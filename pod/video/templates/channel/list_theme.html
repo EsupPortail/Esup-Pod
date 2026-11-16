@@ -40,7 +40,8 @@
       <tfoot>
         <tr>
           <td colspan="4" class="text-center">
-              <form class="get_form_theme d-inline-block" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST">
+              <form class="get_form_theme d-inline-block" method="POST"
+                    action="{% url 'channels:theme_edit' slug=channel.slug %}">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="new">
                 <input type="hidden" name="id" value="{{theme.id}}">

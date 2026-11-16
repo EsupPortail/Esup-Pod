@@ -45,10 +45,16 @@ function manageCategoriesLinks() {
  * Manage search category input in filter aside
  */
 let searchCategoriesInput = document.getElementById("search-categories-input");
+const clearCategoryFilterButton = document.getElementById(
+  "clear-category-filter-btn",
+);
 if (searchCategoriesInput) {
   searchCategoriesInput.addEventListener("input", () => {
     manageSearchCategories(searchCategoriesInput.value.trim());
   });
+}
+if (clearCategoryFilterButton) {
+  clearCategoryFilterButton.addEventListener("click", clearCategoryFilter);
 }
 
 /**
@@ -80,8 +86,105 @@ function manageSearchCategories(search) {
  * @param {HTMLElement} el - Category link clicked
  */
 function toggleCategoryLink(el) {
-  el.parentNode.classList.toggle("active");
+  const categorySlug = el.dataset.slug;
+  // Keep category filter as a single selection from the aside list.
+  updateCategoriesQueryParam([categorySlug]);
+  syncCategoryLinksWithUrl();
+  dispatchAsideCategoryFilterUpdated([
+    {
+      value: categorySlug,
+      label: el.textContent.trim(),
+    },
+  ]);
   refreshVideosSearch();
+}
+
+/**
+ * Clear selected category filter.
+ */
+function clearCategoryFilter() {
+  updateCategoriesQueryParam([]);
+  syncCategoryLinksWithUrl();
+  dispatchAsideCategoryFilterUpdated([]);
+  refreshVideosSearch();
+}
+
+/**
+ * Notify dashboard filter manager that category selection changed from aside.
+ *
+ * @param {Array<{value: string, label: string}>} categories - Selected categories.
+ */
+function dispatchAsideCategoryFilterUpdated(categories) {
+  document.dispatchEvent(
+    new CustomEvent("pod:aside-category-filter-updated", {
+      detail: { categories },
+    }),
+  );
+}
+
+/**
+ * Return selected category slugs from current URL query.
+ * Supports repeated params and comma-separated values.
+ *
+ * @returns {Array<string>} - selected category slugs
+ */
+function getSelectedCategoriesFromUrl() {
+  const searchParams = new URLSearchParams(window.location.search);
+  return searchParams
+    .getAll("categories")
+    .flatMap((value) => value.split(","))
+    .map((value) => value.trim())
+    .filter((value) => value !== "");
+}
+
+/**
+ * Update categories query parameter in browser URL.
+ *
+ * @param {Array<string>} selectedCategories - categories to persist in URL
+ */
+function updateCategoriesQueryParam(selectedCategories) {
+  const currentParams = new URLSearchParams(window.location.search);
+  const orderedParams = new URLSearchParams();
+
+  selectedCategories.forEach((slug) => {
+    orderedParams.append("categories", slug);
+  });
+
+  currentParams.forEach((value, key) => {
+    if (key === "categories" || key === "page") return;
+    orderedParams.append(key, value);
+  });
+
+  const queryString = orderedParams.toString();
+  const newUrl = queryString
+    ? `${window.location.pathname}?${queryString}`
+    : window.location.pathname;
+  window.history.replaceState({}, "", newUrl);
+}
+
+/**
+ * Sync active category links in aside from current URL.
+ */
+function syncCategoryLinksWithUrl() {
+  const selectedCategories = new Set(getSelectedCategoriesFromUrl());
+
+  document.querySelectorAll(".categories-list-item").forEach((item) => {
+    const button = item.querySelector(".cat-title");
+    if (!button) return;
+
+    if (selectedCategories.has(button.dataset.slug)) {
+      item.classList.add("active");
+    } else {
+      item.classList.remove("active");
+    }
+  });
+
+  if (clearCategoryFilterButton) {
+    clearCategoryFilterButton.classList.toggle(
+      "d-none",
+      selectedCategories.size === 0,
+    );
+  }
 }
 
 /**
@@ -186,7 +289,19 @@ function post_category_modal(url) {
       "videos",
       JSON.stringify(selectedVideos[catVideosListContainerId]),
     );
+  } else {
+    const categoryDeleted = url.includes("/video/category/delete/");
+    if (!categoryDeleted) {
+      showalert(
+        gettext("At least one video must be associated with this category."),
+        "alert-error",
+        "form-alert-div-bottom-right",
+      );
+      // Prevents side effects when no videos selected
+      location.reload();
+    }
   }
+
   if (document.getElementById("cat-title")) {
     formData.append(
       "title",
@@ -208,12 +323,19 @@ function post_category_modal(url) {
       data = JSON.parse(data);
       bootstrap.Modal.getInstance(categoryModal).toggle();
       let message = data["message"];
+      let success = data["success"];
       let videos = data["all_categories_videos"];
-      showalert(message, "alert-success", "form-alert-div-bottom-right");
+      if (success) {
+        showalert(message, "alert-success", "form-alert-div-bottom-right");
+      } else {
+        showalert(message, "alert-error", "form-alert-div-bottom-right");
+      }
       if (videos !== undefined) {
         all_categories_videos = JSON.parse(videos);
       }
       refreshCategoriesLinks();
+      // Reinit videos list
+      selectedVideos[catVideosListContainerId] = [];
     })
     .catch(() => {
       showalert(
@@ -221,6 +343,8 @@ function post_category_modal(url) {
         "alert-danger",
         "form-alert-div-bottom-right",
       );
+      // Reinit videos list
+      selectedVideos[catVideosListContainerId] = [];
     });
 }
 
@@ -274,6 +398,7 @@ function refreshCategoriesLinks() {
       let html = parser.parseFromString(data, "text/html").body;
       categoriesListContainer.innerHTML = html.innerHTML;
       manageCategoriesLinks();
+      syncCategoryLinksWithUrl();
     })
     .catch(() => {
       showalert(
@@ -284,5 +409,10 @@ function refreshCategoriesLinks() {
     });
 }
 
+document.addEventListener("pod:dashboard-filters-updated", () => {
+  syncCategoryLinksWithUrl();
+});
+
 // Add event listeners on categories list buttons for the first time
 manageCategoriesLinks();
+syncCategoryLinksWithUrl();

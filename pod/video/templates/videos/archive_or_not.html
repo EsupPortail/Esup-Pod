@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block page_content %}
+
+  <h1 class="h2">{% trans "Are you sure you want to archive this video?" %}</h1>
+  <p class="form-text">
+    {% trans "It will then be unpublished and will no longer be accessible to the public."%}
+  </p>
+  <ul>
+    <li>
+      {% trans "Link to the video:" %}
+      <a href="{% url 'video:video' slug=video.slug %}">{{ video.title }}</a>
+    </li><li>
+      {% trans "Date to delete:" %}
+      <strong>{{ video.date_delete }}</strong>
+    </li>
+  </ul>
+  <div class="text-center mt-1">
+    <a href="/video/go/archive/{{ video.slug }}/" role="button" class="btn btn-warning">
+      {% trans "Archive" %}
+    </a>
+    <a href="/video/respite/{{ video.slug }}/" class="btn btn-secondary"
+       data-bs-toggle="tooltip" data-bs-placement="bottom"
+       data-bs-original-title="{% trans 'Back to choices' %}">
+      {% trans "Back to choices" %}
+    </a>
+  </div>
+
+{% endblock page_content %}

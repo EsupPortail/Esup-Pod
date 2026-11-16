@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import Group
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.sites.models import Site
 
 __FILEPICKER__ = False
@@ -41,7 +41,7 @@ class FrontOwnerForm(OwnerAdminForm):
 
 
 class AdminOwnerForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(AdminOwnerForm, self).__init__(*args, **kwargs)
 
     class Meta(object):

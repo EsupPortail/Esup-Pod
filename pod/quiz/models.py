@@ -4,7 +4,7 @@ import uuid
 from json import JSONDecodeError, loads
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from pod.video.models import Video
 
@@ -69,7 +69,7 @@ class Quiz(models.Model):
         Retrieve questions associated with the quiz.
 
         Returns:
-            List[Question]: List of questions associated with the quiz.
+            list[Question]: List of questions associated with the quiz.
         """
         from pod.quiz.utils import get_quiz_questions
 
@@ -229,7 +229,7 @@ class SingleChoiceQuestion(Question):
         verbose_name=_("Choices"),
         default=dict,
         help_text=_(
-            "Choices must be like this: {'choice 1': true, 'choice 2': false, ...} | true for the right choice, false for the wrong choices."
+            'Choices must be like this: {"choice 1": true, "choice 2": false, …} | true for the right choice, false for the wrong choices.'
         ),
     )
 
@@ -322,7 +322,7 @@ class MultipleChoiceQuestion(Question):
         verbose_name=_("Choices"),
         default=dict,
         help_text=_(
-            "Choices must be like this: {'choice 1': true, 'choice 2': true, 'choice 3': false, ...} | true for the right choice, false for the wrong choices."
+            'Choices must be like this: {"choice 1": true, "choice 2": true, "choice 3": false, …} | true for the right choice, false for the wrong choices.'
         ),
     )
 

@@ -1,25 +1,23 @@
 """Esup-Pod REST views."""
 
-from rest_framework import serializers, viewsets, renderers
-from rest_framework.views import APIView
-from rest_framework.response import Response
+import json
 
-# from rest_framework import authentication, permissions
-from rest_framework.decorators import action
-
+from django.db.models import Q
 from django.template.loader import render_to_string
-
-from .models import Channel, Theme
-from .models import Type, Discipline, Video
-from .models import ViewCount
-from .context_processors import get_available_videos
+from rest_framework import renderers, serializers, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from tagulous.contrib.drf import TagRelatedManagerField
 
 from pod.main.utils import remove_trailing_spaces
+
+from .context_processors import get_available_videos
+from .models import Channel, Discipline, Theme, Type, Video, ViewCount
 
 # commented for v3
 # from .remote_encode import start_store_remote_encoding_video
 
-import json
 
 # Serializers define the API representation.
 
@@ -70,6 +68,8 @@ class DisciplineSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class VideoSerializer(serializers.HyperlinkedModelSerializer):
+    tags = TagRelatedManagerField(required=False)
+
     class Meta:
         model = Video
         fields = (
@@ -215,8 +215,12 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def user_videos(self, request):
-        user_videos = self.filter_queryset(self.get_queryset()).filter(
-            owner__username=request.GET.get("username")
+        # Manage additional_owners filtering
+        username = request.GET.get("username")
+        user_videos = (
+            self.filter_queryset(self.get_queryset())
+            .filter(Q(owner__username=username) | Q(additional_owners__username=username))
+            .distinct()
         )
         if request.GET.get("encoded") and request.GET.get("encoded") == "true":
             user_videos = user_videos.exclude(

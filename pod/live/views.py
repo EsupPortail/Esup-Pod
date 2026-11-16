@@ -3,6 +3,7 @@
 import json
 import logging
 import os.path
+import shutil
 import re
 import threading
 from datetime import datetime
@@ -10,6 +11,7 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import SuspiciousOperation
@@ -28,7 +30,9 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
+from django.utils.cache import add_never_cache_headers
+from django.utils.crypto import constant_time_compare, salted_hmac
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from pod.meeting.models import Livestream
 from rest_framework import status
@@ -123,11 +127,17 @@ def direct(request, slug):
     site = get_current_site(request)
     broadcaster = get_broadcaster_by_slug(slug, site)
     if broadcaster.is_restricted and not request.user.is_authenticated:
-        iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-        return redirect(
-            "%s?%sreferrer=%s"
-            % (settings.LOGIN_URL, iframe_param, request.get_full_path())
+        login_url = settings.LOGIN_URL
+        if request.GET.get("is_iframe"):
+            login_url += "?is_iframe=true"
+        return redirect_to_login(
+            request.get_full_path(),
+            login_url=login_url,
+            redirect_field_name="referrer",
         )
+
+    if request.GET.get("stream") == "1":
+        return stream_response(broadcaster, request=request)
 
     return render(
         request,
@@ -146,6 +156,23 @@ def get_broadcaster_by_slug(slug, site):
         return get_object_or_404(Broadcaster, id=slug, building__sites=site)
     else:
         return get_object_or_404(Broadcaster, slug=slug, building__sites=site)
+
+
+def stream_response(broadcaster, state=None, request=None):
+    """Expose playback availability after the page's access checks."""
+    from .runner_live import log_playback_context, unavailable_stream
+
+    stream = unavailable_stream(state) if state else broadcaster.get_stream_info()
+    if request is not None:
+        log_playback_context(broadcaster, stream, request)
+    response = JsonResponse(stream)
+    add_never_cache_headers(response)
+    return response
+
+
+def event_stream_access_key(evt):
+    """Invalidate playback access when the event password changes."""
+    return salted_hmac("live.event-stream", f"{evt.pk}:{evt.password}").hexdigest()
 
 
 """use rest api to change status
@@ -296,10 +323,13 @@ def event(request, slug, slug_private=None):
     if (
         evemnt.is_restricted or evemnt.restrict_access_to_groups.all().exists()
     ) and not request.user.is_authenticated:
-        iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-        return redirect(
-            "%s?%sreferrer=%s"
-            % (settings.LOGIN_URL, iframe_param, request.get_full_path())
+        login_url = settings.LOGIN_URL
+        if request.GET.get("is_iframe"):
+            login_url += "?is_iframe=true"
+        return redirect_to_login(
+            request.get_full_path(),
+            login_url=login_url,
+            redirect_field_name="referrer",
         )
 
     user_owns_event = request.user.is_authenticated and (
@@ -319,12 +349,24 @@ def render_event_template(request, evemnt, user_owns_event):
     is_password_protected = evemnt.password is not None and evemnt.password != ""
     password_provided = request.POST.get("password") is not None
     password_correct = request.POST.get("password") == evemnt.password
+    stream_request = request.GET.get("stream") == "1"
+    access_key = event_stream_access_key(evemnt)
+    password_verified = constant_time_compare(
+        request.session.get(f"live_event_access_{evemnt.pk}", ""), access_key
+    )
     template_event = (
         "live/event-iframe.html" if request.GET.get("is_iframe") else "live/event.html"
     )
 
     # password protection
-    if is_password_protected and not user_owns_event and not password_correct:
+    if (
+        is_password_protected
+        and not user_owns_event
+        and not password_correct
+        and not (stream_request and password_verified)
+    ):
+        if stream_request:
+            raise PermissionDenied
         form = EventPasswordForm(request.POST) if request.POST else EventPasswordForm()
         if password_provided:
             messages.add_message(request, messages.ERROR, _("The password is incorrect."))
@@ -335,6 +377,15 @@ def render_event_template(request, evemnt, user_owns_event):
                 "event": evemnt,
                 "form": form,
             },
+        )
+
+    if is_password_protected and password_correct:
+        request.session[f"live_event_access_{evemnt.pk}"] = access_key
+    if stream_request:
+        return stream_response(
+            evemnt.broadcaster,
+            None if evemnt.is_current() else "stopped",
+            request=request,
         )
 
     # Search if livestream is used to display a webinar streaming live
@@ -1019,19 +1070,20 @@ def create_video(event_id, current_file, segment_number):
         # verif si la taille du fichier d'origine ne bouge plus
         check_size_not_changing(full_file_name)
 
-        # moving the file
-        os.rename(
-            full_file_name,
-            dest_file,
-        )
+        # Copy puis suppression plutôt qu'un rename qui ne fonctionne pas sous
+        # des systèmes de fichiers différents (env. conteneurisés et volumes persistants)
+        shutil.copyfile(full_file_name, dest_file)
 
         # verif si la taille du fichier copié ne bouge plus
         check_size_not_changing(dest_file)
 
-    except Exception as exc:
+        os.remove(full_file_name)
+
+    except Exception:
+        logger.exception("Unable to create a video for live event %s", event_id)
         return JsonResponse(
             status=500,
-            data={"success": False, "error": str(exc)},
+            data={"success": False, "error": _("Unable to upload the video to Pod")},
         )
 
     segment = "(" + segment_number + ")" if segment_number else ""

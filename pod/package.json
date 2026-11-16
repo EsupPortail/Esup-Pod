@@ -18,11 +18,12 @@
     "videojs-seek-buttons": "latest7",
     "videojs-vr": "^2.0.0",
     "videojs-vtt-thumbnails": "^0.0.13",
-    "videojs-wavesurfer": "^3.9.0",
+    "videojs-wavesurfer": "^3.10.0",
     "wavesurfer.js": "^6.6.4",
     "waypoints": "^4.0.1"
   },
   "engines": {
     "yarn": ">= 1.0.0"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

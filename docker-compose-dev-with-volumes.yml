@@ -12,8 +12,10 @@ services:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod/Dockerfile
     depends_on:
-      - elasticsearch
-      - redis
+      elasticsearch:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     env_file:
       - ./.env.dev
     ports:
@@ -42,6 +44,8 @@ services:
       - ./.env.dev
     ports:
       - 6379:6379
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
 
 #  redis-commander:
 #    container_name: redis-commander

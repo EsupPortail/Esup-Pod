@@ -11,13 +11,17 @@
 /* exported resetDashboardElements getHTMLBadgesSelectedTitles toggleSelectedVideo setSelectedVideos */
 
 var selectedVideos = {};
-var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
-var resetDashboardElementsBtn = document.getElementById(
-  "reset-dashboard-elements-btn",
-);
+// var resetDashboardElementsBtn = document.getElementById(
+//   "reset-dashboard-elements-btn",
+// );
 var countSelectedVideosBadge = document.getElementById(
   "countSelectedVideosBadge",
 );
+
+document.addEventListener("DOMContentLoaded", () => {
+  toggleBulkUpdateVisibility();
+  selectAllManager();
+});
 
 /**
  * Get list of selected videos's titles based on selected videos
@@ -79,6 +83,7 @@ function setSelectedVideos(container) {
  * @param {string} container - Identifier of container = selectedVideos's key
  */
 function replaceSelectedCountVideos(container) {
+  const applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
   let newCount = selectedVideos[container].length;
   let videoCountStr = ngettext("%(count)s video", "%(count)s videos", newCount);
   let videoCountTit = ngettext(
@@ -93,7 +98,7 @@ function replaceSelectedCountVideos(container) {
     applyMultipleActionsBtn,
     newCount > 0 && dashboardAction.length !== 0,
   );
-  manageDisableBtn(resetDashboardElementsBtn, newCount > 0);
+  // manageDisableBtn(resetDashboardElementsBtn, newCount > 0);
 }
 
 /**
@@ -115,8 +120,74 @@ function toggleSelectedVideo(item, container) {
       );
     }
   }
+  toggleBulkUpdateVisibility(container);
   if (container === videosListContainerId) {
     replaceSelectedCountVideos(container);
+  }
+}
+
+/**
+ * Toggle bulk update UI visibility based on video selection and total count.
+ */
+function toggleBulkUpdateVisibility(container) {
+  try {
+    const bulkContainer = document.getElementById("bulk-update-container");
+    const hr = document.getElementById("bottom-ht-filtre");
+    const skipLink = document.getElementById("skipToBulk");
+    const restCheckbox = document.getElementById("selectAll");
+
+    const nbVideos = document.querySelectorAll(
+      "#videos_list .infinite-item",
+    ).length;
+
+    if (!bulkContainer || !hr || !skipLink) {
+      throw new Error(
+        JSON.stringify({
+          reason: "Missing DOM element(s)",
+          elements: {
+            "bulk-update-container": !!bulkContainer,
+            "bottom-ht-filtre": !!hr,
+            skipToBulk: !!skipLink,
+          },
+        }),
+      );
+    }
+
+    // Update "select all" checkbox state
+    if (restCheckbox) {
+      const videos = document.querySelectorAll(".card-select-input");
+      const checkedCount = Array.from(videos).filter((v) => v.checked).length;
+      restCheckbox.checked = nbVideos > 0 && nbVideos === checkedCount;
+    }
+
+    const hasSelection = hasSelectedVideos(container);
+    const shouldShow =
+      hasSelection &&
+      nbVideos > 0 &&
+      (!container || container === "videos_list");
+    bulkContainer.classList.toggle("visible", shouldShow);
+    skipLink.classList.toggle("is-visible", shouldShow);
+    hr.style.display = shouldShow ? "none" : "block";
+  } catch (error) {
+    console.error(`toggleBulkUpdateVisibility() failed: ${error.message}`);
+  }
+}
+
+/**
+ * Checks whether at least one video has been selected.
+ *
+ * @returns {boolean} `true` if any entry in `selectedVideos` contains one or more videos, otherwise `false`.
+ */
+function hasSelectedVideos(container) {
+  try {
+    if (!container) return false;
+    const videos = selectedVideos[container];
+    return videos.length > 0;
+  } catch (error) {
+    console.error(
+      `Error in video_select.js (hasSelectedVideos): ${error.message}`,
+    );
+    return false;
   }
 }
 
@@ -139,9 +210,22 @@ function clearSelectedVideo(container) {
  * @see resetDashboardElementsBtn
  **/
 function resetDashboardElements() {
-  clearSelectedVideo(videosListContainerId);
-  dashboardActionReset();
-  window.scrollTo(0, 0);
+  try {
+    const checkbox = document.getElementById("selectAll");
+
+    if (!checkbox) {
+      throw new Error('Checkbox with id "selectAll" not found in DOM');
+    }
+    checkbox.checked = false;
+    clearSelectedVideo(videosListContainerId);
+    toggleBulkUpdateVisibility();
+    dashboardActionReset();
+    window.scrollTo(0, 0);
+  } catch (error) {
+    console.error(
+      `Error in video_select.js (resetDashboardElements function). Failed to reset dashboard elements because ${error.message}`,
+    );
+  }
 }
 
 /**
@@ -167,10 +251,49 @@ function getHTMLBadgesSelectedTitles(container) {
  * @param {string} container - Identifier of the infinite-items's container
  */
 function selectAllVideos(container) {
-  let selector = "#" + container + " .card-select-input";
-  document.querySelectorAll(selector).forEach((elt) => {
-    elt.checked = true;
-  });
-  setListSelectedVideos(container);
-  replaceSelectedCountVideos(container);
+  try {
+    if (typeof container !== "string" || container.trim() === "")
+      throw new Error("Invalid container identifier provided");
+
+    const selector = "#" + container + " .card-select-input";
+    const elements = document.querySelectorAll(selector);
+    elements.forEach((elt) => {
+      elt.checked = true;
+    });
+    setListSelectedVideos(container);
+    toggleBulkUpdateVisibility(container);
+    replaceSelectedCountVideos(container);
+  } catch (error) {
+    console.error(
+      `Error in video_select.js (selectAllVideos function). Failed to select all videos because ${error.message}`,
+    );
+  }
+}
+
+/**
+ * Sets up the "Select All" checkbox behavior for managing video selection.
+ */
+function selectAllManager() {
+  try {
+    const checkbox = document.getElementById("selectAll");
+    if (checkbox) {
+      checkbox.addEventListener("change", () => {
+        try {
+          if (checkbox.checked) {
+            selectAllVideos(videosListContainerId);
+          } else {
+            resetDashboardElements();
+          }
+        } catch (innerError) {
+          console.error(
+            `Error in video_select.js (selectAllManager > change event). Failed to process checkbox change because ${innerError.message}`,
+          );
+        }
+      });
+    }
+  } catch (error) {
+    console.error(
+      `Error in video_select.js (selectAllManager function). Failed to initialize "Select All" behavior because ${error.message}`,
+    );
+  }
 }

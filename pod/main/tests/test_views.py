@@ -3,26 +3,31 @@
 *  run with 'python manage.py test pod.main.tests.test_views'
 """
 
-from django.test import RequestFactory, override_settings
-from django.test import TestCase
-from django.test import Client
-from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.flatpages.models import FlatPage
-from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
-from django.conf import settings
-from captcha.models import CaptchaStore
-from http import HTTPStatus
-from datetime import datetime, timedelta
-from pod.main import context_processors
-from pod.main.models import Configuration, Block
-from pod.playlist.models import Playlist
-from pod.video.models import Type, Video, Channel, ViewCount
-from pod.live.models import Building, Broadcaster, Event
-
-import os
 import importlib
+import os
+from datetime import datetime, timedelta
+from http import HTTPStatus
+from unittest.mock import patch
+
+from captcha.models import CaptchaStore
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.flatpages.models import FlatPage
+from django.test import Client, TestCase, override_settings
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+
+from pod.live.models import Broadcaster, Building, Event
+from pod.main import context_processors
+from pod.main.models import Block, Configuration
+from pod.playlist.models import Playlist
+from pod.video.models import Channel, Type, Video, ViewCount
+
+# ggignore-start
+# gitguardian:ignore
+PWD = "pod1234pod"  # nosec
+# ggignore-end
 
 
 class MainViewsTestCase(TestCase):
@@ -34,7 +39,7 @@ class MainViewsTestCase(TestCase):
 
     def setUp(self) -> None:
         """Create fictive user who will make tests."""
-        User.objects.create(username="pod", password="podv3")
+        User.objects.create(username="pod", password=PWD)
         print(" --->  SetUp of MainViewsTestCase: OK!")
 
     @override_settings()
@@ -44,15 +49,15 @@ class MainViewsTestCase(TestCase):
 
         # GET method is used
         response = self.client.get("/download/")
-        self.assertRaises(PermissionDenied)
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
         # POST method is used
         # filename is not set
         response = self.client.post("/download/")
-        self.assertRaises(PermissionDenied)
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
         # Wrong filename --> not in MEDIA folder
-        with self.assertRaises(ValueError):
-            response = self.client.post("/download/", {"filename": "/etc/passwd"})
+        response = self.client.post("/download/", {"filename": "/etc/passwd"})
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
         # Good filename
         filename = os.path.join(settings.MEDIA_ROOT, "test/test_file.txt")
@@ -128,7 +133,7 @@ class MaintenanceViewsTestCase(TestCase):
 
     def setUp(self) -> None:
         """Set up function for the tests."""
-        User.objects.create(username="pod", password="podv3")
+        User.objects.create(username="pod", password=PWD)
 
     def test_maintenance(self) -> None:
         """Test Pod maintenance mode."""
@@ -185,8 +190,13 @@ class XSSTests(TestCase):
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertFalse(self.XSS_detect in response.content)
 
-    def test_search_XSS(self) -> None:
+    @patch("pod.video_search.views.Elasticsearch")
+    def test_search_XSS(self, mocked_elasticsearch) -> None:
         """Test if /search/ is safe against some XSS."""
+        mocked_elasticsearch.return_value.search.return_value = {
+            "hits": {"hits": [], "total": {"value": 0}},
+            "aggregations": {},
+        }
         for param in ["q", "start_date", "end_date"]:
             response = self.client.get("/search/?%s=%s" % (param, self.XSS_inject))
 
@@ -210,7 +220,6 @@ class TestShowVideoButtons(TestCase):
 
     def setUp(self) -> None:
         """Set up function for the tests."""
-        self.factory = RequestFactory()
         User.objects.create(
             username="admin", password="admin", is_staff=True, is_superuser=True
         )
@@ -321,7 +330,6 @@ class TestShowMeetingButton(TestCase):
 
     def setUp(self) -> None:
         """Set up function for the tests."""
-        self.factory = RequestFactory()
         User.objects.create(
             username="admin", password="admin", is_staff=True, is_superuser=True
         )
@@ -590,7 +598,7 @@ class TestBlock(TestCase):
 
     def test_default_block(self) -> None:
         """Test when add video if present in default block."""
-        user = User.objects.create(username="pod", password="podv3")
+        user = User.objects.create(username="pod", password=PWD)
         Video.objects.create(
             title="VideoOnHold",
             owner=user,
@@ -599,7 +607,7 @@ class TestBlock(TestCase):
             is_draft=False,
             slug="video-on-hold",
             duration=20,
-            date_added=datetime.today(),
+            date_added=timezone.now(),
             encoding_in_progress=False,
             date_evt=datetime.today(),
         )
@@ -617,7 +625,7 @@ class TestBlock(TestCase):
         bk1.visible = False
         bk1.save()
         channel = Channel.objects.create(title="monChannel")
-        user = User.objects.create(username="pod", password="podv3")
+        user = User.objects.create(username="pod", password=PWD)
         video = Video.objects.create(
             title="VideoOnHold",
             owner=user,
@@ -626,7 +634,7 @@ class TestBlock(TestCase):
             is_draft=False,
             slug="video-on-hold",
             duration=20,
-            date_added=datetime.today(),
+            date_added=timezone.now(),
             encoding_in_progress=False,
             date_evt=datetime.today(),
         )
@@ -695,8 +703,8 @@ class TestBlock(TestCase):
             type=h_type,
             is_draft=False,
         )
-        event.start_date = datetime.today() + timedelta(days=+1)
-        event.end_date = datetime.today() + timedelta(days=+2)
+        event.start_date = timezone.now() + timedelta(days=+1)
+        event.end_date = timezone.now() + timedelta(days=+2)
         event.save()
 
         Block.objects.create(
@@ -724,7 +732,7 @@ class TestBlock(TestCase):
         bk1 = Block.objects.get(id=1)
         bk1.visible = False
         bk1.save()
-        user = User.objects.create(username="pod", password="podv3")
+        user = User.objects.create(username="pod", password=PWD)
         vd1 = Video.objects.create(
             title="VideoOnHold",
             owner=user,

@@ -2,9 +2,9 @@
 
 from django.conf import settings as django_settings
 
-USE_PLAYLIST = getattr(django_settings, "USE_PLAYLIST", True)
-USE_PROMOTED_PLAYLIST = getattr(django_settings, "USE_PROMOTED_PLAYLIST", True)
-USE_FAVORITES = getattr(django_settings, "USE_FAVORITES", True)
+USE_PLAYLIST = getattr(django_settings, "USE_PLAYLIST", False)
+USE_PROMOTED_PLAYLIST = getattr(django_settings, "USE_PROMOTED_PLAYLIST", False)
+USE_FAVORITES = getattr(django_settings, "USE_FAVORITES", False)
 DEFAULT_PLAYLIST_THUMBNAIL = getattr(
     django_settings,
     "DEFAULT_PLAYLIST_THUMBNAIL",

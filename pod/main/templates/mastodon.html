@@ -1,0 +1,60 @@
+{% load i18n %}
+{% if 'MASTODON' in SOCIAL_SHARE %}
+<div class="modal fade" id="mastodonModal" tabindex="-1" aria-labelledby="mastodonModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="mastodonModalLabel">{% trans 'Share on' %} Mastodon</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+        <label for="mastodonInstance" class="form-label">
+          {% trans 'Please enter your Mastodon instance URL:' %}
+        </label>
+        <input type="url" id="mastodonInstance" class="form-control"
+               placeholder="https://{% trans 'your.instance' %}" />
+       <div class="form-check mt-2">
+          <input type="checkbox" class="form-check-input" id="rememberInstance">
+          <label class="form-check-label" for="rememberInstance">{% trans 'Remember this instance' %}</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+        <button type="button" class="btn btn-primary" id="shareMastodonButton">{% trans 'Share' %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const savedInstance = localStorage.getItem('mastodonInstance');
+    if (savedInstance) {
+      document.getElementById('mastodonInstance').value = savedInstance;
+      document.getElementById('rememberInstance').checked = true;
+    }
+  });
+
+  document.getElementById('shareMastodonButton').addEventListener('click', function() {
+    let instanceUrl = document.getElementById('mastodonInstance').value;
+    const remember = document.getElementById('rememberInstance').checked;
+
+    instanceUrl = instanceUrl.replace(/^https?:\/\//, '');
+
+    if (instanceUrl) {
+      if (remember) {
+        localStorage.setItem('mastodonInstance', instanceUrl);
+      } else {
+        localStorage.removeItem('mastodonInstance');
+      }
+
+      const shareUrl = `https://${instanceUrl}/share?text={{request.build_absolute_uri|urlencode}}`;
+      window.open(shareUrl, '_blank');
+    } else {
+      alert("{% trans 'Please provide your instance URL.' %}");
+    }
+    var modal = bootstrap.Modal.getInstance(document.getElementById('mastodonModal'));
+    modal.hide();
+  });
+</script>
+{% endif %}

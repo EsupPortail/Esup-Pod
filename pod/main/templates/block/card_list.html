@@ -3,7 +3,7 @@
 <div class="pod-inner edito-card-list" id="edito-videos-list-{{ uniq_id }}">
   <h2>{{ title |capfirst|truncatechars:43 }}</h2>
 
-  {% if type == "video" %} 
+  {% if type == "video" %}
     {% include "videos/video_list.html" with videos=elements %}
   {% elif type == "event" %}
     {% include "live/events_list.html" with events=elements hide_counter=True %}

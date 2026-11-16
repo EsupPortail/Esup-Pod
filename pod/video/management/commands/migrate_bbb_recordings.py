@@ -4,7 +4,10 @@ Useful script for migrating BBB records when changing BBB infrastructure.
 Typically, when moving from a local architecture to the
 French Ministry of Higher Education and Research (ESR) BBB architecture.
 
-More information on this module at: https://www.esup-portail.org/wiki/x/C4CFUQ
+This script can also be used to backup BBB recordings. For example, in the case of a
+backup of the BBB records of the ESR infrastructure, as they are only kept for one year.
+
+More information on this module at: https://esupportail.github.io/Esup-Pod/4.x/Installation/optional/bbb-infrastructure-migration-install_fr
 
 Reminder of constraints:
  - no use of Pod's old BBB module (this module will be phased out in the near future)
@@ -99,7 +102,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import slugify
 from pod.import_video.utils import manage_download, parse_remote_file
-from pod.import_video.utils import manage_recording_url, check_url_exists
 from pod.import_video.models import ExternalRecording
 from pod.import_video.views import start_bbb_encode_presentation_and_move_to_destination
 from pod.meeting.models import Meeting
@@ -109,8 +111,6 @@ from defusedxml import minidom
 # # Script config (TO EDIT) # #
 # Moodle database engine (postgresql, mysql or None)
 MOODLE_DB_TYPE = None
-
-MOODLE_DB_TYPE = "postgresql"
 
 if MOODLE_DB_TYPE == "postgresql":
     # For PostgreSQL database #
@@ -218,7 +218,7 @@ class Generic_user:
 
     def __init__(
         self, user_id: str, username: str, firstname: str, lastname: str, email: str
-    ):
+    ) -> None:
         """Initialize."""
         self.id = user_id
         self.username = username
@@ -226,7 +226,7 @@ class Generic_user:
         self.lastname = lastname
         self.email = email
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Display a generic user object as string."""
         if self.id:
             return "%s %s (%s)" % (self.firstname, self.lastname, self.username)
@@ -323,7 +323,7 @@ def connect_moodle_database(generic_recording=None):
         return None, None
 
 
-def disconnect_moodle_database(connection, cursor):
+def disconnect_moodle_database(connection, cursor) -> None:
     """Disconnect the Moodle database."""
     try:
         if cursor:
@@ -335,7 +335,7 @@ def disconnect_moodle_database(connection, cursor):
         print(e)
 
 
-def process(options):  # noqa: C901
+def process(options) -> None:
     """Achieve the BBB recordings migration."""
     # Get the BBB recordings from BBB/Scalelite server API
     recordings = get_bbb_recordings_by_xml()
@@ -465,7 +465,7 @@ def get_bbb_recordings_by_xml() -> list:
     return recordings
 
 
-def get_recording(recording) -> Generic_recording:  # noqa: C901
+def get_recording(recording) -> Generic_recording:
     """Return a BBB recording, using the Generic_recording class."""
     generic_recording = None
     try:
@@ -485,26 +485,9 @@ def get_recording(recording) -> Generic_recording:  # noqa: C901
         # Get recording URL that corresponds to the presentation URL
         # Take only the "presentation" or "video" format
         # Not other format like "screenshare" or "podcast"
-        presentation_url = ""
-        video_url = ""
+
         # Check playback data
-        for playback in recording.getElementsByTagName("playback"):
-            # Depends on BBB parameters, we can have multiple format
-            for format in playback.getElementsByTagName("format"):
-                type = format.getElementsByTagName("type")[0].firstChild.data
-                # For bbb-recorder, we need URL of presentation format
-                if type == "presentation":
-                    # Recording URL is the BBB presentation URL
-                    presentation_url = format.getElementsByTagName("url")[
-                        0
-                    ].firstChild.data
-                    # Convert format 2.0 to 2.3 if necessary
-                    presentation_url = convert_format(
-                        presentation_url, internal_meeting_id
-                    )
-                if type == "video":
-                    # Recording URL is the BBB video URL
-                    video_url = format.getElementsByTagName("url")[0].firstChild.data
+        presentation_url, video_url = get_recording_urls(recording, internal_meeting_id)
 
         # Define the result with the Generic_recording class
         generic_recording = Generic_recording(
@@ -542,27 +525,51 @@ def get_recording(recording) -> Generic_recording:  # noqa: C901
     return generic_recording
 
 
+def get_recording_urls(recording, internal_meeting_id):
+    """Get URLs for a BBB recording."""
+    # Depends on BBB parameters, we can have multiple format
+    presentation_url = ""
+    video_url = ""
+    for playback in recording.getElementsByTagName("playback"):
+        for format in playback.getElementsByTagName("format"):
+            type = format.getElementsByTagName("type")[0].firstChild.data
+            # For bbb-recorder, we need URL of presentation format
+            if type == "presentation":
+                # Recording URL is the BBB presentation URL
+                presentation_url = format.getElementsByTagName("url")[0].firstChild.data
+                # Convert format 2.0 to 2.3 if necessary
+                presentation_url = convert_format(presentation_url, internal_meeting_id)
+            if type == "video":
+                # Recording URL is the BBB video URL
+                video_url = format.getElementsByTagName("url")[0].firstChild.data
+    return presentation_url, video_url
+
+
 def get_video_file_name(file_name: str, date: dt, extension: str) -> str:
     """Normalize a video file name."""
     slug = slugify("%s %s" % (file_name[0:40], str(date)[0:10]))
     return "%s.%s" % (slug, extension)
 
 
-def download_bbb_video_file(source_url: str, dest_file: str):
+def download_bbb_video_file(source_url: str, dest_file: str) -> None:
     """Download a BBB video playback."""
     session = requests.Session()
     # Download and parse the remote HTML file (BBB specific)
     video_file_add = parse_remote_file(session, source_url)
-    # Verify that video exists
-    source_video_url = manage_recording_url(source_url, video_file_add)
-    if check_url_exists(source_video_url):
+    try:
         # Download the video file
         source_video_url = manage_download(session, source_url, video_file_add, dest_file)
-    else:
-        print("Unable to download %s: video file doesn't exist." % source_url)
+        print("  > Video %s downloaded." % source_video_url)
+    except Exception as e:
+        err = "Unable to download %s: %s. %s " % (
+            source_url,
+            str(e),
+            traceback.format_exc(),
+        )
+        print(err)
 
 
-def process_recording_to_claim(options, generic_recording):
+def process_recording_to_claim(options, generic_recording) -> None:
     """Download video playback or encode presentation playback to recorder directory.
 
     Please note: the claim requires the encoding of records in presentation playback.
@@ -620,7 +627,7 @@ def process_recording_to_claim(options, generic_recording):
             )
 
 
-def process_recording_to_import_video(options, generic_recording):
+def process_recording_to_import_video(options, generic_recording) -> None:
     """Add the recording to the import video in Pod.
 
     Please note: the link must remain valid for several months,
@@ -716,7 +723,7 @@ def get_or_create_user_pod(options, generic_owner: Generic_user):
             return generic_owner
 
 
-def manage_external_recording(options, generic_recording, site, owner, msg):
+def manage_external_recording(options, generic_recording, site, owner, msg) -> None:
     """Print and create an external recording for a BBB recording, if necessary."""
     print(
         " - Recording %s, playback %s, owner %s: "
@@ -733,7 +740,7 @@ def manage_external_recording(options, generic_recording, site, owner, msg):
         create_external_recording(generic_recording, site, owner)
 
 
-def create_external_recording(generic_recording: Generic_recording, site, owner):
+def create_external_recording(generic_recording: Generic_recording, site, owner) -> None:
     """Create an external recording for a BBB recording, if necessary."""
     # Check if external recording already exists for this owner
     external_recording = ExternalRecording.objects.filter(
@@ -751,7 +758,7 @@ def create_external_recording(generic_recording: Generic_recording, site, owner)
         )
 
 
-def get_created_in_moodle(generic_recording: Generic_recording):  # noqa: C901
+def get_created_in_moodle(generic_recording: Generic_recording) -> list:
     """Allow to know if this recording was made with Moodle.
 
     In such a case, we know the list of owners.
@@ -763,8 +770,6 @@ def get_created_in_moodle(generic_recording: Generic_recording):  # noqa: C901
         print("origin_server_name ignored (%s)." % generic_recording.origin_server_name)
         return owners_found
     try:
-        participants = ""
-
         connection, cursor = connect_moodle_database(generic_recording)
         with cursor as c:
             select_query = (
@@ -789,29 +794,7 @@ def get_created_in_moodle(generic_recording: Generic_recording):  # noqa: C901
                 # Format for participants:
                 # '[{"selectiontype":"all","selectionid":"all","role":"viewer"},
                 # {"selectiontype":"user","selectionid":"83","role":"moderator"}]'
-                participants = res[3]
-                if participants != "":
-                    # Parse participants as a JSON string
-                    parsed_data = json.loads(participants)
-                    for item in parsed_data:
-                        print("%s participants in this recording." % len(parsed_data))
-                        # Search for moderators
-                        if (
-                            item["selectiontype"] == "user"
-                            and item["role"] == "moderator"
-                        ):
-                            user_id_moodle = item["selectionid"]
-                            user_moodle = get_moodle_user(
-                                user_id_moodle, connection, cursor
-                            )
-                            if user_moodle:
-                                print(
-                                    " - Moderator found in Moodle: %s %s"
-                                    % (user_moodle.username, user_moodle.email)
-                                )
-                                owners_found.append(user_moodle)
-                else:
-                    print("No participant in this recording.")
+                extract_moodle_participants(res[3], connection, cursor, owners_found)
         disconnect_moodle_database(connection, cursor)
     except Exception as e:
         err = (
@@ -822,7 +805,28 @@ def get_created_in_moodle(generic_recording: Generic_recording):  # noqa: C901
     return owners_found
 
 
-def set_information_in_moodle(options, generic_recording):
+def extract_moodle_participants(participants, connection, cursor, owners_found) -> None:
+    """Extract participants from a BBB recording in Moodle."""
+    if participants != "":
+        # Parse participants as a JSON string
+        parsed_data = json.loads(participants)
+        for item in parsed_data:
+            print("%s participants in this recording." % len(parsed_data))
+            # Search for moderators
+            if item["selectiontype"] == "user" and item["role"] == "moderator":
+                user_id_moodle = item["selectionid"]
+                user_moodle = get_moodle_user(user_id_moodle, connection, cursor)
+                if user_moodle:
+                    print(
+                        " - Moderator found in Moodle: %s %s"
+                        % (user_moodle.username, user_moodle.email)
+                    )
+                    owners_found.append(user_moodle)
+    else:
+        print("No participant in this recording.")
+
+
+def set_information_in_moodle(options, generic_recording) -> None:
     """Set information about this migration in Moodle (if possible).
 
     Update the field: public.mdl_bigbluebuttonbn.intro in Moodle
@@ -906,7 +910,7 @@ def get_moodle_user(user_id: str, connection, cursor) -> Generic_user:
     return generic_user
 
 
-def convert_format(source_url: str, internal_meeting_id: str):
+def convert_format(source_url: str, internal_meeting_id: str) -> str:
     """Convert presentation playback URL if necessary (see SCRIPT_PLAYBACK_URL_23)."""
     try:
         # Conversion - if necessary - from
@@ -923,7 +927,7 @@ def convert_format(source_url: str, internal_meeting_id: str):
     return source_url.strip()
 
 
-def check_system(options):  # noqa: C901
+def check_system(options) -> None:  # noqa: C901
     """Check the system (configuration, recorder, access rights). Blocking function."""
     error = False
     if options["use_manual_claim"]:
@@ -982,7 +986,7 @@ class Command(BaseCommand):
 
     help = "Migrate BigBlueButton recordings"
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         """Allow arguments to be used with the command."""
         parser.add_argument(
             "--use-manual-claim",
@@ -1030,7 +1034,7 @@ class Command(BaseCommand):
             default=False,
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         """Handle the BBB migration command call."""
         if options["dry"]:
             print("Simulation mode ('dry'). Nothing will be achieved.")
