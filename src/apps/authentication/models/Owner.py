@@ -10,12 +10,12 @@ import logging
 from django.contrib.auth.models import Permission, User
 from django.contrib.sites.models import Site
 from django.db import models
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
-from src.apps.encoding.services.storage import get_storage_path_user_picture
 from src.apps.authentication.conf import auth_settings
+from src.apps.encoding.services.storage import get_storage_path_user_picture
 from src.apps.utils.files import safe_remove_file
 
 from .utils import (

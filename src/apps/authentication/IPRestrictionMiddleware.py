@@ -6,8 +6,9 @@ Ensure that only allowed IPs can access superuser privileges.
 
 import ipaddress
 
-from ipware import get_client_ip
 from django.utils.translation import gettext_lazy as _
+from ipware import get_client_ip
+
 from .conf import auth_settings
 
 

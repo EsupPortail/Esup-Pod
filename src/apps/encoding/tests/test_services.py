@@ -5,17 +5,18 @@ This module validates the RunnerClient communication and the storage path
 generation logic.
 """
 
-from unittest.mock import patch, MagicMock
 from datetime import datetime
-from django.test import TestCase
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.contrib.auth import get_user_model
+from unittest.mock import MagicMock, patch
+
 import requests
+from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase
 
 from src.apps.encoding.services.runner_client import RunnerClient, get_runner_client
 from src.apps.encoding.services.storage import (
-    get_storage_path_video,
     get_storage_path_image,
+    get_storage_path_video,
 )
 from src.apps.video.models import Video
 

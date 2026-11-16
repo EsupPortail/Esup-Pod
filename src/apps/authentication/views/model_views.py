@@ -9,10 +9,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
 from django.utils.translation import gettext_lazy as _
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import (
+    OpenApiResponse,
     extend_schema,
     extend_schema_view,
-    OpenApiResponse,
 )
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
@@ -20,17 +21,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ..filters import AccessGroupFilterSet, UserFilterSet
 from ..models.AccessGroup import AccessGroup
 from ..models.Owner import Owner
+from ..permissions import IsSuperUser
 from ..serializers.AccessGroupSerializer import AccessGroupSerializer
 from ..serializers.GroupSerializer import GroupSerializer
 from ..serializers.OwnerSerializer import OwnerSerializer, OwnerWithGroupsSerializer
 from ..serializers.SiteSerializer import SiteSerializer
 from ..serializers.UserSerializer import UserSerializer
-from ..permissions import IsSuperUser
 from ..services import AccessGroupService
-from django_filters.rest_framework import DjangoFilterBackend
-from ..filters import UserFilterSet, AccessGroupFilterSet
 
 User = get_user_model()
 

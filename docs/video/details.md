@@ -274,6 +274,7 @@ Managed via `VideoConfig` (pydantic-settings in `src/apps/video/conf.py`). Setti
 | Setting                      | Default       | Description                                                 |
 | :--------------------------- | :------------ | :---------------------------------------------------------- |
 | `USE_HYPERLINKS`             | `True`        | Enables the video hyperlinks system globally.               |
+| `USE_CHAPTERS`               | `True`        | Enables the video chapters system globally.                 |
 | `USE_MARKER_TIME`            | `True`        | Enables the video playback resume (marker time) feature.    |
 | `WEBTV_MODE`                 | `False`       | If `True`, video file is optional (WebTV / channel mode).   |
 | `ALLOW_AUTHENTICATED_UPLOAD` | `True`        | Allow authenticated non-staff users to upload.              |

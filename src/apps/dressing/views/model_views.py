@@ -2,13 +2,13 @@
 Esup-Pod - Dressing views.
 """
 
+from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from django.db.models import Q
 
 from src.apps.dressing.models import Dressing
-from src.apps.dressing.serializers import DressingSerializer, CustomImageSerializer
-from src.apps.dressing.permissions import IsDressingEnabled, CanManageDressing
+from src.apps.dressing.permissions import CanManageDressing, IsDressingEnabled
+from src.apps.dressing.serializers import CustomImageSerializer, DressingSerializer
 from src.apps.utils.models import CustomImageModel
 
 

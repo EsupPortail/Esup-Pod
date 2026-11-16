@@ -2,14 +2,14 @@
 
 from django.core.management.base import BaseCommand
 
-from src.apps.migration.utils.userMigrate import userMigrate
-from src.apps.migration.utils.videoMigrate import videoMigrate
-from src.apps.migration.utils.speakerMigrate import speakerMigrate
-from src.apps.migration.utils.hyperlinkMigrate import hyperlinkMigrate
-from src.apps.migration.utils.documentMigrate import documentMigrate
-from src.apps.migration.utils.groupingMigrate import groupingMigrate
 from src.apps.migration.utils.collectionMigrate import collectionMigrate
 from src.apps.migration.utils.commentMigrate import commentMigrate
+from src.apps.migration.utils.documentMigrate import documentMigrate
+from src.apps.migration.utils.groupingMigrate import groupingMigrate
+from src.apps.migration.utils.hyperlinkMigrate import hyperlinkMigrate
+from src.apps.migration.utils.speakerMigrate import speakerMigrate
+from src.apps.migration.utils.userMigrate import userMigrate
+from src.apps.migration.utils.videoMigrate import videoMigrate
 
 
 class Command(BaseCommand):

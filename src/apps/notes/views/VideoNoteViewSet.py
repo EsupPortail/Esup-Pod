@@ -6,8 +6,8 @@ import logging
 
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework import viewsets, permissions
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework import permissions, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from src.apps.notes.conf import notes_settings
@@ -55,8 +55,9 @@ class VideoNoteViewSet(viewsets.ModelViewSet):
         """Creates a note, assigning the current user as owner."""
         video = serializer.validated_data.get("video")
 
-        from src.apps.video.models import Video
         from django.contrib.sites.shortcuts import get_current_site
+
+        from src.apps.video.models import Video
 
         current_site = get_current_site(self.request)
         if (

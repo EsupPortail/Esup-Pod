@@ -2,11 +2,13 @@
 Esup-Pod - User and Owner data populator from external sources.
 """
 
-from typing import Any, Dict, List, Optional
 import logging
-from ...conf import auth_settings
+from typing import Any, Dict, List, Optional
+
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
+
+from ...conf import auth_settings
 from ...models import AccessGroup, Owner
 from ..ldap_client import get_ldap_conn, get_ldap_entry
 

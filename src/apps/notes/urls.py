@@ -3,8 +3,9 @@ Esup-Pod - Notes application URL configuration.
 """
 
 from rest_framework.routers import SimpleRouter
-from src.apps.notes.views import VideoNoteViewSet
+
 from src.apps.notes.conf import notes_settings
+from src.apps.notes.views import VideoNoteViewSet
 
 router = SimpleRouter()
 

@@ -2,14 +2,16 @@
 Esup-Pod - Tests for migration compatibility.
 """
 
+import hashlib
+
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.test import override_settings
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.conf import settings
-import hashlib
+
 from src.apps.video.models import Video
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
 

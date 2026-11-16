@@ -3,31 +3,31 @@ Esup-Pod - Video administrator interface.
 """
 
 import tagulous.admin
-from django.contrib import admin
 from django import forms
-from django.contrib import messages
+from django.contrib import admin, messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
-from django.core.exceptions import ObjectDoesNotExist
-from src.apps.utils.files import file_size_mb
 
+from src.apps.utils.files import file_size_mb
 from src.apps.video.models import (
-    Video,
-    Type,
-    Discipline,
-    Subtitle,
+    Chapter,
     Comment,
-    ViewCount,
-    Vote,
+    Cursus,
+    Discipline,
     Language,
     License,
-    Cursus,
-    VideoHyperlink,
-    VideoCut,
-    VideoAccessToken,
+    Subtitle,
+    Type,
     UserMarkerTime,
+    Video,
+    VideoAccessToken,
+    VideoCut,
+    VideoHyperlink,
+    ViewCount,
+    Vote,
 )
 
 
@@ -38,6 +38,15 @@ class VideoHyperlinkInline(admin.TabularInline):
     extra = 0
     fields = ("url", "text", "icon", "position", "time_start", "time_end")
     show_change_link = True
+
+
+class ChapterInline(admin.TabularInline):
+    """Inline admin for Chapter inside Video."""
+
+    model = Chapter
+    extra = 0
+    fields = ("title", "time_start")
+    ordering = ("time_start",)
 
 
 class SubtitleInline(admin.TabularInline):
@@ -79,7 +88,7 @@ class VideoAdmin(admin.ModelAdmin):
     )
     raw_id_fields = ("owner", "channel", "license", "cursus", "language", "type")
     date_hierarchy = "created_at"
-    inlines = [VideoHyperlinkInline, SubtitleInline]
+    inlines = [VideoHyperlinkInline, ChapterInline, SubtitleInline]
     fieldsets = (
         (
             _("Core"),

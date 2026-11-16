@@ -2,8 +2,8 @@
 Esup-Pod - Video file utilities.
 """
 
-import shutil
 import os
+import shutil
 
 
 def duplicate_source_file(video_id, src_path, original_name):

@@ -9,8 +9,8 @@ from django.db.models.signals import post_migrate
 def sync_metadata(sender, **kwargs):
     """Sync Cursus, Language, and License from config defaults to DB."""
     try:
-        from src.apps.video.models import Language, License, Cursus
         from src.apps.video.conf import video_settings
+        from src.apps.video.models import Cursus, Language, License
 
         for order, item in enumerate(video_settings.languages):
             Language.objects.get_or_create(

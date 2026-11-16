@@ -2,10 +2,11 @@
 Esup-Pod - Comment serializer.
 """
 
-from rest_framework import serializers
-from drf_spectacular.utils import extend_schema_field
-from django.db.models import Count, Case, When, Value, BooleanField, F
+from django.db.models import BooleanField, Case, Count, F, Value, When
 from django.db.models.functions import Concat
+from drf_spectacular.utils import extend_schema_field
+from rest_framework import serializers
+
 from src.apps.video.models import Comment
 
 

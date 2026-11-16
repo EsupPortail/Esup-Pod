@@ -8,8 +8,8 @@ superusers are properly flagged.
 
 from unittest.mock import patch
 
-from django.test import RequestFactory, TestCase
 from django.contrib.auth import get_user_model
+from django.test import RequestFactory, TestCase
 
 from ..IPRestrictionMiddleware import IPRestrictionMiddleware, ip_in_allowed_range
 

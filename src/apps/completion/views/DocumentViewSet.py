@@ -2,18 +2,18 @@
 Esup-Pod - Document viewset.
 """
 
-from rest_framework import viewsets, permissions, filters, parsers, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.exceptions import PermissionDenied
-from django.http import FileResponse
 from django.db.models import Q
+from django.http import FileResponse
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, parsers, permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.response import Response
 
 from src.apps.completion.models import Document
-from src.apps.completion.serializers import DocumentSerializer
 from src.apps.completion.permissions import CanManageDocument
+from src.apps.completion.serializers import DocumentSerializer
 
 
 class DocumentViewSet(viewsets.ModelViewSet):

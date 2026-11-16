@@ -3,9 +3,11 @@ Esup-Pod - Video view count model.
 """
 
 from datetime import date
+
 from django.db import models
-from src.apps.video.models import Video
 from django.utils.translation import gettext_lazy as _
+
+from src.apps.video.models import Video
 
 
 class ViewCount(models.Model):

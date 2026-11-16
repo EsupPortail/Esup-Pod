@@ -18,8 +18,8 @@ Exit codes:
 """
 
 import os
-import sys
 import subprocess
+import sys
 
 
 def run_command(command: str, description: str) -> None:
@@ -50,6 +50,7 @@ def setup_superuser() -> None:
 
     from django.contrib.auth import get_user_model
     from django.contrib.sites.models import Site
+
     from src.apps.authentication.models import Owner
 
     User = get_user_model()

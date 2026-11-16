@@ -2,12 +2,12 @@
 Esup-Pod - Completion serializers tests.
 """
 
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 
-from src.apps.video.models import Video
 from src.apps.completion.models import Overlay
 from src.apps.completion.serializers import OverlaySerializer
+from src.apps.video.models import Video
 
 User = get_user_model()
 

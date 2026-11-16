@@ -3,6 +3,7 @@ Esup-Pod - Serializer for the VideoHyperlink model.
 """
 
 from rest_framework import serializers
+
 from src.apps.video.models import VideoHyperlink
 
 

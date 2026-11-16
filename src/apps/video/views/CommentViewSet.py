@@ -2,11 +2,12 @@
 Esup-Pod - Comment views.
 """
 
-from rest_framework import viewsets, permissions, status
-from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
-from src.apps.video.models import Video, Comment, Vote
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from rest_framework import permissions, status, viewsets
+from rest_framework.response import Response
+
+from src.apps.video.models import Comment, Video, Vote
 from src.apps.video.serializers import CommentSerializer
 
 

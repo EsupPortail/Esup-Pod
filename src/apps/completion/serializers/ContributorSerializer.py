@@ -3,6 +3,7 @@ Esup-Pod - Contributor serializer.
 """
 
 from rest_framework import serializers
+
 from src.apps.completion.models import Contributor
 
 

@@ -3,6 +3,7 @@ Esup-Pod - Video permissions.
 """
 
 from rest_framework import permissions
+
 from .conf import video_settings
 
 

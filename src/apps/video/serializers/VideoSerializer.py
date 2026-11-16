@@ -3,23 +3,25 @@ Esup-Pod - Video serializer.
 """
 
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers
-from drf_spectacular.utils import extend_schema_field
-from src.apps.video.models import Video, Type, Discipline
-from .SubtitleSerializer import SubtitleSerializer
 from django.contrib.auth.hashers import make_password
-from src.apps.encoding.conf import encoding_settings
-from src.apps.video.conf import video_settings
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema_field
+from rest_framework import serializers
+
 from src.apps.authentication.models import AccessGroup
-from src.apps.collection.models import Theme, ThemeItem, Channel
+from src.apps.collection.models import Channel, Theme, ThemeItem
 from src.apps.completion.serializers import (
     ContributionSerializer,
-    OverlaySerializer,
     DocumentSerializer,
+    OverlaySerializer,
 )
+from src.apps.encoding.conf import encoding_settings
+from src.apps.video.conf import video_settings
+from src.apps.video.models import Discipline, Type, Video
+
 from .DisciplineSerializer import DisciplineSerializer
 from .HyperlinkSerializer import VideoHyperlinkSerializer
+from .SubtitleSerializer import SubtitleSerializer
 
 User = get_user_model()
 

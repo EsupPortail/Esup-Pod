@@ -3,6 +3,7 @@ Esup-Pod - Import Video configuration.
 """
 
 from typing import Tuple, Type
+
 from django.utils.translation import gettext as _
 from pydantic import Field
 from pydantic_settings import (
@@ -10,6 +11,7 @@ from pydantic_settings import (
     PydanticBaseSettingsSource,
     SettingsConfigDict,
 )
+
 from src.apps.utils.conf import DjangoSettingsSource
 from src.config.defaults import import_video as defaults
 

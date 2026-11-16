@@ -3,7 +3,8 @@ Esup-Pod - Admin configuration for the collection app.
 """
 
 from django.contrib import admin
-from .models import Channel, Theme, ThemeItem, Playlist, PlaylistItem, Favorite
+
+from .models import Channel, Favorite, Playlist, PlaylistItem, Theme, ThemeItem
 
 
 class ThemeItemInline(admin.TabularInline):

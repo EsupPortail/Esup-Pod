@@ -3,6 +3,7 @@ Esup-Pod - Dressing permissions.
 """
 
 from rest_framework import permissions
+
 from src.apps.dressing.conf import dressing_settings
 
 

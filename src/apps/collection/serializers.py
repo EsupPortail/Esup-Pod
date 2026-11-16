@@ -2,16 +2,17 @@
 Esup-Pod - Serializers for the distinct collection models.
 """
 
-from rest_framework import serializers
-from drf_spectacular.utils import extend_schema_field
 from django.contrib.auth import get_user_model
+from drf_spectacular.utils import extend_schema_field
+from rest_framework import serializers
+
 from src.apps.collection.models import (
     Channel,
-    Theme,
-    ThemeItem,
+    Favorite,
     Playlist,
     PlaylistItem,
-    Favorite,
+    Theme,
+    ThemeItem,
 )
 from src.apps.video.serializers import VideoSerializer
 

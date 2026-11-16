@@ -2,9 +2,9 @@
 Esup-Pod - Video application views tests.
 """
 
-from unittest.mock import patch
-import tempfile
 import shutil
+import tempfile
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -13,8 +13,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from src.apps.video.models import Video, Subtitle, Type, Discipline
 from src.apps.authentication.models import AccessGroup
+from src.apps.video.models import Discipline, Subtitle, Type, Video
 
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp()

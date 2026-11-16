@@ -4,9 +4,10 @@ Represents a clickable hyperlink overlay displayed on a video at a given time ra
 """
 
 import uuid
+
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 
 class VideoHyperlink(models.Model):

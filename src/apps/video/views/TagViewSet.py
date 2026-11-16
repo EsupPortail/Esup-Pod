@@ -2,8 +2,8 @@
 Esup-Pod - Tag viewset.
 """
 
-from rest_framework import filters, viewsets
 from drf_spectacular.utils import extend_schema, extend_schema_view
+from rest_framework import filters, viewsets
 
 from src.apps.video.models import Video
 from src.apps.video.permissions import IsStaffOrReadOnly

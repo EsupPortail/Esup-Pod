@@ -18,14 +18,14 @@ Exit Codes:
     - 1: Critical errors detected (missing keys in code, import errors, etc.).
 """
 
+import importlib
+import inspect
 import json
 import os
 import sys
-import importlib
-import inspect
 
-from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.core.management.base import BaseCommand
 from pydantic_settings import BaseSettings
 
 

@@ -11,6 +11,7 @@ USER_VIDEO_CATEGORY = False
 WEBTV_MODE = False
 USE_DUPLICATE = False
 USE_HYPERLINKS = False
+USE_CHAPTERS = True
 USE_CUT = False
 USE_DUBLIN_CORE = True
 OAI_PMH_REPOSITORY_NAME = ""  # Nom du dépôt OAI (ex: "Pod - Université de Lille")

@@ -3,9 +3,11 @@ Esup-Pod - Notes configuration.
 """
 
 from typing import Tuple, Type
+
 from django.utils.translation import gettext as _
 from pydantic import Field
 from pydantic_settings import BaseSettings, PydanticBaseSettingsSource, SettingsConfigDict
+
 from src.apps.utils.conf import DjangoSettingsSource
 from src.config.defaults import notes as defaults
 

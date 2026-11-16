@@ -3,8 +3,9 @@ Esup-Pod - Dressing views tests.
 """
 
 import pytest
-from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
+from rest_framework.test import APIClient
+
 from src.apps.dressing.models import Dressing
 
 User = get_user_model()
@@ -114,9 +115,10 @@ class TestDressingViewSet:
 
     def test_credits_duration_validation(self, api_client, user):
         """Test validation of opening/ending credits video duration limits."""
+        from django.core.files.base import ContentFile
+
         from src.apps.dressing.conf import dressing_settings
         from src.apps.video.models import Video
-        from django.core.files.base import ContentFile
 
         # Create mock videos with durations exceeding and within the limit
         limit = dressing_settings.max_credits_duration_seconds
@@ -152,9 +154,11 @@ class TestDressingViewSet:
 
     def test_watermark_size_validation(self, api_client, user):
         """Test validation of watermark size limits."""
-        from src.apps.utils.models import CustomImageModel
         from unittest.mock import patch
+
         from django.core.files.base import ContentFile
+
+        from src.apps.utils.models import CustomImageModel
 
         img = CustomImageModel.objects.create(
             file=ContentFile(b"fake image content", name="watermark.png")

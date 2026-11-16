@@ -3,6 +3,7 @@ Esup-Pod - Service for resolving legacy V4 collection links.
 """
 
 from django.urls import reverse
+
 from src.apps.collection.models import Channel, Theme
 
 

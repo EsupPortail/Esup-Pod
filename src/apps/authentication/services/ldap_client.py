@@ -3,13 +3,15 @@ Esup-Pod - LDAP client service.
 """
 
 import logging
-
 from typing import Any, Optional
-from ..conf import auth_settings
-from config.env import env
-from src.config.defaults import authentication as defaults
+
 from ldap3 import ALL, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPBindError, LDAPException, LDAPSocketOpenError
+
+from config.env import env
+from src.config.defaults import authentication as defaults
+
+from ..conf import auth_settings
 
 logger = logging.getLogger(__name__)
 

@@ -2,10 +2,10 @@
 Esup-Pod - Subtitle viewset.
 """
 
-from rest_framework import viewsets, permissions, parsers
-from rest_framework.exceptions import PermissionDenied
 from django.contrib.sites.shortcuts import get_current_site
-from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_view
+from rest_framework import parsers, permissions, viewsets
+from rest_framework.exceptions import PermissionDenied
 
 from src.apps.video.models import Subtitle
 from src.apps.video.serializers import SubtitleSerializer

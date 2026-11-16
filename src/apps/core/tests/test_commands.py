@@ -16,6 +16,7 @@ from django.core.management import call_command
 from django.test import TestCase, override_settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
+
 from src.apps.authentication.models import Owner
 
 User = get_user_model()

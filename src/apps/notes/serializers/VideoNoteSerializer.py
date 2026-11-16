@@ -3,6 +3,7 @@ Esup-Pod - VideoNote serializer.
 """
 
 from rest_framework import serializers
+
 from src.apps.notes.models import VideoNote
 
 

@@ -7,8 +7,8 @@ MultiValueCharFilter for all applicable fields.
 """
 
 import django_filters
-from django_filters import rest_framework as filters
 from django.utils.translation import gettext_lazy as _
+from django_filters import rest_framework as filters
 
 from src.apps.collection.models import Channel, Playlist
 

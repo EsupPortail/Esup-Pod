@@ -5,15 +5,17 @@ Typed and validated configuration for the collection app using pydantic-settings
 """
 
 from typing import Tuple, Type
+
+from django.utils.translation import gettext_lazy as _
 from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
     PydanticBaseSettingsSource,
     SettingsConfigDict,
 )
+
 from src.apps.utils.conf import DjangoSettingsSource
 from src.config.defaults import collection as defaults
-from django.utils.translation import gettext_lazy as _
 
 
 class CollectionConfig(BaseSettings):

@@ -3,9 +3,10 @@ Esup-Pod - Completion admin.
 """
 
 from django.contrib import admin
+
 from src.apps.completion.models import (
-    Contributor,
     Contribution,
+    Contributor,
     Document,
     Overlay,
     Role,

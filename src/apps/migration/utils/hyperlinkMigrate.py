@@ -8,8 +8,9 @@
 from html import unescape
 
 from django.db import connections, transaction
-from src.apps.video.models import VideoHyperlink
+
 from src.apps.migration.models import VideoMapping
+from src.apps.video.models import VideoHyperlink
 
 
 def hyperlinkMigrate(self, *args, **kwargs):

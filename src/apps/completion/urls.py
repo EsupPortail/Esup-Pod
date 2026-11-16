@@ -3,9 +3,10 @@ Esup-Pod - Completion URLs.
 """
 
 from rest_framework.routers import SimpleRouter
+
 from src.apps.completion.views import (
-    ContributorViewSet,
     ContributionViewSet,
+    ContributorViewSet,
     DocumentViewSet,
     OverlayViewSet,
     RoleViewSet,

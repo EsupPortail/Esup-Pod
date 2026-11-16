@@ -10,8 +10,8 @@ import logging
 import os
 import sys
 
-from django.core.wsgi import get_wsgi_application
 from django.core.exceptions import ImproperlyConfigured
+from django.core.wsgi import get_wsgi_application
 
 from config.env import env
 

@@ -2,14 +2,14 @@
 Esup-Pod - Comment model.
 """
 
-from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext_lazy as _
-from django.db.models import Count, Case, When, Value, BooleanField
-from django.db.models.functions import Concat
-from .Video import Video
-
 from django.core.files.storage import default_storage
+from django.db import models
+from django.db.models import BooleanField, Case, Count, Value, When
+from django.db.models.functions import Concat
+from django.utils.translation import gettext_lazy as _
+
+from .Video import Video
 
 User = get_user_model()
 

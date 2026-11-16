@@ -2,39 +2,39 @@
 Esup-Pod - Viewsets for distinct collection models.
 """
 
-from rest_framework import viewsets, permissions, filters, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import (
-    extend_schema,
-    extend_schema_view,
     OpenApiParameter,
     OpenApiResponse,
+    extend_schema,
+    extend_schema_view,
 )
+from rest_framework import filters, permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
+from src.apps.collection.filters import ChannelFilterSet, PlaylistFilterSet
 from src.apps.collection.models import (
     Channel,
-    Theme,
+    Favorite,
     Playlist,
     PlaylistItem,
-    Favorite,
+    Theme,
+)
+from src.apps.collection.permissions import (
+    IsAdminOrThemeOwner,
+    IsChannelOwnerOrCollaboratorOrReadOnly,
+    IsOwnerOrReadOnly,
 )
 from src.apps.collection.serializers import (
     ChannelSerializer,
-    ThemeSerializer,
-    PlaylistSerializer,
     FavoriteSerializer,
-)
-from src.apps.collection.permissions import (
-    IsOwnerOrReadOnly,
-    IsChannelOwnerOrCollaboratorOrReadOnly,
-    IsAdminOrThemeOwner,
+    PlaylistSerializer,
+    ThemeSerializer,
 )
 from src.apps.video.models import Video
-from django_filters.rest_framework import DjangoFilterBackend
-from src.apps.collection.filters import ChannelFilterSet, PlaylistFilterSet
 
 
 @extend_schema_view(
@@ -231,8 +231,9 @@ class PlaylistViewSet(viewsets.ModelViewSet):
                     "password"
                 ) or self.request.headers.get("X-Playlist-Password")
                 if provided:
-                    from django.contrib.auth.hashers import check_password, make_password
                     import hashlib
+
+                    from django.contrib.auth.hashers import check_password, make_password
 
                     if check_password(provided, instance.password):
                         context["password_verified"] = True

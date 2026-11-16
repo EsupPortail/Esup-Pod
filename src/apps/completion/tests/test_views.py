@@ -7,8 +7,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from src.apps.completion.models import Contribution, Contributor, Overlay
 from src.apps.video.models import Video
-from src.apps.completion.models import Contributor, Contribution, Overlay
 
 User = get_user_model()
 

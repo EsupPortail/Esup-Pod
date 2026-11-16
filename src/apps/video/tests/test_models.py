@@ -2,23 +2,24 @@
 Esup-Pod - Video models tests.
 """
 
+import datetime
 import os
-from django.test import TestCase
+
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase
+
+from src.apps.collection.models.Channel import Channel
+from src.apps.encoding.models.EncodingVideo import EncodingVideo
+from src.apps.video.apps import sync_metadata
 from src.apps.video.models import (
-    Video,
-    ViewCount,
     Comment,
     Subtitle,
-    VideoHyperlink,
+    Video,
     VideoCut,
+    VideoHyperlink,
+    ViewCount,
 )
-from src.apps.encoding.models.EncodingVideo import EncodingVideo
-from src.apps.collection.models.Channel import Channel
-import datetime
-
-from src.apps.video.apps import sync_metadata
 
 User = get_user_model()
 

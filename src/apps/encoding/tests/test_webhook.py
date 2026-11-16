@@ -6,10 +6,11 @@ ensuring that video status and files are correctly updated upon task completion.
 """
 
 import tempfile
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.files import File
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase

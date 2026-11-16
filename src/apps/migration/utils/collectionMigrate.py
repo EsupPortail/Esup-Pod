@@ -14,14 +14,15 @@ recréée (voir _resolve_or_recreate_theme_mapping).
 from html import unescape
 
 from django.db import connections, transaction
+
 from src.apps.collection.models import Channel, Favorite, Playlist, Theme
 from src.apps.collection.models.Playlist import PlaylistItem
 from src.apps.migration.models import (
-    UserMapping,
-    VideoMapping,
     ChannelMapping,
     PlaylistMapping,
     ThemeMapping,
+    UserMapping,
+    VideoMapping,
 )
 
 

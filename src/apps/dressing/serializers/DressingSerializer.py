@@ -2,10 +2,11 @@
 Esup-Pod - Dressing serializers.
 """
 
-from rest_framework import serializers
 from django.utils.translation import gettext as _
-from src.apps.dressing.models import Dressing
+from rest_framework import serializers
+
 from src.apps.dressing.conf import dressing_settings
+from src.apps.dressing.models import Dressing
 from src.apps.utils.models import CustomImageModel
 
 

@@ -4,7 +4,8 @@ Esup-Pod - Video Hyperlink API tests.
 
 from django.contrib.auth import get_user_model
 from rest_framework import status
-from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
+from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
+
 from src.apps.video.models import Video, VideoHyperlink
 from src.apps.video.views.HyperlinkViewSet import VideoHyperlinkViewSet
 

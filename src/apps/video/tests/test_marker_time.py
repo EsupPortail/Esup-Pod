@@ -2,15 +2,15 @@
 Esup-Pod - UserMarkerTime tests.
 """
 
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 from rest_framework.test import APITestCase
 
-from unittest.mock import patch
-
 from src.apps.video.apps import sync_metadata
-from src.apps.video.models import UserMarkerTime, Video
 from src.apps.video.conf import video_settings
+from src.apps.video.models import UserMarkerTime, Video
 
 User = get_user_model()
 

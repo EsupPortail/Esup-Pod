@@ -4,6 +4,7 @@ Source of truth for default values for Authentication app.
 """
 
 from datetime import timedelta
+
 from config.env import env
 
 # Feature Flags

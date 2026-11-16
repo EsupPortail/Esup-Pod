@@ -2,15 +2,16 @@
 Esup-Pod - VideoCut viewset.
 """
 
-from rest_framework import viewsets, status
-from rest_framework.mixins import CreateModelMixin, DestroyModelMixin
-from rest_framework.exceptions import NotFound, PermissionDenied
-from rest_framework.response import Response
-from src.apps.video.models import Video
-from src.apps.video.serializers import VideoCutSerializer
-from src.apps.video.conf import video_settings
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
+from rest_framework import status, viewsets
+from rest_framework.exceptions import NotFound, PermissionDenied
+from rest_framework.mixins import CreateModelMixin, DestroyModelMixin
+from rest_framework.response import Response
+
+from src.apps.video.conf import video_settings
+from src.apps.video.models import Video
+from src.apps.video.serializers import VideoCutSerializer
 
 
 class VideoCutViewSet(CreateModelMixin, DestroyModelMixin, viewsets.GenericViewSet):

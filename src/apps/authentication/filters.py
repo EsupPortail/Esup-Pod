@@ -5,9 +5,9 @@ Provides generic, reusable FilterSet classes for User, Owner, and AccessGroup mo
 """
 
 import django_filters
-from django_filters import rest_framework as filters
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
+from django_filters import rest_framework as filters
 
 from src.apps.authentication.models import AccessGroup
 

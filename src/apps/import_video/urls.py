@@ -3,8 +3,9 @@ Esup-Pod - Import Video application URL configuration.
 """
 
 from rest_framework.routers import SimpleRouter
-from src.apps.import_video.views import ExternalRecordingViewSet
+
 from src.apps.import_video.conf import import_video_settings
+from src.apps.import_video.views import ExternalRecordingViewSet
 
 router = SimpleRouter()
 

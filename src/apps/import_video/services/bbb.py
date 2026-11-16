@@ -4,6 +4,7 @@ Esup-Pod - BigBlueButton import service.
 
 import logging
 import re
+
 import requests
 from bs4 import BeautifulSoup
 from django.utils.translation import gettext_lazy as _

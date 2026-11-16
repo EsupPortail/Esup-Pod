@@ -3,6 +3,7 @@ Esup-Pod - Import Video administrator interface.
 """
 
 from django.contrib import admin
+
 from src.apps.import_video.models import ExternalRecording
 
 
