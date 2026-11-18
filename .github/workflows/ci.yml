@@ -17,9 +17,9 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: "pip"
@@ -38,7 +38,7 @@ jobs:
         if: >-
           github.ref_name != 'main' && github.ref_name != 'dev_v5' &&
           github.actor != 'dependabot[bot]'
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "style: Auto-format code with Black"
           commit_user_name: "github-actions[bot]"
@@ -58,12 +58,12 @@ jobs:
       VERSION: ${{ github.sha }}
       DJANGO_SETTINGS_MODULE: config.django.dev.docker
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.ref_name }}
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
