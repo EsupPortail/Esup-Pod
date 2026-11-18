@@ -1,11 +1,11 @@
-# Esup Pod main dutch strings.
+# Esup-Pod main Dutch strings.
 # This file is distributed under the same license as the POD package.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-29 10:14+0100\n"
+"POT-Creation-Date: 2026-11-18 15:02+0100\n"
 "PO-Revision-Date: 2025-10-09 14:19+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -3097,6 +3097,11 @@ msgstr ""
 msgid "Video file not uploaded to Pod"
 msgstr ""
 
+#: pod/live/admin.py
+#, python-format
+msgid "%(field)s: the assigned manager \"%(manager)s\" is marked as inactive."
+msgstr ""
+
 #: pod/live/admin.py pod/live/models.py
 msgid "QR code to record immediately an event"
 msgstr ""
@@ -3134,6 +3139,22 @@ msgstr ""
 #: pod/live/apps.py pod/live/templates/live/direct.html
 #: pod/live/templates/live/directs.html pod/main/templates/navbar.html
 msgid "Lives"
+msgstr ""
+
+#: pod/live/cache_config.py
+msgid ""
+"As in the standard Esup-Pod configuration, CACHES['default'] must use the "
+"same Redis on all frontends to share Live state."
+msgstr ""
+
+#: pod/live/cache_config.py
+msgid ""
+"The cache CACHES['default'] must be shared to add or change a secondary "
+"runner manager. Existing assignments are preserved."
+msgstr ""
+
+#: pod/live/forms.py pod/video_encode_transcript/admin.py
+msgid "Inactive"
 msgstr ""
 
 #: pod/live/forms.py pod/live/models.py
@@ -3235,12 +3256,23 @@ msgstr ""
 msgid "Fixed stream URL. Required only in fixed URL mode."
 msgstr ""
 
-#: pod/live/models.py pod/video_encode_transcript/models.py
-msgid "Runner manager"
+#: pod/live/models.py
+msgid "Primary runner manager"
 msgstr ""
 
 #: pod/live/models.py
 msgid "Select the manager receiving this broadcaster's RTMP stream."
+msgstr ""
+
+#: pod/live/models.py
+msgid "Secondary runner manager"
+msgstr ""
+
+#: pod/live/models.py
+msgid ""
+"Optional fallback when the primary has no RTMP publication, or after 30 "
+"seconds of primary manager downtime. Both managers use the same Live source "
+"ID. Playback returns to the primary when its HLS is ready."
 msgstr ""
 
 #: pod/live/models.py
@@ -3315,19 +3347,29 @@ msgid "Select a runner manager for Live mode."
 msgstr ""
 
 #: pod/live/models.py
-msgid "Select a manager that supports Live mode."
-msgstr ""
-
-#: pod/live/models.py
 msgid "Enter the source ID for Live mode."
 msgstr ""
 
 #: pod/live/models.py
-msgid "The manager must belong to a building site."
+msgid "The secondary manager must differ from the primary manager."
 msgstr ""
 
 #: pod/live/models.py
 msgid "Enter a stream URL for fixed URL mode."
+msgstr ""
+
+#: pod/live/models.py
+msgid ""
+"Configure shared Redis in CACHES['default'] before adding or changing a "
+"secondary runner manager."
+msgstr ""
+
+#: pod/live/models.py
+msgid "Select a manager that supports Live mode."
+msgstr ""
+
+#: pod/live/models.py
+msgid "The manager must belong to a building site."
 msgstr ""
 
 #: pod/live/models.py
@@ -10233,6 +10275,7 @@ msgstr ""
 
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
+#: pod/video/templates/videos/video_processing_warnings.html
 msgid ""
 "Part of the video is missing: the resulting video is shorter than expected. "
 "Please check the source file and re-upload a valid, complete video file."
@@ -10394,6 +10437,10 @@ msgstr ""
 #: pod/video/templates/videos/video_page_content.html
 msgid "The form does not contain a video."
 msgstr ""
+
+#: pod/video/templates/videos/video_processing_warnings.html
+msgid "This video was processed with warnings. Please check the result."
+msgstr "Deze video is verwerkt met waarschuwingen. Controleer het resultaat."
 
 #: pod/video/templates/videos/video_queue_runner_manager.html
 msgid "Queue rank:"
@@ -10846,10 +10893,6 @@ msgid "Active"
 msgstr ""
 
 #: pod/video_encode_transcript/admin.py
-msgid "Inactive"
-msgstr ""
-
-#: pod/video_encode_transcript/admin.py
 #: pod/video_encode_transcript/templates/admin_test_connection.html
 msgid "Runner administration"
 msgstr ""
@@ -11022,7 +11065,9 @@ msgid "Priority"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
-msgid "Priority of the runner manager. Lower values indicate higher priority."
+msgid ""
+"Runner manager priority for encoding, transcription and Studio tasks only. "
+"Lower values indicate higher priority."
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
@@ -11055,6 +11100,10 @@ msgstr ""
 
 #: pod/video_encode_transcript/models.py
 msgid "Example format: 6YqG_73xt-9s8v5aBz"
+msgstr ""
+
+#: pod/video_encode_transcript/models.py
+msgid "Runner manager"
 msgstr ""
 
 #: pod/video_encode_transcript/models.py
