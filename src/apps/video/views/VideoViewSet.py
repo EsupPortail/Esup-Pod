@@ -14,12 +14,6 @@ from django.db import transaction
 from django.db.models import F, Q, Sum
 from django.http import FileResponse, Http404
 
-from rest_framework import viewsets, permissions, parsers, filters, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.exceptions import PermissionDenied, ValidationError, NotFound
-
-
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import (
