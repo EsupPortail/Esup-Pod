@@ -82,7 +82,8 @@ class ConfigInfoView(APIView):
         for field_name, field_info in settings_instance.model_fields.items():
             extra = field_info.json_schema_extra or {}
             if extra.get("public") is True:
-                public_config[field_name] = getattr(settings_instance, field_name)
+                public_name = extra.get("public_name", field_name)
+                public_config[public_name] = getattr(settings_instance, field_name)
         return public_config
 
     @staticmethod

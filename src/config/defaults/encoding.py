@@ -33,6 +33,8 @@ ALLOWED_EXTENSIONS = (
     "webm",
     "ts",
 )
+ALLOWED_IMAGE_EXTENSIONS = ("png", "jpg", "jpeg", "webp")
+ALLOWED_SUBTITLE_EXTENSIONS = ("vtt", "srt")
 VIDEO_REQUIRED_FIELDS = []
 
 # Webhook behavior

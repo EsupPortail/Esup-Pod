@@ -36,9 +36,9 @@ from src.apps.collection.models import (
     Theme,
     ThemeItem,
 )
+from src.apps.layout.models import BlockConfig
 from src.apps.encoding.conf import encoding_settings
 from src.apps.encoding.models import EncodingVideo
-from src.apps.layout.models import BlockConfig
 from src.apps.video.models import (
     Chapter,
     Comment,

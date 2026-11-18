@@ -20,7 +20,7 @@ class Role(models.Model):
     order = models.PositiveIntegerField(_("Order"), default=0)
 
     class Meta:
-        """Role metadata."""
+        """Meta options for Role."""
 
         ordering = ["order", "label"]
         verbose_name = _("Role")

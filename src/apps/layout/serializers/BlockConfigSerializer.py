@@ -3,7 +3,6 @@ Esup-Pod - BlockConfig serializers.
 """
 
 from rest_framework import serializers
-
 from src.apps.layout.models import BlockConfig
 
 

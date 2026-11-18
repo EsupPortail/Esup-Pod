@@ -39,7 +39,17 @@ class EncodingConfig(BaseSettings):
     allowed_extensions: Tuple[str, ...] = Field(
         default=defaults.ALLOWED_EXTENSIONS,
         description=_("Allowed video file extensions."),
-        json_schema_extra={"public": True},
+        json_schema_extra={"public": True, "public_name": "video_allowed_extensions"},
+    )
+    allowed_image_extensions: Tuple[str, ...] = Field(
+        default=defaults.ALLOWED_IMAGE_EXTENSIONS,
+        description=_("Allowed image file extensions."),
+        json_schema_extra={"public": True, "public_name": "img_allowed_extensions"},
+    )
+    allowed_subtitle_extensions: Tuple[str, ...] = Field(
+        default=defaults.ALLOWED_SUBTITLE_EXTENSIONS,
+        description=_("Allowed subtitle file extensions."),
+        json_schema_extra={"public": True, "public_name": "subtitle_allowed_extensions"},
     )
     video_required_fields: List[str] = Field(
         default=defaults.VIDEO_REQUIRED_FIELDS,

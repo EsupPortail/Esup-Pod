@@ -6,12 +6,16 @@ ensure_superuser, validate_config, and createconfiguration.
 """
 
 import os
+import shutil
+import tempfile
 from io import StringIO
+from pathlib import Path
 
+from django.conf import settings
+from django.core.management import call_command
+from django.test import TestCase, override_settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
-from django.core.management import call_command
-from django.test import TestCase
 
 from src.apps.authentication.models import Owner
 
@@ -119,5 +123,19 @@ class CreateConfigurationTests(TestCase):
         Tests that createconfiguration can generate configuration documentation.
         """
         out = StringIO()
-        call_command("createconfiguration", "en", stdout=out)
-        self.assertIn("configuration", out.getvalue().lower())
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_base = Path(temp_dir)
+            config_file = temp_base / "src" / "apps" / "core" / "configuration.json"
+            config_file.parent.mkdir(parents=True)
+            shutil.copy(
+                settings.BASE_DIR / "src" / "apps" / "core" / "configuration.json",
+                config_file,
+            )
+
+            with override_settings(BASE_DIR=temp_base):
+                call_command("createconfiguration", "en", stdout=out)
+
+            generated_file = temp_base / "docs" / "CONFIGURATION_EN.md"
+            self.assertTrue(generated_file.is_file())
+            self.assertIn("configuration", generated_file.read_text().lower())
+        self.assertIn("successfully export configuration", out.getvalue().lower())

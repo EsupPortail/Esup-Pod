@@ -13,6 +13,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.db import transaction
 from django.db.models import F, Q, Sum
 from django.http import FileResponse, Http404
+
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import (
@@ -312,7 +313,6 @@ class VideoViewSet(viewsets.ModelViewSet):
         self._check_stream_permissions(request, video)
 
         import uuid
-
         from django.core.cache import cache
 
         token = str(uuid.uuid4())
