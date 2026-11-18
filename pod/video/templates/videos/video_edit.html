@@ -98,6 +98,8 @@
         </div>
       {% endif %}
 
+      {% include "videos/video_processing_warnings.html" with video=form.instance USE_RUNNER_MANAGER=USE_RUNNER_MANAGER only %}
+
       {% if form.instance.get_encoding_step == "5 : transcripting audio" %}
         <p class="text-info-emphasis">
           {% trans "The video is currently being transcripted." %}
