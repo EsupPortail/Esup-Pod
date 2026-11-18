@@ -270,6 +270,31 @@ test("new viewers wait for HLS confirmation while the manager is unavailable", a
   assert.equal(live.status.hidden, true);
 });
 
+test("secondary playback continues during primary startup and ready primary HLS takes priority", async () => {
+  const primary = ready();
+  const secondary = { ...ready("secondary-live", "https://backup.example.com/master.m3u8"), retryable: true };
+  const live = await setup([
+    primary,
+    { state: "manager_unavailable", hls_ready: false, hls_url: null, retryable: true },
+    secondary,
+    secondary,
+    secondary,
+    primary,
+  ]);
+  await live.tick();
+  assert.equal(live.player.currentSrc(), primary.hls_url);
+  assert.equal(live.resets, 0);
+  await live.tick(10000);
+  assert.equal(live.player.currentSrc(), secondary.hls_url);
+  await live.tick(10000);
+  assert.equal(live.sources.length, 2);
+  await live.tick(10000);
+  assert.equal(live.player.currentSrc(), secondary.hls_url);
+  assert.equal(live.resets, 0);
+  await live.tick(10000);
+  assert.equal(live.player.currentSrc(), primary.hls_url);
+});
+
 test("failed media retries its existing URL while manager discovery is down", async () => {
   const live = await setup([ready(), {
     state: "manager_unavailable", hls_ready: false, hls_url: null, retryable: true,
