@@ -29,6 +29,7 @@ from pod.main.utils import generate_qrcode
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video, Type
+from pod.live.cache_config import has_incompatible_live_cache
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
@@ -176,8 +177,22 @@ class Broadcaster(models.Model):
         limit_choices_to={"supports_live": True},
         blank=True,
         null=True,
-        verbose_name=_("Runner manager"),
+        verbose_name=_("Primary runner manager"),
         help_text=_("Select the manager receiving this broadcaster's RTMP stream."),
+    )
+    secondary_runner_manager = models.ForeignKey(
+        "video_encode_transcript.RunnerManager",
+        on_delete=models.PROTECT,
+        related_name="secondary_live_broadcasters",
+        limit_choices_to={"supports_live": True},
+        blank=True,
+        null=True,
+        verbose_name=_("Secondary runner manager"),
+        help_text=_(
+            "Optional fallback when the primary has no RTMP publication, or after "
+            "30 seconds of primary manager downtime. Both managers use the same Live "
+            "source ID. Playback returns to the primary when its HLS is ready."
+        ),
     )
     source_id = models.CharField(
         _("Live source ID"),
@@ -267,29 +282,63 @@ class Broadcaster(models.Model):
     def clean(self) -> None:
         """Validate the stream configuration required by the selected playback mode."""
         super().clean()
-        errors = {}
+        errors = self._secondary_cache_errors()
         if self.is_runner_live:
+            errors.update(self._live_manager_errors())
             if not self.runner_manager_id:
                 errors["runner_manager"] = _("Select a runner manager for Live mode.")
-            elif not self.runner_manager.supports_live:
-                errors["runner_manager"] = _("Select a manager that supports Live mode.")
             if not self.source_id:
                 errors["source_id"] = _("Enter the source ID for Live mode.")
             if (
                 self.runner_manager_id
-                and self.building_id
-                and not self.building.sites.filter(
-                    pk=self.runner_manager.site_id
-                ).exists()
+                and self.secondary_runner_manager_id == self.runner_manager_id
             ):
-                errors["runner_manager"] = _(
-                    "The manager must belong to a building site."
+                errors["secondary_runner_manager"] = _(
+                    "The secondary manager must differ from the primary manager."
                 )
         elif not self.url:
             errors["url"] = _("Enter a stream URL for fixed URL mode.")
         if errors:
             raise ValidationError(errors)
         self.url = self.url or None
+
+    def _secondary_cache_errors(self) -> dict:
+        """Block new secondary assignments with local caches while preserving old ones."""
+        if not self.secondary_runner_manager_id or not has_incompatible_live_cache():
+            return {}
+        previous = (
+            type(self)
+            .objects.using(self._state.db)
+            .filter(pk=self.pk)
+            .values_list("secondary_runner_manager_id", flat=True)
+            .first()
+            if self.pk is not None
+            else None
+        )
+        if previous == self.secondary_runner_manager_id:
+            return {}
+        return {
+            "secondary_runner_manager": _(
+                "Configure shared Redis in CACHES['default'] before adding or "
+                "changing a secondary runner manager."
+            )
+        }
+
+    def _live_manager_errors(self) -> dict:
+        """Validate Live capability and building sites for both manager roles."""
+        errors = {}
+        for field in ("runner_manager", "secondary_runner_manager"):
+            manager = getattr(self, field)
+            if manager is None:
+                continue
+            if not manager.supports_live:
+                errors[field] = _("Select a manager that supports Live mode.")
+            if (
+                self.building_id
+                and not self.building.sites.filter(pk=manager.site_id).exists()
+            ):
+                errors[field] = _("The manager must belong to a building site.")
+        return errors
 
     def get_stream_info(self) -> dict:
         """Resolve playback through the configured mode without exposing credentials."""
