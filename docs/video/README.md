@@ -74,6 +74,10 @@ A video passes through the following states:
 | **PATCH**     | `/api/videos/{slug}/`               | Update a video (owner/co-owner only).              |
 | **DELETE**    | `/api/videos/{slug}/`               | Delete a video (owner/admin only).                 |
 | **GET**       | `/api/videos/{slug}/stream/`        | Stream the video file directly.                    |
+| **GET**       | `/api/tokens/`                       | List the authenticated user's video access tokens. |
+| **POST**      | `/api/tokens/`                       | Create a share token for an owned video.           |
+| **GET**       | `/api/tokens/resolve/{token}/`        | Validate a public share token.                    |
+| **POST**      | `/api/tokens/{id}/revoke/`           | Revoke a share token.                              |
 | **POST**      | `/api/videos/{slug}/duplicate/`     | Duplicate the video completely (files & metadata). |
 | **POST**      | `/api/videos/{slug}/register_view/` | Increment the view counter.                        |
 | **POST**      | `/api/videos/{slug}/unlock/`        | Unlock a password-protected restricted video.      |
@@ -100,6 +104,11 @@ A video passes through the following states:
 | **DELETE**    | `/api/marker/{video_slug}/reset/`   | Delete the playback position marker.               |
 
 > **Note:** Completion data (contributions, overlays, documents) is automatically embedded in the `GET /api/videos/{slug}/` and `GET /api/videos/` responses. To create or modify these elements, use the dedicated [`/api/completion/`](../completion/README.md) endpoints.
+
+When video access tokens are enabled, token responses include `token_url` and
+`embed_url`. The latter points to the frontend route
+`/video/embed/{token}/`, which must validate the token through
+`GET /api/tokens/resolve/{token}/` before displaying the player.
 
 ## Further Reading
 
