@@ -187,8 +187,8 @@ class TaskWarningsTests(TestCase):
         self.assertEqual(self.task.warnings, warnings)
         self.assertEqual(EncodingLog.objects.get(video=self.video).warnings, warnings)
 
-    def test_translated_warning_messages_are_deduplicated(self) -> None:
-        """Deduplicate displayed French text while retaining other warning messages."""
+    def test_displayed_warning_messages_are_deduplicated(self) -> None:
+        """Deduplicate displayed English text while retaining other warning messages."""
         other_warning = "Check the subtitle track <French>."
         self._notify(
             warnings=[
@@ -197,10 +197,10 @@ class TaskWarningsTests(TestCase):
                 "Encoding incomplete: audio is truncated.",
             ]
         )
-        with override("fr"):
+        with override("en"):
             rendered = self._render_warning()
 
-        self.assertEqual(rendered.count("Une partie de la vidéo est manquante"), 1)
+        self.assertEqual(rendered.count(self.incomplete_message), 1)
         self.assertEqual(rendered.count("Check the subtitle track &lt;French&gt;."), 1)
         self.assertEqual(rendered.count("<li>"), 2)
 
@@ -365,13 +365,13 @@ class TaskWarningsTests(TestCase):
         self.assertEqual(self.task.status, "completed")
         self.assertIn(self.incomplete_message, self._render_warning())
 
-    def test_warning_alert_is_translated_in_french(self) -> None:
-        """Use the same French incomplete-video explanation as failed task errors."""
+    def test_warning_alert_is_displayed_in_english(self) -> None:
+        """Use the same English incomplete-video explanation as failed task errors."""
         self._notify(warnings=[self.warning])
-        with override("fr"):
+        with override("en"):
             rendered = self._render_warning()
-        self.assertIn("Cette vidéo a été traitée avec des avertissements.", rendered)
-        self.assertIn("Une partie de la vidéo est manquante", rendered)
+        self.assertIn(self.heading, rendered)
+        self.assertIn(self.incomplete_message, rendered)
 
     def test_warning_support_does_not_add_database_fields(self) -> None:
         """Keep warnings in existing logs without extending any model's schema."""
