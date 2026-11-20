@@ -9584,6 +9584,10 @@ msgstr ""
 msgid "The file extension is not in the allowed extension:"
 msgstr ""
 
+#: pod/video/templates/videos/add_video.html
+msgid "Unable to read the file. Please select it again."
+msgstr ""
+
 #: pod/video/templates/videos/archive_download.html
 msgid "Archive Download"
 msgstr ""

@@ -1167,9 +1167,6 @@ msgstr ""
 #~ msgid "Your file is ready to upload."
 #~ msgstr "Votre fichier est prêt à être envoyé."
 
-#~ msgid "Unable to read the file. Please select it again."
-#~ msgstr "Impossible de lire le fichier. Veuillez le sélectionner à nouveau."
-
 #~ msgid "You must accept the necessary authorizations to continue."
 #~ msgstr ""
 #~ "Vous devez confirmer disposer des autorisations nécessaires pour "
