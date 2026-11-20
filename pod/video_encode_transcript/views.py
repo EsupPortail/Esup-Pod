@@ -37,7 +37,12 @@ from pod.video_encode_transcript.runner_manager_utils import (
 )
 from pod.video_encode_transcript.task_queue import refresh_pending_task_ranks
 from pod.video_encode_transcript.transcript import save_vtt_and_notify
-from pod.video_encode_transcript.utils import change_encoding_step, send_email_item
+from pod.video_encode_transcript.runner_warnings import format_runner_warnings
+from pod.video_encode_transcript.utils import (
+    add_encoding_log,
+    change_encoding_step,
+    send_email_item,
+)
 
 log = logging.getLogger(__name__)
 
@@ -84,6 +89,7 @@ class NotifyTaskPayload(TypedDict, total=False):
     status: str
     script_output: str
     error_message: str
+    warnings: list[str]
 
 
 class ResultManifest(TypedDict, total=False):
@@ -160,9 +166,10 @@ def _finalize_task_import(
     """Persist result path and import artifacts based on task type."""
     if hasattr(task, "result_path"):
         task.result_path = extracted_dir
-    task.save()
+        task.save(update_fields=["result_path"])
 
     try:
+        video_id = task.video_id
         if task.type == "studio" or getattr(task, "recording_id", None):
             # Studio tasks generate a new Video from the base media before importing artifacts.
             video_id = _create_video_from_studio_task(task)
@@ -177,8 +184,12 @@ def _finalize_task_import(
             _import_transcription_result(task, extracted_vtt_path)
         else:
             store_after_remote_encoding_video(task.video.id)
+        # A completion callback can supply diagnostics while another worker imports.
+        task.refresh_from_db(fields=["script_output"])
+        if video_id and (task.type != "transcription" or task.warnings):
+            add_encoding_log(video_id, format_runner_warnings(task.warnings))
         task.status = "completed"
-        task.save()
+        task.save(update_fields=["status"])
     except Exception as exc:  # noqa: BLE001
         log.error(f"Error while importing result for task {task.id}: {exc}")
 
@@ -265,6 +276,8 @@ def _apply_notify_payload_to_task(task: Task, data: NotifyTaskPayload) -> None:
     the periodic retry.
     """
     notified_status = str(data["status"])
+    if notified_status == "completed" and "warnings" in data:
+        task.update_warnings(data["warnings"])
     update_fields = ["script_output"]
     if notified_status == "completed":
         # A callback may hold a stale instance while another process finishes importing.

@@ -36,16 +36,30 @@ class BroadcasterSerializer(serializers.HyperlinkedModelSerializer):
         required=False,
         allow_null=True,
     )
+    secondary_runner_manager = serializers.PrimaryKeyRelatedField(
+        queryset=RunnerManager.objects.filter(supports_live=True),
+        required=False,
+        allow_null=True,
+    )
 
     def validate(self, attrs):
         """Validate the effective stream configuration, including partial updates."""
-        fields = ("stream_mode", "url", "runner_manager", "source_id", "building")
+        fields = (
+            "stream_mode",
+            "url",
+            "runner_manager",
+            "secondary_runner_manager",
+            "source_id",
+            "building",
+        )
         values = {
             field: attrs.get(field, getattr(self.instance, field, None))
             for field in fields
             if field in attrs or self.instance is not None
         }
-        candidate = Broadcaster(**values)
+        candidate = Broadcaster(
+            pk=self.instance.pk if self.instance is not None else None, **values
+        )
         try:
             candidate.clean()
         except ValidationError as exc:
@@ -74,6 +88,7 @@ class BroadcasterSerializer(serializers.HyperlinkedModelSerializer):
             "broadcaster_url",
             "stream_mode",
             "runner_manager",
+            "secondary_runner_manager",
             "source_id",
             "status",
             "is_restricted",
@@ -128,9 +143,9 @@ class BuildingViewSet(viewsets.ModelViewSet):
 
 
 class BroadcasterViewSet(viewsets.ModelViewSet):
-    queryset = Broadcaster.objects.select_related("runner_manager").order_by(
-        "building", "name"
-    )
+    queryset = Broadcaster.objects.select_related(
+        "runner_manager", "secondary_runner_manager"
+    ).order_by("building", "name")
     serializer_class = BroadcasterSerializer
     lookup_field = "slug"
     filterset_fields = ["source_id"]

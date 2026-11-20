@@ -20,6 +20,7 @@ from pod.progressive_web_app.utils import notify_user
 from pod.video.models import Video
 
 from .models import EncodingLog, EncodingStep
+from .runner_warnings import format_runner_warnings
 
 DEBUG = getattr(settings, "DEBUG", True)
 logger = logging.getLogger(__name__)
@@ -100,6 +101,10 @@ def change_encoding_step(video_id: int, num_step: int, desc: str) -> None:
     )
     encoding_step.num_step = num_step
     encoding_step.desc_step = desc[:255]
+    if num_step == 0 and desc == "start":
+        encoding_log = EncodingLog.objects.filter(video_id=video_id).first()
+        if encoding_log and encoding_log.warnings:
+            add_encoding_log(video_id, format_runner_warnings([]))
     encoding_step.save()
     logger.debug("Video: %s - step: %d - desc: %s" % (video_id, num_step, desc))
 

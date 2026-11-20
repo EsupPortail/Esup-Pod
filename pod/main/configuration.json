@@ -1292,11 +1292,15 @@
                         "en": [
                             "The **Esup-Runner Live** mode is configured in each broadcaster’s administration form.",
                             "Select the `runner_manager` receiving its RTMP stream and enter its `source_id`, independent of the Pod slug.",
+                            "An optional `secondary_runner_manager` must receive the RTMP stream for the same `source_id`. Pod switches to it when the primary has no stream or after 30 seconds of confirmed downtime, then returns to the primary when its HLS is ready.",
+                            "Playback requests detect Live availability; as in the standard Esup-Pod configuration, `CACHES['default']` must use Redis shared by all frontends.",
                             "Fixed URL mode remains the default; the URL is required only in this mode."
                         ],
                         "fr": [
                             "Le mode **Esup-Runner Live** se configure dans l’administration de chaque broadcaster.",
                             "Sélectionner le `runner_manager` recevant son RTMP et renseigner son `source_id`, indépendant du slug Pod.",
+                            "Un `secondary_runner_manager` facultatif doit recevoir le flux RTMP du même `source_id`. Pod bascule dessus si le principal ne reçoit plus de flux ou après 30 secondes de panne confirmée, puis revient au principal dès que son HLS est prêt.",
+                            "La disponibilité est vérifiée lors des requêtes de lecture ; comme dans la configuration standard d’Esup-Pod, `CACHES['default']` doit utiliser un Redis partagé entre tous les frontaux.",
                             "Le mode URL fixe reste le mode par défaut ; l’URL est obligatoire uniquement dans ce mode."
                         ]
                     },

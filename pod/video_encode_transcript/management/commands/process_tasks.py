@@ -333,6 +333,8 @@ class Command(BaseCommand):
             if response.status_code == 200:
                 data = response.json()
                 status = data.get("status")
+                if status == "completed" and "warnings" in data:
+                    task.update_warnings(data["warnings"])
                 log.info(f"Task {task.id} status from runner: {status}")
                 return status
             else:

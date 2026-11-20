@@ -173,6 +173,7 @@ class HLSProbeTests(SimpleTestCase):
         segment = hls_response(b"media")
 
         def chunks():
+            """Fail if the probe consumes media beyond the first nonempty chunk."""
             yield b"media"
             raise AssertionError("The rest of this segment must not be downloaded")
 
@@ -264,13 +265,16 @@ class RunnerLiveOutageTests(SimpleTestCase):
     def test_responding_but_failing_manager_is_distinct_from_unreachable_manager(self):
         """A 503 means HTTP responded; it still permits HLS-backed continuity."""
         self.confirm()
-        error = Mock(status_code=503, json=Mock())
+        error = Mock(
+            status_code=503,
+            json=Mock(return_value={"detail": "private manager diagnostic"}),
+        )
         result = self.outage(error=error)
         self.assertEqual(result["discovery_status"], "error")
         self.assertTrue(result["retryable"])
         self.clock.return_value += 10
         self.assertEqual(self.outage(2, error=error)["hls_url"], HLS_URL)
-        error.json.assert_not_called()
+        self.assertNotIn("private manager diagnostic", str(result))
 
     def test_frozen_and_ended_playlists_are_not_offered_to_new_viewers(self):
         """Do not advertise an archive as a live during a manager outage."""
@@ -381,6 +385,7 @@ class RunnerLiveOutageTests(SimpleTestCase):
         )
 
         def fetch(url, **kwargs):
+            """Trigger a concurrent lookup while another request owns the refresh lock."""
             if "/sources/" in url:
                 pending.append(get_stream_info(self.broadcaster))
                 return Mock(status_code=200, json=Mock(return_value={"live": payload}))
