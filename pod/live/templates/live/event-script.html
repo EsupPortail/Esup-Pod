@@ -120,6 +120,8 @@
       {% if event.broadcaster.is_runner_live %}
         window.PodRunnerLive.start(player, {
           onUnavailable: () => {
+            // Allow the waiting video to return after an already playing live stops.
+            started = false;
             {% if event.video_on_hold.is_video %}
               showWaitingVideo(false);
             {% endif %}
@@ -204,6 +206,13 @@
           show_transcription();
         {% endif %}
       });
+
+      {% if not event.broadcaster.is_runner_live %}
+        // Always select the source through Video.js after registering its handlers.
+        // Otherwise an HLS-capable browser can start the HTML <source> first,
+        // and Video.js adopts native playback without initializing VHS.
+        player.src(liveSource);
+      {% endif %}
 
       {% if can_record %}
         const startRecordBtn = document.getElementById("startrecord");

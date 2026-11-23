@@ -92,16 +92,14 @@ class EventPlaybackTests(SimpleTestCase):
     def test_successive_errors_retry_the_configured_hls_only_once(self):
         """Recover even when currentSrc/currentType are empty after source failure."""
         states = self.playback(["dom", "error", "error", "retry"])
+        configured = {
+            "src": "https://media.example.com/live.m3u8",
+            "type": "application/x-mpegURL",
+        }
+        self.assertEqual(states[0]["liveSources"], [configured])
+        self.assertEqual(states[2]["liveSources"], [configured])
         self.assertEqual(states[2]["pendingRetries"], 1)
-        self.assertEqual(
-            states[3]["liveSources"],
-            [
-                {
-                    "src": "https://media.example.com/live.m3u8",
-                    "type": "application/x-mpegURL",
-                }
-            ],
-        )
+        self.assertEqual(states[3]["liveSources"], [configured, configured])
 
     def test_recovery_cancels_retry_and_keeps_waiting_player_reusable(self):
         """A pending retry must not reset a recovered stream or remove waiting DOM."""
@@ -112,7 +110,7 @@ class EventPlaybackTests(SimpleTestCase):
         )
         self.assertEqual(states[3]["pendingRetries"], 1)
         self.assertEqual(states[5]["pendingRetries"], 0)
-        self.assertEqual(states[5]["liveSources"], [])
+        self.assertEqual(len(states[5]["liveSources"]), 1)
         self.assertEqual(states[5]["waitingDisplay"], "none")
         self.assertEqual(states[6]["waitingDisplay"], "block")
         self.assertEqual(states[6]["waitingSources"], [sources])
@@ -133,7 +131,10 @@ class EventPlaybackTests(SimpleTestCase):
                 "runner-unavailable",
                 "loadedmetadata",
                 "runner-available",
+                "loadeddata",
+                "playing",
                 "runner-unavailable",
+                "runner-available",
                 "playing",
             ],
             sources=sources,
@@ -141,9 +142,12 @@ class EventPlaybackTests(SimpleTestCase):
         )
         self.assertEqual(states[2]["waitingDisplay"], "block")
         self.assertEqual(states[3]["waitingDisplay"], "none")
-        self.assertEqual(states[4]["waitingDisplay"], "block")
+        self.assertEqual(states[6]["waitingDisplay"], "block")
+        self.assertEqual(states[6]["waitingPlays"], 2)
         self.assertEqual(states[5]["liveDisplay"], "block")
         self.assertEqual(states[5]["waitingDisplay"], "none")
+        self.assertEqual(states[8]["waitingDisplay"], "none")
+        self.assertEqual(states[8]["liveSources"], [])
 
     def test_future_event_can_play_its_waiting_video_without_a_live_player(self):
         """Preserve waiting playback before the scheduled event starts."""
