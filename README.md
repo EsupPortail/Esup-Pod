@@ -25,9 +25,10 @@ Le projet et la plateforme qui porte le même nom ont pour but de faciliter
 la mise à disposition de vidéos et de ce fait, d’encourager
 l’utilisation de celles-ci dans le cadre de l’enseignement et la recherche.
 
-**Développement V5 :** Cette nouvelle version a été intégralement développée par **Giorgio UTZERI** et **Benjamin SERE** (Université de Lille).
+**Développement V5 :** Cette nouvelle version a été intégralement développée par .
 
 **Esup-Pod V5** est l’API backend de la plateforme de gestion vidéo Pod.
+Contributeurs V5 : **Giorgio Utzeri**, **Benjamin Sere**, **Yannis Devos**, **Yvan Serikoff**
 
 Conçue pour l’Enseignement Supérieur et la Recherche, elle permet la publication, l’enrichissement et la diffusion de vidéos.
 >
@@ -35,6 +36,8 @@ Conçue pour l’Enseignement Supérieur et la Recherche, elle permet la publica
 > Ce dépôt contient le backend **V5 (Python/Django)**.
 > Retrouvez la documentation ici [ESUP-POD V5 Documentation](./docs/README.md)
 > Pour la version V4 ou la documentation institutionnelle, voir le [ESUP-Portail Wiki](https://www.esup-portail.org/wiki/display/ES/esup-pod).
+
+**Front-end** : En théorie, le backend Esup-Pod V5 accepte plusieurs Front-end possibles. Nous vous recommandons [Esup-Pod-front](https://github.com/EsupPortail/Esup-Pod-front)
 
 ## [EN]
 
