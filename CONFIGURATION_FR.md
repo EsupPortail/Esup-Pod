@@ -1160,6 +1160,8 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
 Le mode **Esup-Runner Live** se configure dans l’administration de chaque broadcaster.<br>
 Sélectionner le `runner_manager` recevant son RTMP et renseigner son `source_id`, indépendant du slug Pod.<br>
+Un `secondary_runner_manager` facultatif doit recevoir le flux RTMP du même `source_id`. Pod bascule dessus si le principal ne reçoit plus de flux ou après 30 secondes de panne confirmée, puis revient au principal dès que son HLS est prêt.<br>
+La disponibilité est vérifiée lors des requêtes de lecture ; comme dans la configuration standard d’Esup-Pod, `CACHES['default']` doit utiliser un Redis partagé entre tous les frontaux.<br>
 Le mode URL fixe reste le mode par défaut ; l’URL est obligatoire uniquement dans ce mode.<br>
 
 * `AFFILIATION_EVENT`
