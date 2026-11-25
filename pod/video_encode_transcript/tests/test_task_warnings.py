@@ -161,9 +161,7 @@ class TaskWarningsTests(TestCase):
                 )
                 self.assertContains(response, self.heading)
                 self.assertContains(response, self.incomplete_message)
-                self.assertContains(
-                    response, 'class="alert alert-warning" role="alert"'
-                )
+                self.assertContains(response, 'class="alert alert-warning" role="alert"')
                 self.assertNotContains(
                     response, "Our administrators have already been notified."
                 )
@@ -377,9 +375,7 @@ class TaskWarningsTests(TestCase):
         """Keep warnings in existing logs without extending any model's schema."""
         for model in (Task, EncodingLog, EncodingStep):
             with self.subTest(model=model.__name__):
-                self.assertNotIn(
-                    "warnings", {field.name for field in model._meta.fields}
-                )
+                self.assertNotIn("warnings", {field.name for field in model._meta.fields})
 
     def test_full_multiline_warnings_and_existing_logs_are_preserved(self) -> None:
         """Store full diagnostics without the encoding description's 255-character limit."""
