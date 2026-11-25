@@ -131,6 +131,8 @@
     </div>
   {% endif %}
 
+  {% include "videos/video_processing_warnings.html" with video=video USE_RUNNER_MANAGER=USE_RUNNER_MANAGER only %}
+
   {% if video.get_encoding_step == "5 : transcripting audio" %}
     <p class="text-info-emphasis">
       <i class="bi bi-cpu" aria-hidden="true"></i>

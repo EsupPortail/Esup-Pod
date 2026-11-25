@@ -1,0 +1,17 @@
+{# Esup-Pod: If Runner warnings appear after a successful video import, display them. #}
+{% load i18n video_filters %}
+{% if USE_RUNNER_MANAGER %}
+{% with warnings=video.encodinglog.warnings|runner_warning_messages %}
+{% if not video.encoding_in_progress and video.encodingstep.num_step == 0 and warnings %}
+  <div class="alert alert-warning" role="alert">
+    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+    <strong>{% trans "This video was processed with warnings. Please check the result." %}</strong>
+    <ul class="mb-0">
+      {% for warning in warnings %}
+        <li>{{ warning }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+{% endwith %}
+{% endif %}

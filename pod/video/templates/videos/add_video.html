@@ -312,7 +312,10 @@
         });
       }, function() {
         // This is an existing integrity requirement, independent of diagnostics.
-        showalert(gettext("Unable to read the file. Please select it again."), "alert-danger");
+        showalert(
+          "{% filter escapejs %}{% trans 'Unable to read the file. Please select it again.' %}{% endfilter %}",
+          "alert-danger",
+        );
       });
     },
   }).on('fileuploaddragover', function (e) {

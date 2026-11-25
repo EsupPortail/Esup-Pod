@@ -14,6 +14,11 @@ from django.utils.translation import gettext_lazy as _
 
 from pod.recorder.models import Recording
 from pod.video.models import Video, get_storage_path_video
+from pod.video_encode_transcript.runner_warnings import (
+    format_runner_warnings,
+    normalize_runner_warnings,
+    read_runner_warnings,
+)
 
 ENCODING_CHOICES = getattr(
     settings,
@@ -335,6 +340,11 @@ class EncodingLog(models.Model):
     logfile = models.FileField(max_length=255, blank=True, null=True)
 
     @property
+    def warnings(self) -> list[str]:
+        """Read imported Runner warnings from the existing encoding log."""
+        return read_runner_warnings(self.log)
+
+    @property
     def sites(self):
         """Property representing the sites associated with the video."""
         return self.video.sites
@@ -463,7 +473,8 @@ class RunnerManager(models.Model):
     priority = models.IntegerField(
         verbose_name=_("Priority"),
         help_text=_(
-            "Priority of the runner manager. Lower values indicate higher priority."
+            "Runner manager priority for encoding, transcription and Studio tasks only. "
+            "Lower values indicate higher priority."
         ),
         default=1,
     )
@@ -658,6 +669,21 @@ class Task(models.Model):
         null=True,
         blank=True,
     )
+
+    @property
+    def warnings(self) -> list[str]:
+        """Read Runner warnings from the existing script output."""
+        return read_runner_warnings(self.script_output)
+
+    def update_warnings(self, warnings: object) -> None:
+        """Record warning metadata in script output without changing the schema."""
+        messages = normalize_runner_warnings(warnings)
+        if messages is None or messages == self.warnings:
+            return
+        output = self.script_output or ""
+        separator = "" if not output or output.endswith("\n") else "\n"
+        self.script_output = output + separator + format_runner_warnings(messages) + "\n"
+        self.save(update_fields=["script_output"])
 
     def __unicode__(self):
         ref = (
