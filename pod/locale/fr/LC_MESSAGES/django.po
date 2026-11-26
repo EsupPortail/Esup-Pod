@@ -5896,7 +5896,7 @@ msgstr "Enregistrement"
 
 #: pod/meeting/forms.py
 msgid "Date and time options"
-msgstr "Date et heure"
+msgstr "Options de date et d’heure"
 
 #: pod/meeting/forms.py
 msgid "Recurring options"

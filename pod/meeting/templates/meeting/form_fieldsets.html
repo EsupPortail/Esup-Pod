@@ -8,14 +8,15 @@
       <div class="col-12 col-lg-6{% if options.right_column %} ms-lg-auto{% endif %}">
     {% endif %}
     {% if options.template %}
-      <div class="modal fade" id="{{ options.id }}" tabindex="-1" aria-labelledby="addEditLabel" aria-hidden="true">
+      <div class="modal fade" id="{{ options.id }}" tabindex="-1"
+        aria-labelledby="{{ options.id }}-label-{{ forloop.counter }}" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h2 class="modal-title h3" id="addEditLabel">
+              <h2 class="modal-title h3" id="{{ options.id }}-label-{{ forloop.counter }}">
                 <i class="bi {{ options.icon }}" aria-hidden="true"></i> {{ options.legend }}
               </h2>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
             </div>
             <div class="modal-body">
               {% include options.template %}
