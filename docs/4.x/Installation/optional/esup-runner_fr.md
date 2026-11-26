@@ -76,6 +76,23 @@ FILE_UPLOAD_PERMISSIONS = 0o644
 - La valeur octale `0o644` autorise le propriétaire à lire et modifier le fichier, tandis que le groupe et les autres utilisateurs peuvent uniquement le lire.
 - Ce réglage permet notamment au serveur web de lire et de servir les fichiers créés par Pod. Il doit être cohérent avec la configuration de Nginx, en particulier avec l'utilisateur défini par la directive `user` dans `/etc/pod/nginx.conf` (ou dans `/etc/nginx/nginx.conf`, selon l'installation). Consultez la section [Frontal Web Nginx / uWSGI et fichiers statiques](../production-mode_fr#frontal-web-nginx--uwsgi-et-fichiers-statiques).
 
+### Activation de la transcription
+
+Pour activer la transcription dans Pod avec Esup-Runner, ajoutez au minimum les paramètres suivants dans votre fichier `settings_local.py` :
+
+```py
+# Transcription
+USE_TRANSCRIPTION = True
+
+# Paramétrage pour Esup-Runner
+TRANSCRIPTION_MODEL_PARAM = {
+    "WHISPER": {
+        "fr": {},
+        "en": {},
+    }
+}
+```
+
 ## Configuration via l'administration
 
 ### 1. Administration des Runner Managers
