@@ -85,8 +85,7 @@ const context = {
   clearTimeout(id) { timers.delete(id); },
   setInterval() {},
 };
-const script = input.html.match(/<script>([\s\S]*?)<\/script>/)[1];
-vm.runInNewContext(script, context);
+vm.runInNewContext(input.script, context);
 const snapshots = [];
 for (const action of input.actions) {
   if (action === "dom") documentHandlers.DOMContentLoaded();
