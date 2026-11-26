@@ -1945,16 +1945,33 @@
                             "default_value": true,
                             "description": {
                                 "en": [
-                                    ""
+                                    "With `True`, Pod disables recording for new BBB sessions it starts and blocks access to recordings in the Meeting module for everyone.",
+                                    "With `False`, meeting options, access permissions, and `MEETING_DISABLE_RECORD_FOR_STUDENTS` apply."
                                 ],
                                 "fr": [
-                                    "Mettre à True pour désactiver les enregistrements de réunion",
-                                    "Configuration de l’enregistrement des réunions.",
-                                    "Ce champ n’est pas pris en compte si `MEETING_DISABLE_RECORD = True`."
+                                    "À `True`, Pod bloque pour tous l’enregistrement des nouvelles sessions BBB démarrées depuis Pod et l’accès aux enregistrements du module Réunion.",
+                                    "À `False`, les options et droits de la réunion s’appliquent, ainsi que `MEETING_DISABLE_RECORD_FOR_STUDENTS`."
                                 ]
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "MEETING_DISABLE_RECORD_FOR_STUDENTS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "`True` disables recording for new BBB sessions owned by a user with the `student` affiliation.",
+                                    "Pod blocks recording options and playback for these users. In BBB 3.0 and later, their recording controls are blocked even when they are moderators.",
+                                    "`MEETING_DISABLE_RECORD` takes precedence."
+                                ],
+                                "fr": [
+                                    "`True` désactive l’enregistrement des nouvelles sessions BBB dont le propriétaire a l’affiliation `student`.",
+                                    "Pour ces comptes, Pod bloque aussi les options d’enregistrement et l’accès aux replays. Dès BBB 3.0, le démarrage et l’arrêt manuels leur sont bloqués, même comme modérateurs.",
+                                    "`MEETING_DISABLE_RECORD` reste prioritaire."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.5.0"
                         },
                         "MEETING_MAIN_FIELDS": {
                             "default_value": "()",
@@ -2020,10 +2037,10 @@
                             "default_value": "()",
                             "description": {
                                 "en": [
-                                    "list of all fields that will be hidden if `MEETING_DISABLE_RECORD` is set to True."
+                                    "Fields grouped under the recording options in the meeting form. Pod hides these options when the applicable policy disables recording."
                                 ],
                                 "fr": [
-                                    "ensemble des champs qui seront cachés si `MEETING_DISABLE_RECORD` est défini à true.",
+                                    "Champs regroupés dans les options d’enregistrement du formulaire de réunion. Pod masque ces options lorsque les paramètres applicables désactivent l’enregistrement.",
                                     "```python",
                                     "MEETING_RECORD_FIELDS: (\"record\", \"auto_start_recording\", \"allow_start_stop_recording\")",
                                     "```"
@@ -3011,10 +3028,10 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "With `True`, only staff users can upload or edit videos, including uploads of meeting recordings to Pod."
                                 ],
                                 "fr": [
-                                    "Si True, seule les personnes \"Staff\" peuvent déposer des vidéos"
+                                    "À `True`, seuls les comptes `is_staff` peuvent déposer ou modifier des vidéos, y compris téléverser les enregistrements de réunion vers Pod."
                                 ]
                             },
                             "pod_version_end": "",
