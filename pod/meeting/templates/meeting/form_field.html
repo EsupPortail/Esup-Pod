@@ -1,0 +1,20 @@
+{% load i18n %}
+{% spaceless %}
+  <div class="{% if options.inline %}m-1{% else %}mb-3{% endif %}{% if field.name == 'restrict_access_to_groups' %} restricted_access{% if form.is_restricted and not form.is_restricted.value and not field.errors %} d-none{% endif %}{% endif %}">
+    <div class="{% if field.name == 'owners' or field.name == 'users' %}form-row {% endif %}form-group{% if field.field.required %} form-group-required{% endif %}">
+      {{ field.errors }}
+      {% if "form-check-input" in field.field.widget.attrs.class %}
+        <div class="form-check">
+          {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+        </div>
+      {% else %}
+        <label for="{{ field.id_for_label }}"{% if options.id == 'slides_fields' %} class="visually-hidden"{% endif %}>{{ field.label }}</label>
+        {{ field }}
+      {% endif %}
+      {% if field.help_text %}
+        <small id="{{ field.id_for_label }}Help" class="form-text">{{ field.help_text|safe }}</small>
+      {% endif %}
+      {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+    </div>
+  </div>
+{% endspaceless %}

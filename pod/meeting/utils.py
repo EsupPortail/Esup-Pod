@@ -1,11 +1,14 @@
 """Utils for Meeting module."""
 
-import bleach
 from datetime import date, timedelta
+from hashlib import sha1
+
+import bleach
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
 from django.utils.translation import gettext_lazy as _
-from hashlib import sha1
+
 from pod.main.views import TEMPLATE_VISIBLE_SETTINGS
 
 BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
@@ -17,6 +20,19 @@ DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 MANAGERS = getattr(settings, "MANAGERS", {})
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
+
+
+def is_student(user: User | None) -> bool:
+    """Check the affiliation of a Pod user."""
+    return getattr(getattr(user, "owner", None), "affiliation", None) == "student"
+
+
+def meeting_recording_disabled(user: User | None) -> bool:
+    """Check whether recording features are disabled for this user."""
+    return getattr(settings, "MEETING_DISABLE_RECORD", True) or (
+        getattr(settings, "MEETING_DISABLE_RECORD_FOR_STUDENTS", False)
+        and is_student(user)
+    )
 
 
 def api_call(query, call) -> str:

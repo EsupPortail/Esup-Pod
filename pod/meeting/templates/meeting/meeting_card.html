@@ -49,7 +49,7 @@
     </div>
   </div>
   <div class="card-thumbnail">
-    <a class="link-center-pod" href="{% url 'meeting:join' meeting.meeting_id %}" title="{{ meeting.name }}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top"></a>
+    <a class="link-center-pod" href="{% url 'meeting:join' meeting.meeting_id %}" title="{{ meeting.name }}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" data-meeting-open></a>
       <img class="card-img-top" src="{{ DEFAULT_MEETING_THUMBNAIL }}" alt="" loading="lazy">
     </a>
   </div>
@@ -60,9 +60,9 @@
       </footer>
     {% endif %}
 
-    {% if meeting.get_is_meeting_running %}
-      <div class="btn-group" role="group">
-        {% if meeting.is_webinar %}
+    {% with is_running=meeting.get_is_meeting_running %}
+      <div class="btn-group{% if not is_running %} d-none{% endif %}" role="group" data-meeting-running-actions>
+        {% if meeting.is_webinar and use_meeting_webinar %}
           <a class="btn btn-primary btn-sm" href="{% url 'meeting:join' meeting.meeting_id %}" data-bs-toggle="modal" data-bs-target="#meetingModal"
           data-bs-meeting-id="{{meeting.meeting_id}}" data-bs-meeting-title="{{meeting.name}}"
           data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}"
@@ -81,7 +81,7 @@
           <a class="btn btn-primary btn-sm" href="{% url 'meeting:join' meeting.meeting_id %}" data-bs-toggle="modal" data-bs-target="#meetingModal"
           data-bs-meeting-id="{{meeting.meeting_id}}" data-bs-meeting-title="{{meeting.name}}"
           data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}" data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}"
-          data-bs-meeting-webinar="{{meeting.is_webinar}}" aria-label="{% trans 'Show meeting informations' %}">
+          data-bs-meeting-webinar="False" aria-label="{% trans 'Show meeting informations' %}">
             <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Show meeting informations' %}"><i class="bi bi-person-video2 pod-add" aria-hidden="true"></i></span>
           </a>
           <a class="btn btn-primary btn-sm mx-1 meeting-nowrap" href="{% url 'meeting:join' meeting.meeting_id %}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Join the meeting" %}">
@@ -89,17 +89,19 @@
           </a>
         {% endif %}
       </div>
-    {% else %}
-      {% if meeting.is_webinar %}
-        {% trans "Start the webinar" as start %}
-      {% else %}
-        {% trans "Start the meeting" as start %}
+      {% if not is_running %}
+        {% if meeting.is_webinar and use_meeting_webinar %}
+          {% trans "Start the webinar" as start %}
+        {% else %}
+          {% trans "Start the meeting" as start %}
+        {% endif %}
+        <a class="btn btn-primary btn-sm link-center-pod text-white" href="{% url 'meeting:join' meeting.meeting_id %}"
+          data-meeting-open data-meeting-status-url="{% url 'meeting:status' meeting.meeting_id %}"
+          target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{{ start }}">
+          <i class="bi bi-play-fill pod-add" aria-hidden="true"></i><span>{{ start }}</span>
+        </a>
       {% endif %}
-      <a class="btn btn-primary btn-sm link-center-pod text-white" href="{% url 'meeting:join' meeting.meeting_id %}"
-      onClick="setTimeout(function(){ location.reload(); }, 10000);" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{{ start }}">
-        <i class="bi bi-play-fill pod-add" aria-hidden="true"></i><span>{{ start }}</span>
-      </a>
-    {% endif %}
+    {% endwith %}
   </div>
 </div>
 {% endspaceless %}

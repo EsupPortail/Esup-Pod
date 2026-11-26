@@ -55,97 +55,7 @@
       </div>
     {% endif %}
 
-    {% for fieldset in form.fieldsets %}
-    {% with options=fieldset|last name=fieldset|first%}
-      {% if "collapse" in options.classes %}
-        <div class="mb-3">
-          <a class="btn btn-primary" id="advanced_options_btn" data-bs-toggle="collapse" href="#meeting_form_{{fieldset|first}}_{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
-            {{ options.legend|safe }}
-          </a>
-        </div>
-      {% endif %}
-      {% if name != "modal" %}
-        <fieldset class="border rounded-3 p-3 mb-3 {{ options.classes }}" id="meeting_form_{{fieldset|first}}_{{forloop.counter}}" >
-          {% if options.legend %}
-            <legend>{{ options.legend|safe }}</legend>
-          {% endif %}
-          <div {% if name == "input-group" %}class="input-group"{% endif %}>
-            {% for field in form.visible_fields %}
-              {% if field.name in options.fields %}
-                {% spaceless %}
-                <div
-                  {% if name != "input-group" %}
-                   class="mb-3 {% if "restrict_access_to_groups" in field.name %}collapse restricted_access{% endif %}"
-                  {% else %}
-                   class="m-1"
-                  {% endif %}>
-                  <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
-                    {{ field.errors }}
-                    {% if "form-check-input" in field.field.widget.attrs.class %}
-                      <div class="form-check">
-                        {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
-                      </div>
-                    {% else %}
-                      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                      {{ field }}
-                    {% endif %}
-                    {% if field.help_text %}
-                      <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
-                    {% endif %}
-                    {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
-                  </div>
-                </div>
-                {% endspaceless %}
-              {% endif %}
-            {% endfor %}
-          </div>
-          <div class="d-flex align-items-center">
-            {{ options.additional_data|safe }}
-          </div>
-        </fieldset>
-      {% else %}
-        <div class="modal fade" id="{{options.id}}" tabindex="-1" aria-labelledby="addEditLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h2 class="modal-title h3" id="addEditLabel">{{ options.legend|safe }}</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                {% if options.template %}
-                  {% include options.template %}
-                {% else %}
-                  {% for field in form.visible_fields %}
-                    {% if field.name in options.fields %}
-                      <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
-                        {{ field.errors }}
-                        {% if "form-check-input" in field.field.widget.attrs.class %}
-                          <div class="form-check">
-                            {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
-                          </div>
-                        {% else %}
-                          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                          {{ field }}
-                        {% endif %}
-                        {% if field.help_text %}
-                          <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
-                        {% endif %}
-                        {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
-                      </div>
-                    {% endif %}
-                  {% endfor %}
-                {% endif %}
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans "Save" %}</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      {% endif %}
-    {% endwith %}
-    {% endfor %}
+    {% include "meeting/form_fieldsets.html" with fieldsets=form.visible_fieldsets %}
 
     <div class="text-center mb-3">
       <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
@@ -171,37 +81,20 @@
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
   {{form.media}}
 <script>
-  /** Restrict access **/
-/** restrict access to group */
-var is_restricted_elt;
-var restrict_access_to_groups = function () {
-  //here we call our getParents function
-  const parents = getParents(document.getElementById("id_restrict_access_to_groups"), document.querySelector(".restricted_access"))
-  if (is_restricted_elt.checked) {
-    parents[parents.length-1].style.display = 'block';
-  } else {
-    Array.from(document.getElementById("id_restrict_access_to_groups").options).forEach(function (option) {
-      option.selected = false;
-    });
-    parents[parents.length-1].style.display = 'none';
-  }
-};
-window.addEventListener('load', function(event) {
-  is_restricted_elt = document.getElementById("id_is_restricted");
-  is_restricted_elt.addEventListener('clicked',function (event) {
-    restrict_access_to_groups();
-  });
-  restrict_access_to_groups();
-});
-
-/* Add event listener to use advanced options button with keyboard */
-var advanced_options_btn = document.getElementById('advanced_options_btn');
-if (advanced_options_btn) {
-  advanced_options_btn.addEventListener("keydown", function(event) {
-    if (event.key === "Enter" || event.key === " ") {
-      advanced_options_btn.click();
+/** Restrict access to groups */
+const restrictedAccess = document.getElementById("id_is_restricted");
+const accessGroups = document.getElementById("id_restrict_access_to_groups");
+if (restrictedAccess && accessGroups) {
+  const groupField = accessGroups.closest(".restricted_access");
+  const updateGroupVisibility = (showErrors = false) => {
+    const showGroups = restrictedAccess.checked || showErrors;
+    groupField.classList.toggle("d-none", !showGroups);
+    if (!showGroups) {
+      Array.from(accessGroups.options).forEach((option) => { option.selected = false; });
     }
-  });
+  };
+  restrictedAccess.addEventListener("change", () => updateGroupVisibility());
+  updateGroupVisibility(Boolean(groupField.querySelector(".errorlist")));
 }
 
 /**
@@ -228,7 +121,7 @@ for (let i = 0; i < myModals.length; i++) {
 }
 var day_of_start_date = -1;
 let id_start = document.querySelector("#id_start");
-let start_date_formats = {{start_date_formats|safe}};
+let start_date_formats = {{ start_date_formats|default:"[]"|safe }};
 if(id_start) {
   function setDayOfWeekForStartDate() {
     let id_start_value = id_start.value;
@@ -279,14 +172,6 @@ if(modal_recurring_fields) {
   })
 }
 
-/* Manage personal meeting room */
-var is_personal = ('{{ form.instance.is_personal }}' == "True");
-var time_fieldset = document.getElementById('see_recurring_fields').parentElement.parentElement.parentElement;
-if (is_personal && time_fieldset){
-    // Hide the time fieldset
-    time_fieldset.classList.add("d-none");
-}
-
 /* Manage when voice bridge is modified in a bad format, after a BBB session start */
 var field_voice_bridge = document.getElementById('id_voice_bridge');
 if (field_voice_bridge) {
@@ -299,7 +184,6 @@ if (field_voice_bridge) {
 
 /* Manage webinars */
 document.addEventListener("DOMContentLoaded", function (event) {
-    var webinar_input_group = document.querySelectorAll('[id^=meeting_form_input-group-webinar]')
     var is_webinar = document.querySelector('input[name=is_webinar]');
     let see_recurring_fields = document.getElementById('see_recurring_fields');
     let field_guest_policy = document.getElementById('id_guest_policy');
@@ -320,6 +204,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
           field_guest_policy.disabled = true;
           if (field_is_restricted) {
             field_is_restricted.checked = false;
+            field_is_restricted.dispatchEvent(new Event("change"));
           }
           field_is_restricted.disabled = true;
         } else {
@@ -333,10 +218,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
           }
         }
       });
-    }
-    // Do not display legend when no webinar fields
-    if (!is_webinar && webinar_input_group && webinar_input_group.length > 0) {
-      webinar_input_group[0].classList.add("d-none");
     }
 });
 </script>
