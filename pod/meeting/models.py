@@ -1,51 +1,51 @@
-"""Models for the Meeting module."""
+"""Esup-Pod models for the Meeting module."""
 
-import hashlib
-import random
-import requests
-import os
-import json
 import base64
-
-from datetime import timedelta, datetime as dt
-
-from urllib.parse import urlencode
+import hashlib
+import json
+import os
+import random
 import xml.etree.ElementTree as et
+from datetime import datetime as dt
+from datetime import timedelta
+from urllib.parse import urlencode
 
-from django.db import models
+import requests
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
-from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
-from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
+from django.core.serializers.json import DjangoJSONEncoder
+from django.core.validators import (
+    MaxValueValidator,
+    MinLengthValidator,
+    MinValueValidator,
+    RegexValidator,
+)
+from django.db import models
+from django.db.models import F, Q
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
-from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.urls import reverse
-
-from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator
-from django.core.validators import MinLengthValidator
-from django.core.validators import MaxValueValidator
-from django.core.validators import MinValueValidator
-from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import F, Q
-
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from pod.authentication.models import AccessGroup
-from pod.main.models import get_nextautoincrement
 from pod.live.models import Broadcaster, Event
+from pod.main.models import get_nextautoincrement
 
 from .utils import (
     api_call,
-    parseXmlToJson,
-    slash_join,
     get_nth_week_number,
     get_weekday_in_nth_week,
+    meeting_recording_disabled,
+    parseXmlToJson,
+    slash_join,
 )
-from dateutil.relativedelta import relativedelta
 
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomFileModel
@@ -57,7 +57,6 @@ BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
 BBB_LOGOUT_URL = getattr(settings, "BBB_LOGOUT_URL", "")
 MEETING_PRE_UPLOAD_SLIDES = getattr(settings, "MEETING_PRE_UPLOAD_SLIDES", "")
-MEETING_DISABLE_RECORD = getattr(settings, "MEETING_DISABLE_RECORD", True)
 STATIC_ROOT = getattr(settings, "STATIC_ROOT", "")
 TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 USE_MEETING_WEBINAR = getattr(settings, "USE_MEETING_WEBINAR", False)
@@ -289,7 +288,7 @@ class Meeting(models.Model):
 
     # #################### Configs
     max_participants = models.IntegerField(
-        default=150, verbose_name=_("Max Participants")
+        default=250, verbose_name=_("Max Participants")
     )
     welcome_text = models.TextField(
         default=_("Welcome!"), verbose_name=_("Meeting Text in Bigbluebutton")
@@ -530,8 +529,6 @@ class Meeting(models.Model):
             newid = self.id
         newid = "%04d" % newid
         self.meeting_id = "%s-%s" % (newid, slugify(self.name))
-        if MEETING_DISABLE_RECORD:
-            self.record = False
         super(Meeting, self).save(*args, **kwargs)
 
     def get_hashkey(self) -> str:
@@ -684,15 +681,23 @@ class Meeting(models.Model):
             ]
         )
         parameters["meta_endCallbackUrl"] = end_callback_url
-        if not MEETING_DISABLE_RECORD:
-            recordingReadyUrl = "".join(
+        disabled_recording_parameters = {}
+        if meeting_recording_disabled(getattr(self, "owner", None)):
+            disabled_recording_parameters = {
+                "record": "false",
+                "autoStartRecording": "false",
+                "allowStartStopRecording": "false",
+            }
+            parameters.update(disabled_recording_parameters)
+        else:
+            recording_ready_url = "".join(
                 [
                     "https://",
                     get_current_site(None).domain,
                     reverse("meeting:recording_ready", kwargs={}),
                 ]
             )
-            parameters["meta_bbb-recording-ready-url"] = recordingReadyUrl
+            parameters["meta_bbb-recording-ready-url"] = recording_ready_url
         query = urlencode(parameters)
         hashed = api_call(query, action)
         url = slash_join(BBB_API_URL, action, "?%s" % hashed)
@@ -705,9 +710,11 @@ class Meeting(models.Model):
             raise ValueError(msg)
         result = response.content.decode("utf-8")
         xmldoc = et.fromstring(result)
-        meeting_json = {}
-        for elt in xmldoc:
-            meeting_json[elt.tag] = elt.text
+        meeting_json = {
+            elt.tag: elt.text
+            for elt in xmldoc
+            if elt.tag not in disabled_recording_parameters
+        }
         if meeting_json.get("returncode", "") != "SUCCESS":
             # force end of meeting if create failed
             # due to issue bigbluebutton/bigbluebutton#18913
@@ -772,7 +779,7 @@ class Meeting(models.Model):
             )
         return slides_url
 
-    def get_join_url(self, fullname, role, userID=""):
+    def get_join_url(self, fullname, role, userID="", *, disable_recording: bool = False):
         """
         Return join URL.
 
@@ -782,6 +789,7 @@ class Meeting(models.Model):
         role  (required): MODERATOR or VIEWER
         createTime
         userID
+        disable_recording: prevent this user from controlling recording in BBB 3.0+
         """
         if role not in ["MODERATOR", "VIEWER"]:
             msg = {}
@@ -803,6 +811,8 @@ class Meeting(models.Model):
             parameters["password"] = self.attendee_password
         if userID != "":
             parameters["userID"] = userID
+        if disable_recording:
+            parameters["userdata-bbb_record_permission"] = "false"
         if self.bbb_create_time:
             parameters["createTime"] = self.bbb_create_time
         query = urlencode(parameters)
@@ -824,7 +834,12 @@ class Meeting(models.Model):
         self.is_running = True
         self.save()
 
-    def get_is_meeting_running(self):
+    def get_is_meeting_running(self, *, recover: bool = True) -> bool:
+        """Return whether BBB reports that the meeting is running.
+
+        Status polling passes recover=False to avoid attempting to end a meeting
+        when BBB returns a failed status response.
+        """
         if TEST_SETTINGS:
             return self.is_running
         action = "isMeetingRunning"
@@ -848,7 +863,7 @@ class Meeting(models.Model):
         if meeting_json.get("returncode", "") != "SUCCESS":
             # force end of meeting if create failed
             # due to issue bigbluebutton/bigbluebutton#18913
-            if self.end():
+            if recover and self.end():
                 return False
             msg = {}
             msg["error"] = "Unable to get meeting status ! "

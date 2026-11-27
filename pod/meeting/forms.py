@@ -4,21 +4,28 @@ import datetime
 import random
 import re
 import string
+from collections.abc import Iterator
 
-from .models import Meeting, InternalRecording
 from django import forms
 from django.conf import settings
 from django.contrib.admin import widgets as admin_widgets
 from django.contrib.sites.models import Site
-from django.core.validators import validate_email, URLValidator
 from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator, validate_email
 from django.db.models.query import QuerySet
 from django.forms import CharField, Textarea
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from pod.main.forms_utils import add_placeholder_and_asterisk
-from pod.main.forms_utils import OwnerWidget, AddOwnerWidget
+
+from pod.main.forms_utils import (
+    AddOwnerWidget,
+    OwnerWidget,
+    add_placeholder_and_asterisk,
+)
 from pod.meeting.webinar import start_webinar, stop_webinar, toggle_rtmp_gateway
+
+from .models import InternalRecording, Meeting
+from .utils import meeting_recording_disabled
 
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
@@ -40,15 +47,14 @@ MEETING_MAIN_FIELDS = getattr(
         "slides",
     ),
 )
-MEETING_DATE_FIELDS = getattr(
-    settings,
-    "MEETING_DATE_FIELDS",
-    (
-        "start",
-        "start_time",
-        "expected_duration",
-    ),
+MEETING_ACCESS_FIELDS = (
+    "attendee_password",
+    "is_restricted",
+    "restrict_access_to_groups",
+    "guest_policy",
 )
+MEETING_SCHEDULE_FIELDS = ("start", "start_time", "expected_duration")
+MEETING_DATE_FIELDS = getattr(settings, "MEETING_DATE_FIELDS", MEETING_SCHEDULE_FIELDS)
 MEETING_RECURRING_FIELDS = getattr(
     settings,
     "MEETING_RECURRING_FIELDS",
@@ -61,8 +67,19 @@ MEETING_RECURRING_FIELDS = getattr(
         "monthly_type",
     ),
 )
-MEETING_DISABLE_RECORD = getattr(settings, "MEETING_DISABLE_RECORD", True)
-
+MEETING_RECURRING_WIDGET_FIELDS = (
+    "recurrence",
+    "frequency",
+    "recurring_until",
+    "nb_occurrences",
+    "days_of_week",
+    "monthly_type",
+)
+MEETING_RECORD_OPTION_FIELDS = (
+    "record",
+    "auto_start_recording",
+    "allow_start_stop_recording",
+)
 MEETING_RECORD_FIELDS = getattr(
     settings,
     "MEETING_RECORD_FIELDS",
@@ -81,12 +98,13 @@ MEETING_WEBINAR_FIELDS = getattr(
 )
 
 __MEETING_EXCLUDE_FIELDS__ = (
-    MEETING_MAIN_FIELDS
-    + MEETING_DATE_FIELDS
-    + MEETING_RECURRING_FIELDS
-    + ("id", "start_at")
-    + MEETING_RECORD_FIELDS
-    + MEETING_WEBINAR_FIELDS
+    *MEETING_MAIN_FIELDS,
+    *MEETING_DATE_FIELDS,
+    *MEETING_RECURRING_FIELDS,
+    "id",
+    "start_at",
+    *MEETING_RECORD_FIELDS,
+    *MEETING_WEBINAR_FIELDS,
 )
 
 
@@ -153,7 +171,9 @@ class MeetingForm(forms.ModelForm):
         return now
 
     start = forms.DateField(
-        label=_("Start date"), initial=timezone.now, widget=admin_widgets.AdminDateWidget
+        label=_("Start date"),
+        initial=timezone.now,
+        widget=admin_widgets.AdminDateWidget,
     )
     start_time = forms.ChoiceField(
         label=_("Start time"), choices=get_time_choices(), initial=get_rounded_time
@@ -184,60 +204,86 @@ class MeetingForm(forms.ModelForm):
         (
             "main_fields",
             {
-                "legend": (
-                    '<i class="bi bi-gear" aria-hidden="true"></i> %s' % _("Main fields")
+                "legend": _("Main fields"),
+                "icon": "bi-gear",
+                "fields": tuple(
+                    field
+                    for field in (
+                        "name",
+                        "owner",
+                        "additional_owners",
+                        *MEETING_MAIN_FIELDS,
+                    )
+                    if field in MEETING_MAIN_FIELDS
+                    and field
+                    not in (
+                        *MEETING_ACCESS_FIELDS,
+                        "slides",
+                        *MEETING_RECORD_OPTION_FIELDS,
+                        *MEETING_SCHEDULE_FIELDS,
+                    )
                 ),
-                "fields": MEETING_MAIN_FIELDS,
+                "row": "main",
             },
         ),
         (
-            "input-group",
+            "access_fields",
             {
-                "legend": (
-                    '<i class="bi bi-clock-history" aria-hidden="true"></i>'
-                    + " %s" % _("Date and time options")
+                "legend": _("Access"),
+                "icon": "bi-lock",
+                "fields": tuple(
+                    field
+                    for field in MEETING_ACCESS_FIELDS
+                    if field in MEETING_MAIN_FIELDS
                 ),
-                "fields": ["start", "start_time", "expected_duration"],
-                "additional_data": """
-                <div class="m-1">
-                <button type="button" id="%s" class="%s" data-bs-toggle="%s" data-bs-target="%s">
-                    <i class="bi bi-calendar3-range" aria-hidden="true"></i> %s
-                </button>
-                </div>
-            """
-                % (
-                    "see_recurring_fields",
-                    "btn btn-primary btn-sm",
-                    "modal",
-                    "#recurring_fields",
-                    _("Recurring"),
+                "row": "main",
+                "right_column": True,
+            },
+        ),
+        (
+            "slides_fields",
+            {
+                "legend": _("Slides"),
+                "icon": "bi-file-earmark",
+                "fields": ("slides",) if "slides" in MEETING_MAIN_FIELDS else (),
+                "row": "slides_recording",
+            },
+        ),
+        (
+            "recording_fields",
+            {
+                "id": "recording_fields",
+                "legend": _("Record session"),
+                "icon": "bi-record-circle",
+                "fields": (
+                    *MEETING_RECORD_FIELDS,
+                    *(
+                        field
+                        for field in MEETING_RECORD_OPTION_FIELDS
+                        if field in MEETING_MAIN_FIELDS
+                    ),
                 ),
+                "row": "slides_recording",
+                "right_column": True,
+            },
+        ),
+        (
+            "date_fields",
+            {
+                "legend": _("Date and time options"),
+                "icon": "bi-clock-history",
+                "fields": (*MEETING_SCHEDULE_FIELDS, *MEETING_DATE_FIELDS),
+                "inline": True,
             },
         ),
     )
-    if not MEETING_DISABLE_RECORD:
-        fieldsets += (
-            (
-                "input-group",
-                {
-                    "legend": (
-                        '<i class="bi bi-record-circle" aria-hidden="true"></i>'
-                        + " %s" % _("Record session")
-                    ),
-                    "fields": MEETING_RECORD_FIELDS,
-                },
-            ),
-        )
-
     if USE_MEETING_WEBINAR:
         fieldsets += (
             (
-                "input-group-webinar",
+                "webinar_fields",
                 {
-                    "legend": (
-                        '<i class="bi bi-cast" aria-hidden="true"></i>'
-                        + " %s" % _("Webinar options")
-                    ),
+                    "legend": _("Webinar options"),
+                    "icon": "bi-cast",
                     "fields": MEETING_WEBINAR_FIELDS,
                 },
             ),
@@ -247,27 +293,113 @@ class MeetingForm(forms.ModelForm):
         (
             "modal",
             {
-                "legend": (
-                    '<i class="bi bi-calendar3-range" aria-hidden="true"></i>&nbsp;'
-                    + "  %s" % _("Recurring options")
-                ),
+                "legend": _("Recurring options"),
+                "icon": "bi-calendar3-range",
                 "id": "recurring_fields",
-                "fields": MEETING_RECURRING_FIELDS,
+                "fields": tuple(
+                    field for field in MEETING_RECURRING_FIELDS if field != "weekdays"
+                ),
                 "template": "meeting/recurring_options_modal_form.html",
             },
         ),
         (
             "advanced_options",
             {
-                "legend": (
-                    '<i class="bi bi-file-earmark-plus-fill" aria-hidden="true"></i>'
-                    + " %s" % _("Advanced options")
-                ),
-                "classes": "collapse border border-primary p-1 m-1",
+                "legend": _("Advanced options"),
+                "icon": "bi-file-earmark-plus-fill",
+                "collapse": True,
                 "fields": get_meeting_fields(),
             },
         ),
     )
+    advanced_fieldsets = (
+        {
+            "id": "advanced_general",
+            "legend": _("General settings"),
+            "icon": "bi-gear",
+            "row": "advanced_general_access",
+        },
+        {
+            "id": "advanced_access",
+            "legend": _("Access"),
+            "icon": "bi-lock",
+            "row": "advanced_general_access",
+            "right_column": True,
+            "fields": ("max_participants", *MEETING_ACCESS_FIELDS),
+        },
+        {
+            "id": "advanced_restrictions",
+            "legend": _("Restrictions"),
+            "icon": "bi-shield-lock",
+            "row": "advanced_restrictions_technical",
+            "fields": (
+                "webcam_only_for_moderators",
+                "lock_settings_disable_cam",
+                "lock_settings_disable_mic",
+                "lock_settings_disable_private_chat",
+                "lock_settings_disable_public_chat",
+                "lock_settings_disable_note",
+                "lock_settings_locked_layout",
+            ),
+        },
+        {
+            "id": "advanced_technical",
+            "legend": _("Technical settings"),
+            "icon": "bi-tools",
+            "row": "advanced_restrictions_technical",
+            "right_column": True,
+            "fields": ("parent_meeting_id", "voice_bridge"),
+        },
+        {
+            "id": "advanced_recording",
+            "legend": _("Record session"),
+            "icon": "bi-record-circle",
+            "fields": MEETING_RECORD_OPTION_FIELDS,
+        },
+    )
+
+    def group_advanced_fields(self, fields: list[forms.BoundField]) -> list[dict]:
+        """Group the available advanced fields, keeping extra fields in general settings."""
+        group_by_field = {
+            name: group["id"]
+            for group in self.advanced_fieldsets
+            for name in group.get("fields", ())
+        }
+        grouped_fields = {group["id"]: [] for group in self.advanced_fieldsets}
+        for field in fields:
+            grouped_fields[group_by_field.get(field.name, "advanced_general")].append(
+                field
+            )
+        return [
+            {**group, "fields": grouped_fields[group["id"]]}
+            for group in self.advanced_fieldsets
+            if grouped_fields[group["id"]]
+        ]
+
+    def visible_fieldsets(self) -> Iterator[dict]:
+        """Yield nonempty fieldsets with each visible field rendered once."""
+        # The recurrence modal already renders its standard widgets.
+        fields = {
+            field.name: field
+            for field in self.visible_fields()
+            if field.name not in MEETING_RECURRING_WIDGET_FIELDS
+        }
+        for name, options in self.fieldsets:
+            fieldset_fields = [
+                fields.pop(field_name)
+                for field_name in options["fields"]
+                if field_name in fields
+            ]
+            if fieldset_fields or options.get("template"):
+                fieldset = {
+                    **options,
+                    "id": options.get("id", name),
+                    "fields": fieldset_fields,
+                }
+                if options.get("collapse"):
+                    fieldset["expanded"] = any(field.errors for field in fieldset_fields)
+                    fieldset["groups"] = self.group_advanced_fields(fieldset_fields)
+                yield fieldset
 
     def filter_fields_admin(form) -> None:
         """Remove fields for not admin user."""
@@ -459,16 +591,34 @@ class MeetingForm(forms.ModelForm):
             self.initial["recurring_until"] = None
             self.initial["nb_occurrences"] = None
 
-        # MEETING_DISABLE_RECORD
-        if MEETING_DISABLE_RECORD:
-            for field in MEETING_RECORD_FIELDS:
-                self.remove_field(field)
+        self.filter_recording_fields()
         # remove start_at
         self.remove_field("start_at")
         # set min frequency to 1
         self.fields["frequency"].widget.attrs["min"] = 1
         # Manage personal meeting room
         self.manage_personal_meeting_room()
+
+    def filter_recording_fields(self) -> None:
+        """Hide recording options when the owner or editor may not record."""
+        owner = getattr(self.instance, "owner", None) or self.current_user
+        if not (
+            meeting_recording_disabled(owner)
+            or meeting_recording_disabled(self.current_user)
+        ):
+            return
+
+        fields = MEETING_RECORD_FIELDS
+        if not self.is_admin:
+            fields = (*fields, *MEETING_RECORD_OPTION_FIELDS)
+            self.fieldsets = tuple(
+                fieldset
+                for fieldset in self.fieldsets
+                if fieldset[1].get("id") != "recording_fields"
+            )
+
+        for field in fields:
+            self.remove_field(field)
 
     def manage_personal_meeting_room(self):
         """Manage fields for a personal meeting room."""

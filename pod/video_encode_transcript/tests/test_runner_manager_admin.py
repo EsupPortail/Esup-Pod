@@ -62,6 +62,8 @@ class RunnerManagerAdminTests(TestCase):
         self.assertContains(response, self.test_connection_url)
         self.assertContains(response, "runner-admin-link")
         self.assertContains(response, "https://runner.example.com/admin")
+        self.assertContains(response, 'name="supports_live"')
+        self.assertFalse(response.context["adminform"].form.initial["supports_live"])
 
     def test_change_page_runner_admin_link_handles_url_without_trailing_slash(self):
         """Build remote admin URL correctly when runner URL has no trailing slash."""

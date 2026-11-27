@@ -1,3 +1,5 @@
+"""Esup-Pod Live forms."""
+
 from django import forms
 from django.conf import settings
 from django.db.models import Q
@@ -15,6 +17,8 @@ from django_select2 import forms as s2forms
 from django.utils import timezone
 from datetime import datetime
 from django.contrib import admin
+
+from pod.live.cache_config import SHARED_LIVE_CACHE_HELP, has_incompatible_live_cache
 
 USE_LIVE_TRANSCRIPTION = getattr(settings, "USE_LIVE_TRANSCRIPTION", False)
 __FILEPICKER__ = False
@@ -68,11 +72,37 @@ class BuildingAdminForm(forms.ModelForm):
         fields = "__all__"
 
 
+def runner_manager_label(manager) -> str:
+    """Identify inactive managers in broadcaster choices and autocomplete results."""
+    if manager.is_active:
+        return str(manager)
+    return "%s — %s" % (manager, _("Inactive"))
+
+
+class RunnerManagerAutocompleteSelect(widgets.AutocompleteSelect):
+    """Use broadcaster-specific manager labels without changing other admin forms."""
+
+    url_name = "%s:live_broadcaster_runner_manager_autocomplete"
+
+
 class BroadcasterAdminForm(forms.ModelForm):
     required_css_class = "required"
 
     def __init__(self, *args, **kwargs) -> None:
         super(BroadcasterAdminForm, self).__init__(*args, **kwargs)
+        mode = (
+            self.data.get(self.add_prefix("stream_mode"), Broadcaster.StreamMode.STATIC)
+            if self.is_bound
+            else self.initial.get("stream_mode", self.instance.stream_mode)
+        )
+        self.fields["url"].required = mode == Broadcaster.StreamMode.STATIC
+        for field in ("runner_manager", "source_id"):
+            self.fields[field].required = mode == Broadcaster.StreamMode.ESUP_RUNNER
+        for field in ("runner_manager", "secondary_runner_manager"):
+            self.fields[field].label_from_instance = runner_manager_label
+        secondary = self.fields["secondary_runner_manager"]
+        secondary.help_text = f"{secondary.help_text} {SHARED_LIVE_CACHE_HELP}"
+        secondary.disabled = has_incompatible_live_cache()
         if __FILEPICKER__:
             self.fields["poster"].widget = CustomFileWidget(type="image")
 

@@ -31,6 +31,8 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.utils.cache import add_never_cache_headers
+from django.utils.crypto import constant_time_compare, salted_hmac
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from pod.meeting.models import Livestream
 from rest_framework import status
@@ -134,6 +136,9 @@ def direct(request, slug):
             redirect_field_name="referrer",
         )
 
+    if request.GET.get("stream") == "1":
+        return stream_response(broadcaster, request=request)
+
     return render(
         request,
         "live/direct.html",
@@ -151,6 +156,23 @@ def get_broadcaster_by_slug(slug, site):
         return get_object_or_404(Broadcaster, id=slug, building__sites=site)
     else:
         return get_object_or_404(Broadcaster, slug=slug, building__sites=site)
+
+
+def stream_response(broadcaster, state=None, request=None):
+    """Expose playback availability after the page's access checks."""
+    from .runner_live import log_playback_context, unavailable_stream
+
+    stream = unavailable_stream(state) if state else broadcaster.get_stream_info()
+    if request is not None:
+        log_playback_context(broadcaster, stream, request)
+    response = JsonResponse(stream)
+    add_never_cache_headers(response)
+    return response
+
+
+def event_stream_access_key(evt):
+    """Invalidate playback access when the event password changes."""
+    return salted_hmac("live.event-stream", f"{evt.pk}:{evt.password}").hexdigest()
 
 
 """use rest api to change status
@@ -327,12 +349,24 @@ def render_event_template(request, evemnt, user_owns_event):
     is_password_protected = evemnt.password is not None and evemnt.password != ""
     password_provided = request.POST.get("password") is not None
     password_correct = request.POST.get("password") == evemnt.password
+    stream_request = request.GET.get("stream") == "1"
+    access_key = event_stream_access_key(evemnt)
+    password_verified = constant_time_compare(
+        request.session.get(f"live_event_access_{evemnt.pk}", ""), access_key
+    )
     template_event = (
         "live/event-iframe.html" if request.GET.get("is_iframe") else "live/event.html"
     )
 
     # password protection
-    if is_password_protected and not user_owns_event and not password_correct:
+    if (
+        is_password_protected
+        and not user_owns_event
+        and not password_correct
+        and not (stream_request and password_verified)
+    ):
+        if stream_request:
+            raise PermissionDenied
         form = EventPasswordForm(request.POST) if request.POST else EventPasswordForm()
         if password_provided:
             messages.add_message(request, messages.ERROR, _("The password is incorrect."))
@@ -343,6 +377,15 @@ def render_event_template(request, evemnt, user_owns_event):
                 "event": evemnt,
                 "form": form,
             },
+        )
+
+    if is_password_protected and password_correct:
+        request.session[f"live_event_access_{evemnt.pk}"] = access_key
+    if stream_request:
+        return stream_response(
+            evemnt.broadcaster,
+            None if evemnt.is_current() else "stopped",
+            request=request,
         )
 
     # Search if livestream is used to display a webinar streaming live

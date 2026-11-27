@@ -39,7 +39,7 @@
       {% trans 'Invite to the meeting'%}
     </a>
   </li>
-  {% if not meeting_disable_record %}
+  {% if show_meeting_recordings %}
     <li><hr class="dropdown-divider"></li>
     <li>
       <a href="{% url 'meeting:internal_recordings' meeting.meeting_id %}"

@@ -1,0 +1,67 @@
+{% load i18n %}
+
+{% regroup fieldsets by row as fieldset_rows %}
+{% for row in fieldset_rows %}
+  {% if row.grouper %}<div class="row g-3 mb-3">{% endif %}
+  {% for options in row.list %}
+    {% if row.grouper %}
+      <div class="col-12 col-lg-6{% if options.right_column %} ms-lg-auto{% endif %}">
+    {% endif %}
+    {% if options.template %}
+      <div class="modal fade" id="{{ options.id }}" tabindex="-1"
+        aria-labelledby="{{ options.id }}-label-{{ forloop.counter }}" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2 class="modal-title h3" id="{{ options.id }}-label-{{ forloop.counter }}">
+                <i class="bi {{ options.icon }}" aria-hidden="true"></i> {{ options.legend }}
+              </h2>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+            </div>
+            <div class="modal-body">
+              {% include options.template %}
+              {% for field in options.fields %}
+                {% include "meeting/form_field.html" %}
+              {% endfor %}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans "Save" %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% elif options.collapse %}
+      <button type="button" class="btn btn-primary w-100 text-start mb-3" id="advanced_options_btn"
+        data-bs-toggle="collapse" data-bs-target="#meeting_form_{{ options.id }}"
+        aria-expanded="{{ options.expanded|yesno:'true,false' }}" aria-controls="meeting_form_{{ options.id }}">
+        <i class="bi {{ options.icon }}" aria-hidden="true"></i> {{ options.legend }}
+      </button>
+      <div class="collapse{% if options.expanded %} show{% endif %}" id="meeting_form_{{ options.id }}"
+        role="region" aria-labelledby="advanced_options_btn">
+        {% include "meeting/form_fieldsets.html" with fieldsets=options.groups %}
+      </div>
+    {% else %}
+      <fieldset class="border rounded-3 p-3 {% if row.grouper %}h-100{% else %}mb-3{% endif %}" id="meeting_form_{{ options.id }}">
+        <legend><i class="bi {{ options.icon }}" aria-hidden="true"></i> {{ options.legend }}</legend>
+        <div{% if options.inline %} class="input-group"{% endif %}>
+          {% for field in options.fields %}
+            {% include "meeting/form_field.html" %}
+          {% endfor %}
+        </div>
+        {% if options.id == 'date_fields' and not form.instance.is_personal %}
+          <div class="d-flex align-items-center">
+            <div class="m-1">
+              <button type="button" id="see_recurring_fields" class="btn btn-primary btn-sm"
+                data-bs-toggle="modal" data-bs-target="#recurring_fields">
+                <i class="bi bi-calendar3-range" aria-hidden="true"></i> {% trans "Recurring" %}
+              </button>
+            </div>
+          </div>
+        {% endif %}
+      </fieldset>
+    {% endif %}
+    {% if row.grouper %}</div>{% endif %}
+  {% endfor %}
+  {% if row.grouper %}</div>{% endif %}
+{% endfor %}

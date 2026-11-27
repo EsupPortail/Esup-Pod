@@ -11,6 +11,7 @@ from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save
@@ -28,6 +29,7 @@ from pod.main.utils import generate_qrcode
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video, Type
+from pod.live.cache_config import has_incompatible_live_cache
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
@@ -131,6 +133,12 @@ def get_building_having_available_broadcaster(user, building_id=None):
 
 
 class Broadcaster(models.Model):
+    class StreamMode(models.TextChoices):
+        """Define fixed URL and automatic Esup-Runner Live playback modes."""
+
+        STATIC = "static", _("Fixed URL")
+        ESUP_RUNNER = "esup_runner", _("Esup-Runner Live")
+
     name = models.CharField(_("name"), max_length=200, unique=True)
     slug = models.SlugField(
         _("Slug"),
@@ -150,7 +158,51 @@ class Broadcaster(models.Model):
     poster = models.ForeignKey(
         CustomImageModel, models.SET_NULL, blank=True, null=True, verbose_name=_("Poster")
     )
-    url = models.URLField(_("URL"), help_text=_("Url of the stream"), unique=True)
+    stream_mode = models.CharField(
+        _("Stream mode"),
+        max_length=20,
+        choices=StreamMode.choices,
+        default=StreamMode.STATIC,
+    )
+    url = models.URLField(
+        _("URL"),
+        help_text=_("Fixed stream URL. Required only in fixed URL mode."),
+        unique=True,
+        blank=True,
+        null=True,
+    )
+    runner_manager = models.ForeignKey(
+        "video_encode_transcript.RunnerManager",
+        on_delete=models.PROTECT,
+        limit_choices_to={"supports_live": True},
+        blank=True,
+        null=True,
+        verbose_name=_("Primary runner manager"),
+        help_text=_("Select the manager receiving this broadcaster's RTMP stream."),
+    )
+    secondary_runner_manager = models.ForeignKey(
+        "video_encode_transcript.RunnerManager",
+        on_delete=models.PROTECT,
+        related_name="secondary_live_broadcasters",
+        limit_choices_to={"supports_live": True},
+        blank=True,
+        null=True,
+        verbose_name=_("Secondary runner manager"),
+        help_text=_(
+            "Optional fallback when the primary has no RTMP publication, or after "
+            "30 seconds of primary manager downtime. Both managers use the same Live "
+            "source ID. Playback returns to the primary when its HLS is ready."
+        ),
+    )
+    source_id = models.CharField(
+        _("Live source ID"),
+        max_length=100,
+        blank=True,
+        validators=[RegexValidator(r"\A[A-Za-z0-9][A-Za-z0-9_-]{0,99}\Z")],
+        help_text=_(
+            "Source identifier on the manager, may match this broadcaster's slug."
+        ),
+    )
     status = models.BooleanField(
         default=0,
         help_text=_("Check if the broadcaster is currently sending stream."),
@@ -218,7 +270,85 @@ class Broadcaster(models.Model):
         return reverse("live:direct", args=[str(self.slug)])
 
     def __str__(self) -> str:
+        if self.is_runner_live:
+            return "%s - %s" % (self.name, self.source_id)
         return "%s - %s" % (self.name, self.url)
+
+    @property
+    def is_runner_live(self) -> bool:
+        """Return whether the broadcaster uses automatic Esup-Runner Live playback."""
+        return self.stream_mode == self.StreamMode.ESUP_RUNNER
+
+    def clean(self) -> None:
+        """Validate the stream configuration required by the selected playback mode."""
+        super().clean()
+        errors = self._secondary_cache_errors()
+        if self.is_runner_live:
+            errors.update(self._live_manager_errors())
+            if not self.runner_manager_id:
+                errors["runner_manager"] = _("Select a runner manager for Live mode.")
+            if not self.source_id:
+                errors["source_id"] = _("Enter the source ID for Live mode.")
+            if (
+                self.runner_manager_id
+                and self.secondary_runner_manager_id == self.runner_manager_id
+            ):
+                errors["secondary_runner_manager"] = _(
+                    "The secondary manager must differ from the primary manager."
+                )
+        elif not self.url:
+            errors["url"] = _("Enter a stream URL for fixed URL mode.")
+        if errors:
+            raise ValidationError(errors)
+        self.url = self.url or None
+
+    def _secondary_cache_errors(self) -> dict:
+        """Block new secondary assignments with local caches while preserving old ones."""
+        if not self.secondary_runner_manager_id or not has_incompatible_live_cache():
+            return {}
+        previous = (
+            type(self)
+            .objects.using(self._state.db)
+            .filter(pk=self.pk)
+            .values_list("secondary_runner_manager_id", flat=True)
+            .first()
+            if self.pk is not None
+            else None
+        )
+        if previous == self.secondary_runner_manager_id:
+            return {}
+        return {
+            "secondary_runner_manager": _(
+                "Configure shared Redis in CACHES['default'] before adding or "
+                "changing a secondary runner manager."
+            )
+        }
+
+    def _live_manager_errors(self) -> dict:
+        """Validate Live capability and building sites for both manager roles."""
+        errors = {}
+        for field in ("runner_manager", "secondary_runner_manager"):
+            manager = getattr(self, field)
+            if manager is None:
+                continue
+            if not manager.supports_live:
+                errors[field] = _("Select a manager that supports Live mode.")
+            if (
+                self.building_id
+                and not self.building.sites.filter(pk=manager.site_id).exists()
+            ):
+                errors[field] = _("The manager must belong to a building site.")
+        return errors
+
+    def get_stream_info(self) -> dict:
+        """Resolve playback through the configured mode without exposing credentials."""
+        from .runner_live import get_stream_info
+
+        return get_stream_info(self)
+
+    def get_stream_url(self) -> str:
+        """Return the playable stream URL or an empty string while it is unavailable."""
+        return self.get_stream_info()["hls_url"] or ""
 
     def get_poster_url(self) -> str:
         if self.poster:
@@ -228,6 +358,7 @@ class Broadcaster(models.Model):
             return thumbnail_url
 
     def save(self, *args, **kwargs) -> None:
+        self.url = self.url or None
         self.slug = slugify(self.name)
         filename = self.slug + ".vtt"
         self.set_broadcaster_file(filename)

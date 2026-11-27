@@ -3,9 +3,9 @@
 ## Informations générales
 
 La plateforme Esup-Pod se base sur le framework Django écrit en Python.<br>
-Elle est compatible avec les versions 3.10 et 3.12 de Python.<br>
-> Attention : à partir d’Esup-Pod version 4.2,<br>
- la version 3.9 de Python n’est plus supportée.<br>
+Elle est compatible avec les versions 3.11 et 3.12 de Python.<br>
+> Attention : à partir d’Esup-Pod version 4.5,<br>
+ la version 3.10 de Python n’est plus supportée.<br>
 
 **Django Version : 4.2 LTS**<br>
 
@@ -1158,6 +1158,12 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
 ### Configuration de l’application live
 
+Le mode **Esup-Runner Live** se configure dans l’administration de chaque broadcaster.<br>
+Sélectionner le `runner_manager` recevant son RTMP et renseigner son `source_id`, indépendant du slug Pod.<br>
+Un `secondary_runner_manager` facultatif doit recevoir le flux RTMP du même `source_id`. Pod bascule dessus si le principal ne reçoit plus de flux ou après 30 secondes de panne confirmée, puis revient au principal dès que son HLS est prêt.<br>
+La disponibilité est vérifiée lors des requêtes de lecture ; comme dans la configuration standard d’Esup-Pod, `CACHES['default']` doit utiliser un Redis partagé entre tous les frontaux.<br>
+Le mode URL fixe reste le mode par défaut ; l’URL est obligatoire uniquement dans ce mode.<br>
+
 * `AFFILIATION_EVENT`
   > valeur par défaut : `['faculty', 'employee', 'staff']`
   >> Groupes ou affiliations des personnes autorisées à créer un évènement.<br>
@@ -1189,6 +1195,22 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
   > valeur par défaut : `True`
   >> Si True, un courriel est envoyé aux managers et à l’auteur<br>
   >> (si DEBUG est à False) à la création/modification d’un event.<br>
+* `ESUP_RUNNER_LIVE_CACHE_TIMEOUT`
+  > valeur par défaut : `10`
+  >> Durée (en secondes) du cache des flux indisponibles et des nouvelles tentatives après une erreur temporaire de découverte.<br>
+  >> Pendant une panne du manager, la dernière URL confirmée est conservée séparément et proposée à nouveau uniquement si de nouveaux segments HLS accessibles sont observés.<br>
+  >> La lecture en cours continue indépendamment de la disponibilité du manager, sans limite fixe de durée de panne.<br>
+* `ESUP_RUNNER_LIVE_HLS_TIMEOUT`
+  > valeur par défaut : `(2, 2)`
+  >> Délais de connexion et de lecture (en secondes) des vérifications HLS pendant une panne du manager.<br>
+  >> Les vérifications suivent la playlist principale, observent la progression de la playlist média et lisent uniquement le début du dernier segment, sans les identifiants du manager.<br>
+* `ESUP_RUNNER_LIVE_HTTP_TIMEOUT`
+  > valeur par défaut : `(2, 4)`
+  >> Délais de connexion et de lecture (en secondes) des requêtes HTTP au manager Esup-Runner Live.<br>
+* `ESUP_RUNNER_LIVE_READY_CACHE_TIMEOUT`
+  > valeur par défaut : `20`
+  >> Durée (en secondes) du cache des flux HLS prêts confirmés par le manager Esup-Runner Live.<br>
+  >> Les arrêts confirmés et les refus d’accès invalident la dernière URL connue. Les requêtes de disponibilité du navigateur expirent après 30 secondes.<br>
 * `EVENT_ACTIVE_AUTO_START`
   > valeur par défaut : `False`
   >> Permet de lancer automatiquement l’enregistrement sur l’interface utilisée<br>
@@ -1357,9 +1379,13 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
   >>
 * `MEETING_DISABLE_RECORD`
   > valeur par défaut : `True`
-  >> Mettre à True pour désactiver les enregistrements de réunion<br>
-  >> Configuration de l’enregistrement des réunions.<br>
-  >> Ce champ n’est pas pris en compte si `MEETING_DISABLE_RECORD = True`.<br>
+  >> À `True`, Pod bloque pour tous l’enregistrement des nouvelles sessions BBB démarrées depuis Pod et l’accès aux enregistrements du module Réunion.<br>
+  >> À `False`, les options et droits de la réunion s’appliquent, ainsi que `MEETING_DISABLE_RECORD_FOR_STUDENTS`.<br>
+* `MEETING_DISABLE_RECORD_FOR_STUDENTS`
+  > valeur par défaut : `False`
+  >> `True` désactive l’enregistrement des nouvelles sessions BBB dont le propriétaire a l’affiliation `student`.<br>
+  >> Pour ces comptes, Pod bloque aussi les options d’enregistrement et l’accès aux replays. Dès BBB 3.0, le démarrage et l’arrêt manuels leur sont bloqués, même comme modérateurs.<br>
+  >> `MEETING_DISABLE_RECORD` reste prioritaire.<br>
 * `MEETING_MAIN_FIELDS`
   > valeur par défaut : `()`
   >> Permet de définir les champs principaux du formulaire de création d’une réunion<br>
@@ -1390,7 +1416,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
   >> Doit se trouver dans le répertoire statique.<br>
 * `MEETING_RECORD_FIELDS`
   > valeur par défaut : `()`
-  >> ensemble des champs qui seront cachés si `MEETING_DISABLE_RECORD` est défini à true.<br>
+  >> Champs regroupés dans les options d’enregistrement du formulaire de réunion. Pod masque ces options lorsque les paramètres applicables désactivent l’enregistrement.<br>
   >>
   >> ```python
   >> MEETING_RECORD_FIELDS: ("record", "auto_start_recording", "allow_start_stop_recording")
@@ -1732,7 +1758,7 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
   >> Affichage des sous-thèmes directs de la chaîne ou du thème actuel(le)<br>
 * `RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY`
   > valeur par défaut : `False`
-  >> Si True, seule les personnes "Staff" peuvent déposer des vidéos<br>
+  >> À `True`, seuls les comptes `is_staff` peuvent déposer ou modifier des vidéos, y compris téléverser les enregistrements de réunion vers Pod.<br>
 * `THEME_FORM_FIELDS_HELP_TEXT`
   > valeur par défaut : `""`
   >> Ensemble des textes d’aide affichés avec le formulaire d’édition de theme.<br>

@@ -37,7 +37,12 @@ from pod.video_encode_transcript.runner_manager_utils import (
 )
 from pod.video_encode_transcript.task_queue import refresh_pending_task_ranks
 from pod.video_encode_transcript.transcript import save_vtt_and_notify
-from pod.video_encode_transcript.utils import change_encoding_step, send_email_item
+from pod.video_encode_transcript.runner_warnings import format_runner_warnings
+from pod.video_encode_transcript.utils import (
+    add_encoding_log,
+    change_encoding_step,
+    send_email_item,
+)
 
 log = logging.getLogger(__name__)
 
@@ -84,6 +89,7 @@ class NotifyTaskPayload(TypedDict, total=False):
     status: str
     script_output: str
     error_message: str
+    warnings: list[str]
 
 
 class ResultManifest(TypedDict, total=False):
@@ -140,7 +146,7 @@ def _extract_bearer_token(request: WSGIRequest) -> str | None:
 def _fetch_task_result(
     url: str, headers: HeadersDict, task_id: int | str
 ) -> requests.Response | None:
-    """Return HTTP response for a task result or None on failure."""
+    """Return the task result response, including HTTP errors, or None on network failure."""
     try:
         response = requests.get(url, headers=headers, timeout=30)
         log.info(f"Fetched result for task {task_id}: {url}")
@@ -151,7 +157,6 @@ def _fetch_task_result(
         log.error(
             f"Failed to download result for task {task_id}: {response.status_code} {response.text}"
         )
-        return None
     return response
 
 
@@ -161,9 +166,10 @@ def _finalize_task_import(
     """Persist result path and import artifacts based on task type."""
     if hasattr(task, "result_path"):
         task.result_path = extracted_dir
-    task.save()
+        task.save(update_fields=["result_path"])
 
     try:
+        video_id = task.video_id
         if task.type == "studio" or getattr(task, "recording_id", None):
             # Studio tasks generate a new Video from the base media before importing artifacts.
             video_id = _create_video_from_studio_task(task)
@@ -178,8 +184,12 @@ def _finalize_task_import(
             _import_transcription_result(task, extracted_vtt_path)
         else:
             store_after_remote_encoding_video(task.video.id)
+        # A completion callback can supply diagnostics while another worker imports.
+        task.refresh_from_db(fields=["script_output"])
+        if video_id and (task.type != "transcription" or task.warnings):
+            add_encoding_log(video_id, format_runner_warnings(task.warnings))
         task.status = "completed"
-        task.save()
+        task.save(update_fields=["status"])
     except Exception as exc:  # noqa: BLE001
         log.error(f"Error while importing result for task {task.id}: {exc}")
 
@@ -266,6 +276,8 @@ def _apply_notify_payload_to_task(task: Task, data: NotifyTaskPayload) -> None:
     the periodic retry.
     """
     notified_status = str(data["status"])
+    if notified_status == "completed" and "warnings" in data:
+        task.update_warnings(data["warnings"])
     update_fields = ["script_output"]
     if notified_status == "completed":
         # A callback may hold a stale instance while another process finishes importing.
@@ -294,6 +306,15 @@ def _apply_notify_payload_to_task(task: Task, data: NotifyTaskPayload) -> None:
             or data.get("script_output")
             or f"Runner manager task {task.status}"
         )
+        # Recognize invalid input before change_encoding_step truncates the details.
+        if any(
+            "invalid data found when processing input" in str(message).lower()
+            for message in (error_message, script_output_payload)
+        ):
+            detail = (
+                "The source file does not appear to be a valid video file. "
+                "Please re-upload a valid video file."
+            )
         # Keep video state aligned with task state for admin visibility.
         change_encoding_step(task.video_id, -1, str(detail))
         Video.objects.filter(id=task.video_id).update(encoding_in_progress=False)
@@ -355,7 +376,7 @@ def _get_runner_manager_for_task(task: Task) -> RunnerManager | None:
 def _get_task_result_manifest(
     task: Task, runner_manager: RunnerManager
 ) -> ResultManifest | None:
-    """Fetch and validate task result manifest from runner manager."""
+    """Fetch the result manifest and fail the local task when the result is missing."""
     if not task.task_id:
         log.error(f"Missing task_id for task {task.id}")
         return None
@@ -363,7 +384,18 @@ def _get_task_result_manifest(
     result_url = _build_result_url(runner_manager.url, task.task_id)
     headers = _build_headers(runner_manager.token)
     response = _fetch_task_result(result_url, headers, task.id)
-    if not response:
+    # Error responses are falsey in requests, but a 404 needs a terminal task status.
+    if response is None:
+        return None
+    if response.status_code == 404:
+        detail = (
+            "Runner manager task result not found (HTTP 404). "
+            "Result files may have been removed by runner cleanup (MAX_FILE_AGE_DAYS)."
+        )
+        _apply_notify_payload_to_task(task, {"status": "failed", "error_message": detail})
+        log.error("Task %s marked as failed: %s", task.id, detail)
+        return None
+    if response.status_code != 200:
         return None
 
     try:
@@ -409,7 +441,8 @@ def download_and_import_task_result(task: Task) -> None:
     """Download and import a Runner result while holding the task's file lock.
 
     Skip imports already running in another worker or completed in the database.
-    Failed attempts release the lock and remain eligible for a later retry.
+    Transient failures release the lock and remain eligible for a later retry.
+    A missing result (HTTP 404) marks the task as failed instead.
 
     Args:
         task: Task whose remote result is ready to import.

@@ -1,14 +1,27 @@
+"""Esup-Pod Live administration."""
+
 from django.conf import settings
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.contrib.admin.views.autocomplete import AutocompleteJsonView
 from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
-from django.urls import reverse
+from django.urls import path, reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from sorl.thumbnail import get_thumbnail
 from django.templatetags.static import static
 
-from pod.live.forms import BuildingAdminForm, EventAdminForm, BroadcasterAdminForm
+from pod.live.cache_config import (
+    INCOMPATIBLE_LIVE_CACHE_WARNING,
+    has_incompatible_live_cache,
+)
+from pod.live.forms import (
+    BuildingAdminForm,
+    EventAdminForm,
+    BroadcasterAdminForm,
+    RunnerManagerAutocompleteSelect,
+    runner_manager_label,
+)
 from pod.live.models import (
     Building,
     Event,
@@ -72,13 +85,33 @@ class BuildingAdmin(admin.ModelAdmin):
         )
 
 
+class RunnerManagerAutocompleteJsonView(AutocompleteJsonView):
+    """Include inactivity in manager search results for broadcaster forms only."""
+
+    def serialize_result(self, obj, to_field_name):
+        """Keep standard autocomplete IDs and permissions with contextual labels."""
+        result = super().serialize_result(obj, to_field_name)
+        if self.source_field.model is Broadcaster and self.source_field.name in (
+            "runner_manager",
+            "secondary_runner_manager",
+        ):
+            result["text"] = runner_manager_label(obj)
+        return result
+
+
 @admin.register(Broadcaster)
 class BroadcasterAdmin(admin.ModelAdmin):
+    """Configure broadcasters."""
+
     form = BroadcasterAdminForm
     list_display = (
         "name",
         "slug",
         "building",
+        "stream_mode",
+        "runner_manager",
+        "secondary_runner_manager",
+        "source_id",
         "url",
         "status",
         "is_recording_admin",
@@ -86,14 +119,24 @@ class BroadcasterAdmin(admin.ModelAdmin):
         "piloting_conf",
         "main_lang",
     )
-    list_filter = ["building"]
+    list_filter = [
+        "building",
+        "stream_mode",
+        "runner_manager",
+        "secondary_runner_manager",
+    ]
 
     def get_fields(self, request, obj=None):
+        """Expose broadcaster settings and add its QR code when editing an existing entry."""
         fields = (
             "name",
             "building",
             "description",
             "poster",
+            "stream_mode",
+            "runner_manager",
+            "secondary_runner_manager",
+            "source_id",
             "url",
             "status",
             "enable_add_event",
@@ -113,15 +156,58 @@ class BroadcasterAdmin(admin.ModelAdmin):
         return fields
 
     def get_readonly_fields(self, request, obj=None):
+        """Protect generated broadcaster fields and the QR code from direct edits."""
         if obj is None:
             return ["slug", "transcription_file"]
         return ["slug", "qrcode", "transcription_file"]
 
     def get_autocomplete_fields(self, request):
-        return ["building"]
+        """Enable building and Live manager searches in the administration form."""
+        return ["building", "runner_manager", "secondary_runner_manager"]
+
+    def get_urls(self):
+        """Register the manager autocomplete used only by broadcaster forms."""
+        return [
+            path(
+                "runner-manager-autocomplete/",
+                self.admin_site.admin_view(
+                    RunnerManagerAutocompleteJsonView.as_view(admin_site=self.admin_site)
+                ),
+                name="live_broadcaster_runner_manager_autocomplete",
+            ),
+        ] + super().get_urls()
+
+    def render_change_form(
+        self, request, context, add=False, change=False, form_url="", obj=None
+    ):
+        """Warn about incompatible caches and existing inactive Live managers."""
+        if has_incompatible_live_cache():
+            self.message_user(
+                request, INCOMPATIBLE_LIVE_CACHE_WARNING, level=messages.WARNING
+            )
+        if obj is not None and obj.is_runner_live:
+            for field in ("runner_manager", "secondary_runner_manager"):
+                manager = getattr(obj, field)
+                if manager is not None and not manager.is_active:
+                    self.message_user(
+                        request,
+                        _(
+                            '%(field)s: the assigned manager "%(manager)s" '
+                            "is marked as inactive."
+                        )
+                        % {
+                            "field": obj._meta.get_field(field).verbose_name,
+                            "manager": manager.name,
+                        },
+                        level=messages.WARNING,
+                    )
+        return super().render_change_form(request, context, add, change, form_url, obj)
 
     def get_form(self, request, obj=None, **kwargs):
+        """Configure both manager widgets and the piloting parameter lookup URL."""
         form = super(BroadcasterAdmin, self).get_form(request, obj, **kwargs)
+        for field in ("runner_manager", "secondary_runner_manager"):
+            form.base_fields[field].widget.can_delete_related = False
         form.base_fields["piloting_conf"].widget.attrs.update(
             {"data-url": reverse("live:ajax_get_mandatory_parameters") + "?impl_name="}
         )
@@ -129,18 +215,34 @@ class BroadcasterAdmin(admin.ModelAdmin):
         return form
 
     def get_queryset(self, request):
+        """Limit non-superusers to broadcasters belonging to the current site."""
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
             qs = qs.filter(building__sites=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """Restrict building and manager choices to the administrator's allowed site."""
         if db_field.name == "building":
             kwargs["queryset"] = Building.objects.filter(sites=Site.objects.get_current())
+        if db_field.name in ("runner_manager", "secondary_runner_manager"):
+            kwargs["widget"] = RunnerManagerAutocompleteSelect(
+                db_field, self.admin_site, using=kwargs.get("using")
+            )
+        if (
+            db_field.name in ("runner_manager", "secondary_runner_manager")
+            and not request.user.is_superuser
+        ):
+            from pod.video_encode_transcript.models import RunnerManager
+
+            kwargs["queryset"] = RunnerManager.objects.filter(
+                site=get_current_site(request)
+            )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     @admin.display(description=_("QR code"))
     def qrcode(self, obj):
+        """Display the broadcaster's generated QR code in its administration form."""
         return obj.qrcode
 
     class Media:

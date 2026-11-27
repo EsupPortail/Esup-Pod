@@ -704,6 +704,7 @@ class VideoForm(forms.ModelForm):
                 "fields": [
                     "channel",
                     "theme",
+                    "order",
                 ],
             },
         ),
@@ -726,7 +727,7 @@ class VideoForm(forms.ModelForm):
             {
                 "legend": _("Advanced options"),
                 "classes": "",
-                "fields": ["allow_downloading", "is_360", "disable_comment", "order"],
+                "fields": ["allow_downloading", "is_360", "disable_comment"],
             },
         ),
     )

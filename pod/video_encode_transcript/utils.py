@@ -3,10 +3,16 @@
 import logging
 import os
 import time
+from smtplib import SMTPException
 
 import bleach
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives, mail_admins, mail_managers, send_mail
+from django.core.mail import (
+    EmailMultiAlternatives,
+    mail_admins,
+    mail_managers,
+    send_mail,
+)
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -14,6 +20,7 @@ from pod.progressive_web_app.utils import notify_user
 from pod.video.models import Video
 
 from .models import EncodingLog, EncodingStep
+from .runner_warnings import format_runner_warnings
 
 DEBUG = getattr(settings, "DEBUG", True)
 logger = logging.getLogger(__name__)
@@ -94,6 +101,10 @@ def change_encoding_step(video_id: int, num_step: int, desc: str) -> None:
     )
     encoding_step.num_step = num_step
     encoding_step.desc_step = desc[:255]
+    if num_step == 0 and desc == "start":
+        encoding_log = EncodingLog.objects.filter(video_id=video_id).first()
+        if encoding_log and encoding_log.warnings:
+            add_encoding_log(video_id, format_runner_warnings([]))
     encoding_step.save()
     logger.debug("Video: %s - step: %d - desc: %s" % (video_id, num_step, desc))
 
@@ -239,7 +250,7 @@ def _completion_message(content_title, subject_prefix) -> str:
 
 
 def send_notification_email(video_to_encode, subject_prefix) -> None:
-    """Send email notification on video encoding or transcripting completion."""
+    """Send a completion email without letting delivery errors interrupt processing."""
     logger.debug("SEND EMAIL ON %s COMPLETION" % subject_prefix.upper())
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
     content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
@@ -277,39 +288,44 @@ def send_notification_email(video_to_encode, subject_prefix) -> None:
     to_email = []
     to_email.append(video_to_encode.owner.email)
 
-    if (
-        USE_ESTABLISHMENT_FIELD
-        and MANAGERS
-        and video_to_encode.owner.owner.establishment.lower() in dict(MANAGERS)
-    ):
-        bcc_email = []
-        video_estab = video_to_encode.owner.owner.establishment.lower()
-        manager = dict(MANAGERS)[video_estab]
-        if isinstance(manager, (list, tuple)):
-            bcc_email = manager
-        elif isinstance(manager, str):
-            bcc_email.append(manager)
-        msg = EmailMultiAlternatives(
-            direct_subject, message, from_email, to_email, bcc=bcc_email
-        )
-        msg.attach_alternative(html_message, "text/html")
-        msg.send()
-    else:
-        mail_managers(
-            subject,
-            full_message,
-            fail_silently=False,
-            html_message=full_html_message,
-        )
-        if not DEBUG:
-            send_mail(
-                direct_subject,
-                message,
-                from_email,
-                to_email,
-                fail_silently=False,
-                html_message=html_message,
+    try:
+        if (
+            USE_ESTABLISHMENT_FIELD
+            and MANAGERS
+            and video_to_encode.owner.owner.establishment.lower() in dict(MANAGERS)
+        ):
+            bcc_email = []
+            video_estab = video_to_encode.owner.owner.establishment.lower()
+            manager = dict(MANAGERS)[video_estab]
+            if isinstance(manager, (list, tuple)):
+                bcc_email = manager
+            elif isinstance(manager, str):
+                bcc_email.append(manager)
+            msg = EmailMultiAlternatives(
+                direct_subject, message, from_email, to_email, bcc=bcc_email
             )
+            msg.attach_alternative(html_message, "text/html")
+            msg.send()
+        else:
+            mail_managers(
+                subject,
+                full_message,
+                fail_silently=False,
+                html_message=full_html_message,
+            )
+            if not DEBUG:
+                send_mail(
+                    direct_subject,
+                    message,
+                    from_email,
+                    to_email,
+                    fail_silently=False,
+                    html_message=html_message,
+                )
+    except (SMTPException, OSError):
+        logger.exception(
+            "Could not send completion email for video %s", video_to_encode.id
+        )
 
 
 def send_notification(video_to_encode, subject_prefix) -> None:

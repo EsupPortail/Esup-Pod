@@ -2,6 +2,49 @@
 
 /* exported displayLoader */
 
+// Start a single polling loop per card when a meeting opens in a new tab.
+document.addEventListener("click", (event) => {
+  const card = event.target
+    .closest("[data-meeting-open]")
+    ?.closest(".meeting-card");
+  const startLink = card?.querySelector("[data-meeting-status-url]");
+  if (!startLink || startLink.dataset.meetingPending) return;
+
+  startLink.dataset.meetingPending = "true";
+
+  /**
+   * Show the join and information buttons once BBB reports the meeting as running.
+   * Retry when the meeting is still starting or the request fails.
+   * @return {Promise<void>}
+   */
+  async function checkMeetingStatus() {
+    if (!startLink.isConnected) return;
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    try {
+      const response = await fetch(startLink.dataset.meetingStatusUrl, {
+        cache: "no-store",
+        signal: controller.signal,
+      });
+      if (response.ok && (await response.json()).status === true) {
+        window.bootstrap?.Tooltip?.getInstance(startLink)?.dispose();
+        startLink.remove();
+        card
+          .querySelector("[data-meeting-running-actions]")
+          .classList.remove("d-none");
+        return;
+      }
+    } catch {
+      // The connection or BBB may be temporarily unavailable during startup.
+    } finally {
+      clearTimeout(timeout);
+    }
+    setTimeout(checkMeetingStatus, 3000);
+  }
+  setTimeout(checkMeetingStatus, 3000);
+});
+
 var meetingModal = document.getElementById("meetingModal");
 meetingModal.addEventListener("show.bs.modal", function (event) {
   // Button that triggered the modal

@@ -9,6 +9,7 @@
   ![Open issues](https://img.shields.io/github/issues-raw/EsupPortail/Esup-Pod)
   ![last commit push](https://img.shields.io/github/last-commit/EsupPortail/Esup-Pod)
   [![Author](https://img.shields.io/badge/author-Ptitloup-blue)](https://www.linkedin.com/in/nicolas-can-a6bb7869/)
+  [![Plumber Score](https://score.getplumber.io/github.com/EsupPortail/Esup-Pod.svg)](https://score.getplumber.io/github.com/EsupPortail/Esup-Pod)
 
 ## [FR]
 

@@ -1288,7 +1288,22 @@
                     }
                 },
                 "live": {
-                    "description": {},
+                    "description": {
+                        "en": [
+                            "The **Esup-Runner Live** mode is configured in each broadcaster’s administration form.",
+                            "Select the `runner_manager` receiving its RTMP stream and enter its `source_id`, independent of the Pod slug.",
+                            "An optional `secondary_runner_manager` must receive the RTMP stream for the same `source_id`. Pod switches to it when the primary has no stream or after 30 seconds of confirmed downtime, then returns to the primary when its HLS is ready.",
+                            "Playback requests detect Live availability; as in the standard Esup-Pod configuration, `CACHES['default']` must use Redis shared by all frontends.",
+                            "Fixed URL mode remains the default; the URL is required only in this mode."
+                        ],
+                        "fr": [
+                            "Le mode **Esup-Runner Live** se configure dans l’administration de chaque broadcaster.",
+                            "Sélectionner le `runner_manager` recevant son RTMP et renseigner son `source_id`, indépendant du slug Pod.",
+                            "Un `secondary_runner_manager` facultatif doit recevoir le flux RTMP du même `source_id`. Pod bascule dessus si le principal ne reçoit plus de flux ou après 30 secondes de panne confirmée, puis revient au principal dès que son HLS est prêt.",
+                            "La disponibilité est vérifiée lors des requêtes de lecture ; comme dans la configuration standard d’Esup-Pod, `CACHES['default']` doit utiliser un Redis partagé entre tous les frontaux.",
+                            "Le mode URL fixe reste le mode par défaut ; l’URL est obligatoire uniquement dans ce mode."
+                        ]
+                    },
                     "settings": {
                         "AFFILIATION_EVENT": {
                             "default_value": "['faculty', 'employee', 'staff']",
@@ -1390,6 +1405,66 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "ESUP_RUNNER_LIVE_CACHE_TIMEOUT": {
+                            "default_value": 10,
+                            "description": {
+                                "en": [
+                                    "Cache duration (in seconds) for unavailable streams and retries after temporary discovery errors.",
+                                    "During manager outages, the last confirmed URL is retained separately and offered again only when new accessible HLS segments are observed.",
+                                    "Ongoing playback continues independently of manager availability, without a fixed outage duration limit."
+                                ],
+                                "fr": [
+                                    "Durée (en secondes) du cache des flux indisponibles et des nouvelles tentatives après une erreur temporaire de découverte.",
+                                    "Pendant une panne du manager, la dernière URL confirmée est conservée séparément et proposée à nouveau uniquement si de nouveaux segments HLS accessibles sont observés.",
+                                    "La lecture en cours continue indépendamment de la disponibilité du manager, sans limite fixe de durée de panne."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.5.0"
+                        },
+                        "ESUP_RUNNER_LIVE_HLS_TIMEOUT": {
+                            "default_value": "(2, 2)",
+                            "description": {
+                                "en": [
+                                    "Connection and read timeouts (in seconds) for HLS checks during manager outages.",
+                                    "Checks follow a master playlist, observe media playlist progression and read at most the start of the latest segment, without manager credentials."
+                                ],
+                                "fr": [
+                                    "Délais de connexion et de lecture (en secondes) des vérifications HLS pendant une panne du manager.",
+                                    "Les vérifications suivent la playlist principale, observent la progression de la playlist média et lisent uniquement le début du dernier segment, sans les identifiants du manager."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.5.0"
+                        },
+                        "ESUP_RUNNER_LIVE_HTTP_TIMEOUT": {
+                            "default_value": "(2, 4)",
+                            "description": {
+                                "en": [
+                                    "Connection and read timeouts (in seconds) for HTTP requests to the Esup-Runner Live manager."
+                                ],
+                                "fr": [
+                                    "Délais de connexion et de lecture (en secondes) des requêtes HTTP au manager Esup-Runner Live."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.5.0"
+                        },
+                        "ESUP_RUNNER_LIVE_READY_CACHE_TIMEOUT": {
+                            "default_value": 20,
+                            "description": {
+                                "en": [
+                                    "Cache duration (in seconds) for ready HLS streams confirmed by the Esup-Runner Live manager.",
+                                    "Confirmed stops and access refusals invalidate the last known URL. Browser availability requests time out after 30 seconds."
+                                ],
+                                "fr": [
+                                    "Durée (en secondes) du cache des flux HLS prêts confirmés par le manager Esup-Runner Live.",
+                                    "Les arrêts confirmés et les refus d’accès invalident la dernière URL connue. Les requêtes de disponibilité du navigateur expirent après 30 secondes."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.5.0"
                         },
                         "EVENT_ACTIVE_AUTO_START": {
                             "default_value": false,
@@ -1560,7 +1635,7 @@
                         }
                     },
                     "title": {
-                        "en": "",
+                        "en": "Live application configuration",
                         "fr": "Configuration de l’application live"
                     }
                 },
@@ -1870,16 +1945,33 @@
                             "default_value": true,
                             "description": {
                                 "en": [
-                                    ""
+                                    "With `True`, Pod disables recording for new BBB sessions it starts and blocks access to recordings in the Meeting module for everyone.",
+                                    "With `False`, meeting options, access permissions, and `MEETING_DISABLE_RECORD_FOR_STUDENTS` apply."
                                 ],
                                 "fr": [
-                                    "Mettre à True pour désactiver les enregistrements de réunion",
-                                    "Configuration de l’enregistrement des réunions.",
-                                    "Ce champ n’est pas pris en compte si `MEETING_DISABLE_RECORD = True`."
+                                    "À `True`, Pod bloque pour tous l’enregistrement des nouvelles sessions BBB démarrées depuis Pod et l’accès aux enregistrements du module Réunion.",
+                                    "À `False`, les options et droits de la réunion s’appliquent, ainsi que `MEETING_DISABLE_RECORD_FOR_STUDENTS`."
                                 ]
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "MEETING_DISABLE_RECORD_FOR_STUDENTS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "`True` disables recording for new BBB sessions owned by a user with the `student` affiliation.",
+                                    "Pod blocks recording options and playback for these users. In BBB 3.0 and later, their recording controls are blocked even when they are moderators.",
+                                    "`MEETING_DISABLE_RECORD` takes precedence."
+                                ],
+                                "fr": [
+                                    "`True` désactive l’enregistrement des nouvelles sessions BBB dont le propriétaire a l’affiliation `student`.",
+                                    "Pour ces comptes, Pod bloque aussi les options d’enregistrement et l’accès aux replays. Dès BBB 3.0, le démarrage et l’arrêt manuels leur sont bloqués, même comme modérateurs.",
+                                    "`MEETING_DISABLE_RECORD` reste prioritaire."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.5.0"
                         },
                         "MEETING_MAIN_FIELDS": {
                             "default_value": "()",
@@ -1945,10 +2037,10 @@
                             "default_value": "()",
                             "description": {
                                 "en": [
-                                    "list of all fields that will be hidden if `MEETING_DISABLE_RECORD` is set to True."
+                                    "Fields grouped under the recording options in the meeting form. Pod hides these options when the applicable policy disables recording."
                                 ],
                                 "fr": [
-                                    "ensemble des champs qui seront cachés si `MEETING_DISABLE_RECORD` est défini à true.",
+                                    "Champs regroupés dans les options d’enregistrement du formulaire de réunion. Pod masque ces options lorsque les paramètres applicables désactivent l’enregistrement.",
                                     "```python",
                                     "MEETING_RECORD_FIELDS: (\"record\", \"auto_start_recording\", \"allow_start_stop_recording\")",
                                     "```"
@@ -2936,10 +3028,10 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "With `True`, only staff users can upload or edit videos, including uploads of meeting recordings to Pod."
                                 ],
                                 "fr": [
-                                    "Si True, seule les personnes \"Staff\" peuvent déposer des vidéos"
+                                    "À `True`, seuls les comptes `is_staff` peuvent déposer ou modifier des vidéos, y compris téléverser les enregistrements de réunion vers Pod."
                                 ]
                             },
                             "pod_version_end": "",
@@ -5945,9 +6037,9 @@
                 "fr": [
                     "",
                     "La plateforme Esup-Pod se base sur le framework Django écrit en Python.",
-                    "Elle est compatible avec les versions 3.10 et 3.12 de Python.",
-                    "> Attention : à partir d’Esup-Pod version 4.2,",
-                    " la version 3.9 de Python n’est plus supportée.",
+                    "Elle est compatible avec les versions 3.11 et 3.12 de Python.",
+                    "> Attention : à partir d’Esup-Pod version 4.5,",
+                    " la version 3.10 de Python n’est plus supportée.",
                     "",
                     "**Django Version : 4.2 LTS**",
                     "",

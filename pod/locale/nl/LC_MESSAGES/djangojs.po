@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-16 12:34+0200\n"
+"POT-Creation-Date: 2026-11-18 15:02+0100\n"
 "PO-Revision-Date: 2025-04-25 10:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -25,6 +25,7 @@ msgid "No description"
 msgstr ""
 
 #: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+#: pod/video/static/js/video_upload.js
 msgid "An error has occurred. Please try later."
 msgstr ""
 
@@ -46,6 +47,7 @@ msgstr ""
 #: pod/chapter/static/js/chapters.js pod/completion/static/js/completion.js
 #: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
 #: pod/podfile/static/podfile/js/filewidget.js
+#: pod/video/static/js/video_upload.js
 msgid "You are no longer authenticated. Please log in again."
 msgstr ""
 
@@ -1068,4 +1070,18 @@ msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "Uploading…"
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid "Checking your upload…"
+msgstr ""
+
+#: pod/video/static/js/video_upload.js
+msgid ""
+"Unable to confirm the upload. Check your dashboard before uploading the file "
+"again."
 msgstr ""
