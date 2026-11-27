@@ -1379,9 +1379,13 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
   >>
 * `MEETING_DISABLE_RECORD`
   > valeur par défaut : `True`
-  >> Mettre à True pour désactiver les enregistrements de réunion<br>
-  >> Configuration de l’enregistrement des réunions.<br>
-  >> Ce champ n’est pas pris en compte si `MEETING_DISABLE_RECORD = True`.<br>
+  >> À `True`, Pod bloque pour tous l’enregistrement des nouvelles sessions BBB démarrées depuis Pod et l’accès aux enregistrements du module Réunion.<br>
+  >> À `False`, les options et droits de la réunion s’appliquent, ainsi que `MEETING_DISABLE_RECORD_FOR_STUDENTS`.<br>
+* `MEETING_DISABLE_RECORD_FOR_STUDENTS`
+  > valeur par défaut : `False`
+  >> `True` désactive l’enregistrement des nouvelles sessions BBB dont le propriétaire a l’affiliation `student`.<br>
+  >> Pour ces comptes, Pod bloque aussi les options d’enregistrement et l’accès aux replays. Dès BBB 3.0, le démarrage et l’arrêt manuels leur sont bloqués, même comme modérateurs.<br>
+  >> `MEETING_DISABLE_RECORD` reste prioritaire.<br>
 * `MEETING_MAIN_FIELDS`
   > valeur par défaut : `()`
   >> Permet de définir les champs principaux du formulaire de création d’une réunion<br>
@@ -1412,7 +1416,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
   >> Doit se trouver dans le répertoire statique.<br>
 * `MEETING_RECORD_FIELDS`
   > valeur par défaut : `()`
-  >> ensemble des champs qui seront cachés si `MEETING_DISABLE_RECORD` est défini à true.<br>
+  >> Champs regroupés dans les options d’enregistrement du formulaire de réunion. Pod masque ces options lorsque les paramètres applicables désactivent l’enregistrement.<br>
   >>
   >> ```python
   >> MEETING_RECORD_FIELDS: ("record", "auto_start_recording", "allow_start_stop_recording")
@@ -1754,7 +1758,7 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
   >> Affichage des sous-thèmes directs de la chaîne ou du thème actuel(le)<br>
 * `RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY`
   > valeur par défaut : `False`
-  >> Si True, seule les personnes "Staff" peuvent déposer des vidéos<br>
+  >> À `True`, seuls les comptes `is_staff` peuvent déposer ou modifier des vidéos, y compris téléverser les enregistrements de réunion vers Pod.<br>
 * `THEME_FORM_FIELDS_HELP_TEXT`
   > valeur par défaut : `""`
   >> Ensemble des textes d’aide affichés avec le formulaire d’édition de theme.<br>
