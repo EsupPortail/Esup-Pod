@@ -7,6 +7,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest import skipUnless
 
+from bs4 import BeautifulSoup
 from django.template.loader import render_to_string
 from django.test import SimpleTestCase
 from django.utils import timezone
@@ -43,12 +44,15 @@ class EventPlaybackTests(SimpleTestCase):
                 "LOGO_PLAYER": "logo.png",
             },
         )
+        inline_scripts = BeautifulSoup(html, "html.parser").select("script:not([src])")
+        self.assertEqual(len(inline_scripts), 1, "Expected one inline playback script")
+        script = inline_scripts[0].get_text()
         result = subprocess.run(
             [
                 shutil.which("node"),
                 str(Path(__file__).with_name("event_playback_harness.cjs")),
             ],
-            input=json.dumps({"html": html, "actions": actions}),
+            input=json.dumps({"script": script, "actions": actions}),
             text=True,
             capture_output=True,
             check=False,

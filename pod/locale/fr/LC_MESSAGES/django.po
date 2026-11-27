@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-18 15:02+0100\n"
+"POT-Creation-Date: 2026-11-25 11:58+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -316,9 +316,8 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: pod/live/templates/live/event_delete.html
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/delete.html
+#: pod/main/templates/contact_us.html pod/meeting/templates/meeting/delete.html
+#: pod/meeting/templates/meeting/form_field.html
 #: pod/meeting/templates/meeting/invite.html
 #: pod/meeting/templates/meeting/join.html
 #: pod/playlist/templates/playlist/add_or_edit.html
@@ -740,7 +739,7 @@ msgstr "Changer votre image de profil"
 #: pod/live/templates/live/event-info.html pod/main/templates/base.html
 #: pod/main/templates/mastodon.html pod/main/templates/navbar.html
 #: pod/main/templates/navbar_collapse.html
-#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/form_fieldsets.html
 #: pod/meeting/templates/meeting/my_meetings.html
 #: pod/playlist/templates/playlist/playlist-list-modal.html
 #: pod/podfile/templates/podfile/customfilewidget.html
@@ -854,6 +853,7 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 #: pod/hyperlinks/templates/hyperlinks/form_hyperlink.html
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/form_fieldsets.html
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/recorder/templates/recorder/add_recording.html
@@ -2115,7 +2115,7 @@ msgstr ""
 "« Supprimer »."
 
 #: pod/dressing/templates/dressing_edit.html pod/import_video/forms.py
-#: pod/live/forms.py pod/video/forms.py
+#: pod/live/forms.py pod/meeting/forms.py pod/video/forms.py
 msgid "General settings"
 msgstr "Paramètres généraux"
 
@@ -5815,7 +5815,7 @@ msgstr "votre message intitulé"
 msgid "join"
 msgstr "rejoindre"
 
-#: pod/meeting/admin.py pod/meeting/forms.py
+#: pod/meeting/admin.py pod/meeting/templates/meeting/form_fieldsets.html
 msgid "Recurring"
 msgstr "Récurrence"
 
@@ -5883,16 +5883,33 @@ msgid "Main fields"
 msgstr "Champs principaux"
 
 #: pod/meeting/forms.py
-msgid "Date and time options"
-msgstr "Date et heure"
+msgid "Access"
+msgstr "Accès"
+
+#: pod/meeting/forms.py pod/meeting/models.py
+msgid "Slides"
+msgstr "Diapositives"
 
 #: pod/meeting/forms.py
 msgid "Record session"
 msgstr "Enregistrement"
 
 #: pod/meeting/forms.py
+msgid "Date and time options"
+msgstr "Options de date et d’heure"
+
+#: pod/meeting/forms.py
 msgid "Recurring options"
 msgstr "Options de récurrence"
+
+#: pod/meeting/forms.py pod/video/forms.py
+#: pod/video/templates/videos/dashboard.html
+msgid "Restrictions"
+msgstr "Restrictions"
+
+#: pod/meeting/forms.py
+msgid "Technical settings"
+msgstr "Paramètres techniques"
 
 #: pod/meeting/forms.py pod/meeting/models.py
 msgid "Start date must be less than recurring until date"
@@ -6068,10 +6085,6 @@ msgstr "En cours d’exécution"
 msgid "Indicates whether this meeting is running in BigBlueButton or not!"
 msgstr ""
 "Indique si cette réunion est en cours d’exécution dans BigBlueButton ou non !"
-
-#: pod/meeting/models.py
-msgid "Slides"
-msgstr "Diapositives"
 
 #: pod/meeting/models.py
 msgid ""
@@ -6936,12 +6949,12 @@ msgid "The meeting was successfully stopped."
 msgstr "La réunion a été arrêtée avec succès."
 
 #: pod/meeting/views.py
-msgid "Meeting recordings"
-msgstr "Enregistrements de réunion"
-
-#: pod/meeting/views.py
 msgid "You cannot view the recordings of this meeting."
 msgstr "Vous ne pouvez pas consulter les enregistrements de cette réunion."
+
+#: pod/meeting/views.py
+msgid "Meeting recordings"
+msgstr "Enregistrements de réunion"
 
 #: pod/meeting/views.py
 msgid "The recording has been deleted."
@@ -9318,10 +9331,6 @@ msgstr "Fichier source"
 msgid "Channel options"
 msgstr "Options de chaîne"
 
-#: pod/video/forms.py pod/video/templates/videos/dashboard.html
-msgid "Restrictions"
-msgstr "Restrictions"
-
 #: pod/video/forms.py
 #, python-format
 msgid "The date must be before or equal to %(date)s."
@@ -11035,7 +11044,7 @@ msgstr ""
 
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
-#: pod/video/templates/videos/video_processing_warnings.html
+#: pod/video/templatetags/video_filters.py
 msgid ""
 "Part of the video is missing: the resulting video is shorter than expected. "
 "Please check the source file and re-upload a valid, complete video file."

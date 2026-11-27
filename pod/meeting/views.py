@@ -1,54 +1,71 @@
 """Esup-Pod Meeting views."""
 
-import bleach
 import json
-import jwt
 import logging
 import os
-import requests
 import time
 import traceback
-
-from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm
-from .forms import MeetingInviteForm, get_random_string
-from .models import Meeting, InternalRecording, Livestream, MeetingSessionLog
-from .utils import get_nth_week_number, send_email_recording_ready
 from datetime import datetime
+
+import bleach
+import jwt
+import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.models import User
+from django.contrib.auth.views import redirect_to_login
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import SuspiciousOperation
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.mail import EmailMultiAlternatives
 from django.http import (
+    Http404,
     HttpResponse,
     HttpResponseBadRequest,
-    JsonResponse,
     HttpResponseNotAllowed,
+    JsonResponse,
 )
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
-from pod.import_video.utils import StatelessRecording
-from pod.import_video.utils import manage_download, parse_remote_file
-from pod.import_video.utils import save_video, secure_request_for_upload
-from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
-from pod.main.utils import secure_post_request, display_message_with_icon, is_ajax
-from pod.meeting.webinar import chat_rtmp_gateway, toggle_chat_webinar
-from pod.meeting.webinar import start_webinar, stop_webinar
-from pod.meeting.webinar_utils import search_for_available_livegateway, manage_webinar
+from django.views.decorators.csrf import csrf_exempt, csrf_protect, ensure_csrf_cookie
+
+from pod.import_video.utils import (
+    StatelessRecording,
+    manage_download,
+    parse_remote_file,
+    save_video,
+    secure_request_for_upload,
+)
 from pod.live.models import Event
 from pod.live.views import can_manage_event
+from pod.main.utils import display_message_with_icon, is_ajax, secure_post_request
+from pod.main.views import TEMPLATE_VISIBLE_SETTINGS, in_maintenance
+from pod.meeting.webinar import (
+    chat_rtmp_gateway,
+    start_webinar,
+    stop_webinar,
+    toggle_chat_webinar,
+)
+from pod.meeting.webinar_utils import manage_webinar, search_for_available_livegateway
+
+from .forms import (
+    MeetingDeleteForm,
+    MeetingForm,
+    MeetingInviteForm,
+    MeetingPasswordForm,
+    get_random_string,
+)
+from .models import InternalRecording, Livestream, Meeting, MeetingSessionLog
+from .utils import (
+    get_nth_week_number,
+    meeting_recording_disabled,
+    send_email_recording_ready,
+)
 
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
@@ -157,7 +174,8 @@ def my_meetings(request: WSGIRequest) -> HttpResponse:
             "meetings": meetings,
             "page_title": _("My meetings"),
             "DEFAULT_MEETING_THUMBNAIL": static(DEFAULT_MEETING_THUMBNAIL),
-            "meeting_disable_record": MEETING_DISABLE_RECORD,
+            "use_meeting_webinar": USE_MEETING_WEBINAR,
+            "show_meeting_recordings": meeting_recordings_available_to(request.user),
         },
     )
 
@@ -430,7 +448,12 @@ def render_show_page(
             if (request.user.get_full_name() != "")
             else request.user.get_username()
         )
-        join_url = meeting.get_join_url(fullname, "VIEWER", request.user.get_username())
+        join_url = meeting.get_join_url(
+            fullname,
+            "VIEWER",
+            request.user.get_username(),
+            disable_recording=meeting_recording_disabled(request.user),
+        )
         # session log
         sess = meeting.get_current_session()
         viewers = sess.get_viewers()
@@ -468,7 +491,10 @@ def join_as_moderator(request: WSGIRequest, meeting: Meeting) -> HttpResponse:
                 else request.user.get_username()
             )
             join_url = meeting.get_join_url(
-                fullname, "MODERATOR", request.user.get_username()
+                fullname,
+                "MODERATOR",
+                request.user.get_username(),
+                disable_recording=meeting_recording_disabled(request.user),
             )
             # session log
             sess = meeting.get_current_session()
@@ -547,7 +573,10 @@ def check_form(
                         else request.user.get_username()
                     )
                     join_url = meeting.get_join_url(
-                        fullname, "VIEWER", request.user.get_username()
+                        fullname,
+                        "VIEWER",
+                        current_user.get_username(),
+                        disable_recording=meeting_recording_disabled(current_user),
                     )
                 else:
                     fullname = form.cleaned_data["name"]
@@ -624,7 +653,9 @@ def status(request: WSGIRequest, meeting_id: str) -> JsonResponse:
         )
         raise PermissionDenied
     """
-    return JsonResponse({"status": meeting.get_is_meeting_running()}, safe=False)
+    return JsonResponse(
+        {"status": meeting.get_is_meeting_running(recover=False)}, safe=False
+    )
 
 
 @csrf_protect
@@ -700,78 +731,93 @@ def get_meeting_info(request: WSGIRequest, meeting_id: str) -> JsonResponse:
         return JsonResponse({"info": info, "msg": msg}, safe=False)
 
 
-@login_required(redirect_field_name="referrer")
-def get_internal_recordings(
-    request: WSGIRequest, meeting_id: str, recording_id=None
-) -> list:
-    """List the internal recordings, depends on parameters (core function).
+def meeting_recordings_available_to(user: User) -> bool:
+    """Check whether recording access is enabled for the user's affiliation."""
+    return user.is_authenticated and not meeting_recording_disabled(user)
 
-    Args:
-        request (WSGIRequest): HTTP request
-        meeting_id (str): meeting id (BBB format)
-        recording_id (str, optional): recording id (BBB format)
 
-    Raises:
-        PermissionDenied: if user not allowed
-
-    Returns:
-        recordings[]: list of recordings corresponding to parameters
-    """
-    meeting = get_object_or_404(
-        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+def can_upload_internal_recordings(user: User) -> bool:
+    """Apply the video upload restriction to meeting recordings."""
+    return user.is_staff or not getattr(
+        settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
     )
 
-    # Secure the list of internal recordings
+
+def secure_internal_recordings(request: WSGIRequest, meeting: Meeting) -> None:
+    """Require the applicable permissions for the meeting recordings."""
+    user = request.user
+    if meeting_recordings_available_to(user) and (
+        user == meeting.owner
+        or user.is_superuser
+        or user.has_perm("meeting.view_meeting")
+        or meeting.additional_owners.filter(pk=user.pk).exists()
+    ):
+        return
+
+    display_message_with_icon(
+        request, messages.ERROR, _("You cannot view the recordings of this meeting.")
+    )
+    raise PermissionDenied
+
+
+def build_internal_recording(
+    data: dict, meeting: Meeting, *, can_upload: bool, can_delete: bool
+) -> StatelessRecording:
+    """Build a recording with playback links and the user's management rights."""
+    recording = StatelessRecording(data["recordID"], data["name"], data["state"])
+    recording.startTime = data["startTime"]
+    recording.endTime = data["endTime"]
+    recording.canUpload = False
+    recording.canDelete = can_delete
+    playback_formats = data.get("playback") or {}
+    for playback in playback_formats.values():
+        if playback["type"] == "presentation":
+            recording.presentationUrl = playback["url"]
+        if playback["type"] == "video":
+            recording.videoUrl = playback["url"]
+            recording.canUpload = can_upload
+
+    stored_recording = InternalRecording.objects.filter(
+        meeting=meeting, recording_id=recording.id
+    ).first()
+    if stored_recording:
+        recording.uploadedToPodBy = stored_recording.uploaded_to_pod_by
+
+    return recording
+
+
+def get_internal_recordings(
+    request: WSGIRequest, meeting: Meeting, recording_id: str | None = None
+) -> list[StatelessRecording]:
+    """Return the recordings visible to the user."""
     secure_internal_recordings(request, meeting)
 
-    # The user can delete this recording?
+    response = (
+        meeting.get_recordings()
+        if recording_id is None
+        else meeting.get_recording(recording_id)
+    )
+    data_by_id = response.get("recordings")
+    if not isinstance(data_by_id, dict):
+        return []
+
+    can_upload = can_upload_internal_recordings(request.user)
     can_delete = get_can_delete_recordings(request, meeting)
-
-    # Get one or more recordings
-    meeting_recordings = get_one_or_more_recordings(request, meeting, recording_id)
-
     recordings = []
-    if type(meeting_recordings.get("recordings")) is dict:
-        for data in meeting_recordings["recordings"].values():
-            # Management of the BBB recording
-            bbb_recording = StatelessRecording(
-                data["recordID"], data["name"], data["state"]
+    for data in data_by_id.values():
+        # BBB ignores meetingID when recordID is supplied and accepts prefixes.
+        if recording_id is not None and (
+            data.get("recordID") != recording_id
+            or data.get("meetingID") != meeting.meeting_id
+        ):
+            continue
+        recordings.append(
+            build_internal_recording(
+                data, meeting, can_upload=can_upload, can_delete=can_delete
             )
-            # Init rights
-            bbb_recording.canUpload = False
-
-            bbb_recording.startTime = data["startTime"]
-            bbb_recording.endTime = data["endTime"]
-            for playback in data["playback"]:
-                if data["playback"][playback]["type"] == "presentation":
-                    bbb_recording.presentationUrl = data["playback"][playback]["url"]
-
-                # Uploading to Pod is possible only for video playback
-                if data["playback"][playback]["type"] == "video":
-                    bbb_recording.canUpload = True
-                    bbb_recording.videoUrl = data["playback"][playback]["url"]
-
-            # Only the owner can delete their recordings
-            bbb_recording.canDelete = can_delete
-            # Search for more informations from database (if already uploaded to Pod)
-            recording = InternalRecording.objects.filter(
-                recording_id=data["recordID"]
-            ).first()
-            if recording:
-                bbb_recording.uploadedToPodBy = recording.uploaded_to_pod_by
-            recordings.append(bbb_recording)
+        )
 
     return recordings
-
-
-@login_required(redirect_field_name="referrer")
-def get_one_or_more_recordings(request: WSGIRequest, meeting, recording_id=None) -> list:
-    """Define recordings useful for get_internal_recordings function."""
-    if recording_id is None:
-        meeting_recordings = meeting.get_recordings()
-    else:
-        meeting_recordings = meeting.get_recording(recording_id)
-    return meeting_recordings
 
 
 @login_required(redirect_field_name="referrer")
@@ -791,8 +837,7 @@ def internal_recordings(request: WSGIRequest, meeting_id: str) -> HttpResponse:
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
-    # Call the core function
-    recordings = get_internal_recordings(request, meeting_id)
+    recordings = get_internal_recordings(request, meeting)
 
     return render(
         request,
@@ -824,38 +869,16 @@ def internal_recording(
     Returns:
         HttpResponse: internal recording (JSON format)
     """
-    # Call the core function
-    recordings = get_internal_recordings(request, meeting_id, recording_id)
-    # JSON format
-    data = recordings[0].to_json()
-    if is_ajax(request):
-        return HttpResponse(data, content_type="application/json")
-    else:
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+    recordings = get_internal_recordings(request, meeting, recording_id)
+    if not is_ajax(request):
         return HttpResponseBadRequest()
+    if not recordings:
+        raise Http404
 
-
-def secure_internal_recordings(request: WSGIRequest, meeting: Meeting):
-    """Secure the internal recordings of a meeting.
-
-    Args:
-        request (WSGIRequest): HTTP request
-        meeting (Meeting): Meeting instance
-
-    Raises:
-        PermissionDenied: if user not allowed
-    """
-    if (
-        meeting
-        and request.user != meeting.owner
-        and not (
-            request.user.is_superuser or request.user.has_perm("meeting.view_meeting")
-        )
-        and (request.user not in meeting.additional_owners.all())
-    ):
-        display_message_with_icon(
-            request, messages.ERROR, _("You cannot view the recordings of this meeting.")
-        )
-        raise PermissionDenied
+    return HttpResponse(recordings[0].to_json(), content_type="application/json")
 
 
 def get_can_delete_recordings(request: WSGIRequest, meeting: Meeting) -> bool:
@@ -1245,6 +1268,8 @@ def upload_internal_recording_to_pod(
     )
     # Secure the internal recordings
     secure_internal_recordings(request, meeting)
+    if not can_upload_internal_recordings(request.user):
+        raise PermissionDenied
 
     # Only POST request
     secure_post_request(request)
@@ -1252,7 +1277,7 @@ def upload_internal_recording_to_pod(
     msg = ""
     upload = False
     try:
-        # Save the internal recording, before the upload
+        # Create the internal recording before downloading its video
         recording_title = request.POST.get("recording_name")
         save_internal_recording(request, recording_id, recording_title, meeting_id)
         # Get it
@@ -1291,16 +1316,14 @@ def save_internal_recording(
     recording_id: str,
     recording_name: str,
     meeting_id: str,
-    source_url=None,
-):
-    """Save an internal recording in database.
+) -> None:
+    """Create the internal recording if needed before importing its video.
 
     Args:
         request (WSGIRequest): HTTP request
         recording_id (str): recording id (BBB format)
         recording_name (str): recording name
         meeting_id (str): meeting id (BBB format)
-        source_url (str, optional): Video file URL. Defaults to None.
 
     Raises:
         ValueError: if impossible creation
@@ -1322,17 +1345,13 @@ def save_internal_recording(
         duration = str(end_dt - start_dt).split(".")[0]
         """
 
-        if source_url is None:
-            source_url = ""
-        # Save the recording as an internal recording
-        recording, created = InternalRecording.objects.update_or_create(
+        InternalRecording.objects.get_or_create(
             name=recording_name,
             recording_id=recording_id,
             meeting=meeting,
             # start_at=start_at,
             # duration=parse_duration(duration),
             owner=meeting.owner,
-            defaults={"uploaded_to_pod_by": request.user, "source_url": source_url},
         )
     except Exception as exc:
         msg = {}
@@ -1433,23 +1452,18 @@ def upload_bbb_recording_to_pod(
         # Step 3: Download the video file
         source_video_url = manage_download(session, source_url, video_file_add, dest_file)
 
-        # Step 4: Save informations about the recording
-        recording_title = request.POST.get("recording_name")
-        save_internal_recording(
-            request,
-            recording.recording_id,
-            recording_title,
-            meeting_id,
-            source_video_url,
-        )
-
-        # Step 5: Save and encode Pod video
+        # Step 4: Save and encode the Pod video
         description = _(
             "This video was uploaded to Pod; its origin is %(type)s: "
             '<a href="%(url)s" target="_blank">%(url)s</a>'
         ) % {"type": "Big Blue Button", "url": source_video_url}
 
-        save_video(request.user, dest_path, recording_title, description)
+        save_video(request.user, dest_path, recording.name, description)
+
+        # Step 5: Mark the recording as imported
+        recording.uploaded_to_pod_by = request.user
+        recording.source_url = source_video_url
+        recording.save(update_fields=["uploaded_to_pod_by", "source_url"])
 
         return True
     except Exception as exc:
@@ -1498,8 +1512,8 @@ def recording_ready(request: WSGIRequest) -> HttpResponse:
             meeting = get_object_or_404(
                 Meeting, meeting_id=meeting_id, site=get_current_site(request)
             )
-            # Send email to the owner
-            send_email_recording_ready(meeting)
+            if meeting_recordings_available_to(meeting.owner):
+                send_email_recording_ready(meeting)
         else:
             raise ValueError("No POST method")
 

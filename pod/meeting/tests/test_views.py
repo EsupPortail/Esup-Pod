@@ -1,25 +1,27 @@
 """Esup-Pod - tests the views for meeting module."""
 
 import random
-import requests
-
-from .. import views
-from ..models import Meeting, InternalRecording
 from datetime import datetime
+from http import HTTPStatus
+from importlib import reload
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
+
+import requests
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
-from django.test import TestCase
-from django.test import Client, override_settings
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
-from http import HTTPStatus
-from importlib import reload
-from unittest.mock import patch
+
 from pod.authentication.models import AccessGroup
-from pod.live.models import Building, Broadcaster
+from pod.live.models import Broadcaster, Building
 from pod.meeting.models import LiveGateway
 from pod.video.models import Type
+
+from .. import views
+from ..models import InternalRecording, Meeting
 
 VIDEO_TEST = getattr(settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp4")
 ROOT_URLCONF = getattr(settings, "ROOT_URLCONF", "http://testserver")
@@ -885,6 +887,7 @@ class MeetingRecordingTestView(TestCase):
         user2 = User.objects.create(username="pod2", password="pod1234pod")
         meeting = Meeting.objects.create(id=1, name="test_pod1", owner=user, site=site)
         user.owner.sites.add(Site.objects.get_current())
+        user.owner.affiliation = "faculty"
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
@@ -1172,6 +1175,7 @@ class InternalRecordingDeleteTestView(TestCase):
             owner=user,
         )
         user.owner.sites.add(Site.objects.get_current())
+        user.owner.affiliation = "faculty"
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
@@ -1273,6 +1277,7 @@ class InternalRecordingUploadTestView(TestCase):
             owner=user,
         )
         user.owner.sites.add(Site.objects.get_current())
+        user.owner.affiliation = "faculty"
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
@@ -1313,24 +1318,71 @@ class InternalRecordingUploadTestView(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_recording_upload_post_request(self):
-        """Test recording upload with Post request."""
-        self.user = User.objects.get(username="pod")
-        self.client.force_login(self.user)
+        """Mark a recording as imported only when the upload succeeds."""
         meeting = Meeting.objects.get(name="test")
+        self.client.force_login(meeting.owner)
+        recording_id = "bbb-recording-to-import"
+        recording_name = "Recording to import"
+        source_url = "https://bbb.example.test/video.mp4"
+        bbb_response = {
+            "recordings": {
+                "recording": {
+                    "recordID": recording_id,
+                    "meetingID": meeting.meeting_id,
+                    "name": recording_name,
+                    "state": "published",
+                    "startTime": "1760000000000",
+                    "endTime": "1760000100000",
+                    "playback": {"format": {"type": "video", "url": source_url}},
+                }
+            }
+        }
         url = reverse(
             "meeting:upload_internal_recording_to_pod",
-            kwargs={
-                "meeting_id": meeting.meeting_id,
-                "recording_id": "e058c39d3dc59d9e9516d95f76eb",
-            },
+            args=[meeting.meeting_id, recording_id],
         )
+        form_data = {"recording_name": recording_name}
 
-        # Check upload to Pod for internal recording
-        response = self.client.post(
-            url,
-            {"recording_name": "test recording2", "source_url": "pod.mp4"},
-            follow=True,
-        )
-        self.assertEqual(response.status_code, HTTPStatus.OK)
+        with (
+            TemporaryDirectory() as media_root,
+            self.settings(MEDIA_ROOT=media_root),
+            patch.object(Meeting, "get_recording", return_value=bbb_response),
+            patch.object(Meeting, "get_recordings", return_value=bbb_response),
+            patch.object(
+                views,
+                "manage_download",
+                side_effect=[ValueError("Download failed"), source_url, source_url],
+            ) as download,
+            patch.object(
+                views,
+                "save_video",
+                side_effect=[ValueError("Video creation failed"), None],
+            ) as save_video,
+        ):
+            for error in ("Download failed", "Video creation failed"):
+                with self.subTest(error=error):
+                    response = self.client.post(url, form_data, follow=True)
+                    self.assertContains(response, error)
+                    self.assertNotContains(response, "Video file already uploaded to Pod")
+                    recording = InternalRecording.objects.get(
+                        meeting=meeting, recording_id=recording_id
+                    )
+                    self.assertIsNone(recording.uploaded_to_pod_by)
+                    self.assertEqual(recording.source_url, "")
 
-        print(" --->  test_recording_upload_get_request of RecordingUploadTestView: OK!")
+            response = self.client.post(url, form_data, follow=True)
+            self.assertContains(response, "Video file already uploaded to Pod")
+            recording = InternalRecording.objects.get(
+                meeting=meeting, recording_id=recording_id
+            )
+            self.assertEqual(recording.uploaded_to_pod_by, meeting.owner)
+            self.assertEqual(recording.source_url, source_url)
+
+            download.side_effect = ValueError("Download failed")
+            response = self.client.post(url, form_data, follow=True)
+            self.assertContains(response, "Download failed")
+            self.assertContains(response, "Video file already uploaded to Pod")
+            recording.refresh_from_db()
+            self.assertEqual(recording.uploaded_to_pod_by, meeting.owner)
+            self.assertEqual(recording.source_url, source_url)
+            self.assertEqual(save_video.call_count, 2)
